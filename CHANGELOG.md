@@ -4,6 +4,52 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Bundle Framework pair `ui-128601792cf9-smart-e235dc4f7627` (Core `12860179`,
+  Smart `e235dc4f`, contracts `0afe5cce`), built from ui-source `97ca0e02`.
+  Core ships Inter again: `core.css` declares seven "Inter Variable" faces
+  (weights 100 to 900, one per script, `font-display: optional`) and an
+  "Inter Fallback" face with metric overrides, and the family tokens lead
+  with them. The data view table gains count on request, column moves and
+  pinned-column labels, a row tint and a page row that holds the window
+  bottom; the pagination renders a short wait; the admin menu searches from a
+  panel. `sf-admin-menu` declares `search-hint`, `search-keys-hint`,
+  `search-label`, `search-mode` and `search-shortcut`. `sf-pagination`
+  declares `can-count`, `count-known`, `counting`, `counting-label`,
+  `first-label`, `has-next`, `page-field-label` and `show-count-label`, and
+  now requires `sf-input` and `sf-spinner`. `sf-table` declares
+  `pin-column-label` and `unpin-column-label`. CI checks out simai/ui at
+  `12860179`.
+- The runtime projection carries the files the foundation stylesheets name
+  through `url()`: the seven hashed Inter woff2 files beside `core/css/`. The
+  sync reads them from `core.css` rather than from a list, resolves each one
+  relative to the stylesheet, and refuses a reference that leaves
+  `distr/core/`. The upstream guard covers them. The verbatim copies under
+  `core/fonts/inter/` are not projected. The projection grows from 1379 to
+  1386 files, and a built site gains 7 files per locale.
+- The Smart sync derives the eager Smart projection (`asset_projection.files`)
+  instead of taking it from the lock's existing list. It uses the closure the
+  admission preflight checks: the shell tags and the tag of each admitted
+  component manifest, expanded through `requires` by the function the asset
+  planner itself uses (`FrameworkRuntimeClosure`), mapped to each component's
+  stylesheet and script. A list already in the lock is ignored, so a lock
+  that still names only alert, buttons, icons and modal is rewritten to the
+  seven files the closure reaches. For this pair those are alert, buttons,
+  close, icon-buttons (stylesheet and script), icons and modal.
+- Design tokens for a documentation source without a contract pointer are
+  read from the runtime projection's `core.css`.
+- The `ed549e72` runtime packet is no longer carried. A site whose lock names
+  it stays admitted through `superseded_framework_locks` until it repins.
+
+### Removed
+- The bundled typography packet (`vendor/simai-framework/typography/`:
+  edition 5.4.0 and its seven Inter fonts, 4,078,074 bytes). The runtime
+  projection's `core.css` is now the single source of the foundation and its
+  faces. A lock that still pins edition 5.4.0 (or the earlier 5.8.0), the way
+  larena-doc once did, is recorded in `superseded_typography_projections` and
+  takes the runtime foundation instead; any other pinned packet fails closed
+  with `FRAMEWORK_TYPOGRAPHY_ASSET_MISSING`.
+
 ## [2.13.0] - 2026-10-04
 
 ### Added
@@ -122,6 +168,14 @@ All notable changes to Docara are documented in this file.
   `distr/component/icon/`; the Framework has removed that component and Docara
   no longer carries the packet. A site whose lock still names `f0b69761` stays
   admitted through `superseded_framework_locks` until it repins.
+
+### Upgrade notes
+- A project that writes its own Framework lock (a custom runtime
+  materializer) must list `smart/close/js/close.js`,
+  `smart/icon-buttons/css/icon-buttons.css` and
+  `smart/icon-buttons/js/icon-buttons.js` in `asset_projection.files` with
+  2.13.0, or the build fails with `FRAMEWORK_ASSET_PROJECTION_CLOSURE_MISMATCH`.
+  From the next release the Smart sync derives this set from the closure.
 
 ## [2.12.0] - 2026-09-30
 

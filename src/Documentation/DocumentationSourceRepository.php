@@ -127,8 +127,11 @@ final class DocumentationSourceRepository
             $groups[$key]['title'] = $this->title($family);
             $groups[$key]['rules'][] = $this->publicRule($rule);
         }
-        $typographyTag = (string) ($lock['typography_projection']['candidate'] ?? ltrim((string) $runtime['tag'], 'v'));
-        $coreCss = dirname(__DIR__, 2) . '/resources/portable/vendor/simai-framework/typography/' . $typographyTag . '/core.css';
+        // Design tokens come from the foundation the pinned pair ships: the
+        // runtime projection's core.css. The separate typography packet that
+        // used to carry it is no longer bundled.
+        $coreCss = dirname(__DIR__, 2) . '/resources/portable/vendor/simai-framework/runtime/'
+            . $uiCommit . '/distr/core/css/core.css';
         if (is_file($coreCss) && ! is_link($coreCss)) {
             $css = (string) file_get_contents($coreCss);
             preg_match_all('/(--sf-[a-zA-Z0-9\\/_-]+)\s*:\s*([^;{}]+);/', $css, $matches, PREG_SET_ORDER);

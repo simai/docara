@@ -459,59 +459,9 @@ final readonly class FrameworkAssetPlanner
      */
     private function orderedRuntimeTags(array $tags, array $runtime): array
     {
-        $ordered = [];
-        $visiting = [];
-        $visited = [];
-        foreach ($tags as $tag) {
-            $this->visitRuntimeTag($tag, $runtime, $ordered, $visiting, $visited);
-        }
-
-        return $ordered;
-    }
-
-    /**
-     * @param  array<string, mixed>  $runtime
-     * @param  list<string>  $ordered
-     * @param  array<string, true>  $visiting
-     * @param  array<string, true>  $visited
-     */
-    private function visitRuntimeTag(
-        string $tag,
-        array $runtime,
-        array &$ordered,
-        array &$visiting,
-        array &$visited,
-    ): void {
-        if (isset($visited[$tag])) {
-            return;
-        }
-        if (isset($visiting[$tag])) {
-            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_DEPENDENCY_CYCLE', $tag);
-        }
-
-        $component = $runtime['components'][$tag] ?? null;
-        if (! is_array($component)) {
-            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_COMPONENT_MISSING', $tag);
-        }
-        $requires = $component['requires'] ?? [];
-        if (! is_array($requires) || ! array_is_list($requires)) {
-            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_DEPENDENCY_INVALID', $tag);
-        }
-        foreach ($requires as $dependency) {
-            if (! is_string($dependency) || preg_match('/^sf-[a-z][a-z0-9-]*$/D', $dependency) !== 1) {
-                throw new FrameworkComponentException('FRAMEWORK_RUNTIME_DEPENDENCY_INVALID', $tag);
-            }
-        }
-        $requires = array_values(array_unique($requires));
-        sort($requires, SORT_STRING);
-
-        $visiting[$tag] = true;
-        foreach ($requires as $dependency) {
-            $this->visitRuntimeTag($dependency, $runtime, $ordered, $visiting, $visited);
-        }
-        unset($visiting[$tag]);
-        $visited[$tag] = true;
-        $ordered[] = $tag;
+        // Shared with the Smart sync script, which derives the eager asset
+        // projection from the same closure this planner checks.
+        return FrameworkRuntimeClosure::orderedTags($runtime, $tags);
     }
 
     /**

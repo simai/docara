@@ -75,8 +75,9 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringNotContainsString("root.style.setProperty('--sf-display--family'", $renderer);
         self::assertStringContainsString('The frame takes the page\'s font families with the other tokens.', $renderer);
 
-        // Typography faces live in the Framework foundation stylesheet link,
-        // which the frame receives as text with its font files as bytes.
+        // The Inter faces live in the Framework foundation stylesheet link (the
+        // runtime projection's core.css), which the frame receives as text with
+        // its font files as bytes.
         self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shell);
         self::assertStringContainsString('codepoints=exampleCodepoints(source)', $shell);
         self::assertStringContainsString('portableExampleStylesheet(link,codepoints)', $shell);

@@ -167,30 +167,24 @@ final class FrameworkPortableWaveTest extends TestCase
         );
         $runtimeRevision = (string) $stub['runtime_projection']['source']['revision'];
 
-        // The stub no longer pins a typography edition: a new site takes its
-        // foundation from the runtime projection. The pinned case therefore
-        // comes from a consumer lock that still names an edition, the way
-        // larena-doc does.
+        // The package no longer ships a typography packet. A lock that still
+        // names the retired 5.4.0 edition, the way larena-doc once did, takes
+        // the runtime foundation and receives no typography files at all.
         $pinned = json_decode(
             (string) file_get_contents(dirname(__DIR__) . '/fixtures/framework/simai-framework-5.6.1.lock.json'),
             true,
             512,
             JSON_THROW_ON_ERROR,
         );
-        $pinnedEdition = (string) $pinned['typography_projection']['candidate'];
         $withPacketLock = $stub;
         $withPacketLock['typography_projection'] = $pinned['typography_projection'];
-
-        // A lock that pins the typography packet still gets that edition, and only
-        // that one: the package ships more than one.
         $withPacket = $this->tmpPath('packet-pinned');
         (new PortablePublisherAssetPublisher(new Filesystem, SmartRegistry::bundled(), $withPacketLock))
             ->publish($withPacket, []);
-        $typographyRoot = $withPacket . '/_docara/vendor/simai-framework/typography';
-        self::assertFileExists($typographyRoot . '/' . $pinnedEdition . '/core.css');
-        foreach (glob($typographyRoot . '/*', GLOB_ONLYDIR) ?: [] as $edition) {
-            self::assertSame($pinnedEdition, basename($edition), 'an edition nobody pinned was published');
-        }
+        self::assertDirectoryDoesNotExist($withPacket . '/_docara/vendor/simai-framework/typography');
+        self::assertFileExists(
+            $withPacket . '/_docara/vendor/simai-framework/runtime/' . $runtimeRevision . '/distr/core/css/core.css',
+        );
 
         // A lock that takes its foundation from the runtime projection gets no
         // edition of the packet at all, and no font that only it declared.

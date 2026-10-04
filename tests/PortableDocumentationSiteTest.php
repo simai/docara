@@ -395,8 +395,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // component's stylesheet and script and the third-party notices in —
         // published once per locale, 24 * 2. The Smart runtime stayed at 62
         // files and the shell stylesheets at 70. The flag catalogue and its 494
-        // SVGs, which sf-flag fetches by URL, then added 495 per locale.
-        self::assertCount(3356, $firstFiles);
+        // SVGs, which sf-flag fetches by URL, then added 495 per locale. The
+        // seven Inter woff2 files core.css names add 7 per locale, 3356 to 3370.
+        self::assertCount(3370, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_contains($path, 'vendor/simai-framework/typography/'),

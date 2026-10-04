@@ -111,6 +111,18 @@ final readonly class FrameworkManifestRepository
 
         $projectTypography = $projectLock->typographyProjection();
         $packageTypography = $packageLock->typographyProjection();
+        // The package no longer ships a typography packet: the runtime
+        // projection's core.css carries the foundation and its own font faces.
+        // A lock that still names a retired edition recorded in
+        // superseded_typography_projections takes that foundation instead. Any
+        // other pinned packet stays as it is and fails closed, because its
+        // bytes are no longer bundled.
+        if (is_array($projectTypography)
+            && $packageTypography === null
+            && self::isSupersededTypography($projectTypography, $runtimeLock)
+        ) {
+            unset($data['typography_projection']);
+        }
         if (is_array($projectTypography)
             && is_array($packageTypography)
             && CanonicalJson::encode($projectTypography) !== CanonicalJson::encode($packageTypography)
@@ -146,6 +158,29 @@ final readonly class FrameworkManifestRepository
         }
 
         return FrameworkLock::fromArray($data);
+    }
+
+    /**
+     * @param  array<string, mixed>  $typography
+     * @param  array<string, mixed>|null  $runtimeLock
+     */
+    private static function isSupersededTypography(array $typography, ?array $runtimeLock): bool
+    {
+        $records = $runtimeLock['asset_planner']['superseded_typography_projections'] ?? null;
+        if (! is_array($records) || ! array_is_list($records)) {
+            return false;
+        }
+        foreach ($records as $record) {
+            if (is_array($record)
+                && array_keys($record) === ['packet_sha256', 'core_sha256']
+                && ($record['packet_sha256'] ?? null) === ($typography['packet_sha256'] ?? null)
+                && ($record['core_sha256'] ?? null) === ($typography['files']['core']['sha256'] ?? null)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** @param array<string,mixed>|null $runtimeLock */
@@ -525,6 +560,9 @@ final readonly class FrameworkManifestRepository
 
         $resources = dirname($this->resourceRoot);
         $path = $resources . '/' . $record['path'];
+        if (! file_exists($path) && ! is_link($path)) {
+            throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_MISSING', $key);
+        }
         $stat = @lstat($path);
         $root = realpath($resources);
         $real = realpath($path);
@@ -858,7 +896,7 @@ final readonly class FrameworkManifestRepository
         }
     }
 
-    private function manifestRelativePath(string $key): string
+    public static function manifestRelativePath(string $key): string
     {
         if (preg_match('/\Aui(?:\.[a-z][a-z0-9_]*)+\z/D', $key) !== 1) {
             throw new FrameworkComponentException('FRAMEWORK_COMPONENT_UNSUPPORTED', $key);

@@ -348,6 +348,50 @@ foreach (array_merge($coreFiles, [
     chmod($runtimeTarget, 0644);
 }
 
+// Files the foundation stylesheets name through url(): the Inter faces in
+// core.css point at hashed woff2 files beside core/css/. They are read from the
+// stylesheet the page loads, not listed here, so a rebuilt font set moves with
+// the stylesheet. A reference resolves relative to the stylesheet and must stay
+// inside distr/core/; data: URIs and absolute URLs are not files. Unreferenced
+// copies (core/fonts/inter/) are not projected.
+$foundationStylesheets = ['core/css/core.css', 'core/css/utility.full.css'];
+$foundationDependencies = [];
+foreach ($foundationStylesheets as $foundationStylesheet) {
+    $cssBytes = file_get_contents($distribution . '/' . $foundationStylesheet);
+    if (! is_string($cssBytes) || $cssBytes === '') {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_INVALID: ' . $foundationStylesheet);
+    }
+    preg_match_all('#url\(\s*(["\']?)([^"\')]+)\1\s*\)#i', $cssBytes, $urlMatches);
+    foreach ($urlMatches[2] ?? [] as $url) {
+        $url = trim((string) $url);
+        if ($url === ''
+            || str_starts_with($url, '#')
+            || str_starts_with($url, '/')
+            || preg_match('#^(?:data:|https?:|//)#i', $url) === 1
+        ) {
+            continue;
+        }
+        $urlPath = preg_split('/[?#]/', $url, 2)[0] ?? '';
+        $dependency = $normalizeRelativePath(dirname($foundationStylesheet) . '/' . $urlPath);
+        if (! is_string($dependency) || ! str_starts_with($dependency, 'core/')) {
+            throw new RuntimeException('FRAMEWORK_RUNTIME_DEPENDENCY_PATH_INVALID: ' . $foundationStylesheet . ' -> ' . $url);
+        }
+        $foundationDependencies[$dependency] = true;
+    }
+}
+ksort($foundationDependencies, SORT_STRING);
+foreach (array_keys($foundationDependencies) as $relativePath) {
+    $assetTarget = $distribution . '/' . $relativePath;
+    if (! is_dir(dirname($assetTarget))
+        && ! mkdir(dirname($assetTarget), 0755, true)
+        && ! is_dir(dirname($assetTarget))
+    ) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_DIRECTORY_FAILED: ' . $relativePath);
+    }
+    file_put_contents($assetTarget, $readRuntime($relativePath), LOCK_EX);
+    chmod($assetTarget, 0644);
+}
+
 $manifestPath = $runtimeBase . '/runtime-manifest.json';
 $manifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
 $manifest['source'] = $projection['source'];
@@ -357,6 +401,7 @@ $manifest['files'] = array_filter(
         && ! str_starts_with($relativePath, 'core/js/')
         && ! str_starts_with($relativePath, 'core/css/')
         && ! str_starts_with($relativePath, 'core/contracts/')
+        && preg_match('#^core/[^/]+$#D', $relativePath) !== 1
         && array_filter(
             $componentAssetDirectories,
             static fn (string $assetDirectory): bool => str_starts_with($relativePath, $assetDirectory . '/'),
@@ -370,7 +415,7 @@ foreach (glob($coreJsRoot . '/*.js') ?: [] as $coreFile) {
     }
     $manifest['files']['core/js/' . basename($coreFile)] = ['sha256' => hash_file('sha256', $coreFile)];
 }
-foreach (['core/css/core.css', 'core/css/utility.full.css'] as $foundationFile) {
+foreach ([...$foundationStylesheets, ...array_keys($foundationDependencies)] as $foundationFile) {
     $manifest['files'][$foundationFile] = [
         'sha256' => hash_file('sha256', $distribution . '/' . $foundationFile),
     ];

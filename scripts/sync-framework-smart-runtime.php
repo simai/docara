@@ -9,6 +9,11 @@ declare(strict_types=1);
  * files are published for the dynamic Loader without being loaded eagerly.
  */
 $root = dirname(__DIR__);
+require $root . '/vendor/autoload.php';
+
+use Simai\Docara\Framework\FrameworkManifestRepository;
+use Simai\Docara\Framework\FrameworkRuntimeClosure;
+
 $smartRoot = $argv[1] ?? null;
 if (! is_string($smartRoot)
     || $smartRoot === ''
@@ -144,25 +149,6 @@ foreach ($iterator as $entry) {
 }
 sort($pruned, SORT_STRING);
 
-$staticPaths = array_keys($lock['asset_projection']['files'] ?? []);
-sort($staticPaths, SORT_STRING);
-foreach ($staticPaths as $relativePath) {
-    if (! isset($files[$relativePath])) {
-        throw new RuntimeException('FRAMEWORK_STATIC_SMART_ASSET_MISSING: ' . $relativePath);
-    }
-}
-
-$staticProjection = [];
-$dynamicProjection = [];
-foreach ($files as $relativePath => $bytes) {
-    $record = ['sha256' => hash('sha256', $bytes)];
-    if (in_array($relativePath, $staticPaths, true)) {
-        $staticProjection[$relativePath] = $record;
-    } else {
-        $dynamicProjection[$relativePath] = $record;
-    }
-}
-
 $registry = json_decode(
     (string) file_get_contents($root . '/docs/site/contracts/generated/framework-contract-registry.json'),
     true,
@@ -247,6 +233,9 @@ foreach ($registry['entries'] as $entry) {
 ksort($runtimeDependencies, SORT_STRING);
 
 $synchronizedRuntime = null;
+$staticPaths = null;
+$staticProjection = [];
+$dynamicProjection = [];
 foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $projectLockPath) {
     $projectLock = json_decode((string) file_get_contents($projectLockPath), true, 512, JSON_THROW_ON_ERROR);
     if (($projectLock['runtime']['ui_smart']['commit'] ?? null) !== $revision
@@ -254,14 +243,6 @@ foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $pr
     ) {
         throw new RuntimeException('FRAMEWORK_SMART_PROJECT_LOCK_REVISION_MISMATCH: ' . $projectLockPath);
     }
-    $projectLock['asset_projection']['mount'] = '_docara/framework-runtime';
-    $projectLock['asset_projection']['files'] = $staticProjection;
-    $projectLock['dynamic_asset_projection'] = [
-        'schema' => 'docara.framework_dynamic_asset_projection.v1',
-        'mount' => '_docara/framework-runtime',
-        'source' => $projectLock['asset_projection']['source'],
-        'files' => $dynamicProjection,
-    ];
     foreach ($smartEntries as $tag => $component) {
         if (! isset($projectLock['runtime']['components'][$tag])) {
             $projectLock['runtime']['components'][$tag] = $component;
@@ -283,6 +264,52 @@ foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $pr
         $projectLock['runtime']['components'][$tag]['attributes'] = $declaredAttributes[$tag] ?? [];
     }
     ksort($projectLock['runtime']['components'], SORT_STRING);
+
+    // The eager projection is exactly what the admission preflight's closure
+    // reaches: the shell tags and each admitted manifest's tag, expanded
+    // through `requires`. It is derived with the planner's own function, and a
+    // list already present in the lock is ignored, so a hand-kept list can no
+    // longer drift from the closure the planner checks.
+    $manifestTags = [];
+    foreach (array_keys($projectLock['manifests'] ?? []) as $manifestKey) {
+        $manifestPath = $root . '/resources/framework/'
+            . FrameworkManifestRepository::manifestRelativePath((string) $manifestKey);
+        $componentManifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
+        $manifestTag = $componentManifest['frontend']['tag'] ?? null;
+        if (! is_string($manifestTag)) {
+            throw new RuntimeException('FRAMEWORK_SMART_MANIFEST_TAG_MISSING: ' . $manifestKey);
+        }
+        $manifestTags[] = $manifestTag;
+    }
+    $eagerPaths = FrameworkRuntimeClosure::eagerSmartFiles($projectLock['runtime'], $manifestTags);
+    foreach ($eagerPaths as $relativePath) {
+        if (! isset($files[$relativePath])) {
+            throw new RuntimeException('FRAMEWORK_STATIC_SMART_ASSET_MISSING: ' . $relativePath);
+        }
+    }
+    if ($staticPaths !== null && $staticPaths !== $eagerPaths) {
+        throw new RuntimeException('FRAMEWORK_SMART_EAGER_SET_DIVERGES: ' . $projectLockPath);
+    }
+    $staticPaths = $eagerPaths;
+    $staticProjection = [];
+    $dynamicProjection = [];
+    foreach ($files as $relativePath => $bytes) {
+        $record = ['sha256' => hash('sha256', $bytes)];
+        if (in_array($relativePath, $eagerPaths, true)) {
+            $staticProjection[$relativePath] = $record;
+        } else {
+            $dynamicProjection[$relativePath] = $record;
+        }
+    }
+    $projectLock['asset_projection']['mount'] = '_docara/framework-runtime';
+    $projectLock['asset_projection']['files'] = $staticProjection;
+    $projectLock['dynamic_asset_projection'] = [
+        'schema' => 'docara.framework_dynamic_asset_projection.v1',
+        'mount' => '_docara/framework-runtime',
+        'source' => $projectLock['asset_projection']['source'],
+        'files' => $dynamicProjection,
+    ];
+
     $synchronizedRuntime = $projectLock['runtime'];
     file_put_contents(
         $projectLockPath,

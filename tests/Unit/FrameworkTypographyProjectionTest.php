@@ -26,7 +26,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($project));
 
-        self::assertSame('ui-ed549e7282ef-smart-6a58ac134bdb', $repository->runtime()['pair_id']);
+        self::assertSame('ui-128601792cf9-smart-e235dc4f7627', $repository->runtime()['pair_id']);
     }
 
     #[Test]
@@ -40,8 +40,8 @@ final class FrameworkTypographyProjectionTest extends TestCase
         );
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
-        self::assertSame('ui-ed549e7282ef-smart-6a58ac134bdb', $repository->runtime()['pair_id']);
-        self::assertSame(1379, $repository->runtimeProjection()['files']);
+        self::assertSame('ui-128601792cf9-smart-e235dc4f7627', $repository->runtime()['pair_id']);
+        self::assertSame(1386, $repository->runtimeProjection()['files']);
         self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $previous['runtime']['pair_id']);
 
         $previous['runtime']['ui']['files'] = 6772;
@@ -60,7 +60,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $legacy['runtime_projection']['manifest']['sha256'] = '8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e';
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($legacy));
-        self::assertSame(1379, $repository->runtimeProjection()['files']);
+        self::assertSame(1386, $repository->runtimeProjection()['files']);
         self::assertArrayHasKey('rule/rule.json', $repository->runtimeManifest()['files']);
         self::assertSame(117, $legacy['runtime_projection']['files']);
 
@@ -71,17 +71,13 @@ final class FrameworkTypographyProjectionTest extends TestCase
     }
 
     #[Test]
-    public function a_pinned_typography_packet_is_admitted_as_it_stands_and_fails_closed_on_changed_bytes(): void
+    public function a_retired_typography_packet_takes_the_runtime_foundation_and_any_other_pin_fails_closed(): void
     {
-        // The package no longer declares a typography edition of its own: the
-        // own site and the stub take their foundation from the runtime
-        // projection. There is therefore nothing to upgrade a consumer lock to,
-        // and a consumer that pins an edition the package still ships keeps
-        // exactly what it pinned.
-        // A lock from the superseded list is adopted wholesale and therefore
-        // takes the package's arrangement, foundation included. The case here
-        // is the other one: a current lock that pins an edition of its own, the
-        // way larena-doc does.
+        // The package no longer ships a typography packet: the runtime
+        // projection's core.css carries the foundation with its own Inter
+        // faces. A current lock that still pins the retired 5.4.0 edition, the
+        // way larena-doc once did, is recorded in
+        // superseded_typography_projections and takes the runtime foundation.
         $pinned = json_decode(
             (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json'),
             true,
@@ -97,68 +93,39 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $pinned['typography_projection'] = $consumer['typography_projection'];
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($pinned));
-        $projection = $repository->typographyProjection();
-        self::assertSame(
-            $pinned['typography_projection']['packet_sha256'],
-            $projection['packet_sha256'],
-            'a pinned packet was rewritten',
+        self::assertNull($repository->typographyProjection());
+        $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->plan([]);
+        $assets = array_column($plan->assets, null, 'key');
+        self::assertStringStartsWith(
+            '/_docara/vendor/simai-framework/runtime/' . $pinned['runtime']['ui']['commit'] . '/distr/core/css/core.css?sf_v=',
+            $assets['simai.framework.core.css']['url'],
         );
-        self::assertSame(
-            $pinned['typography_projection']['files']['core']['sha256'],
-            $projection['files']['core']['sha256'],
-        );
-        self::assertStringContainsString(
-            '--sf-breakpoint-xxl',
-            $repository->bundledTypographyAsset('core'),
-        );
+        self::assertDirectoryDoesNotExist(dirname(__DIR__, 2) . '/resources/portable/vendor/simai-framework/typography');
 
-        // The fail-closed rule is unchanged: a hash the bytes do not match is
-        // refused before anything renders.
-        $tampered = $pinned;
-        $tampered['typography_projection']['files']['core']['sha256'] = str_repeat('f', 64);
+        // A pinned packet that is not a recorded edition is not rewritten, and
+        // its bytes are no longer bundled: it is refused before anything renders.
+        $unknown = $pinned;
+        $unknown['typography_projection']['files']['core']['sha256'] = str_repeat('f', 64);
         $this->expectException(FrameworkComponentException::class);
-        $this->expectExceptionMessage('FRAMEWORK_TYPOGRAPHY_ASSET_HASH_MISMATCH');
-        FrameworkManifestRepository::bundled(FrameworkLock::fromArray($tampered));
+        $this->expectExceptionMessage('FRAMEWORK_TYPOGRAPHY_ASSET_MISSING');
+        FrameworkManifestRepository::bundled(FrameworkLock::fromArray($unknown));
     }
 
     #[Test]
-    public function exact_projections_publish_typography_and_framework_runtime_locally(): void
+    public function exact_projections_publish_the_foundation_and_framework_runtime_locally(): void
     {
-        // The shape larena-doc still has: the own site's runtime projection with
-        // a pinned typography packet on top. The own site itself no longer pins
-        // one, so the packet comes from the consumer fixture.
+        // The own site's lock: the foundation, its Inter faces and the Framework
+        // runtime all come from the runtime projection.
         $own = json_decode(
             (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json'),
             true,
             512,
             JSON_THROW_ON_ERROR,
         );
-        $consumer = json_decode(
-            (string) file_get_contents(dirname(__DIR__) . '/fixtures/framework/simai-framework-5.6.1.lock.json'),
-            true,
-            512,
-            JSON_THROW_ON_ERROR,
-        );
-        $own['typography_projection'] = $consumer['typography_projection'];
         $lock = FrameworkLock::fromArray($own);
         $repository = FrameworkManifestRepository::bundled($lock);
-        $projection = $repository->typographyProjection();
-
-        self::assertIsArray($projection);
-        $pinned = $consumer['typography_projection'];
-        self::assertSame($pinned['candidate'], $projection['candidate']);
-        self::assertSame($pinned['source']['revision'], $projection['source']['revision']);
-        self::assertSame($pinned['builder']['revision'], $projection['builder']['revision']);
-        self::assertSame($pinned['distribution']['revision'], $projection['distribution']['revision']);
-        self::assertSame($pinned['distribution']['published'], $projection['distribution']['published']);
-
-        self::assertCount(10, $projection['files']);
-        foreach (array_keys($projection['files']) as $key) {
-            self::assertSame(
-                $projection['files'][$key]['sha256'],
-                hash('sha256', $repository->bundledTypographyAsset($key)),
-            );
-        }
+        self::assertNull($repository->typographyProjection());
+        $uiCommit = (string) $own['runtime']['ui']['commit'];
 
         $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->plan([]);
         $assets = array_column($plan->assets, null, 'key');
@@ -186,28 +153,37 @@ final class FrameworkTypographyProjectionTest extends TestCase
             array_search('simai.framework.core.js', $assetKeys, true),
             array_search('simai.framework.preloaded.sf_modal.js', $assetKeys, true),
         );
-        foreach (['simai.framework.core.css' => 'core', 'simai.framework.utility.full.css' => 'utility'] as $assetKey => $fileKey) {
-            self::assertStringStartsWith('/' . $projection['files'][$fileKey]['public'] . '?sf_v=', $assets[$assetKey]['url']);
-            self::assertSame($projection['files'][$fileKey]['sha256'], $assets[$assetKey]['sha256']);
-            self::assertSame($projection['distribution']['revision'], $assets[$assetKey]['source_revision']);
+        foreach (['simai.framework.core.css' => 'core/css/core.css', 'simai.framework.utility.full.css' => 'core/css/utility.full.css'] as $assetKey => $runtimeFile) {
+            self::assertStringStartsWith(
+                '/_docara/vendor/simai-framework/runtime/' . $uiCommit . '/distr/' . $runtimeFile . '?sf_v=',
+                $assets[$assetKey]['url'],
+            );
+            self::assertSame($repository->runtimeAssetRecord($runtimeFile)['sha256'], $assets[$assetKey]['sha256']);
+            self::assertSame($uiCommit, $assets[$assetKey]['source_revision']);
         }
         // Sandboxed example frames receive every Framework stylesheet link as
-        // bytes, with the font files its faces name; the typography faces
-        // therefore have to sit in that link and point at packet files.
+        // bytes, with the font files its faces name. The Inter faces sit in the
+        // runtime projection's core.css and point at the hashed woff2 files the
+        // sync projects beside core/css/.
         self::assertMatchesRegularExpression(
-            '#<link rel="stylesheet" href="/_docara/vendor/simai-framework/typography/5\.4\.0/core\.css\?sf_v=[^"]+" data-docara-framework-asset="simai\.framework\.core\.css">#',
+            '#<link rel="stylesheet" href="/_docara/vendor/simai-framework/runtime/' . $uiCommit . '/distr/core/css/core\.css\?sf_v=[^"]+" data-docara-framework-asset="simai\.framework\.core\.css">#',
             $plan->headHtml(),
         );
-        preg_match_all('/url\(\.\.\/([a-f0-9]{20})\.woff2\)/', $repository->bundledTypographyAsset('core'), $faces);
+        $coreCss = $repository->bundledRuntimeAsset('core/css/core.css');
+        self::assertSame(7, substr_count($coreCss, 'font-family: "Inter Variable"'));
+        preg_match_all('/url\(\.\.\/([a-f0-9]{20})\.woff2\)/', $coreCss, $faces);
         self::assertCount(7, $faces[1]);
         foreach ($faces[1] as $font) {
-            self::assertArrayHasKey('font_' . $font, $projection['files']);
+            self::assertSame(
+                $repository->runtimeAssetRecord('core/' . $font . '.woff2')['sha256'],
+                hash('sha256', $repository->bundledRuntimeAsset('core/' . $font . '.woff2')),
+            );
         }
         $runtime = $repository->runtimeProjection();
         self::assertIsArray($runtime);
-        self::assertSame(1379, $runtime['files']);
+        self::assertSame(1386, $runtime['files']);
         $runtimeFiles = $repository->runtimeManifest()['files'];
-        self::assertCount(1379, $runtimeFiles);
+        self::assertCount(1386, $runtimeFiles);
         self::assertArrayHasKey('rule/rule.json', $runtimeFiles);
         self::assertArrayHasKey('utility/theme/default/css/default.css', $runtimeFiles);
         self::assertArrayHasKey('component/highlight/js/highlight.js', $runtimeFiles);
@@ -245,7 +221,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertStringNotContainsString('.min.', $relativePath);
         }
         self::assertSame(
-            '970e920e0d0900c9bd3241edca92e427fbb0206c41b6fa253fff1a5a7f9df981',
+            'b679cda21fda5739d330b1d1e9640a972b6c73f54ebca0c26594e022d76abb68',
             $runtime['packet_sha256'],
         );
         $coreLoader = $repository->bundledRuntimeAsset('core/js/core-loader.js');
@@ -255,7 +231,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertStringNotContainsString('cdn.jsdelivr.net', $assets['simai.framework.boot']['content']);
         foreach (['simai.framework.smart_base.js', 'simai.framework.core.js'] as $assetKey) {
             self::assertStringStartsWith('/_docara/vendor/simai-framework/runtime/', $assets[$assetKey]['url']);
-            self::assertSame('ed549e7282efbc0c4af0a2750abc38e2615e7696', $assets[$assetKey]['source_revision']);
+            self::assertSame('128601792cf9a28482441a58e835c27015e8a24b', $assets[$assetKey]['source_revision']);
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
@@ -411,11 +387,11 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $nested = (new FrameworkAssetPlanner($repository, '/project~/docs/_docara/framework-runtime'))->plan([]);
         $nestedAssets = array_column($nested->assets, null, 'key');
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/typography/5.4.0/core.css?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/' . $uiCommit . '/distr/core/css/core.css?sf_v=',
             $nestedAssets['simai.framework.core.css']['url'],
         );
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/ed549e7282efbc0c4af0a2750abc38e2615e7696/distr/core/js/core.js?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/128601792cf9a28482441a58e835c27015e8a24b/distr/core/js/core.js?sf_v=',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }
@@ -672,10 +648,10 @@ final class FrameworkTypographyProjectionTest extends TestCase
             copy($source, $target);
         }
         copy(dirname(__DIR__, 2) . '/resources/framework/runtime-lock.json', $resources . '/framework/runtime-lock.json');
-        // The own site takes its foundation from the runtime projection and no
-        // longer pins a typography packet. These cases guard the bytes of a
-        // pinned packet, so the fixture keeps the shape larena-doc still has:
-        // the own site's projections with a pinned edition on top.
+        // The package no longer ships a typography packet, but the planner still
+        // honours one in a resource root that carries it. These cases guard the
+        // bytes of such a packet, so the fixture writes a small stand-in packet
+        // of its own and pins it with matching digests.
         $projectLock = json_decode(
             (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json'),
             true,
@@ -689,15 +665,18 @@ final class FrameworkTypographyProjectionTest extends TestCase
             JSON_THROW_ON_ERROR,
         );
         $projectLock['typography_projection'] = $pinningConsumer['typography_projection'];
-        $lock = FrameworkLock::fromArray($projectLock);
-        foreach ($lock->typographyProjection()['files'] as $record) {
-            $source = dirname(__DIR__, 2) . '/resources/' . $record['path'];
+        foreach ($projectLock['typography_projection']['files'] as $key => $record) {
             $target = $resources . '/' . $record['path'];
             if (! is_dir(dirname($target))) {
                 mkdir(dirname($target), 0777, true);
             }
-            copy($source, $target);
+            $bytes = $key === 'core'
+                ? ":root{--sf-breakpoint-xxl:1400px}\n"
+                : 'stand-in ' . $key . "\n";
+            file_put_contents($target, $bytes);
+            $projectLock['typography_projection']['files'][$key]['sha256'] = hash('sha256', $bytes);
         }
+        $lock = FrameworkLock::fromArray($projectLock);
         $runtime = $lock->runtimeProjection();
         $manifestSource = dirname(__DIR__, 2) . '/resources/' . $runtime['manifest']['path'];
         $manifestTarget = $resources . '/' . $runtime['manifest']['path'];

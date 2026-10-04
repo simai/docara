@@ -13,7 +13,11 @@ declare(strict_types=1);
 $root = dirname(__DIR__);
 $uiRoot = $argv[1] ?? null;
 $useWorkingRegistry = ($argv[2] ?? null) === '--registry-working-tree';
-if (! is_string($uiRoot) || $uiRoot === '' || ! is_dir($uiRoot . '/.git')) {
+// A checkout or a linked worktree, whose .git is a file.
+if (! is_string($uiRoot)
+    || $uiRoot === ''
+    || (! is_dir($uiRoot . '/.git') && ! is_file($uiRoot . '/.git'))
+) {
     fwrite(STDERR, "Usage: php scripts/sync-framework-rule-registry.php /absolute/path/to/ui\n");
     exit(2);
 }

@@ -4,6 +4,21 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Added
+- `scripts/verify-consumer-install.php` installs the package into a throwaway
+  Composer project from `git archive` of the checkout, with no `vendor/` of
+  its own, as a tag's zipball would. It runs both Framework syncs from
+  `vendor/simai/docara`, starting from a project lock that still carries the
+  old four-file eager Smart list, and then builds and verifies the site. The
+  release-readiness workflow runs it in a new `consumer-install` job against
+  the ui and ui-smart commits pinned in `resources/framework/runtime-lock.json`.
+  It fails on both the 2.14.0 autoload fatal and the 2.13.0
+  `FRAMEWORK_ASSET_PROJECTION_CLOSURE_MISMATCH`.
+
+### Fixed
+- `scripts/sync-framework-rule-registry.php` accepts a `ui` checkout that is a
+  linked Git worktree, whose `.git` is a file, as the Smart sync already did.
+
 ## [2.14.1] - 2026-10-04
 
 ### Fixed

@@ -4,6 +4,26 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Bundle Framework pair `ui-4f5e5067afeb-smart-7d932ed51408` (Core `4f5e5067`,
+  Smart `7d932ed5`, contracts `6dff03e4`), built from ui-source `2284e9c5`.
+  Smart elements keep their place: an element a template declares keeps its
+  rendered position, and a re-render writes only what changed. Every Smart
+  bundle now carries that shared base, so 45 of the 62 projected Smart files
+  have new bytes. The button emphases each get their own look: `--ghost`
+  reads as `--link`, and there is a new tonal primary and calm loading
+  stripes. Buttons and icon buttons gain readable density classes. The page
+  field keeps its number under a host's own reset, the open admin-menu search
+  panel stands over the menu and can carry the host's title, and a dropdown
+  holding tags is as tall as one holding text. The runtime projection keeps
+  1386 files; the Inter faces in `core.css` are unchanged, so the preloads
+  resolve to the same files. Smart attributes, `requires` and the derived
+  eager set (alert, buttons, close, icon-buttons, icons, modal) are unchanged.
+  CI and the consumer-install job check out simai/ui at `4f5e5067` and
+  simai/ui-smart at `7d932ed5`.
+- The `26434c2b` runtime packet is no longer carried. A site whose lock names
+  it stays admitted through `superseded_framework_locks` until it repins.
+
 ### Added
 - `scripts/verify-consumer-install.php` installs the package into a throwaway
   Composer project from `git archive` of the checkout, with no `vendor/` of

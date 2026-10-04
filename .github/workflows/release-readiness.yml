@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: simai/ui
-          ref: 26434c2bab11501424a56dc15c0781e930a81419
+          ref: 4f5e5067afeba3b5206fef83469b668cc2af6a34
           path: .dependencies/ui
       - uses: actions/setup-node@v4
         with:
@@ -77,7 +77,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: simai/ui
-          ref: 26434c2bab11501424a56dc15c0781e930a81419
+          ref: 4f5e5067afeba3b5206fef83469b668cc2af6a34
           path: .dependencies/ui
       - name: Require read access to simai/ui-smart
         env:
@@ -90,7 +90,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: simai/ui-smart
-          ref: f0b1097df3686dea723a83d4e33028d7f0132e79
+          ref: 7d932ed5140813806a601db3f3ddc6f3840e4638
           path: .dependencies/ui-smart
           token: ${{ secrets.SIMAI_UI_SMART_READ_TOKEN }}
       - uses: actions/setup-node@v4

@@ -104,8 +104,7 @@
                     "sf-context-menu",
                     "sf-icon",
                     "sf-icon-button",
-                    "sf-input",
-                    "sf-modal"
+                    "sf-input"
                 ]
             },
             "sf-alert": {
@@ -113,7 +112,8 @@
                 "javascript": "smart/smart/alert/js/alert.js",
                 "css": null,
                 "requires": [
-                    "sf-icon"
+                    "sf-icon",
+                    "sf-icon-button"
                 ],
                 "attributes": [
                     "action",
@@ -224,6 +224,9 @@
                     "separator-class",
                     "separator-icon",
                     "template"
+                ],
+                "requires": [
+                    "sf-icon"
                 ]
             },
             "sf-button": {
@@ -264,6 +267,9 @@
                     "text-position",
                     "tightness",
                     "type"
+                ],
+                "requires": [
+                    "sf-icon"
                 ]
             },
             "sf-button-group": {
@@ -282,6 +288,9 @@
                     "template",
                     "tightness",
                     "value"
+                ],
+                "requires": [
+                    "sf-button"
                 ]
             },
             "sf-checkbox": {
@@ -302,6 +311,9 @@
                     "size",
                     "template",
                     "value"
+                ],
+                "requires": [
+                    "sf-icon"
                 ]
             },
             "sf-close": {
@@ -324,6 +336,9 @@
                     "label",
                     "root-class",
                     "template"
+                ],
+                "requires": [
+                    "sf-sortable"
                 ]
             },
             "sf-context-menu": {
@@ -340,6 +355,9 @@
                     "template",
                     "text",
                     "tooltip"
+                ],
+                "requires": [
+                    "sf-button"
                 ]
             },
             "sf-country-code": {
@@ -414,6 +432,12 @@
                     "value",
                     "week-start",
                     "year"
+                ],
+                "requires": [
+                    "sf-button",
+                    "sf-icon",
+                    "sf-icon-button",
+                    "sf-input"
                 ]
             },
             "sf-download-file": {
@@ -432,6 +456,9 @@
                     "size",
                     "target",
                     "template"
+                ],
+                "requires": [
+                    "sf-icon"
                 ]
             },
             "sf-drawer": {
@@ -487,6 +514,11 @@
                     "template",
                     "type",
                     "value"
+                ],
+                "requires": [
+                    "sf-icon-button",
+                    "sf-input",
+                    "sf-list-item"
                 ]
             },
             "sf-file-preview": {
@@ -537,6 +569,9 @@
                     "supporting-text",
                     "template",
                     "text"
+                ],
+                "requires": [
+                    "sf-progress-bar"
                 ]
             },
             "sf-gallery": {
@@ -589,6 +624,10 @@
                     "thumbs-class",
                     "title",
                     "width"
+                ],
+                "requires": [
+                    "sf-modal",
+                    "sf-slider"
                 ]
             },
             "sf-icon": {
@@ -643,6 +682,10 @@
                     "tightness",
                     "type",
                     "variant"
+                ],
+                "requires": [
+                    "sf-close",
+                    "sf-icon"
                 ]
             },
             "sf-inline-editor": {
@@ -689,6 +732,9 @@
                     "text-end",
                     "type",
                     "value"
+                ],
+                "requires": [
+                    "sf-icon"
                 ]
             },
             "sf-list-item": {
@@ -816,6 +862,13 @@
                     "top-class",
                     "total",
                     "total-label"
+                ],
+                "requires": [
+                    "sf-button",
+                    "sf-checkbox",
+                    "sf-dropdown",
+                    "sf-icon-button",
+                    "sf-list-item"
                 ]
             },
             "sf-progress-bar": {
@@ -910,6 +963,9 @@
                     "target",
                     "template",
                     "text"
+                ],
+                "requires": [
+                    "sf-icon"
                 ]
             },
             "sf-skeleton": {
@@ -950,6 +1006,9 @@
                     "thumb-class",
                     "thumbs",
                     "thumbs-class"
+                ],
+                "requires": [
+                    "sf-icon-button"
                 ]
             },
             "sf-sortable": {
@@ -1053,6 +1112,7 @@
                 ],
                 "requires": [
                     "sf-avatar",
+                    "sf-badge",
                     "sf-button",
                     "sf-checkbox",
                     "sf-context-menu",
@@ -1064,6 +1124,7 @@
                     "sf-modal",
                     "sf-pagination",
                     "sf-range-slider",
+                    "sf-spinner",
                     "sf-tabs",
                     "sf-tag"
                 ]
@@ -1084,6 +1145,10 @@
                     "top-position",
                     "type",
                     "variant"
+                ],
+                "requires": [
+                    "sf-button",
+                    "sf-icon-button"
                 ]
             },
             "sf-tag": {
@@ -1111,6 +1176,9 @@
                     "template",
                     "text",
                     "type"
+                ],
+                "requires": [
+                    "sf-icon-button"
                 ]
             },
             "sf-textarea": {
@@ -1164,6 +1232,10 @@
                     "template",
                     "title",
                     "type"
+                ],
+                "requires": [
+                    "sf-icon",
+                    "sf-icon-button"
                 ]
             },
             "sf-toggle": {
@@ -1209,6 +1281,9 @@
                     "root-class",
                     "selection",
                     "template"
+                ],
+                "requires": [
+                    "sf-tree-item"
                 ]
             },
             "sf-tree-item": {
@@ -1241,6 +1316,9 @@
                     "text",
                     "type",
                     "value"
+                ],
+                "requires": [
+                    "sf-icon"
                 ]
             }
         }

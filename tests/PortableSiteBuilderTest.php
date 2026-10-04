@@ -929,7 +929,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/26434c2bab11501424a56dc15c0781e930a81419/distr/',
+                '/_docara/vendor/simai-framework/runtime/4f5e5067afeba3b5206fef83469b668cc2af6a34/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -1210,9 +1210,9 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => 'c5fadeb7827bca71b532996a3a5c8356e6346c0a6075926d28313f522e73b2e7',
-            'smart/buttons/js/buttons.js' => '63b8ff99f2b6f8127aad62a089ccf1df3901976a1b2101cf3e3756f9263ed5c0',
-            'smart/icons/js/icons.js' => 'a1f7508fc5e6adfd2e8d0a4f0a2721d782990453ff897bc2d71080dcbd65c0fd',
+            'smart/alert/js/alert.js' => '9fe722e48e98332e98951c73feababd3be85b3dfa574542bf2afa85fc4f23db2',
+            'smart/buttons/js/buttons.js' => 'dac70e17c1891712bacc4648ad4a2dc04ca0ff0a0ac04fb2924b15417812da30',
+            'smart/icons/js/icons.js' => '63c83e36e0eafbcdd72eddfb23c9fb6e0b6e584afc6f6c1f53f8414ec067fa94',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
             self::assertFileExists($published);
@@ -1296,7 +1296,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('ui-26434c2bab11-smart-f0b1097df368', $componentCatalog['framework_pair']);
+        self::assertSame('ui-4f5e5067afeb-smart-7d932ed51408', $componentCatalog['framework_pair']);
         self::assertCount(38, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1781,7 +1781,7 @@ MD;
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-26434c2bab11-smart-f0b1097df368-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-4f5e5067afeb-smart-7d932ed51408-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));

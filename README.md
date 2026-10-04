@@ -234,6 +234,42 @@ both ZIPs into fresh Composer consumers, verify their consumer-owned locks,
 run init/update/build/static/browser checks, and retain the exact rollback and
 smoke plan. See [publishing and rollback](docs/site/content/ru/build/publish.md).
 
+### Consumer install check
+
+`scripts/verify-consumer-install.php` tests Docara the way a consumer project
+gets it, as a Composer dependency in `vendor/simai/docara` with no `vendor/`
+of its own:
+
+```bash
+SIMAI_UI_ROOT=/path/to/ui SIMAI_UI_SMART_ROOT=/path/to/ui-smart \
+  php scripts/verify-consumer-install.php
+```
+
+`ui` must be checked out at the `ui.commit` in
+`resources/framework/runtime-lock.json`, and `ui-smart` must contain the
+`ui_smart.commit` named there. A linked worktree is fine for both. The script:
+
+1. archives this checkout with `git archive`, which produces the same tree as
+   a tag's zipball. Tracked working-tree changes are included; untracked
+   files are not;
+2. requires that tree in a temporary Composer project through a `path`
+   repository with `"symlink": false`, then runs `vendor/bin/docara init`;
+3. writes a project Framework lock whose eager Smart list is the old
+   four-file one (alert, buttons, icons, modal) into the package-owned locks.
+   It then runs `sync-framework-rule-registry.php` and
+   `sync-framework-smart-runtime.php` from `vendor/simai/docara`, as a
+   consumer's runtime materializer does, and copies the result back;
+4. runs `vendor/bin/docara build production` and
+   `vendor/bin/docara verify-static build_production`.
+
+It prints `CONSUMER_INSTALL_PASSED`, or exits 1 with
+`CONSUMER_INSTALL_FAILED at step [<step>]` and the tail of that step's output.
+Composer needs network access to resolve Docara's dependencies. Use
+`--work-dir=DIR` to choose where the temporary project is created, and
+`--keep` to keep it for inspection. The `consumer-install` job in
+`.github/workflows/release-readiness.yml` runs this check on every pull
+request.
+
 ## License
 
 MIT

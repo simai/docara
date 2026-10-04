@@ -63,4 +63,48 @@ jobs:
           cmp source-a/release-out/docara-0.0.0-ci.release-manifest.json source-b/release-out/docara-0.0.0-ci.release-manifest.json
           cmp source-a/release-out/docara-0.0.0-ci.sha256 source-b/release-out/docara-0.0.0-ci.sha256
 
+  consumer-install:
+    # Installs the package into a fresh Composer project from `git archive`
+    # of this revision (what a tag's zipball contains), runs both Framework
+    # syncs from vendor/simai/docara, then builds and verifies the site.
+    # The refs are the ui and ui_smart commits in
+    # resources/framework/runtime-lock.json; the script fails if they differ.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          path: source
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: simai/ui
+          ref: 26434c2bab11501424a56dc15c0781e930a81419
+          path: .dependencies/ui
+      - name: Require read access to simai/ui-smart
+        env:
+          UI_SMART_TOKEN: ${{ secrets.SIMAI_UI_SMART_READ_TOKEN }}
+        run: |
+          if [ -z "$UI_SMART_TOKEN" ]; then
+            echo "::error::simai/ui-smart is private; add a read-only token as the SIMAI_UI_SMART_READ_TOKEN secret to run the consumer install check."
+            exit 1
+          fi
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: simai/ui-smart
+          ref: f0b1097df3686dea723a83d4e33028d7f0132e79
+          path: .dependencies/ui-smart
+          token: ${{ secrets.SIMAI_UI_SMART_READ_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer
+      - name: Install into a consumer project, sync, build and verify
+        env:
+          SIMAI_UI_ROOT: ${{ github.workspace }}/.dependencies/ui
+          SIMAI_UI_SMART_ROOT: ${{ github.workspace }}/.dependencies/ui-smart
+        run: php source/scripts/verify-consumer-install.php --source=source
+
   # No artifact upload, release permission or publication step is allowed here.

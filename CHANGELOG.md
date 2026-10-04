@@ -47,6 +47,20 @@ All notable changes to Docara are documented in this file.
   shared `--sf-focus--offset` gap.
 
 ### Changed
+- Each Smart runtime component's `requires` is now derived from the bundled
+  Framework contract registry instead of a map kept by hand in the Smart sync
+  script. 24 components declare dependencies instead of 3. `sf-table` gains
+  `sf-badge` and `sf-spinner`. `sf-admin-menu` drops `sf-modal`, which its
+  sources do not use.
+- The shell's eager Smart projection grows from four files to seven:
+  `sf-close` (`smart/close/js/close.js`) and `sf-icon-button`
+  (`smart/icon-buttons/css/icon-buttons.css` and `js/icon-buttons.js`) join
+  alert, buttons, icons and modal. With the complete graph, `sf-alert` needs
+  `sf-icon-button`, which needs `sf-close`, so the admitted eager closure
+  reaches them. They are projected rather than the closure check being
+  relaxed. The three files were already published in the dynamic projection,
+  so a built site carries no new files. Its pages reference the same assets
+  as before; only the cache version changes.
 - Bundle Framework pair `ui-ed549e7282ef-smart-6a58ac134bdb` (Core `ed549e72`,
   Smart `6a58ac13`, contracts `c434bbc2`), built from ui-source `0993cfc8`.
   Over `c6f98eb4` the pair brings: the rule registry loads every component a

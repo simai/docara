@@ -4,6 +4,8 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.15.0] - 2026-10-05
+
 ### Changed
 - Bundle Framework pair `ui-4f5e5067afeb-smart-7d932ed51408` (Core `4f5e5067`,
   Smart `7d932ed5`, contracts `6dff03e4`), built from ui-source `2284e9c5`.

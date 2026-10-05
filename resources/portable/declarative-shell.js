@@ -322,6 +322,17 @@
   }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));
   var docaraExampleFrames=Array.from(document.querySelectorAll('iframe[data-docara-example-frame]'));
+  /* An example without its own label is named with the localized "Example": the tab, its tab list, the frame's title attribute and, through the environment, the frame document's title. */
+  (function(){
+    var label=message('examples.example');
+    if(label==='examples.example')return;
+    document.querySelectorAll('[data-docara-example-default-label]').forEach(function(element){
+      if(element.tagName==='IFRAME'){element.setAttribute('title',label);return}
+      element.textContent=label;
+      var list=element.closest('[role="tablist"]');
+      if(list)list.setAttribute('aria-label',label);
+    });
+  })();
   /* An inline example may hold a demo form. Capturing on the example root cancels every submission that starts inside it before any other listener runs, so the form can never navigate or reload the documentation page. */
   Array.from(document.querySelectorAll('[data-docara-example-inline-preview]')).forEach(function(root){
     root.addEventListener('submit',function(event){event.preventDefault()},true);
@@ -371,12 +382,15 @@
     syncSourceWrapIcon(button,active);
   }
   var exampleFontAssets=Object.create(null),exampleStylesheets=Object.create(null);
+  /* The page loads the same font files itself. Waiting for its own font loads and then reading through the HTTP cache lets the transfer reuse those responses instead of requesting each file again. */
+  var exampleFontsSettled=document.fonts&&document.fonts.ready?document.fonts.ready.catch(function(){}):Promise.resolve();
+  function exampleIconFace(rule){return /font-family\s*:\s*["']?Material (?:Symbols|Icons)/i.test(rule)}
   function exampleFontAsset(url,baseHref){
     var resolved;
     try{resolved=new URL(url,baseHref||document.baseURI)}catch(error){return Promise.resolve(null)}
     if(resolved.origin!==location.origin){return Promise.resolve(null)}
     if(!exampleFontAssets[resolved.href]){
-      exampleFontAssets[resolved.href]=fetch(resolved.href,{credentials:'same-origin'}).then(function(response){
+      exampleFontAssets[resolved.href]=exampleFontsSettled.then(function(){return fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'})}).then(function(response){
         if(!response.ok)throw new Error('Font request failed');
         return response.arrayBuffer().then(function(bytes){return{bytes:bytes,type:response.headers.get('content-type')||'font/woff2'}});
       }).catch(function(){return null});
@@ -404,8 +418,10 @@
     return codepoints;
   }
   /* Font files reach the opaque-origin frame as bytes, so no host has to send CORS headers. A same-origin face whose file cannot be transferred is dropped, so the family stack falls back to its local faces; a cross-origin face keeps its URL for hosts that serve fonts with CORS. */
-  function portableExampleStyle(content,baseHref,codepoints){
-    content=content.replace(/@font-face\s*\{[^}]*\}/gi,function(rule){return exampleFaceNeeded(rule,codepoints)?rule:''});
+  /* faces='text' removes icon faces from a stylesheet and faces='icons' keeps only them, so the large icon fonts travel apart from the stylesheet that declares them. */
+  function portableExampleStyle(content,baseHref,codepoints,faces){
+    if(faces==='icons'){content=(content.match(/@font-face\s*\{[^}]*\}/gi)||[]).filter(exampleIconFace).join('\n')}
+    content=content.replace(/@font-face\s*\{[^}]*\}/gi,function(rule){return (faces==='text'&&exampleIconFace(rule))||!exampleFaceNeeded(rule,codepoints)?'':rule});
     var matches=[],pattern=/url\(\s*(["']?)([^"')]+)\1\s*\)/g,match;
     while((match=pattern.exec(content))!==null){matches.push({token:match[0],url:match[2]})}
     return Promise.all(matches.map(function(item){return exampleFontAsset(item.url,baseHref)})).then(function(assets){
@@ -427,19 +443,19 @@
       return{content:result,fonts:fonts};
     });
   }
-  function portableExampleStylesheet(link,codepoints){
+  function portableExampleStylesheet(link,codepoints,faces){
     if(!link||typeof link.href!=='string')return Promise.resolve(null);
     var resolved;
     try{resolved=new URL(link.href,document.baseURI)}catch(error){return Promise.resolve(null)}
     if(resolved.origin!==location.origin)return Promise.resolve(null);
     if(!exampleStylesheets[resolved.href]){
-      exampleStylesheets[resolved.href]=fetch(resolved.href,{credentials:'same-origin'}).then(function(response){
+      exampleStylesheets[resolved.href]=fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'}).then(function(response){
         if(!response.ok)throw new Error('Stylesheet request failed');
         return response.text();
       }).catch(function(){return null});
     }
     return exampleStylesheets[resolved.href].then(function(content){
-      return content===null?null:portableExampleStyle(content,resolved.href,codepoints);
+      return content===null?null:portableExampleStyle(content,resolved.href,codepoints,faces);
     });
   }
   function collectExampleTokenNames(rules,names){
@@ -468,42 +484,97 @@
     });
     return tokens;
   }
+  /* Per frame: which environment entries it already holds (so font bytes are sent once, not with every theme or resize update) and which icon styles it shows. */
+  var exampleFrameStates=new WeakMap();
+  function exampleFrameState(frame){
+    var state=exampleFrameStates.get(frame);
+    if(!state){
+      state={sent:Object.create(null),icons:Object.create(null),generation:0,queue:Promise.resolve()};
+      (frame.getAttribute('data-docara-example-icons')||'').split(/\s+/).forEach(function(token){if(token)state.icons[token]=true});
+      exampleFrameStates.set(frame,state);
+    }
+    return state;
+  }
   function exampleEnvironment(frame){
-    var inlineScripts=Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])'));
+    var state=exampleFrameState(frame),source=frame.getAttribute('srcdoc')||'',codepoints=exampleCodepoints(source);
+    var icons=Boolean(state.icons.outlined||state.icons.rounded||state.icons.shape);
+    function fresh(key){
+      if(!key||state.sent[key])return false;
+      state.sent[key]=true;
+      return true;
+    }
+    var keyOf=function(element){return element.getAttribute('data-docara-framework-asset')||''};
+    var inlineScripts=icons?Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])')):[];
     var bootScripts=Array.from(document.querySelectorAll('script[data-docara-framework-asset="docara.framework.storage.compatibility"]:not([src]),script[data-docara-framework-asset="simai.framework.boot"]:not([src]),script[data-docara-framework-asset="simai.framework.preloaded"]:not([src])'));
-    var source=frame.getAttribute('srcdoc')||'',needsIcons=source.indexOf('sf-icon')!==-1||inlineScripts.length>0,codepoints=exampleCodepoints(source);
-    var inlineStyles=needsIcons?Array.from(document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_font.css"],style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]')):[];
-    if(source.indexOf('sf-icon-rounded')!==-1||source.indexOf('sf-icon-shape')!==-1){
+    var inlineStyles=icons?Array.from(document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_font.css"],style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]')):[];
+    if(state.icons.rounded||state.icons.shape){
       document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_variant_fonts.css"]').forEach(function(style){inlineStyles.push(style)});
     }
-    var stylesheetLinks=Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"],link[data-docara-declarative-shell-style][rel="stylesheet"]'));
+    inlineStyles=inlineStyles.filter(function(style){return fresh(keyOf(style))});
+    inlineScripts=inlineScripts.filter(function(script){return fresh(keyOf(script))});
+    bootScripts=bootScripts.filter(function(script){return fresh(keyOf(script))});
+    var linked=[];
+    Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"],link[data-docara-declarative-shell-style][rel="stylesheet"]')).forEach(function(link){
+      if(fresh('stylesheet:'+link.href))linked.push({link:link,key:'stylesheet:'+link.href,faces:'text'});
+      if(icons&&fresh('icon-faces:'+link.href))linked.push({link:link,key:'icon-faces:'+link.href,faces:'icons'});
+    });
     var environment={
       stylesheets:[],
-      bootScripts:bootScripts.map(function(script){return{key:script.getAttribute('data-docara-framework-asset')||'',content:script.textContent||''}}),
+      bootScripts:bootScripts.map(function(script){return{key:keyOf(script),content:script.textContent||''}}),
       scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]')).map(function(script){return script.src}),
       inlineScripts:[],
       theme:document.documentElement.classList.contains('theme-dark')?'dark':'light',
       direction:document.documentElement.dir==='rtl'?'rtl':'ltr',
+      lang:document.documentElement.lang||'',
+      title:frame.getAttribute('title')||'',
       rootFontSize:getComputedStyle(document.documentElement).fontSize,
       designTokens:exampleDesignTokens()
     };
     return Promise.all(inlineStyles.map(function(style){return portableExampleStyle(style.textContent||'',document.baseURI,codepoints).then(function(portable){
-      return{key:style.getAttribute('data-docara-framework-asset')||'',content:portable.content,fonts:portable.fonts};
+      return{key:keyOf(style),content:portable.content,fonts:portable.fonts};
     })})).then(function(styles){return Promise.all(inlineScripts.map(function(script){return portableExampleStyle(script.textContent||'',document.baseURI).then(function(portable){
-      return{key:script.getAttribute('data-docara-framework-asset')||'',content:portable.content,fonts:portable.fonts};
+      return{key:keyOf(script),content:portable.content,fonts:portable.fonts};
     })})).then(function(scripts){environment.inlineScripts=scripts;return styles})}).then(function(styles){
-      return Promise.all(stylesheetLinks.map(function(link){return portableExampleStylesheet(link,codepoints).then(function(portable){
-        if(!portable){environment.stylesheets.push(link.href);return null}
-        return{key:'stylesheet:'+link.href,content:portable.content,fonts:portable.fonts};
+      return Promise.all(linked.map(function(item){return portableExampleStylesheet(item.link,codepoints,item.faces).then(function(portable){
+        if(!portable){if(item.faces==='text')environment.stylesheets.push(item.link.href);return null}
+        if(portable.content.trim()==='')return null;
+        return{key:item.key,content:portable.content,fonts:portable.fonts};
       })})).then(function(linkedStyles){environment.inlineStyles=styles.concat(linkedStyles.filter(Boolean));return environment});
     });
   }
   function requestExampleHeight(frame){
     if(!frame.contentWindow)return;
-    exampleEnvironment(frame).then(function(environment){
-      if(frame.contentWindow){frame.contentWindow.postMessage(Object.assign({type:'docara:example-measure'},environment),'*')}
-    });
+    var state=exampleFrameState(frame),generation=state.generation;
+    /* Environments reach a frame in the order they were requested: boot state goes out once, in the first one, and must arrive before any later update loads Core. */
+    state.queue=state.queue.then(function(){
+      if(state.generation!==generation)return null;
+      return exampleEnvironment(frame).then(function(environment){
+        /* An environment prepared for an earlier frame document is dropped; the newer one carries the same entries. */
+        if(state.generation!==generation)return;
+        if(frame.contentWindow){frame.contentWindow.postMessage(Object.assign({type:'docara:example-measure'},environment),'*')}
+      });
+    }).catch(function(){});
   }
+  /* A frame document announces itself when its runtime starts, after a first load or after the frame was moved and reloaded. It holds nothing yet, so everything is sent to it again; entries sent before it could listen were lost. */
+  window.addEventListener('message',function(event){
+    if(!event.data||event.data.type!=='docara:example-ready')return;
+    var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
+    if(!frame)return;
+    var state=exampleFrameState(frame);
+    state.sent=Object.create(null);
+    state.generation++;
+    requestExampleHeight(frame);
+  });
+  window.addEventListener('message',function(event){
+    if(!event.data||event.data.type!=='docara:example-icons'||!Array.isArray(event.data.icons))return;
+    var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
+    if(!frame)return;
+    var state=exampleFrameState(frame),changed=false;
+    event.data.icons.forEach(function(token){
+      if(['outlined','rounded','shape'].indexOf(token)!==-1&&!state.icons[token]){state.icons[token]=true;changed=true}
+    });
+    if(changed)requestExampleHeight(frame);
+  });
   window.addEventListener('message',function(event){
     if(!event.data||event.data.type!=='docara:example-height')return;
     var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;

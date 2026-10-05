@@ -16,7 +16,7 @@ final class ExampleRuntimeContractTest extends TestCase
 
         self::assertStringContainsString("scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]'))", $shell);
         self::assertStringContainsString('simai.framework.icon_font.ready', $shell);
-        self::assertStringContainsString("source.indexOf('sf-icon')!==-1||inlineScripts.length>0", $shell);
+        self::assertStringNotContainsString('inlineScripts.length>0', $shell);
         self::assertStringContainsString('inlineScripts:', $shell);
         self::assertStringContainsString('portableExampleStyle(script.textContent', $shell);
         self::assertStringContainsString('exampleFontAsset', $shell);
@@ -80,11 +80,67 @@ final class ExampleRuntimeContractTest extends TestCase
         // its font files as bytes.
         self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shell);
         self::assertStringContainsString('codepoints=exampleCodepoints(source)', $shell);
-        self::assertStringContainsString('portableExampleStylesheet(link,codepoints)', $shell);
-        self::assertStringContainsString('return exampleFaceNeeded(rule,codepoints)?rule:\'\'', $shell);
+        self::assertStringContainsString('portableExampleStylesheet(item.link,codepoints,item.faces)', $shell);
+        self::assertStringContainsString('||!exampleFaceNeeded(rule,codepoints)?\'\':rule', $shell);
         self::assertStringContainsString('function exampleFaceNeeded(rule,codepoints)', $shell);
         self::assertStringContainsString('missing.some(function(token){return rule.indexOf(token)!==-1})?\'\':rule', $shell);
-        self::assertStringContainsString("exampleFontAssets[resolved.href]=fetch(resolved.href,{credentials:'same-origin'})", $shell);
+        self::assertStringContainsString("exampleFontAssets[resolved.href]=exampleFontsSettled.then(function(){return fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'})})", $shell);
+    }
+
+    public function test_icon_fonts_reach_only_frames_that_show_icons(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
+
+        // Icons named in the frame's own sources are known at build time.
+        self::assertStringContainsString("preg_match('/sf-icon|material-symbols/i', \$authored)", $renderer);
+        self::assertStringContainsString('data-docara-example-icons="', $renderer);
+        self::assertStringContainsString("(frame.getAttribute('data-docara-example-icons')||'').split(/\\s+/)", $shell);
+        // Smart components render theirs later; the frame reports them once.
+        self::assertStringContainsString("root.querySelector('sf-icon,.sf-icon,[class*=\"material-symbols\"]')", $renderer);
+        self::assertStringContainsString("parent.postMessage({type:'docara:example-icons',icons:icons},'*');", $renderer);
+        self::assertStringContainsString("event.data.type!=='docara:example-icons'", $shell);
+        self::assertStringContainsString("['outlined','rounded','shape'].indexOf(token)!==-1", $shell);
+        // Icon styles, the icon-ready runtime and icon faces travel only with icons.
+        self::assertStringContainsString("var inlineScripts=icons?Array.from(document.querySelectorAll('script[data-docara-framework-asset=\"simai.framework.icon_font.ready\"]:not([src])')):[];", $shell);
+        self::assertStringContainsString('var inlineStyles=icons?Array.from(', $shell);
+        self::assertStringContainsString('if(state.icons.rounded||state.icons.shape){', $shell);
+        self::assertStringContainsString("if(icons&&fresh('icon-faces:'+link.href))", $shell);
+        self::assertStringContainsString("return /font-family\\s*:\\s*[\"']?Material (?:Symbols|Icons)/i.test(rule)", $shell);
+        self::assertStringContainsString("(faces==='text'&&exampleIconFace(rule))", $shell);
+    }
+
+    public function test_frames_receive_each_font_once_from_the_page_cache(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
+
+        self::assertStringContainsString('document.fonts.ready.catch(function(){})', $shell);
+        self::assertStringContainsString("fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'})", $shell);
+        self::assertStringContainsString('if(!key||state.sent[key])return false;', $shell);
+        self::assertStringContainsString('bootScripts=bootScripts.filter(function(script){return fresh(keyOf(script))});', $shell);
+        self::assertStringContainsString("event.data.type!=='docara:example-ready'", $shell);
+        self::assertStringContainsString('state.sent=Object.create(null);', $shell);
+        self::assertStringContainsString('if(state.generation!==generation)return;', $shell);
+        self::assertStringContainsString('state.queue=state.queue.then(function(){', $shell);
+        self::assertStringContainsString("parent.postMessage({type:'docara:example-ready'},'*');", $renderer);
+    }
+
+    public function test_frame_documents_carry_the_page_language_and_a_title(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
+
+        self::assertStringContainsString("lang:document.documentElement.lang||''", $shell);
+        self::assertStringContainsString("title:frame.getAttribute('title')||''", $shell);
+        self::assertStringContainsString("var label=message('examples.example');", $shell);
+        self::assertStringContainsString("if(element.tagName==='IFRAME'){element.setAttribute('title',label);return}", $shell);
+        self::assertStringContainsString('{document.documentElement.lang=data.lang}', $renderer);
+        self::assertStringContainsString('{document.title=data.title}', $renderer);
+        self::assertStringContainsString("'<title>' . \$this->escapeHtml(\$label) . '</title>'", $renderer);
     }
 
     public function test_example_height_measures_content_instead_of_its_current_viewport(): void

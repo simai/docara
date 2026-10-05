@@ -4,6 +4,27 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- A sandboxed example frame receives icon fonts only when it shows icons.
+  It used to receive every Material Symbols font (subset, full, and the
+  shell's own face, about 4.6 MB), because the page's icon-ready script made
+  every frame count as an icon frame. Icons named in the example's own sources
+  mark the frame at build time (`data-docara-example-icons`). A Smart component
+  that renders an icon internally is reported by the frame itself once the
+  icon appears, and the icon styles follow. On the own site's example page the
+  font bytes sent into frames drop from 75.1 MB to 0.13 MB.
+- Font bytes and boot state go to a frame once. Later environment updates on
+  theme or size changes carry only what the frame does not have yet; the
+  frame announces a fresh document (`docara:example-ready`), and the shell
+  then sends everything again. Font transfers wait for the page's own font
+  loads and read through the HTTP cache (`cache: 'force-cache'`), so on a
+  server without caching headers each Inter file is requested from the
+  network once instead of twice.
+- The frame document has a `<title>`, the example's label, and takes the
+  page's `lang` and `dir`. An example without a label is named with the new
+  optional UI copy `examples.example` ("Example"; "Пример" on the own site),
+  which also names its tab and the iframe's `title`.
+
 ## [2.15.0] - 2026-10-05
 
 ### Changed

@@ -73,7 +73,7 @@ final class ProjectExampleRepositoryTest extends TestCase
             . '<span id="save-tooltip" data-tooltip="save" class="sf-tooltip">Save</span><form class="grid">',
             $html,
         );
-        self::assertSame(1, substr_count($html, '<iframe title="Example" data-docara-example-frame'));
+        self::assertSame(1, substr_count($html, '<iframe title="Result" data-docara-example-frame'));
         self::assertStringNotContainsString('data-docara-example-source="components/script"', $html);
         self::assertStringNotContainsString('&lt;base href=&quot;/docs/_docara/examples/components/tooltip/', $html);
         $outsideFrames = (string) preg_replace('/\ssrcdoc="[^"]*"/', '', $html);

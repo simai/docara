@@ -668,6 +668,7 @@ final class PortableMarkdownRenderer
         array $exampleSettings = [],
     ): string {
         $this->assertAttributes($attributes, ['id', 'label', 'preview', 'fullscreen', 'wrap'], 'example');
+        $defaultLabel = ! array_key_exists('label', $attributes);
         $label = trim($attributes['label'] ?? 'Example');
         if ($label === '') {
             throw new PortableConfigurationException(
@@ -745,6 +746,8 @@ final class PortableMarkdownRenderer
             $preview = $this->renderExampleDocument(
                 $hasMarkdown ? ['HTML' => $compiledPreview] : $sources,
                 $baseHref,
+                $label,
+                $defaultLabel,
             );
         } elseif ($hasMarkdown) {
             $preview = '<div data-docara-example-inline-preview>' . $compiledPreview . '</div>';
@@ -766,6 +769,7 @@ final class PortableMarkdownRenderer
             preview: $preview,
             sources: $renderedSources,
             exampleLabel: $label,
+            defaultLabel: $defaultLabel,
             copyLabel: 'Copy code',
             copiedLabel: 'Code copied',
             requestedPreview: $previewDecision['requested'],
@@ -907,19 +911,47 @@ final class PortableMarkdownRenderer
         return $sources;
     }
 
-    /** @param array<string,string> $sources */
-    private function renderExampleDocument(array $sources, ?string $baseHref = null): string
-    {
+    /**
+     * The frame document carries the example label as its title; the shell
+     * localizes the default label and passes the page language and direction,
+     * which the frame runtime applies to its root element. The iframe lists the
+     * icon styles its own sources use, so the shell sends icon fonts up front
+     * only to those frames; Smart components that render icons later are
+     * reported by the frame runtime itself.
+     *
+     * @param  array<string,string>  $sources
+     */
+    private function renderExampleDocument(
+        array $sources,
+        ?string $baseHref = null,
+        string $label = 'Example',
+        bool $defaultLabel = true,
+    ): string {
         $document = '<!doctype html><html><head><meta charset="utf-8">'
             . '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            . '<title>' . $this->escapeHtml($label) . '</title>'
             . ($baseHref === null ? '' : '<base href="' . $this->escapeHtml($baseHref) . '">')
             . (isset($sources['CSS']) ? '<style>' . $sources['CSS'] . '</style>' : '')
             . '</head><body>' . $sources['HTML']
             . (isset($sources['JavaScript']) ? '<script>' . str_replace('</script', '<\\/script', $sources['JavaScript']) . '</script>' : '')
             . $this->exampleAutoHeightRuntime()
             . '</body></html>';
+        $authored = implode("\n", $sources);
+        $icons = [];
+        if (preg_match('/sf-icon|material-symbols/i', $authored) === 1) {
+            $icons[] = 'outlined';
+        }
+        if (str_contains($authored, 'sf-icon-rounded')) {
+            $icons[] = 'rounded';
+        }
+        if (str_contains($authored, 'sf-icon-shape')) {
+            $icons[] = 'shape';
+        }
 
-        return '<iframe title="Example" data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" scrolling="no" srcdoc="'
+        return '<iframe title="' . $this->escapeHtml($label) . '"'
+            . ($defaultLabel ? ' data-docara-example-default-label' : '')
+            . ($icons === [] ? '' : ' data-docara-example-icons="' . implode(' ', $icons) . '"')
+            . ' data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" scrolling="no" srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
     }
 
@@ -953,6 +985,8 @@ body.classList.remove('theme-light','theme-dark');
 body.classList.add('theme-'+theme);
 document.documentElement.dir=direction;
 body.dir=direction;
+if(typeof data.lang==='string'&&/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$/.test(data.lang)){document.documentElement.lang=data.lang}
+if(typeof data.title==='string'&&data.title!==''&&data.title.length<=200){document.title=data.title}
 var currentInlineStyles=Array.from(document.querySelectorAll('style[data-docara-example-framework-inline-style]')).map(function(style){return style.getAttribute('data-docara-example-framework-inline-style')});
 (Array.isArray(data.inlineStyles)?data.inlineStyles:[]).forEach(function(item){
 if(!item||typeof item.key!=='string'||typeof item.content!=='string'||item.content===''||currentInlineStyles.indexOf(item.key)!==-1)return;
@@ -1057,6 +1091,26 @@ measure();
 requestAnimationFrame(measure);
 setTimeout(measureNow,100);
 }
+/* Icon fonts are large, so the shell sends them only to a frame that shows icons. Markup that names icons is known from the source; Smart components render theirs later, so the frame reports each icon style once it appears. */
+var reportedIcons={},iconScan=null;
+function scanIcons(root,found){
+if(root.querySelector('sf-icon,.sf-icon,[class*="material-symbols"]'))found.outlined=true;
+if(root.querySelector('.sf-icon-rounded'))found.rounded=true;
+if(root.querySelector('.sf-icon-shape'))found.shape=true;
+root.querySelectorAll('*').forEach(function(element){if(element.shadowRoot)scanIcons(element.shadowRoot,found)});
+}
+function reportIcons(){
+iconScan=null;
+var found={};
+scanIcons(document,found);
+var icons=Object.keys(found).filter(function(token){return !reportedIcons[token]});
+if(!icons.length)return;
+icons.forEach(function(token){reportedIcons[token]=true});
+parent.postMessage({type:'docara:example-icons',icons:icons},'*');
+}
+function scheduleIconReport(){if(iconScan===null)iconScan=setTimeout(reportIcons,50)}
+if(typeof MutationObserver==='function')new MutationObserver(scheduleIconReport).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+addEventListener('load',scheduleIconReport);
 addEventListener('load',measureSettled);
 addEventListener('resize',measureSettled);
 addEventListener('message',function(event){
@@ -1064,6 +1118,7 @@ if(event.source===parent&&event.data&&event.data.type==='docara:example-measure'
 applyEnvironment(event.data);
 lastHeight=-1;
 measureSettled();
+scheduleIconReport();
 }
 });
 if(typeof ResizeObserver==='function')new ResizeObserver(measure).observe(body);
@@ -1071,6 +1126,8 @@ if(typeof ResizeObserver==='function')new ResizeObserver(measure).observe(docume
 if(typeof MutationObserver==='function')new MutationObserver(measure).observe(body,{childList:true,subtree:true,attributes:true,characterData:true});
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measureSettled);
 measureSettled();
+/* A fresh frame document holds nothing yet; this asks the shell for the whole environment. */
+parent.postMessage({type:'docara:example-ready'},'*');
 })();</script>
 HTML;
     }

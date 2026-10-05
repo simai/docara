@@ -85,6 +85,7 @@ final readonly class UiCopy
         'code.copied' => 'Copied',
         'code.wrap' => 'Wrap source lines',
         'code.unwrap' => 'Keep original source lines',
+        'examples.example' => 'Example',
         'examples.viewer' => 'Check responsive preview',
         'examples.viewer_exit' => 'Exit responsive preview',
         'examples.viewer_dialog' => 'Responsive example preview',

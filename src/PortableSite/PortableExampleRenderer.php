@@ -23,6 +23,7 @@ final class PortableExampleRenderer
         string $previewReason = 'typed_markdown',
         bool $fullscreen = true,
         bool $wrap = true,
+        bool $defaultLabel = false,
     ): string {
         $safeId = preg_replace('/[^a-z0-9_-]+/i', '-', $id) ?: 'example';
         $previewTabId = $safeId . '-tab-example';
@@ -31,6 +32,7 @@ final class PortableExampleRenderer
             '<button type="button" role="tab" id="' . $previewTabId
                 . '" aria-controls="' . $previewPanelId
                 . '" aria-selected="true" tabindex="0" data-docara-example-tab="example"'
+                . ($defaultLabel ? ' data-docara-example-default-label' : '')
                 . ' class="docara-example-preview__tab">'
                 . $this->escape($exampleLabel) . '</button>',
         ];

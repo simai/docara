@@ -105,6 +105,45 @@ MD);
     }
 
     #[Test]
+    public function sandboxed_examples_name_their_frame_and_declare_the_icons_their_sources_use(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+
+        $labelled = $renderer->render(<<<'MD'
+:::example {label="Save <button>" preview=sandbox}
+```html
+<button type="button">Save</button>
+```
+:::
+MD);
+        self::assertStringContainsString('<iframe title="Save &lt;button&gt;" data-docara-example-frame', $labelled);
+        self::assertStringContainsString(htmlspecialchars('<title>Save &lt;button&gt;</title>', ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8'), $labelled);
+        self::assertStringNotContainsString('data-docara-example-default-label', $labelled);
+        self::assertStringNotContainsString('data-docara-example-icons', $labelled);
+
+        $unlabelled = $renderer->render(<<<'MD'
+:::example {preview=sandbox}
+```html
+<i class="sf-icon sf-icon-rounded" aria-hidden="true">home</i>
+```
+:::
+MD);
+        self::assertStringContainsString('<iframe title="Example" data-docara-example-default-label data-docara-example-icons="outlined rounded" data-docara-example-frame', $unlabelled);
+        self::assertStringContainsString('data-docara-example-tab="example" data-docara-example-default-label', $unlabelled);
+        self::assertStringContainsString(htmlspecialchars('<title>Example</title>', ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8'), $unlabelled);
+
+        $smart = $renderer->render(<<<'MD'
+:::example {label="Alert" preview=sandbox}
+```html
+<sf-alert type="info" title="Notice"></sf-alert>
+```
+:::
+MD);
+        // A Smart component's own icons are reported by the frame at run time.
+        self::assertStringNotContainsString('data-docara-example-icons', $smart);
+    }
+
+    #[Test]
     public function explicit_inline_example_fails_closed_when_isolation_is_required(): void
     {
         $renderer = new PortableMarkdownRenderer;

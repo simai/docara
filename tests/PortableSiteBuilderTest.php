@@ -711,7 +711,8 @@ MD);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll code{background:transparent}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] [data-docara-code-block]{block-size:auto;margin:0;', $shellCss);
         self::assertStringContainsString('.docara-example-preview__action,.docara-example-preview__copy{margin:0;color:var(--sf-on-surface-variant)}', $shellCss);
-        self::assertStringContainsString('.sf-alert.sf-alert--success>sf-icon>.sf-icon{--sf-icon--color:var(--sf-success)}', $shellCss);
+        // The pinned Framework colours the success alert icon itself.
+        self::assertStringNotContainsString('.sf-alert.sf-alert--success>sf-icon>.sf-icon', $shellCss);
         self::assertStringContainsString('.docara-example-preview__action .sf-icon,.docara-example-preview__copy .sf-icon{--sf-icon--color:var(--sf-on-surface-variant)}', $shellCss);
         self::assertStringContainsString('.docara-example-preview__action:hover,.docara-example-preview__action:focus-visible,.docara-example-preview__copy:hover,.docara-example-preview__copy:focus-visible{color:var(--sf-on-surface)}', $shellCss);
         self::assertStringContainsString('.docara-example-preview__action:hover .sf-icon,.docara-example-preview__action:focus-visible .sf-icon,.docara-example-preview__copy:hover .sf-icon,.docara-example-preview__copy:focus-visible .sf-icon{--sf-icon--color:var(--sf-on-surface)}', $shellCss);
@@ -1068,7 +1069,9 @@ MD);
         self::assertStringNotContainsString('.docara-header-actions{', $shellCss);
         self::assertStringNotContainsString('.docara-reading-column,.docara-content{min-width:0}', $shellCss);
         self::assertStringNotContainsString('.sf-breadcrumbs{min-width:0;', $shellCss);
-        self::assertStringContainsString('.sf-breadcrumbs-item[hidden]{display:none}', $shellCss);
+        // The pinned Framework hides collapsed breadcrumb items itself.
+        self::assertStringNotContainsString('.sf-breadcrumbs-item[hidden]{display:none}', $shellCss);
+        self::assertStringNotContainsString('.sf-breadcrumbs{overscroll-behavior-inline:contain}', $shellCss);
 
         self::assertSame(10, substr_count($index, '<input data-docara-preference-option'));
         self::assertMatchesRegularExpression('/docara\\.preferences\\.[a-f0-9]{16}\\.v1/', $index);

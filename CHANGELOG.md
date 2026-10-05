@@ -5,6 +5,18 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- The shell stylesheet no longer changes Framework components inside
+  examples. It is unlayered and is also sent into sandbox frames, so six of
+  its rules reached Framework markup in inline examples and frames. Five of
+  them repeated what the pinned Framework (`4f5e5067`) already does and are
+  removed: `sf-alert{display:block}`, the success alert icon colour, the
+  outline button side borders, and the breadcrumb `overscroll-behavior-inline`
+  and `[hidden]` rules. `sf-button{display:block}` is kept for Docara's own
+  content only (`body[data-docara-shell] sf-button` outside
+  `.docara-example-inline`): before upgrade it turned an inline `sf-button`
+  into a block, so a sentence with a button wrapped where a plain Framework
+  page keeps one line. The shell's own pages are pixel-identical before and
+  after.
 - A sandboxed example frame receives icon fonts only when it shows icons.
   It used to receive every Material Symbols font (subset, full, and the
   shell's own face, about 4.6 MB), because the page's icon-ready script made

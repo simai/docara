@@ -1,5 +1,10 @@
 # Docara releases
 
+- [Docara 2.15.0](https://github.com/simai/docara/releases/tag/v2.15.0) — the
+  bundled pair moves to `ui-4f5e5067afeb-smart-7d932ed51408` (stable cells,
+  reworked buttons, pagination and admin-menu fixes), and a consumer-install
+  check verifies Docara the way projects install it.
+
 - [Docara 2.14.1](https://github.com/simai/docara/releases/tag/v2.14.1) — the
   Smart runtime sync runs again from a project that installs Docara as a
   dependency.

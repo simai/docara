@@ -150,22 +150,54 @@ final class FrameworkNativeSurfaceTest extends TestCase
     }
 
     #[Test]
-    public function framework_outline_buttons_keep_their_logical_side_borders(): void
+    public function framework_outline_buttons_draw_their_own_logical_side_borders(): void
     {
         $root = dirname(__DIR__, 2);
         $css = file_get_contents($root . '/resources/portable/declarative-shell.css');
 
         self::assertIsString($css);
-        self::assertStringContainsString(
-            '.sf-button.sf-button--outline{border-inline-start-width:var(--sf-button--border-inline-start-width,1px);border-inline-end-width:var(--sf-button--border-inline-end-width,1px)}',
-            $css,
-        );
+        // The pinned Framework sets the outline side borders through
+        // --sf-button--border-inline-*-width; a shell override would also
+        // reach outline buttons inside examples.
+        self::assertStringNotContainsString('.sf-button.sf-button--outline{', $css);
         self::assertStringNotContainsString('.docara-cta-link{border-', $css);
         self::assertStringNotContainsString('.docara-search-trigger{border-', $css);
         self::assertStringContainsString(
             '.docara-search-trigger{--sf-button--border-color:var(--sf-outline-variant)}',
             $css,
         );
+    }
+
+    #[Test]
+    public function shell_rules_for_framework_components_cannot_reach_example_content(): void
+    {
+        $css = file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertIsString($css);
+        $css = (string) preg_replace('~/\*.*?\*/~s', '', $css);
+        // These Docara elements wrap page content, inline examples included,
+        // and the frame document has none of them. A rule anchored only on
+        // them must stop at the inline example root.
+        $contentWrappers = ['.docara-prose', '.docara-content', '.docara-landing', '[data-docara-shell', '[data-docara-region', '[data-docara-section'];
+        preg_match_all('/([^{}@;]+)\{/', $css, $blocks);
+        $checked = 0;
+        foreach ($blocks[1] as $selectorList) {
+            foreach (explode(',', $selectorList) as $selector) {
+                $selector = trim($selector);
+                if (preg_match('/(?:^|[\s>+~(])(?:\.sf-|sf-[a-z])/', $selector) !== 1) {
+                    continue;
+                }
+                $checked++;
+                preg_match_all('/\.docara-[a-z0-9_-]+|\[data-docara-[a-z-]+/', $selector, $anchors);
+                self::assertNotSame([], $anchors[0], "[$selector] matches Framework components outside Docara chrome.");
+                $chrome = array_filter($anchors[0], static fn (string $anchor): bool => ! in_array($anchor, $contentWrappers, true));
+                if ($chrome === []) {
+                    self::assertStringContainsString(':not(:where(.docara-example-inline *))', $selector, "[$selector] reaches inline examples.");
+                }
+            }
+        }
+        self::assertGreaterThan(20, $checked);
+        self::assertStringContainsString('body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:block}', $css);
+        self::assertStringNotContainsString("\nsf-alert,sf-button{display:block}", $css);
     }
 
     #[Test]

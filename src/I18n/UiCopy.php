@@ -120,6 +120,12 @@ final readonly class UiCopy
         ],
     ];
 
+    /** Optional keys that replaced a site-owned key of an earlier release. */
+    private const RENAMED_FROM = [
+        'reader.panel_title' => 'reader.title',
+        'reader.reset_all' => 'reader.reset',
+    ];
+
     public function __construct(private Translator $translator) {}
 
     /** @return array<string, string> */
@@ -130,11 +136,22 @@ final readonly class UiCopy
             $copy[$id] = $this->translator->message($locale, $id);
         }
         $defaults = self::optionalDefaults($locale);
+        $ownLanguage = self::hasOwnDefaults($locale);
         foreach ($defaults as $id => $default) {
+            // A language without built-in strings keeps the site's own text for
+            // a renamed key rather than showing the English default.
+            if (! $ownLanguage && isset(self::RENAMED_FROM[$id])) {
+                $default = $this->translator->messageOr($locale, self::RENAMED_FROM[$id], $default);
+            }
             $copy[$id] = $this->translator->messageOr($locale, $id, $default);
         }
 
         return $copy;
+    }
+
+    private static function hasOwnDefaults(string $locale): bool
+    {
+        return isset(self::OPTIONAL_DEFAULTS[strtolower(explode('-', str_replace('_', '-', $locale), 2)[0])]);
     }
 
     /** @return array<string, string> */

@@ -183,10 +183,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln{inline-size:100%;table-layout:fixed}
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln-code{white-space:pre-wrap;overflow-wrap:anywhere}
 [data-docara-example-copy][hidden],[data-docara-example-viewer][hidden],[data-docara-example-viewports][hidden],[data-docara-example-wrap][hidden]{display:none}
-/* The width switcher is a Framework segmented button group: outline segments, the checked one in the filled primary variant, so the state reads by fill and border in both themes. */
-.docara-example-preview__viewports{display:inline-flex;align-items:stretch}
-.docara-example-preview__viewport{justify-content:center;min-block-size:var(--sf-ui-1--control-height);margin:0}
-.docara-example-preview__viewport:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);outline-offset:var(--sf-focus--offset)}
+/* The width switcher is three Framework link icon buttons; the pressed one carries the Framework .active state (surface-container-active), visible in both themes. */
+.docara-example-preview__viewports{display:inline-flex;align-items:center;gap:var(--sf-space-1\/3)}
 .docara-example-viewer-dialog{box-sizing:border-box;inline-size:100vw;max-inline-size:none;block-size:100dvh;max-block-size:none;margin:0;padding:0;border:0;background:var(--sf-surface-0);color:var(--sf-on-surface)}
 .docara-example-viewer-dialog::backdrop{background:color-mix(in srgb,var(--sf-scrim,var(--sf-on-surface)) 48%,transparent)}
 .docara-example-preview[data-docara-example-viewer-active="true"]{display:flex;flex-direction:column;inline-size:100%;block-size:100%;margin:0;border:0;border-radius:0;background:var(--sf-surface-0)}

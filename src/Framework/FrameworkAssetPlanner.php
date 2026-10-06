@@ -14,11 +14,11 @@ final readonly class FrameworkAssetPlanner
 
     private const SHELL_CSS_SOURCE = 'declarative-shell.css';
 
-    private const ICON_SUBSET_MANIFEST = 'vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.995fbf08c43fe8ae9c3b.manifest.json';
+    private const ICON_SUBSET_MANIFEST = 'vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.1923885bcfbdb6f0ece3.manifest.json';
 
-    private const ICON_SUBSET_MANIFEST_SHA256 = '2f3e37280f73a955b5c84409d7c36553ca4c5a81696366b33482212d748d9501';
+    private const ICON_SUBSET_MANIFEST_SHA256 = '6db4b2cc076b518279799a1e03ffe49702e7e520c1f4332ef78d798e770e89e2';
 
-    private const ICON_SUBSET_PACKET_SHA256 = 'c4088dd2b1c006b83308dd276cc52850c948c1d4532c674dd119353379dac800';
+    private const ICON_SUBSET_PACKET_SHA256 = 'a58bc7f4f4112529023cd48e9262ecc9b9b62fe413804954101523348441f7be';
 
     public function __construct(
         private FrameworkManifestRepository $repository,

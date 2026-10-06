@@ -22,9 +22,7 @@ All notable changes to Docara are documented in this file.
   turns on reading mode, which keeps only the content column with a floating
   exit control and Esc to leave. The state persists per site under
   `docara.reading.<site-hash>.v1`, falls back to memory without storage, and
-  is restored before first paint. The outline toggle uses `dock_to_left`,
-  which is now listed in the shell icon subset manifest (68 icons; the
-  subset font bytes are unchanged), so no toggle loads the full icon font.
+  is restored before first paint. The outline toggle uses `dock_to_left`.
 - The header menu marks the item of the section that contains the current
   page with `aria-current="true"` and the active surface, chosen at build
   time from the navigation ancestry or the longest route prefix; the site
@@ -47,6 +45,14 @@ All notable changes to Docara are documented in this file.
   the bar 22px inside the divider. It now starts on the divider, is 2px wide
   with square ends over the 1px track, and follows the inline-start side in right-to-left
   pages, where the divider also moves to the inline-start edge.
+- A docs page no longer loads the 3,964,532-byte full outlined icon font for
+  the shell's own icons. The shell icon subset lacked `wrap_text` and
+  `format_text_overflow` (code wrap toggle), `devices` (example viewer),
+  `data_object` and `folder_open` (file trees), so every page with a code
+  block pulled the full font. The subset is regenerated with ui-builder
+  `sf-icons build` from the same pinned source and generator, adding those
+  five and the new `dock_to_left`: 73 icons, 247,824 bytes instead of 67
+  icons and 244,368 bytes.
 - The docs layout and footer use the header row's one-step inline padding, so
   the sidebar starts at the logo and the outline ends at the last header
   action; they were 32px further in on wide screens.

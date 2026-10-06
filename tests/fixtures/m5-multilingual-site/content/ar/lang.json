@@ -24,9 +24,9 @@
         "appearance": "المظهر", "appearance_description": "اضبط مظهر الوثائق في هذا المتصفح.",
         "help": "اضبط مظهر الوثائق في هذا المتصفح.", "reset": "استعادة إعداد الموقع",
         "theme_title": "السمة", "theme_description": "اختر المظهر الفاتح أو الداكن.",
-        "theme_system": "استخدام إعداد النظام", "theme_system_description": "يتبع إعداد الجهاز تلقائيًا.",
-        "theme_light": "فاتح", "theme_light_description": "استخدام المظهر الفاتح في جميع الصفحات.",
-        "theme_dark": "داكن", "theme_dark_description": "استخدام المظهر الداكن في جميع الصفحات.",
+        "theme_system": "استخدام إعداد النظام",
+        "theme_light": "فاتح",
+        "theme_dark": "داكن",
         "saved": "تم الحفظ: {setting} — {value}.", "applied_not_saved": "تم تطبيق الإعداد. لم يسمح المتصفح بحفظ الاختيار.",
         "restored": "تمت استعادة إعدادات الموقع."
     },

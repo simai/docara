@@ -21,11 +21,7 @@ final class CoreReaderPreferenceContribution implements ReaderPreferenceContribu
                 'light' => 'reader.theme_light',
                 'dark' => 'reader.theme_dark',
             ],
-            [
-                'system' => 'reader.theme_system_description',
-                'light' => 'reader.theme_light_description',
-                'dark' => 'reader.theme_dark_description',
-            ],
+            [],
             'reader.theme_title',
             'reader.theme_description',
         ));

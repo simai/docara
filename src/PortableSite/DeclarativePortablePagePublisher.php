@@ -117,8 +117,6 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             is_array($page['reader_preferences'] ?? null) ? $page['reader_preferences'] : [],
             [
                 'appearance.theme' => $configuredTheme,
-                'appearance.modal_blur' => $configuredModalBlur,
-                'appearance.ui_radius' => $configuredUiRadius,
             ],
             $copy,
             is_string($page['reader_preferences_storage_key'] ?? null)
@@ -212,7 +210,10 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 ])),
                 $assetBase,
             ) . $this->contentRuntimeHead($regions['main'], $assetBase),
-            $this->preferencesBootstrap($readerPreferences),
+            $this->preferencesBootstrap($readerPreferences, [
+                'modal_blur' => $configuredModalBlur,
+                'ui_radius' => $configuredUiRadius,
+            ]),
             $preset,
             'max-container-' . $containerMax,
             $this->escape($scrollbarPreset),
@@ -384,15 +385,18 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         return $resolved;
     }
 
-    /** @param array<string, mixed> $manifest */
-    private function preferencesBootstrap(array $manifest): string
+    /**
+     * @param  array<string, mixed>  $manifest
+     * @param  array{modal_blur:string,ui_radius:string}  $siteAppearance
+     */
+    private function preferencesBootstrap(array $manifest, array $siteAppearance): string
     {
-        $json = json_encode(
-            $manifest,
-            JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT,
-        );
+        $flags = JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+        $json = json_encode($manifest, $flags);
+        $site = json_encode($siteAppearance, $flags);
 
         return '<script data-docara-preferences-bootstrap>(function(){var manifest=' . $json
+            . ',site=' . $site
             . ',key=manifest.storage_key,fields={},defaults=manifest.values||{},volatile={};'
             . 'manifest.groups.forEach(function(group){group.fields.forEach(function(field){fields[field.id]=field})});'
             . "function frameworkMemory(){return document.documentElement.dataset.docaraFrameworkStorage==='memory'}"
@@ -403,7 +407,11 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             . "function applyTheme(mode,source){if(['system','light','dark'].indexOf(mode)===-1)mode='system';var dark=mode==='dark'||(mode==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var root=document.documentElement;root.classList.remove('theme-light','theme-dark');root.classList.add(dark?'theme-dark':'theme-light');root.dataset.docaraThemePreference=mode;root.dataset.docaraThemeSource=source}"
             . "function applyModalBlur(mode,source){if(['none','small','medium','large'].indexOf(mode)===-1)mode='none';var value='backdrop-blur-'+mode;document.documentElement.dataset.docaraModalBlurPreference=mode;document.documentElement.dataset.docaraModalBlurSource=source;document.querySelectorAll('sf-modal[data-docara-transient-dialog]').forEach(function(modal){modal.setAttribute('overlay-class',value)})}"
             . "function applyUiRadius(mode,source){if(['default','medium','large'].indexOf(mode)===-1)mode='default';var root=document.documentElement,values={medium:'var(--sf-radius-1\\\\/2)',large:'var(--sf-radius-1)'};if(mode==='default')root.style.removeProperty('--sf-radius--ui');else root.style.setProperty('--sf-radius--ui',values[mode]);root.dataset.docaraUiRadiusPreference=mode;root.dataset.docaraUiRadiusSource=source}"
-            . "var effects={'docara.theme':applyTheme,'docara.modal_blur':applyModalBlur,'docara.ui_radius':applyUiRadius};"
+            . "var effects={'docara.theme':applyTheme};"
+            // Modal blur and control radius are author settings only; readers no longer override them.
+            . "function applySite(){applyModalBlur(site.modal_blur,'site');applyUiRadius(site.ui_radius,'site')}"
+            // Drop values of fields this site no longer offers (for example retired preferences) from storage.
+            . "function prune(){if(!manifest.enabled||frameworkMemory())return;try{var raw=window.localStorage.getItem(key);if(!raw)return;var value=JSON.parse(raw),values=value&&typeof value.values==='object'&&!Array.isArray(value.values)?value.values:null;if(!value||value.schema!==manifest.schema||!values)return;var kept={};Object.keys(values).forEach(function(id){if(fields[id]&&fields[id].values.indexOf(values[id])!==-1)kept[id]=values[id]});if(Object.keys(kept).length===Object.keys(values).length)return;if(Object.keys(kept).length)window.localStorage.setItem(key,JSON.stringify({schema:manifest.schema,values:kept}));else window.localStorage.removeItem(key)}catch(error){}}"
             . 'function applyField(id,source){var field=fields[id],effect=field&&effects[field.effect];if(effect)effect(current(id),source)}'
             . 'function applyAll(source){Object.keys(fields).forEach(function(id){applyField(id,source)})}'
             . 'function write(values){if(frameworkMemory())return false;try{var ids=Object.keys(values);if(ids.length){window.localStorage.setItem(key,JSON.stringify({schema:manifest.schema,values:values}))}else{window.localStorage.removeItem(key)}var verify=stored();return JSON.stringify(verify)===JSON.stringify(clean(values))}catch(error){return false}}'
@@ -411,10 +419,10 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             . "function reset(){volatile={};if(!frameworkMemory()){try{window.localStorage.removeItem(key)}catch(error){}}applyAll('site')}"
             . "function syncExternal(){volatile={};applyAll(Object.keys(stored()).length?'reader':'site')}"
             . 'function hasOverride(){return Object.keys(overrides()).length>0}'
-            . "var initialSource=Object.keys(stored()).length?'reader':'site';applyModalBlur(defaults['appearance.modal_blur']||'none','site');applyUiRadius(defaults['appearance.ui_radius']||'default','site');applyAll(initialSource);"
+            . "prune();var initialSource=Object.keys(stored()).length?'reader':'site';applySite();applyAll(initialSource);"
             . 'window.DocaraReaderPreferences={manifest:manifest,key:key,current:current,set:set,reset:reset,syncExternal:syncExternal,hasOverride:hasOverride};'
             . "document.dispatchEvent(new CustomEvent('docara:preferences-ready'));"
-            . "if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){applyAll(initialSource)},{once:true})}else{applyAll(initialSource)}"
+            . "if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){applySite();applyAll(initialSource)},{once:true})}else{applySite();applyAll(initialSource)}"
             . "var media=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');if(media&&media.addEventListener){media.addEventListener('change',function(){if(current('appearance.theme')==='system')applyField('appearance.theme',document.documentElement.dataset.docaraThemeSource||'site')})}"
             . 'window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};})();</script>';
     }

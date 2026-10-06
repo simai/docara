@@ -14,7 +14,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
     {
         $manifest = (new ReaderPreferenceCompiler)->compile(
             ReaderPreferenceCompiler::defaultConfiguration(),
-            ['appearance.theme' => 'system', 'appearance.modal_blur' => 'none', 'appearance.ui_radius' => 'default'],
+            ['appearance.theme' => 'system'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -30,14 +30,25 @@ final class ReaderPreferenceCompilerTest extends TestCase
         self::assertSame('docara.theme', $manifest['groups'][0]['fields'][0]['effect']);
         self::assertSame(['system', 'light', 'dark'], $manifest['groups'][0]['fields'][0]['values']);
         self::assertSame('Тема', $manifest['groups'][0]['fields'][0]['title']);
-        self::assertSame('appearance.modal_blur', $manifest['groups'][0]['fields'][1]['id']);
-        self::assertSame('none', $manifest['groups'][0]['fields'][1]['configured']);
-        self::assertSame('docara.modal_blur', $manifest['groups'][0]['fields'][1]['effect']);
-        self::assertSame(['none', 'small', 'medium', 'large'], $manifest['groups'][0]['fields'][1]['values']);
-        self::assertSame('appearance.ui_radius', $manifest['groups'][0]['fields'][2]['id']);
-        self::assertSame('default', $manifest['groups'][0]['fields'][2]['configured']);
-        self::assertSame('docara.ui_radius', $manifest['groups'][0]['fields'][2]['effect']);
-        self::assertSame(['default', 'medium', 'large'], $manifest['groups'][0]['fields'][2]['values']);
+        self::assertCount(1, $manifest['groups'][0]['fields']);
+    }
+
+    public function test_retired_fields_listed_by_an_older_site_configuration_are_skipped(): void
+    {
+        $manifest = (new ReaderPreferenceCompiler)->compile(
+            [
+                'enabled' => true,
+                'view' => 'side-panel',
+                'groups' => [
+                    ['id' => 'appearance', 'fields' => ['appearance.theme', 'appearance.modal_blur', 'appearance.ui_radius']],
+                ],
+            ],
+            ['appearance.theme' => 'dark'],
+            $this->copy(),
+            'docara.preferences.site.v1',
+        );
+
+        self::assertSame(['appearance.theme'], array_column($manifest['groups'][0]['fields'], 'id'));
     }
 
     public function test_it_fails_closed_for_an_unknown_field(): void
@@ -103,24 +114,6 @@ final class ReaderPreferenceCompilerTest extends TestCase
             'reader.theme_light_description' => 'Всегда светлая тема.',
             'reader.theme_dark' => 'Тёмная',
             'reader.theme_dark_description' => 'Всегда тёмная тема.',
-            'reader.modal_blur_title' => 'Размытие фона модальных окон',
-            'reader.modal_blur_description' => 'Выбор степени размытия.',
-            'reader.modal_blur_none' => 'Без размытия',
-            'reader.modal_blur_none_description' => 'Только затемнение.',
-            'reader.modal_blur_small' => 'Слабое',
-            'reader.modal_blur_small_description' => 'Слабое размытие.',
-            'reader.modal_blur_medium' => 'Среднее',
-            'reader.modal_blur_medium_description' => 'Среднее размытие.',
-            'reader.modal_blur_large' => 'Максимальное',
-            'reader.modal_blur_large_description' => 'Максимальное размытие.',
-            'reader.ui_radius_title' => 'Закругление элементов',
-            'reader.ui_radius_description' => 'Выбор общего радиуса.',
-            'reader.ui_radius_default' => 'Стандартное',
-            'reader.ui_radius_default_description' => 'Системный радиус.',
-            'reader.ui_radius_medium' => 'Среднее',
-            'reader.ui_radius_medium_description' => 'Средний радиус.',
-            'reader.ui_radius_large' => 'Крупное',
-            'reader.ui_radius_large_description' => 'Крупный радиус.',
         ];
     }
 }

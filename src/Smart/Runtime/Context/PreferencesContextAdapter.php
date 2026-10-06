@@ -34,6 +34,10 @@ final class PreferencesContextAdapter implements SmartContextAdapter
                     'description' => $this->escape((string) $field['description']),
                     'control' => $this->escape((string) $field['control']),
                     'configured' => $this->escape((string) $field['configured']),
+                    // Options without descriptions are short labels and sit on one row.
+                    'layout' => array_filter($options, static fn (array $option): bool => $option['description'] !== '') === []
+                        ? 'inline'
+                        : 'list',
                     'options' => $options,
                 ];
             }

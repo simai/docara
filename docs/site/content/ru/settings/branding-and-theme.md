@@ -1,6 +1,6 @@
 # Branding и тема
 
-Branding отвечает за title/label/logo/favicons/mode/size. Reader appearance управляет `theme`, `modal_blur` и `ui_radius` только через allowlisted values.
+Branding отвечает за title/label/logo/favicons/mode/size. Настройки `theme`, `modal_blur` и `ui_radius` принимают только значения из списка. Читатель может переопределить в панели только тему; размытие и закругление задаёт автор.
 
 ```json
 {

@@ -105,7 +105,7 @@ Resolver начинает с небольшого встроенного наб�
     "groups": [
       {
         "id": "appearance",
-        "fields": ["appearance.theme", "appearance.modal_blur", "appearance.ui_radius"]
+        "fields": ["appearance.theme", "appearance.font_size", "appearance.content_width"]
       }
     ]
   },
@@ -195,9 +195,11 @@ URL, query, fragment, self redirect, chain, cycle, collision со страниц
 - `layout.regions`: включение и состав областей макета;
 - `settings.theme`: `system`, `light`, `dark`;
 - `settings.modal_blur`: `none`, `small`, `medium`, `large`; по умолчанию
-  размытие выключено (`none`), остаётся штатное затемнение подложки;
+  размытие выключено (`none`), остаётся штатное затемнение подложки. Это
+  настройка автора: в панели читателя её нет;
 - `settings.ui_radius`: `default`, `medium`, `large`; безопасно выбирает общий
-  токен Framework `--sf-radius--ui`, без произвольного CSS;
+  токен Framework `--sf-radius--ui`, без произвольного CSS. Это тоже настройка
+  только автора;
 - `examples.fullscreen`: включать режим проверки адаптивности для изолированных
   примеров; имя поля сохранено для совместимости;
 - `examples.wrap`: показывать CSS-перенос длинных строк на вкладках исходников;

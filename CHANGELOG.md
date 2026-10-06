@@ -53,10 +53,12 @@ All notable changes to Docara are documented in this file.
   English and Russian defaults; `reader.title`, `reader.reset`,
   `reader.appearance`, `reader.appearance_description`, `reader.help` and the
   `reader.theme_*_description` strings are no longer required.
-- The responsive example viewer's width switcher is a Framework segmented
-  button group with icon-only segments (`desktop_windows`, `tablet`,
-  `smartphone`), radio semantics and arrow keys; the checked segment uses the
-  filled primary variant, which reads in both themes.
+- The responsive example viewer's width switcher is three Framework link icon
+  buttons (`desktop_windows`, `tablet`, `smartphone`) like the close button
+  beside them, with `aria-pressed` and the Framework `.active` state on the
+  chosen width, which reads in both themes. The simulated device column is
+  edged by a 1px Framework outline border instead of a shadow that vanished
+  in the dark theme.
 - The search status line uses body text and the key hints small body text,
   with key chips at the same size, instead of the smaller label token.
 - Docara's own CSS lengths use Framework size tokens; only 1px hairlines,

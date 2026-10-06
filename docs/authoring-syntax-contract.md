@@ -94,6 +94,18 @@ examples written in the page. `preview=sandbox` forces isolation.
 inline policy requires isolation. The build receipt and page inspection expose
 the requested mode, resolved mode and decision reason.
 
+Under `auto`, admitted HTML that uses Framework breakpoint utilities
+(`sm:aspect-16x9`) or their container-query form (`cq-md:grid-col-2`,
+`cq-lg/sidebar:flex`) resolves to sandbox with the reason
+`responsive_utilities`. Those utilities respond to the viewport or to their
+query container, and only a frame gives them the responsive viewer's widths;
+inline they would follow the documentation page. The breakpoint names come
+from the bundled Framework utility registry: a variant whose classes carry
+its prefix and whose stylesheet is a `min-width` media query. State variants
+such as `hover:` are not breakpoints. An explicit `preview=inline` keeps such
+an example inline, because its markup is safe in the page; `preview=inline`
+fails closed only when isolation is needed for safety.
+
 The inline policy admits a fixed set of non-executable elements and
 attributes. Beyond the basic list it admits:
 

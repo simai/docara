@@ -5,6 +5,15 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Added
+- Under `preview=auto`, an HTML-only example whose markup uses Framework
+  breakpoint utilities (`sm:` … `xxl:`) or their container-query form
+  (`cq-md:`, `cq-lg/sidebar:`) resolves to sandbox with the new reason
+  `responsive_utilities`, so it gets the responsive viewer; inline it could
+  only follow the documentation page's width. The breakpoint names come from
+  the bundled utility registry (variants with a class prefix and a
+  `min-width` media query), so `hover:` and other state variants stay inline.
+  An explicit `preview=inline` still renders such an example inline. Receipts
+  and `inspect page` report the reason.
 - Reader preferences offer a font size (Small, Normal, Large) and a page
   width (Normal, Wide). Font size sets the root size to 87.5% or 112.5%;
   Framework type, spacing, controls and container steps are rem-based, so the

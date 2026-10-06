@@ -12,7 +12,9 @@ All notable changes to Docara are documented in this file.
   spacing are rem-based, so a root font-size step would have resized the
   chrome too. Wide format lifts the container maximum of the header, docs
   layout and footer and the reading measure of prose paragraphs and list
-  items. Both are restored before first paint like the theme.
+  items. Wide format uses the widest Framework container step
+  (`--sf-container-8--size-max`, 112rem) rather than an unbounded width.
+  Both are restored before first paint like the theme.
 - Theme, font size and page width are the bundled reader controls and are
   shown even when a site lists its own fields: listed fields keep the group
   and order the site gives them, and an unlisted bundled control is appended
@@ -42,9 +44,21 @@ All notable changes to Docara are documented in this file.
   values are pruned. `settings.modal_blur` and `settings.ui_radius` remain
   author settings. Their `reader.modal_blur_*` and `reader.ui_radius_*`
   strings are no longer required in `lang.json`.
-- The preferences panel is more compact: options are labels only (the
-  `reader.theme_*_description` strings are no longer required), sit on one
-  row, and keep the Framework control height as their minimum target.
+- The preferences panel is titled "Settings" and shows each setting as its
+  label above a Framework button group used as a segmented control: outline
+  segments, the selected one filled primary, each wrapping a native radio so
+  the group is a keyboard `radiogroup`. Settings are separated by
+  outline-variant rules, the header sits on `--sf-surface-1` and the settings
+  on `--sf-surface-0`. The group heading, intro, field and option
+  descriptions and the footer are gone; a `restart_alt` icon button in the
+  header resets every preference. The title and reset label come from the new
+  optional `reader.panel_title` and `reader.reset_all` strings with built-in
+  English and Russian defaults; `reader.title`, `reader.reset`,
+  `reader.appearance`, `reader.appearance_description`, `reader.help` and the
+  `reader.theme_*_description` strings are no longer required.
+- Reading mode exits through a round tonal Framework icon button
+  (`radius-rounded`) pinned to the window corner instead of a boxed copy of
+  the toolbar.
 
 ### Fixed
 - The active outline bar sits on the rail divider. Its offset used `calc()`
@@ -58,10 +72,11 @@ All notable changes to Docara are documented in this file.
   `data_object` and `folder_open` (file trees), so every page with a code
   block pulled the full font. The subset is regenerated with ui-builder
   `sf-icons build` from the same pinned source and generator, adding those
-  five, `open_in_new` (the open-file action) and the new `dock_to_left`: 74
-  icons, 247,824 bytes instead of 67 icons and 244,368 bytes. An icon whose
-  name is still empty, such as a Framework checkbox mark before it is
-  checked, now stays on the subset instead of pulling the full font.
+  five, `open_in_new` (the open-file action) and the new `dock_to_left` and
+  `restart_alt`: 75 icons, 247,824 bytes instead of 67 icons and 244,368
+  bytes. An icon whose name is still empty, such as a Framework checkbox
+  mark before it is checked, now stays on the subset instead of pulling the
+  full font.
 - The docs layout and footer use the header row's one-step inline padding, so
   the sidebar starts at the logo and the outline ends at the last header
   action; they were 32px further in on wide screens.

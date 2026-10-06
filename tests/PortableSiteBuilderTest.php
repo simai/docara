@@ -11,6 +11,7 @@ use Simai\Docara\Document\SmartComponentNode;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Framework\FrameworkComponentException;
+use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
@@ -452,6 +453,48 @@ MD);
         self::assertStringContainsString(
             'Открыть поиск по документации',
             (string) file_get_contents($this->tmpPath('build_local/ru/index.html')),
+        );
+    }
+
+    #[Test]
+    public function a_russian_site_gets_built_in_russian_interface_strings_and_its_own_lang_json_wins(): void
+    {
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        $langPath = $this->tmpPath('content/ru/lang.json');
+        $lang = $this->jsonFile($langPath);
+        foreach (array_keys(UiCopy::optionalDefaults('ru')) as $id) {
+            [$group, $key] = explode('.', $id, 2);
+            unset($lang[$group][$key]);
+            if (($lang[$group] ?? null) === []) {
+                unset($lang[$group]);
+            }
+        }
+        $lang['reader']['focus_mode'] = 'Только текст';
+        file_put_contents($langPath, CanonicalJson::encodePretty($lang));
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $html = (string) file_get_contents($this->tmpPath('build_local/ru/index.html'));
+        self::assertStringContainsString('"reader.font_size_title":"Размер шрифта"', $html);
+        self::assertStringContainsString('"reader.content_width_wide":"Широкая"', $html);
+        self::assertStringContainsString('"reader.outline_hide":"Скрыть содержание страницы"', $html);
+        self::assertStringContainsString('"code.copy":"Скопировать"', $html);
+        // The site's own string wins over the built-in default.
+        self::assertStringContainsString('"reader.focus_mode":"Только текст"', $html);
+        self::assertStringNotContainsString('"reader.font_size_title":"Font size"', $html);
+    }
+
+    #[Test]
+    public function built_in_interface_strings_follow_the_language_and_fall_back_to_english(): void
+    {
+        self::assertSame('Режим чтения', UiCopy::optionalDefaults('ru')['reader.focus_mode']);
+        self::assertSame('Режим чтения', UiCopy::optionalDefaults('ru-RU')['reader.focus_mode']);
+        self::assertSame('Reading mode', UiCopy::optionalDefaults('en')['reader.focus_mode']);
+        self::assertSame('Reading mode', UiCopy::optionalDefaults('ar')['reader.focus_mode']);
+        self::assertSame(
+            array_keys(UiCopy::optionalDefaults('en')),
+            array_keys(UiCopy::optionalDefaults('ru')),
+            'Every built-in interface string has a Russian default.',
         );
     }
 

@@ -16,9 +16,9 @@ final readonly class FrameworkAssetPlanner
 
     private const ICON_SUBSET_MANIFEST = 'vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.1923885bcfbdb6f0ece3.manifest.json';
 
-    private const ICON_SUBSET_MANIFEST_SHA256 = '6db4b2cc076b518279799a1e03ffe49702e7e520c1f4332ef78d798e770e89e2';
+    private const ICON_SUBSET_MANIFEST_SHA256 = '8538d07dd8e3f653ec658387c7748f8a8c0e9aa18c195c7e2ccf166d358e6b49';
 
-    private const ICON_SUBSET_PACKET_SHA256 = 'a58bc7f4f4112529023cd48e9262ecc9b9b62fe413804954101523348441f7be';
+    private const ICON_SUBSET_PACKET_SHA256 = '3e26cd44d21488b265918d5921a8b6835bae71f18657be5b9b2ad566238e65fa';
 
     public function __construct(
         private FrameworkManifestRepository $repository,
@@ -1739,7 +1739,9 @@ final readonly class FrameworkAssetPlanner
             . 'function fallbackStyle(){return document.querySelector(\'style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"],style[data-docara-example-framework-inline-style="simai.framework.icon_fallback_font.css"]\')}'
             . 'function requestFullFont(){return new Promise(function(resolve){if(fallbackStyle()){resolve();return}var observer=new MutationObserver(function(){if(fallbackStyle()){observer.disconnect();resolve()}});observer.observe(document.head,{childList:true});parent.postMessage({type:"docara:example-icons",icons:["full"]},"*")})}'
             . 'function ensureFullFont(){if(fallbackPending)return fallbackPending;var style=fallbackStyle();if(!style&&document.documentElement.hasAttribute("data-docara-example-frame")){fallbackPending=requestFullFont().then(function(){return document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "Material Symbols Outlined Full"\'):[true]});return fallbackPending}if(!style){style=document.createElement("style");style.dataset.docaraIconFallback="outlined";style.textContent=fallbackCss;document.head.appendChild(style)}fallbackPending=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "Material Symbols Outlined Full"\'):Promise.resolve([true]);return fallbackPending}'
-            . 'function family(icon){if(icon.classList.contains("sf-icon-rounded"))return variants.rounded||null;if(icon.classList.contains("sf-icon-shape"))return variants.shape||null;if(subsetIcons.has(iconName(icon))){icon.classList.remove("sf-icon-full-font");return subsetFamily}icon.classList.add("sf-icon-full-font");return "Material Symbols Outlined Full"}'
+            // An icon without a name yet (a Framework checkbox mark before it
+            // is checked) has no glyph to fetch; the subset face covers it.
+            . 'function family(icon){if(icon.classList.contains("sf-icon-rounded"))return variants.rounded||null;if(icon.classList.contains("sf-icon-shape"))return variants.shape||null;var name=iconName(icon);if(name===""||subsetIcons.has(name)){icon.classList.remove("sf-icon-full-font");return subsetFamily}icon.classList.add("sf-icon-full-font");return "Material Symbols Outlined Full"}'
             . 'function ready(icon){if(icon.classList.contains("sf-icon-loaded"))return;var name=family(icon);if(!name)return;var promise=loaded[name]||(loaded[name]=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "\'+name+\'"\'):Promise.resolve([true]));promise.then(function(faces){if(faces&&faces.length)icon.classList.add("sf-icon-loaded")}).catch(function(){})}'
             . 'var originalReady=ready;ready=function(icon){if(family(icon)==="Material Symbols Outlined Full"){ensureFullFont().then(function(){originalReady(icon)})}else{originalReady(icon)}};'
             . 'function mark(root){if(root.nodeType===1&&root.matches(".sf-icon"))ready(root);if(root.querySelectorAll){root.querySelectorAll(".sf-icon").forEach(ready)}}'

@@ -86,6 +86,7 @@
     "more_vert",
     "navigation",
     "notifications",
+    "open_in_new",
     "people",
     "person",
     "photo_camera",
@@ -106,7 +107,7 @@
     "wrap_text"
   ],
   "license": "Apache-2.0",
-  "packet_sha256": "a58bc7f4f4112529023cd48e9262ecc9b9b62fe413804954101523348441f7be",
+  "packet_sha256": "3e26cd44d21488b265918d5921a8b6835bae71f18657be5b9b2ad566238e65fa",
   "provenance": "google/material-design-icons",
   "schema": "sf.icon_subset.v1",
   "selector": ".sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape)",

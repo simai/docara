@@ -960,6 +960,8 @@ final class PortableMarkdownRenderer
         return <<<'HTML'
 <script data-docara-example-resize>(function(){
 var body=document.body,lastHeight=0,scheduled=false,frameworkScriptSources={};
+/* Marks the document as an example frame for the Framework icon runtime, which then asks the shell for the full icon font instead of fetching it. */
+document.documentElement.setAttribute('data-docara-example-frame','');
 document.documentElement.style.overflow='hidden';
 body.style.overflow='hidden';
 function applyDesignEnvironment(data){

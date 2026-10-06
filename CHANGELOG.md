@@ -5,6 +5,16 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- An icon frame no longer receives the full Material Symbols font up front.
+  It gets the icon subset with its first icon, and the full fallback font
+  (3,964,532 bytes) only when the Framework icon runtime inside the frame
+  meets an icon name the subset lacks, the same moment the page itself would
+  start loading that font. The runtime knows it runs in a frame
+  (`data-docara-example-frame`) and asks the shell instead of fetching from
+  the site. The icon faces declared in the linked stylesheets (418,700 bytes)
+  are no longer sent where the subset styles every icon, since the page never
+  uses them either. A frame showing only subset icons now receives 311,372
+  font bytes instead of 4,694,604.
 - The shell stylesheet no longer changes Framework components inside
   examples. It is unlayered and is also sent into sandbox frames, so six of
   its rules reached Framework markup in inline examples and frames. Five of

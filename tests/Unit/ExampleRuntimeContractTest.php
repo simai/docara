@@ -101,14 +101,31 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString("root.querySelector('sf-icon,.sf-icon,[class*=\"material-symbols\"]')", $renderer);
         self::assertStringContainsString("parent.postMessage({type:'docara:example-icons',icons:icons},'*');", $renderer);
         self::assertStringContainsString("event.data.type!=='docara:example-icons'", $shell);
-        self::assertStringContainsString("['outlined','rounded','shape'].indexOf(token)!==-1", $shell);
+        self::assertStringContainsString("['outlined','rounded','shape','full'].indexOf(token)!==-1", $shell);
         // Icon styles, the icon-ready runtime and icon faces travel only with icons.
         self::assertStringContainsString("var inlineScripts=icons?Array.from(document.querySelectorAll('script[data-docara-framework-asset=\"simai.framework.icon_font.ready\"]:not([src])')):[];", $shell);
         self::assertStringContainsString('var inlineStyles=icons?Array.from(', $shell);
         self::assertStringContainsString('if(state.icons.rounded||state.icons.shape){', $shell);
-        self::assertStringContainsString("if(icons&&fresh('icon-faces:'+link.href))", $shell);
+        self::assertStringContainsString("if(icons&&!subsetStyle&&fresh('icon-faces:'+link.href))", $shell);
         self::assertStringContainsString("return /font-family\\s*:\\s*[\"']?Material (?:Symbols|Icons)/i.test(rule)", $shell);
         self::assertStringContainsString("(faces==='text'&&exampleIconFace(rule))", $shell);
+    }
+
+    public function test_the_full_icon_font_reaches_a_frame_only_when_its_icon_runtime_asks(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
+        $planner = (string) file_get_contents($root . '/src/Framework/FrameworkAssetPlanner.php');
+
+        // The subset goes with the first icon; the full font waits for a request.
+        self::assertStringContainsString("document.querySelectorAll(state.icons.full?'style[data-docara-framework-asset=\"simai.framework.icon_font.css\"],style[data-docara-framework-asset=\"simai.framework.icon_fallback_font.css\"]':'style[data-docara-framework-asset=\"simai.framework.icon_font.css\"]')", $shell);
+        self::assertStringContainsString("if(token==='full'&&!state.icons.outlined){state.icons.outlined=true;changed=true}", $shell);
+        // The frame document identifies itself to the Framework icon runtime.
+        self::assertStringContainsString("document.documentElement.setAttribute('data-docara-example-frame','');", $renderer);
+        // That runtime asks at the moment the page would load the full font.
+        self::assertStringContainsString('if(!style&&document.documentElement.hasAttribute("data-docara-example-frame")){fallbackPending=requestFullFont()', $planner);
+        self::assertStringContainsString('parent.postMessage({type:"docara:example-icons",icons:["full"]},"*")', $planner);
     }
 
     public function test_frames_receive_each_font_once_from_the_page_cache(): void

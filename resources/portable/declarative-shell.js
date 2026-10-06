@@ -821,6 +821,7 @@
   (function(){
     var outlineButton=document.querySelector('[data-docara-outline-toggle]');
     var focusButton=document.querySelector('[data-docara-focus-toggle]');
+    var exitButton=document.querySelector('[data-docara-focus-exit]');
     if(!outlineButton&&!focusButton)return;
     var root=document.documentElement;
     var store=window.DocaraReadingLayout||null;
@@ -833,10 +834,7 @@
     function sync(){
       var current=state();
       if(outlineButton)outlineButton.setAttribute('aria-pressed',current.outline==='hidden'?'true':'false');
-      if(focusButton){
-        focusButton.setAttribute('aria-pressed',current.focus?'true':'false');
-        focusButton.title=current.focus?(focusButton.dataset.docaraExitTitle||focusButton.title):(focusButton.dataset.docaraEnterTitle||focusButton.title);
-      }
+      if(focusButton)focusButton.setAttribute('aria-pressed',current.focus?'true':'false');
     }
     if(outlineButton){
       outlineButton.addEventListener('click',function(){
@@ -846,22 +844,28 @@
         sync();
       });
     }
-    function setFocus(active,returnFocus){
+    // The toolbar toggle hides in reading mode and the exit button shows, so
+    // focus moves to whichever of the two is visible.
+    function setFocus(active){
       var next=state();
       next.focus=active;
       save(next);
       sync();
-      if(returnFocus&&focusButton)focusButton.focus({preventScroll:true});
+      var target=active?exitButton:focusButton;
+      if(target)target.focus({preventScroll:true});
     }
     if(focusButton){
-      focusButton.addEventListener('click',function(){setFocus(!state().focus,false)});
+      focusButton.addEventListener('click',function(){setFocus(true)});
+    }
+    if(exitButton){
+      exitButton.addEventListener('click',function(){setFocus(false)});
     }
     document.addEventListener('keydown',function(event){
       if(event.key!=='Escape'||event.defaultPrevented||!state().focus)return;
       var target=event.target;
       // Dialogs, menus and modals close themselves first.
       if(target&&target.closest&&target.closest('dialog,sf-modal,[role="dialog"],details[open]'))return;
-      setFocus(false,true);
+      setFocus(false);
     });
     window.addEventListener('storage',function(event){
       if(!store||event.key!==store.key)return;

@@ -164,6 +164,54 @@ final class DeclarativeViewCompositionTest extends TestCase
         self::assertFalse($headerBlocks[1]['smart']['props']['items'][1]['active']);
     }
 
+    public function test_header_navigation_marks_the_section_that_contains_the_current_page(): void
+    {
+        $items = [
+            ['id' => 'home', 'label' => 'Главная', 'href' => '/ru/'],
+            ['id' => 'guide', 'label' => 'Руководство', 'href' => '/ru/guide/'],
+            ['id' => 'utilities', 'label' => 'Утилиты', 'href' => '/ru/utilities/layout/'],
+            ['id' => 'components', 'label' => 'Компоненты', 'href' => '/ru/components/'],
+            ['id' => 'github', 'label' => 'GitHub', 'href' => 'https://github.com/simai/docara'],
+        ];
+        $header = static function (string $currentUrl, array $navigation = []) use ($items): array {
+            return PageCompositionContext::fromBuilder(
+                ['title' => 'Docara'],
+                '/ru/',
+                $navigation,
+                [],
+                [],
+                ['enabled' => true, 'items' => $items],
+                $currentUrl,
+            )->headerNavigation;
+        };
+        $state = static fn (array $nodes): array => array_map(
+            static fn (array $node): string => $node['active'] ? 'page' : ($node['current_section'] ? 'section' : '-'),
+            $nodes,
+        );
+
+        // A page below a header destination marks that destination as its section.
+        self::assertSame(['-', '-', '-', 'section', '-'], $state($header('/ru/components/card/')));
+        // The home destination contains every page, so it never becomes a section.
+        self::assertSame(['-', '-', '-', '-', '-'], $state($header('/ru/migration/')));
+        self::assertSame(['page', '-', '-', '-', '-'], $state($header('/ru/')));
+        // The page itself wins over any section match.
+        self::assertSame(['-', '-', '-', 'page', '-'], $state($header('/ru/components/')));
+        // A destination that is not a URL prefix still matches through the navigation ancestry.
+        $navigation = [[
+            'key' => 'utilities', 'title' => 'Утилиты', 'url' => '/ru/utilities/', 'active' => false,
+            'active_ancestor' => true, 'current_section' => false, 'open' => true,
+            'children' => [[
+                'key' => 'layout', 'title' => 'Макет', 'url' => '/ru/utilities/layout/', 'active' => false,
+                'active_ancestor' => true, 'current_section' => false, 'open' => true,
+                'children' => [[
+                    'key' => 'sizing', 'title' => 'Box sizing', 'url' => '/ru/utilities/sizing/', 'active' => true,
+                    'active_ancestor' => false, 'current_section' => false, 'open' => false, 'children' => [],
+                ]],
+            ]],
+        ]];
+        self::assertSame(['-', '-', 'section', '-', '-'], $state($header('/ru/utilities/sizing/', $navigation)));
+    }
+
     public function test_canonical_navigation_binding_selects_header_tree_and_compact_without_an_engine_branch(): void
     {
         foreach ([

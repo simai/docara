@@ -747,9 +747,9 @@ MD);
         self::assertStringContainsString('.docara-example-preview__panel--source{padding:0}', $shellCss);
         self::assertStringContainsString('.docara-example-preview__panel.is-active{display:block}', $shellCss);
         self::assertStringContainsString('.docara-example-preview iframe{display:block;inline-size:100%;border:0;overflow:hidden;background:var(--sf-surface-0)}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview iframe[data-docara-example-frame]{block-size:12rem}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview iframe[data-docara-example-frame]{block-size:var(--sf-f2)}', $shellCss);
         self::assertStringNotContainsString('iframe[data-docara-example-frame]{block-size:12rem;transition:', $shellCss);
-        self::assertStringContainsString('.docara-example-preview iframe:not([data-docara-example-frame]){block-size:32rem}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview iframe:not([data-docara-example-frame]){block-size:var(--sf-g6)}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll{box-sizing:border-box;block-size:auto;margin:0', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll code{background:transparent}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] [data-docara-code-block]{block-size:auto;margin:0;', $shellCss);
@@ -766,7 +766,7 @@ MD);
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-outline-scroll{position:sticky;inset-block-start:4.5rem;block-size:calc(100vh - 4.5rem);direction:ltr}',
+            '.docara-outline-scroll{position:sticky;inset-block-start:var(--sf-d8);block-size:calc(100vh - var(--sf-d8));direction:ltr}',
             $shellCss,
         );
         self::assertStringContainsString(
@@ -774,7 +774,7 @@ MD);
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-sidebar-scroll{position:sticky;inset-block-start:3.5rem;block-size:calc(100vh - 3.5rem)}',
+            '.docara-sidebar-scroll{position:sticky;inset-block-start:var(--sf-d4);block-size:calc(100vh - var(--sf-d4))}',
             $shellCss,
         );
         self::assertStringNotContainsString('html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}', $shellCss);

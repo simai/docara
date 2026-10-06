@@ -6,7 +6,7 @@
 .docara-brand-logo--dark{display:none}
 .theme-dark .docara-brand-logo--light:has(+.docara-brand-logo--dark){display:none}
 .theme-dark .docara-brand-logo--dark{display:block}
-.docara-brand-copy{min-width:0;max-inline-size:18rem}
+.docara-brand-copy{min-width:0;max-inline-size:var(--sf-f8)}
 .docara-brand-title,.docara-brand-label{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .docara-brand--size-small .docara-brand-title{font-size:var(--sf-text-small--size);line-height:var(--sf-text-small--height)}
 .docara-brand--size-large .docara-brand-title{font-size:var(--sf-text-large--size);line-height:var(--sf-text-large--height)}

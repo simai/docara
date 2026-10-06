@@ -1,4 +1,4 @@
 /* Project-owned, locally served demo asset. */
 .project-product-configurator fieldset {
-    max-inline-size: 32rem;
+    max-inline-size: var(--sf-g6);
 }

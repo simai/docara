@@ -50,6 +50,7 @@
     "dark_mode",
     "delete",
     "description",
+    "dock_to_left",
     "download",
     "edit",
     "error",
@@ -100,7 +101,7 @@
     "work"
   ],
   "license": "Apache-2.0",
-  "packet_sha256": "1da7a11c755697447b5ed8d556b8ceb6f19c5ee86b805c1893b30a763e57bd54",
+  "packet_sha256": "c4088dd2b1c006b83308dd276cc52850c948c1d4532c674dd119353379dac800",
   "provenance": "google/material-design-icons",
   "schema": "sf.icon_subset.v1",
   "selector": ".sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape)",

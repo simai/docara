@@ -135,7 +135,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                         'position' => ($page['direction'] ?? 'ltr') === 'rtl' ? 'left' : 'right',
                         'title' => (string) $copy['reader.title'],
                         'close_label' => (string) $copy['reader.close'],
-                        'reset_label' => (string) $copy['reader.reset'],
+                        'reset_label' => (string) $copy['reader.reset_all'],
                         'groups' => $readerPreferences['groups'],
                         'manifest' => $readerPreferences,
                     ],

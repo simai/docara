@@ -22,7 +22,7 @@
     "reader": {
         "open": "Open reading settings", "title": "Reading settings", "close": "Close reading settings",
         "appearance": "Appearance", "appearance_description": "Adjust how the documentation looks in this browser.",
-        "help": "Adjust how the documentation looks in this browser.", "reset": "Restore site setting",
+        "help": "Adjust how the documentation looks in this browser.", "reset_all": "Reset settings",
         "theme_title": "Theme", "theme_description": "Choose a light or dark appearance.",
         "theme_system": "Use system setting",
         "theme_light": "Light",

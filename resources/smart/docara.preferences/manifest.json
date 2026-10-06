@@ -115,7 +115,7 @@
       "position": "right",
       "title": "Reading settings",
       "close_label": "Close",
-      "reset_label": "Restore site setting",
+      "reset_label": "Reset settings",
       "groups": [],
       "manifest": {"enabled": true, "view": "side-panel", "storage_key": "docara.preferences.example.v1", "schema": 1, "groups": [], "values": {"appearance.theme": "system", "appearance.font_size": "normal", "appearance.content_width": "normal"}}
     },

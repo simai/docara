@@ -91,6 +91,7 @@
     "person",
     "photo_camera",
     "remove",
+    "restart_alt",
     "search",
     "settings",
     "share",
@@ -107,7 +108,7 @@
     "wrap_text"
   ],
   "license": "Apache-2.0",
-  "packet_sha256": "3e26cd44d21488b265918d5921a8b6835bae71f18657be5b9b2ad566238e65fa",
+  "packet_sha256": "ea974c3a088da96ffb1505baf70d2144f35765ea0c82202d8bd9a5259ad2dfd9",
   "provenance": "google/material-design-icons",
   "schema": "sf.icon_subset.v1",
   "selector": ".sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape)",

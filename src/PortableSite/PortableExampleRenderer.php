@@ -70,10 +70,12 @@ final class PortableExampleRenderer
             . '<div role="tablist" aria-label="' . $this->escape($exampleLabel)
             . '" class="docara-example-preview__tabs">' . implode('', $tabs) . '</div>'
             . '<div class="docara-example-preview__actions">'
-            . ($fullscreen && $resolvedPreview === 'sandbox' ? '<div data-docara-example-viewports hidden role="group" aria-label="Preview width" class="docara-example-preview__viewports">'
-                . '<button type="button" data-docara-example-viewport="desktop" aria-pressed="true" class="docara-example-preview__viewport">Desktop</button>'
-                . '<button type="button" data-docara-example-viewport="tablet" aria-pressed="false" class="docara-example-preview__viewport">Tablet</button>'
-                . '<button type="button" data-docara-example-viewport="mobile" aria-pressed="false" class="docara-example-preview__viewport">Mobile</button>'
+            // The width switcher is a Framework segmented button group with
+            // radio semantics; each segment is an icon with its name as label.
+            . ($fullscreen && $resolvedPreview === 'sandbox' ? '<div data-docara-example-viewports hidden role="radiogroup" aria-label="Preview width" class="docara-example-preview__viewports sf-button-group">'
+                . $this->viewportButton('desktop', 'desktop_windows', 'Desktop', true)
+                . $this->viewportButton('tablet', 'tablet', 'Tablet', false)
+                . $this->viewportButton('mobile', 'smartphone', 'Mobile', false)
                 . '</div><button type="button" data-docara-example-viewer hidden aria-pressed="false" aria-label="Check responsive preview"'
                 . ' data-viewer-icon="devices" data-viewer-exit-icon="close"'
                 . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
@@ -95,5 +97,14 @@ final class PortableExampleRenderer
     private function escape(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+    }
+
+    private function viewportButton(string $viewport, string $icon, string $label, bool $selected): string
+    {
+        return '<button type="button" role="radio" data-docara-example-viewport="' . $viewport . '" aria-checked="'
+            . ($selected ? 'true' : 'false') . '" tabindex="' . ($selected ? '0' : '-1') . '" aria-label="' . $label
+            . '" title="' . $label . '" class="docara-example-preview__viewport sf-button sf-button--size-1 '
+            . ($selected ? 'sf-button--default sf-button--primary active' : 'sf-button--outline sf-button--on-surface')
+            . '"><sf-icon icon="' . $icon . '" aria-hidden="true"></sf-icon></button>';
     }
 }

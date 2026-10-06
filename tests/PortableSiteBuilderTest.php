@@ -1122,7 +1122,7 @@ MD);
         self::assertStringNotContainsString('.sf-breadcrumbs{overscroll-behavior-inline:contain}', $shellCss);
 
         // Theme (3), font size (3) and page width (2); blur and radius are no longer reader options.
-        self::assertSame(8, substr_count($index, '<input data-docara-preference-option'));
+        self::assertSame(8, substr_count($index, '<input data-docara-preference-option name='));
         self::assertMatchesRegularExpression('/docara\\.preferences\\.[a-f0-9]{16}\\.v1/', $index);
         self::assertStringContainsString("matchMedia('(prefers-color-scheme: dark)')", $index);
         self::assertStringContainsString('localStorage.getItem', $index);

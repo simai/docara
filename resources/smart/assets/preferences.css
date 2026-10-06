@@ -8,13 +8,18 @@
   max-block-size:100dvh;
 }
 .docara-preferences-body,.docara-preferences-content{min-block-size:0}
-.docara-preferences-field{min-inline-size:0}
-.docara-preferences-options>.sf-radio-button:hover{background:var(--sf-surface-transparent-hover)}
-/* Compact rows still keep the Framework control height as the minimum target. */
-.docara-preferences-options>.sf-radio-button{box-sizing:border-box;min-block-size:var(--sf-ui-1--control-height)}
-.docara-preferences-options[data-docara-preference-layout="inline"]>.sf-radio-button{align-items:center}
+/* A setting is its label above a full-width segmented control; segments share the
+   width by content so the longest label still fits a 390px panel. The native radio
+   covers its segment invisibly, so clicks, arrow keys and the radio group stay native. */
+.docara-preferences-field{display:flex;flex-direction:column;align-items:stretch;gap:var(--sf-space-1\/3);min-inline-size:0;padding-block:var(--sf-space-1)}
+.docara-preferences-field:first-child{padding-block-start:0}
+.docara-preferences-label{color:var(--sf-on-surface);font-weight:var(--sf-font-weight-medium)}
+.docara-preferences-options{display:flex;inline-size:100%}
+.docara-preferences-options>.sf-button{position:relative;flex:1 1 auto;justify-content:center;min-block-size:var(--sf-ui-1--control-height);margin:0;text-align:center}
+.docara-preferences-options>.sf-button>input{position:absolute;inset:0;z-index:1;inline-size:100%;block-size:100%;margin:0;opacity:0;cursor:pointer}
+.docara-preferences-options>.sf-button:has(input:focus-visible){outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
 @media(max-width:40rem){
   .docara-preferences-panel{inline-size:100vw}
 }
 /* One outline-variant rule between neighbouring settings. */
-.docara-preferences-groups [data-docara-preference-field]+[data-docara-preference-field]{border-block-start:var(--sf-px) solid var(--sf-outline-variant);padding-block-start:var(--sf-space-1)}
+.docara-preferences-groups [data-docara-preference-field]+[data-docara-preference-field]{border-block-start:var(--sf-px) solid var(--sf-outline-variant)}

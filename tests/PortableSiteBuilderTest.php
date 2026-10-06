@@ -844,7 +844,7 @@ MD);
             $smartSurface,
         );
         self::assertStringContainsString(
-            'inset-inline-start:calc(var(--docara-outline-indent,calc(var(--sf-space-2) + var(--sf-a2))) * -1);inline-size:var(--sf-a3)',
+            'inset-inline-start:calc(var(--docara-outline-indent,calc(var(--sf-space-2) + var(--sf-a2))) * -1);inline-size:var(--sf-a2);border-radius:0;',
             $smartSurface,
             'The active outline marker must start on the rail divider and grow into the list.',
         );

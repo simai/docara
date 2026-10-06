@@ -133,7 +133,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                     'reader-preferences-' . substr(hash('sha256', (string) $page['url']), 0, 20),
                     [
                         'position' => ($page['direction'] ?? 'ltr') === 'rtl' ? 'left' : 'right',
-                        'title' => (string) $copy['reader.title'],
+                        'title' => (string) $copy['reader.panel_title'],
                         'close_label' => (string) $copy['reader.close'],
                         'reset_label' => (string) $copy['reader.reset_all'],
                         'groups' => $readerPreferences['groups'],

@@ -40,7 +40,6 @@ final readonly class UiCopy
         'search.open_result',
         'search.dismiss',
         'reader.open',
-        'reader.title',
         'reader.close',
         'reader.appearance',
         'reader.appearance_description',
@@ -92,6 +91,7 @@ final readonly class UiCopy
             'reader.focus_mode' => 'Reading mode',
             'reader.focus_mode_exit' => 'Exit reading mode (Esc)',
             'reader.reset_all' => 'Reset settings',
+            'reader.panel_title' => 'Settings',
         ],
         'ru' => [
             'code.copy' => 'Скопировать',
@@ -119,6 +119,7 @@ final readonly class UiCopy
             'reader.focus_mode' => 'Режим чтения',
             'reader.focus_mode_exit' => 'Выйти из режима чтения (Esc)',
             'reader.reset_all' => 'Сбросить настройки',
+            'reader.panel_title' => 'Настройки',
         ],
     ];
 

@@ -113,7 +113,7 @@
     "accessibility": ["framework_modal_focus_management", "escape_close", "focus_return", "live_status", "rtl_side_mapping"],
     "example_props": {
       "position": "right",
-      "title": "Reading settings",
+      "title": "Settings",
       "close_label": "Close",
       "reset_label": "Reset settings",
       "groups": [],

@@ -64,7 +64,7 @@ final readonly class PageCompositionContext
                 'home_url' => $homeUrl,
             ],
             self::normalizeNavigation($navigation),
-            self::normalizeHeaderNavigation($headerNavigation, $currentUrl),
+            self::normalizeHeaderNavigation($headerNavigation, $currentUrl, $homeUrl, self::activeTrail($navigation)),
             $normalizedOutline,
             [
                 'label' => self::copy($copy, 'navigation.title', 'Sections'),
@@ -190,7 +190,8 @@ final readonly class PageCompositionContext
                 || ! self::safeHeaderUrl((string) $node['url'])
                 || ! is_bool($node['active'] ?? null)
                 || ($node['active_ancestor'] ?? null) !== false
-                || ($node['current_section'] ?? null) !== false
+                || ! is_bool($node['current_section'] ?? null)
+                || ($node['active'] === true && $node['current_section'] === true)
                 || ($node['open'] ?? null) !== false
                 || ($node['children'] ?? null) !== []
             ) {
@@ -231,9 +232,10 @@ final readonly class PageCompositionContext
 
     /**
      * @param  array<string, mixed>  $configuration
+     * @param  list<string>  $trail
      * @return list<array<string, mixed>>
      */
-    private static function normalizeHeaderNavigation(array $configuration, string $currentUrl): array
+    private static function normalizeHeaderNavigation(array $configuration, string $currentUrl, string $homeUrl = '', array $trail = []): array
     {
         if (($configuration['enabled'] ?? false) !== true) {
             return [];
@@ -246,21 +248,103 @@ final readonly class PageCompositionContext
             );
         }
         $normalized = [];
+        $exact = false;
         foreach ($items as $item) {
             $url = is_string($item['href'] ?? null) ? $item['href'] : '';
+            $active = self::headerUrlIsActive($url, $currentUrl);
+            $exact = $exact || $active;
             $normalized[] = [
                 'key' => is_string($item['id'] ?? null) ? $item['id'] : '',
                 'title' => is_string($item['label'] ?? null) ? $item['label'] : '',
                 'url' => $url,
-                'active' => self::headerUrlIsActive($url, $currentUrl),
+                'active' => $active,
                 'active_ancestor' => false,
                 'current_section' => false,
                 'open' => false,
                 'children' => [],
             ];
         }
+        if ($exact) {
+            return $normalized;
+        }
+
+        // The page is not a header destination itself: mark the one header
+        // item whose route contains it, preferring the closest section.
+        $best = null;
+        $bestScore = 0;
+        foreach ($normalized as $index => $item) {
+            $score = self::headerSectionScore((string) $item['url'], $currentUrl, $homeUrl, $trail);
+            if ($score > $bestScore) {
+                $best = $index;
+                $bestScore = $score;
+            }
+        }
+        if ($best !== null) {
+            $normalized[$best]['current_section'] = true;
+        }
 
         return $normalized;
+    }
+
+    /**
+     * Paths of the active page and its ancestors in the activated navigation.
+     *
+     * @param  list<array<string, mixed>>  $nodes
+     * @return list<string>
+     */
+    private static function activeTrail(array $nodes): array
+    {
+        foreach ($nodes as $node) {
+            $inTrail = ($node['active'] ?? false) === true
+                || ($node['active_ancestor'] ?? false) === true
+                || ($node['current_section'] ?? false) === true;
+            if (! $inTrail) {
+                continue;
+            }
+            $path = is_string($node['url'] ?? null) ? self::routePath($node['url']) : null;
+            $children = is_array($node['children'] ?? null) && array_is_list($node['children'])
+                ? self::activeTrail($node['children'])
+                : [];
+
+            return $path === null ? $children : [$path, ...$children];
+        }
+
+        return [];
+    }
+
+    /** @param list<string> $trail */
+    private static function headerSectionScore(string $url, string $currentUrl, string $homeUrl, array $trail): int
+    {
+        $target = self::routePath($url);
+        $current = self::routePath($currentUrl);
+        if ($target === null || $current === null) {
+            return 0;
+        }
+        // The home destination contains every page; it is only current on itself.
+        $home = self::routePath($homeUrl);
+        if ($target === '/' || $target === $home) {
+            return 0;
+        }
+        $position = array_search($target, $trail, true);
+        if ($position !== false) {
+            return 10000 + (int) $position;
+        }
+
+        return str_starts_with($current, $target . '/') ? strlen($target) : 0;
+    }
+
+    private static function routePath(string $url): ?string
+    {
+        if (! str_starts_with($url, '/') || str_starts_with($url, '//')) {
+            return null;
+        }
+        $path = parse_url($url, PHP_URL_PATH);
+        if (! is_string($path)) {
+            return null;
+        }
+        $path = rtrim($path, '/');
+
+        return $path === '' ? '/' : $path;
     }
 
     private static function safeUrl(string $url): bool

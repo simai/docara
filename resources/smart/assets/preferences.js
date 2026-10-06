@@ -33,9 +33,6 @@
       options().forEach(function(option){
         option.checked=option.value===store.current(option.dataset.preferenceId);
       });
-      document.querySelectorAll('[data-docara-reader-settings-reset]').forEach(function(reset){
-        reset.hidden=!store.hasOverride();
-      });
     }
     function open(){
       document.dispatchEvent(new CustomEvent('docara:open-transient',{detail:{id:modal.id}}));

@@ -1,4 +1,4 @@
 .project-notice {
-  border-inline-start: 0.25rem solid var(--sf-color-primary, #356df3);
-  padding-inline-start: 1rem;
+  border-inline-start: var(--sf-a4) solid var(--sf-primary);
+  padding-inline-start: var(--sf-space-1);
 }

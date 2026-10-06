@@ -1,4 +1,4 @@
 /* Project-owned, locally served demo asset. */
 .project-install-builder [data-install-framework-controls] {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--sf-f6)), 1fr));
 }

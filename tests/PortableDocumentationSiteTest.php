@@ -236,7 +236,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The mobile navigation sheet must follow the logical inline direction in LTR and RTL.',
         );
         self::assertStringContainsString(
-            'scroll-margin-block-start:4.5rem',
+            'scroll-margin-block-start:var(--sf-d8)',
             $shellCss,
             'Heading anchors must reserve space for the compact sticky documentation header.',
         );
@@ -251,7 +251,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The desktop outline divider must span the row without clipping its active marker.',
         );
         self::assertStringContainsString(
-            '.docara-outline-scroll{position:sticky;inset-block-start:4.5rem;block-size:calc(100vh - 4.5rem);direction:ltr}',
+            '.docara-outline-scroll{position:sticky;inset-block-start:var(--sf-d8);block-size:calc(100vh - var(--sf-d8));direction:ltr}',
             $shellCss,
             'The Framework scrollbar root must remain aligned below the header.',
         );
@@ -261,7 +261,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The desktop navigation divider must span the full layout row.',
         );
         self::assertStringContainsString(
-            '.docara-sidebar-scroll{position:sticky;inset-block-start:3.5rem;block-size:calc(100vh - 3.5rem)}',
+            '.docara-sidebar-scroll{position:sticky;inset-block-start:var(--sf-d4);block-size:calc(100vh - var(--sf-d4))}',
             $shellCss,
             'The navigation must use a bounded Framework scrollbar root.',
         );

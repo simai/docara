@@ -1,4 +1,4 @@
-.docara-navigation .sf-menu{gap:var(--sf-a1,1px)}
+.docara-navigation .sf-menu{gap:var(--sf-a1)}
 .docara-navigation .sf-menu-element{box-sizing:border-box;min-block-size:var(--sf-d2);inline-size:100%;border-block-width:var(--sf-0);border-inline-width:var(--sf-0);--sf-menu-element--border-width:var(--sf-0);--sf-menu-element--border-top-width:var(--sf-0);--sf-menu-element--border-right-width:var(--sf-0);--sf-menu-element--border-bottom-width:var(--sf-0);--sf-menu-element--border-left-width:var(--sf-0)}
 .docara-navigation .sf-menu-element--level-1{--sf-menu-element--padding-inline-start:var(--sf-space-1)}
 .docara-navigation .sf-menu-element--level-2{--sf-menu-element--padding-inline-start:var(--sf-space-4)}

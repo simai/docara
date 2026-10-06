@@ -1452,6 +1452,8 @@ MD);
         // The reading toolbar sits next to the breadcrumbs and its state is restored before paint.
         self::assertMatchesRegularExpression('~<button type="button" data-docara-outline-toggle aria-pressed="false" aria-controls="docara-outline"~', $html);
         self::assertMatchesRegularExpression('~<button type="button" data-docara-focus-toggle aria-pressed="false"~', $html);
+        // Reading mode exits through a round Framework icon button.
+        self::assertMatchesRegularExpression('~<button type="button" data-docara-focus-exit [^>]*class="docara-focus-exit sf-icon-button [^"]*\\bradius-rounded\\b~', $html);
         self::assertStringContainsString('<aside id="docara-outline" class="docara-outline-rail"', $html);
         self::assertStringContainsString("var layoutKey=key.replace(/^docara\\.preferences\\./,'docara.reading.')", $html);
         self::assertStringContainsString('window.DocaraReadingLayout={key:layoutKey', $html);

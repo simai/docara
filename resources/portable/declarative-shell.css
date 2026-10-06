@@ -37,17 +37,17 @@ html[data-docara-font-size="small"] .docara-docs-layout .docara-content{zoom:.87
 html[data-docara-font-size="large"] .docara-docs-layout .docara-content{zoom:1.125}
 /* Reading toolbar: breadcrumbs with the outline and reading-mode toggles at the inline end. */
 .docara-reading-actions{margin-inline-start:auto}
-/* sf-icon sets an inline display once upgraded, so the hidden face needs !important. */
-html:not([data-docara-focus-mode]) .docara-focus-toggle__exit,html[data-docara-focus-mode] .docara-focus-toggle__enter{display:none!important}
+/* Reading mode swaps the toolbar toggle for a round Framework icon button pinned to the window corner. */
+.docara-focus-exit,html[data-docara-focus-mode] .docara-focus-toggle{display:none}
+html[data-docara-focus-mode] .docara-docs-layout .docara-focus-exit{display:inline-flex;position:fixed;z-index:3;inset-block-start:var(--sf-space-1);inset-inline-end:var(--sf-space-1)}
 @media not all and (max-width:1152px){
   html[data-docara-outline-hidden] .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}
   html[data-docara-outline-hidden] .docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr)}
   html[data-docara-outline-hidden] .docara-docs-layout>.docara-outline-rail{display:none}
 }
-/* Reading mode keeps only the content column; the toggle stays reachable as a floating exit control. */
+/* Reading mode keeps only the content column. */
 html[data-docara-focus-mode] body:has(>.docara-docs-layout)>.docara-header,html[data-docara-focus-mode] body:has(>.docara-docs-layout)>[data-docara-region="footer"],html[data-docara-focus-mode] .docara-docs-layout>.docara-sidebar,html[data-docara-focus-mode] .docara-docs-layout>.docara-outline-rail,html[data-docara-focus-mode] .docara-docs-layout .docara-outline-mobile,html[data-docara-focus-mode] .docara-outline-toggle{display:none}
 html[data-docara-focus-mode] .docara-docs-layout.docara-docs-layout{grid-template-columns:minmax(0,1fr)}
-html[data-docara-focus-mode] .docara-docs-layout .docara-reading-actions{position:fixed;z-index:3;inset-block-start:var(--sf-space-1);inset-inline-end:var(--sf-space-1);padding:var(--sf-space-1\/4);border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-default);background:var(--sf-surface-0);box-shadow:var(--sf-ui-shadow-2)}
 @media(max-width:1152px){.docara-outline-toggle{display:none}}
 /* Reader wide format: the shell takes the Framework's widest container step (layout.container.max 8) instead of the authored one, and prose lines lose their measure limit. The container tokens exist from 960px, like max-container-N. */
 @media(min-width:960px){html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:var(--sf-container-8--size-max)}}

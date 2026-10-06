@@ -1025,8 +1025,8 @@ MD);
             self::assertStringNotContainsString('simai.framework.sf_modal.js', $html);
             self::assertStringContainsString('data-docara-search-status', $html);
             self::assertStringContainsString('data-docara-search-results', $html);
-            self::assertStringContainsString('docara-search-status label-medium', $html);
-            self::assertStringContainsString('docara-search-help border-top-1 border-outline-variant p-1 flex content-main-center items-cross-center gap-2 color-on-surface-variant label-medium', $html);
+            self::assertStringContainsString('docara-search-status text-1', $html);
+            self::assertStringContainsString('docara-search-help border-top-1 border-outline-variant p-1 flex content-main-center items-cross-center gap-2 color-on-surface-variant text-small', $html);
             self::assertSame(3, substr_count($html, 'class="inline-flex items-cross-center p-x-1/2 p-y-1/4"'));
             self::assertStringNotContainsString('docara-search-status label-small', $html);
             self::assertStringContainsString(

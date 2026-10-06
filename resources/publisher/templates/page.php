@@ -43,7 +43,7 @@
         </aside>
 <?php } ?>
         <div class="docara-reading-column flex min-w-0 flex-col gap-2 p-3">
-            <?= $view->chrome['breadcrumbs'] ?>
+            <div class="docara-reading-toolbar flex items-cross-center gap-1 min-w-0"><div class="docara-reading-toolbar__location flex-1 min-w-0"><?= $view->chrome['breadcrumbs'] ?></div><?= $view->chrome['reading_actions'] ?></div>
             <?= $view->chrome['mobile_toc'] ?>
             <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-docara-region="main">
                 <article class="docara-prose min-w-0<?= $view->contentGap === 0 ? '' : ' flex flex-col gap-' . $view->contentGap ?>"><?= $view->regions['main'] ?></article>
@@ -51,7 +51,7 @@
             </main>
         </div>
 <?php if ($view->regions['outline'] !== '') { ?>
-        <aside class="docara-outline-rail" data-docara-region="outline">
+        <aside id="docara-outline" class="docara-outline-rail" data-docara-region="outline">
             <div class="docara-outline-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
                 <div class="sf-scrollbar__viewport" tabindex="0" aria-label="<?= $view->copy['navigation.outline'] ?>"><?= $view->regions['outline'] ?></div>
             </div>

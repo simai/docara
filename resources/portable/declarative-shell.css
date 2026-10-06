@@ -33,6 +33,20 @@ html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-sect
 /* Reader font size: zoom the documentation content only. Framework type, spacing and media are rem-based, so a root font-size step would also resize the chrome; zoom keeps the content in proportion (16px body text becomes 14px or 18px). */
 html[data-docara-font-size="small"] .docara-docs-layout .docara-content{zoom:.875}
 html[data-docara-font-size="large"] .docara-docs-layout .docara-content{zoom:1.125}
+/* Reading toolbar: breadcrumbs with the outline and reading-mode toggles at the inline end. */
+.docara-reading-actions{margin-inline-start:auto}
+/* sf-icon sets an inline display once upgraded, so the hidden face needs !important. */
+html:not([data-docara-focus-mode]) .docara-focus-toggle__exit,html[data-docara-focus-mode] .docara-focus-toggle__enter{display:none!important}
+@media not all and (max-width:1152px){
+  html[data-docara-outline-hidden] .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}
+  html[data-docara-outline-hidden] .docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr)}
+  html[data-docara-outline-hidden] .docara-docs-layout>.docara-outline-rail{display:none}
+}
+/* Reading mode keeps only the content column; the toggle stays reachable as a floating exit control. */
+html[data-docara-focus-mode] body:has(>.docara-docs-layout)>.docara-header,html[data-docara-focus-mode] body:has(>.docara-docs-layout)>[data-docara-region="footer"],html[data-docara-focus-mode] .docara-docs-layout>.docara-sidebar,html[data-docara-focus-mode] .docara-docs-layout>.docara-outline-rail,html[data-docara-focus-mode] .docara-docs-layout .docara-outline-mobile,html[data-docara-focus-mode] .docara-outline-toggle{display:none}
+html[data-docara-focus-mode] .docara-docs-layout.docara-docs-layout{grid-template-columns:minmax(0,1fr)}
+html[data-docara-focus-mode] .docara-docs-layout .docara-reading-actions{position:fixed;z-index:3;inset-block-start:var(--sf-space-1);inset-inline-end:var(--sf-space-1);padding:var(--sf-space-1\/4);border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-default);background:var(--sf-surface-0);box-shadow:var(--sf-ui-shadow-2)}
+@media(max-width:1152px){.docara-outline-toggle{display:none}}
 /* Reader wide format: the docs shell fills the window and prose lines lose their measure limit. */
 html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:none}
 html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:where(.docara-example-inline *)),html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose li:not(:where(.docara-example-inline *)){max-width:none}

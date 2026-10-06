@@ -1403,6 +1403,14 @@ MD);
         self::assertStringNotContainsString('docara-preference-appearance.modal_blur', $html);
         self::assertStringNotContainsString('docara-preference-appearance.ui_radius', $html);
         self::assertStringContainsString('function prune(){', $html);
+        // Font size and wide format are restored before paint from the same document.
+        self::assertStringContainsString("'docara.font_size':applyFontSize,'docara.content_width':applyContentWidth", $html);
+        // The reading toolbar sits next to the breadcrumbs and its state is restored before paint.
+        self::assertMatchesRegularExpression('~<button type="button" data-docara-outline-toggle aria-pressed="false" aria-controls="docara-outline"~', $html);
+        self::assertMatchesRegularExpression('~<button type="button" data-docara-focus-toggle aria-pressed="false"~', $html);
+        self::assertStringContainsString('<aside id="docara-outline" class="docara-outline-rail"', $html);
+        self::assertStringContainsString("var layoutKey=key.replace(/^docara\\.preferences\\./,'docara.reading.')", $html);
+        self::assertStringContainsString('window.DocaraReadingLayout={key:layoutKey', $html);
         self::assertStringContainsString("root.style.setProperty('--sf-radius--ui',values[mode])", $html);
         self::assertStringContainsString("root.style.removeProperty('--sf-radius--ui')", $html);
         self::assertStringContainsString("medium:'var(--sf-radius-1\\\\/2)'", $html);

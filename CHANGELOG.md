@@ -51,8 +51,10 @@ All notable changes to Docara are documented in this file.
   `data_object` and `folder_open` (file trees), so every page with a code
   block pulled the full font. The subset is regenerated with ui-builder
   `sf-icons build` from the same pinned source and generator, adding those
-  five and the new `dock_to_left`: 73 icons, 247,824 bytes instead of 67
-  icons and 244,368 bytes.
+  five, `open_in_new` (the open-file action) and the new `dock_to_left`: 74
+  icons, 247,824 bytes instead of 67 icons and 244,368 bytes. An icon whose
+  name is still empty, such as a Framework checkbox mark before it is
+  checked, now stays on the subset instead of pulling the full font.
 - The docs layout and footer use the header row's one-step inline padding, so
   the sidebar starts at the logo and the outline ends at the last header
   action; they were 32px further in on wide screens.

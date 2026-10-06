@@ -29,6 +29,8 @@
         "theme_dark": "Dark", "theme_dark_description": "Use the dark appearance on every page.",
         "font_size_title": "Font size", "font_size_description": "Changes the size of the page content; navigation keeps its size.",
         "font_size_small": "Small", "font_size_normal": "Normal", "font_size_large": "Large",
+        "content_width_title": "Page width", "content_width_description": "Wide uses the full window and does not limit line length.",
+        "content_width_normal": "Normal", "content_width_wide": "Wide",
         "saved": "Saved: {setting} — {value}.", "applied_not_saved": "The setting was applied. The browser did not allow the choice to be saved.",
         "restored": "The site settings have been restored."
     },

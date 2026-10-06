@@ -118,6 +118,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             [
                 'appearance.theme' => $configuredTheme,
                 'appearance.font_size' => 'normal',
+                'appearance.content_width' => 'normal',
             ],
             $copy,
             is_string($page['reader_preferences_storage_key'] ?? null)
@@ -410,7 +411,8 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             . "function applyUiRadius(mode,source){if(['default','medium','large'].indexOf(mode)===-1)mode='default';var root=document.documentElement,values={medium:'var(--sf-radius-1\\\\/2)',large:'var(--sf-radius-1)'};if(mode==='default')root.style.removeProperty('--sf-radius--ui');else root.style.setProperty('--sf-radius--ui',values[mode]);root.dataset.docaraUiRadiusPreference=mode;root.dataset.docaraUiRadiusSource=source}"
             // Content size is a root attribute so the shell stylesheet scales the reading column before first paint.
             . "function applyFontSize(mode,source){if(['small','normal','large'].indexOf(mode)===-1)mode='normal';var root=document.documentElement;if(mode==='normal')root.removeAttribute('data-docara-font-size');else root.setAttribute('data-docara-font-size',mode);root.dataset.docaraFontSizeSource=source}"
-            . "var effects={'docara.theme':applyTheme,'docara.font_size':applyFontSize};"
+            . "function applyContentWidth(mode,source){if(['normal','wide'].indexOf(mode)===-1)mode='normal';var root=document.documentElement;if(mode==='normal')root.removeAttribute('data-docara-content-width');else root.setAttribute('data-docara-content-width',mode);root.dataset.docaraContentWidthSource=source}"
+            . "var effects={'docara.theme':applyTheme,'docara.font_size':applyFontSize,'docara.content_width':applyContentWidth};"
             // Modal blur and control radius are author settings only; readers no longer override them.
             . "function applySite(){applyModalBlur(site.modal_blur,'site');applyUiRadius(site.ui_radius,'site')}"
             // Drop values of fields this site no longer offers (for example retired preferences) from storage.

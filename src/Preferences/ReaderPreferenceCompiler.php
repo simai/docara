@@ -167,7 +167,7 @@ final readonly class ReaderPreferenceCompiler
             'enabled' => true,
             'view' => 'side-panel',
             'groups' => [
-                ['id' => 'appearance', 'fields' => ['appearance.theme', 'appearance.font_size']],
+                ['id' => 'appearance', 'fields' => ['appearance.theme', 'appearance.font_size', 'appearance.content_width']],
             ],
         ];
     }

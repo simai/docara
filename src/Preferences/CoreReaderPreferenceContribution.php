@@ -46,5 +46,21 @@ final class CoreReaderPreferenceContribution implements ReaderPreferenceContribu
             'reader.font_size_title',
             'reader.font_size_description',
         ));
+        $registry->add(new ReaderPreferenceDefinition(
+            'appearance.content_width',
+            'appearance',
+            'choice',
+            ['normal', 'wide'],
+            'docara.content_width',
+            'prepaint',
+            'site',
+            [
+                'normal' => 'reader.content_width_normal',
+                'wide' => 'reader.content_width_wide',
+            ],
+            [],
+            'reader.content_width_title',
+            'reader.content_width_description',
+        ));
     }
 }

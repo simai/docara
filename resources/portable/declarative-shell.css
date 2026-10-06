@@ -33,6 +33,9 @@ html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-sect
 /* Reader font size: zoom the documentation content only. Framework type, spacing and media are rem-based, so a root font-size step would also resize the chrome; zoom keeps the content in proportion (16px body text becomes 14px or 18px). */
 html[data-docara-font-size="small"] .docara-docs-layout .docara-content{zoom:.875}
 html[data-docara-font-size="large"] .docara-docs-layout .docara-content{zoom:1.125}
+/* Reader wide format: the docs shell fills the window and prose lines lose their measure limit. */
+html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:none}
+html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:where(.docara-example-inline *)),html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose li:not(:where(.docara-example-inline *)){max-width:none}
 .docara-document-link{overflow-wrap:anywhere;background:transparent;transition:background-color 120ms ease}
 .docara-document-link:hover{background:var(--sf-surface-container-hover)}
 .docara-document-link:active{background:var(--sf-surface-container-active)}

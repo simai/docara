@@ -9,7 +9,10 @@
 }
 .docara-preferences-body,.docara-preferences-content{min-block-size:0}
 .docara-preferences-field{min-inline-size:0}
-.docara-preferences-field>.sf-radio-button:hover{background:var(--sf-surface-transparent-hover)}
+.docara-preferences-options>.sf-radio-button:hover{background:var(--sf-surface-transparent-hover)}
+/* Compact rows still keep the Framework control height as the minimum target. */
+.docara-preferences-options>.sf-radio-button{box-sizing:border-box;min-block-size:var(--sf-ui-1--control-height)}
+.docara-preferences-options[data-docara-preference-layout="inline"]>.sf-radio-button{align-items:center}
 @media(max-width:40rem){
   .docara-preferences-panel{inline-size:100vw}
 }

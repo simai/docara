@@ -6,15 +6,13 @@ All notable changes to Docara are documented in this file.
 
 ### Added
 - Reader preferences offer a font size (Small, Normal, Large) and a page
-  width (Normal, Wide). Font size zooms only the documentation content by
-  14/16 or 18/16, so 16px body text becomes 14px or 18px while the header,
-  navigation, outline and breadcrumbs keep their size; Framework type and
-  spacing are rem-based, so a root font-size step would have resized the
-  chrome too. Wide format lifts the container maximum of the header, docs
-  layout and footer and the reading measure of prose paragraphs and list
-  items. Wide format uses the widest Framework container step
-  (`--sf-container-8--size-max`, 112rem) rather than an unbounded width.
-  Both are restored before first paint like the theme.
+  width (Normal, Wide). Font size sets the root size to 87.5% or 112.5%;
+  Framework type, spacing, controls and container steps are rem-based, so the
+  header, navigation, outline, breadcrumbs and content scale together (16px
+  body text becomes 14px or 18px). Wide format uses the widest Framework
+  container step (`--sf-container-8--size-max`, 112rem) for the header, docs
+  layout and footer and lifts the reading measure of prose paragraphs and list
+  items. Both are restored before first paint like the theme.
 - Theme, font size and page width are the bundled reader controls and are
   shown even when a site lists its own fields: listed fields keep the group
   and order the site gives them, and an unlisted bundled control is appended
@@ -47,15 +45,22 @@ All notable changes to Docara are documented in this file.
 - The preferences panel is titled "Settings" and shows each setting as its
   label above a Framework button group used as a segmented control: outline
   segments, the selected one filled primary, each wrapping a native radio so
-  the group is a keyboard `radiogroup`. Settings are separated by
-  outline-variant rules, the header sits on `--sf-surface-1` and the settings
-  on `--sf-surface-0`. The group heading, intro, field and option
-  descriptions and the footer are gone; a `restart_alt` icon button in the
-  header resets every preference. The title and reset label come from the new
+  the group is a keyboard `radiogroup`. The header sits on `--sf-surface-1`
+  and the settings on `--sf-surface-0`. The group heading, intro, field and
+  option descriptions and the footer are gone; a `restart_alt` icon button
+  in the header resets every preference. The title and reset label come from the new
   optional `reader.panel_title` and `reader.reset_all` strings with built-in
   English and Russian defaults; `reader.title`, `reader.reset`,
   `reader.appearance`, `reader.appearance_description`, `reader.help` and the
   `reader.theme_*_description` strings are no longer required.
+- The responsive example viewer's width switcher is a Framework segmented
+  button group with icon-only segments (`desktop_windows`, `tablet`,
+  `smartphone`), radio semantics and arrow keys; the checked segment uses the
+  filled primary variant, which reads in both themes.
+- The search status line uses body text and the key hints small body text,
+  with key chips at the same size, instead of the smaller label token.
+- Docara's own CSS lengths use Framework size tokens; only 1px hairlines,
+  media query breakpoints and the .2em underline offset stay literal.
 - Reading mode exits through a round tonal Framework icon button
   (`radius-rounded`) pinned to the window corner instead of a boxed copy of
   the toolbar.
@@ -73,7 +78,8 @@ All notable changes to Docara are documented in this file.
   block pulled the full font. The subset is regenerated with ui-builder
   `sf-icons build` from the same pinned source and generator, adding those
   five, `open_in_new` (the open-file action) and the new `dock_to_left` and
-  `restart_alt`: 75 icons, 247,824 bytes instead of 67 icons and 244,368
+  `restart_alt`, and the viewer's `desktop_windows`, `tablet` and
+  `smartphone`: 78 icons, 247,824 bytes instead of 67 icons and 244,368
   bytes. An icon whose name is still empty, such as a Framework checkbox
   mark before it is checked, now stays on the subset instead of pulling the
   full font.

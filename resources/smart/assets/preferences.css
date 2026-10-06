@@ -21,5 +21,3 @@
 @media(max-width:40rem){
   .docara-preferences-panel{inline-size:100vw}
 }
-/* One outline-variant rule between neighbouring settings. */
-.docara-preferences-groups [data-docara-preference-field]+[data-docara-preference-field]{border-block-start:var(--sf-px) solid var(--sf-outline-variant)}

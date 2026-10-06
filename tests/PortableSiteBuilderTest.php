@@ -1393,25 +1393,22 @@ MD);
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
         $html = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
-        self::assertStringContainsString('"values":{"appearance.theme":"dark","appearance.modal_blur":"small","appearance.ui_radius":"large"}', $html);
+        self::assertStringContainsString('"values":{"appearance.theme":"dark"}', $html);
+        self::assertStringContainsString(',site={"modal_blur":"small","ui_radius":"large"}', $html);
         self::assertMatchesRegularExpression(
             '~data-docara-preference-option name="docara-preference-appearance\\.theme" type="radio" value="dark" data-preference-id="appearance\\.theme" checked~',
             $html,
         );
-        self::assertMatchesRegularExpression(
-            '~data-docara-preference-option name="docara-preference-appearance\.modal_blur" type="radio" value="small" data-preference-id="appearance\.modal_blur" checked~',
-            $html,
-        );
-        self::assertMatchesRegularExpression(
-            '~data-docara-preference-option name="docara-preference-appearance\.ui_radius" type="radio" value="large" data-preference-id="appearance\.ui_radius" checked~',
-            $html,
-        );
+        // Modal blur and control radius remain author settings; readers no longer get controls for them.
+        self::assertStringNotContainsString('docara-preference-appearance.modal_blur', $html);
+        self::assertStringNotContainsString('docara-preference-appearance.ui_radius', $html);
+        self::assertStringContainsString('function prune(){', $html);
         self::assertStringContainsString("root.style.setProperty('--sf-radius--ui',values[mode])", $html);
         self::assertStringContainsString("root.style.removeProperty('--sf-radius--ui')", $html);
         self::assertStringContainsString("medium:'var(--sf-radius-1\\\\/2)'", $html);
         self::assertStringContainsString("'sf-modal[data-docara-transient-dialog]'", $html);
         self::assertStringContainsString("modal.setAttribute('overlay-class',value)", $html);
-        self::assertStringContainsString("document.addEventListener('DOMContentLoaded',function(){applyAll(initialSource)},{once:true})", $html);
+        self::assertStringContainsString("document.addEventListener('DOMContentLoaded',function(){applySite();applyAll(initialSource)},{once:true})", $html);
         self::assertStringNotContainsString('revealFrameworkBody', $html);
     }
 

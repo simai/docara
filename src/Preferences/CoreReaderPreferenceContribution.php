@@ -29,49 +29,5 @@ final class CoreReaderPreferenceContribution implements ReaderPreferenceContribu
             'reader.theme_title',
             'reader.theme_description',
         ));
-        $registry->add(new ReaderPreferenceDefinition(
-            'appearance.modal_blur',
-            'appearance',
-            'choice',
-            ['none', 'small', 'medium', 'large'],
-            'docara.modal_blur',
-            'prepaint',
-            'site',
-            [
-                'none' => 'reader.modal_blur_none',
-                'small' => 'reader.modal_blur_small',
-                'medium' => 'reader.modal_blur_medium',
-                'large' => 'reader.modal_blur_large',
-            ],
-            [
-                'none' => 'reader.modal_blur_none_description',
-                'small' => 'reader.modal_blur_small_description',
-                'medium' => 'reader.modal_blur_medium_description',
-                'large' => 'reader.modal_blur_large_description',
-            ],
-            'reader.modal_blur_title',
-            'reader.modal_blur_description',
-        ));
-        $registry->add(new ReaderPreferenceDefinition(
-            'appearance.ui_radius',
-            'appearance',
-            'choice',
-            ['default', 'medium', 'large'],
-            'docara.ui_radius',
-            'prepaint',
-            'site',
-            [
-                'default' => 'reader.ui_radius_default',
-                'medium' => 'reader.ui_radius_medium',
-                'large' => 'reader.ui_radius_large',
-            ],
-            [
-                'default' => 'reader.ui_radius_default_description',
-                'medium' => 'reader.ui_radius_medium_description',
-                'large' => 'reader.ui_radius_large_description',
-            ],
-            'reader.ui_radius_title',
-            'reader.ui_radius_description',
-        ));
     }
 }

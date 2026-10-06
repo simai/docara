@@ -51,7 +51,7 @@
     "groups": [
       {
         "id": "appearance",
-        "fields": ["appearance.theme", "appearance.modal_blur", "appearance.ui_radius"]
+        "fields": ["appearance.theme"]
       }
     ]
   },

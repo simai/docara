@@ -8,6 +8,12 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class ReaderPreferenceCompiler
 {
+    /**
+     * Fields that earlier releases offered. A site configuration that still
+     * lists them keeps building; the field is simply no longer shown.
+     */
+    public const RETIRED_FIELDS = ['appearance.modal_blur', 'appearance.ui_radius'];
+
     private ReaderPreferenceRegistry $registry;
 
     public function __construct(
@@ -61,6 +67,9 @@ final readonly class ReaderPreferenceCompiler
                         'Reader preference field ids must be strings.',
                     );
                 }
+                if (in_array($fieldId, self::RETIRED_FIELDS, true)) {
+                    continue;
+                }
                 if (isset($seenFields[$fieldId])) {
                     throw new PortableConfigurationException(
                         'READER_PREFERENCES_FIELD_DUPLICATE',
@@ -101,8 +110,11 @@ final readonly class ReaderPreferenceCompiler
                 }
                 foreach ($definition->values as $value) {
                     $titleKey = $definition->optionTitleKeys[$value] ?? '';
-                    $descriptionKey = $definition->optionDescriptionKeys[$value] ?? '';
-                    if (! is_string($copy[$titleKey] ?? null) || ! is_string($copy[$descriptionKey] ?? null)) {
+                    // An option may be a short label without its own description.
+                    $descriptionKey = $definition->optionDescriptionKeys[$value] ?? null;
+                    if (! is_string($copy[$titleKey] ?? null)
+                        || ($descriptionKey !== null && ! is_string($copy[$descriptionKey] ?? null))
+                    ) {
                         throw new PortableConfigurationException(
                             'READER_PREFERENCES_COPY_MISSING',
                             "Reader preference copy is missing for [$fieldId:$value].",
@@ -111,7 +123,7 @@ final readonly class ReaderPreferenceCompiler
                     $options[] = [
                         'value' => $value,
                         'title' => $copy[$titleKey],
-                        'description' => $copy[$descriptionKey],
+                        'description' => $descriptionKey === null ? '' : $copy[$descriptionKey],
                     ];
                 }
                 $fields[] = [
@@ -126,6 +138,9 @@ final readonly class ReaderPreferenceCompiler
                     'storage_scope' => $definition->storageScope,
                     'options' => $options,
                 ];
+            }
+            if ($fields === []) {
+                continue;
             }
             $groups[] = [
                 'id' => $groupId,
@@ -152,7 +167,7 @@ final readonly class ReaderPreferenceCompiler
             'enabled' => true,
             'view' => 'side-panel',
             'groups' => [
-                ['id' => 'appearance', 'fields' => ['appearance.theme', 'appearance.modal_blur', 'appearance.ui_radius']],
+                ['id' => 'appearance', 'fields' => ['appearance.theme']],
             ],
         ];
     }

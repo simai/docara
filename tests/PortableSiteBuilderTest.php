@@ -2706,7 +2706,7 @@ MD;
         $language = $this->jsonFile(dirname(__DIR__) . '/stubs/portable/content/ru/lang.json');
         if ($locale === 'zh-Hans') {
             $language['language']['label'] = '语言';
-            $language['reader']['title'] = '阅读设置';
+            $language['reader']['panel_title'] = '阅读设置';
             $language['navigation']['sections'] = '章节';
             $language['navigation']['outline'] = '目录';
         }

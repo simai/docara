@@ -32,9 +32,9 @@ html[dir="ltr"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-sect
 html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]>*{direction:rtl}
 .docara-content{color:var(--sf-on-surface);scroll-margin-block-start:4.5rem}
 [data-docara-region="main"]{container-type:inline-size}
-/* Reader font size: zoom the documentation content only. Framework type, spacing and media are rem-based, so a root font-size step would also resize the chrome; zoom keeps the content in proportion (16px body text becomes 14px or 18px). */
-html[data-docara-font-size="small"] .docara-docs-layout .docara-content{zoom:.875}
-html[data-docara-font-size="large"] .docara-docs-layout .docara-content{zoom:1.125}
+/* Reader font size: one step of the root size. Framework type, spacing, controls and container steps are rem-based, so the header, navigation, outline, breadcrumbs and content all follow, like a browser text-size change: 16px body text becomes 14px or 18px (--sf-b4 / --sf-b8 over --sf-b6). Percentages keep the reader's own browser default as the base. */
+html[data-docara-font-size="small"]{font-size:87.5%}
+html[data-docara-font-size="large"]{font-size:112.5%}
 /* Reading toolbar: breadcrumbs with the outline and reading-mode toggles at the inline end. */
 .docara-reading-actions{margin-inline-start:auto}
 /* Reading mode swaps the toolbar toggle for a round Framework icon button pinned to the window corner. */

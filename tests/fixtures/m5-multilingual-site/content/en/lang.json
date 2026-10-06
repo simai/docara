@@ -27,7 +27,7 @@
         "theme_system": "Use system setting",
         "theme_light": "Light",
         "theme_dark": "Dark",
-        "font_size_title": "Font size", "font_size_description": "Changes the size of the page content; navigation keeps its size.",
+        "font_size_title": "Font size", "font_size_description": "Changes the size of the whole documentation interface.",
         "font_size_small": "Small", "font_size_normal": "Normal", "font_size_large": "Large",
         "content_width_title": "Page width", "content_width_description": "Wide uses the full window and does not limit line length.",
         "content_width_normal": "Normal", "content_width_wide": "Wide",

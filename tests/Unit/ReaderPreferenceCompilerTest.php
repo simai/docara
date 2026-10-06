@@ -30,6 +30,8 @@ final class ReaderPreferenceCompilerTest extends TestCase
         self::assertSame('docara.theme', $manifest['groups'][0]['fields'][0]['effect']);
         self::assertSame(['system', 'light', 'dark'], $manifest['groups'][0]['fields'][0]['values']);
         self::assertSame('Тема', $manifest['groups'][0]['fields'][0]['title']);
+        // Options are labels only; the field description explains the choice.
+        self::assertSame(['', '', ''], array_column($manifest['groups'][0]['fields'][0]['options'], 'description'));
         self::assertSame('appearance.font_size', $manifest['groups'][0]['fields'][1]['id']);
         self::assertSame('normal', $manifest['groups'][0]['fields'][1]['configured']);
         self::assertSame('docara.font_size', $manifest['groups'][0]['fields'][1]['effect']);
@@ -118,11 +120,8 @@ final class ReaderPreferenceCompilerTest extends TestCase
             'reader.theme_title' => 'Тема',
             'reader.theme_description' => 'Выбор темы.',
             'reader.theme_system' => 'Как в системе',
-            'reader.theme_system_description' => 'Следовать теме устройства.',
             'reader.theme_light' => 'Светлая',
-            'reader.theme_light_description' => 'Всегда светлая тема.',
             'reader.theme_dark' => 'Тёмная',
-            'reader.theme_dark_description' => 'Всегда тёмная тема.',
             'reader.font_size_title' => 'Размер шрифта',
             'reader.font_size_description' => 'Размер текста страницы.',
             'reader.font_size_small' => 'Мелкий',

@@ -497,7 +497,7 @@
   }
   function exampleEnvironment(frame){
     var state=exampleFrameState(frame),source=frame.getAttribute('srcdoc')||'',codepoints=exampleCodepoints(source);
-    var icons=Boolean(state.icons.outlined||state.icons.rounded||state.icons.shape);
+    var icons=Boolean(state.icons.outlined||state.icons.rounded||state.icons.shape||state.icons.full);
     function fresh(key){
       if(!key||state.sent[key])return false;
       state.sent[key]=true;
@@ -506,7 +506,9 @@
     var keyOf=function(element){return element.getAttribute('data-docara-framework-asset')||''};
     var inlineScripts=icons?Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])')):[];
     var bootScripts=Array.from(document.querySelectorAll('script[data-docara-framework-asset="docara.framework.storage.compatibility"]:not([src]),script[data-docara-framework-asset="simai.framework.boot"]:not([src]),script[data-docara-framework-asset="simai.framework.preloaded"]:not([src])'));
-    var inlineStyles=icons?Array.from(document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_font.css"],style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]')):[];
+    /* Like the page, a frame gets the icon subset with its first icon, the full fallback font only once its icon runtime asks for a name the subset lacks, and the variant fonts only for variant icons. */
+    var subsetStyle=document.querySelector('style[data-docara-framework-asset="simai.framework.icon_font.css"]');
+    var inlineStyles=icons?Array.from(document.querySelectorAll(state.icons.full?'style[data-docara-framework-asset="simai.framework.icon_font.css"],style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]':'style[data-docara-framework-asset="simai.framework.icon_font.css"]')):[];
     if(state.icons.rounded||state.icons.shape){
       document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_variant_fonts.css"]').forEach(function(style){inlineStyles.push(style)});
     }
@@ -516,7 +518,8 @@
     var linked=[];
     Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"],link[data-docara-declarative-shell-style][rel="stylesheet"]')).forEach(function(link){
       if(fresh('stylesheet:'+link.href))linked.push({link:link,key:'stylesheet:'+link.href,faces:'text'});
-      if(icons&&fresh('icon-faces:'+link.href))linked.push({link:link,key:'icon-faces:'+link.href,faces:'icons'});
+      /* Where the subset styles every icon, the page never uses the icon faces its stylesheets declare, so neither does the frame. */
+      if(icons&&!subsetStyle&&fresh('icon-faces:'+link.href))linked.push({link:link,key:'icon-faces:'+link.href,faces:'icons'});
     });
     var environment={
       stylesheets:[],
@@ -571,7 +574,8 @@
     if(!frame)return;
     var state=exampleFrameState(frame),changed=false;
     event.data.icons.forEach(function(token){
-      if(['outlined','rounded','shape'].indexOf(token)!==-1&&!state.icons[token]){state.icons[token]=true;changed=true}
+      if(['outlined','rounded','shape','full'].indexOf(token)!==-1&&!state.icons[token]){state.icons[token]=true;changed=true}
+      if(token==='full'&&!state.icons.outlined){state.icons.outlined=true;changed=true}
     });
     if(changed)requestExampleHeight(frame);
   });

@@ -262,6 +262,10 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertSame(244368, $plan->preload['icons']['font_size']);
         self::assertSame('local_full_font_on_unknown_icon', $plan->preload['icons']['fallback']);
         self::assertStringContainsString('ensureFullFont()', $assets['simai.framework.icon_font.ready']['content']);
+        // In an example frame the runtime asks the shell for the full font
+        // instead of fetching it from the site.
+        self::assertStringContainsString('document.documentElement.hasAttribute("data-docara-example-frame")', $assets['simai.framework.icon_font.ready']['content']);
+        self::assertStringContainsString('parent.postMessage({type:"docara:example-icons",icons:["full"]},"*")', $assets['simai.framework.icon_font.ready']['content']);
         self::assertStringContainsString(
             '.sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-full-font)',
             $assets['simai.framework.icon_font.css']['content'],

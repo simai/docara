@@ -844,9 +844,14 @@ MD);
             $smartSurface,
         );
         self::assertStringContainsString(
-            'left:calc(var(--sf-0) - var(--sf-space-2) - var(--sf-a2));width:var(--sf-a2)',
+            'inset-inline-start:calc(var(--docara-outline-indent,calc(var(--sf-space-2) + var(--sf-a2))) * -1);inline-size:var(--sf-a3)',
             $smartSurface,
-            'The active outline marker must overlay the physical left divider.',
+            'The active outline marker must start on the rail divider and grow into the list.',
+        );
+        self::assertStringNotContainsString(
+            'left:calc(var(--sf-0) - ',
+            $smartSurface,
+            'A unitless zero inside calc() invalidates the offset and detaches the marker from the divider.',
         );
         self::assertStringContainsString(
             'background:var(--sf-outline)',

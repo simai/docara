@@ -21,8 +21,11 @@ body[data-docara-shell]{opacity:1!important}
 .docara-sidebar-scroll{position:sticky;inset-block-start:3.5rem;block-size:calc(100vh - 3.5rem)}
 .docara-sidebar-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-block:var(--sf-space-1);padding-inline-end:var(--sf-space-1);padding-inline-start:0}
 .docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}
+.docara-outline-rail{--docara-outline-indent:calc(var(--sf-space-2) + var(--sf-a2))}
+html[dir="rtl"] .docara-outline-rail{box-shadow:inset calc(var(--sf-px) * -1) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}
 .docara-outline-scroll{position:sticky;inset-block-start:4.5rem;block-size:calc(100vh - 4.5rem);direction:ltr}
-.docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding:var(--sf-space-2);padding-inline-start:calc(var(--sf-space-2) + var(--sf-a2))}
+.docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding:var(--sf-space-2);padding-inline-start:var(--docara-outline-indent)}
+html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-inline-start:var(--sf-space-2);padding-inline-end:var(--docara-outline-indent)}
 html[dir="ltr"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]>*{direction:ltr}
 html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]>*{direction:rtl}
 .docara-content{color:var(--sf-on-surface);scroll-margin-block-start:4.5rem}

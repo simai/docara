@@ -29,5 +29,22 @@ final class CoreReaderPreferenceContribution implements ReaderPreferenceContribu
             'reader.theme_title',
             'reader.theme_description',
         ));
+        $registry->add(new ReaderPreferenceDefinition(
+            'appearance.font_size',
+            'appearance',
+            'choice',
+            ['small', 'normal', 'large'],
+            'docara.font_size',
+            'prepaint',
+            'site',
+            [
+                'small' => 'reader.font_size_small',
+                'normal' => 'reader.font_size_normal',
+                'large' => 'reader.font_size_large',
+            ],
+            [],
+            'reader.font_size_title',
+            'reader.font_size_description',
+        ));
     }
 }

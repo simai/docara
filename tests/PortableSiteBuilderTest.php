@@ -1393,7 +1393,7 @@ MD);
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
         $html = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
-        self::assertStringContainsString('"values":{"appearance.theme":"dark"}', $html);
+        self::assertStringContainsString('"values":{"appearance.theme":"dark","appearance.font_size":"normal"}', $html);
         self::assertStringContainsString(',site={"modal_blur":"small","ui_radius":"large"}', $html);
         self::assertMatchesRegularExpression(
             '~data-docara-preference-option name="docara-preference-appearance\\.theme" type="radio" value="dark" data-preference-id="appearance\\.theme" checked~',

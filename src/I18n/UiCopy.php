@@ -75,6 +75,11 @@ final readonly class UiCopy
         'examples.viewport_desktop' => 'Desktop',
         'examples.viewport_tablet' => 'Tablet',
         'examples.viewport_mobile' => 'Mobile',
+        'reader.font_size_title' => 'Font size',
+        'reader.font_size_description' => 'Changes the size of the page content; navigation keeps its size.',
+        'reader.font_size_small' => 'Small',
+        'reader.font_size_normal' => 'Normal',
+        'reader.font_size_large' => 'Large',
     ];
 
     public function __construct(private Translator $translator) {}

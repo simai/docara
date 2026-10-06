@@ -117,6 +117,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             is_array($page['reader_preferences'] ?? null) ? $page['reader_preferences'] : [],
             [
                 'appearance.theme' => $configuredTheme,
+                'appearance.font_size' => 'normal',
             ],
             $copy,
             is_string($page['reader_preferences_storage_key'] ?? null)
@@ -407,7 +408,9 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             . "function applyTheme(mode,source){if(['system','light','dark'].indexOf(mode)===-1)mode='system';var dark=mode==='dark'||(mode==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var root=document.documentElement;root.classList.remove('theme-light','theme-dark');root.classList.add(dark?'theme-dark':'theme-light');root.dataset.docaraThemePreference=mode;root.dataset.docaraThemeSource=source}"
             . "function applyModalBlur(mode,source){if(['none','small','medium','large'].indexOf(mode)===-1)mode='none';var value='backdrop-blur-'+mode;document.documentElement.dataset.docaraModalBlurPreference=mode;document.documentElement.dataset.docaraModalBlurSource=source;document.querySelectorAll('sf-modal[data-docara-transient-dialog]').forEach(function(modal){modal.setAttribute('overlay-class',value)})}"
             . "function applyUiRadius(mode,source){if(['default','medium','large'].indexOf(mode)===-1)mode='default';var root=document.documentElement,values={medium:'var(--sf-radius-1\\\\/2)',large:'var(--sf-radius-1)'};if(mode==='default')root.style.removeProperty('--sf-radius--ui');else root.style.setProperty('--sf-radius--ui',values[mode]);root.dataset.docaraUiRadiusPreference=mode;root.dataset.docaraUiRadiusSource=source}"
-            . "var effects={'docara.theme':applyTheme};"
+            // Content size is a root attribute so the shell stylesheet scales the reading column before first paint.
+            . "function applyFontSize(mode,source){if(['small','normal','large'].indexOf(mode)===-1)mode='normal';var root=document.documentElement;if(mode==='normal')root.removeAttribute('data-docara-font-size');else root.setAttribute('data-docara-font-size',mode);root.dataset.docaraFontSizeSource=source}"
+            . "var effects={'docara.theme':applyTheme,'docara.font_size':applyFontSize};"
             // Modal blur and control radius are author settings only; readers no longer override them.
             . "function applySite(){applyModalBlur(site.modal_blur,'site');applyUiRadius(site.ui_radius,'site')}"
             // Drop values of fields this site no longer offers (for example retired preferences) from storage.

@@ -56,9 +56,10 @@ All notable changes to Docara are documented in this file.
 - The responsive example viewer's width switcher is three Framework link icon
   buttons (`desktop_windows`, `tablet`, `smartphone`) like the close button
   beside them, with `aria-pressed` and the Framework `.active` state on the
-  chosen width, which reads in both themes. The simulated device column is
-  edged by a 1px Framework outline border instead of a shadow that vanished
-  in the dark theme.
+  chosen width, which reads in both themes. At tablet and phone widths the
+  simulated device column is on `--sf-surface-0` and the area around it on
+  `--sf-surface-1`, replacing a shadow that vanished in the dark theme;
+  desktop width stays full width without a backdrop.
 - The search status line uses body text and the key hints small body text,
   with key chips at the same size, instead of the smaller label token.
 - Docara's own CSS lengths use Framework size tokens; only 1px hairlines,

@@ -4,7 +4,44 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Added
+- Reader preferences offer a font size (Small, Normal, Large) and a page
+  width (Normal, Wide). Font size zooms only the documentation content by
+  14/16 or 18/16, so 16px body text becomes 14px or 18px while the header,
+  navigation, outline and breadcrumbs keep their size; Framework type and
+  spacing are rem-based, so a root font-size step would have resized the
+  chrome too. Wide format lifts the container maximum of the header, docs
+  layout and footer and the reading measure of prose paragraphs and list
+  items. Both are restored before first paint like the theme. They are in
+  the default panel; a site whose `reader_preferences` lists its fields adds
+  `appearance.font_size` and `appearance.content_width` to show them.
+- Two toggles next to the breadcrumbs: one hides the outline rail, the other
+  turns on reading mode, which keeps only the content column with a floating
+  exit control and Esc to leave. The state persists per site under
+  `docara.reading.<site-hash>.v1`, falls back to memory without storage, and
+  is restored before first paint. The toggles use subset icons only.
+- The header menu marks the item of the section that contains the current
+  page with `aria-current="true"` and the active surface, chosen at build
+  time from the navigation ancestry or the longest route prefix; the site
+  home is current only on itself.
+
+### Changed
+- Reader preferences no longer offer modal backdrop blur or control corner
+  radius. A configuration that still lists `appearance.modal_blur` or
+  `appearance.ui_radius` keeps building and hides them, and their stored
+  values are pruned. `settings.modal_blur` and `settings.ui_radius` remain
+  author settings. Their `reader.modal_blur_*` and `reader.ui_radius_*`
+  strings are no longer required in `lang.json`.
+- The preferences panel is more compact: option rows use a third of the space
+  step for block padding without a gap between them, and options without
+  descriptions sit on one row.
+
 ### Fixed
+- The active outline bar sits on the rail divider. Its offset used `calc()`
+  with the unitless `--sf-0` token, which invalidated the expression and left
+  the bar 22px inside the divider. It now starts on the divider, is 3px wide
+  over the 1px track, and follows the inline-start side in right-to-left
+  pages, where the divider also moves to the inline-start edge.
 - An icon frame no longer receives the full Material Symbols font up front.
   It gets the icon subset with its first icon, and the full fallback font
   (3,964,532 bytes) only when the Framework icon runtime inside the frame

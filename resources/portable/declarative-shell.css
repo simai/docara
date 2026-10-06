@@ -13,6 +13,8 @@ body[data-docara-shell]{opacity:1!important}
 .docara-language-menu:not([open])>.docara-language-menu__popup{display:none}
 .docara-language-menu__option:hover{background:var(--sf-surface-container-hover)}
 .docara-language-menu__option:focus-visible{background:var(--sf-surface-container-active);outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);outline-offset:calc(var(--sf-focus--width) * -1)}
+/* The header row pads its container with one space step (p-1); the docs layout and footer use the same inset so the sidebar, content and outline edges line up with the logo and the last header action. */
+.docara-docs-layout.container,body[data-docara-shell]>.container[data-docara-region="footer"]{padding-inline:var(--sf-space-1)}
 .docara-docs-layout{display:grid;grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}
 .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr) var(--sf-f2)}
 .docara-docs-layout[data-sidebar="false"]{grid-template-columns:minmax(0,1fr)}

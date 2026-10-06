@@ -16,9 +16,9 @@ final readonly class FrameworkAssetPlanner
 
     private const ICON_SUBSET_MANIFEST = 'vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.1923885bcfbdb6f0ece3.manifest.json';
 
-    private const ICON_SUBSET_MANIFEST_SHA256 = '6b822f521a9a7108f77a87cb901f9e64225f855808d53d817be6bd099706d666';
+    private const ICON_SUBSET_MANIFEST_SHA256 = 'a874fabe777d87aae248407d65a7417ffaebf327fbea52813fcb6667d43cfae5';
 
-    private const ICON_SUBSET_PACKET_SHA256 = 'ea974c3a088da96ffb1505baf70d2144f35765ea0c82202d8bd9a5259ad2dfd9';
+    private const ICON_SUBSET_PACKET_SHA256 = 'ab13403d3b78df4f13e35249307d09e3154b2dd43f3d004ad0ba44e7d6feff44';
 
     public function __construct(
         private FrameworkManifestRepository $repository,

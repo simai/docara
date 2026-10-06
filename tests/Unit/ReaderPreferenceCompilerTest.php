@@ -14,7 +14,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
     {
         $manifest = (new ReaderPreferenceCompiler)->compile(
             ReaderPreferenceCompiler::defaultConfiguration(),
-            ['appearance.theme' => 'system'],
+            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -30,7 +30,13 @@ final class ReaderPreferenceCompilerTest extends TestCase
         self::assertSame('docara.theme', $manifest['groups'][0]['fields'][0]['effect']);
         self::assertSame(['system', 'light', 'dark'], $manifest['groups'][0]['fields'][0]['values']);
         self::assertSame('Тема', $manifest['groups'][0]['fields'][0]['title']);
-        self::assertCount(1, $manifest['groups'][0]['fields']);
+        self::assertSame('appearance.font_size', $manifest['groups'][0]['fields'][1]['id']);
+        self::assertSame('normal', $manifest['groups'][0]['fields'][1]['configured']);
+        self::assertSame('docara.font_size', $manifest['groups'][0]['fields'][1]['effect']);
+        self::assertSame('prepaint', $manifest['groups'][0]['fields'][1]['apply_phase']);
+        self::assertSame(['small', 'normal', 'large'], $manifest['groups'][0]['fields'][1]['values']);
+        self::assertSame(['', '', ''], array_column($manifest['groups'][0]['fields'][1]['options'], 'description'));
+        self::assertCount(2, $manifest['groups'][0]['fields']);
     }
 
     public function test_retired_fields_listed_by_an_older_site_configuration_are_skipped(): void
@@ -114,6 +120,11 @@ final class ReaderPreferenceCompilerTest extends TestCase
             'reader.theme_light_description' => 'Всегда светлая тема.',
             'reader.theme_dark' => 'Тёмная',
             'reader.theme_dark_description' => 'Всегда тёмная тема.',
+            'reader.font_size_title' => 'Размер шрифта',
+            'reader.font_size_description' => 'Размер текста страницы.',
+            'reader.font_size_small' => 'Мелкий',
+            'reader.font_size_normal' => 'Обычный',
+            'reader.font_size_large' => 'Крупный',
         ];
     }
 }

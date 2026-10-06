@@ -27,6 +27,8 @@
         "theme_system": "Use system setting", "theme_system_description": "Automatically follows the device setting.",
         "theme_light": "Light", "theme_light_description": "Use the light appearance on every page.",
         "theme_dark": "Dark", "theme_dark_description": "Use the dark appearance on every page.",
+        "font_size_title": "Font size", "font_size_description": "Changes the size of the page content; navigation keeps its size.",
+        "font_size_small": "Small", "font_size_normal": "Normal", "font_size_large": "Large",
         "saved": "Saved: {setting} — {value}.", "applied_not_saved": "The setting was applied. The browser did not allow the choice to be saved.",
         "restored": "The site settings have been restored."
     },

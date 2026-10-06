@@ -63,6 +63,11 @@
         "theme_light_description": "Светлое оформление на всех страницах.",
         "theme_dark": "Тёмная",
         "theme_dark_description": "Тёмное оформление на всех страницах.",
+        "font_size_title": "Размер шрифта",
+        "font_size_description": "Меняет размер текста страницы, навигация остаётся прежней.",
+        "font_size_small": "Мелкий",
+        "font_size_normal": "Обычный",
+        "font_size_large": "Крупный",
         "saved": "Сохранено: {setting} — {value}.",
         "applied_not_saved": "Настройка применена. Браузер не разрешил сохранить выбор.",
         "restored": "Восстановлены настройки сайта."

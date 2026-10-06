@@ -51,7 +51,7 @@
     "groups": [
       {
         "id": "appearance",
-        "fields": ["appearance.theme"]
+        "fields": ["appearance.theme", "appearance.font_size"]
       }
     ]
   },

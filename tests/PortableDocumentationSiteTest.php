@@ -241,7 +241,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'Heading anchors must reserve space for the compact sticky documentation header.',
         );
         self::assertStringContainsString(
-            'scroll-margin-block-start:4rem',
+            'scroll-margin-block-start:var(--sf-d6)',
             $shellCss,
             'Mobile heading anchors must reserve space for the compact mobile header.',
         );
@@ -397,7 +397,12 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // files and the shell stylesheets at 70. The flag catalogue and its 494
         // SVGs, which sf-flag fetches by URL, then added 495 per locale. The
         // seven Inter woff2 files core.css names add 7 per locale, 3356 to 3370.
-        self::assertCount(3370, $firstFiles);
+        // The reader preferences panel became a button group instead of radio
+        // rows, so it no longer brings the radio component and border-style
+        // utility to every page. The steps and tree pages, which shared one
+        // shell stylesheet only because of that, now differ by the
+        // border-style utility: one more stylesheet per locale, 3372.
+        self::assertCount(3372, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_contains($path, 'vendor/simai-framework/typography/'),

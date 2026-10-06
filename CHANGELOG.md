@@ -27,6 +27,13 @@ All notable changes to Docara are documented in this file.
   page with `aria-current="true"` and the active surface, chosen at build
   time from the navigation ancestry or the longest route prefix; the site
   home is current only on itself.
+- Docara ships built-in Russian defaults for its optional interface strings
+  beside the English ones: code copy and wrap, the responsive example
+  viewer, font size, page width and the reading toolbar. A locale gets the
+  defaults of its language (`ru`, `ru-RU`) or English otherwise, and any key
+  in the site's `content/<locale>/lang.json` still wins. The required shell
+  strings stay site-owned, so a locale without its own `lang.json` still
+  fails the build.
 
 ### Changed
 - Reader preferences no longer offer modal backdrop blur or control corner

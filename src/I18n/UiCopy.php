@@ -80,6 +80,10 @@ final readonly class UiCopy
         'reader.font_size_small' => 'Small',
         'reader.font_size_normal' => 'Normal',
         'reader.font_size_large' => 'Large',
+        'reader.content_width_title' => 'Page width',
+        'reader.content_width_description' => 'Wide uses the full window and does not limit line length.',
+        'reader.content_width_normal' => 'Normal',
+        'reader.content_width_wide' => 'Wide',
     ];
 
     public function __construct(private Translator $translator) {}

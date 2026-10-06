@@ -14,7 +14,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
     {
         $manifest = (new ReaderPreferenceCompiler)->compile(
             ReaderPreferenceCompiler::defaultConfiguration(),
-            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal'],
+            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -36,7 +36,10 @@ final class ReaderPreferenceCompilerTest extends TestCase
         self::assertSame('prepaint', $manifest['groups'][0]['fields'][1]['apply_phase']);
         self::assertSame(['small', 'normal', 'large'], $manifest['groups'][0]['fields'][1]['values']);
         self::assertSame(['', '', ''], array_column($manifest['groups'][0]['fields'][1]['options'], 'description'));
-        self::assertCount(2, $manifest['groups'][0]['fields']);
+        self::assertSame('appearance.content_width', $manifest['groups'][0]['fields'][2]['id']);
+        self::assertSame('docara.content_width', $manifest['groups'][0]['fields'][2]['effect']);
+        self::assertSame(['normal', 'wide'], $manifest['groups'][0]['fields'][2]['values']);
+        self::assertCount(3, $manifest['groups'][0]['fields']);
     }
 
     public function test_retired_fields_listed_by_an_older_site_configuration_are_skipped(): void
@@ -125,6 +128,10 @@ final class ReaderPreferenceCompilerTest extends TestCase
             'reader.font_size_small' => 'Мелкий',
             'reader.font_size_normal' => 'Обычный',
             'reader.font_size_large' => 'Крупный',
+            'reader.content_width_title' => 'Ширина страницы',
+            'reader.content_width_description' => 'Ширина области страницы.',
+            'reader.content_width_normal' => 'Обычная',
+            'reader.content_width_wide' => 'Широкая',
         ];
     }
 }

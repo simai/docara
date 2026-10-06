@@ -12,14 +12,19 @@ All notable changes to Docara are documented in this file.
   spacing are rem-based, so a root font-size step would have resized the
   chrome too. Wide format lifts the container maximum of the header, docs
   layout and footer and the reading measure of prose paragraphs and list
-  items. Both are restored before first paint like the theme. They are in
-  the default panel; a site whose `reader_preferences` lists its fields adds
-  `appearance.font_size` and `appearance.content_width` to show them.
+  items. Both are restored before first paint like the theme.
+- Theme, font size and page width are the bundled reader controls and are
+  shown even when a site lists its own fields: listed fields keep the group
+  and order the site gives them, and an unlisted bundled control is appended
+  to its group. The new `reader_preferences.hidden_fields` list opts a
+  control out; naming a field both there and in a group fails the build.
 - Two toggles next to the breadcrumbs: one hides the outline rail, the other
   turns on reading mode, which keeps only the content column with a floating
   exit control and Esc to leave. The state persists per site under
   `docara.reading.<site-hash>.v1`, falls back to memory without storage, and
-  is restored before first paint. The toggles use subset icons only.
+  is restored before first paint. The outline toggle uses `dock_to_left`,
+  which is now listed in the shell icon subset manifest (68 icons; the
+  subset font bytes are unchanged), so no toggle loads the full icon font.
 - The header menu marks the item of the section that contains the current
   page with `aria-current="true"` and the active surface, chosen at build
   time from the navigation ancestry or the longest route prefix; the site
@@ -32,16 +37,19 @@ All notable changes to Docara are documented in this file.
   values are pruned. `settings.modal_blur` and `settings.ui_radius` remain
   author settings. Their `reader.modal_blur_*` and `reader.ui_radius_*`
   strings are no longer required in `lang.json`.
-- The preferences panel is more compact: option rows use a third of the space
-  step for block padding without a gap between them, and options without
-  descriptions sit on one row.
+- The preferences panel is more compact: options are labels only (the
+  `reader.theme_*_description` strings are no longer required), sit on one
+  row, and keep the Framework control height as their minimum target.
 
 ### Fixed
 - The active outline bar sits on the rail divider. Its offset used `calc()`
   with the unitless `--sf-0` token, which invalidated the expression and left
-  the bar 22px inside the divider. It now starts on the divider, is 3px wide
-  over the 1px track, and follows the inline-start side in right-to-left
+  the bar 22px inside the divider. It now starts on the divider, is 2px wide
+  with square ends over the 1px track, and follows the inline-start side in right-to-left
   pages, where the divider also moves to the inline-start edge.
+- The docs layout and footer use the header row's one-step inline padding, so
+  the sidebar starts at the logo and the outline ends at the last header
+  action; they were 32px further in on wide screens.
 - An icon frame no longer receives the full Material Symbols font up front.
   It gets the icon subset with its first icon, and the full fallback font
   (3,964,532 bytes) only when the Framework icon runtime inside the frame

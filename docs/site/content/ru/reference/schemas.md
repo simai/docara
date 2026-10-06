@@ -80,6 +80,8 @@ Invalid-пример документирует ожидаемую ошибку;
 - `settings.ui_radius`: `default`, `medium`, `large`;
 - `reader_preferences.enabled`: boolean;
 - `reader_preferences.view`: `side-panel`;
+- `reader_preferences.hidden_fields`: необязательный список встроенных полей,
+  которые не нужно показывать;
 - `reader_preferences.groups`: непустой список зарегистрированных групп и
   полей; runtime дополнительно проверяет неизвестные ID, повторы, принадлежность
   группе и безопасный effect contract;

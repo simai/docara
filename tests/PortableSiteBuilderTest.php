@@ -946,7 +946,7 @@ MD);
                 $html,
             );
             self::assertStringContainsString(
-                '/_docara/vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.995fbf08c43fe8ae9c3b.woff2',
+                '/_docara/vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.1923885bcfbdb6f0ece3.woff2',
                 $html,
             );
             self::assertStringNotContainsString(

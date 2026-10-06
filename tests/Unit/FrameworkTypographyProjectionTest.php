@@ -235,11 +235,11 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
-            '/_docara/vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.995fbf08c43fe8ae9c3b.woff2',
+            '/_docara/vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.1923885bcfbdb6f0ece3.woff2',
             $assets['simai.framework.icon_font.css']['content'],
         );
         self::assertStringContainsString(
-            '@font-face{font-family:"Material Symbols Outlined Subset 995fbf08c43f"',
+            '@font-face{font-family:"Material Symbols Outlined Subset 1923885bcfbd"',
             $assets['simai.framework.icon_font.css']['content'],
         );
         $icons = $repository->iconProjection();
@@ -256,10 +256,10 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $icons['files']['outlined']['sha256'],
         );
         self::assertStringContainsString(
-            '/_docara/vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.995fbf08c43fe8ae9c3b.woff2',
+            '/_docara/vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.1923885bcfbdb6f0ece3.woff2',
             $assets['simai.framework.icon_font.css']['content'],
         );
-        self::assertSame(244368, $plan->preload['icons']['font_size']);
+        self::assertSame(247824, $plan->preload['icons']['font_size']);
         self::assertSame('local_full_font_on_unknown_icon', $plan->preload['icons']['fallback']);
         self::assertStringContainsString('ensureFullFont()', $assets['simai.framework.icon_font.ready']['content']);
         // In an example frame the runtime asks the shell for the full font
@@ -479,9 +479,9 @@ final class FrameworkTypographyProjectionTest extends TestCase
     public function changed_shell_icon_subset_files_fail_before_render(): void
     {
         $cases = [
-            'material-symbols-outlined.995fbf08c43fe8ae9c3b.manifest.json' => 'FRAMEWORK_ICON_SUBSET_MANIFEST_HASH_MISMATCH',
-            'material-symbols-outlined.995fbf08c43fe8ae9c3b.css' => 'FRAMEWORK_ICON_SUBSET_CSS_HASH_MISMATCH',
-            'material-symbols-outlined.995fbf08c43fe8ae9c3b.woff2' => 'FRAMEWORK_PORTABLE_ASSET_HASH_MISMATCH',
+            'material-symbols-outlined.1923885bcfbdb6f0ece3.manifest.json' => 'FRAMEWORK_ICON_SUBSET_MANIFEST_HASH_MISMATCH',
+            'material-symbols-outlined.1923885bcfbdb6f0ece3.css' => 'FRAMEWORK_ICON_SUBSET_CSS_HASH_MISMATCH',
+            'material-symbols-outlined.1923885bcfbdb6f0ece3.woff2' => 'FRAMEWORK_PORTABLE_ASSET_HASH_MISMATCH',
         ];
 
         foreach ($cases as $file => $expectedCode) {

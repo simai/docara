@@ -424,6 +424,12 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             . "function reset(){volatile={};if(!frameworkMemory()){try{window.localStorage.removeItem(key)}catch(error){}}applyAll('site')}"
             . "function syncExternal(){volatile={};applyAll(Object.keys(stored()).length?'reader':'site')}"
             . 'function hasOverride(){return Object.keys(overrides()).length>0}'
+            // Reading layout (outline hidden, reading mode) is restored here, before first paint, as root attributes.
+            . "var layoutKey=key.replace(/^docara\\.preferences\\./,'docara.reading.'),layoutMemory={};"
+            . "function readLayout(){if(frameworkMemory())return Object.assign({},layoutMemory);try{var value=JSON.parse(window.localStorage.getItem(layoutKey)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?{outline:value.outline==='hidden'?'hidden':'shown',focus:value.focus===true}:{}}catch(error){return Object.assign({},layoutMemory)}}"
+            . "function applyLayout(state){var root=document.documentElement;root.toggleAttribute('data-docara-outline-hidden',state.outline==='hidden');root.toggleAttribute('data-docara-focus-mode',state.focus===true)}"
+            . "function writeLayout(state){var value={};if(state.outline==='hidden')value.outline='hidden';if(state.focus===true)value.focus=true;layoutMemory=value;applyLayout(value);if(frameworkMemory())return false;try{if(Object.keys(value).length)window.localStorage.setItem(layoutKey,JSON.stringify(value));else window.localStorage.removeItem(layoutKey);return true}catch(error){return false}}"
+            . 'applyLayout(readLayout());window.DocaraReadingLayout={key:layoutKey,read:readLayout,write:writeLayout,apply:applyLayout};'
             . "prune();var initialSource=Object.keys(stored()).length?'reader':'site';applySite();applyAll(initialSource);"
             . 'window.DocaraReaderPreferences={manifest:manifest,key:key,current:current,set:set,reset:reset,syncExternal:syncExternal,hasOverride:hasOverride};'
             . "document.dispatchEvent(new CustomEvent('docara:preferences-ready'));"

@@ -84,6 +84,9 @@ final readonly class UiCopy
         'reader.content_width_description' => 'Wide uses the full window and does not limit line length.',
         'reader.content_width_normal' => 'Normal',
         'reader.content_width_wide' => 'Wide',
+        'reader.outline_hide' => 'Hide page contents',
+        'reader.focus_mode' => 'Reading mode',
+        'reader.focus_mode_exit' => 'Exit reading mode (Esc)',
     ];
 
     public function __construct(private Translator $translator) {}

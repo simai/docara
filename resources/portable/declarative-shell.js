@@ -814,6 +814,62 @@
   window.addEventListener('resize',function(){
     docaraExamples.forEach(function(example){positionExampleIndicator(example,false)});
   },{passive:true});
+  // Reading layout: hide the outline rail and the reading (focus) mode. The
+  // preferences boot script restores both as root attributes before first
+  // paint; this binds the toolbar buttons, keeps aria-pressed in sync and
+  // stores the state per site so it follows the reader across pages.
+  (function(){
+    var outlineButton=document.querySelector('[data-docara-outline-toggle]');
+    var focusButton=document.querySelector('[data-docara-focus-toggle]');
+    if(!outlineButton&&!focusButton)return;
+    var root=document.documentElement;
+    var store=window.DocaraReadingLayout||null;
+    function state(){return{outline:root.hasAttribute('data-docara-outline-hidden')?'hidden':'shown',focus:root.hasAttribute('data-docara-focus-mode')}}
+    function save(next){
+      if(store){store.write(next);return}
+      root.toggleAttribute('data-docara-outline-hidden',next.outline==='hidden');
+      root.toggleAttribute('data-docara-focus-mode',next.focus===true);
+    }
+    function sync(){
+      var current=state();
+      if(outlineButton)outlineButton.setAttribute('aria-pressed',current.outline==='hidden'?'true':'false');
+      if(focusButton){
+        focusButton.setAttribute('aria-pressed',current.focus?'true':'false');
+        focusButton.title=current.focus?(focusButton.dataset.docaraExitTitle||focusButton.title):(focusButton.dataset.docaraEnterTitle||focusButton.title);
+      }
+    }
+    if(outlineButton){
+      outlineButton.addEventListener('click',function(){
+        var next=state();
+        next.outline=next.outline==='hidden'?'shown':'hidden';
+        save(next);
+        sync();
+      });
+    }
+    function setFocus(active,returnFocus){
+      var next=state();
+      next.focus=active;
+      save(next);
+      sync();
+      if(returnFocus&&focusButton)focusButton.focus({preventScroll:true});
+    }
+    if(focusButton){
+      focusButton.addEventListener('click',function(){setFocus(!state().focus,false)});
+    }
+    document.addEventListener('keydown',function(event){
+      if(event.key!=='Escape'||event.defaultPrevented||!state().focus)return;
+      var target=event.target;
+      // Dialogs, menus and modals close themselves first.
+      if(target&&target.closest&&target.closest('dialog,sf-modal,[role="dialog"],details[open]'))return;
+      setFocus(false,true);
+    });
+    window.addEventListener('storage',function(event){
+      if(!store||event.key!==store.key)return;
+      store.apply(store.read());
+      sync();
+    });
+    sync();
+  })();
   localizeCodeCopy(document);
   if(document.body){
     new MutationObserver(function(records){

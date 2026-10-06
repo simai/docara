@@ -72,6 +72,9 @@
         "content_width_description": "Широкий формат занимает всё окно и не ограничивает длину строк.",
         "content_width_normal": "Обычная",
         "content_width_wide": "Широкая",
+        "outline_hide": "Скрыть содержание страницы",
+        "focus_mode": "Режим чтения",
+        "focus_mode_exit": "Выйти из режима чтения (Esc)",
         "saved": "Сохранено: {setting} — {value}.",
         "applied_not_saved": "Настройка применена. Браузер не разрешил сохранить выбор.",
         "restored": "Восстановлены настройки сайта."

@@ -33,6 +33,7 @@ final class PublisherChromeRenderer
             'header-actions',
             'mobile-navigation',
             'breadcrumbs',
+            'reading-actions',
             'mobile-toc',
             'pager',
             'search-dialog',
@@ -40,6 +41,11 @@ final class PublisherChromeRenderer
         ] as $part) {
             if ($part === 'mobile-toc' && ! $view->mobileTocEnabled) {
                 $result['mobile_toc'] = '';
+
+                continue;
+            }
+            if ($part === 'reading-actions' && $view->preset !== 'docs') {
+                $result['reading_actions'] = '';
 
                 continue;
             }

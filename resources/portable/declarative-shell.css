@@ -49,8 +49,8 @@ html[data-docara-focus-mode] body:has(>.docara-docs-layout)>.docara-header,html[
 html[data-docara-focus-mode] .docara-docs-layout.docara-docs-layout{grid-template-columns:minmax(0,1fr)}
 html[data-docara-focus-mode] .docara-docs-layout .docara-reading-actions{position:fixed;z-index:3;inset-block-start:var(--sf-space-1);inset-inline-end:var(--sf-space-1);padding:var(--sf-space-1\/4);border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-default);background:var(--sf-surface-0);box-shadow:var(--sf-ui-shadow-2)}
 @media(max-width:1152px){.docara-outline-toggle{display:none}}
-/* Reader wide format: the docs shell fills the window and prose lines lose their measure limit. */
-html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:none}
+/* Reader wide format: the shell takes the Framework's widest container step (layout.container.max 8) instead of the authored one, and prose lines lose their measure limit. The container tokens exist from 960px, like max-container-N. */
+@media(min-width:960px){html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:var(--sf-container-8--size-max)}}
 html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:where(.docara-example-inline *)),html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose li:not(:where(.docara-example-inline *)){max-width:none}
 .docara-document-link{overflow-wrap:anywhere;background:transparent;transition:background-color 120ms ease}
 .docara-document-link:hover{background:var(--sf-surface-container-hover)}

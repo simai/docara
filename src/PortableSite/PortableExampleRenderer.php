@@ -70,9 +70,9 @@ final class PortableExampleRenderer
             . '<div role="tablist" aria-label="' . $this->escape($exampleLabel)
             . '" class="docara-example-preview__tabs">' . implode('', $tabs) . '</div>'
             . '<div class="docara-example-preview__actions">'
-            // The width switcher is a Framework segmented button group with
-            // radio semantics; each segment is an icon with its name as label.
-            . ($fullscreen && $resolvedPreview === 'sandbox' ? '<div data-docara-example-viewports hidden role="radiogroup" aria-label="Preview width" class="docara-example-preview__viewports sf-button-group">'
+            // The width switcher is three Framework icon buttons like the
+            // close button beside it; the chosen width is pressed.
+            . ($fullscreen && $resolvedPreview === 'sandbox' ? '<div data-docara-example-viewports hidden role="group" aria-label="Preview width" class="docara-example-preview__viewports">'
                 . $this->viewportButton('desktop', 'desktop_windows', 'Desktop', true)
                 . $this->viewportButton('tablet', 'tablet', 'Tablet', false)
                 . $this->viewportButton('mobile', 'smartphone', 'Mobile', false)
@@ -101,10 +101,10 @@ final class PortableExampleRenderer
 
     private function viewportButton(string $viewport, string $icon, string $label, bool $selected): string
     {
-        return '<button type="button" role="radio" data-docara-example-viewport="' . $viewport . '" aria-checked="'
-            . ($selected ? 'true' : 'false') . '" tabindex="' . ($selected ? '0' : '-1') . '" aria-label="' . $label
-            . '" title="' . $label . '" class="docara-example-preview__viewport sf-button sf-button--size-1 '
-            . ($selected ? 'sf-button--default sf-button--primary active' : 'sf-button--outline sf-button--on-surface')
-            . '"><sf-icon icon="' . $icon . '" aria-hidden="true"></sf-icon></button>';
+        return '<button type="button" data-docara-example-viewport="' . $viewport . '" aria-pressed="'
+            . ($selected ? 'true' : 'false') . '" aria-label="' . $label . '" title="' . $label
+            . '" class="docara-example-preview__viewport sf-icon-button sf-icon-button--icon sf-icon-button--on-surface'
+            . ' sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0'
+            . ($selected ? ' active' : '') . '"><sf-icon icon="' . $icon . '" aria-hidden="true"></sf-icon></button>';
     }
 }

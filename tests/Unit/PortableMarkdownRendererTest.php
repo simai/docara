@@ -335,7 +335,7 @@ MD);
         self::assertStringContainsString('data-docara-example-viewport="desktop"', $web);
         self::assertStringContainsString('data-docara-example-viewport="tablet"', $web);
         self::assertStringContainsString('data-docara-example-viewport="mobile"', $web);
-        self::assertStringContainsString('role="radiogroup" aria-label="Preview width" class="docara-example-preview__viewports sf-button-group"', $web);
+        self::assertStringContainsString('role="group" aria-label="Preview width" class="docara-example-preview__viewports"', $web);
         self::assertStringContainsString('<sf-icon icon="desktop_windows" aria-hidden="true"></sf-icon>', $web);
         self::assertStringContainsString('<sf-icon icon="smartphone" aria-hidden="true"></sf-icon>', $web);
         self::assertStringContainsString('<sf-icon icon="devices" aria-hidden="true"></sf-icon>', $web);

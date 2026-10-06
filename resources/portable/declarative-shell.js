@@ -632,15 +632,10 @@
       viewportButtons.forEach(function(button){
         var active=button.dataset.docaraExampleViewport===viewport;
         var label=message('examples.viewport_'+button.dataset.docaraExampleViewport)+' · '+exampleViewportWidths[button.dataset.docaraExampleViewport]+' px';
-        button.setAttribute('aria-checked',active?'true':'false');
-        button.tabIndex=active?0:-1;
+        button.setAttribute('aria-pressed',active?'true':'false');
         button.setAttribute('aria-label',label);
         button.title=label;
-        button.classList.toggle('sf-button--default',active);
-        button.classList.toggle('sf-button--primary',active);
         button.classList.toggle('active',active);
-        button.classList.toggle('sf-button--outline',!active);
-        button.classList.toggle('sf-button--on-surface',!active);
       });
       if(persist){
         try{sessionStorage.setItem(exampleViewportStorageKey,viewport)}catch(error){}
@@ -732,20 +727,8 @@
         event.preventDefault();selectTab(tabs[next],true);
       });
     });
-    viewportButtons.forEach(function(button,index){
+    viewportButtons.forEach(function(button){
       button.addEventListener('click',function(){setViewport(button.dataset.docaraExampleViewport,true)});
-      // Radio group keyboard model: arrows and Home/End move the choice and focus.
-      button.addEventListener('keydown',function(event){
-        var next=null,last=viewportButtons.length-1;
-        if(event.key==='ArrowRight'||event.key==='ArrowDown')next=index===last?0:index+1;
-        else if(event.key==='ArrowLeft'||event.key==='ArrowUp')next=index===0?last:index-1;
-        else if(event.key==='Home')next=0;
-        else if(event.key==='End')next=last;
-        if(next===null)return;
-        event.preventDefault();
-        setViewport(viewportButtons[next].dataset.docaraExampleViewport,true);
-        viewportButtons[next].focus();
-      });
     });
     document.addEventListener('docara:example-viewport-change',function(event){
       var viewport=event.detail&&event.detail.viewport;

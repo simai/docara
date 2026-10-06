@@ -61,7 +61,7 @@
         "theme_light": "Светлая",
         "theme_dark": "Тёмная",
         "font_size_title": "Размер шрифта",
-        "font_size_description": "Меняет размер текста страницы, навигация остаётся прежней.",
+        "font_size_description": "Меняет размер всего интерфейса документации.",
         "font_size_small": "Мелкий",
         "font_size_normal": "Обычный",
         "font_size_large": "Крупный",

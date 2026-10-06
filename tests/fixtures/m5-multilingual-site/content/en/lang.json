@@ -20,7 +20,7 @@
         "navigate": "navigate", "open_result": "open", "dismiss": "close"
     },
     "reader": {
-        "open": "Open reading settings", "title": "Reading settings", "close": "Close reading settings",
+        "open": "Open reading settings", "panel_title": "Settings", "close": "Close reading settings",
         "appearance": "Appearance", "appearance_description": "Adjust how the documentation looks in this browser.",
         "help": "Adjust how the documentation looks in this browser.", "reset_all": "Reset settings",
         "theme_title": "Theme", "theme_description": "Choose a light or dark appearance.",

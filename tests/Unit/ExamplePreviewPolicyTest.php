@@ -7,6 +7,7 @@ namespace Tests\Unit;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\ExamplePreviewPolicy;
 
@@ -147,5 +148,53 @@ final class ExamplePreviewPolicyTest extends TestCase
         self::assertSame('html_attribute_not_admitted', $resolve('<sf-country-code form="checkout"></sf-country-code>'));
         self::assertSame('html_attribute_not_admitted', $resolve('<sf-country-code root-style="color:red"></sf-country-code>'));
         self::assertSame('html_attribute_not_admitted', $resolve('<sf-inline-editor template="x"></sf-inline-editor>'));
+    }
+
+    #[Test]
+    public function the_breakpoints_come_from_the_bundled_utility_registry(): void
+    {
+        $lock = FrameworkLock::fromJsonFile(dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json')->toArray();
+
+        self::assertSame(
+            ['lg', 'md', 'sm', 'xl', 'xxl'],
+            ExamplePreviewPolicy::frameworkBreakpoints(FrameworkManifestRepository::bundled(FrameworkLock::fromArray($lock))),
+        );
+    }
+
+    #[Test]
+    public function auto_frames_html_that_uses_breakpoint_utilities_so_the_responsive_viewer_applies(): void
+    {
+        $lock = FrameworkLock::fromJsonFile(dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json')->toArray();
+        $policy = ExamplePreviewPolicy::fromFrameworkLock($lock);
+
+        foreach ([
+            '<div class="aspect-1x1 sm:aspect-16x9 bg-surface-container"></div>',
+            '<div class="grid grid-col-1 xxl:grid-col-4"></div>',
+            '<div class="query-container"><div class="grid cq-md:grid-col-2"></div></div>',
+            '<div class="query-container/sidebar"><div class="cq-lg/sidebar:flex"></div></div>',
+        ] as $html) {
+            self::assertSame(
+                ['requested' => 'auto', 'resolved' => 'sandbox', 'reason' => 'responsive_utilities'],
+                $policy->resolve(['HTML' => $html], true, 'auto'),
+                $html,
+            );
+            // Responsive markup is safe in the page; an explicit inline request stands.
+            self::assertSame(
+                ['requested' => 'inline', 'resolved' => 'inline', 'reason' => 'admitted_html'],
+                $policy->resolve(['HTML' => $html], false, 'inline'),
+                $html,
+            );
+        }
+
+        foreach ([
+            '<div class="aspect-16x9 flex"></div>',
+            '<button type="button" class="sf-button hover:shadow-2 focus-visible:shadow-2">Save</button>',
+            '<p data-note="sm:not-a-class">Text with sm:prefix words</p>',
+        ] as $html) {
+            self::assertSame('inline', $policy->resolve(['HTML' => $html], true, 'auto')['resolved'], $html);
+        }
+
+        // Without a lock no breakpoint is known, as before.
+        self::assertSame('inline', (new ExamplePreviewPolicy)->resolve(['HTML' => '<div class="sm:aspect-16x9"></div>'], true, 'auto')['resolved']);
     }
 }

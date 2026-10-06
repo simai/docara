@@ -57,9 +57,18 @@ final class ExamplePreviewPolicy
      * lock declares for it. Without a lock the map is empty and Smart tags
      * admit only the generic attributes.
      *
+     * $breakpoints lists the Framework breakpoint names (sm, md, ...) whose
+     * prefixed utilities respond to the viewport or, with a cq- prefix, to
+     * their query container. Without a lock it is empty and no example is
+     * treated as responsive.
+     *
      * @param  array<string,list<string>>  $smartAttributes
+     * @param  list<string>  $breakpoints
      */
-    public function __construct(private readonly array $smartAttributes = []) {}
+    public function __construct(
+        private readonly array $smartAttributes = [],
+        private readonly array $breakpoints = [],
+    ) {}
 
     /**
      * Builds the policy from a project Framework lock through the bundled
@@ -69,9 +78,53 @@ final class ExamplePreviewPolicy
      */
     public static function fromFrameworkLock(array $frameworkLock): self
     {
-        return self::fromFrameworkRuntime(
-            FrameworkManifestRepository::bundled(FrameworkLock::fromArray($frameworkLock))->runtime(),
-        );
+        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($frameworkLock));
+
+        return self::fromFrameworkRuntime($repository->runtime(), self::frameworkBreakpoints($repository));
+    }
+
+    /**
+     * Reads the breakpoint names from the bundled utility registry: a variant
+     * that prefixes its classes (sm:aspect-16x9) and whose stylesheet is a
+     * min-width media query. State variants such as hover: carry a prefix too,
+     * but no media query, so they are not breakpoints.
+     *
+     * @return list<string>
+     */
+    public static function frameworkBreakpoints(FrameworkManifestRepository $repository): array
+    {
+        try {
+            $rules = json_decode($repository->bundledRuntimeAsset('rule/rule.json'), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable) {
+            return [];
+        }
+        $candidates = [];
+        foreach (is_array($rules) ? $rules : [] as $rule) {
+            $name = is_array($rule) ? ($rule['name'] ?? null) : null;
+            $regex = is_array($rule) ? ($rule['regex'] ?? null) : null;
+            if (! is_string($name) || ! is_string($regex)
+                || preg_match('#\A(?<family>[a-z0-9-]+)/(?<variant>[a-z][a-z0-9-]*)\z#D', $name, $match) !== 1
+                || $match['variant'] === 'default'
+                || ! str_starts_with($regex, '/^(?:' . $match['variant'] . ':')
+            ) {
+                continue;
+            }
+            $candidates[$match['variant']] ??= 'utility/' . $match['family'] . '/' . $match['variant'] . '/css/' . $match['variant'] . '.css';
+        }
+        $breakpoints = [];
+        foreach ($candidates as $variant => $path) {
+            try {
+                $css = $repository->bundledRuntimeAsset($path);
+            } catch (\Throwable) {
+                continue;
+            }
+            if (preg_match('/@media\s*\(\s*min-width\s*:/i', $css) === 1) {
+                $breakpoints[] = (string) $variant;
+            }
+        }
+        sort($breakpoints, SORT_STRING);
+
+        return $breakpoints;
     }
 
     /**
@@ -80,8 +133,9 @@ final class ExamplePreviewPolicy
      * a missing or empty list declares nothing.
      *
      * @param  array<string,mixed>  $runtime
+     * @param  list<string>  $breakpoints
      */
-    public static function fromFrameworkRuntime(array $runtime): self
+    public static function fromFrameworkRuntime(array $runtime, array $breakpoints = []): self
     {
         $declared = [];
         foreach ((is_array($runtime['components'] ?? null) ? $runtime['components'] : []) as $tag => $component) {
@@ -103,7 +157,7 @@ final class ExamplePreviewPolicy
             }
         }
 
-        return new self($declared);
+        return new self($declared, $breakpoints);
     }
 
     /**
@@ -133,6 +187,15 @@ final class ExamplePreviewPolicy
             : (isset($sources['CSS']) ? 'custom_css' : $this->htmlReason($sources['HTML'] ?? ''));
 
         if ($reason === 'admitted_html') {
+            // Breakpoint utilities respond to the viewport (or, cq-, to their
+            // query container); inline they follow the documentation page, so
+            // auto gives them a frame and its responsive viewer. The markup is
+            // safe inline, so an explicit preview=inline stays the author's
+            // choice: only isolation that safety needs fails closed.
+            if ($requested === 'auto' && $this->usesResponsiveUtilities($sources['HTML'] ?? '')) {
+                return ['requested' => $requested, 'resolved' => 'sandbox', 'reason' => 'responsive_utilities'];
+            }
+
             return ['requested' => $requested, 'resolved' => 'inline', 'reason' => $reason];
         }
 
@@ -144,6 +207,24 @@ final class ExamplePreviewPolicy
         }
 
         return ['requested' => $requested, 'resolved' => 'sandbox', 'reason' => $reason];
+    }
+
+    private function usesResponsiveUtilities(string $html): bool
+    {
+        if ($this->breakpoints === [] || preg_match_all('/\bclass\s*=\s*(?:"([^"]*)"|\'([^\']*)\'|([^\s>]+))/i', $html, $matches, PREG_SET_ORDER) < 1) {
+            return false;
+        }
+        $names = implode('|', array_map(static fn (string $name): string => preg_quote($name, '/'), $this->breakpoints));
+        foreach ($matches as $match) {
+            $classes = ($match[1] ?? '') . ($match[2] ?? '') . ($match[3] ?? '');
+            foreach (preg_split('/\s+/', trim(html_entity_decode($classes, ENT_QUOTES | ENT_HTML5, 'UTF-8'))) ?: [] as $class) {
+                if (preg_match('/\A(?:cq-)?(?:' . $names . ')(?:\/[a-z0-9-]+)?:./D', $class) === 1) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private function htmlReason(string $html): string

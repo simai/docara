@@ -26,6 +26,7 @@ final class PreferencesContextAdapter implements SmartContextAdapter
                         'value' => $this->escape((string) $option['value']),
                         'title' => $this->escape((string) $option['title']),
                         'description' => $this->escape((string) $option['description']),
+                        'selected' => (string) $option['value'] === (string) $field['configured'],
                     ];
                 }
                 $fields[] = [

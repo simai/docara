@@ -29,9 +29,22 @@
         statuses.forEach(function(status){status.textContent=value});
       });
     }
+    // Each choice is a Framework button in a segmented group: the selected one
+    // uses the filled primary variant, the others the outline variant.
+    function paint(option){
+      var choice=option.closest('[data-docara-preference-choice]');
+      if(!choice)return;
+      var on=option.checked;
+      choice.classList.toggle('sf-button--default',on);
+      choice.classList.toggle('sf-button--primary',on);
+      choice.classList.toggle('active',on);
+      choice.classList.toggle('sf-button--outline',!on);
+      choice.classList.toggle('sf-button--on-surface',!on);
+    }
     function sync(){
       options().forEach(function(option){
         option.checked=option.value===store.current(option.dataset.preferenceId);
+        paint(option);
       });
     }
     function open(){
@@ -66,9 +79,10 @@
       var result=store.set(option.dataset.preferenceId,option.value);
       if(!result.applied)return;
       sync();
-      var label=option.closest('label').querySelector('.sf-radio-button-text').textContent;
+      var label=option.closest('label').textContent.trim();
       var field=option.closest('[data-docara-preference-field]');
-      var title=field&&field.querySelector('legend')?field.querySelector('legend').textContent:'';
+      var heading=field&&field.querySelector('.docara-preferences-label');
+      var title=heading?heading.textContent.trim():'';
       announce(result.persisted?message('reader.saved',{setting:title,value:label}):message('reader.applied_not_saved'));
       current.dispatchEvent(new CustomEvent('docara-preference-change',{
         bubbles:true,

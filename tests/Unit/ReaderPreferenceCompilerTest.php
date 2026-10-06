@@ -54,12 +54,58 @@ final class ReaderPreferenceCompilerTest extends TestCase
                     ['id' => 'appearance', 'fields' => ['appearance.theme', 'appearance.modal_blur', 'appearance.ui_radius']],
                 ],
             ],
-            ['appearance.theme' => 'dark'],
+            ['appearance.theme' => 'dark', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
 
-        self::assertSame(['appearance.theme'], array_column($manifest['groups'][0]['fields'], 'id'));
+        self::assertSame(
+            ['appearance.theme', 'appearance.font_size', 'appearance.content_width'],
+            array_column($manifest['groups'][0]['fields'], 'id'),
+        );
+    }
+
+    public function test_bundled_controls_are_appended_to_a_site_list_unless_hidden(): void
+    {
+        $compile = fn (array $configuration): array => (new ReaderPreferenceCompiler)->compile(
+            ['enabled' => true, 'view' => 'side-panel', ...$configuration],
+            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
+            $this->copy(),
+            'docara.preferences.site.v1',
+        );
+        $ids = static fn (array $manifest): array => array_merge(...array_map(
+            static fn (array $group): array => array_column($group['fields'], 'id'),
+            $manifest['groups'],
+        ));
+
+        // A site that lists only the theme still shows the bundled controls after it.
+        self::assertSame(
+            ['appearance.theme', 'appearance.font_size', 'appearance.content_width'],
+            $ids($compile(['groups' => [['id' => 'appearance', 'fields' => ['appearance.theme']]]])),
+        );
+        // The site keeps its own order for the fields it lists.
+        self::assertSame(
+            ['appearance.content_width', 'appearance.theme', 'appearance.font_size'],
+            $ids($compile(['groups' => [['id' => 'appearance', 'fields' => ['appearance.content_width', 'appearance.theme']]]])),
+        );
+        // hidden_fields opts a bundled control out.
+        self::assertSame(
+            ['appearance.theme', 'appearance.content_width'],
+            $ids($compile([
+                'hidden_fields' => ['appearance.font_size'],
+                'groups' => [['id' => 'appearance', 'fields' => ['appearance.theme']]],
+            ])),
+        );
+
+        try {
+            $compile([
+                'hidden_fields' => ['appearance.theme'],
+                'groups' => [['id' => 'appearance', 'fields' => ['appearance.theme']]],
+            ]);
+            self::fail('A field that is both listed and hidden was accepted.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('READER_PREFERENCES_FIELD_HIDDEN_CONFLICT', $exception->errorCode);
+        }
     }
 
     public function test_it_fails_closed_for_an_unknown_field(): void
@@ -75,7 +121,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
                     ['id' => 'appearance', 'fields' => ['appearance.unknown']],
                 ],
             ],
-            ['appearance.theme' => 'system'],
+            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -95,7 +141,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
                     ['id' => 'secondary', 'fields' => ['appearance.theme']],
                 ],
             ],
-            ['appearance.theme' => 'system'],
+            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );

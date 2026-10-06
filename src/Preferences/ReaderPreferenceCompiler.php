@@ -14,6 +14,9 @@ final readonly class ReaderPreferenceCompiler
      */
     public const RETIRED_FIELDS = ['appearance.modal_blur', 'appearance.ui_radius'];
 
+    /** Bundled reader controls that every enabled panel shows unless the site hides them. */
+    public const DEFAULT_FIELDS = ['appearance.theme', 'appearance.font_size', 'appearance.content_width'];
+
     private ReaderPreferenceRegistry $registry;
 
     public function __construct(
@@ -41,10 +44,11 @@ final readonly class ReaderPreferenceCompiler
             );
         }
 
+        $configuration['groups'] = $this->withDefaultFields($configuration);
         $groups = [];
         $seenGroups = [];
         $seenFields = [];
-        foreach ($configuration['groups'] ?? [] as $group) {
+        foreach ($configuration['groups'] as $group) {
             if (! is_array($group) || ! is_string($group['id'] ?? null) || ! is_array($group['fields'] ?? null)) {
                 throw new PortableConfigurationException(
                     'READER_PREFERENCES_GROUP_INVALID',
@@ -160,6 +164,81 @@ final readonly class ReaderPreferenceCompiler
         ];
     }
 
+    /**
+     * Bundled reader controls are shown by default. A site that lists fields
+     * chooses their group and order; a default field it does not list is
+     * appended to its registered group, unless the site names it in
+     * hidden_fields.
+     *
+     * @param  array<string, mixed>  $configuration
+     * @return list<mixed>
+     */
+    private function withDefaultFields(array $configuration): array
+    {
+        $groups = is_array($configuration['groups'] ?? null) ? array_values($configuration['groups']) : [];
+        $hidden = $configuration['hidden_fields'] ?? [];
+        if (! is_array($hidden) || ! array_is_list($hidden)) {
+            throw new PortableConfigurationException(
+                'READER_PREFERENCES_HIDDEN_FIELDS_INVALID',
+                'Reader preference hidden_fields must be a list of field ids.',
+            );
+        }
+        $listed = [];
+        foreach ($groups as $group) {
+            foreach (is_array($group['fields'] ?? null) ? $group['fields'] : [] as $fieldId) {
+                if (is_string($fieldId)) {
+                    $listed[$fieldId] = true;
+                }
+            }
+        }
+        foreach ($hidden as $fieldId) {
+            if (! is_string($fieldId)) {
+                throw new PortableConfigurationException(
+                    'READER_PREFERENCES_HIDDEN_FIELDS_INVALID',
+                    'Reader preference hidden_fields must be a list of field ids.',
+                );
+            }
+            if (in_array($fieldId, self::RETIRED_FIELDS, true)) {
+                continue;
+            }
+            try {
+                $this->registry->get($fieldId);
+            } catch (\InvalidArgumentException $exception) {
+                throw new PortableConfigurationException(
+                    'READER_PREFERENCES_FIELD_UNKNOWN',
+                    "Reader preference field [$fieldId] is not registered.",
+                    $exception,
+                );
+            }
+            if (isset($listed[$fieldId])) {
+                throw new PortableConfigurationException(
+                    'READER_PREFERENCES_FIELD_HIDDEN_CONFLICT',
+                    "Reader preference field [$fieldId] is both listed and hidden.",
+                );
+            }
+        }
+        foreach (self::DEFAULT_FIELDS as $fieldId) {
+            if (isset($listed[$fieldId]) || in_array($fieldId, $hidden, true)) {
+                continue;
+            }
+            $groupId = $this->registry->get($fieldId)->group;
+            $target = null;
+            foreach ($groups as $index => $group) {
+                if (is_array($group) && ($group['id'] ?? null) === $groupId && is_array($group['fields'] ?? null)) {
+                    $target = $index;
+                    break;
+                }
+            }
+            if ($target === null) {
+                $groups[] = ['id' => $groupId, 'fields' => [$fieldId]];
+            } else {
+                $groups[$target]['fields'][] = $fieldId;
+            }
+        }
+
+        return $groups;
+    }
+
     /** @return array{enabled:bool,view:string,groups:list<array{id:string,fields:list<string>}>} */
     public static function defaultConfiguration(): array
     {
@@ -167,7 +246,7 @@ final readonly class ReaderPreferenceCompiler
             'enabled' => true,
             'view' => 'side-panel',
             'groups' => [
-                ['id' => 'appearance', 'fields' => ['appearance.theme', 'appearance.font_size', 'appearance.content_width']],
+                ['id' => 'appearance', 'fields' => self::DEFAULT_FIELDS],
             ],
         ];
     }

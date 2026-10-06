@@ -189,6 +189,16 @@
                     "type": "string",
                     "const": "side-panel"
                 },
+                "hidden_fields": {
+                    "type": "array",
+                    "maxItems": 50,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+                        "maxLength": 120
+                    }
+                },
                 "groups": {
                     "type": "array",
                     "uniqueItems": true,

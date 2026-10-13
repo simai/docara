@@ -168,7 +168,8 @@ Reset затрагивает только `reading`; branding, layout, search и
 php vendor/bin/docara build production
 ```
 
-Откройте `.docara/resolved-page-plans.json` внутри output. Для нужной страницы
+Откройте `build_production.docara/resolved-page-plans.json` — квитанцию сборки
+рядом с output. Для нужной страницы
 сравните:
 
 - `resolved_page_plan.configuration` — итог;

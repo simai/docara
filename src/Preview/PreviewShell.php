@@ -8,6 +8,7 @@ use Simai\Docara\File\Filesystem;
 use Simai\Docara\File\ProjectFilesystemGuard;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\PortableSite\BuildReceipts;
 
 final readonly class PreviewShell
 {
@@ -72,7 +73,7 @@ final readonly class PreviewShell
                 'Preview public source must be a real generated directory inside the project root.',
             );
         }
-        $receipt = $source . '/.docara/resolved-page-plans.json';
+        $receipt = BuildReceipts::existing($source) . '/resolved-page-plans.json';
         $manifest = json_decode((string) @file_get_contents($receipt), true);
         if (! is_array($manifest) || ($manifest['build']['purpose'] ?? null) !== 'preview') {
             throw new PortableConfigurationException(

@@ -33,7 +33,11 @@ production build is byte-deterministic for the same source and exact package
 revision. `verify-static` checks receipts, generated pages, assets, redirects,
 search data and local references.
 
-Each production build also publishes `.docara/performance.json`. This
+Build receipts (resolved page plans, performance, examples, redirects, locale
+routes, translation and documentation status) are written next to the output,
+in `build_<environment>.docara/`, never into the published folder.
+
+Each production build also writes the `performance.json` receipt. This
 report-only receipt records the initial CSS, font and JavaScript references of
 every generated page, their local byte sizes and hashes, inline style/script
 sizes and the largest shared resources. It is deterministic and verified by

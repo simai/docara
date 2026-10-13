@@ -97,6 +97,29 @@ function docaraCanonicalJson(mixed $value): string
 }
 
 /**
+ * The receipt directory of a build folder. Docara 3.0.1 keeps receipts next to
+ * the published folder (`build_production.docara/` for `build_production/`);
+ * a folder built by Docara 3.0.0 still carries them in `<folder>/.docara/`.
+ * `--receipts=` names the directory explicitly, for a deployed copy.
+ */
+function docaraReceiptDirectory(string $root, ?string $override = null): string
+{
+    static $overrides = [];
+    if ($override !== null) {
+        $overrides[$root] = $override;
+    }
+    if (isset($overrides[$root])) {
+        return $overrides[$root];
+    }
+    $sibling = $root . '.docara';
+    if (is_dir($sibling) && ! is_link($sibling)) {
+        return $sibling;
+    }
+
+    return $root . '/.docara';
+}
+
+/**
  * @param  list<string>  $pageOutputs
  * @param  list<array<string, mixed>>  $pageRecords
  * @return list<string>
@@ -110,7 +133,7 @@ function docaraRedirectOutputs(
     string $documentationVersion,
     ?string $expectedSource,
 ): array {
-    $receiptPath = $root . '/.docara/redirects.json';
+    $receiptPath = docaraReceiptDirectory($root) . '/redirects.json';
     if (! file_exists($receiptPath) && ! is_link($receiptPath)) {
         if ($expectedSource !== null) {
             throw new RuntimeException('Configured redirects require a safe redirect receipt.');
@@ -269,7 +292,7 @@ function docaraLocaleRouteOutputs(
     array $reservedOutputs,
     array $pageRecords,
 ): array {
-    $receiptPath = $root . '/.docara/locale-routes.json';
+    $receiptPath = docaraReceiptDirectory($root) . '/locale-routes.json';
     if (! file_exists($receiptPath) && ! is_link($receiptPath)) {
         foreach ($pageRecords as $page) {
             $routing = $page['resolved_page_plan']['configuration']['locale_routing'] ?? null;
@@ -1562,8 +1585,17 @@ function docaraAssertCatalogShellContract(
 }
 
 $rootInput = $argv[1] ?? '';
-if ($rootInput === '' || count($argv) !== 2) {
-    fwrite(STDERR, "Usage: php scripts/verify-static-build.php <build-directory>\n");
+$receiptsInput = null;
+foreach (array_slice($argv, 2) as $argument) {
+    if (str_starts_with($argument, '--receipts=') && $receiptsInput === null) {
+        $receiptsInput = substr($argument, strlen('--receipts='));
+
+        continue;
+    }
+    $rootInput = '';
+}
+if ($rootInput === '' || $receiptsInput === '' || count($argv) < 2 || count($argv) > 3) {
+    fwrite(STDERR, "Usage: php scripts/verify-static-build.php <build-directory> [--receipts=<receipt-directory>]\n");
 
     exit(2);
 }
@@ -1607,6 +1639,15 @@ if ($root === false || ! is_dir($root)) {
 
     exit(1);
 }
+if ($receiptsInput !== null) {
+    $receiptsRoot = realpath($receiptsInput);
+    if (is_link(rtrim($receiptsInput, '/\\')) || $receiptsRoot === false || ! is_dir($receiptsRoot)) {
+        fwrite(STDERR, "Receipt directory is missing or unsafe.\n");
+
+        exit(1);
+    }
+    docaraReceiptDirectory($root, $receiptsRoot);
+}
 
 $htmlFiles = [];
 $unsafeArtifactEntries = [];
@@ -1647,8 +1688,8 @@ sort($htmlFiles, SORT_STRING);
 sort($unsafeArtifactEntries, SORT_STRING);
 
 $deploymentBase = '/';
-$manifestDirectory = $root . '/.docara';
-$manifestPath = $root . '/.docara/resolved-page-plans.json';
+$manifestDirectory = docaraReceiptDirectory($root);
+$manifestPath = docaraReceiptDirectory($root) . '/resolved-page-plans.json';
 $manifestError = null;
 $manifestOutputs = [];
 $contentPageOutputs = [];
@@ -2180,6 +2221,17 @@ $broken = array_map(
 );
 array_push($broken, ...$htmlIdProblems);
 array_push($broken, ...$htmlBuildIdentityProblems);
+// Build receipts describe how the site was built and are never published:
+// a folder whose receipts live outside it must not carry a copy inside.
+if (docaraReceiptDirectory($root) !== $root . '/.docara'
+    && (file_exists($root . '/.docara') || is_link($root . '/.docara'))
+) {
+    $broken[] = [
+        'page' => '@build',
+        'reference' => '@build-receipts-in-output',
+        'target' => 'The published folder carries build receipts under .docara/; they belong next to it.',
+    ];
+}
 if ($manifestError !== null) {
     $broken[] = ['page' => '@build', 'reference' => '@resolved-page-plans', 'target' => $manifestError];
 } else {
@@ -2195,7 +2247,7 @@ if ($manifestError !== null) {
     );
     sort($actualHtmlOutputs, SORT_STRING);
     $standaloneHtmlOutputs = [];
-    $standaloneManifestPath = $root . '/.docara/standalone-examples.json';
+    $standaloneManifestPath = docaraReceiptDirectory($root) . '/standalone-examples.json';
     if (file_exists($standaloneManifestPath) || is_link($standaloneManifestPath)) {
         try {
             if (! docaraSafeRegularFile($standaloneManifestPath)) {
@@ -2310,6 +2362,7 @@ if ($manifestError !== null) {
             throw new RuntimeException('Generated Framework page asset-plan receipt is invalid.');
         }
         $expectedShellUrls = [];
+        $verifiedShellStylesheets = [];
         $expectedShellAssetOrders = [];
         $expectedPreloadModes = [];
         foreach ($manifestPageRecords as $pageRecord) {
@@ -2335,43 +2388,48 @@ if ($manifestError !== null) {
             $generatedShellAssets = $pageReceipt['generated_assets'] ?? null;
             if (! is_array($generatedShellAssets)
                 || ! array_is_list($generatedShellAssets)
-                || count($generatedShellAssets) !== 1
+                || $generatedShellAssets === []
             ) {
-                throw new RuntimeException('Generated Framework page asset plan must contain exactly one stylesheet.');
+                throw new RuntimeException('Generated Framework page asset plan must contain at least one stylesheet.');
             }
-            $generatedShellAsset = $generatedShellAssets[0];
-            if (! is_array($generatedShellAsset)
-                || ! docaraExactKeys($generatedShellAsset, ['key', 'kind', 'filename', 'url', 'sha256', 'inputs'])
-                || ($generatedShellAsset['key'] ?? null) !== 'docara.framework.shell.css'
-                || ($generatedShellAsset['kind'] ?? null) !== 'shell_css'
-                || ! is_string($generatedShellAsset['filename'] ?? null)
-                || preg_match('/\Adocara-shell\.[a-f0-9]{64}\.css\z/D', $generatedShellAsset['filename']) !== 1
-                || ! is_string($generatedShellAsset['sha256'] ?? null)
-                || $generatedShellAsset['filename'] !== 'docara-shell.' . $generatedShellAsset['sha256'] . '.css'
-                || ($generatedShellAsset['url'] ?? null) !== (($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/' . $generatedShellAsset['filename'])
-                || ! is_array($generatedShellAsset['inputs'] ?? null)
-                || ! array_is_list($generatedShellAsset['inputs'])
-                || $generatedShellAsset['inputs'] === []
-            ) {
-                throw new RuntimeException('Generated Framework page stylesheet metadata is invalid.');
-            }
-            foreach ($generatedShellAsset['inputs'] as $input) {
-                if (! is_array($input)
-                    || ! docaraExactKeys($input, ['source', 'sha256'])
-                    || ! is_string($input['source'] ?? null)
-                    || ! is_string($input['sha256'] ?? null)
-                    || preg_match('/\A[a-f0-9]{64}\z/D', $input['sha256']) !== 1
+            $expectedShellUrls[$output] = [];
+            foreach ($generatedShellAssets as $generatedShellAsset) {
+                if (! is_array($generatedShellAsset)
+                    || ! docaraExactKeys($generatedShellAsset, ['key', 'kind', 'filename', 'url', 'sha256', 'inputs'])
+                    || ($generatedShellAsset['key'] ?? null) !== 'docara.framework.shell.css'
+                    || ($generatedShellAsset['kind'] ?? null) !== 'shell_css'
+                    || ! is_string($generatedShellAsset['filename'] ?? null)
+                    || preg_match('/\Adocara-shell\.[a-f0-9]{64}\.css\z/D', $generatedShellAsset['filename']) !== 1
+                    || ! is_string($generatedShellAsset['sha256'] ?? null)
+                    || $generatedShellAsset['filename'] !== 'docara-shell.' . $generatedShellAsset['sha256'] . '.css'
+                    || ($generatedShellAsset['url'] ?? null) !== (($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/' . $generatedShellAsset['filename'])
+                    || ! is_array($generatedShellAsset['inputs'] ?? null)
+                    || ! array_is_list($generatedShellAsset['inputs'])
+                    || count($generatedShellAsset['inputs']) !== 1
                 ) {
-                    throw new RuntimeException('Generated Framework page stylesheet input metadata is invalid.');
+                    throw new RuntimeException('Generated Framework page stylesheet metadata is invalid.');
                 }
+                foreach ($generatedShellAsset['inputs'] as $input) {
+                    if (! is_array($input)
+                        || ! docaraExactKeys($input, ['source', 'sha256'])
+                        || ! is_string($input['source'] ?? null)
+                        || ! is_string($input['sha256'] ?? null)
+                        || preg_match('/\A[a-f0-9]{64}\z/D', $input['sha256']) !== 1
+                    ) {
+                        throw new RuntimeException('Generated Framework page stylesheet input metadata is invalid.');
+                    }
+                }
+                $generatedShellPath = $root . '/_docara/' . $generatedShellAsset['filename'];
+                if (! isset($verifiedShellStylesheets[$generatedShellAsset['filename']])) {
+                    if (! docaraSafeRegularFile($generatedShellPath)
+                        || ! hash_equals($generatedShellAsset['sha256'], (string) hash_file('sha256', $generatedShellPath))
+                    ) {
+                        throw new RuntimeException('Generated Framework page stylesheet is missing, unsafe or hash-mismatched.');
+                    }
+                    $verifiedShellStylesheets[$generatedShellAsset['filename']] = true;
+                }
+                $expectedShellUrls[$output][] = $generatedShellAsset['url'];
             }
-            $generatedShellPath = $root . '/_docara/' . $generatedShellAsset['filename'];
-            if (! docaraSafeRegularFile($generatedShellPath)
-                || ! hash_equals($generatedShellAsset['sha256'], (string) hash_file('sha256', $generatedShellPath))
-            ) {
-                throw new RuntimeException('Generated Framework page stylesheet is missing, unsafe or hash-mismatched.');
-            }
-            $expectedShellUrls[$output] = $generatedShellAsset['url'];
             $expectedShellAssetOrders[$output] = is_array($pageReceipt['preload']['asset_order'] ?? null)
                 ? $pageReceipt['preload']['asset_order']
                 : [];
@@ -2479,18 +2537,28 @@ foreach ($htmlFiles as $htmlFile) {
             'reference' => '@html-base-element',
         ];
     }
-    $expectedShellUrl = $expectedShellUrls[$relativeHtmlFile] ?? null;
-    if (is_string($expectedShellUrl)
+    $expectedPageShellUrls = $expectedShellUrls[$relativeHtmlFile] ?? null;
+    if (is_array($expectedPageShellUrls)
         && in_array($relativeHtmlFile, $contentPageOutputs, true)
     ) {
-        $escapedShellUrl = htmlspecialchars($expectedShellUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-        if (substr_count($html, 'href="' . $escapedShellUrl . '"') !== 1
+        // The page links its generated stylesheets, and nothing else as a
+        // shell stylesheet, in exactly the receipt's cascade order.
+        preg_match_all(
+            '/<link\b(?=[^>]*\bdata-docara-declarative-shell-style\b)[^>]*\bhref="([^"]*)"[^>]*>/i',
+            $html,
+            $shellLinkMatches,
+        );
+        $expectedEscapedShellUrls = array_map(
+            static fn (string $url): string => htmlspecialchars($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'),
+            $expectedPageShellUrls,
+        );
+        if ($shellLinkMatches[1] !== $expectedEscapedShellUrls
             || str_contains($html, 'href="' . (($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/declarative-shell.css') . '"')
         ) {
             $broken[] = [
                 'page' => $relativeHtmlFile,
                 'reference' => '@framework-shell-stylesheet',
-                'target' => 'The page does not reference exactly one generated shell stylesheet.',
+                'target' => 'The page does not reference exactly its generated shell stylesheets in cascade order.',
             ];
         }
         $lastAssetOffset = -1;
@@ -3034,7 +3102,7 @@ if ($manifestError === null) {
     }
 
     try {
-        $componentIndexReceiptPath = $root . '/.docara/component-index.json';
+        $componentIndexReceiptPath = docaraReceiptDirectory($root) . '/component-index.json';
         $componentIndexReceipt = (file_exists($componentIndexReceiptPath) || is_link($componentIndexReceiptPath))
             ? docaraComponentIndexReceipt($componentIndexReceiptPath)
             : null;
@@ -3145,7 +3213,7 @@ if ($manifestError === null) {
 if (is_array($manifestBuild['public_projections'] ?? null)) {
     try {
         docaraBootstrapTrustedSource();
-        $atlasPath = $root . '/.docara/design-atlas.json';
+        $atlasPath = docaraReceiptDirectory($root) . '/design-atlas.json';
         $atlasReceipt = json_decode((string) file_get_contents($atlasPath), true, 512, JSON_THROW_ON_ERROR);
         if (! docaraSafeRegularFile($atlasPath)
             || ! is_array($atlasReceipt)
@@ -3159,7 +3227,7 @@ if (is_array($manifestBuild['public_projections'] ?? null)) {
         }
         (new JsonSchemaValidator(new SchemaRepository))->assertValid($atlasReceipt['atlas'], 'design-atlas.schema.json');
 
-        $schemaPath = $root . '/.docara/schema-reference.json';
+        $schemaPath = docaraReceiptDirectory($root) . '/schema-reference.json';
         $schemaReceipt = json_decode((string) file_get_contents($schemaPath), true, 512, JSON_THROW_ON_ERROR);
         $schemaFiles = [
             'site' => 'site.schema.json',
@@ -3187,7 +3255,7 @@ if (is_array($manifestBuild['public_projections'] ?? null)) {
             }
         }
 
-        $examplesPath = $root . '/.docara/examples.json';
+        $examplesPath = docaraReceiptDirectory($root) . '/examples.json';
         $examplesReceipt = json_decode((string) file_get_contents($examplesPath), true, 512, JSON_THROW_ON_ERROR);
         if (! docaraSafeRegularFile($examplesPath)
             || ! is_array($examplesReceipt)
@@ -3267,7 +3335,7 @@ if (is_array($manifestBuild['public_projections'] ?? null)) {
             }
             $previousPreview = $previewOrder;
         }
-        $performancePath = $root . '/.docara/performance.json';
+        $performancePath = docaraReceiptDirectory($root) . '/performance.json';
         if (! docaraSafeRegularFile($performancePath)) {
             throw new RuntimeException('Performance receipt is missing or unsafe.');
         }

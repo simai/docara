@@ -85,7 +85,8 @@ assets/                     logo, favicon and other files you reference
 redirects.json              old URL -> new URL
 simai-framework.lock.json   the SIMAI Framework release the site uses
 .docara/                    files Docara manages; do not edit
-build_production/           the built site (generated)
+build_production/           the built site (generated); publish this folder
+build_production.docara/    build receipts for verify-static (generated; not published)
 ```
 
 Settings are inherited: `docara.json`, then each `section.json` from the

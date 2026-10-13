@@ -29,12 +29,17 @@ final class ProjectUpgradeServiceTest extends TestCase
         self::assertSame('2.4.0', $this->lockVersion($project . '/composer.lock'));
         self::assertFileExists($project . '/build_production/new.html');
         self::assertFileDoesNotExist($project . '/build_production/old.html');
+        // The verified build's receipts are promoted with it.
+        self::assertFileExists($project . '/build_production.docara/new.json');
+        self::assertFileDoesNotExist($project . '/build_production.docara/old.json');
         self::assertSame($content, file_get_contents($project . '/content/ru/index.md'));
 
         $rolledBack = $service->rollback($project, 'latest')->data;
         self::assertSame('rolled_back', $rolledBack['status']);
         self::assertSame('2.3.0', $this->lockVersion($project . '/composer.lock'));
         self::assertFileExists($project . '/build_production/old.html');
+        self::assertFileExists($project . '/build_production.docara/old.json');
+        self::assertFileDoesNotExist($project . '/build_production.docara/new.json');
         self::assertSame($content, file_get_contents($project . '/content/ru/index.md'));
     }
 
@@ -130,6 +135,8 @@ final class ProjectUpgradeServiceTest extends TestCase
             function (string $root, string $candidate, string $upgradeRoot): array {
                 $this->filesystem->ensureDirectoryExists($upgradeRoot . '/verified-build');
                 $this->filesystem->put($upgradeRoot . '/verified-build/new.html', 'new');
+                $this->filesystem->ensureDirectoryExists($upgradeRoot . '/verified-build.docara');
+                $this->filesystem->put($upgradeRoot . '/verified-build.docara/new.json', 'new');
 
                 return ['checks' => ['fixture']];
             },
@@ -146,6 +153,8 @@ final class ProjectUpgradeServiceTest extends TestCase
         self::assertFileExists($project . '/vendor/bin/docara');
         self::assertFileExists($project . '/.docara/engine/ownership.json');
         self::assertFileExists($project . '/build_production/old.html');
+        self::assertFileExists($project . '/build_production.docara/old.json');
+        self::assertFileDoesNotExist($project . '/build_production.docara/new.json');
         $journal = json_decode((string) file_get_contents($project . '/.docara/upgrades/' . $plan['upgrade_id'] . '/journal.json'), true, 512, JSON_THROW_ON_ERROR);
         self::assertSame('compensated', $journal['phase']);
     }
@@ -243,6 +252,8 @@ final class ProjectUpgradeServiceTest extends TestCase
         $this->filesystem->put($project . '/vendor/bin/docara', $this->proxy());
         $this->filesystem->ensureDirectoryExists($project . '/build_production');
         $this->filesystem->put($project . '/build_production/old.html', 'old');
+        $this->filesystem->ensureDirectoryExists($project . '/build_production.docara');
+        $this->filesystem->put($project . '/build_production.docara/old.json', 'old');
 
         return $project;
     }
@@ -262,6 +273,8 @@ final class ProjectUpgradeServiceTest extends TestCase
             function (string $root, string $candidate, string $upgradeRoot): array {
                 $this->filesystem->ensureDirectoryExists($upgradeRoot . '/verified-build');
                 $this->filesystem->put($upgradeRoot . '/verified-build/new.html', 'new');
+                $this->filesystem->ensureDirectoryExists($upgradeRoot . '/verified-build.docara');
+                $this->filesystem->put($upgradeRoot . '/verified-build.docara/new.json', 'new');
 
                 return ['checks' => ['doctor', 'validate', 'update', 'build', 'verify-static']];
             },

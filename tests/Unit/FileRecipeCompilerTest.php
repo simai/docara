@@ -102,7 +102,7 @@ MD);
         self::assertStringContainsString('Файловый контент Docara.', $html);
         self::assertStringNotContainsString('Расширенная шапка', $html);
         $receipt = json_decode(
-            (string) file_get_contents($destination . '/.docara/resolved-page-plans.json'),
+            (string) file_get_contents($destination . '.docara/resolved-page-plans.json'),
             true,
             512,
             JSON_THROW_ON_ERROR,

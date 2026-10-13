@@ -36,8 +36,8 @@
 
 ## Не редактируйте output
 
-`build_*`, `.docara/resolved-page-plans.json`, `.docara/redirects.json` и
-`_docara/component-catalog.json` создаются заново. Если результат неверен,
+`build_*`, квитанции в `build_*.docara/` (`resolved-page-plans.json`,
+`redirects.json` и другие) и `_docara/component-catalog.json` создаются заново. Если результат неверен,
 исправьте исходный Markdown/JSON и повторите сборку.
 
 ## Общая технология двух preset

@@ -24,7 +24,7 @@ final readonly class PortablePerformanceReceipt
     public function publish(string $destination, string $baseUrl, array $pages): array
     {
         $receipt = $this->build($destination, $baseUrl, $pages);
-        $path = FilesystemPath::normalize($destination) . '/.docara/performance.json';
+        $path = BuildReceipts::existing(FilesystemPath::normalize($destination)) . '/performance.json';
         $this->files->ensureDirectoryExists(dirname($path));
         $bytes = CanonicalJson::encodePretty($receipt);
         if ($this->files->put($path, $bytes) === false

@@ -71,7 +71,6 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         if (($page['outline'] ?? []) === []) {
             $regions['outline'] = '';
         }
-        $regions['sidebar_mobile'] = $this->mobileClone($regions['sidebar']);
         $regions['outline_mobile'] = $this->mobileOutlineClone($regions['outline']);
         $copy = is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [];
         if ($copy === []) {
@@ -171,7 +170,9 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         }
         $mobileTocState = $regions['outline'] === '' ? 'unavailable' : $this->mobileTocState($page);
         $primaryNavigationEnabled = $regions['header_navigation_mobile'] !== '';
-        $documentationNavigationEnabled = $preset === 'docs' && $regions['sidebar_mobile'] !== '';
+        // The documentation sheet is filled from the sidebar in the browser
+        // (declarative-shell.js), so the page carries the navigation tree once.
+        $documentationNavigationEnabled = $preset === 'docs' && $regions['sidebar'] !== '';
         $mobileNavigationEnabled = $primaryNavigationEnabled || $documentationNavigationEnabled;
         $chrome = $this->chrome->render(new PublisherChromeViewModel(
             $preset,
@@ -226,7 +227,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $searchEnabled,
             $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,
             $searchEnabled ? $this->escape((string) $page['search_index_url']) : null,
-            $this->shellCssUrl($assets),
+            $this->shellCssUrls($assets),
             $this->publisherAssetUrl($assetBase, 'declarative-shell.js'),
             $regions,
             $breadcrumbs,
@@ -243,22 +244,31 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
     }
 
-    private function shellCssUrl(FrameworkAssetPlan $assets): string
+    /** @return list<string> */
+    private function shellCssUrls(FrameworkAssetPlan $assets): array
     {
-        $url = $assets->shellCssUrl();
-        if (! is_string($url)
-            || preg_match(
-                '#^/(?:[A-Za-z0-9._~-]+/)*_docara/docara-shell\.[a-f0-9]{64}\.css$#D',
-                $url,
-            ) !== 1
-        ) {
+        $urls = $assets->shellCssUrls();
+        if ($urls === []) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_SHELL_ASSET_MISSING',
                 'The Framework asset plan has no safe generated Docara shell stylesheet.',
             );
         }
+        $escaped = [];
+        foreach ($urls as $url) {
+            if (preg_match(
+                '#^/(?:[A-Za-z0-9._~-]+/)*_docara/docara-shell\.[a-f0-9]{64}\.css$#D',
+                $url,
+            ) !== 1) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_SHELL_ASSET_MISSING',
+                    'The Framework asset plan has no safe generated Docara shell stylesheet.',
+                );
+            }
+            $escaped[] = $this->escape($url);
+        }
 
-        return $this->escape($url);
+        return $escaped;
     }
 
     private function publisherAssetUrl(string $assetBase, string $name): string

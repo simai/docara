@@ -207,7 +207,7 @@ ID секций и блоков обязаны быть уникальными �
 Итог и владеющий файл находятся в:
 
 ```text
-build_<environment>/.docara/resolved-page-plans.json
+build_<environment>.docara/resolved-page-plans.json
 ```
 
 Проверьте `configuration.layout.regions` и соответствующие pointers вида

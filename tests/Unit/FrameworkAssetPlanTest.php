@@ -28,7 +28,8 @@ final class FrameworkAssetPlanTest extends TestCase
         $released = $plan->withoutGeneratedAssetContent();
 
         self::assertSame($plan->headHtml(), $released->headHtml());
-        self::assertSame($plan->shellCssUrl(), $released->shellCssUrl());
+        self::assertSame($plan->shellCssUrls(), $released->shellCssUrls());
+        self::assertSame(['/_docara/docara-shell.' . str_repeat('a', 64) . '.css'], $released->shellCssUrls());
         self::assertSame($plan->receipt(), $released->receipt());
         self::assertArrayNotHasKey('content', $released->generatedAssets[0]);
     }

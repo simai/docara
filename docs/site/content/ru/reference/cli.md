@@ -57,10 +57,12 @@ Docara проверит accepted full-build receipts, выберет route до 
 ## `verify-static`
 
 ```text
-php vendor/bin/docara verify-static [directory]
+php vendor/bin/docara verify-static [directory] [--receipts=DIR]
 ```
 
-Без аргумента проверяется `build_production`. Проверка не выполняет проектный
+Без аргумента проверяется `build_production`. Квитанции сборки читаются из
+соседнего каталога `<directory>.docara/`; `--receipts` указывает их каталог
+явно, например для копии, уже размещённой на хостинге. Проверка не выполняет проектный
 PHP-код: она читает статический каталог, receipts и manifest и выводит JSON с
 `html_pages`, `local_references_checked` и списком `broken`. Подробности — в
 разделе [Проверка статического результата](/build/verify/).
@@ -280,8 +282,8 @@ php vendor/bin/docara documentation accept --apply=<plan-sha256> [--json]
 - `--apply` — применить точный план по SHA-256;
 - `--json` — результат в JSON.
 
-`status`, `validate` и build только читают входы; сборка создаёт
-`.docara/documentation-status.json`, но не останавливается из-за редакционных
+`status`, `validate` и build только читают входы; сборка создаёт квитанцию
+`build_<environment>.docara/documentation-status.json`, но не останавливается из-за редакционных
 статусов. Изменить `documentation.lock.json` можно только неизменившимся
 hash-bound планом.
 
@@ -316,8 +318,8 @@ php vendor/bin/docara translations accept --apply=<plan-sha256> --json
 - `--json` — результат в JSON.
 
 `status` только читает исходники и lock-файл. При включённом
-`translation_tracking` обычная сборка также создаёт
-`.docara/translation-status.json`; найденные проблемы выводятся как
+`translation_tracking` обычная сборка также создаёт квитанцию
+`build_<environment>.docara/translation-status.json`; найденные проблемы выводятся как
 предупреждение и не делают сборку неуспешной. `--apply` меняет только
 указанный lock-файл и только если все входные hashes совпадают с планом.
 

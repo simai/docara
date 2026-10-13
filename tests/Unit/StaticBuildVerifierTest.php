@@ -14,6 +14,7 @@ use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkPortableAssetProjection;
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\PortableSite\BuildReceipts;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortablePerformanceReceipt;
 use Simai\Docara\PortableSite\PortablePublisherAssetPublisher;
@@ -473,7 +474,7 @@ final class StaticBuildVerifierTest extends TestCase
     public function search_uses_the_inherited_default_locale_when_page_locale_is_not_explicit(): void
     {
         $build = $this->createSearchBuild('search-default-locale', '/');
-        $manifestPath = $build . '/.docara/resolved-page-plans.json';
+        $manifestPath = BuildReceipts::existing($build) . '/resolved-page-plans.json';
         $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
         foreach ($manifest['pages'] as &$page) {
             unset($page['resolved_page_plan']['configuration']['locale']);
@@ -504,10 +505,10 @@ final class StaticBuildVerifierTest extends TestCase
 
         $catalogPath = $build . '/_docara/component-catalog.json';
         self::assertDirectoryDoesNotExist($build . '/_docara/component-catalog');
-        $plansPath = $build . '/.docara/resolved-page-plans.json';
+        $plansPath = BuildReceipts::existing($build) . '/resolved-page-plans.json';
         $originalCatalog = (string) file_get_contents($catalogPath);
         $originalPlans = (string) file_get_contents($plansPath);
-        $performancePath = $build . '/.docara/performance.json';
+        $performancePath = BuildReceipts::existing($build) . '/performance.json';
         $originalPerformance = (string) file_get_contents($performancePath);
         $valid = $this->verify($build);
         self::assertSame(0, $valid->getExitCode(), $valid->getErrorOutput() . $valid->getOutput());
@@ -733,7 +734,7 @@ final class StaticBuildVerifierTest extends TestCase
 
         $valid = $this->verify($build);
         self::assertSame(0, $valid->getExitCode(), $valid->getOutput());
-        $manifestPath = $build . '/.docara/resolved-page-plans.json';
+        $manifestPath = BuildReceipts::existing($build) . '/resolved-page-plans.json';
         $manifest = $this->readJson($manifestPath);
         $manifest['pages'][0]['resolved_page_plan']['configuration']['default_locale'] = 'ru';
         $this->writeJson($manifestPath, $manifest);
@@ -790,7 +791,7 @@ final class StaticBuildVerifierTest extends TestCase
         }
 
         $missingBuild = $this->createGeneratedCatalogBuild('build-identity-missing-manifest-build');
-        $manifestPath = $missingBuild . '/.docara/resolved-page-plans.json';
+        $manifestPath = BuildReceipts::existing($missingBuild) . '/resolved-page-plans.json';
         $manifest = $this->readJson($manifestPath);
         unset($manifest['build']);
         $this->writeJson($manifestPath, $manifest);
@@ -815,7 +816,7 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertSame(0, $valid->getExitCode(), $valid->getOutput());
 
         $missingBuild = $this->createGeneratedCatalogBuild('redirect-contract-missing', true);
-        $receiptPath = $missingBuild . '/.docara/redirects.json';
+        $receiptPath = BuildReceipts::existing($missingBuild) . '/redirects.json';
         $receipt = $this->readJson($receiptPath);
         foreach ($receipt['redirects'] as $redirect) {
             $this->filesystem->deleteDirectory(
@@ -844,7 +845,7 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('deterministic receipt', $htmlTamper->getOutput());
 
         $hashBuild = $this->createGeneratedCatalogBuild('redirect-contract-hash-tamper', true);
-        $receiptPath = $hashBuild . '/.docara/redirects.json';
+        $receiptPath = BuildReceipts::existing($hashBuild) . '/redirects.json';
         $receipt = $this->readJson($receiptPath);
         $receipt['content_sha256'] = str_repeat('f', 64);
         $this->writeJson($receiptPath, $receipt);
@@ -854,7 +855,7 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('content_sha256', $hashTamper->getOutput());
 
         $sourceHashBuild = $this->createGeneratedCatalogBuild('redirect-contract-source-hash-tamper', true);
-        $receiptPath = $sourceHashBuild . '/.docara/redirects.json';
+        $receiptPath = BuildReceipts::existing($sourceHashBuild) . '/redirects.json';
         $receipt = $this->readJson($receiptPath);
         $receipt['source_sha256'] = str_repeat('f', 64);
         $this->writeJson($receiptPath, $receipt);
@@ -864,7 +865,7 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('source_sha256', $sourceHashTamper->getOutput());
 
         $routeBuild = $this->createGeneratedCatalogBuild('redirect-contract-route-tamper', true);
-        $receiptPath = $routeBuild . '/.docara/redirects.json';
+        $receiptPath = BuildReceipts::existing($routeBuild) . '/redirects.json';
         $receipt = $this->readJson($receiptPath);
         $receipt['redirects'][0]['target_url'] = '/forged/';
         $receipt['content_sha256'] = hash(
@@ -1152,12 +1153,8 @@ final class StaticBuildVerifierTest extends TestCase
                 $plan = $frameworkAssetPlanner->planForHtml($html, []);
                 $frameworkAssetPlans[] = $plan;
                 $receipts[$output] = $plan->receipt();
-                $shellCssUrl = $plan->shellCssUrl();
-                self::assertIsString($shellCssUrl);
-                $frameworkHead = '<link rel="stylesheet" href="'
-                    . htmlspecialchars($shellCssUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
-                    . '" data-docara-declarative-shell-style>'
-                    . $plan->headHtml();
+                self::assertNotSame([], $plan->shellCssUrls());
+                $frameworkHead = $this->shellStylesheetLinks($plan) . $plan->headHtml();
                 file_put_contents(
                     $build . '/' . $output,
                     preg_replace('/<\/head>/i', $frameworkHead . '</head>', $html, 1),
@@ -1186,17 +1183,24 @@ final class StaticBuildVerifierTest extends TestCase
         }
     }
 
+    private function shellStylesheetLinks(FrameworkAssetPlan $plan): string
+    {
+        return implode('', array_map(
+            static fn (string $url): string => '<link rel="stylesheet" href="'
+                . htmlspecialchars($url, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                . '" data-docara-declarative-shell-style>',
+            $plan->shellCssUrls(),
+        ));
+    }
+
     /** @param list<array<string, mixed>> $pages */
     private function decorateSyntheticPagesWithFrameworkShell(
         string $build,
         array $pages,
         FrameworkAssetPlan $plan,
     ): void {
-        $shellCssUrl = $plan->shellCssUrl();
-        self::assertIsString($shellCssUrl);
-        $head = '<link rel="stylesheet" href="'
-            . htmlspecialchars($shellCssUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
-            . '" data-docara-declarative-shell-style>' . $plan->headHtml();
+        self::assertNotSame([], $plan->shellCssUrls());
+        $head = $this->shellStylesheetLinks($plan) . $plan->headHtml();
         foreach ($pages as $page) {
             $output = $page['output'] ?? null;
             if (! is_string($output) || $output === '') {
@@ -1340,7 +1344,7 @@ final class StaticBuildVerifierTest extends TestCase
 
     private function normalizeBuildIdentityFixture(string $build): void
     {
-        $manifestPath = $build . '/.docara/resolved-page-plans.json';
+        $manifestPath = BuildReceipts::existing($build) . '/resolved-page-plans.json';
         if (! is_file($manifestPath)) {
             return;
         }
@@ -1419,12 +1423,8 @@ final class StaticBuildVerifierTest extends TestCase
             }
             if ($fixturePlanner instanceof FrameworkAssetPlanner) {
                 $plan = $fixturePlanner->planForHtml($html, []);
-                $shellCssUrl = $plan->shellCssUrl();
-                if (is_string($shellCssUrl)) {
-                    $frameworkHead = '<link rel="stylesheet" href="'
-                        . htmlspecialchars($shellCssUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
-                        . '" data-docara-declarative-shell-style>'
-                        . $plan->headHtml();
+                if ($plan->shellCssUrls() !== []) {
+                    $frameworkHead = $this->shellStylesheetLinks($plan) . $plan->headHtml();
                     $html = preg_replace('/<\/head>/i', $frameworkHead . '</head>', $html, 1) ?? $html;
                     $fixturePlans[] = $plan;
                     $fixtureReceipts[(string) $page['output']] = $plan->receipt();
@@ -1443,7 +1443,7 @@ final class StaticBuildVerifierTest extends TestCase
             (new PortablePublisherAssetPublisher($this->filesystem))
                 ->publishFrameworkAssetPlans($build, $fixturePlans);
         }
-        if (is_file($build . '/.docara/performance.json')) {
+        if (is_file(BuildReceipts::existing($build) . '/performance.json')) {
             $performance = (new PortablePerformanceReceipt($this->filesystem))->publish(
                 $build,
                 is_string($firstBaseUrl) ? $firstBaseUrl : '/',

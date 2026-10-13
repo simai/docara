@@ -89,6 +89,9 @@ final class ProjectUpgradeService
         if (is_dir($root . '/build_production') && ! is_link($root . '/build_production')) {
             $this->copyTree($root . '/build_production', $rollback . '/build_production');
         }
+        if (is_dir($root . '/build_production.docara') && ! is_link($root . '/build_production.docara')) {
+            $this->copyTree($root . '/build_production.docara', $rollback . '/build_production.docara');
+        }
         $journal = [
             'schema' => self::JOURNAL_SCHEMA,
             'upgrade_id' => $plan['upgrade_id'],
@@ -131,6 +134,23 @@ final class ProjectUpgradeService
                 @rename($replacedBuild, $rollback . '/build_production');
             } elseif (is_dir($replacedBuild)) {
                 $this->files->deleteDirectory($replacedBuild);
+            }
+            // The verified build's receipts (build_production.docara/) follow
+            // it, so the promoted folder is never read with stale receipts.
+            $replacedReceipts = $upgradeRoot . '/replaced-build.docara';
+            if (is_dir($root . '/build_production.docara')
+                && ! is_link($root . '/build_production.docara')
+                && ! @rename($root . '/build_production.docara', $replacedReceipts)
+            ) {
+                throw new RuntimeException('UPGRADE_PROMOTION_FAILED:Previous build receipts could not be staged.');
+            }
+            if (is_dir($upgradeRoot . '/verified-build.docara')
+                && ! @rename($upgradeRoot . '/verified-build.docara', $root . '/build_production.docara')
+            ) {
+                throw new RuntimeException('UPGRADE_PROMOTION_FAILED:Verified build receipts could not be promoted.');
+            }
+            if (is_dir($replacedReceipts)) {
+                $this->files->deleteDirectory($replacedReceipts);
             }
 
             $journal = $this->advance($upgradeRoot, $journal, 'applied');
@@ -337,6 +357,10 @@ final class ProjectUpgradeService
         }
         if (! @rename($verification . '/build_production', $upgradeRoot . '/verified-build')) {
             throw new RuntimeException('UPGRADE_CANDIDATE_INVALID:Candidate verified build could not be retained.');
+        }
+        $receipts = $verification . '/build_production.docara';
+        if (is_dir($receipts) && ! is_link($receipts) && ! @rename($receipts, $upgradeRoot . '/verified-build.docara')) {
+            throw new RuntimeException('UPGRADE_CANDIDATE_INVALID:Candidate build receipts could not be retained.');
         }
 
         return ['checks' => array_keys($checks), 'outputs_sha256' => hash('sha256', CanonicalJson::encode($results))];
@@ -585,7 +609,13 @@ final class ProjectUpgradeService
     {
         $failed = $upgradeRoot . '/failed-' . gmdate('His');
         $this->files->ensureDirectoryExists($failed);
-        foreach (['vendor' => 'vendor', '.docara/engine' => 'engine', 'build_production' => 'build_production'] as $current => $backup) {
+        $restoresBuild = file_exists($rollback . '/build_production') && ! is_link($rollback . '/build_production');
+        foreach ([
+            'vendor' => 'vendor',
+            '.docara/engine' => 'engine',
+            'build_production' => 'build_production',
+            'build_production.docara' => 'build_production.docara',
+        ] as $current => $backup) {
             $currentPath = $root . '/' . $current;
             $backupPath = $rollback . '/' . $backup;
             if (file_exists($backupPath) && ! is_link($backupPath)) {
@@ -593,6 +623,14 @@ final class ProjectUpgradeService
                     @rename($currentPath, $failed . '/' . str_replace('/', '-', $current));
                 }
                 @rename($backupPath, $currentPath);
+            } elseif ($current === 'build_production.docara'
+                && is_dir($currentPath)
+                && ! is_link($currentPath)
+                && $restoresBuild
+            ) {
+                // The restored build had no sibling receipts: receipts of the
+                // build being rolled back must not describe it.
+                @rename($currentPath, $failed . '/' . $current);
             }
         }
         if (is_file($rollback . '/composer.lock') && ! is_link($rollback . '/composer.lock')) {

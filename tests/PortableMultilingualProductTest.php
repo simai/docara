@@ -57,7 +57,7 @@ final class PortableMultilingualProductTest extends TestCase
             self::assertStringContainsString($searchLabel, $html);
         }
 
-        $receipt = $this->json($destination . '/.docara/resolved-page-plans.json');
+        $receipt = $this->json($destination . '.docara/resolved-page-plans.json');
         self::assertSame('content/en/lang.json', $receipt['build']['locale_sources']['en']['path']);
         self::assertSame('content/ar/lang.json', $receipt['build']['locale_sources']['ar']['path']);
         self::assertSame('content/en/index.md', collect($receipt['pages'])->firstWhere('url', '/en/')['page_path']);

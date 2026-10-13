@@ -16,7 +16,9 @@
 <?php } ?>
     <title><?= $view->documentTitle ?></title>
 <?= $view->headHtml ?>
-    <link rel="stylesheet" href="<?= $view->shellCssUrl ?>" data-docara-declarative-shell-style>
+<?php foreach ($view->shellCssUrls as $shellCssUrl) { ?>
+    <link rel="stylesheet" href="<?= $shellCssUrl ?>" data-docara-declarative-shell-style>
+<?php } ?>
 <?= $view->themeBootstrap ?>
 <?= $view->chrome['head'] ?>
 </head>

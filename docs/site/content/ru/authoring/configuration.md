@@ -315,7 +315,7 @@ Docara не рисует собственные полосы прокрутки.
 После сборки откройте:
 
 ```text
-build_<environment>/.docara/resolved-page-plans.json
+build_<environment>.docara/resolved-page-plans.json
 ```
 
 Найдите страницу по `output` или `url`, затем:

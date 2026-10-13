@@ -149,12 +149,17 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->plan([]);
         $assets = array_column($plan->assets, null, 'key');
-        self::assertCount(1, $plan->generatedAssets);
-        $shell = $plan->generatedAssets[0];
-        self::assertMatchesRegularExpression('/^docara-shell\.[a-f0-9]{64}\.css$/D', $shell['filename']);
-        self::assertSame('/_docara/' . $shell['filename'], $shell['url']);
-        self::assertSame($shell['sha256'], hash('sha256', $shell['content']));
-        self::assertStringContainsString('docara-shell-source: portable/declarative-shell.css', $shell['content']);
+        // One content-addressed stylesheet per source, the Docara shell last.
+        self::assertGreaterThan(1, count($plan->generatedAssets));
+        foreach ($plan->generatedAssets as $shell) {
+            self::assertMatchesRegularExpression('/^docara-shell\.[a-f0-9]{64}\.css$/D', $shell['filename']);
+            self::assertSame('/_docara/' . $shell['filename'], $shell['url']);
+            self::assertSame($shell['sha256'], hash('sha256', $shell['content']));
+            self::assertCount(1, $shell['inputs']);
+            self::assertSame(1, substr_count($shell['content'], 'docara-shell-source: '));
+        }
+        $shell = $plan->generatedAssets[array_key_last($plan->generatedAssets)];
+        self::assertStringStartsWith('/* docara-shell-source: portable/declarative-shell.css */', $shell['content']);
         self::assertSame('static_shell', $plan->preload['mode']);
         self::assertContains('cl-buttons', $plan->preload['modules']);
         self::assertContains('cl-icons', $plan->preload['modules']);
@@ -379,9 +384,12 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertContains('pointer-events/default', $productionPlan->preload['modules']);
         self::assertContains('text-align/default', $productionPlan->preload['modules']);
         self::assertNotContains('simai.framework.utility.full.css', array_column($productionPlan->assets, 'key'));
-        self::assertStringContainsString(
-            'docara-shell-source: runtime/utility/display/default/css/default.css',
-            $productionPlan->generatedAssets[0]['content'],
+        self::assertContains(
+            'runtime/utility/display/default/css/default.css',
+            array_map(
+                static fn (array $asset): string => $asset['inputs'][0]['source'],
+                $productionPlan->generatedAssets,
+            ),
         );
 
         $singleGapClass = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml(
@@ -586,7 +594,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertSame([], $plan->diagnostics);
             self::assertStringContainsString('window.SF_PRELOADED=', $plan->headHtml());
             self::assertArrayNotHasKey('simai.framework.sf_icon.js', array_column($plan->assets, null, 'key'));
-            self::assertCount(1, $plan->generatedAssets);
+            self::assertGreaterThan(1, count($plan->generatedAssets));
         } finally {
             $this->removeFixture($root);
         }

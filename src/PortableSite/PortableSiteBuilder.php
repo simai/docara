@@ -25,6 +25,7 @@ use Simai\Docara\Design\Registry\DesignRegistry;
 use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\Documentation\DocumentationStatusService;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
@@ -459,7 +460,7 @@ final readonly class PortableSiteBuilder
         $backlinkHydrator = new PortableBacklinkHydrator;
         $backlinkReceipt = null;
         if ($earlyPhysicalSelection) {
-            $backlinkReceiptPath = rtrim($finalDestination, '/\\') . '/.docara/backlinks.json';
+            $backlinkReceiptPath = BuildReceipts::existing($finalDestination) . '/backlinks.json';
             try {
                 $backlinkReceipt = json_decode(
                     (string) $this->files->get($backlinkReceiptPath),
@@ -502,7 +503,7 @@ final readonly class PortableSiteBuilder
         $componentIndexHydrator = new PortableComponentIndexHydrator;
         $componentIndexReceipt = null;
         if ($earlyPhysicalSelection) {
-            $componentIndexReceiptPath = rtrim($finalDestination, '/\\') . '/.docara/component-index.json';
+            $componentIndexReceiptPath = BuildReceipts::existing($finalDestination) . '/component-index.json';
             try {
                 $componentIndexReceipt = json_decode(
                     (string) $this->files->get($componentIndexReceiptPath),
@@ -560,7 +561,7 @@ final readonly class PortableSiteBuilder
             'atlas' => $currentAtlas,
         ];
         if ($earlyPhysicalSelection) {
-            $atlasReceiptPath = rtrim($finalDestination, '/\\') . '/.docara/design-atlas.json';
+            $atlasReceiptPath = BuildReceipts::existing($finalDestination) . '/design-atlas.json';
             try {
                 $acceptedAtlasReceipt = json_decode(
                     (string) $this->files->get($atlasReceiptPath),
@@ -599,7 +600,7 @@ final readonly class PortableSiteBuilder
         $schemaReferenceProjector = new PortableSchemaReferenceProjector;
         $schemaReferenceReceipt = $schemaReferenceProjector->receipt();
         if ($earlyPhysicalSelection) {
-            $schemaReferenceReceiptPath = rtrim($finalDestination, '/\\') . '/.docara/schema-reference.json';
+            $schemaReferenceReceiptPath = BuildReceipts::existing($finalDestination) . '/schema-reference.json';
             try {
                 $acceptedSchemaReferenceReceipt = json_decode(
                     (string) $this->files->get($schemaReferenceReceiptPath),
@@ -820,6 +821,17 @@ final readonly class PortableSiteBuilder
                 throw new PortableConfigurationException(
                     'PORTABLE_INCREMENTAL_BASE_COPY_FAILED',
                     'The existing complete build could not be copied into the atomic candidate.',
+                );
+            }
+            $existingReceipts = BuildReceipts::directoryFor($finalDestination);
+            if ($selectedPageUrl !== null
+                && $this->files->isDirectory($existingReceipts)
+                && ! is_link($existingReceipts)
+                && ! $this->files->copyDirectory($existingReceipts, BuildReceipts::stagingFor($destination))
+            ) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_BASE_COPY_FAILED',
+                    'The existing build receipts could not be copied into the atomic candidate.',
                 );
             }
             $selectedSource = $selectedPageUrl === null
@@ -1048,7 +1060,7 @@ final readonly class PortableSiteBuilder
                 $rendered = $localeLinkProjectors[$pageLocale]->project($rendered);
                 $finalFrameworkPlan = $runtime->planAssetsForHtml($rendered, $componentKeys);
                 if ($finalFrameworkPlan->headHtml() !== $exactFrameworkPlan->headHtml()
-                    || $finalFrameworkPlan->shellCssUrl() !== $exactFrameworkPlan->shellCssUrl()
+                    || $finalFrameworkPlan->shellCssUrls() !== $exactFrameworkPlan->shellCssUrls()
                 ) {
                     $page['components'] = $page['components']->withAssetPlan($finalFrameworkPlan);
                     $rendered = $publisher->render(
@@ -1061,7 +1073,7 @@ final readonly class PortableSiteBuilder
                     $rendered = $localeLinkProjectors[$pageLocale]->project($rendered);
                     $verifiedFrameworkPlan = $runtime->planAssetsForHtml($rendered, $componentKeys);
                     if ($verifiedFrameworkPlan->headHtml() !== $finalFrameworkPlan->headHtml()
-                        || $verifiedFrameworkPlan->shellCssUrl() !== $finalFrameworkPlan->shellCssUrl()
+                        || $verifiedFrameworkPlan->shellCssUrls() !== $finalFrameworkPlan->shellCssUrls()
                     ) {
                         throw new PortableConfigurationException(
                             'FRAMEWORK_ASSET_PLAN_NOT_STABLE',
@@ -1070,21 +1082,40 @@ final readonly class PortableSiteBuilder
                     }
                     $finalFrameworkPlan = $verifiedFrameworkPlan;
                 }
-                $generatedAssetSha256 = $finalFrameworkPlan->generatedAssets[0]['sha256'] ?? null;
-                if (! is_string($generatedAssetSha256)
-                    || preg_match('/^[a-f0-9]{64}$/D', $generatedAssetSha256) !== 1
-                ) {
+                // Each generated stylesheet is content-addressed and shared
+                // by every page whose closure holds that source: publish the
+                // ones no earlier page has published.
+                $unpublishedGeneratedAssets = [];
+                foreach ($finalFrameworkPlan->generatedAssets as $generatedAsset) {
+                    $generatedAssetSha256 = is_array($generatedAsset) ? ($generatedAsset['sha256'] ?? null) : null;
+                    if (! is_string($generatedAssetSha256)
+                        || preg_match('/^[a-f0-9]{64}$/D', $generatedAssetSha256) !== 1
+                    ) {
+                        throw new PortableConfigurationException(
+                            'DECLARATIVE_GENERATED_ASSET_INVALID',
+                            "Framework assets for [{$page['output']}] have no immutable generated asset identity.",
+                        );
+                    }
+                    if (! isset($publishedFrameworkAssetPlans[$generatedAssetSha256])) {
+                        $unpublishedGeneratedAssets[] = $generatedAsset;
+                        $publishedFrameworkAssetPlans[$generatedAssetSha256] = true;
+                    }
+                }
+                if ($finalFrameworkPlan->generatedAssets === []) {
                     throw new PortableConfigurationException(
                         'DECLARATIVE_GENERATED_ASSET_INVALID',
                         "Framework assets for [{$page['output']}] have no immutable generated asset identity.",
                     );
                 }
-                if (! isset($publishedFrameworkAssetPlans[$generatedAssetSha256])) {
+                if ($unpublishedGeneratedAssets !== []) {
                     foreach ($localeDestinations as $localeDestination) {
                         (new PortablePublisherAssetPublisher($this->files, $smartRegistry))
-                            ->publishFrameworkAssetPlans($localeDestination, [$finalFrameworkPlan]);
+                            ->publishFrameworkAssetPlans($localeDestination, [new FrameworkAssetPlan(
+                                $finalFrameworkPlan->runtimePair,
+                                [],
+                                $unpublishedGeneratedAssets,
+                            )]);
                     }
-                    $publishedFrameworkAssetPlans[$generatedAssetSha256] = true;
                 }
                 $frameworkAssetPlanReceipts[(string) $page['output']] = $finalFrameworkPlan->receipt();
                 $inlineExampleIds->assertUnique($rendered, (string) $page['page_path']);
@@ -1616,7 +1647,7 @@ final readonly class PortableSiteBuilder
     /** @return array<string, array<string, mixed>> */
     private function existingDiagnosticsByUrl(string $destination): array
     {
-        $path = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
+        $path = BuildReceipts::existing($destination) . '/resolved-page-plans.json';
         try {
             $document = json_decode((string) $this->files->get($path), true, 512, JSON_THROW_ON_ERROR);
         } catch (\Throwable $exception) {
@@ -1650,7 +1681,7 @@ final readonly class PortableSiteBuilder
     /** @return array<string, mixed> */
     private function existingBuildProvenance(string $destination): array
     {
-        $path = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
+        $path = BuildReceipts::existing($destination) . '/resolved-page-plans.json';
         try {
             $document = json_decode((string) $this->files->get($path), true, 512, JSON_THROW_ON_ERROR);
         } catch (\Throwable $exception) {
@@ -1673,7 +1704,7 @@ final readonly class PortableSiteBuilder
     /** @return array<string,mixed> */
     private function existingExampleReceipt(string $destination): array
     {
-        $path = rtrim($destination, '/\\') . '/.docara/examples.json';
+        $path = BuildReceipts::existing($destination) . '/examples.json';
         try {
             $document = json_decode((string) $this->files->get($path), true, 512, JSON_THROW_ON_ERROR);
         } catch (\Throwable $exception) {
@@ -1793,15 +1824,61 @@ final readonly class PortableSiteBuilder
             );
         }
 
-        $hasCurrent = $this->files->isDirectory($destination);
-        if ($hasCurrent && ! @rename($destination, $rollback)) {
+        // Receipts leave the published folder: they move from the candidate
+        // to the sibling receipt directory together with the promotion.
+        $stagedReceipts = BuildReceipts::stagingFor($candidate);
+        $receipts = BuildReceipts::directoryFor($destination);
+        $receiptsRollback = $receipts . '.rollback';
+        $this->assertDestinationShape($root, $receipts);
+        $this->assertDestinationShape($root, $receiptsRollback);
+        if (is_link($stagedReceipts) || ! $this->files->isDirectory($stagedReceipts)) {
+            throw new PortableConfigurationException(
+                'DESTINATION_CANDIDATE_INVALID',
+                'The completed portable build candidate has no build receipts.',
+            );
+        }
+        if (is_link($receipts) || is_link($receiptsRollback)) {
+            throw new PortableConfigurationException(
+                'DESTINATION_ROLLBACK_SYMLINK_FORBIDDEN',
+                'Portable builds refuse to replace a symbolic-link receipt directory.',
+            );
+        }
+        if ($this->files->isDirectory($receiptsRollback) && ! $this->files->deleteDirectory($receiptsRollback)) {
+            throw new PortableConfigurationException(
+                'DESTINATION_ROLLBACK_CLEANUP_FAILED',
+                'A stale portable build receipt rollback directory could not be removed.',
+            );
+        }
+        $hasCurrentReceipts = $this->files->isDirectory($receipts);
+        if ($hasCurrentReceipts && ! @rename($receipts, $receiptsRollback)) {
             throw new PortableConfigurationException(
                 'DESTINATION_ROLLBACK_PREPARE_FAILED',
+                'The current build receipts could not be moved to the rollback directory.',
+            );
+        }
+        $restoreReceipts = function () use ($hasCurrentReceipts, $receipts, $receiptsRollback): bool {
+            return ! $hasCurrentReceipts || @rename($receiptsRollback, $receipts);
+        };
+        if (! @rename($stagedReceipts, $receipts)) {
+            $restored = $restoreReceipts();
+            throw new PortableConfigurationException(
+                $restored ? 'DESTINATION_PROMOTION_FAILED' : 'DESTINATION_PROMOTION_AND_RESTORE_FAILED',
+                'The build receipts could not be moved out of the portable candidate.',
+            );
+        }
+
+        $hasCurrent = $this->files->isDirectory($destination);
+        if ($hasCurrent && ! @rename($destination, $rollback)) {
+            $restored = @rename($receipts, $stagedReceipts) && $restoreReceipts();
+            throw new PortableConfigurationException(
+                $restored ? 'DESTINATION_ROLLBACK_PREPARE_FAILED' : 'DESTINATION_PROMOTION_AND_RESTORE_FAILED',
                 'The current portable build could not be moved to the rollback directory.',
             );
         }
         if (@rename($candidate, $destination)) {
-            if ($hasCurrent && ! $this->files->deleteDirectory($rollback)) {
+            if (($hasCurrent && ! $this->files->deleteDirectory($rollback))
+                || ($hasCurrentReceipts && ! $this->files->deleteDirectory($receiptsRollback))
+            ) {
                 throw new PortableConfigurationException(
                     'DESTINATION_ROLLBACK_CLEANUP_FAILED',
                     'The accepted portable build was published, but its rollback directory could not be removed.',
@@ -1811,7 +1888,10 @@ final readonly class PortableSiteBuilder
             return;
         }
 
-        if ($hasCurrent && ! @rename($rollback, $destination)) {
+        if (($hasCurrent && ! @rename($rollback, $destination))
+            || ! @rename($receipts, $stagedReceipts)
+            || ! $restoreReceipts()
+        ) {
             throw new PortableConfigurationException(
                 'DESTINATION_PROMOTION_AND_RESTORE_FAILED',
                 'The portable candidate could not be published and the previous build could not be restored.',

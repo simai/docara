@@ -269,7 +269,7 @@ final readonly class FrameworkAssetPlanner
         return new FrameworkAssetPlan(
             $this->repository->pairId(),
             $assets,
-            [$shell['generated_asset']],
+            $shell['generated_assets'],
             $shell['preload'],
             $shell['diagnostics'],
         );
@@ -645,7 +645,7 @@ final readonly class FrameworkAssetPlanner
     /**
      * @param  array<string, mixed>  $runtime
      * @return array{
-     *   generated_asset:array<string,mixed>,
+     *   generated_assets:list<array<string,mixed>>,
      *   dependency_assets:list<array<string,mixed>>,
      *   smart_assets:list<array<string,mixed>>,
      *   preload_boot:?string,
@@ -806,11 +806,11 @@ final readonly class FrameworkAssetPlanner
             $shellBytes,
             'portable',
         );
-        $generatedAsset = $this->generatedShellCss($cssInputs);
+        $generatedAssets = $this->generatedShellCss($cssInputs);
 
         if (! $metadataAvailable) {
             return [
-                'generated_asset' => $generatedAsset,
+                'generated_assets' => $generatedAssets,
                 'dependency_assets' => [],
                 'smart_assets' => [],
                 'preload_boot' => null,
@@ -849,7 +849,7 @@ final readonly class FrameworkAssetPlanner
             . ';';
 
         return [
-            'generated_asset' => $generatedAsset,
+            'generated_assets' => $generatedAssets,
             'dependency_assets' => $dependencyAssets,
             'smart_assets' => $smartAssets,
             'preload_boot' => $preloadBoot,
@@ -866,7 +866,7 @@ final readonly class FrameworkAssetPlanner
      *
      * @param  array<string, mixed>  $runtime
      * @return array{
-     *   generated_asset:array<string,mixed>,
+     *   generated_assets:list<array<string,mixed>>,
      *   dependency_assets:list<array<string,mixed>>,
      *   smart_assets:list<array<string,mixed>>,
      *   preload_boot:string,
@@ -1296,7 +1296,7 @@ final readonly class FrameworkAssetPlanner
             $shellBytes,
             'portable',
         );
-        $generatedAsset = $this->generatedShellCss($cssInputs);
+        $generatedAssets = $this->generatedShellCss($cssInputs);
         $modules = array_values(array_unique($modules));
         $runtimeTags = array_values(array_unique($runtimeTags));
         sort($runtimeTags, SORT_STRING);
@@ -1323,7 +1323,7 @@ final readonly class FrameworkAssetPlanner
         ) . ';';
 
         return [
-            'generated_asset' => $generatedAsset,
+            'generated_assets' => $generatedAssets,
             'dependency_assets' => $dependencyAssets,
             'smart_assets' => $smartAssets,
             'preload_boot' => $preloadBoot,
@@ -1428,31 +1428,44 @@ final readonly class FrameworkAssetPlanner
         ];
     }
 
-    /** @param list<array{source:string,path:string,sha256:string,content:string,root:string}> $inputs */
+    /**
+     * Publish the first-frame stylesheet closure as one content-addressed
+     * file per source, linked in closure order.
+     *
+     * Each file holds exactly the bytes the source contributed to the former
+     * single concatenated sheet, so the cascade is unchanged, but a module
+     * shared by many pages is one cached file instead of a copy inside every
+     * distinct per-page closure.
+     *
+     * @param  list<array{source:string,path:string,sha256:string,content:string,root:string}>  $inputs
+     * @return list<array<string, mixed>>
+     */
     private function generatedShellCss(array $inputs): array
     {
-        $content = '';
-        $receiptInputs = [];
+        $assets = [];
         foreach ($inputs as $input) {
-            $content .= '/* docara-shell-source: ' . $input['source'] . ' */' . "\n"
+            $content = '/* docara-shell-source: ' . $input['source'] . ' */' . "\n"
                 . $this->rewriteCssUrls($input['content'], $input['path'], $input['root']) . "\n";
-            $receiptInputs[] = [
-                'source' => $input['source'],
-                'sha256' => $input['sha256'],
+            $sha256 = hash('sha256', $content);
+            $filename = 'docara-shell.' . $sha256 . '.css';
+            $assets[] = [
+                'key' => 'docara.framework.shell.css',
+                'kind' => 'shell_css',
+                'filename' => $filename,
+                'url' => $this->publisherBase() . '/' . $filename,
+                'sha256' => $sha256,
+                'inputs' => [[
+                    'source' => $input['source'],
+                    'sha256' => $input['sha256'],
+                ]],
+                'content' => $content,
             ];
         }
-        $sha256 = hash('sha256', $content);
-        $filename = 'docara-shell.' . $sha256 . '.css';
+        if ($assets === []) {
+            throw new FrameworkComponentException('FRAMEWORK_SHELL_CSS_INVALID', 'empty');
+        }
 
-        return [
-            'key' => 'docara.framework.shell.css',
-            'kind' => 'shell_css',
-            'filename' => $filename,
-            'url' => $this->publisherBase() . '/' . $filename,
-            'sha256' => $sha256,
-            'inputs' => $receiptInputs,
-            'content' => $content,
-        ];
+        return $assets;
     }
 
     private function rewriteCssUrls(string $css, string $sourcePath, string $root): string

@@ -18,9 +18,24 @@ php vendor/bin/docara verify-static
 
 Без аргумента проверяется `build_production`.
 
+## Квитанции сборки
+
+Verifier читает квитанции сборки из соседнего каталога
+`build_production.docara/`. Для каталога, собранного Docara 3.0.0, где они ещё
+лежали внутри результата в `.docara/`, используется прежнее место. Если
+результат уже скопирован на хостинг без квитанций, укажите их каталог явно:
+
+```bash
+php vendor/bin/docara verify-static /var/www/docs --receipts=build_production.docara
+```
+
+Если квитанции лежат снаружи, а в проверяемом каталоге всё же есть `.docara/`,
+проверка не проходит с маркером `@build-receipts-in-output`: служебные файлы
+сборки не должны попадать в публикуемый каталог.
+
 ## Что проверяется
 
-- manifest `.docara/resolved-page-plans.json`;
+- manifest `resolved-page-plans.json` из квитанций сборки;
 - соответствие заявленных страниц физическому output;
 - local routes, links и fragments;
 - duplicate HTML IDs и fragment encoding;
@@ -28,7 +43,8 @@ php vendor/bin/docara verify-static
 - search index и pinned search runtime;
 - redirect receipt, статические redirect pages и их targets;
 - effective component catalog и физические Markdown-owner страниц компонентов;
-- точная asset projection SIMAI Framework;
+- точная asset projection SIMAI Framework и общие файлы
+  `docara-shell.<sha256>.css`, подключённые страницей в порядке каскада;
 - отсутствие лишней или пропавшей поверхности, охваченной manifest.
 
 Успешный exit code означает, что проверенный каталог самосогласован. Он не

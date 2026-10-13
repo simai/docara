@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Console;
 
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Process\Process;
 
@@ -29,7 +30,13 @@ final class VerifyStaticCommand extends Command
     {
         $this->setName('verify-static')
             ->setDescription('Verify a static build and all pinned contracts.')
-            ->addArgument('directory', InputArgument::OPTIONAL, 'Build directory.', 'build_production');
+            ->addArgument('directory', InputArgument::OPTIONAL, 'Build directory.', 'build_production')
+            ->addOption(
+                'receipts',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Build receipt directory (default: <directory>.docara next to the build directory).',
+            );
     }
 
     protected function fire(): int
@@ -48,6 +55,9 @@ final class VerifyStaticCommand extends Command
             'memory_limit=' . ($memoryLimit === '' ? '-1' : $memoryLimit),
             $script,
             (string) $this->input->getArgument('directory'),
+            ...(is_string($this->input->getOption('receipts')) && $this->input->getOption('receipts') !== ''
+                ? ['--receipts=' . $this->input->getOption('receipts')]
+                : []),
         ], $this->base);
         // Large documentation trees can legitimately require more than
         // Symfony Process' 60-second default while checking every local

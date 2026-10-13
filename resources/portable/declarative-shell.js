@@ -1,4 +1,12 @@
 (function(){
+  /* The documentation sheet shows the sidebar navigation. The page carries that tree once: before any other script can change it, the sheet template takes a copy of the sidebar as the server rendered it, without element ids. */
+  document.querySelectorAll('template[data-docara-sheet-template][data-docara-sheet-source="sidebar"]').forEach(function(template){
+    var source=document.querySelector('aside[data-docara-region="sidebar"]>.docara-sidebar-scroll>.sf-scrollbar__viewport');
+    var section=template.content.firstElementChild;
+    if(!source||!section)return;
+    Array.prototype.forEach.call(source.childNodes,function(node){section.appendChild(node.cloneNode(true))});
+    Array.prototype.forEach.call(section.querySelectorAll('[id]'),function(element){element.removeAttribute('id')});
+  });
   var copyNode=document.getElementById('docara-runtime-copy'),messages={};
   try{messages=JSON.parse(copyNode?copyNode.textContent:'{}')}catch(error){messages={}}
   function message(id,parameters){

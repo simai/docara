@@ -76,15 +76,22 @@ final readonly class FrameworkAssetPlan
         return implode("\n", $html);
     }
 
-    public function shellCssUrl(): ?string
+    /**
+     * The generated first-frame stylesheets in cascade order: one
+     * content-addressed file per source of the page's closure.
+     *
+     * @return list<string>
+     */
+    public function shellCssUrls(): array
     {
+        $urls = [];
         foreach ($this->generatedAssets as $asset) {
             if (($asset['kind'] ?? null) === 'shell_css' && is_string($asset['url'] ?? null)) {
-                return $asset['url'];
+                $urls[] = $asset['url'];
             }
         }
 
-        return null;
+        return $urls;
     }
 
     public function withoutGeneratedAssetContent(): self

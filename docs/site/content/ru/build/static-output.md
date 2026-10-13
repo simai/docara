@@ -1,21 +1,34 @@
 # Статический результат
 
-Собранный каталог содержит HTML страниц, копии контентных ассетов, служебные
-Framework-ассеты и диагностический файл:
+Собранный каталог содержит HTML страниц, копии контентных ассетов и служебные
+Framework-ассеты. Рядом с ним Docara кладёт квитанции сборки — они описывают,
+как собран сайт, и не публикуются:
 
 ```text
-build_production/
+build_production/                  публикуется целиком
   index.html
   section/page/index.html
   _docara/search-index.json
   _docara/search.js
-  _docara/docara-shell.<sha256>.css
+  _docara/docara-shell.<sha256>.css   по одному файлу на исходный CSS
   _docara/framework/
   _docara/vendor/simai-framework/runtime/<revision>/
-  .docara/resolved-page-plans.json
-  .docara/redirects.json
   old/route/index.html
+build_production.docara/           квитанции сборки, не публикуются
+  resolved-page-plans.json
+  redirects.json
+  locale-routes.json
+  performance.json
+  examples.json
+  …
 ```
+
+Каталог `build_production/` можно копировать на хостинг как есть: служебных
+файлов сборки в нём нет. Квитанции из `build_production.docara/` читают
+`verify-static`, однострочная пересборка `build --page`, `preview` и `inspect`.
+Сайт, собранный Docara 3.0.0, хранил их внутри результата в `.docara/`; такие
+каталоги по-прежнему проверяются, но при новой сборке квитанции переезжают
+наружу.
 
 HTML можно обслуживать обычным статическим веб-сервером. Значение `base_url`
 должно совпадать с префиксом размещения: `/` для корня домена или безопасный
@@ -28,7 +41,7 @@ HTML можно обслуживать обычным статическим в�
 runtime имеют независимые SHA-256 query revisions.
 
 Проверка артефакта читает `base_url` из
-`.docara/resolved-page-plans.json`: совпадающий deployment-префикс удаляется
+`resolved-page-plans.json`: совпадающий deployment-префикс удаляется
 перед поиском файла внутри build-каталога, а похожий или посторонний абсолютный
 путь отклоняется.
 
@@ -38,7 +51,7 @@ Verifier требует exact schema manifest, непустой список с�
 Элемент HTML `<base>` запрещён, чтобы относительные quoted `href`/`src` всегда
 разрешались одинаково verifier-ом и браузером.
 
-Если `redirects_file` не пуст, `.docara/redirects.json` фиксирует SHA-256
+Если `redirects_file` не пуст, квитанция `redirects.json` фиксирует SHA-256
 source, locale, версию документации, `base_url`, source/target URL и output
 каждого redirect. Redirect HTML содержит canonical, `noindex`, meta refresh и
 обычную видимую ссылку на один и тот же внутренний target.
@@ -61,8 +74,13 @@ runtime-загрузки с CDN.
 
 Перед первым отображением общий production Asset Planner SIMAI Framework
 анализирует готовый HTML страницы по тем же правилам `distr/rule/rule.json`,
-которые использует динамический Loader. Он раскрывает зависимости и создаёт
-небольшой `docara-shell.<sha256>.css` из точных CSS страницы и геометрии Docara.
+которые использует динамический Loader. Он раскрывает зависимости и подключает
+точный набор CSS страницы и геометрию Docara в порядке каскада. Каждый исходный
+CSS публикуется один раз — отдельным файлом `docara-shell.<sha256>.css`, имя
+которого определяется его содержимым. Страницы с разным набором компонентов
+ссылаются на одни и те же файлы, поэтому браузер кеширует их между страницами,
+а размер сайта не растёт с числом различных страниц. Порядок подключения тот
+же, что и порядок частей прежнего единого файла, поэтому каскад не меняется.
 Нужные JavaScript-модули подключаются в порядке зависимостей до Core, а
 `window.SF_PRELOADED` перечисляет только фактически опубликованные ресурсы.
 Поэтому Loader не загружает их повторно после первого отображения и остаётся
@@ -86,9 +104,10 @@ fallback. Он сохраняет естественные размеры тек
 поэтому подмена шрифта не перестраивает шапку, меню и колонки. Фиксированная
 высота шапки, скрытие страницы или отдельный проектный кеш для этого не нужны.
 
-`.docara/resolved-page-plans.json` содержит отдельный Framework asset receipt
+`resolved-page-plans.json` содержит отдельный Framework asset receipt
 для каждого HTML-output: входные файлы и их SHA-256, порядок JavaScript, список
-preload-модулей, hash HTML-содержимого и публичное имя generated CSS.
+preload-модулей, hash HTML-содержимого и публичные имена generated CSS в
+порядке подключения.
 `verify-static` повторно вычисляет каждый план по финальному HTML и отклоняет
 ложный preload, изменённый CSS, отсутствующий ресурс, stale receipt или другой
 порядок подключения. В точном production-режиме `utility.full.css` не

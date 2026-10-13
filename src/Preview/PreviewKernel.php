@@ -12,6 +12,7 @@ use Simai\Docara\File\Filesystem;
 use Simai\Docara\File\ProjectFilesystemGuard;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\BuildPurpose;
+use Simai\Docara\PortableSite\BuildReceipts;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Smart\SmartRegistry;
 
@@ -33,10 +34,16 @@ final readonly class PreviewKernel
         $page = $this->page($page);
         $selector = $this->selector($target, $selector);
         $cache = $root . '/build_preview-cache';
-        foreach (['build_preview-cache', 'build_preview-cache.docara-candidate', 'build_preview-cache.docara-rollback'] as $generated) {
+        foreach ([
+            'build_preview-cache',
+            'build_preview-cache.docara',
+            'build_preview-cache.docara.rollback',
+            'build_preview-cache.docara-candidate',
+            'build_preview-cache.docara-rollback',
+        ] as $generated) {
             $this->writes->directoryPath($root, $generated);
         }
-        $receipt = $cache . '/.docara/resolved-page-plans.json';
+        $receipt = BuildReceipts::existing($cache) . '/resolved-page-plans.json';
         $buildMode = is_file($receipt) ? 'single_page' : 'full_site';
         if (! is_file($receipt)) {
             $this->builder->build($root, $cache, purpose: BuildPurpose::Preview);

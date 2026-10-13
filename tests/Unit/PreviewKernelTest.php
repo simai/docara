@@ -51,9 +51,9 @@ final class PreviewKernelTest extends TestCase
         self::assertSame($page->assets, $layout->assets);
         self::assertSame('portable_site_builder', $smart->provenance['runtime']);
         self::assertSame($page->provenance['plan_hash'], $smart->provenance['plan_hash']);
-        self::assertFileExists($this->tmpPath('build_preview-cache/.docara/resolved-page-plans.json'));
+        self::assertFileExists($this->tmpPath('build_preview-cache.docara/resolved-page-plans.json'));
         $receipt = json_decode(
-            (string) file_get_contents($this->tmpPath('build_preview-cache/.docara/resolved-page-plans.json')),
+            (string) file_get_contents($this->tmpPath('build_preview-cache.docara/resolved-page-plans.json')),
             true,
             512,
             JSON_THROW_ON_ERROR,

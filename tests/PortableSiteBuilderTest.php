@@ -38,7 +38,7 @@ final class PortableSiteBuilderTest extends TestCase
         $destination = $this->tmpPath('build_local');
         $this->builder()->build($this->tmp, $destination);
 
-        $receipt = $this->jsonFile($destination . '/.docara/examples.json');
+        $receipt = $this->jsonFile($destination . '.docara/examples.json');
         self::assertSame('utilities/card', $receipt['examples'][0]['id']);
         self::assertSame(['content/ru/index.md'], $receipt['examples'][0]['consumers']);
         $preview = array_values(array_filter(
@@ -76,7 +76,7 @@ final class PortableSiteBuilderTest extends TestCase
 
         $page = (string) file_get_contents($destination . '/ru/index.html');
         self::assertStringContainsString('<!-- transformed --></body>', $page);
-        $performance = $this->jsonFile($destination . '/.docara/performance.json');
+        $performance = $this->jsonFile($destination . '.docara/performance.json');
         $record = array_values(array_filter($performance['pages'], static fn (array $item): bool => $item['output'] === 'ru/index.html'))[0];
         self::assertSame(strlen($page), $record['html_bytes']);
 
@@ -106,7 +106,7 @@ final class PortableSiteBuilderTest extends TestCase
         $destination = $this->tmpPath('build_local');
         $this->builder()->build($this->tmp, $destination);
 
-        $receipt = $this->jsonFile($destination . '/.docara/examples.json');
+        $receipt = $this->jsonFile($destination . '.docara/examples.json');
         $preview = array_values(array_filter(
             $receipt['previews'],
             static fn (array $record): bool => $record['consumer'] === 'content/ru/index.md',
@@ -239,7 +239,7 @@ MD);
         $searchIndexHash = hash_file('sha256', $searchIndexPath);
         $searchIndex = $this->jsonFile($searchIndexPath);
         $diagnosticCount = count($this->jsonFile(
-            $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
+            $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         )['pages']);
         file_put_contents(
             $this->tmpPath('content/guides/getting-started.md'),
@@ -255,7 +255,7 @@ MD);
         self::assertSame($neighborHash, hash_file('sha256', $neighbor));
         self::assertCount(
             $diagnosticCount,
-            $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'))['pages'],
+            $this->jsonFile($this->tmpPath('build_local.docara/resolved-page-plans.json'))['pages'],
         );
         self::assertSame($searchIndexHash, hash_file('sha256', $searchIndexPath));
         self::assertStringContainsString(
@@ -270,7 +270,7 @@ MD);
         $this->copyPortableFixture($this->tmp);
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        $receipt = $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'));
+        $receipt = $this->jsonFile($this->tmpPath('build_local.docara/resolved-page-plans.json'));
         self::assertSame('docara.package_revision.v1', $receipt['build']['engine']['schema']);
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $receipt['build']['engine']['tree_sha256']);
         self::assertSame('docara.dependency_lock.v1', $receipt['build']['dependencies']['schema']);
@@ -322,7 +322,7 @@ MD);
         $destination = $this->tmpPath('build_local');
         $builder = $this->builder();
         $builder->build($this->tmp, $destination);
-        $receiptPath = $destination . '/.docara/resolved-page-plans.json';
+        $receiptPath = $destination . '.docara/resolved-page-plans.json';
         $receipt = $this->jsonFile($receiptPath);
         $receipt['build']['engine']['tree_sha256'] = str_repeat('0', 64);
         file_put_contents($receiptPath, CanonicalJson::encodePretty($receipt));
@@ -479,7 +479,7 @@ MD);
 
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        $receipt = $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'));
+        $receipt = $this->jsonFile($this->tmpPath('build_local.docara/resolved-page-plans.json'));
         self::assertSame('content/ru/lang.json', $receipt['build']['locale_sources']['ru']['path']);
         self::assertStringContainsString(
             'Открыть поиск по документации',
@@ -612,7 +612,7 @@ MD);
         self::assertFileExists($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
         self::assertFileExists($this->tmpPath('build_local/landing/index.html'));
         self::assertFileExists($this->tmpPath('build_local/_docara/component-catalog.json'));
-        self::assertFileDoesNotExist($this->tmpPath('build_local/.docara/component-catalog-pages.json'));
+        self::assertFileDoesNotExist($this->tmpPath('build_local.docara/component-catalog-pages.json'));
         self::assertFileExists($this->tmpPath('build_local/components/index.html'));
         self::assertFileExists($this->tmpPath('build_local/components/card/index.html'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search-index.json'));
@@ -1309,7 +1309,7 @@ MD);
             self::assertSame($sha256, hash_file('sha256', $published));
         }
 
-        $diagnosticPath = $this->tmpPath('build_local/.docara/resolved-page-plans.json');
+        $diagnosticPath = $this->tmpPath('build_local.docara/resolved-page-plans.json');
         $diagnosticJson = (string) file_get_contents($diagnosticPath);
         self::assertMatchesRegularExpression('/"navigation":\s*\{\}/', $diagnosticJson);
         self::assertDoesNotMatchRegularExpression('/"navigation":\s*\[\]/', $diagnosticJson);
@@ -1319,7 +1319,7 @@ MD);
         self::assertSame('docara.framework_asset_plans.v1', $shellReceipt['schema']);
         self::assertSame('production_exact', $shellReceipt['mode']);
         self::assertCount(39, $shellReceipt['plans']);
-        $performance = $this->jsonFile($this->tmpPath('build_local/.docara/performance.json'));
+        $performance = $this->jsonFile($this->tmpPath('build_local.docara/performance.json'));
         self::assertSame('docara.performance_receipt.v1', $performance['schema']);
         self::assertSame(39, $performance['site']['page_count']);
         self::assertSame(
@@ -1333,13 +1333,15 @@ MD);
         self::assertNotEmpty($performance['site']['largest_initial_local_resources']);
         $indexShellReceipt = $shellReceipt['plans']['index.html'];
         self::assertSame('production_exact', $indexShellReceipt['preload']['mode']);
-        self::assertCount(1, $indexShellReceipt['generated_assets']);
-        $generatedShell = $indexShellReceipt['generated_assets'][0];
-        self::assertSame('/_docara/' . $generatedShell['filename'], $generatedShell['url']);
-        self::assertSame(
-            $generatedShell['sha256'],
-            hash_file('sha256', $this->tmpPath('build_local/_docara/' . $generatedShell['filename'])),
-        );
+        self::assertGreaterThan(1, count($indexShellReceipt['generated_assets']));
+        foreach ($indexShellReceipt['generated_assets'] as $generatedShell) {
+            self::assertSame('/_docara/' . $generatedShell['filename'], $generatedShell['url']);
+            self::assertCount(1, $generatedShell['inputs']);
+            self::assertSame(
+                $generatedShell['sha256'],
+                hash_file('sha256', $this->tmpPath('build_local/_docara/' . $generatedShell['filename'])),
+            );
+        }
         self::assertStringNotContainsString(
             'utility.full.css',
             (string) file_get_contents($this->tmpPath('build_local/index.html')),
@@ -1656,7 +1658,7 @@ MD);
         self::assertFileDoesNotExist($this->tmpPath('build_local/examples/smart-button/index.html'));
         self::assertFileExists($this->tmpPath('build_local/example-results/button/index.html'));
         self::assertFileDoesNotExist($this->tmpPath('build_local/_docara/declarative-examples.json'));
-        self::assertFileDoesNotExist($this->tmpPath('build_local/.docara/declarative-example-pages.json'));
+        self::assertFileDoesNotExist($this->tmpPath('build_local.docara/declarative-example-pages.json'));
 
         $result = (string) file_get_contents($this->tmpPath('build_local/example-results/button/index.html'));
         self::assertStringContainsString('<sf-button', $result);
@@ -1735,7 +1737,7 @@ MD);
 
         self::assertSame($expected, $this->desktopNavigationLinks($html));
 
-        $diagnostics = $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'));
+        $diagnostics = $this->jsonFile($this->tmpPath('build_local.docara/resolved-page-plans.json'));
         $orders = [];
         foreach ($diagnostics['pages'] as $record) {
             $orders[$record['url']] = $record['resolved_page_plan']['configuration']['navigation']['order'] ?? null;
@@ -1813,7 +1815,7 @@ MD);
         self::assertFileExists($site . '/build_local/guides/platform/configuration/layout/index.html');
         self::assertFileExists($site . '/build_local/landing/index.html');
         self::assertFileExists($site . '/build_local/_docara/component-catalog.json');
-        self::assertFileExists($site . '/build_local/.docara/resolved-page-plans.json');
+        self::assertFileExists($site . '/build_local.docara/resolved-page-plans.json');
         self::assertFileExists($site . '/build_local/_docara/framework-runtime/smart/alert/js/alert.js');
         self::assertCount(2, glob($site . '/build_local/_docara/brand/*') ?: []);
     }
@@ -1875,7 +1877,7 @@ MD;
             self::assertStringStartsWith('/project~/docs/', $document['url']);
         }
         $diagnostics = (string) file_get_contents(
-            $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
+            $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
             '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-82fc0ba882ba-[a-f0-9]{16}#',
@@ -1919,7 +1921,7 @@ MD;
 
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        $receiptPath = $this->tmpPath('build_local/.docara/redirects.json');
+        $receiptPath = $this->tmpPath('build_local.docara/redirects.json');
         self::assertFileExists($receiptPath);
         $receipt = $this->jsonFile($receiptPath);
         self::assertSame('docara.redirect_receipt.v1', $receipt['schema']);
@@ -1996,7 +1998,7 @@ MD;
         self::assertSame('/project~/docs/', $home['target_url']);
 
         $manifest = $this->jsonFile(
-            $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
+            $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertSame('ru', $manifest['build']['locale']);
         self::assertSame('2.4.0', $manifest['build']['documentation_version']);
@@ -2609,6 +2611,110 @@ MD;
 
         self::assertSame('accepted-build', file_get_contents($this->tmpPath('build_local/sentinel.txt')));
         self::assertDirectoryDoesNotExist($this->tmpPath('build_local.docara-candidate'));
+    }
+
+    #[Test]
+    public function published_output_shares_shell_stylesheets_carries_navigation_once_and_keeps_receipts_outside(): void
+    {
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        $output = $this->tmpPath('build_local');
+        $this->builder()->build($this->tmp, $output);
+
+        // Build receipts are never published: they live next to the output.
+        self::assertDirectoryDoesNotExist($output . '/.docara');
+        foreach (['resolved-page-plans.json', 'performance.json', 'examples.json'] as $receipt) {
+            self::assertFileExists($output . '.docara/' . $receipt);
+        }
+
+        // One content-addressed stylesheet per source, shared by every page
+        // whose first-frame closure holds that source; never one per page.
+        $plans = $this->jsonFile($output . '.docara/resolved-page-plans.json')['build']['framework']['shell']['plans'];
+        self::assertGreaterThan(1, count($plans));
+        $filesBySource = [];
+        $pageFiles = [];
+        foreach ($plans as $page => $plan) {
+            $pageFiles[$page] = array_column($plan['generated_assets'], 'filename');
+            foreach ($plan['generated_assets'] as $asset) {
+                self::assertCount(1, $asset['inputs']);
+                $filesBySource[$asset['inputs'][0]['source']][$asset['filename']] = true;
+            }
+            preg_match_all(
+                '/<link\b[^>]*\bhref="([^"]*)"[^>]*\bdata-docara-declarative-shell-style\b[^>]*>/',
+                (string) file_get_contents($output . '/' . $page),
+                $links,
+            );
+            self::assertSame(array_column($plan['generated_assets'], 'url'), $links[1], $page);
+        }
+        foreach ($filesBySource as $source => $files) {
+            self::assertCount(1, $files, "Source [$source] must be published as exactly one stylesheet.");
+        }
+        $published = glob($output . '/_docara/docara-shell.*.css') ?: [];
+        self::assertCount(count($filesBySource), $published);
+        foreach ($published as $stylesheet) {
+            self::assertSame(1, substr_count((string) file_get_contents($stylesheet), '/* docara-shell-source: '));
+        }
+        $distinctClosures = array_unique(array_map(
+            static fn (array $files): string => implode(',', $files),
+            $pageFiles,
+        ));
+        self::assertGreaterThan(1, count($distinctClosures), 'the fixture must hold pages with different closures');
+        $shared = array_intersect(...array_values($pageFiles));
+        self::assertNotEmpty($shared, 'pages with different closures still share the common stylesheets');
+
+        // The mobile documentation sheet takes the sidebar tree in the
+        // browser; the page does not carry a second copy of it.
+        $records = $this->jsonFile($output . '.docara/resolved-page-plans.json')['pages'];
+        $guideRecord = collect($records)->first(
+            static fn (array $record): bool => str_contains(
+                (string) file_get_contents($output . '/' . $record['output']),
+                'data-docara-sheet-template',
+            ),
+        );
+        self::assertIsArray($guideRecord);
+        $guide = (string) file_get_contents($output . '/' . $guideRecord['output']);
+        self::assertStringContainsString('data-docara-sheet-source="sidebar"', $guide);
+        self::assertSame(1, preg_match('~<template data-docara-sheet-template[^>]*>(.*?)</template>~s', $guide, $template));
+        self::assertStringNotContainsString('<nav', $template[1]);
+        self::assertStringNotContainsString('data-docara-navigation-key', $template[1]);
+        self::assertStringContainsString(
+            'template[data-docara-sheet-template][data-docara-sheet-source="sidebar"]',
+            (string) file_get_contents(dirname(__DIR__) . '/resources/portable/declarative-shell.js'),
+        );
+
+        $verify = function (string ...$arguments) use ($output): Process {
+            $process = new Process([
+                PHP_BINARY,
+                'scripts/verify-static-build.php',
+                $output,
+                ...$arguments,
+            ], dirname(__DIR__));
+            $process->run();
+
+            return $process;
+        };
+        $accepted = $verify();
+        self::assertSame(0, $accepted->getExitCode(), $accepted->getErrorOutput() . $accepted->getOutput());
+
+        // A published folder that carries its receipts again is rejected.
+        $this->filesystem->copyDirectory($output . '.docara', $output . '/.docara');
+        $leaked = $verify();
+        self::assertSame(1, $leaked->getExitCode(), $leaked->getOutput());
+        self::assertStringContainsString('@build-receipts-in-output', $leaked->getOutput());
+        $this->filesystem->deleteDirectory($output . '/.docara');
+
+        // A deployed copy is verified against receipts kept elsewhere.
+        rename($output . '.docara', $this->tmpPath('receipts-elsewhere'));
+        $elsewhere = $verify('--receipts=' . $this->tmpPath('receipts-elsewhere'));
+        self::assertSame(0, $elsewhere->getExitCode(), $elsewhere->getErrorOutput() . $elsewhere->getOutput());
+        rename($this->tmpPath('receipts-elsewhere'), $output . '.docara');
+
+        // A single-page rebuild reads and replaces the sibling receipts.
+        $this->builder()->build($this->tmp, $output, (string) $guideRecord['url']);
+        self::assertDirectoryDoesNotExist($output . '/.docara');
+        self::assertFileExists($output . '.docara/resolved-page-plans.json');
+        self::assertDirectoryDoesNotExist($output . '.docara.rollback');
+        $rebuilt = $verify();
+        self::assertSame(0, $rebuilt->getExitCode(), $rebuilt->getErrorOutput() . $rebuilt->getOutput());
     }
 
     private function builder(): PortableSiteBuilder

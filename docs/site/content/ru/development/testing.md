@@ -49,7 +49,7 @@ receipt имеют `main_source=pagebuilder_document_ir`, а full/single HTML
 совпадает. Machine-readable component catalog остаётся производным output; он
 не создаёт публичные страницы.
 
-Файл `.docara/performance.json` — детерминированный отчёт, а не ещё один
+Квитанция `build_production.docara/performance.json` — детерминированный отчёт, а не ещё один
 status engine. Он показывает для каждой страницы начальные CSS, шрифты и
 JavaScript, число запросов, локальный объём и крупнейшие общие ресурсы.
 `verify-static` пересчитывает этот receipt и отвергает устаревшие размеры или

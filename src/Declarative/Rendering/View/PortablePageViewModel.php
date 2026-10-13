@@ -15,6 +15,7 @@ final readonly class PortablePageViewModel
      * @param  list<array{locale:string,url:string}>  $alternates
      * @param  list<array{locale:string,label:string,url:string,current:bool}>  $languageOptions
      * @param  array<string, string>  $chrome
+     * @param  list<string>  $shellCssUrls
      */
     public function __construct(
         public string $locale,
@@ -34,7 +35,7 @@ final readonly class PortablePageViewModel
         public bool $searchEnabled,
         public ?string $searchRuntimeUrl,
         public ?string $searchIndexUrl,
-        public string $shellCssUrl,
+        public array $shellCssUrls,
         public string $shellRuntimeUrl,
         public array $regions,
         public array $breadcrumbs,

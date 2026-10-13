@@ -7,7 +7,7 @@
 <?php } ?>
 <?php if ($view->documentationNavigationEnabled) { ?>
         <div data-docara-sheet-lazy-content></div>
-        <template data-docara-sheet-template><section class="flex flex-col gap-1"><h3 class="m-0 weight-7"><?= $view->copy['navigation.sections'] ?></h3><?= $view->regions['sidebar_mobile'] ?></section></template>
+        <template data-docara-sheet-template data-docara-sheet-source="sidebar"><section class="flex flex-col gap-1"><h3 class="m-0 weight-7"><?= $view->copy['navigation.sections'] ?></h3></section></template>
 <?php } ?>
     </div>
 </dialog>

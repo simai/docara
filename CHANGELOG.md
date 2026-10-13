@@ -4,6 +4,55 @@ All notable changes to Docara are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and Docara uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+## [3.0.1] - 2026-10-14
+
+A smaller built site. The published folder no longer carries build receipts,
+the first-frame stylesheets are shared between pages, and each page carries
+its navigation tree once. Pages look and behave the same.
+
+### Changed
+
+- **Shared first-frame stylesheets.** Docara published one
+  `_docara/docara-shell.<sha256>.css` per distinct page closure: every page
+  whose set of Framework utilities and components differed got its own copy
+  of the same CSS, so a large site carried hundreds of near-identical 1 MB
+  files. Each source stylesheet of the closure is now published once, as its
+  own content-addressed `docara-shell.<sha256>.css`, and a page links the
+  files of its closure in the same order as before. The bytes and their order
+  are those of the former single file, so the cascade is unchanged; the files
+  are shared and cached across pages. The asset-plan receipt lists one
+  generated stylesheet per source, and `verify-static` checks that a page
+  links exactly its stylesheets in receipt order.
+- **Build receipts are no longer published.** Resolved page plans,
+  performance, examples, redirects, locale routes, backlinks, translation and
+  documentation status and the other projections describe how a site was
+  built; a visitor never needs them. They now live next to the output, in
+  `build_<environment>.docara/`, instead of `build_<environment>/.docara/`.
+  `build --page`, `verify-static`, `preview` and `inspect` read them there.
+  `verify-static` still reads the in-tree `.docara/` of a folder built by
+  3.0.0, takes `--receipts=DIR` for a deployed copy, and reports
+  `@build-receipts-in-output` when a folder whose receipts live outside also
+  carries a `.docara/` directory.
+- **The navigation tree is in the page once.** The mobile documentation sheet
+  held a second, id-stripped copy of the sidebar navigation in a `<template>`.
+  The shell runtime now fills that template from the sidebar before any other
+  script runs, so the server-rendered copy is gone; the opened sheet is the
+  same as before.
+
+### Upgrade notes
+
+- A project script that reads or writes `build_<environment>/.docara/…`
+  (for example the resolved page plans, or a `standalone-examples.json`
+  receipt written after the build) must use
+  `build_<environment>.docara/…` instead.
+- Deployment needs no change: publish `build_<environment>/` as before. Do not
+  publish `build_<environment>.docara/`.
+- After `docara upgrade` from 3.0.0, run `build production` once: 3.0.0
+  promotes the verified folder without the receipts that now live next to it.
+  From 3.0.1 on, `upgrade` promotes and rolls back the receipts with the build.
+
 ## [3.0.0] - 2026-10-14
 
 Docara 3.0 is the first public release of Docara: a static site generator

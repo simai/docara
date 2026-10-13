@@ -6,6 +6,7 @@ namespace Simai\Docara\Console;
 
 use Simai\Docara\Application\PageInspectionService;
 use Simai\Docara\Authoring\AuthoringContract;
+use Simai\Docara\PortableSite\BuildReceipts;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -85,7 +86,7 @@ final class BuildCommand extends Command
         } catch (Throwable $exception) {
             $this->console->comment('Page authoring contract warning: ' . $exception->getMessage() . ' The build remains valid in report mode.');
         }
-        $translationReport = $destination . '/.docara/translation-status.json';
+        $translationReport = BuildReceipts::existing($destination) . '/translation-status.json';
         if (is_file($translationReport) && ! is_link($translationReport)) {
             $report = json_decode((string) file_get_contents($translationReport), true);
             if (is_array($report)) {
@@ -98,7 +99,7 @@ final class BuildCommand extends Command
                 }
             }
         }
-        $documentationReport = $destination . '/.docara/documentation-status.json';
+        $documentationReport = BuildReceipts::existing($destination) . '/documentation-status.json';
         if (is_file($documentationReport) && ! is_link($documentationReport)) {
             $report = json_decode((string) file_get_contents($documentationReport), true);
             if (is_array($report)) {

@@ -54,13 +54,13 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $htmlPages = $this->filesWithExtension($build, 'html');
         $catalog = $this->json($build . '/_docara/component-catalog.json');
-        $redirectReceipt = $this->json($build . '/.docara/redirects.json');
-        $localeRouteReceipt = $this->json($build . '/.docara/locale-routes.json');
+        $redirectReceipt = $this->json($build . '.docara/redirects.json');
+        $localeRouteReceipt = $this->json($build . '.docara/locale-routes.json');
         $search = $this->json($build . '/_docara/search-index.json');
-        $resolvedPlans = $this->json($build . '/.docara/resolved-page-plans.json');
-        $atlasProjection = $this->json($build . '/.docara/design-atlas.json');
-        $schemaProjection = $this->json($build . '/.docara/schema-reference.json');
-        $exampleProjection = $this->json($build . '/.docara/examples.json');
+        $resolvedPlans = $this->json($build . '.docara/resolved-page-plans.json');
+        $atlasProjection = $this->json($build . '.docara/design-atlas.json');
+        $schemaProjection = $this->json($build . '.docara/schema-reference.json');
+        $exampleProjection = $this->json($build . '.docara/examples.json');
         $supported = array_values(array_filter(
             $catalog['entries'],
             static fn (array $entry): bool => $entry['lifecycle'] === 'supported'
@@ -85,7 +85,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         self::assertCount(132, $pages);
         $performanceProjection = json_decode(
-            (string) file_get_contents($build . '/.docara/performance.json'),
+            (string) file_get_contents($build . '.docara/performance.json'),
             true,
             flags: JSON_THROW_ON_ERROR,
         );
@@ -112,8 +112,8 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(38, $catalog['entries']);
         self::assertCount(31, $supported);
         self::assertCount(5, $unavailable);
-        self::assertFileDoesNotExist($build . '/.docara/component-catalog-pages.json');
-        self::assertFileDoesNotExist($build . '/.docara/declarative-example-pages.json');
+        self::assertFileDoesNotExist($build . '.docara/component-catalog-pages.json');
+        self::assertFileDoesNotExist($build . '.docara/declarative-example-pages.json');
         self::assertFileDoesNotExist($build . '/_docara/declarative-examples.json');
         self::assertSame(
             15,
@@ -299,7 +299,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $resolvedPlans['build']['public_projections']['design_atlas_sha256'] = str_repeat('0', 64);
         file_put_contents(
-            $build . '/.docara/resolved-page-plans.json',
+            $build . '.docara/resolved-page-plans.json',
             json_encode($resolvedPlans, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
         );
         $verification->run();
@@ -395,14 +395,25 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // bundled release is ui-82fc0ba882ba (a 1385-file runtime packet and
         // 63 Smart files). The tree has 1835 files: two pages and their two
         // locale redirects were added for 3.0 (hosting and the 2.x upgrade).
-        self::assertCount(1835, $firstFiles);
+        // 3.0.1 took the 9 build receipts out of the published tree (they are
+        // in build_dist.docara/) and replaced the 36 per-page shell
+        // stylesheets with 79 shared ones, one per source: 1869 files.
+        self::assertCount(1869, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_contains($path, 'vendor/simai-framework/typography/'),
         )), 'no typography packet is published into a site that does not name one');
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
-        self::assertArrayHasKey('.docara/examples.json', $firstFiles);
-        self::assertArrayHasKey('.docara/performance.json', $firstFiles);
+        self::assertSame([], array_values(array_filter(
+            array_keys($firstFiles),
+            static fn (string $path): bool => str_starts_with($path, '.docara/'),
+        )), 'build receipts are never part of the published tree');
+        self::assertSame(
+            $this->treeHashes($firstBuild . '.docara'),
+            $this->treeHashes($secondBuild . '.docara'),
+        );
+        self::assertArrayHasKey('examples.json', $this->treeHashes($firstBuild . '.docara'));
+        self::assertArrayHasKey('performance.json', $this->treeHashes($firstBuild . '.docara'));
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
         self::assertCount(132, $metadata['pages']);

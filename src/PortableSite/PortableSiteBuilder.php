@@ -200,6 +200,7 @@ final readonly class PortableSiteBuilder
         $earlyPhysicalSelection = false;
         $existingExampleReceipt = null;
         $existingFrameworkAssetPlanReceipts = [];
+        $existingShellStylesheets = null;
         if ($selectedPageUrl !== null) {
             if (is_link($finalDestination) || ! $this->files->isDirectory($finalDestination)) {
                 throw new PortableConfigurationException(
@@ -211,10 +212,12 @@ final readonly class PortableSiteBuilder
             $existingBuild = $this->existingBuildProvenance($finalDestination);
             $existingFrameworkShell = $existingBuild['framework']['shell'] ?? null;
             if (! is_array($existingFrameworkShell)
-                || ($existingFrameworkShell['schema'] ?? null) !== 'docara.framework_asset_plans.v1'
+                || ($existingFrameworkShell['schema'] ?? null) !== 'docara.framework_asset_plans.v2'
                 || ($existingFrameworkShell['mode'] ?? null) !== 'production_exact'
                 || ! is_array($existingFrameworkShell['plans'] ?? null)
                 || array_is_list($existingFrameworkShell['plans'])
+                || ! is_array($existingFrameworkShell['stylesheets'] ?? null)
+                || ($existingFrameworkShell['stylesheets']['schema'] ?? null) !== PortableShellStylesheets::SCHEMA
             ) {
                 throw new PortableConfigurationException(
                     'PORTABLE_INCREMENTAL_FRAMEWORK_ASSET_BASE_INVALID',
@@ -222,6 +225,7 @@ final readonly class PortableSiteBuilder
                 );
             }
             $existingFrameworkAssetPlanReceipts = $existingFrameworkShell['plans'];
+            $existingShellStylesheets = $existingFrameworkShell['stylesheets'];
             $existingExampleReceipt = $this->existingExampleReceipt($finalDestination);
             $projectExamples->assertIncrementalCompatible($existingExampleReceipt);
             if (($existingBuild['purpose'] ?? null) !== $purpose->value) {
@@ -896,7 +900,11 @@ final readonly class PortableSiteBuilder
             }
 
             $requiredSmartAssets = [];
-            $publishedFrameworkAssetPlans = [];
+            $shellSegments = [];
+            $shellClosures = [];
+            $shellSegmentUrls = [];
+            $shellPageUrls = [];
+            $shellRuntimePair = '';
             foreach ($pagesToRender as $pageIndex => $page) {
                 $declarative = null;
                 $pageLocale = (string) $page['locale'];
@@ -1082,41 +1090,34 @@ final readonly class PortableSiteBuilder
                     }
                     $finalFrameworkPlan = $verifiedFrameworkPlan;
                 }
-                // Each generated stylesheet is content-addressed and shared
-                // by every page whose closure holds that source: publish the
-                // ones no earlier page has published.
-                $unpublishedGeneratedAssets = [];
+                // The page links one URL per first-frame segment for now;
+                // once every closure is known the segments are grouped into
+                // shared stylesheets and the links replaced (see below).
+                $pageShellSegments = [];
                 foreach ($finalFrameworkPlan->generatedAssets as $generatedAsset) {
                     $generatedAssetSha256 = is_array($generatedAsset) ? ($generatedAsset['sha256'] ?? null) : null;
                     if (! is_string($generatedAssetSha256)
                         || preg_match('/^[a-f0-9]{64}$/D', $generatedAssetSha256) !== 1
+                        || ! is_string($generatedAsset['content'] ?? null)
                     ) {
                         throw new PortableConfigurationException(
                             'DECLARATIVE_GENERATED_ASSET_INVALID',
                             "Framework assets for [{$page['output']}] have no immutable generated asset identity.",
                         );
                     }
-                    if (! isset($publishedFrameworkAssetPlans[$generatedAssetSha256])) {
-                        $unpublishedGeneratedAssets[] = $generatedAsset;
-                        $publishedFrameworkAssetPlans[$generatedAssetSha256] = true;
-                    }
+                    $shellSegments[$generatedAssetSha256] ??= $generatedAsset;
+                    $pageShellSegments[] = $generatedAssetSha256;
                 }
-                if ($finalFrameworkPlan->generatedAssets === []) {
+                if ($pageShellSegments === []) {
                     throw new PortableConfigurationException(
                         'DECLARATIVE_GENERATED_ASSET_INVALID',
                         "Framework assets for [{$page['output']}] have no immutable generated asset identity.",
                     );
                 }
-                if ($unpublishedGeneratedAssets !== []) {
-                    foreach ($localeDestinations as $localeDestination) {
-                        (new PortablePublisherAssetPublisher($this->files, $smartRegistry))
-                            ->publishFrameworkAssetPlans($localeDestination, [new FrameworkAssetPlan(
-                                $finalFrameworkPlan->runtimePair,
-                                [],
-                                $unpublishedGeneratedAssets,
-                            )]);
-                    }
-                }
+                $shellClosures[(string) $page['output']] = $pageShellSegments;
+                $shellSegmentUrls[(string) $page['output']] = $finalFrameworkPlan->shellCssUrls();
+                $shellPageUrls[(string) $page['output']] = (string) $page['url'];
+                $shellRuntimePair = $finalFrameworkPlan->runtimePair;
                 $frameworkAssetPlanReceipts[(string) $page['output']] = $finalFrameworkPlan->receipt();
                 $inlineExampleIds->assertUnique($rendered, (string) $page['page_path']);
                 $this->files->put($outputPath, $rendered);
@@ -1153,6 +1154,47 @@ final readonly class PortableSiteBuilder
                 $diagnosticsByUrl[(string) $page['url']] = $record;
                 $result->put((string) $page['url'], $record);
             }
+            $shellStylesheets = (new PortableShellStylesheets($runtime))->plan(
+                $shellClosures,
+                $shellSegments,
+                $selectedPageUrl === null ? null : $existingShellStylesheets,
+                $existingFrameworkAssetPlanReceipts,
+            );
+            unset($shellSegments);
+            foreach ($localeDestinations as $localeDestination) {
+                if ($shellStylesheets['publish'] !== []) {
+                    (new PortablePublisherAssetPublisher($this->files, $smartRegistry))
+                        ->publishFrameworkAssetPlans($localeDestination, [new FrameworkAssetPlan(
+                            $shellRuntimePair,
+                            [],
+                            $shellStylesheets['publish'],
+                        )]);
+                }
+                foreach ($shellStylesheets['remove'] as $filename) {
+                    $stale = rtrim($localeDestination, '/\\') . '/_docara/' . $filename;
+                    if (preg_match('/^docara-shell\.[a-f0-9]{64}\.css$/D', $filename) !== 1
+                        || ($this->files->exists($stale) && ! $this->files->delete($stale))
+                    ) {
+                        throw new PortableConfigurationException(
+                            'DECLARATIVE_GENERATED_ASSET_PUBLICATION_FAILED',
+                            $filename,
+                        );
+                    }
+                }
+            }
+            foreach ($shellStylesheets['links'] as $output => $stylesheetUrls) {
+                $outputPath = rtrim($destination, '/\\') . '/' . $output;
+                $relinked = PortableShellStylesheets::relink(
+                    (string) $this->files->get($outputPath),
+                    $shellSegmentUrls[$output],
+                    $stylesheetUrls,
+                );
+                $this->files->put($outputPath, $relinked);
+                $pageUrl = $shellPageUrls[$output];
+                $diagnosticsByUrl[$pageUrl]['publisher']['html_sha256'] = hash('sha256', $relinked);
+                $result->put($pageUrl, $diagnosticsByUrl[$pageUrl]);
+            }
+            unset($shellClosures, $shellSegmentUrls, $shellPageUrls);
             $orderedDiagnostics = $this->orderedDiagnostics($contextPages, $diagnosticsByUrl);
             unset($pagesToRender, $pages, $contextPages, $initialFrameworkPlans);
             gc_collect_cycles();
@@ -1217,9 +1259,10 @@ final readonly class PortableSiteBuilder
                             'asset_projection' => $buildBasePlan->frameworkLock['asset_projection'],
                             'dynamic_asset_projection' => $buildBasePlan->frameworkLock['dynamic_asset_projection'] ?? null,
                             'shell' => [
-                                'schema' => 'docara.framework_asset_plans.v1',
+                                'schema' => 'docara.framework_asset_plans.v2',
                                 'mode' => 'production_exact',
                                 'plans' => $frameworkAssetPlanReceipts,
+                                'stylesheets' => $shellStylesheets['receipt'],
                             ],
                             'portable_smart_asset_projection' => (new FrameworkPortableAssetProjection($smartRegistry))
                                 ->forKeys($requiredSmartAssets),

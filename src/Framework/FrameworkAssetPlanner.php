@@ -1468,6 +1468,69 @@ final readonly class FrameworkAssetPlanner
         return $assets;
     }
 
+    /**
+     * The cascade layers the page's foundation stylesheet establishes before
+     * any shell stylesheet. Empty when the foundation is not the bundled
+     * runtime's core stylesheet, which makes every layered segment keep its
+     * order relative to the others.
+     *
+     * @return list<string>
+     */
+    public function shellCascadeLayers(): array
+    {
+        if ($this->repository->typographyProjection() !== null
+            || $this->repository->runtimeProjection() === null
+        ) {
+            return [];
+        }
+
+        return ShellStylesheetCascade::declaredLayers(
+            $this->repository->bundledRuntimeAsset('core/css/core.css'),
+        );
+    }
+
+    /**
+     * One published shell stylesheet made of first-frame segments: their
+     * exact bytes, concatenated in the given order.
+     *
+     * @param  list<array<string, mixed>>  $segments  generated shell assets with content
+     * @return array<string, mixed>
+     */
+    public function shellStylesheet(array $segments): array
+    {
+        if ($segments === []) {
+            throw new FrameworkComponentException('FRAMEWORK_SHELL_CSS_INVALID', 'empty');
+        }
+        $content = '';
+        $inputs = [];
+        foreach ($segments as $segment) {
+            $source = $segment['inputs'][0]['source'] ?? null;
+            if (($segment['kind'] ?? null) !== 'shell_css'
+                || ! is_string($segment['content'] ?? null)
+                || ! is_string($segment['sha256'] ?? null)
+                || ! hash_equals($segment['sha256'], hash('sha256', $segment['content']))
+                || ! is_string($source)
+                || count($segment['inputs']) !== 1
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_SHELL_CSS_INVALID', 'segment');
+            }
+            $content .= $segment['content'];
+            $inputs[] = ['source' => $source, 'sha256' => $segment['sha256']];
+        }
+        $sha256 = hash('sha256', $content);
+        $filename = 'docara-shell.' . $sha256 . '.css';
+
+        return [
+            'key' => 'docara.framework.shell.css',
+            'kind' => 'shell_css',
+            'filename' => $filename,
+            'url' => $this->publisherBase() . '/' . $filename,
+            'sha256' => $sha256,
+            'inputs' => $inputs,
+            'content' => $content,
+        ];
+    }
+
     private function rewriteCssUrls(string $css, string $sourcePath, string $root): string
     {
         $rewritten = preg_replace_callback(

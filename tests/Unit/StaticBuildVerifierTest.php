@@ -13,12 +13,14 @@ use Simai\Docara\Framework\FrameworkConsumerPolicy;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkPortableAssetProjection;
+use Simai\Docara\Framework\ShellStylesheetBundler;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\PortableSite\BuildReceipts;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortablePerformanceReceipt;
 use Simai\Docara\PortableSite\PortablePublisherAssetPublisher;
 use Simai\Docara\PortableSite\PortableRuntimeMetadata;
+use Simai\Docara\PortableSite\PortableShellStylesheets;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Smart\SmartRegistry;
 use Symfony\Component\Process\Process;
@@ -512,6 +514,10 @@ final class StaticBuildVerifierTest extends TestCase
         $originalPerformance = (string) file_get_contents($performancePath);
         $valid = $this->verify($build);
         self::assertSame(0, $valid->getExitCode(), $valid->getErrorOutput() . $valid->getOutput());
+        // The receipts the verifier accepted (the fixture normalizes them on
+        // the first run) are the ones each step below restores.
+        $originalPlans = (string) file_get_contents($plansPath);
+        $originalPerformance = (string) file_get_contents($performancePath);
 
         $performance = json_decode($originalPerformance, true, flags: JSON_THROW_ON_ERROR);
         $performance['pages'][0]['html_bytes']++;
@@ -566,8 +572,7 @@ final class StaticBuildVerifierTest extends TestCase
         unlink($build . '/_docara/framework-runtime/unexpected.js');
 
         $plans = json_decode($originalPlans, true, flags: JSON_THROW_ON_ERROR);
-        $shellRecord = $plans['build']['framework']['shell']['plans']['index.html']['generated_assets'][0];
-        $shellPath = $build . '/_docara/' . $shellRecord['filename'];
+        $shellPath = $build . '/_docara/' . $plans['build']['framework']['shell']['stylesheets']['pages']['index.html'][0];
         $shellBytes = (string) file_get_contents($shellPath);
         file_put_contents($shellPath, $shellBytes . "\n/* tampered */\n");
         $tamperedShell = $this->verify($build, false);
@@ -1162,9 +1167,10 @@ final class StaticBuildVerifierTest extends TestCase
             }
             ksort($receipts, SORT_STRING);
             $manifest['build']['framework']['shell'] = [
-                'schema' => 'docara.framework_asset_plans.v1',
+                'schema' => 'docara.framework_asset_plans.v2',
                 'mode' => 'production_exact',
                 'plans' => $receipts,
+                'stylesheets' => $this->singleSegmentStylesheets($receipts),
             ];
         }
         $this->filesystem->ensureDirectoryExists($build . '/.docara');
@@ -1178,9 +1184,50 @@ final class StaticBuildVerifierTest extends TestCase
             null,
         );
         if ($frameworkAssetPlans !== []) {
+            // The fixture's own shell replaces whatever a build published.
+            foreach (glob($build . '/_docara/docara-shell.*.css') ?: [] as $stylesheet) {
+                unlink($stylesheet);
+            }
             (new PortablePublisherAssetPublisher($this->filesystem))
                 ->publishFrameworkAssetPlans($build, $frameworkAssetPlans);
         }
+    }
+
+    /**
+     * A stylesheet receipt in which every segment is published alone, the
+     * way the fixtures link them (one stylesheet per segment).
+     *
+     * @param  array<string, array<string, mixed>>  $plans
+     * @return array<string, mixed>
+     */
+    private function singleSegmentStylesheets(array $plans): array
+    {
+        $bundles = [];
+        $pages = [];
+        foreach ($plans as $output => $plan) {
+            foreach ($plan['generated_assets'] as $segment) {
+                $bundles[$segment['filename']] = [
+                    'url' => $segment['url'],
+                    'sha256' => $segment['sha256'],
+                    'inputs' => [[
+                        'source' => $segment['inputs'][0]['source'],
+                        'sha256' => $segment['sha256'],
+                    ]],
+                ];
+                $pages[$output][] = $segment['filename'];
+            }
+        }
+        ksort($bundles, SORT_STRING);
+        ksort($pages, SORT_STRING);
+
+        return [
+            'schema' => PortableShellStylesheets::SCHEMA,
+            'target_requests' => ShellStylesheetBundler::TARGET_REQUESTS,
+            'byte_budget_factor' => ShellStylesheetBundler::BYTE_BUDGET_FACTOR,
+            'request_weight' => 0,
+            'bundles' => $bundles,
+            'pages' => $pages,
+        ];
     }
 
     private function shellStylesheetLinks(FrameworkAssetPlan $plan): string
@@ -1435,11 +1482,15 @@ final class StaticBuildVerifierTest extends TestCase
         if ($fixturePlans !== []) {
             ksort($fixtureReceipts, SORT_STRING);
             $manifest['build']['framework']['shell'] = [
-                'schema' => 'docara.framework_asset_plans.v1',
+                'schema' => 'docara.framework_asset_plans.v2',
                 'mode' => 'production_exact',
                 'plans' => $fixtureReceipts,
+                'stylesheets' => $this->singleSegmentStylesheets($fixtureReceipts),
             ];
             $this->writeJson($manifestPath, $manifest);
+            foreach (glob($build . '/_docara/docara-shell.*.css') ?: [] as $stylesheet) {
+                unlink($stylesheet);
+            }
             (new PortablePublisherAssetPublisher($this->filesystem))
                 ->publishFrameworkAssetPlans($build, $fixturePlans);
         }

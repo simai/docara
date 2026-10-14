@@ -44,7 +44,9 @@ php vendor/bin/docara verify-static /var/www/docs --receipts=build_production.do
 - redirect receipt, статические redirect pages и их targets;
 - effective component catalog и физические Markdown-owner страниц компонентов;
 - точная asset projection SIMAI Framework и общие файлы
-  `docara-shell.<sha256>.css`, подключённые страницей в порядке каскада;
+  `docara-shell.<sha256>.css`: каждый файл — точные байты его исходных CSS,
+  страница подключает файлы из квитанции в её порядке, их исходные CSS — это
+  ровно набор страницы, и порядок каскада между ними сохранён;
 - отсутствие лишней или пропавшей поверхности, охваченной manifest.
 
 Успешный exit code означает, что проверенный каталог самосогласован. Он не

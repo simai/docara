@@ -398,7 +398,8 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // 3.0.1 took the 9 build receipts out of the published tree (they are
         // in build_dist.docara/) and replaced the 36 per-page shell
         // stylesheets with 79 shared ones, one per source: 1869 files.
-        self::assertCount(1869, $firstFiles);
+        // 3.0.2 groups those sources into 43 shared stylesheets: 1833 files.
+        self::assertCount(1833, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_contains($path, 'vendor/simai-framework/typography/'),

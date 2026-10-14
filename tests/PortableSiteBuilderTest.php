@@ -11,11 +11,14 @@ use Simai\Docara\Document\SmartComponentNode;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Framework\FrameworkComponentException;
+use Simai\Docara\Framework\ShellStylesheetBundler;
+use Simai\Docara\Framework\ShellStylesheetCascade;
 use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortablePagePublisher;
+use Simai\Docara\PortableSite\PortableShellStylesheets;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -1316,7 +1319,7 @@ MD);
         $diagnostics = $this->jsonFile($diagnosticPath);
         self::assertSame('docara.resolved_page_plans.v1', $diagnostics['schema']);
         $shellReceipt = $diagnostics['build']['framework']['shell'];
-        self::assertSame('docara.framework_asset_plans.v1', $shellReceipt['schema']);
+        self::assertSame('docara.framework_asset_plans.v2', $shellReceipt['schema']);
         self::assertSame('production_exact', $shellReceipt['mode']);
         self::assertCount(39, $shellReceipt['plans']);
         $performance = $this->jsonFile($this->tmpPath('build_local.docara/performance.json'));
@@ -1334,14 +1337,25 @@ MD);
         $indexShellReceipt = $shellReceipt['plans']['index.html'];
         self::assertSame('production_exact', $indexShellReceipt['preload']['mode']);
         self::assertGreaterThan(1, count($indexShellReceipt['generated_assets']));
+        $indexSegments = [];
         foreach ($indexShellReceipt['generated_assets'] as $generatedShell) {
             self::assertSame('/_docara/' . $generatedShell['filename'], $generatedShell['url']);
             self::assertCount(1, $generatedShell['inputs']);
-            self::assertSame(
-                $generatedShell['sha256'],
-                hash_file('sha256', $this->tmpPath('build_local/_docara/' . $generatedShell['filename'])),
-            );
+            $indexSegments[] = $generatedShell['sha256'];
         }
+        // The segments are published inside the page's shared stylesheets.
+        $indexLinked = [];
+        foreach ($shellReceipt['stylesheets']['pages']['index.html'] as $filename) {
+            $stylesheet = $shellReceipt['stylesheets']['bundles'][$filename];
+            self::assertSame('/_docara/' . $filename, $stylesheet['url']);
+            self::assertSame(
+                $stylesheet['sha256'],
+                hash_file('sha256', $this->tmpPath('build_local/_docara/' . $filename)),
+            );
+            array_push($indexLinked, ...array_column($stylesheet['inputs'], 'sha256'));
+        }
+        self::assertEqualsCanonicalizing($indexSegments, $indexLinked);
+        self::assertLessThan(count($indexSegments), count($shellReceipt['stylesheets']['pages']['index.html']));
         self::assertStringNotContainsString(
             'utility.full.css',
             (string) file_get_contents($this->tmpPath('build_local/index.html')),
@@ -2614,7 +2628,7 @@ MD;
     }
 
     #[Test]
-    public function published_output_shares_shell_stylesheets_carries_navigation_once_and_keeps_receipts_outside(): void
+    public function published_output_groups_shell_stylesheets_carries_navigation_once_and_keeps_receipts_outside(): void
     {
         $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
         $output = $this->tmpPath('build_local');
@@ -2626,36 +2640,104 @@ MD;
             self::assertFileExists($output . '.docara/' . $receipt);
         }
 
-        // One content-addressed stylesheet per source, shared by every page
-        // whose first-frame closure holds that source; never one per page.
-        $plans = $this->jsonFile($output . '.docara/resolved-page-plans.json')['build']['framework']['shell']['plans'];
+        // Each page's first-frame segments are published in a few shared,
+        // content-addressed stylesheets; a page links no segment it does not
+        // need, and its segments keep the cascade of their own order.
+        $shell = $this->jsonFile($output . '.docara/resolved-page-plans.json')['build']['framework']['shell'];
+        self::assertSame('docara.framework_asset_plans.v2', $shell['schema']);
+        $plans = $shell['plans'];
+        $stylesheets = $shell['stylesheets'];
+        self::assertSame('docara.shell_stylesheets.v1', $stylesheets['schema']);
         self::assertGreaterThan(1, count($plans));
-        $filesBySource = [];
-        $pageFiles = [];
-        foreach ($plans as $page => $plan) {
-            $pageFiles[$page] = array_column($plan['generated_assets'], 'filename');
+        self::assertSame(array_keys($plans), array_keys($stylesheets['pages']));
+        $segments = [];
+        foreach ($plans as $plan) {
             foreach ($plan['generated_assets'] as $asset) {
                 self::assertCount(1, $asset['inputs']);
-                $filesBySource[$asset['inputs'][0]['source']][$asset['filename']] = true;
+                $segments[$asset['sha256']] = $asset['inputs'][0]['source'];
+            }
+        }
+        $cascade = new ShellStylesheetCascade(
+            ShellStylesheetCascade::declaredLayers((string) file_get_contents(
+                (string) (glob($output . '/_docara/vendor/simai-framework/runtime/*/distr/core/css/core.css') ?: [''])[0],
+            )),
+        );
+        self::assertContains('sf.utilities', ShellStylesheetCascade::declaredLayers((string) file_get_contents(
+            (string) (glob($output . '/_docara/vendor/simai-framework/runtime/*/distr/core/css/core.css') ?: [''])[0],
+        )));
+        $segmentBytes = [];
+        $published = glob($output . '/_docara/docara-shell.*.css') ?: [];
+        self::assertSame(
+            array_keys($stylesheets['bundles']),
+            array_map('basename', $published),
+            'exactly the planned stylesheets are published',
+        );
+        foreach ($stylesheets['bundles'] as $filename => $bundle) {
+            $content = (string) file_get_contents($output . '/_docara/' . $filename);
+            self::assertSame($bundle['sha256'], hash('sha256', $content));
+            // A stylesheet is its segments' bytes, one after the other.
+            $offset = 0;
+            foreach ($bundle['inputs'] as $index => $input) {
+                self::assertSame($segments[$input['sha256']], $input['source']);
+                $header = '/* docara-shell-source: ' . $input['source'] . ' */';
+                self::assertSame($offset, strpos($content, $header, $offset));
+                $next = $bundle['inputs'][$index + 1] ?? null;
+                $end = $next === null ? strlen($content) : strpos($content, '/* docara-shell-source: ' . $next['source'] . ' */', $offset + 1);
+                self::assertIsInt($end);
+                $segment = substr($content, $offset, $end - $offset);
+                self::assertSame($input['sha256'], hash('sha256', $segment));
+                $segmentBytes[$input['sha256']] = $segment;
+                $offset = $end;
+            }
+        }
+        $signatures = array_map(
+            static fn (string $segment): array => $cascade->signature($segment),
+            $segmentBytes,
+        );
+        $pageFiles = [];
+        foreach ($plans as $page => $plan) {
+            $closure = array_column($plan['generated_assets'], 'sha256');
+            $links = $stylesheets['pages'][$page];
+            // The stub site's closures hold 44-56 segments; its pages link
+            // 4-8 stylesheets.
+            self::assertLessThanOrEqual(8, count($links), $page);
+            self::assertLessThan(count($closure), count($links), $page);
+            $linked = array_merge(...array_map(
+                static fn (string $filename): array => array_column($stylesheets['bundles'][$filename]['inputs'], 'sha256'),
+                $links,
+            ));
+            self::assertEqualsCanonicalizing($closure, $linked, $page);
+            $position = array_flip($linked);
+            foreach ($closure as $i => $a) {
+                foreach (array_slice($closure, $i + 1) as $b) {
+                    if (ShellStylesheetCascade::conflicts($signatures[$a], $signatures[$b])) {
+                        self::assertLessThan($position[$b], $position[$a], "$page reorders {$segments[$a]} and {$segments[$b]}");
+                    }
+                }
             }
             preg_match_all(
                 '/<link\b[^>]*\bhref="([^"]*)"[^>]*\bdata-docara-declarative-shell-style\b[^>]*>/',
                 (string) file_get_contents($output . '/' . $page),
-                $links,
+                $pageLinks,
             );
-            self::assertSame(array_column($plan['generated_assets'], 'url'), $links[1], $page);
+            self::assertSame(
+                array_map(static fn (string $filename): string => $stylesheets['bundles'][$filename]['url'], $links),
+                $pageLinks[1],
+                $page,
+            );
+            $pageFiles[$page] = $links;
         }
-        foreach ($filesBySource as $source => $files) {
-            self::assertCount(1, $files, "Source [$source] must be published as exactly one stylesheet.");
-        }
-        $published = glob($output . '/_docara/docara-shell.*.css') ?: [];
-        self::assertCount(count($filesBySource), $published);
-        foreach ($published as $stylesheet) {
-            self::assertSame(1, substr_count((string) file_get_contents($stylesheet), '/* docara-shell-source: '));
-        }
+        self::assertLessThanOrEqual(
+            ShellStylesheetBundler::TARGET_REQUESTS,
+            array_sum(array_map('count', $pageFiles)) / count($pageFiles),
+        );
+        self::assertLessThanOrEqual(
+            ShellStylesheetBundler::BYTE_BUDGET_FACTOR * array_sum(array_map('strlen', $segmentBytes)),
+            array_sum(array_map('filesize', $published)),
+        );
         $distinctClosures = array_unique(array_map(
-            static fn (array $files): string => implode(',', $files),
-            $pageFiles,
+            static fn (array $plan): string => implode(',', array_column($plan['generated_assets'], 'sha256')),
+            $plans,
         ));
         self::assertGreaterThan(1, count($distinctClosures), 'the fixture must hold pages with different closures');
         $shared = array_intersect(...array_values($pageFiles));
@@ -2708,6 +2790,31 @@ MD;
         self::assertSame(0, $elsewhere->getExitCode(), $elsewhere->getErrorOutput() . $elsewhere->getOutput());
         rename($this->tmpPath('receipts-elsewhere'), $output . '.docara');
 
+        // A stylesheet that does not hold exactly its segments is rejected,
+        // and so is a page that links its stylesheets in another order.
+        $firstStylesheet = $output . '/_docara/' . array_key_first($stylesheets['bundles']);
+        $original = (string) file_get_contents($firstStylesheet);
+        file_put_contents($firstStylesheet, $original . "\n");
+        $tampered = $verify();
+        self::assertSame(1, $tampered->getExitCode(), $tampered->getOutput());
+        self::assertStringContainsString('@framework-shell-asset', $tampered->getOutput());
+        file_put_contents($firstStylesheet, $original);
+        $reordered = null;
+        foreach ($pageFiles as $page => $links) {
+            if (count($links) > 1) {
+                $reordered = $page;
+                break;
+            }
+        }
+        self::assertIsString($reordered);
+        $pageHtml = (string) file_get_contents($output . '/' . $reordered);
+        $urls = array_map(static fn (string $filename): string => $stylesheets['bundles'][$filename]['url'], $pageFiles[$reordered]);
+        file_put_contents($output . '/' . $reordered, PortableShellStylesheets::relink($pageHtml, $urls, array_reverse($urls)));
+        $relinked = $verify();
+        self::assertSame(1, $relinked->getExitCode(), $relinked->getOutput());
+        self::assertStringContainsString('@framework-shell-stylesheet', $relinked->getOutput());
+        file_put_contents($output . '/' . $reordered, $pageHtml);
+
         // A single-page rebuild reads and replaces the sibling receipts.
         $this->builder()->build($this->tmp, $output, (string) $guideRecord['url']);
         self::assertDirectoryDoesNotExist($output . '/.docara');
@@ -2715,6 +2822,10 @@ MD;
         self::assertDirectoryDoesNotExist($output . '.docara.rollback');
         $rebuilt = $verify();
         self::assertSame(0, $rebuilt->getExitCode(), $rebuilt->getErrorOutput() . $rebuilt->getOutput());
+        // An unchanged page keeps its stylesheets, and nothing else moves.
+        $rebuiltShell = $this->jsonFile($output . '.docara/resolved-page-plans.json')['build']['framework']['shell'];
+        self::assertSame($stylesheets, $rebuiltShell['stylesheets']);
+        self::assertSame(array_keys($stylesheets['bundles']), array_map('basename', glob($output . '/_docara/docara-shell.*.css') ?: []));
     }
 
     private function builder(): PortableSiteBuilder

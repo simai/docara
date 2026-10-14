@@ -88,6 +88,21 @@ final readonly class FrameworkComponentRuntime
         return $this->assetPlanner->planForHtml($html, $componentKeys, $additionalRuntimeTags);
     }
 
+    /** @return list<string> */
+    public function shellCascadeLayers(): array
+    {
+        return $this->assetPlanner->shellCascadeLayers();
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $segments
+     * @return array<string, mixed>
+     */
+    public function shellStylesheet(array $segments): array
+    {
+        return $this->assetPlanner->shellStylesheet($segments);
+    }
+
     /**
      * Records Framework calls that have already been resolved and rendered by
      * the shared SmartComponentGateway. This method never renders page HTML.

@@ -10,12 +10,130 @@ use Simai\Docara\Framework\FrameworkAssetPlanner;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkPortableAssetProjection;
+use Simai\Docara\Framework\ShellStylesheetBundler;
+use Simai\Docara\Framework\ShellStylesheetCascade;
 use Simai\Docara\I18n\LocaleTag;
 use Simai\Docara\Portable\JsonSchemaValidator;
 use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\PortableSite\PortablePerformanceReceipt;
 use Simai\Docara\PortableSite\PortableRedirectPublisher;
+use Simai\Docara\PortableSite\PortableShellStylesheets;
 use Simai\Docara\Smart\SmartRegistry;
+
+/**
+ * Check the shared first-frame stylesheets: each one is exactly its segments'
+ * bytes in order, and each page links stylesheets whose segments are its
+ * closure in an order with the same cascade.
+ *
+ * @param  array<string, list<string>>  $expectedSegments  page output => segment sha256s in closure order
+ * @param  array<string, string>  $segmentContents  segment sha256 => bytes
+ * @param  list<string>  $declaredLayers
+ * @return array<string, list<string>> page output => stylesheet URLs in link order
+ */
+function docaraVerifyShellStylesheets(
+    string $root,
+    mixed $receipt,
+    array $expectedSegments,
+    array $segmentContents,
+    array $declaredLayers,
+    string $urlPrefix,
+): array {
+    if (! is_array($receipt)
+        || ! docaraExactKeys($receipt, ['schema', 'target_requests', 'byte_budget_factor', 'request_weight', 'bundles', 'pages'])
+        || ($receipt['schema'] ?? null) !== PortableShellStylesheets::SCHEMA
+        || ! is_array($receipt['bundles'] ?? null)
+        || ! is_array($receipt['pages'] ?? null)
+        || ($receipt['bundles'] !== [] && array_is_list($receipt['bundles']))
+        || ($receipt['pages'] !== [] && array_is_list($receipt['pages']))
+    ) {
+        throw new RuntimeException('Generated Framework shell stylesheet receipt is invalid.');
+    }
+    $bundles = [];
+    foreach ($receipt['bundles'] as $filename => $bundle) {
+        if (! is_string($filename)
+            || preg_match('/\Adocara-shell\.([a-f0-9]{64})\.css\z/D', $filename, $match) !== 1
+            || ! is_array($bundle)
+            || ! docaraExactKeys($bundle, ['url', 'sha256', 'inputs'])
+            || ($bundle['sha256'] ?? null) !== $match[1]
+            || ($bundle['url'] ?? null) !== $urlPrefix . $filename
+            || ! is_array($bundle['inputs'] ?? null)
+            || ! array_is_list($bundle['inputs'])
+            || $bundle['inputs'] === []
+        ) {
+            throw new RuntimeException('Generated Framework shell stylesheet metadata is invalid.');
+        }
+        $content = '';
+        $segments = [];
+        foreach ($bundle['inputs'] as $input) {
+            if (! is_array($input)
+                || ! docaraExactKeys($input, ['source', 'sha256'])
+                || ! is_string($input['source'] ?? null)
+                || ! is_string($input['sha256'] ?? null)
+                || ! isset($segmentContents[$input['sha256']])
+                || ! str_starts_with($segmentContents[$input['sha256']], '/* docara-shell-source: ' . $input['source'] . ' */')
+            ) {
+                throw new RuntimeException('Generated Framework shell stylesheet input metadata is invalid.');
+            }
+            $content .= $segmentContents[$input['sha256']];
+            $segments[] = $input['sha256'];
+        }
+        $path = $root . '/_docara/' . $filename;
+        if (! hash_equals($match[1], hash('sha256', $content))
+            || ! docaraSafeRegularFile($path)
+            || ! hash_equals($match[1], (string) hash_file('sha256', $path))
+        ) {
+            throw new RuntimeException('Generated Framework shell stylesheet is missing, unsafe or does not hold exactly its segments.');
+        }
+        $bundles[$filename] = $segments;
+    }
+    $receiptOutputs = array_map('strval', array_keys($receipt['pages']));
+    $expectedOutputs = array_map('strval', array_keys($expectedSegments));
+    sort($receiptOutputs, SORT_STRING);
+    sort($expectedOutputs, SORT_STRING);
+    if ($receiptOutputs !== $expectedOutputs) {
+        throw new RuntimeException('Generated Framework shell stylesheet pages do not match the page asset plans.');
+    }
+    $cascade = new ShellStylesheetCascade($declaredLayers);
+    $signatures = [];
+    $bundler = new ShellStylesheetBundler(
+        static function (string $a, string $b) use (&$signatures, $cascade, $segmentContents): bool {
+            $signatures[$a] ??= $cascade->signature($segmentContents[$a]);
+            $signatures[$b] ??= $cascade->signature($segmentContents[$b]);
+
+            return ShellStylesheetCascade::conflicts($signatures[$a], $signatures[$b]);
+        },
+    );
+    $urls = [];
+    $referenced = [];
+    foreach ($expectedSegments as $output => $closure) {
+        $links = $receipt['pages'][$output] ?? null;
+        if (! is_array($links) || ! array_is_list($links) || $links === []) {
+            throw new RuntimeException('Generated Framework shell stylesheet page links are invalid.');
+        }
+        $linked = [];
+        foreach ($links as $filename) {
+            if (! is_string($filename) || ! isset($bundles[$filename])) {
+                throw new RuntimeException('Generated Framework shell stylesheet page links are invalid.');
+            }
+            array_push($linked, ...$bundles[$filename]);
+            $urls[$output][] = $urlPrefix . $filename;
+            $referenced[$filename] = true;
+        }
+        if (! $bundler->preservesCascade($closure, $linked)) {
+            throw new RuntimeException("Generated Framework shell stylesheets of [$output] do not keep the page's cascade.");
+        }
+    }
+    if (count($referenced) !== count($bundles)) {
+        throw new RuntimeException('Generated Framework shell stylesheet receipt lists unused stylesheets.');
+    }
+    foreach (glob($root . '/_docara/docara-shell.*.css') ?: [] as $published) {
+        if (! isset($bundles[basename($published)])) {
+            throw new RuntimeException('Generated Framework shell stylesheet [' . basename($published) . '] is not in the receipt.');
+        }
+    }
+
+    return $urls;
+}
 
 function docaraBootstrapTrustedSource(): void
 {
@@ -2353,8 +2471,8 @@ if ($manifestError !== null) {
         );
         $shellReceipt = $manifestBuild['framework']['shell'] ?? null;
         if (! is_array($shellReceipt)
-            || ! docaraExactKeys($shellReceipt, ['schema', 'mode', 'plans'])
-            || ($shellReceipt['schema'] ?? null) !== 'docara.framework_asset_plans.v1'
+            || ! docaraExactKeys($shellReceipt, ['schema', 'mode', 'plans', 'stylesheets'])
+            || ($shellReceipt['schema'] ?? null) !== 'docara.framework_asset_plans.v2'
             || ($shellReceipt['mode'] ?? null) !== 'production_exact'
             || ! is_array($shellReceipt['plans'] ?? null)
             || array_is_list($shellReceipt['plans'])
@@ -2362,7 +2480,8 @@ if ($manifestError !== null) {
             throw new RuntimeException('Generated Framework page asset-plan receipt is invalid.');
         }
         $expectedShellUrls = [];
-        $verifiedShellStylesheets = [];
+        $expectedShellSegments = [];
+        $shellSegmentContents = [];
         $expectedShellAssetOrders = [];
         $expectedPreloadModes = [];
         foreach ($manifestPageRecords as $pageRecord) {
@@ -2392,7 +2511,10 @@ if ($manifestError !== null) {
             ) {
                 throw new RuntimeException('Generated Framework page asset plan must contain at least one stylesheet.');
             }
-            $expectedShellUrls[$output] = [];
+            $expectedShellSegments[$output] = [];
+            foreach ($expectedPlan->generatedAssets as $expectedSegment) {
+                $shellSegmentContents[(string) $expectedSegment['sha256']] ??= (string) $expectedSegment['content'];
+            }
             foreach ($generatedShellAssets as $generatedShellAsset) {
                 if (! is_array($generatedShellAsset)
                     || ! docaraExactKeys($generatedShellAsset, ['key', 'kind', 'filename', 'url', 'sha256', 'inputs'])
@@ -2419,16 +2541,9 @@ if ($manifestError !== null) {
                         throw new RuntimeException('Generated Framework page stylesheet input metadata is invalid.');
                     }
                 }
-                $generatedShellPath = $root . '/_docara/' . $generatedShellAsset['filename'];
-                if (! isset($verifiedShellStylesheets[$generatedShellAsset['filename']])) {
-                    if (! docaraSafeRegularFile($generatedShellPath)
-                        || ! hash_equals($generatedShellAsset['sha256'], (string) hash_file('sha256', $generatedShellPath))
-                    ) {
-                        throw new RuntimeException('Generated Framework page stylesheet is missing, unsafe or hash-mismatched.');
-                    }
-                    $verifiedShellStylesheets[$generatedShellAsset['filename']] = true;
-                }
-                $expectedShellUrls[$output][] = $generatedShellAsset['url'];
+                // A segment is published inside the shared stylesheets the
+                // stylesheet receipt lists, not as a file of its own.
+                $expectedShellSegments[$output][] = $generatedShellAsset['sha256'];
             }
             $expectedShellAssetOrders[$output] = is_array($pageReceipt['preload']['asset_order'] ?? null)
                 ? $pageReceipt['preload']['asset_order']
@@ -2438,6 +2553,16 @@ if ($manifestError !== null) {
         if (count($shellReceipt['plans']) !== count($manifestPageRecords)) {
             throw new RuntimeException('Generated Framework page asset plans contain stale entries.');
         }
+        // The shared stylesheets are checked on their own below, so that a
+        // fault there does not hide one in the Framework projection.
+        $shellStylesheetCheck = [
+            $shellReceipt['stylesheets'],
+            $expectedShellSegments,
+            $shellSegmentContents,
+            $frameworkPlanner->shellCascadeLayers(),
+            ($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/',
+        ];
+        unset($shellSegmentContents);
         $verifyProjection = static function (string $projectionRoot, array $projectedFiles, string $label): void {
             $rootStat = @lstat($projectionRoot);
             if (is_link($projectionRoot)
@@ -2521,6 +2646,30 @@ if ($manifestError !== null) {
             'reference' => $reference,
             'target' => $exception->getMessage(),
         ];
+    }
+    if (isset($shellStylesheetCheck)) {
+        try {
+            $expectedShellUrls = docaraVerifyShellStylesheets($root, ...$shellStylesheetCheck);
+        } catch (Throwable $exception) {
+            $broken[] = [
+                'page' => '@build',
+                'reference' => '@framework-shell-asset',
+                'target' => $exception->getMessage(),
+            ];
+            // The pages are still checked against the links the receipt
+            // names, so a page fault is reported as well.
+            $expectedShellUrls = [];
+            foreach (array_keys($shellStylesheetCheck[1]) as $output) {
+                $links = $shellStylesheetCheck[0]['pages'][$output] ?? null;
+                if (is_array($links) && array_is_list($links)) {
+                    $expectedShellUrls[$output] = array_map(
+                        static fn (mixed $filename): string => $shellStylesheetCheck[4] . (is_string($filename) ? $filename : ''),
+                        $links,
+                    );
+                }
+            }
+        }
+        unset($shellStylesheetCheck);
     }
 }
 foreach ($htmlFiles as $htmlFile) {

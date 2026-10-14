@@ -6,6 +6,49 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.0.2] - 2026-10-14
+
+Fewer stylesheet requests. A page links a few shared first-frame stylesheets
+instead of one per Framework source. Pages look and behave the same.
+
+### Changed
+
+- **Grouped first-frame stylesheets.** 3.0.1 published each source
+  stylesheet of a page's first-frame closure as its own
+  `docara-shell.<sha256>.css`, so a page linked about fifty stylesheets. Once
+  every page is built, Docara now groups the sources of all pages into shared,
+  content-addressed stylesheets: the common core of the site is one file,
+  frequent combinations get their own files, and a page links only stylesheets
+  whose sources it needs, nothing more. On the SIMAI Framework documentation
+  (922 pages) a page links 3–18 stylesheets, 4.5 on average, instead of 48–64;
+  on Docara's own documentation 5–11 instead of 46–62. The published
+  stylesheets stay within twice the bytes of the distinct sources.
+- **The cascade is unchanged.** A stylesheet is the exact bytes of its sources
+  one after the other. Two sources change places only where their order cannot
+  decide any declaration: they declare no common property (shorthands,
+  logical/physical twins and vendor aliases count as one) in a common cascade
+  layer and share no name-keyed rule such as `@keyframes`, `@property` or
+  `@font-face`. The layer order comes from the Framework `core.css`, which
+  every page links first. A source the analysis does not understand stays in
+  place.
+- **Receipts.** The Framework shell receipt is now
+  `docara.framework_asset_plans.v2`: each page's plan still lists its sources
+  in cascade order, and the new `stylesheets` section
+  (`docara.shell_stylesheets.v1`) lists every published stylesheet with its
+  sources and each page's stylesheets in link order. `verify-static` checks
+  that each stylesheet is exactly its sources, that a page links exactly its
+  stylesheets in that order, that their sources are the page's closure with
+  every order-dependent pair kept, and that no other shell stylesheet is
+  published.
+- **`build --page`** keeps the other pages' stylesheets: it reuses the
+  published stylesheets and adds new ones only for a changed closure. A
+  complete build groups the whole site again.
+
+### Upgrade notes
+
+- Run a complete build once after upgrading: `build --page` needs the 3.0.2
+  receipt of a complete build.
+
 ## [3.0.1] - 2026-10-14
 
 A smaller built site. The published folder no longer carries build receipts,

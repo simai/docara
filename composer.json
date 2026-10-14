@@ -1,0 +1,94 @@
+{
+    "name": "simai/docara",
+    "description": "Build static documentation sites and landing pages from Markdown and JSON, styled with SIMAI Framework",
+    "keywords": [
+        "documentation",
+        "docs",
+        "static-site-generator",
+        "static-site",
+        "markdown",
+        "site-generator",
+        "simai",
+        "simai-framework"
+    ],
+    "license": "Apache-2.0",
+    "homepage": "https://github.com/simai/docara",
+    "support": {
+        "issues": "https://github.com/simai/docara/issues",
+        "source": "https://github.com/simai/docara",
+        "security": "https://github.com/simai/docara/security/policy"
+    },
+    "authors": [
+        {
+            "name": "SIMAI"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "ext-ctype": "*",
+        "ext-dom": "*",
+        "ext-intl": "*",
+        "ext-json": "*",
+        "ext-libxml": "*",
+        "ext-mbstring": "*",
+        "illuminate/filesystem": "^11.0 || ^12.0",
+        "illuminate/support": "^11.0 || ^12.0",
+        "illuminate/view": "^11.0 || ^12.0",
+        "league/commonmark": "^2.4",
+        "symfony/console": "^6.0 || ^7.0",
+        "symfony/process": "^6.0 || ^7.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.27.1",
+        "mockery/mockery": "^1.6",
+        "phpunit/phpunit": "^11.0.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Simai\\Docara\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "docara"
+    ],
+    "archive": {
+        "exclude": [
+            "/.editorconfig",
+            "/.env",
+            "/.env.local",
+            "/.git",
+            "/.gitattributes",
+            "/.github",
+            "/.gitignore",
+            "/.idea",
+            "/.markdownlint.json",
+            "/.phpunit.cache",
+            "/.vscode",
+            "/CONTRIBUTING.md",
+            "/composer.lock",
+            "/output",
+            "/phpunit.xml",
+            "/pint.json",
+            "/resources/framework/runtime-packages",
+            "/tests",
+            "/vendor",
+            ".DS_Store",
+            ".cache",
+            ".docara-preview",
+            ".docara-qa",
+            "build_*",
+            "node_modules"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

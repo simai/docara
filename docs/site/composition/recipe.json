@@ -1,0 +1,26 @@
+{
+  "schema": "simai.composition.recipe.v1",
+  "id": "docara.file-demo",
+  "profile": "ui-layout",
+  "inputs": {
+    "headerMode": { "kind": "setting", "schema": { "type": "string", "enum": ["compact", "expanded"] }, "expectedOrigin": { "owner": "docara/settings", "ref": "header.mode", "revision": "1" } },
+    "body": { "kind": "content", "schema": { "type": "array" }, "expectedOrigin": { "owner": "docara/content", "ref": "page.demo", "revision": "1" } }
+  },
+  "root": {
+    "id": "page",
+    "ref": { "kind": "template", "owner": "docara/files", "ref": "page", "policy": "pinned", "revision": "1" },
+    "slots": {
+      "header": [{
+        "id": "header-choice",
+        "select": {
+          "value": { "input": "headerMode" },
+          "cases": {
+            "compact": { "id": "compact", "ref": { "kind": "fragment", "owner": "docara/files", "ref": "header.compact", "policy": "pinned", "revision": "1" } },
+            "expanded": { "id": "expanded", "ref": { "kind": "fragment", "owner": "docara/files", "ref": "header.expanded", "policy": "pinned", "revision": "1" } }
+          }
+        }
+      }],
+      "main": [{ "id": "body", "node": { "type": "content.paragraph", "data": { "content": { "input": "body" } }, "bindings": [{ "input": "body", "target": "content" }] } }]
+    }
+  }
+}

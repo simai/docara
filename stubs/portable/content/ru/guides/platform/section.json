@@ -1,0 +1,7 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Платформа",
+  "navigation": {
+    "order": 20
+  }
+}

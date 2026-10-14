@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "docara.brand",
+  "view": "logo",
+  "template": "smart.docara.brand.logo"
+}

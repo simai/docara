@@ -1,0 +1,6 @@
+ERROR: inspect [smart:project.notice]
+- ERROR SMART_PROVIDER_JSON_INVALID: SMART_PROVIDER_JSON_INVALID:project.notice/manifest.json:Syntax error
+  Source: smart/project.notice/manifest.json:2:5#/
+  Owner: docara.application
+  Provenance: {"engine_revision":"fixture-revision","input_sha256":"dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd","operation":"inspect","subject":"smart:project.notice"}
+  Suggestion: Correct the referenced argument or project contract and retry the same operation.

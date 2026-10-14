@@ -1,0 +1,21 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Product Smart-компоненты Docara",
+  "description": "Бренд, навигация и содержание страницы из canonical product Smart-компонентов.",
+  "layout": {
+    "regions": {
+      "header": {
+        "enabled": true,
+        "sections": [{"id": "site-brand", "section": "docara.header"}]
+      },
+      "sidebar": {
+        "enabled": true,
+        "sections": [{"id": "docs-navigation", "section": "docara.navigation"}]
+      },
+      "outline": {
+        "enabled": true,
+        "sections": [{"id": "page-toc", "section": "docara.outline"}]
+      }
+    }
+  }
+}

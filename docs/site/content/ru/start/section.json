@@ -1,0 +1,7 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Быстрый старт",
+  "layout": {
+    "container": {"max": 7}
+  }
+}

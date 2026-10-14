@@ -1,0 +1,34 @@
+{
+    "data": [],
+    "diagnostics": [
+        {
+            "code": "SMART_PROVIDER_JSON_INVALID",
+            "message": "SMART_PROVIDER_JSON_INVALID:project.notice/manifest.json:Syntax error",
+            "owner": "docara.application",
+            "provenance": {
+                "engine_revision": "fixture-revision",
+                "input_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+                "operation": "inspect",
+                "subject": "smart:project.notice"
+            },
+            "severity": "error",
+            "source": {
+                "column": 5,
+                "line": 2,
+                "path": "smart/project.notice/manifest.json",
+                "pointer": "/"
+            },
+            "suggestion": "Correct the referenced argument or project contract and retry the same operation."
+        }
+    ],
+    "exit_code": 2,
+    "operation": "inspect",
+    "provenance": {
+        "engine_revision": "fixture-revision",
+        "input_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+        "project_root": "."
+    },
+    "schema": "docara.operation_result.v1",
+    "status": "error",
+    "subject": "smart:project.notice"
+}

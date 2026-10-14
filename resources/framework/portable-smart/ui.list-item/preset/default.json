@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.preset",
+  "smart": "ui.list-item",
+  "code": "default",
+  "title": "Default list item",
+  "view": "default",
+  "props": {
+    "type": "text",
+    "size": "1"
+  }
+}

@@ -1,0 +1,37 @@
+name: Quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      SIMAI_UI_ROOT: ${{ github.workspace }}/.dependencies/ui
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Check out the exact Simai Framework distribution
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          repository: simai/ui
+          ref: 82fc0ba882baae72ae3d83d7370decbcebe366d7
+          path: .dependencies/ui
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer
+      - run: composer validate --strict --no-check-publish
+      - run: composer install --no-interaction --prefer-dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - run: vendor/bin/pint --test
+      - run: vendor/bin/phpunit
+      # The documentation site builds with the Framework Docara bundles.
+      - run: env -u SIMAI_UI_ROOT php ../../docara build production
+        working-directory: docs/site
+      - run: php ../../docara verify-static build_production
+        working-directory: docs/site

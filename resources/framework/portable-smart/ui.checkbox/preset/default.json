@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.preset",
+  "smart": "ui.checkbox",
+  "code": "default",
+  "title": "Default checkbox",
+  "view": "default",
+  "props": {
+    "size": "1"
+  }
+}

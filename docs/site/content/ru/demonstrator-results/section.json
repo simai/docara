@@ -1,0 +1,10 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Результаты демонстратора",
+  "navigation": {
+    "hidden": true
+  },
+  "search": {
+    "indexed": false
+  }
+}

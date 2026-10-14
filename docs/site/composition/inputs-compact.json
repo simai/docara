@@ -1,0 +1,18 @@
+{
+  "schema": "simai.composition.inputs.v1",
+  "scope": "docara-site",
+  "values": {
+    "headerMode": {
+      "kind": "setting",
+      "value": "compact",
+      "valueDigest": "sha256:886faf3fbc9f853264de745e42584714338cc21178976b45aa9c67f19d42c2c1",
+      "origin": { "scope": "docara-site", "owner": "docara/settings", "ref": "header.mode", "revision": "1" }
+    },
+    "body": {
+      "kind": "content",
+      "value": [{ "type": "text", "value": "Файловый контент Docara." }],
+      "valueDigest": "sha256:0e653cfe6060054772d820706b92e0e453f15f3004e7c20515a063c153e54305",
+      "origin": { "scope": "docara-site", "owner": "docara/content", "ref": "page.demo", "revision": "1" }
+    }
+  }
+}

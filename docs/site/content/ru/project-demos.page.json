@@ -1,0 +1,23 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Полезные компоненты проекта",
+  "description": "Project-owned install builder, configurator and footer contribution without engine changes.",
+  "layout": {
+    "regions": {
+      "footer": {
+        "enabled": true,
+        "sections": [{
+          "id": "project-footer",
+          "section": "project.footer",
+          "blocks": [{
+            "id": "project-footer-notice",
+            "block": "project.footer-smart",
+            "slot": "content",
+            "smart": "project.footer-links",
+            "props": {"title": "Полезные ссылки"}
+          }]
+        }]
+      }
+    }
+  }
+}

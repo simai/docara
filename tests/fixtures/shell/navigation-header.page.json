@@ -1,0 +1,27 @@
+{
+  "schema": "docara.page.v1",
+  "header_navigation": {
+    "enabled": true,
+    "items": [{"id": "home", "label": "Home", "href": "/ru/"}]
+  },
+  "layout": {
+    "regions": {
+      "sidebar": {"enabled": false},
+      "header": {
+        "sections": [{
+          "id": "navigation-header",
+          "section": "docara.shell",
+          "blocks": [{
+            "id": "navigation",
+            "block": "shell.smart",
+            "slot": "content",
+            "smart": "docara.navigation",
+            "view": "header",
+            "bind": "docara.navigation",
+            "props": {"maximum_depth": 4}
+          }]
+        }]
+      }
+    }
+  }
+}

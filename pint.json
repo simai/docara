@@ -1,0 +1,12 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "resources/framework/portable-smart"
+    ],
+    "rules": {
+        "concat_space": {
+            "spacing": "one"
+        },
+        "single_line_empty_body": true
+    }
+}

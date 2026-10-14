@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "docara.toc",
+  "view": "default",
+  "template": "smart.docara.toc.default"
+}

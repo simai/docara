@@ -1,0 +1,32 @@
+{
+    "id": "docara.steps",
+    "name": "steps",
+    "renderer": "docara.steps.v1",
+    "family": "docara_typed",
+    "category": "content_structure",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::steps",
+        "jobs": [
+            "explain_sequence"
+        ],
+    "parameters": [
+      {"name": "view", "type": "enum", "required": false, "default": "timeline", "values": ["timeline", "list"]},
+      {"name": "current", "type": "integer", "required": false, "default": 1}
+    ]
+    },
+    "capabilities": ["content.embeddable"],
+    "states": [],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/components/steps.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.steps.json"
+    }
+}

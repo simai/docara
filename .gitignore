@@ -1,0 +1,23 @@
+# Dependencies and tool caches
+/vendor/
+/composer.lock
+/.phpunit.cache/
+node_modules/
+.cache/
+
+# Builds, release packages and Docara working state
+build_*/
+/output/
+.docara-preview/
+.docara-qa/
+
+# Product component packages are laid here by a site at build time, from the
+# package's receipt, and are never shipped with Docara.
+/resources/framework/runtime-packages/
+
+# Local environment and editors
+.env
+.env.local
+.idea/
+.vscode/
+.DS_Store

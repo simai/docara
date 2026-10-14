@@ -1,0 +1,43 @@
+{
+    "data": {
+        "binding_fingerprint": "80f51fcc93ea35fb3b62041ad9c86bf2d60af53ba4583c1afe4aea9f0e6ea85a",
+        "checks": [
+            {
+                "code": "PROJECT_CONFIG_VALID",
+                "status": "pass"
+            },
+            {
+                "code": "SMART_REGISTRY_VALID",
+                "count": 17,
+                "status": "pass"
+            },
+            {
+                "code": "DESIGN_REGISTRY_VALID",
+                "count": 18,
+                "status": "pass"
+            },
+            {
+                "code": "BINDING_REGISTRY_VALID",
+                "count": 3,
+                "status": "pass"
+            },
+            {
+                "code": "SCHEMA_CATALOG_VALID",
+                "count": 49,
+                "status": "pass"
+            }
+        ],
+        "design_fingerprint": "426cd3fea5dbf6edd4ced6e495942553577efd629e9ca4bc329bb87ca4896490"
+    },
+    "diagnostics": [],
+    "exit_code": 0,
+    "operation": "doctor",
+    "provenance": {
+        "engine_revision": "fixture-revision",
+        "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "project_root": "."
+    },
+    "schema": "docara.operation_result.v1",
+    "status": "success",
+    "subject": "project"
+}

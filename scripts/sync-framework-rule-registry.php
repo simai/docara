@@ -1,0 +1,630 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Project the exact Loader rule registry from the pinned SIMAI Framework commit.
+ *
+ * This is a deterministic maintainer command. It does not invent rules and it
+ * refuses a dirty/mismatched source revision. The projected file is consumed by
+ * the production Asset Planner; the dynamic Loader keeps using the same bytes.
+ */
+$root = dirname(__DIR__);
+$uiRoot = $argv[1] ?? null;
+$useWorkingRegistry = ($argv[2] ?? null) === '--registry-working-tree';
+// A checkout or a linked worktree, whose .git is a file.
+if (! is_string($uiRoot)
+    || $uiRoot === ''
+    || (! is_dir($uiRoot . '/.git') && ! is_file($uiRoot . '/.git'))
+) {
+    fwrite(STDERR, "Usage: php scripts/sync-framework-rule-registry.php /absolute/path/to/ui\n");
+    exit(2);
+}
+
+$lockPath = $root . '/docs/site/simai-framework.lock.json';
+$lock = json_decode((string) file_get_contents($lockPath), true, 512, JSON_THROW_ON_ERROR);
+$projection = $lock['runtime_projection'] ?? null;
+$revision = $projection['source']['revision'] ?? null;
+if (! is_array($projection) || ! is_string($revision) || preg_match('/^[a-f0-9]{40}$/D', $revision) !== 1) {
+    throw new RuntimeException('FRAMEWORK_RUNTIME_PROJECTION_INVALID');
+}
+
+$git = static function (array $arguments) use ($uiRoot): string {
+    $command = ['git', '-C', realpath($uiRoot), ...$arguments];
+    $pipes = [];
+    $process = proc_open($command, [1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+    if (! is_resource($process)) {
+        throw new RuntimeException('FRAMEWORK_SOURCE_UNAVAILABLE');
+    }
+    $output = stream_get_contents($pipes[1]);
+    $error = stream_get_contents($pipes[2]);
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    $status = proc_close($process);
+    if ($status !== 0 || ! is_string($output)) {
+        throw new RuntimeException('FRAMEWORK_SOURCE_UNAVAILABLE: ' . trim((string) $error));
+    }
+
+    return $output;
+};
+
+$normalizeRelativePath = static function (string $path): ?string {
+    $segments = [];
+    foreach (explode('/', str_replace('\\', '/', $path)) as $segment) {
+        if ($segment === '' || $segment === '.') {
+            continue;
+        }
+        if ($segment === '..') {
+            if ($segments === []) {
+                return null;
+            }
+            array_pop($segments);
+
+            continue;
+        }
+        $segments[] = $segment;
+    }
+
+    return $segments === [] ? null : implode('/', $segments);
+};
+$bytes = $useWorkingRegistry
+    ? file_get_contents(realpath($uiRoot) . '/distr/rule/rule.json')
+    : $git(['show', $revision . ':distr/rule/rule.json']);
+if (! is_string($bytes)) {
+    throw new RuntimeException('FRAMEWORK_RULE_REGISTRY_SOURCE_UNAVAILABLE');
+}
+if ($bytes === '') {
+    throw new RuntimeException('FRAMEWORK_RULE_REGISTRY_SOURCE_UNAVAILABLE');
+}
+$rules = json_decode($bytes, true, 512, JSON_THROW_ON_ERROR);
+if (! is_array($rules) || ! array_is_list($rules) || $rules === []) {
+    throw new RuntimeException('FRAMEWORK_RULE_REGISTRY_INVALID');
+}
+
+$runtimeBase = $root . '/resources/portable/vendor/simai-framework/runtime/' . $revision;
+$distribution = $runtimeBase . '/distr';
+$target = $distribution . '/rule/rule.json';
+if (! is_dir(dirname($target)) && ! mkdir(dirname($target), 0755, true) && ! is_dir(dirname($target))) {
+    throw new RuntimeException('FRAMEWORK_RULE_REGISTRY_DIRECTORY_FAILED');
+}
+$temporary = $target . '.tmp-' . bin2hex(random_bytes(6));
+file_put_contents($temporary, $bytes, LOCK_EX);
+chmod($temporary, 0644);
+rename($temporary, $target);
+
+// Production planning needs every utility stylesheet that the canonical rule
+// registry may select. JavaScript and precompressed/minified variants are not
+// copied here; the exact page plan publishes only selected unminified CSS.
+$tree = $git(['ls-tree', '-r', '--name-only', $revision, 'distr/utility']);
+foreach (preg_split('/\R/', trim($tree)) ?: [] as $sourcePath) {
+    if (preg_match('#^distr/utility/[A-Za-z0-9/-]+/css/[A-Za-z0-9-]+\.css$#D', $sourcePath) !== 1
+        || str_contains($sourcePath, '.min.')
+    ) {
+        continue;
+    }
+    $relativePath = substr($sourcePath, strlen('distr/'));
+    $assetTarget = $distribution . '/' . $relativePath;
+    if (! is_dir(dirname($assetTarget))
+        && ! mkdir(dirname($assetTarget), 0755, true)
+        && ! is_dir(dirname($assetTarget))
+    ) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_DIRECTORY_FAILED: ' . $relativePath);
+    }
+    $assetBytes = $git(['show', $revision . ':' . $sourcePath]);
+    if ($assetBytes === '' || preg_match('//u', $assetBytes) !== 1) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_INVALID: ' . $relativePath);
+    }
+    file_put_contents($assetTarget, $assetBytes, LOCK_EX);
+    chmod($assetTarget, 0644);
+}
+
+// Project conventional component entrypoints as well. Very large editor
+// runtimes remain dynamic; the planner reports that fallback instead of
+// turning every documentation build into a monolithic JavaScript bundle.
+$componentTree = $git(['ls-tree', '-r', '-l', $revision, 'distr/component']);
+$projectedComponentCss = [];
+foreach (preg_split('/\R/', trim($componentTree)) ?: [] as $line) {
+    if (preg_match('/^[0-9]+\s+blob\s+[a-f0-9]{40}\s+([0-9-]+)\t(.+)$/D', $line, $match) !== 1) {
+        continue;
+    }
+    $size = (int) $match[1];
+    $sourcePath = $match[2];
+    if ($size === 0
+        || $size > 4 * 1024 * 1024
+        || preg_match('#^distr/component/([A-Za-z0-9-]+)/(css|js)/\1\.(css|js)$#D', $sourcePath) !== 1
+        || str_contains($sourcePath, '.min.')
+    ) {
+        continue;
+    }
+    $relativePath = substr($sourcePath, strlen('distr/'));
+    $assetTarget = $distribution . '/' . $relativePath;
+    if (! is_dir(dirname($assetTarget))
+        && ! mkdir(dirname($assetTarget), 0755, true)
+        && ! is_dir(dirname($assetTarget))
+    ) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_DIRECTORY_FAILED: ' . $relativePath);
+    }
+    $assetBytes = $git(['show', $revision . ':' . $sourcePath]);
+    if ($assetBytes === '' || preg_match('//u', $assetBytes) !== 1) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_INVALID: ' . $relativePath);
+    }
+    file_put_contents($assetTarget, $assetBytes, LOCK_EX);
+    chmod($assetTarget, 0644);
+    if (str_ends_with($relativePath, '.css')) {
+        $projectedComponentCss[] = $relativePath;
+    }
+}
+
+// Conventional component styles may reference sibling fonts or images. Those
+// dependencies are part of the same immutable component contract and must be
+// projected with the stylesheet; otherwise a locally valid CSS entrypoint can
+// produce a broken standalone Docara build.
+$componentDependencies = [];
+foreach ($projectedComponentCss as $cssRelativePath) {
+    $cssPath = $distribution . '/' . $cssRelativePath;
+    $cssBytes = file_get_contents($cssPath);
+    if (! is_string($cssBytes) || $cssBytes === '') {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_INVALID: ' . $cssRelativePath);
+    }
+    preg_match_all('#url\(\s*(["\']?)([^"\')]+)\1\s*\)#i', $cssBytes, $urlMatches);
+    foreach ($urlMatches[2] ?? [] as $url) {
+        $url = trim((string) $url);
+        if ($url === ''
+            || str_starts_with($url, '#')
+            || str_starts_with($url, '/')
+            || preg_match('#^(?:data:|https?:|//)#i', $url) === 1
+        ) {
+            continue;
+        }
+        $urlPath = preg_split('/[?#]/', $url, 2)[0] ?? '';
+        $dependency = $normalizeRelativePath(dirname($cssRelativePath) . '/' . $urlPath);
+        if (! is_string($dependency)
+            || preg_match('#^component/([A-Za-z0-9-]+)/#D', $cssRelativePath, $componentMatch) !== 1
+            || ! str_starts_with($dependency, 'component/' . $componentMatch[1] . '/')
+        ) {
+            throw new RuntimeException('FRAMEWORK_RUNTIME_DEPENDENCY_PATH_INVALID: ' . $cssRelativePath . ' -> ' . $url);
+        }
+        $componentDependencies[$dependency] = true;
+    }
+}
+ksort($componentDependencies, SORT_STRING);
+foreach (array_keys($componentDependencies) as $relativePath) {
+    $assetBytes = $git(['show', $revision . ':distr/' . $relativePath]);
+    if ($assetBytes === '') {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_DEPENDENCY_MISSING: ' . $relativePath);
+    }
+    $assetTarget = $distribution . '/' . $relativePath;
+    if (! is_dir(dirname($assetTarget))
+        && ! mkdir(dirname($assetTarget), 0755, true)
+        && ! is_dir(dirname($assetTarget))
+    ) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_DIRECTORY_FAILED: ' . $relativePath);
+    }
+    file_put_contents($assetTarget, $assetBytes, LOCK_EX);
+    chmod($assetTarget, 0644);
+}
+
+// Core and icon fallback assets are always projected from one exact source.
+// The maintainer-only working-tree mode remains available for pre-release
+// verification; normal release projection reads immutable Git objects.
+$readRuntime = static function (string $runtimeFile) use (
+    $git,
+    $revision,
+    $uiRoot,
+    $useWorkingRegistry,
+): string {
+    $bytes = $useWorkingRegistry
+        ? file_get_contents(realpath($uiRoot) . '/distr/' . $runtimeFile)
+        : $git(['show', $revision . ':distr/' . $runtimeFile]);
+    if (! is_string($bytes) || $bytes === '') {
+        throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_SOURCE_UNAVAILABLE: ' . $runtimeFile);
+    }
+
+    return $bytes;
+};
+
+// Docara highlights this finite public language set. Resolve the emitted
+// webpack chunk names from the exact entrypoint instead of pinning build-time
+// chunk ids in this repository.
+$highlightEntrypoint = $readRuntime('component/highlight/js/highlight.js');
+$highlightChunkFiles = [];
+if (str_contains($highlightEntrypoint, '__webpack_require__.e')) {
+    foreach (['javascript', 'markdown', 'bash', 'xml', 'css', 'plaintext', 'json', 'php'] as $language) {
+        if (preg_match(
+            '#(?:^|\R)\s*[\'\"]?' . preg_quote($language, '#')
+                . '[\'\"]?\s*:\s*\(\)\s*=>\s*__webpack_require__\.e\([^0-9]*([0-9]+)\)#',
+            $highlightEntrypoint,
+            $chunkMatch,
+        ) !== 1) {
+            throw new RuntimeException('FRAMEWORK_HIGHLIGHT_LANGUAGE_CHUNK_MISSING: ' . $language);
+        }
+        $highlightChunkFiles[] = 'component/highlight/js/' . $chunkMatch[1] . '.js';
+    }
+}
+$highlightChunkFiles = array_values(array_unique($highlightChunkFiles));
+sort($highlightChunkFiles, SORT_STRING);
+
+$coreFiles = [];
+if ($useWorkingRegistry) {
+    foreach (new DirectoryIterator(realpath($uiRoot) . '/distr/core/js') as $file) {
+        if ($file->isFile() && ! $file->isLink()) {
+            $coreFiles[] = 'core/js/' . $file->getFilename();
+        }
+    }
+} else {
+    $coreTree = $git(['ls-tree', '-r', '--name-only', $revision, 'distr/core/js']);
+    foreach (preg_split('/\R/', trim($coreTree)) ?: [] as $sourcePath) {
+        $coreFiles[] = substr($sourcePath, strlen('distr/'));
+    }
+}
+$coreFiles = array_values(array_filter(
+    $coreFiles,
+    static fn (string $runtimeFile): bool => preg_match(
+        '#^core/js/(?:[0-9]+|core(?:-[a-z0-9-]+)?|smart-base)\.js$#D',
+        $runtimeFile,
+    ) === 1,
+));
+sort($coreFiles, SORT_STRING);
+if ($coreFiles === []) {
+    throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_SOURCE_UNAVAILABLE');
+}
+
+// The distribution's third-party notices: the licences of the code and fonts
+// it bundles (Lit, Floating UI, Material Symbols, flag-icons) and of the
+// Framework itself. Nothing loads them, so the entrypoint and url() walks above
+// never reach them; they are named here so every projected runtime carries
+// them. An explicit list, not a glob over core/contracts, and never the .gz
+// variants. The .min.js.LICENSE.txt files stay out with the .min.js they
+// annotate, which this projection does not ship.
+$noticeFiles = [
+    'core/contracts/third-party-notices.v1.json',
+];
+
+// Asset directories a component fetches by a URL it builds from sfPath at run
+// time: sf-flag requests component/flag/flags/index.json and the rect/ and
+// circle/ SVGs itself, and no stylesheet names them, so the walks above never
+// reach them. An explicit list of directories, never the .gz variants.
+$componentAssetDirectories = [
+    'component/flag/flags',
+];
+$componentAssetFiles = [];
+foreach ($componentAssetDirectories as $assetDirectory) {
+    if ($useWorkingRegistry) {
+        $assetRoot = realpath($uiRoot) . '/distr/' . $assetDirectory;
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($assetRoot, FilesystemIterator::SKIP_DOTS)) as $file) {
+            if ($file->isFile() && ! $file->isLink()) {
+                $componentAssetFiles[] = $assetDirectory . '/' . str_replace('\\', '/', substr($file->getPathname(), strlen($assetRoot) + 1));
+            }
+        }
+    } else {
+        $assetTree = $git(['ls-tree', '-r', '--name-only', $revision, 'distr/' . $assetDirectory]);
+        foreach (preg_split('/\R/', trim($assetTree)) ?: [] as $sourcePath) {
+            $componentAssetFiles[] = substr($sourcePath, strlen('distr/'));
+        }
+    }
+}
+$componentAssetFiles = array_values(array_filter(
+    $componentAssetFiles,
+    static fn (string $runtimeFile): bool => ! str_ends_with($runtimeFile, '.gz'),
+));
+sort($componentAssetFiles, SORT_STRING);
+if ($componentAssetFiles === []) {
+    throw new RuntimeException('FRAMEWORK_COMPONENT_ASSET_SOURCE_UNAVAILABLE');
+}
+
+$runtimeCoreJsRoot = $distribution . '/core/js';
+$coreNames = array_fill_keys(array_map('basename', $coreFiles), true);
+foreach (glob($runtimeCoreJsRoot . '/*.js') ?: [] as $existingCoreFile) {
+    $fileName = basename($existingCoreFile);
+    if (! isset($coreNames[$fileName])) {
+        if (is_link($existingCoreFile) || ! is_file($existingCoreFile) || ! unlink($existingCoreFile)) {
+            throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_PRUNE_FAILED: ' . $fileName);
+        }
+    }
+}
+
+foreach (array_merge($coreFiles, [
+    // The foundation a page loads first. It used to come from the separately
+    // pinned typography packet shipped inside this repository, which left a site
+    // serving whatever pair that packet was cut from while every other asset
+    // moved with the locked pair.
+    'core/css/core.css',
+    'core/css/utility.full.css',
+    'component/icons/css/icons.css',
+    'component/icons/fonts/MaterialSymbols-Outlined.woff2',
+    'component/icons/fonts/MaterialIconsRound-Regular.otf',
+    'component/icons/fonts/MaterialIconsSharp-Regular.otf',
+    'component/icon-buttons/css/icon-buttons.css',
+    'component/menu/css/menu.css',
+    'component/menu/js/menu.js',
+    'component/highlight/js/highlight.js',
+], $highlightChunkFiles, $noticeFiles, $componentAssetFiles) as $runtimeFile) {
+    $runtimeTarget = $distribution . '/' . $runtimeFile;
+    $runtimeBytes = $readRuntime($runtimeFile);
+    if (! is_dir(dirname($runtimeTarget))
+        && ! mkdir(dirname($runtimeTarget), 0755, true)
+        && ! is_dir(dirname($runtimeTarget))
+    ) {
+        throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_DIRECTORY_FAILED: ' . $runtimeFile);
+    }
+    file_put_contents($runtimeTarget, $runtimeBytes, LOCK_EX);
+    chmod($runtimeTarget, 0644);
+}
+
+// Files the foundation stylesheets name through url(): the Inter faces in
+// core.css point at hashed woff2 files beside core/css/. They are read from the
+// stylesheet the page loads, not listed here, so a rebuilt font set moves with
+// the stylesheet. A reference resolves relative to the stylesheet and must stay
+// inside distr/core/; data: URIs and absolute URLs are not files. Unreferenced
+// copies (core/fonts/inter/) are not projected.
+$foundationStylesheets = ['core/css/core.css', 'core/css/utility.full.css'];
+$foundationDependencies = [];
+foreach ($foundationStylesheets as $foundationStylesheet) {
+    $cssBytes = file_get_contents($distribution . '/' . $foundationStylesheet);
+    if (! is_string($cssBytes) || $cssBytes === '') {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_INVALID: ' . $foundationStylesheet);
+    }
+    preg_match_all('#url\(\s*(["\']?)([^"\')]+)\1\s*\)#i', $cssBytes, $urlMatches);
+    foreach ($urlMatches[2] ?? [] as $url) {
+        $url = trim((string) $url);
+        if ($url === ''
+            || str_starts_with($url, '#')
+            || str_starts_with($url, '/')
+            || preg_match('#^(?:data:|https?:|//)#i', $url) === 1
+        ) {
+            continue;
+        }
+        $urlPath = preg_split('/[?#]/', $url, 2)[0] ?? '';
+        $dependency = $normalizeRelativePath(dirname($foundationStylesheet) . '/' . $urlPath);
+        if (! is_string($dependency) || ! str_starts_with($dependency, 'core/')) {
+            throw new RuntimeException('FRAMEWORK_RUNTIME_DEPENDENCY_PATH_INVALID: ' . $foundationStylesheet . ' -> ' . $url);
+        }
+        $foundationDependencies[$dependency] = true;
+    }
+}
+ksort($foundationDependencies, SORT_STRING);
+foreach (array_keys($foundationDependencies) as $relativePath) {
+    $assetTarget = $distribution . '/' . $relativePath;
+    if (! is_dir(dirname($assetTarget))
+        && ! mkdir(dirname($assetTarget), 0755, true)
+        && ! is_dir(dirname($assetTarget))
+    ) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_DIRECTORY_FAILED: ' . $relativePath);
+    }
+    file_put_contents($assetTarget, $readRuntime($relativePath), LOCK_EX);
+    chmod($assetTarget, 0644);
+}
+
+$manifestPath = $runtimeBase . '/runtime-manifest.json';
+$manifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
+$manifest['source'] = $projection['source'];
+$manifest['files'] = array_filter(
+    $manifest['files'],
+    static fn (string $relativePath): bool => ! str_starts_with($relativePath, 'utility/')
+        && ! str_starts_with($relativePath, 'core/js/')
+        && ! str_starts_with($relativePath, 'core/css/')
+        && ! str_starts_with($relativePath, 'core/contracts/')
+        && preg_match('#^core/[^/]+$#D', $relativePath) !== 1
+        && array_filter(
+            $componentAssetDirectories,
+            static fn (string $assetDirectory): bool => str_starts_with($relativePath, $assetDirectory . '/'),
+        ) === [],
+    ARRAY_FILTER_USE_KEY,
+);
+$coreJsRoot = $distribution . '/core/js';
+foreach (glob($coreJsRoot . '/*.js') ?: [] as $coreFile) {
+    if (is_link($coreFile) || ! is_file($coreFile) || str_contains(basename($coreFile), '.min.')) {
+        continue;
+    }
+    $manifest['files']['core/js/' . basename($coreFile)] = ['sha256' => hash_file('sha256', $coreFile)];
+}
+foreach ([...$foundationStylesheets, ...array_keys($foundationDependencies)] as $foundationFile) {
+    $manifest['files'][$foundationFile] = [
+        'sha256' => hash_file('sha256', $distribution . '/' . $foundationFile),
+    ];
+}
+foreach ([
+    'component/icons/fonts/MaterialSymbols-Outlined.woff2',
+    'component/icons/fonts/MaterialIconsRound-Regular.otf',
+    'component/icons/fonts/MaterialIconsSharp-Regular.otf',
+] as $fontFile) {
+    $manifest['files'][$fontFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $fontFile)];
+}
+foreach ($noticeFiles as $noticeFile) {
+    $manifest['files'][$noticeFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $noticeFile)];
+}
+foreach ($componentAssetFiles as $componentAssetFile) {
+    $manifest['files'][$componentAssetFile] = [
+        'sha256' => hash_file('sha256', $distribution . '/' . $componentAssetFile),
+    ];
+}
+foreach ($highlightChunkFiles as $highlightChunkFile) {
+    $manifest['files'][$highlightChunkFile] = [
+        'sha256' => hash_file('sha256', $distribution . '/' . $highlightChunkFile),
+    ];
+}
+$manifest['files']['rule/rule.json'] = ['sha256' => hash('sha256', $bytes)];
+foreach (new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($distribution . '/utility', FilesystemIterator::SKIP_DOTS),
+) as $file) {
+    if (! $file->isFile() || $file->isLink() || str_contains($file->getFilename(), '.min.')) {
+        continue;
+    }
+    $relativePath = str_replace('\\', '/', substr($file->getPathname(), strlen($distribution) + 1));
+    if (! str_ends_with($relativePath, '.css')) {
+        continue;
+    }
+    $manifest['files'][$relativePath] = ['sha256' => hash_file('sha256', $file->getPathname())];
+}
+foreach (new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($distribution . '/component', FilesystemIterator::SKIP_DOTS),
+) as $file) {
+    if (! $file->isFile() || $file->isLink() || str_contains($file->getFilename(), '.min.')) {
+        continue;
+    }
+    $relativePath = str_replace('\\', '/', substr($file->getPathname(), strlen($distribution) + 1));
+    if (preg_match('#^component/([A-Za-z0-9-]+)/(css|js)/\1\.(css|js)$#D', $relativePath) !== 1) {
+        continue;
+    }
+    $manifest['files'][$relativePath] = ['sha256' => hash_file('sha256', $file->getPathname())];
+}
+foreach (array_keys($componentDependencies) as $relativePath) {
+    $manifest['files'][$relativePath] = [
+        'sha256' => hash_file('sha256', $distribution . '/' . $relativePath),
+    ];
+}
+ksort($manifest['files'], SORT_STRING);
+
+// Missing-upstream guard. The packet directory is seeded from the packet it
+// replaces and every manifest entry is re-hashed from disk, so a file the
+// pinned revision no longer has (a component the Framework removed, a renamed
+// font) would otherwise survive into the new packet with a freshly computed
+// digest. Every entry must exist at the pinned revision with the same bytes,
+// and no file may sit in the distribution without a manifest entry. The sync
+// fails and names the paths instead of pruning, so a maintainer sees what the
+// seed carried and removes it deliberately.
+$upstreamBlobs = [];
+if (! $useWorkingRegistry) {
+    foreach (preg_split('/\R/', trim($git(['ls-tree', '-r', $revision, 'distr']))) ?: [] as $line) {
+        if (preg_match('/^[0-9]+\s+blob\s+([a-f0-9]{40})\t(distr\/.+)$/D', $line, $blobMatch) === 1) {
+            $upstreamBlobs[substr($blobMatch[2], strlen('distr/'))] = $blobMatch[1];
+        }
+    }
+    if ($upstreamBlobs === []) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_UPSTREAM_TREE_UNAVAILABLE: ' . $revision);
+    }
+}
+$missingUpstream = [];
+$divergedFromUpstream = [];
+foreach (array_keys($manifest['files']) as $relativePath) {
+    $path = $distribution . '/' . $relativePath;
+    $bytes = is_file($path) && ! is_link($path) ? file_get_contents($path) : false;
+    if ($useWorkingRegistry) {
+        $upstreamPath = realpath($uiRoot) . '/distr/' . $relativePath;
+        if (! is_file($upstreamPath) || is_link($upstreamPath)) {
+            $missingUpstream[] = $relativePath;
+        } elseif (! is_string($bytes) || $bytes !== file_get_contents($upstreamPath)) {
+            $divergedFromUpstream[] = $relativePath;
+        }
+
+        continue;
+    }
+    if (! isset($upstreamBlobs[$relativePath])) {
+        $missingUpstream[] = $relativePath;
+    } elseif (! is_string($bytes)
+        || sha1('blob ' . strlen($bytes) . "\0" . $bytes) !== $upstreamBlobs[$relativePath]
+    ) {
+        $divergedFromUpstream[] = $relativePath;
+    }
+}
+$unmanifested = [];
+foreach (new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($distribution, FilesystemIterator::SKIP_DOTS),
+) as $file) {
+    $relativePath = str_replace('\\', '/', substr($file->getPathname(), strlen($distribution) + 1));
+    if (! isset($manifest['files'][$relativePath])) {
+        $unmanifested[] = $relativePath;
+    }
+}
+sort($unmanifested, SORT_STRING);
+$describePaths = static function (array $paths): string {
+    $shown = array_slice($paths, 0, 20);
+
+    return count($paths) . ' file(s): ' . implode(', ', $shown)
+        . (count($paths) > count($shown) ? ', ...' : '');
+};
+if ($missingUpstream !== []) {
+    throw new RuntimeException(
+        'FRAMEWORK_RUNTIME_UPSTREAM_MISSING: not present at ' . $revision . ': '
+            . $describePaths($missingUpstream),
+    );
+}
+if ($divergedFromUpstream !== []) {
+    throw new RuntimeException(
+        'FRAMEWORK_RUNTIME_UPSTREAM_MISMATCH: bytes differ from ' . $revision . ': '
+            . $describePaths($divergedFromUpstream),
+    );
+}
+if ($unmanifested !== []) {
+    throw new RuntimeException(
+        'FRAMEWORK_RUNTIME_UNMANIFESTED_FILE: on disk but not in the manifest: '
+            . $describePaths($unmanifested),
+    );
+}
+
+$ledger = '';
+foreach (array_keys($manifest['files']) as $relativePath) {
+    $path = $distribution . '/' . $relativePath;
+    if (! is_file($path) || is_link($path) || fileinode($path) === false || (int) fileperms($path) === 0) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_UNSAFE: ' . $relativePath);
+    }
+    $asset = file_get_contents($path);
+    if (! is_string($asset) || $asset === '') {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_MISSING: ' . $relativePath);
+    }
+    $sha256 = hash('sha256', $asset);
+    $manifest['files'][$relativePath] = ['sha256' => $sha256];
+    $ledger .= $sha256 . '  ' . $relativePath . "\n";
+}
+$packetSha256 = hash('sha256', $ledger);
+$manifest['packet_sha256'] = $packetSha256;
+$manifestBytes = json_encode($manifest, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
+file_put_contents($manifestPath, $manifestBytes, LOCK_EX);
+
+$manifestSha256 = hash('sha256', $manifestBytes);
+foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $projectLockPath) {
+    $projectLock = json_decode((string) file_get_contents($projectLockPath), true, 512, JSON_THROW_ON_ERROR);
+    if (($projectLock['runtime_projection']['source']['revision'] ?? null) !== $revision) {
+        throw new RuntimeException('FRAMEWORK_PROJECT_LOCK_REVISION_MISMATCH: ' . $projectLockPath);
+    }
+    $projectLock['runtime_projection']['packet_sha256'] = $packetSha256;
+    $projectLock['runtime_projection']['files'] = count($manifest['files']);
+    $projectLock['runtime_projection']['manifest']['sha256'] = $manifestSha256;
+    $lockBytes = json_encode($projectLock, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
+    file_put_contents($projectLockPath, $lockBytes, LOCK_EX);
+}
+
+$runtimeLockPath = $root . '/resources/framework/runtime-lock.json';
+$runtimeLock = json_decode((string) file_get_contents($runtimeLockPath), true, 512, JSON_THROW_ON_ERROR);
+$assetPlannerCompatibility = $runtimeLock['asset_planner'] ?? null;
+$runtimeLock = $lock['runtime'];
+if (is_array($assetPlannerCompatibility)) {
+    $runtimeLock = [
+        'schema' => $runtimeLock['schema'],
+        'asset_planner' => $assetPlannerCompatibility,
+        ...array_diff_key($runtimeLock, ['schema' => true]),
+    ];
+}
+$runtimeLockBytes = json_encode(
+    $runtimeLock,
+    JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES,
+) . "\n";
+file_put_contents($runtimeLockPath, $runtimeLockBytes, LOCK_EX);
+
+$viewUtilitiesPath = $root . '/resources/framework/view-utilities.json';
+$viewUtilities = json_decode((string) file_get_contents($viewUtilitiesPath), true, 512, JSON_THROW_ON_ERROR);
+$compatibilityId = $lock['runtime']['pair_id'] ?? null;
+$contractRegistrySha256 = $lock['runtime']['framework_registry']['file_sha256'] ?? null;
+if (! is_string($compatibilityId)
+    || ! is_string($contractRegistrySha256)
+    || preg_match('/^[a-f0-9]{64}$/D', $contractRegistrySha256) !== 1
+) {
+    throw new RuntimeException('FRAMEWORK_VIEW_UTILITY_PROVENANCE_INVALID');
+}
+$viewUtilities['compatibility_id'] = $compatibilityId;
+$viewUtilities['registry_sha256'] = $contractRegistrySha256;
+file_put_contents(
+    $viewUtilitiesPath,
+    json_encode($viewUtilities, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+    LOCK_EX,
+);
+
+fwrite(STDOUT, json_encode([
+    'schema' => 'docara.framework_rule_projection.v1',
+    'revision' => $revision,
+    'rule_registry_sha256' => hash('sha256', $bytes),
+    'rule_registry_source' => $useWorkingRegistry ? 'working_tree' : 'revision',
+    'files' => count($manifest['files']),
+    'packet_sha256' => $packetSha256,
+], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");

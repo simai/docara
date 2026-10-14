@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Быстрый старт",
+  "description": "Создайте и соберите первый переносимый сайт Docara только с PHP и Composer.",
+  "navigation": {
+    "order": 10
+  }
+}

@@ -1,0 +1,87 @@
+name: Publish verified release
+
+run-name: Publish verified Docara release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing stable tag to publish (for example v3.0.0)
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: docara-release-${{ github.event.inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: "8.3"
+          coverage: none
+      - name: Resolve and verify requested tag
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          tag="$RELEASE_TAG"
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Unsupported stable tag: $tag" >&2
+            exit 1
+          fi
+          git rev-parse --verify "refs/tags/$tag" >/dev/null
+          git checkout --detach "$tag"
+          test "$(git rev-list -n 1 "$tag")" = "$(git rev-parse HEAD)"
+          echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
+      - name: Build and verify release package
+        run: |
+          version="${RELEASE_TAG#v}"
+          revision="$(git rev-parse HEAD)"
+          php scripts/build-release-package.php \
+            --revision="$revision" \
+            --version="$version" \
+            --tag="$RELEASE_TAG" \
+            --output=release-out
+          php scripts/verify-release-package.php \
+            "release-out/docara-$version.release-manifest.json"
+      - name: Publish immutable GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${RELEASE_TAG#v}"
+          awk -v heading="## [$version]" '
+            index($0, heading) == 1 { capture = 1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' CHANGELOG.md > release-notes.md
+          test -s release-notes.md
+          assets=(
+            "release-out/docara-$version.zip"
+            "release-out/docara-$version.release-manifest.json"
+            "release-out/docara-$version.sha256"
+          )
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "Docara $version" \
+              --notes-file release-notes.md \
+              --latest
+            gh release upload "$RELEASE_TAG" "${assets[@]}" \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber
+          else
+            gh release create "$RELEASE_TAG" "${assets[@]}" \
+              --repo "$GITHUB_REPOSITORY" \
+              --verify-tag \
+              --title "Docara $version" \
+              --notes-file release-notes.md \
+              --latest
+          fi

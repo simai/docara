@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.preset",
+  "smart": "ui.input",
+  "code": "default",
+  "title": "Default input",
+  "view": "default",
+  "props": {
+    "size": "1",
+    "type": "bordered"
+  }
+}

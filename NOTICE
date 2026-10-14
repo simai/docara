@@ -1,0 +1,22 @@
+Docara
+Copyright 2025-2026 Rim Zabarov and contributors
+
+Licensed under the Apache License, Version 2.0 (LICENSE).
+
+"Docara", "SIMAI" and "SIMAI Framework" are names of the SIMAI project. The
+licence grants no right to use them, except as needed to describe the origin
+of the work.
+
+Docara 2.x releases were published separately and keep the licence each was
+published under.
+
+Bundled third-party material keeps its own licence:
+
+- SIMAI Framework runtime (resources/framework, resources/portable/vendor/
+  simai-framework) -- Apache License 2.0, https://github.com/simai/ui
+- KaTeX (resources/portable/vendor/katex) -- MIT License,
+  resources/portable/vendor/licenses/katex-LICENSE
+- Mermaid (resources/portable/vendor/mermaid) -- MIT License,
+  resources/portable/vendor/licenses/mermaid-LICENSE
+- Material Symbols fonts (resources/portable/vendor/google/material-symbols)
+  -- Apache License 2.0, the LICENSE file beside the fonts

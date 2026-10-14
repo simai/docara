@@ -1,0 +1,6 @@
+ERROR: doctor [project]
+- ERROR SDK_PROJECT_CONFIG_INVALID: [SDK_PROJECT_CONFIG_INVALID] docara.json must be valid JSON.
+  Source: docara.json:2:31#/
+  Owner: docara.application
+  Provenance: {"engine_revision":"fixture-revision","input_sha256":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","operation":"doctor","subject":"project"}
+  Suggestion: Correct the referenced argument or project contract and retry the same operation.

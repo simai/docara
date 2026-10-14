@@ -1,0 +1,12 @@
+{
+  "MD013": false,
+  "MD033": false,
+  "default": true,
+  "ignores": [
+    "node_modules",
+    "vendor",
+    "build_*",
+    "dist",
+    "public"
+  ]
+}

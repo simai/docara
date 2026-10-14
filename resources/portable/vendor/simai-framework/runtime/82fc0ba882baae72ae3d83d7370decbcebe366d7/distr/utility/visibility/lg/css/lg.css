@@ -1,0 +1,10 @@
+@layer sf.utilities {
+  @media (min-width: 60rem) {
+    .lg\:visible {
+      visibility: visible;
+    }
+    .lg\:invisible {
+      visibility: hidden;
+    }
+  }
+}

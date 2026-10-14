@@ -1,0 +1,3322 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use League\CommonMark\Environment\Environment;
+use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
+use Simai\Docara\File\Filesystem;
+use Simai\Docara\Framework\FrameworkAssetPlanner;
+use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\Framework\FrameworkManifestRepository;
+use Simai\Docara\Framework\FrameworkPortableAssetProjection;
+use Simai\Docara\I18n\LocaleTag;
+use Simai\Docara\Portable\JsonSchemaValidator;
+use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\PortableSite\PortablePerformanceReceipt;
+use Simai\Docara\PortableSite\PortableRedirectPublisher;
+use Simai\Docara\Smart\SmartRegistry;
+
+function docaraBootstrapTrustedSource(): void
+{
+    static $bootstrapped = false;
+    if ($bootstrapped) {
+        return;
+    }
+
+    $packageRoot = dirname(__DIR__);
+    $candidates = [
+        getenv('DOCARA_COMPOSER_AUTOLOAD') ?: null,
+        $packageRoot . '/vendor/autoload.php',
+        getcwd() . '/vendor/autoload.php',
+        dirname(__DIR__, 3) . '/autoload.php',
+    ];
+    foreach ($candidates as $candidate) {
+        if (is_string($candidate) && is_file($candidate)) {
+            require_once $candidate;
+            break;
+        }
+    }
+    spl_autoload_register(
+        static function (string $class) use ($packageRoot): void {
+            $prefix = 'Simai\\Docara\\';
+            if (! str_starts_with($class, $prefix)) {
+                return;
+            }
+            $path = $packageRoot . '/src/' . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+            if (is_file($path)) {
+                require_once $path;
+            }
+        },
+        true,
+        true,
+    );
+    if (! class_exists(Environment::class)
+        || ! class_exists(JsonSchemaValidator::class)
+        || ! class_exists(EffectiveComponentCatalogBuilder::class)
+    ) {
+        throw new RuntimeException(
+            'Trusted Docara source verification requires the project Composer autoloader.',
+        );
+    }
+    $bootstrapped = true;
+}
+
+/** @param list<string> $expected */
+function docaraExactKeys(array $value, array $expected): bool
+{
+    $keys = array_keys($value);
+    sort($keys, SORT_STRING);
+    sort($expected, SORT_STRING);
+
+    return $keys === $expected;
+}
+
+function docaraCanonicalValue(mixed $value): mixed
+{
+    if (! is_array($value)) {
+        return $value;
+    }
+    if (array_is_list($value)) {
+        return array_map(docaraCanonicalValue(...), $value);
+    }
+    ksort($value, SORT_STRING);
+    foreach ($value as $key => $item) {
+        $value[$key] = docaraCanonicalValue($item);
+    }
+
+    return $value;
+}
+
+function docaraCanonicalJson(mixed $value): string
+{
+    return json_encode(
+        docaraCanonicalValue($value),
+        JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION,
+    );
+}
+
+/**
+ * @param  list<string>  $pageOutputs
+ * @param  list<array<string, mixed>>  $pageRecords
+ * @return list<string>
+ */
+function docaraRedirectOutputs(
+    string $root,
+    string $deploymentBase,
+    array $pageOutputs,
+    array $pageRecords,
+    string $locale,
+    string $documentationVersion,
+    ?string $expectedSource,
+): array {
+    $receiptPath = $root . '/.docara/redirects.json';
+    if (! file_exists($receiptPath) && ! is_link($receiptPath)) {
+        if ($expectedSource !== null) {
+            throw new RuntimeException('Configured redirects require a safe redirect receipt.');
+        }
+
+        return [];
+    }
+    if ($expectedSource === null) {
+        throw new RuntimeException('A redirect receipt exists while redirects are not configured.');
+    }
+    if (! docaraSafeRegularFile($receiptPath)) {
+        throw new RuntimeException('Redirect receipt is missing or unsafe.');
+    }
+
+    docaraBootstrapTrustedSource();
+    $receipt = json_decode(
+        (string) file_get_contents($receiptPath),
+        true,
+        512,
+        JSON_THROW_ON_ERROR,
+    );
+    (new SchemaRepository)->assertValid($receipt, 'redirect-receipt.schema.json');
+    if (! is_array($receipt)
+        || ($receipt['base_url'] ?? null) !== $deploymentBase
+        || ($receipt['locale'] ?? null) !== $locale
+        || ($receipt['documentation_version'] ?? null) !== $documentationVersion
+        || ($receipt['source'] ?? null) !== $expectedSource
+    ) {
+        throw new RuntimeException('Redirect receipt build identity does not match the resolved page plans.');
+    }
+
+    $records = $receipt['redirects'] ?? null;
+    if (! is_array($records) || ! array_is_list($records)) {
+        throw new RuntimeException('Redirect receipt does not contain a redirect list.');
+    }
+    if (! hash_equals(
+        hash('sha256', docaraCanonicalJson($records)),
+        (string) ($receipt['content_sha256'] ?? ''),
+    )) {
+        throw new RuntimeException('Redirect receipt content_sha256 does not match canonical records.');
+    }
+
+    $targets = [];
+    foreach ($pageRecords as $page) {
+        $output = $page['output'] ?? null;
+        $url = $page['url'] ?? null;
+        if (is_string($output) && is_string($url)) {
+            $targets[$output] = $url;
+        }
+    }
+    $reservedOutputs = array_fill_keys($pageOutputs, true);
+    $sourceRoutes = [];
+    foreach ($records as $record) {
+        if (is_array($record) && is_string($record['from'] ?? null)) {
+            $sourceRoutes[$record['from']] = true;
+        }
+    }
+
+    $outputs = [];
+    $sourceDescriptorRecords = [];
+    $previousFrom = null;
+    foreach ($records as $index => $record) {
+        if (! is_array($record)
+            || ! docaraExactKeys($record, ['from', 'to', 'url', 'target_url', 'output'])
+        ) {
+            throw new RuntimeException("Redirect receipt record [$index] has an invalid shape.");
+        }
+        foreach (['from', 'url', 'target_url', 'output'] as $field) {
+            if (! is_string($record[$field] ?? null) || $record[$field] === '') {
+                throw new RuntimeException("Redirect receipt record [$index] has an invalid [$field].");
+            }
+        }
+        if (! is_string($record['to'] ?? null)) {
+            throw new RuntimeException("Redirect receipt record [$index] has an invalid [to].");
+        }
+        $from = $record['from'];
+        $to = $record['to'];
+        $sourceDescriptorRecords[] = [
+            'from' => $from,
+            'to' => $to,
+        ];
+        $slugPattern = '/\A[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?(?:\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?)*\z/D';
+        $targetSlugPattern = '/\A(?:[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?(?:\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?)*)?\z/D';
+        if (preg_match($slugPattern, $from) !== 1
+            || preg_match($targetSlugPattern, $to) !== 1
+            || ! docaraSearchUrlIsSafe($record['url'], $deploymentBase)
+            || ! docaraSearchUrlIsSafe($record['target_url'], $deploymentBase)
+        ) {
+            throw new RuntimeException("Redirect receipt record [$index] contains an unsafe route.");
+        }
+        if ($previousFrom !== null && strcmp($previousFrom, $from) >= 0) {
+            throw new RuntimeException('Redirect receipt records are not strictly sorted or contain duplicates.');
+        }
+        $previousFrom = $from;
+        if ($from === $to || isset($sourceRoutes[$to])) {
+            throw new RuntimeException("Redirect [$from] forms a chain or loop.");
+        }
+
+        $output = $from . '/index.html';
+        $targetOutput = $to === '' ? 'index.html' : $to . '/index.html';
+        $expectedUrl = $deploymentBase . $from . '/';
+        $expectedTargetRoute = $to === '' ? $deploymentBase : $deploymentBase . $to . '/';
+        $expectedTargetUrl = $targets[$targetOutput] ?? null;
+        if ($record['output'] !== $output
+            || $record['url'] !== $expectedUrl
+            || ! is_string($expectedTargetUrl)
+            || $expectedTargetUrl !== $expectedTargetRoute
+            || $record['target_url'] !== $expectedTargetUrl
+        ) {
+            throw new RuntimeException("Redirect [$from] does not match exact generated routes.");
+        }
+        if (isset($reservedOutputs[$output]) || isset($outputs[$output])) {
+            throw new RuntimeException("Redirect output [$output] collides with another generated HTML output.");
+        }
+        if (! docaraSafeRegularFile($root . '/' . $output)) {
+            throw new RuntimeException("Redirect output [$output] is missing or unsafe.");
+        }
+        $actualBytes = file_get_contents($root . '/' . $output);
+        $expectedBytes = PortableRedirectPublisher::renderPage(
+            $record,
+            $locale,
+            $documentationVersion,
+            is_array($receipt['copy'] ?? null) ? $receipt['copy'] : [],
+            is_string($receipt['direction'] ?? null) ? $receipt['direction'] : 'ltr',
+        );
+        if (! is_string($actualBytes) || ! hash_equals($expectedBytes, $actualBytes)) {
+            throw new RuntimeException("Redirect output [$output] does not match its deterministic receipt.");
+        }
+        $outputs[$output] = true;
+    }
+    $canonicalSource = [
+        'schema' => 'docara.redirects.v1',
+        'version' => 1,
+        'redirects' => $sourceDescriptorRecords,
+    ];
+    if (! hash_equals(
+        hash('sha256', docaraCanonicalJson($canonicalSource)),
+        (string) ($receipt['source_sha256'] ?? ''),
+    )) {
+        throw new RuntimeException('Redirect receipt source_sha256 does not match canonical source descriptors.');
+    }
+
+    $outputs = array_keys($outputs);
+    sort($outputs, SORT_STRING);
+
+    return $outputs;
+}
+
+/**
+ * @param  list<string>  $reservedOutputs
+ * @param  list<array<string, mixed>>  $pageRecords
+ * @return list<string>
+ */
+function docaraLocaleRouteOutputs(
+    string $root,
+    array $reservedOutputs,
+    array $pageRecords,
+): array {
+    $receiptPath = $root . '/.docara/locale-routes.json';
+    if (! file_exists($receiptPath) && ! is_link($receiptPath)) {
+        foreach ($pageRecords as $page) {
+            $routing = $page['resolved_page_plan']['configuration']['locale_routing'] ?? null;
+            if (is_array($routing) && ($routing['strategy'] ?? null) === 'prefixed') {
+                throw new RuntimeException('Symmetric locale routing requires a locale route receipt.');
+            }
+        }
+
+        return [];
+    }
+    if (! docaraSafeRegularFile($receiptPath)) {
+        throw new RuntimeException('Locale route receipt is missing or unsafe.');
+    }
+    docaraBootstrapTrustedSource();
+    $receipt = json_decode((string) file_get_contents($receiptPath), true, 512, JSON_THROW_ON_ERROR);
+    (new SchemaRepository)->assertValid($receipt, 'locale-route-receipt.schema.json');
+    $records = $receipt['redirects'] ?? null;
+    if (! is_array($records)
+        || ! array_is_list($records)
+        || ! hash_equals(
+            hash('sha256', docaraCanonicalJson($records)),
+            (string) ($receipt['content_sha256'] ?? ''),
+        )
+    ) {
+        throw new RuntimeException('Locale route receipt content is invalid.');
+    }
+    $targets = [];
+    foreach ($pageRecords as $page) {
+        if (is_string($page['url'] ?? null)) {
+            $targets[$page['url']] = true;
+        }
+    }
+    $reserved = array_fill_keys($reservedOutputs, true);
+    $outputs = [];
+    foreach ($records as $index => $record) {
+        if (! is_array($record)
+            || ! docaraExactKeys($record, ['kind', 'from', 'to', 'url', 'target_url', 'output'])
+            || ! in_array($record['kind'] ?? null, ['root', 'legacy_unprefixed'], true)
+            || ! is_string($record['from'] ?? null)
+            || ! is_string($record['to'] ?? null)
+            || ! is_string($record['url'] ?? null)
+            || ! is_string($record['target_url'] ?? null)
+            || ! is_string($record['output'] ?? null)
+            || ! docaraCatalogSafePath($record['output'])
+            || ! isset($targets[$record['target_url']])
+        ) {
+            throw new RuntimeException("Locale route receipt record [$index] is invalid.");
+        }
+        $output = $record['output'];
+        if (isset($reserved[$output]) || isset($outputs[$output])) {
+            throw new RuntimeException("Locale route output [$output] collides with another generated page.");
+        }
+        if (! docaraSafeRegularFile($root . '/' . $output)) {
+            throw new RuntimeException("Locale route output [$output] is missing or unsafe.");
+        }
+        $html = (string) file_get_contents($root . '/' . $output);
+        if (! str_contains($html, '<link rel="canonical" href="' . $record['target_url'] . '">')
+            || ! str_contains($html, 'url=' . $record['target_url'])
+        ) {
+            throw new RuntimeException("Locale route output [$output] does not match its exact target.");
+        }
+        $outputs[$output] = true;
+    }
+
+    $result = array_keys($outputs);
+    sort($result, SORT_STRING);
+
+    return $result;
+}
+
+function docaraSearchUrlIsSafe(string $url, string $deploymentBase): bool
+{
+    return preg_match('#\A/(?:(?!\.{1,2}/)[A-Za-z0-9._~-]+/)*\z#D', $url) === 1
+        && str_starts_with($url, $deploymentBase);
+}
+
+function docaraSafeRegularFile(string $path): bool
+{
+    $stat = @lstat($path);
+
+    return ! is_link($path)
+        && is_array($stat)
+        && (($stat['mode'] ?? 0) & 0170000) === 0100000
+        && ($stat['nlink'] ?? 1) === 1;
+}
+
+function docaraCatalogSafePath(string $path): bool
+{
+    if ($path === ''
+        || str_starts_with($path, '/')
+        || preg_match('/\A[A-Za-z]:/', $path) === 1
+        || str_contains($path, '\\')
+        || str_contains($path, "\0")
+    ) {
+        return false;
+    }
+    foreach (explode('/', $path) as $segment) {
+        if ($segment === '' || $segment === '.' || $segment === '..') {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function docaraCatalogStringList(mixed $value, bool $nonEmpty = false): bool
+{
+    if (! is_array($value)
+        || ! array_is_list($value)
+        || ($nonEmpty && $value === [])
+    ) {
+        return false;
+    }
+    foreach ($value as $item) {
+        if (! is_string($item) || trim($item) === '') {
+            return false;
+        }
+    }
+
+    return count($value) === count(array_unique($value));
+}
+
+function docaraCatalogValues(mixed $value): bool
+{
+    if (! is_array($value) || ! array_is_list($value)) {
+        return false;
+    }
+    $encoded = [];
+    foreach ($value as $item) {
+        if (! docaraCatalogScalar($item)) {
+            return false;
+        }
+        $encoded[] = docaraCanonicalJson($item);
+    }
+
+    return count($encoded) === count(array_unique($encoded));
+}
+
+function docaraCatalogScalar(mixed $value): bool
+{
+    return is_string($value) || is_bool($value) || is_int($value) || is_float($value);
+}
+
+function docaraCatalogCondition(mixed $value): bool
+{
+    if (! is_array($value) || array_is_list($value) || $value === []) {
+        return false;
+    }
+    foreach ($value as $key => $item) {
+        if (! is_string($key)
+            || preg_match('/\A[a-z][a-z0-9_-]*\z/D', $key) !== 1
+            || ! docaraCatalogScalar($item)
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function docaraCatalogConstraints(mixed $value): bool
+{
+    if (! is_array($value)
+        || array_is_list($value)
+        || ! docaraExactKeys($value, ['allowed_combinations', 'requires'])
+        || ! is_array($value['allowed_combinations'])
+        || ! array_is_list($value['allowed_combinations'])
+        || ! is_array($value['requires'])
+        || ! array_is_list($value['requires'])
+    ) {
+        return false;
+    }
+    foreach ($value['allowed_combinations'] as $combination) {
+        if (! is_array($combination)
+            || array_is_list($combination)
+            || ! docaraExactKeys($combination, ['keys', 'values'])
+            || ! docaraCatalogStringList($combination['keys'], true)
+            || ! is_array($combination['values'])
+            || ! array_is_list($combination['values'])
+            || $combination['values'] === []
+        ) {
+            return false;
+        }
+        foreach ($combination['keys'] as $key) {
+            if (preg_match('/\A[a-z][a-z0-9_-]*\z/D', $key) !== 1) {
+                return false;
+            }
+        }
+        foreach ($combination['values'] as $tuple) {
+            if (! is_array($tuple)
+                || ! array_is_list($tuple)
+                || count($tuple) !== count($combination['keys'])
+            ) {
+                return false;
+            }
+            foreach ($tuple as $item) {
+                if (! docaraCatalogScalar($item)) {
+                    return false;
+                }
+            }
+        }
+    }
+    foreach ($value['requires'] as $requirement) {
+        if (! is_array($requirement)
+            || array_is_list($requirement)
+            || ! docaraExactKeys($requirement, ['when', 'then'])
+            || ! docaraCatalogCondition($requirement['when'])
+            || ! docaraCatalogCondition($requirement['then'])
+        ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function docaraCatalogParameterValidation(mixed $value, string $type): bool
+{
+    if (! is_array($value)
+        || array_is_list($value)
+        || $value === []
+        || array_diff(
+            array_keys($value),
+            ['min_length', 'max_length', 'pattern', 'minimum', 'maximum'],
+        ) !== []
+    ) {
+        return false;
+    }
+    foreach (['min_length', 'max_length'] as $key) {
+        if (array_key_exists($key, $value)
+            && (! in_array($type, ['string', 'enum'], true)
+                || ! is_int($value[$key])
+                || $value[$key] < 0)
+        ) {
+            return false;
+        }
+    }
+    if (isset($value['min_length'], $value['max_length'])
+        && $value['min_length'] > $value['max_length']
+    ) {
+        return false;
+    }
+    if (array_key_exists('pattern', $value)
+        && (! in_array($type, ['string', 'enum'], true)
+            || ! is_string($value['pattern'])
+            || $value['pattern'] === '')
+    ) {
+        return false;
+    }
+    foreach (['minimum', 'maximum'] as $key) {
+        if (array_key_exists($key, $value)
+            && (! in_array($type, ['integer', 'number', 'enum'], true)
+                || (! is_int($value[$key]) && ! is_float($value[$key])))
+        ) {
+            return false;
+        }
+    }
+    if (isset($value['minimum'], $value['maximum'])
+        && $value['minimum'] > $value['maximum']
+    ) {
+        return false;
+    }
+
+    return true;
+}
+
+function docaraCatalogContainsAbsoluteFilesystemReference(mixed $value): bool
+{
+    if (is_array($value)) {
+        foreach ($value as $item) {
+            if (docaraCatalogContainsAbsoluteFilesystemReference($item)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    if (! is_string($value)) {
+        return false;
+    }
+
+    return preg_match(
+        '~(?:^|[\s("\'])'
+        . '(?:/(?:'
+        . 'Applications|Library|Network|System|Users|Volumes'
+        . '|bin|boot|dev|etc|home|lib|lib64|media|mnt|opt|private|proc'
+        . '|root|run|sbin|srv|sys|tmp|usr|var'
+        . ')/'
+        . '|[A-Za-z]:[\\\\/]'
+        . '|\\\\\\\\[^\\\\\s]+\\\\)'
+        . '~u',
+        $value,
+    ) === 1;
+}
+
+/** @param array<string, mixed> $entry */
+function docaraCatalogEntryContractError(
+    array $entry,
+    string $frameworkPair,
+    string $providerRevision,
+): ?string {
+    $required = [
+        'id',
+        'family',
+        'category',
+        'lifecycle',
+        'authoring',
+        'states',
+        'verification',
+        'docs_ref',
+        'provenance',
+    ];
+    $allowed = [...$required, 'metadata', 'consumer_policy', 'gap', 'container_contract', 'nesting_contract', 'capabilities'];
+    if (array_diff($required, array_keys($entry)) !== []
+        || array_diff(array_keys($entry), $allowed) !== []
+        || ! is_string($entry['id'])
+        || preg_match('/\A[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+\z/D', $entry['id']) !== 1
+        || ! in_array(
+            $entry['family'],
+            ['native_markdown', 'docara_typed', 'framework_smart', 'requirement'],
+            true,
+        )
+        || ! is_string($entry['category'])
+        || trim($entry['category']) === ''
+        || ! in_array(
+            $entry['lifecycle'],
+            ['supported', 'admission_pending', 'framework_gap', 'deferred'],
+            true,
+        )
+        || ! docaraCatalogStringList($entry['states'])
+        || ! is_string($entry['docs_ref'])
+        || ! docaraCatalogSafePath($entry['docs_ref'])
+    ) {
+        return 'The effective component catalogue entry shape is invalid.';
+    }
+    if (isset($entry['capabilities']) && ! docaraCatalogStringList($entry['capabilities'])) {
+        return 'The effective component catalogue capability contract is invalid.';
+    }
+    foreach (['container_contract', 'nesting_contract'] as $contractName) {
+        if (! isset($entry[$contractName])) {
+            continue;
+        }
+        $container = $entry[$contractName];
+        $requiredContainerKeys = ['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth', 'depth_semantics'];
+        $containerKeys = [...$requiredContainerKeys, 'allowed_child_capabilities'];
+        if (! is_array($container)
+            || array_is_list($container)
+            || array_diff($requiredContainerKeys, array_keys($container)) !== []
+            || array_diff(array_keys($container), $containerKeys) !== []
+            || ! docaraCatalogStringList($container['allowed_children'])
+            || (isset($container['allowed_child_capabilities']) && ! docaraCatalogStringList($container['allowed_child_capabilities']))
+            || ! docaraCatalogStringList($container['slots'])
+            || ! is_int($container['min_children'])
+            || $container['min_children'] < 0
+            || ! is_int($container['max_children'])
+            || $container['max_children'] < 1
+            || $container['max_children'] > 512
+            || $container['min_children'] > $container['max_children']
+            || ! in_array($container['order'], ['declared', 'layout_regions', 'manifest'], true)
+            || ! is_int($container['max_depth'])
+            || $container['max_depth'] < 1
+            || $container['max_depth'] > 16
+            || $container['depth_semantics'] !== 'relative_subtree_root_level_1'
+        ) {
+            return 'The effective component catalogue container contract is invalid.';
+        }
+    }
+
+    $authoring = $entry['authoring'];
+    if (! is_array($authoring)
+        || array_is_list($authoring)
+        || array_diff(['syntax', 'call', 'jobs', 'parameters'], array_keys($authoring)) !== []
+        || array_diff(array_keys($authoring), ['syntax', 'call', 'jobs', 'parameters', 'constraints']) !== []
+        || ! in_array(
+            $authoring['syntax'],
+            ['markdown', 'inline', 'directive', 'directive_json', 'proposed_directive', 'unavailable'],
+            true,
+        )
+        || (! is_string($authoring['call']) && $authoring['call'] !== null)
+        || (is_string($authoring['call']) && trim($authoring['call']) === '')
+        || ! docaraCatalogStringList($authoring['jobs'], true)
+        || ! is_array($authoring['parameters'])
+        || ! array_is_list($authoring['parameters'])
+    ) {
+        return 'The effective component catalogue authoring contract is invalid.';
+    }
+    foreach ($authoring['jobs'] as $job) {
+        if (preg_match('/\A[a-z][a-z0-9_]*\z/D', $job) !== 1) {
+            return 'The effective component catalogue author job is invalid.';
+        }
+    }
+    foreach ($authoring['parameters'] as $parameter) {
+        if (! is_array($parameter) || array_is_list($parameter)) {
+            return 'The effective component catalogue parameter is invalid.';
+        }
+        $parameterKeys = array_keys($parameter);
+        if (array_diff(['name', 'type', 'required'], $parameterKeys) !== []
+            || array_diff(
+                $parameterKeys,
+                ['name', 'type', 'required', 'values', 'default', 'validation', 'mirrors', 'available_when'],
+            ) !== []
+            || ! is_string($parameter['name'])
+            || preg_match('/\A[a-z][a-z0-9_-]*\z/D', $parameter['name']) !== 1
+            || ! in_array($parameter['type'], ['string', 'boolean', 'integer', 'number', 'enum', 'markdown'], true)
+            || ! is_bool($parameter['required'])
+            || (isset($parameter['values']) && ! docaraCatalogValues($parameter['values']))
+            || (array_key_exists('default', $parameter) && ! docaraCatalogScalar($parameter['default']))
+            || (isset($parameter['validation'])
+                && ! docaraCatalogParameterValidation($parameter['validation'], (string) $parameter['type']))
+            || (isset($parameter['available_when'])
+                && ! docaraCatalogCondition($parameter['available_when']))
+            || (isset($parameter['mirrors'])
+                && (! docaraCatalogStringList($parameter['mirrors'], true)
+                    || array_filter(
+                        $parameter['mirrors'],
+                        static fn (string $target): bool => preg_match(
+                            '/\A[a-z][a-z0-9_-]*\z/D',
+                            $target,
+                        ) !== 1,
+                    ) !== []))
+        ) {
+            return 'The effective component catalogue parameter is invalid.';
+        }
+    }
+    if (isset($authoring['constraints']) && ! docaraCatalogConstraints($authoring['constraints'])) {
+        return 'The effective component catalogue author constraints are invalid.';
+    }
+    $verification = $entry['verification'];
+    if (! is_array($verification)
+        || array_is_list($verification)
+        || array_diff(['renderer', 'tests', 'docs', 'demo'], array_keys($verification)) !== []
+        || array_diff(array_keys($verification), ['renderer', 'tests', 'docs', 'demo', 'variant_coverage']) !== []
+    ) {
+        return 'The effective component catalogue verification contract is invalid.';
+    }
+    foreach (['renderer', 'tests', 'docs', 'demo'] as $key) {
+        if (! is_bool($verification[$key])) {
+            return 'The effective component catalogue verification contract is invalid.';
+        }
+    }
+    if (isset($verification['variant_coverage'])
+        && (! is_array($verification['variant_coverage'])
+            || ! array_is_list($verification['variant_coverage'])
+            || $verification['variant_coverage'] === [])
+    ) {
+        return 'The effective component catalogue verification contract is invalid.';
+    }
+
+    if (isset($entry['metadata'])) {
+        $metadata = $entry['metadata'];
+        if (! is_array($metadata)
+            || array_is_list($metadata)
+            || ! docaraExactKeys($metadata, [
+                'owner', 'package', 'version', 'source_ref', 'capabilities',
+                'source_sha256', 'release', 'source_url', 'history_url', 'history_exact',
+            ])
+            || ! is_string($metadata['owner'])
+            || trim($metadata['owner']) === ''
+            || ! is_string($metadata['package'])
+            || trim($metadata['package']) === ''
+            || ! is_string($metadata['version'])
+            || trim($metadata['version']) === ''
+            || ! is_string($metadata['source_ref'])
+            || ! docaraCatalogSafePath($metadata['source_ref'])
+            || ! docaraCatalogStringList($metadata['capabilities'], true)
+            || ! is_string($metadata['source_sha256'])
+            || preg_match('/\A[a-f0-9]{64}\z/D', $metadata['source_sha256']) !== 1
+            || ! is_string($metadata['release'])
+            || preg_match('/\A[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?\z/D', $metadata['release']) !== 1
+            || (! is_string($metadata['source_url']) && $metadata['source_url'] !== null)
+            || (! is_string($metadata['history_url']) && $metadata['history_url'] !== null)
+            || ! is_bool($metadata['history_exact'])
+        ) {
+            return 'The effective component catalogue metadata is invalid.';
+        }
+    }
+
+    $family = $entry['family'];
+    $lifecycle = $entry['lifecycle'];
+    $provenance = $entry['provenance'];
+    if (! is_array($provenance) || array_is_list($provenance)) {
+        return 'The effective component catalogue provenance is invalid.';
+    }
+    if ($family === 'native_markdown') {
+        if ($lifecycle !== 'supported'
+            || $authoring['syntax'] !== 'markdown'
+            || ! docaraExactKeys($provenance, ['source_kind', 'profile_id'])
+            || $provenance['source_kind'] !== 'portable_markdown_profile'
+            || $provenance['profile_id'] !== 'docara.portable_markdown_profile.v1'
+            || isset($entry['consumer_policy'])
+            || isset($entry['gap'])
+        ) {
+            return 'A native Markdown catalogue entry violates its family contract.';
+        }
+    } elseif ($family === 'docara_typed') {
+        $name = str_starts_with($entry['id'], 'docara.')
+            ? substr($entry['id'], strlen('docara.'))
+            : '';
+        $isBlock = $authoring['syntax'] === 'directive'
+            && $authoring['call'] === ':::' . $name
+            && ($provenance['source_kind'] ?? null) === 'typed_definition';
+        $isInline = $authoring['syntax'] === 'inline'
+            && $authoring['call'] === ':' . $name
+            && ($provenance['source_kind'] ?? null) === 'inline_definition';
+        if ($lifecycle !== 'supported'
+            || (! $isBlock && ! $isInline)
+            || ! docaraExactKeys($provenance, ['source_kind', 'definition_ref'])
+            || ! is_string($provenance['definition_ref'])
+            || ! docaraCatalogSafePath($provenance['definition_ref'])
+            || isset($entry['consumer_policy'])
+            || isset($entry['gap'])
+        ) {
+            return 'A typed Docara catalogue entry violates its family contract.';
+        }
+    } elseif ($family === 'framework_smart') {
+        if ($lifecycle !== 'supported'
+            || $authoring['syntax'] !== 'directive_json'
+            || $authoring['call'] !== ':::' . $entry['id']
+            || ! isset($authoring['constraints'])
+            || ! docaraCatalogConstraints($authoring['constraints'])
+            || ! docaraExactKeys(
+                $provenance,
+                [
+                    'source_kind',
+                    'manifest_ref',
+                    'provider',
+                    'provider_revision',
+                    'upstream_revision',
+                    'manifest_sha256',
+                    'runtime_pair',
+                ],
+            )
+            || $provenance['source_kind'] !== 'smart_consumer_metadata'
+            || $provenance['provider'] !== 'larena/ui'
+            || $provenance['provider_revision'] !== $providerRevision
+            || $provenance['runtime_pair'] !== $frameworkPair
+            || ! is_string($provenance['upstream_revision'])
+            || preg_match('/\A[a-f0-9]{40}\z/D', $provenance['upstream_revision']) !== 1
+            || ! is_string($provenance['manifest_sha256'])
+            || preg_match('/\A[a-f0-9]{64}\z/D', $provenance['manifest_sha256']) !== 1
+            || ! is_string($provenance['manifest_ref'])
+            || ! docaraCatalogSafePath($provenance['manifest_ref'])
+            || ! is_array($entry['consumer_policy'] ?? null)
+            || isset($entry['gap'])
+        ) {
+            return 'A Smart catalogue entry violates its exact admission contract.';
+        }
+        $policy = $entry['consumer_policy'];
+        if (array_is_list($policy)
+            || ! docaraExactKeys(
+                $policy,
+                [
+                    'can_admit',
+                    'managed_properties',
+                    'forbidden_inputs',
+                    'omitted_assets',
+                    'excluded_states',
+                ],
+            )
+            || $policy['can_admit'] !== false
+            || ! docaraCatalogStringList($policy['managed_properties'])
+            || ! docaraCatalogStringList($policy['forbidden_inputs'])
+            || ! docaraCatalogStringList($policy['omitted_assets'])
+            || ! docaraCatalogStringList($policy['excluded_states'])
+        ) {
+            return 'A Smart catalogue entry has an invalid narrowing consumer policy.';
+        }
+    } elseif ($family === 'requirement') {
+        if ($lifecycle === 'supported'
+            || ! in_array($authoring['syntax'], ['proposed_directive', 'unavailable'], true)
+            || ! docaraExactKeys($provenance, ['source_kind', 'framework_owner'])
+            || $provenance['source_kind'] !== 'product_requirement'
+            || ! is_string($provenance['framework_owner'])
+            || trim($provenance['framework_owner']) === ''
+            || isset($entry['consumer_policy'])
+            || ! is_array($entry['gap'] ?? null)
+        ) {
+            return 'A requirement catalogue entry is incorrectly executable.';
+        }
+    }
+
+    if ($lifecycle === 'supported') {
+        if ($verification['renderer'] !== true
+            || $verification['tests'] !== true
+            || $verification['docs'] !== true
+        ) {
+            return 'A supported component catalogue entry has incomplete evidence.';
+        }
+    } else {
+        $gap = $entry['gap'] ?? null;
+        if (! is_array($gap)
+            || array_is_list($gap)
+            || ! docaraExactKeys($gap, ['owner'])
+        ) {
+            return 'An unavailable component catalogue entry lacks a complete gap contract.';
+        }
+        foreach ($gap as $value) {
+            if (! is_string($value) || trim($value) === '') {
+                return 'An unavailable component catalogue entry lacks a complete gap contract.';
+            }
+        }
+    }
+
+    return null;
+}
+
+/** @return array{ids: array<string, true>, duplicates: list<string>} */
+function docaraHtmlIdInventory(string $html): array
+{
+    $document = new DOMDocument('1.0', 'UTF-8');
+    $previous = libxml_use_internal_errors(true);
+    $loaded = $document->loadHTML(
+        '<?xml encoding="UTF-8">' . $html,
+        LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_COMPACT,
+    );
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+    if ($loaded !== true) {
+        throw new RuntimeException('Generated HTML could not be parsed for fragment verification.');
+    }
+
+    $ids = [];
+    $duplicates = [];
+    $xpath = new DOMXPath($document);
+    foreach ($xpath->query('//*[@id]') ?: [] as $node) {
+        if (! $node instanceof DOMElement) {
+            continue;
+        }
+        $id = $node->getAttribute('id');
+        if ($id === '') {
+            continue;
+        }
+        if (isset($ids[$id])) {
+            $duplicates[] = $id;
+        }
+        $ids[$id] = true;
+    }
+    sort($duplicates, SORT_STRING);
+
+    return ['ids' => $ids, 'duplicates' => array_values(array_unique($duplicates))];
+}
+
+function docaraAssertHtmlBuildIdentity(
+    string $html,
+    string $locale,
+    string $documentationVersion,
+): void {
+    $document = new DOMDocument('1.0', 'UTF-8');
+    $previous = libxml_use_internal_errors(true);
+    $loaded = $document->loadHTML(
+        '<?xml encoding="UTF-8">' . $html,
+        LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_COMPACT,
+    );
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+    if ($loaded !== true) {
+        throw new RuntimeException('Generated HTML could not be parsed for build identity verification.');
+    }
+
+    $root = $document->documentElement;
+    if (! $root instanceof DOMElement
+        || strtolower($root->tagName) !== 'html'
+        || $root->getAttribute('lang') !== $locale
+        || $root->getAttribute('data-docara-documentation-version') !== $documentationVersion
+    ) {
+        throw new RuntimeException(
+            'Generated HTML root does not match the resolved locale and documentation version.',
+        );
+    }
+
+    $nodes = (new DOMXPath($document))->query(
+        '//meta[@name="docara:documentation-version"]',
+    );
+    if ($nodes === false
+        || $nodes->length !== 1
+        || ! $nodes->item(0) instanceof DOMElement
+        || $nodes->item(0)->getAttribute('content') !== $documentationVersion
+    ) {
+        throw new RuntimeException(
+            'Generated HTML requires one documentation-version meta matching the resolved build.',
+        );
+    }
+}
+
+function docaraAssertTrustedPackagedDirectory(string $packageRoot, string $relative): void
+{
+    if (! docaraCatalogSafePath($relative)) {
+        throw new RuntimeException("Packaged source directory [$relative] has an unsafe path.");
+    }
+    $cursor = rtrim($packageRoot, '/\\');
+    $packageStat = @lstat($cursor);
+    if (! is_array($packageStat)
+        || is_link($cursor)
+        || (($packageStat['mode'] ?? 0) & 0170000) !== 0040000
+    ) {
+        throw new RuntimeException('Packaged source root is missing or unsafe.');
+    }
+    foreach (explode('/', $relative) as $segment) {
+        $cursor .= '/' . $segment;
+        $segmentStat = @lstat($cursor);
+        if (! is_array($segmentStat)
+            || is_link($cursor)
+            || (($segmentStat['mode'] ?? 0) & 0170000) !== 0040000
+        ) {
+            throw new RuntimeException("Packaged source directory [$relative] has an unsafe path segment.");
+        }
+    }
+    $packageReal = realpath($packageRoot);
+    $directory = rtrim($packageRoot, '/\\') . '/' . $relative;
+    $directoryReal = realpath($directory);
+    $directoryStat = @lstat($directory);
+    if (! is_string($packageReal)
+        || ! is_string($directoryReal)
+        || ! is_array($directoryStat)
+        || is_link($directory)
+        || (($directoryStat['mode'] ?? 0) & 0170000) !== 0040000
+        || ! str_starts_with($directoryReal, rtrim($packageReal, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)
+    ) {
+        throw new RuntimeException("Packaged source directory [$relative] is missing or unsafe.");
+    }
+
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST,
+    );
+    foreach ($iterator as $entry) {
+        $path = $entry->getPathname();
+        $entryRelative = str_replace('\\', '/', substr($path, strlen($packageRoot) + 1));
+        $stat = @lstat($path);
+        $real = realpath($path);
+        if ($entry->isLink()
+            || is_link($path)
+            || ! is_array($stat)
+            || ! is_string($real)
+            || ! str_starts_with($real, rtrim($packageReal, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)
+        ) {
+            throw new RuntimeException("Packaged source [$entryRelative] is unsafe.");
+        }
+        $mode = ($stat['mode'] ?? 0) & 0170000;
+        if ($entry->isDir()) {
+            if ($mode !== 0040000) {
+                throw new RuntimeException("Packaged source [$entryRelative] is not a regular directory.");
+            }
+
+            continue;
+        }
+        if (! $entry->isFile() || $mode !== 0100000 || ($stat['nlink'] ?? 0) !== 1) {
+            throw new RuntimeException("Packaged source [$entryRelative] is not a safe regular file.");
+        }
+    }
+}
+
+function docaraAssertTrustedPackagedFile(string $packageRoot, string $relative): void
+{
+    if (! docaraCatalogSafePath($relative)) {
+        throw new RuntimeException("Packaged source [$relative] has an unsafe path.");
+    }
+    $segments = explode('/', $relative);
+    $cursor = rtrim($packageRoot, '/\\');
+    $packageStat = @lstat($cursor);
+    if (! is_array($packageStat)
+        || is_link($cursor)
+        || (($packageStat['mode'] ?? 0) & 0170000) !== 0040000
+    ) {
+        throw new RuntimeException('Packaged source root is missing or unsafe.');
+    }
+    foreach ($segments as $index => $segment) {
+        $cursor .= '/' . $segment;
+        $segmentStat = @lstat($cursor);
+        $expectedMode = $index === count($segments) - 1 ? 0100000 : 0040000;
+        if (! is_array($segmentStat)
+            || is_link($cursor)
+            || (($segmentStat['mode'] ?? 0) & 0170000) !== $expectedMode
+        ) {
+            throw new RuntimeException("Packaged source [$relative] has an unsafe path segment.");
+        }
+    }
+    $packageReal = realpath($packageRoot);
+    $path = rtrim($packageRoot, '/\\') . '/' . $relative;
+    $stat = @lstat($path);
+    $real = realpath($path);
+    if (! is_string($packageReal)
+        || ! is_string($real)
+        || ! is_array($stat)
+        || is_link($path)
+        || (($stat['mode'] ?? 0) & 0170000) !== 0100000
+        || ($stat['nlink'] ?? 0) !== 1
+        || ! str_starts_with($real, rtrim($packageReal, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)
+    ) {
+        throw new RuntimeException("Packaged source [$relative] is missing or unsafe.");
+    }
+}
+
+/** @return list<string> */
+function docaraSafeFileInventory(string $root, string $relative): array
+{
+    if (! docaraCatalogSafePath($relative)) {
+        throw new RuntimeException("Generated directory [$relative] has an unsafe path.");
+    }
+    $directory = rtrim($root, '/\\') . '/' . $relative;
+    $directoryStat = @lstat($directory);
+    $directoryReal = realpath($directory);
+    if (! is_array($directoryStat)
+        || is_link($directory)
+        || (($directoryStat['mode'] ?? 0) & 0170000) !== 0040000
+        || ! is_string($directoryReal)
+        || ($directoryReal !== $root && ! str_starts_with($directoryReal, $root . DIRECTORY_SEPARATOR))
+    ) {
+        throw new RuntimeException("Generated directory [$relative] is missing or unsafe.");
+    }
+
+    $files = [];
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($directory, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST,
+    );
+    foreach ($iterator as $entry) {
+        $path = $entry->getPathname();
+        $entryRelative = str_replace('\\', '/', substr($path, strlen($root) + 1));
+        $stat = @lstat($path);
+        $real = realpath($path);
+        if ($entry->isLink()
+            || is_link($path)
+            || ! is_array($stat)
+            || ! is_string($real)
+            || ($real !== $root && ! str_starts_with($real, $root . DIRECTORY_SEPARATOR))
+        ) {
+            throw new RuntimeException("Generated catalogue artifact [$entryRelative] is unsafe.");
+        }
+        $mode = ($stat['mode'] ?? 0) & 0170000;
+        if ($entry->isDir()) {
+            if ($mode !== 0040000) {
+                throw new RuntimeException("Generated catalogue artifact [$entryRelative] is unsafe.");
+            }
+
+            continue;
+        }
+        if (! $entry->isFile() || $mode !== 0100000 || ($stat['nlink'] ?? 0) !== 1) {
+            throw new RuntimeException("Generated catalogue artifact [$entryRelative] is unsafe.");
+        }
+        $files[] = $entryRelative;
+    }
+    sort($files, SORT_STRING);
+
+    return $files;
+}
+
+/** @return array<string, mixed> */
+function docaraCatalogPagesReceipt(string $path): array
+{
+    if (! docaraSafeRegularFile($path)) {
+        throw new RuntimeException('Generated component catalogue page receipt is missing or unsafe.');
+    }
+    $receipt = json_decode(
+        (string) file_get_contents($path),
+        true,
+        512,
+        JSON_THROW_ON_ERROR,
+    );
+    if (! is_array($receipt)
+        || array_is_list($receipt)
+        || ! docaraExactKeys(
+            $receipt,
+            ['schema', 'version', 'catalog_content_sha256', 'content_sha256', 'index', 'pages'],
+        )
+        || ($receipt['schema'] ?? null) !== 'docara.component_catalog_pages.v1'
+        || ($receipt['version'] ?? null) !== 1
+        || ! is_string($receipt['catalog_content_sha256'] ?? null)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $receipt['catalog_content_sha256']) !== 1
+        || ! is_string($receipt['content_sha256'] ?? null)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $receipt['content_sha256']) !== 1
+        || (! is_null($receipt['index'] ?? null)
+            && (! is_array($receipt['index'])
+                || array_is_list($receipt['index'])
+                || ! docaraExactKeys($receipt['index'], ['output', 'route', 'contract_fragment_sha256'])))
+        || ! is_array($receipt['pages'] ?? null)
+        || ! array_is_list($receipt['pages'])
+    ) {
+        throw new RuntimeException('Generated component catalogue page receipt root contract is invalid.');
+    }
+    if (is_array($receipt['index']) && (! is_string($receipt['index']['output'] ?? null)
+        || ! docaraCatalogSafePath($receipt['index']['output'])
+        || ! ($receipt['index']['output'] === 'components/index.html'
+            || str_ends_with($receipt['index']['output'], '/components/index.html'))
+        || ! is_string($receipt['index']['route'] ?? null)
+        || ! is_string($receipt['index']['contract_fragment_sha256'] ?? null)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $receipt['index']['contract_fragment_sha256']) !== 1
+    )) {
+        throw new RuntimeException('Generated component catalogue index receipt is invalid.');
+    }
+
+    $previousId = null;
+    foreach ($receipt['pages'] as $index => $page) {
+        if (! is_array($page)
+            || array_is_list($page)
+            || ! docaraExactKeys(
+                $page,
+                [
+                    'id',
+                    'family',
+                    'lifecycle',
+                    'output',
+                    'route',
+                    'example_ref',
+                    'catalog_entry_sha256',
+                    'example_sha256',
+                    'rendered_fragment_sha256',
+                    'contract_fragment_sha256',
+                ],
+            )
+            || ! is_string($page['id'] ?? null)
+            || preg_match('/\A[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+\z/D', $page['id']) !== 1
+            || ! in_array($page['family'] ?? null, ['native_markdown', 'docara_typed', 'framework_smart', 'requirement'], true)
+            || ($page['lifecycle'] ?? null) !== 'supported'
+            || ! is_string($page['output'] ?? null)
+            || ! docaraCatalogSafePath($page['output'])
+            || ! str_ends_with($page['output'], '/index.html')
+            || ! is_string($page['route'] ?? null)
+            || (! is_string($page['example_ref'] ?? null) && ($page['example_ref'] ?? null) !== null)
+            || (is_string($page['example_ref'] ?? null) && ! docaraCatalogSafePath($page['example_ref']))
+        ) {
+            throw new RuntimeException("Generated component catalogue page receipt record [$index] is invalid.");
+        }
+        foreach ([
+            'catalog_entry_sha256',
+            'example_sha256',
+            'rendered_fragment_sha256',
+            'contract_fragment_sha256',
+        ] as $hashKey) {
+            if (($page[$hashKey] ?? null) === null
+                && in_array($hashKey, ['example_sha256', 'rendered_fragment_sha256'], true)
+            ) {
+                continue;
+            }
+            if (! is_string($page[$hashKey] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $page[$hashKey]) !== 1
+            ) {
+                throw new RuntimeException(
+                    "Generated component catalogue page receipt record [$index] has an invalid hash.",
+                );
+            }
+        }
+        if ($previousId !== null && strcmp($previousId, $page['id']) >= 0) {
+            throw new RuntimeException(
+                'Generated component catalogue page receipt records are not strictly sorted or contain duplicates.',
+            );
+        }
+        $previousId = $page['id'];
+    }
+
+    $calculated = hash('sha256', docaraCanonicalJson([
+        'catalog_content_sha256' => $receipt['catalog_content_sha256'],
+        'index' => $receipt['index'],
+        'pages' => $receipt['pages'],
+    ]));
+    if (! hash_equals($calculated, $receipt['content_sha256'])) {
+        throw new RuntimeException(
+            'Generated component catalogue page receipt content_sha256 does not match its canonical content.',
+        );
+    }
+
+    return $receipt;
+}
+
+/** @return array<string, mixed> */
+function docaraComponentIndexReceipt(string $path): array
+{
+    if (! docaraSafeRegularFile($path)) {
+        throw new RuntimeException('Component index receipt is missing or unsafe.');
+    }
+    $receipt = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+    if (! is_array($receipt)
+        || array_is_list($receipt)
+        || ! docaraExactKeys($receipt, ['schema', 'content_sha256', 'indexes'])
+        || ($receipt['schema'] ?? null) !== 'docara.component_index.v1'
+        || ! is_string($receipt['content_sha256'] ?? null)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $receipt['content_sha256']) !== 1
+        || ! is_array($receipt['indexes'] ?? null)
+        || ($receipt['indexes'] !== [] && array_is_list($receipt['indexes']))
+        || ! hash_equals(
+            $receipt['content_sha256'],
+            hash('sha256', docaraCanonicalJson($receipt['indexes'])),
+        )
+    ) {
+        throw new RuntimeException('Component index receipt root contract is invalid.');
+    }
+    foreach ($receipt['indexes'] as $route => $entries) {
+        if (! is_string($route)
+            || preg_match('#\A/(?:[^/]+/)*components/\z#D', $route) !== 1
+            || ! is_array($entries)
+            || ! array_is_list($entries)
+        ) {
+            throw new RuntimeException('Component index receipt route contract is invalid.');
+        }
+        foreach ($entries as $entry) {
+            if (! is_array($entry)
+                || array_is_list($entry)
+                || ! docaraExactKeys($entry, ['url', 'title', 'description'])
+                || ! is_string($entry['url'] ?? null)
+                || preg_match('#\A' . preg_quote($route, '#') . '[^/]+/\z#D', $entry['url']) !== 1
+                || ! is_string($entry['title'] ?? null)
+                || trim($entry['title']) === ''
+                || ! is_string($entry['description'] ?? null)
+            ) {
+                throw new RuntimeException('Component index receipt entry contract is invalid.');
+            }
+        }
+    }
+
+    return $receipt;
+}
+
+function docaraCatalogContractFragment(string $html, string $xpathExpression): string
+{
+    $document = new DOMDocument('1.0', 'UTF-8');
+    $previous = libxml_use_internal_errors(true);
+    $loaded = $document->loadHTML(
+        '<?xml encoding="UTF-8">' . $html,
+        LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_COMPACT,
+    );
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+    if ($loaded !== true) {
+        throw new RuntimeException('Generated component catalogue HTML could not be parsed.');
+    }
+    $nodes = (new DOMXPath($document))->query($xpathExpression);
+    if ($nodes === false || $nodes->length !== 1) {
+        throw new RuntimeException(
+            "Generated component catalogue HTML requires exactly one contract node [$xpathExpression].",
+        );
+    }
+    $fragment = $document->saveHTML($nodes->item(0));
+    if (! is_string($fragment) || $fragment === '') {
+        throw new RuntimeException('Generated component catalogue contract node could not be serialized.');
+    }
+
+    return docaraNormalizeDynamicCatalogFragment($fragment);
+}
+
+function docaraNormalizeDynamicCatalogFragment(string $fragment): string
+{
+    $normalized = preg_replace(
+        '/<(?:nav|section)\b[^>]*(?:data-docara-backlinks|data-docara-block="backlinks")[^>]*>.*?<\/(?:nav|section)>/isu',
+        '<nav data-docara-block="backlinks" data-docara-dynamic-contract></nav>',
+        $fragment,
+    );
+
+    return is_string($normalized) ? $normalized : $fragment;
+}
+
+function docaraCatalogContractText(string $html, string $xpathExpression): string
+{
+    $document = new DOMDocument('1.0', 'UTF-8');
+    $previous = libxml_use_internal_errors(true);
+    $loaded = $document->loadHTML(
+        '<?xml encoding="UTF-8">' . $html,
+        LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_COMPACT,
+    );
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+    if ($loaded !== true) {
+        throw new RuntimeException('Generated component catalogue HTML could not be parsed.');
+    }
+    $nodes = (new DOMXPath($document))->query($xpathExpression);
+    if ($nodes === false || $nodes->length !== 1) {
+        throw new RuntimeException(
+            "Generated component catalogue HTML requires exactly one source node [$xpathExpression].",
+        );
+    }
+
+    return str_replace(["\r\n", "\r"], "\n", (string) $nodes->item(0)?->textContent);
+}
+
+/** @param array<string, mixed> $expectedPage */
+function docaraAssertCatalogShellContract(
+    string $html,
+    array $expectedPage,
+    string $catalogRoute,
+    string $activeNavigationRoute,
+): void {
+    $document = new DOMDocument('1.0', 'UTF-8');
+    $previous = libxml_use_internal_errors(true);
+    $loaded = $document->loadHTML(
+        '<?xml encoding="UTF-8">' . $html,
+        LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_COMPACT,
+    );
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+    if ($loaded !== true) {
+        throw new RuntimeException('Generated component catalogue shell could not be parsed.');
+    }
+    $xpath = new DOMXPath($document);
+    $count = static function (string $expression) use ($xpath): int {
+        $nodes = $xpath->query($expression);
+        if ($nodes === false) {
+            throw new RuntimeException(
+                "Generated component catalogue shell XPath is invalid [$expression].",
+            );
+        }
+
+        return $nodes->length;
+    };
+    $hasClass = static function (DOMElement $element, string $class): bool {
+        return in_array(
+            $class,
+            preg_split('/\s+/', trim($element->getAttribute('class'))) ?: [],
+            true,
+        );
+    };
+
+    $readerPreferencesEnabled = (bool) data_get($expectedPage, 'reader_preferences.enabled', true);
+    if ($count('/html') !== 1
+        || $count('/html/head') !== 1
+        || $count('/html/body') !== 1
+        || $count('//*[@id="docara-main"]') !== 1
+        || $count('//*[@id="docara-main"]/article[contains(concat(" ", normalize-space(@class), " "), " docara-prose ")]') !== 1
+        || $count('//header[contains(concat(" ", normalize-space(@class), " "), " docara-header ")]') !== 1
+        || $count('//*[@id="docara-reader-settings-dialog"]') !== ($readerPreferencesEnabled ? 1 : 0)
+        || $count('//script[@data-docara-shell-controller]') !== 1
+        || $count('//script[@id="docara-runtime-copy" and @type="application/json"]') !== 1
+    ) {
+        throw new RuntimeException(
+            'Generated component catalogue shell is missing a required unique landmark.',
+        );
+    }
+
+    $expectedBody = ['skip', 'header', 'layout'];
+    if (($expectedPage['search_enabled'] ?? false) === true) {
+        $expectedBody[] = 'search';
+    }
+    if ($readerPreferencesEnabled) {
+        $expectedBody[] = 'reader';
+    }
+    $expectedBody = [...$expectedBody, 'copy', 'controller'];
+    $actualBody = [];
+    $bodyChildren = $xpath->query('/html/body/*');
+    if ($bodyChildren === false) {
+        throw new RuntimeException('Generated component catalogue body could not be inspected.');
+    }
+    foreach ($bodyChildren as $child) {
+        if (! $child instanceof DOMElement) {
+            continue;
+        }
+        $actualBody[] = match (true) {
+            $child->tagName === 'a' && $hasClass($child, 'docara-skip-link') => 'skip',
+            $child->tagName === 'header' && $hasClass($child, 'docara-header') => 'header',
+            in_array($child->tagName, ['dialog', 'sf-modal'], true)
+                && $child->getAttribute('id') === 'docara-search-dialog' => 'search',
+            in_array($child->tagName, ['dialog', 'sf-modal'], true)
+                && $child->getAttribute('id') === 'docara-reader-settings-dialog' => 'reader',
+            $child->tagName === 'div' && $hasClass($child, 'docara-docs-layout') => 'layout',
+            $child->tagName === 'script' && $child->getAttribute('id') === 'docara-runtime-copy' => 'copy',
+            $child->tagName === 'script' && $child->hasAttribute('data-docara-shell-controller') => 'controller',
+            default => 'unexpected:' . $child->tagName,
+        };
+    }
+    $legacyBody = ['skip', 'header'];
+    if (($expectedPage['search_enabled'] ?? false) === true) {
+        $legacyBody[] = 'search';
+    }
+    if ($readerPreferencesEnabled) {
+        $legacyBody[] = 'reader';
+    }
+    $legacyBody = [...$legacyBody, 'layout', 'copy', 'controller'];
+    if ($actualBody !== $expectedBody && $actualBody !== $legacyBody) {
+        throw new RuntimeException(
+            'Generated component catalogue shell body structure does not match the strict contract.',
+        );
+    }
+
+    $rootSelector = ($expectedPage['component_catalog_kind'] ?? null) === 'index'
+        ? '//*[@id="docara-main"]/article/*[@data-docara-component-catalog-index]'
+        : '//*[@id="docara-main"]/article/*[@data-docara-component-detail="'
+            . (string) ($expectedPage['component_catalog_id'] ?? '') . '"]';
+    if ($count('//*[@id="docara-main"]/article/*') !== 1 || $count($rootSelector) !== 1) {
+        throw new RuntimeException(
+            'Generated component catalogue shell contains missing or injected article content.',
+        );
+    }
+    $documentationNavigation = '//nav['
+        . 'contains(concat(" ", normalize-space(@class), " "), " docara-navigation ")'
+        . ' and not(contains(concat(" ", normalize-space(@class), " "), " docara-header-navigation "))'
+        . ' and not(ancestor::*[@data-docara-primary-navigation])'
+        . ']';
+    if ($count($documentationNavigation) !== 2
+        || $count(
+            $documentationNavigation . '//a[@href="' . $activeNavigationRoute
+                . '" and @aria-current="page"]',
+        ) !== 2
+    ) {
+        throw new RuntimeException(
+            'Generated component catalogue shell lost its active desktop or mobile navigation context.',
+        );
+    }
+    $layout = $xpath->query('//div[contains(concat(" ", normalize-space(@class), " "), " docara-docs-layout ")]')->item(0);
+    if (! $layout instanceof DOMElement) {
+        throw new RuntimeException(
+            'Generated component catalogue shell has no inspectable documentation layout.',
+        );
+    }
+    $mobileTocState = $layout->getAttribute('data-mobile-toc');
+    $expectedOutlineCount = match ($mobileTocState) {
+        '' => 2,
+        'shown' => 2,
+        'auto-hidden', 'disabled' => 1,
+        'unavailable' => 0,
+        default => -1,
+    };
+    if ($expectedOutlineCount < 0
+        || $count('//*[@data-docara-outline]') !== $expectedOutlineCount
+    ) {
+        throw new RuntimeException(
+            'Generated component catalogue shell mobile contents state does not match its outlines.',
+        );
+    }
+
+    $expectedBreadcrumbs = $expectedPage['component_catalog_breadcrumbs'] ?? null;
+    if (! is_array($expectedBreadcrumbs) || $expectedBreadcrumbs === []) {
+        throw new RuntimeException('Trusted component catalogue breadcrumbs are unavailable.');
+    }
+    $breadcrumbNodes = $xpath->query(
+        '//*[@data-docara-breadcrumbs]/*['
+        . 'contains(concat(" ", normalize-space(@class), " "), " sf-breadcrumbs-item ")'
+        . ' and not(@data-sf-breadcrumb-separator)]',
+    );
+    if ($breadcrumbNodes === false || $breadcrumbNodes->length !== count($expectedBreadcrumbs)) {
+        throw new RuntimeException(
+            'Generated component catalogue breadcrumbs do not match the strict shell contract.',
+        );
+    }
+    foreach ($expectedBreadcrumbs as $index => $expectedBreadcrumb) {
+        $node = $breadcrumbNodes->item($index);
+        if (! $node instanceof DOMElement
+            || trim((string) $node->textContent) !== (string) ($expectedBreadcrumb['title'] ?? '')
+        ) {
+            throw new RuntimeException(
+                'Generated component catalogue breadcrumb labels do not match the trusted projection.',
+            );
+        }
+        $expectedUrl = $expectedBreadcrumb['url'] ?? null;
+        if (is_string($expectedUrl)) {
+            if ($node->tagName !== 'a' || $node->getAttribute('href') !== $expectedUrl) {
+                throw new RuntimeException(
+                    'Generated component catalogue breadcrumb links do not match the trusted projection.',
+                );
+            }
+        } elseif ($index !== count($expectedBreadcrumbs) - 1
+            || $node->tagName !== 'span'
+            || $node->getAttribute('aria-current') !== 'page'
+        ) {
+            throw new RuntimeException(
+                'Generated component catalogue current breadcrumb is invalid.',
+            );
+        }
+    }
+
+    foreach (['previous' => 'prev', 'next' => 'next'] as $field => $relation) {
+        $expected = $expectedPage['component_catalog_' . $field] ?? null;
+        $links = $xpath->query('//*[@data-docara-previous-next]/a[@rel="' . $relation . '"]');
+        if ($links === false) {
+            throw new RuntimeException('Generated component catalogue adjacency could not be inspected.');
+        }
+        if ($expected === null) {
+            if ($links->length !== 0) {
+                throw new RuntimeException(
+                    "Generated component catalogue unexpectedly contains a [$relation] link.",
+                );
+            }
+
+            continue;
+        }
+        $link = $links->item(0);
+        if ($links->length !== 1
+            || ! $link instanceof DOMElement
+            || $link->getAttribute('href') !== (string) ($expected['url'] ?? '')
+            || ! str_contains(trim((string) $link->textContent), (string) ($expected['title'] ?? ''))
+        ) {
+            throw new RuntimeException(
+                "Generated component catalogue [$relation] link does not match the trusted projection.",
+            );
+        }
+    }
+    $expectsAdjacency = ($expectedPage['component_catalog_previous'] ?? null) !== null
+        || ($expectedPage['component_catalog_next'] ?? null) !== null;
+    if ($count('//*[@data-docara-previous-next]') !== ($expectsAdjacency ? 1 : 0)) {
+        throw new RuntimeException(
+            'Generated component catalogue adjacency container does not match the strict shell contract.',
+        );
+    }
+}
+
+$rootInput = $argv[1] ?? '';
+if ($rootInput === '' || count($argv) !== 2) {
+    fwrite(STDERR, "Usage: php scripts/verify-static-build.php <build-directory>\n");
+
+    exit(2);
+}
+docaraBootstrapTrustedSource();
+
+$lexicalInput = str_replace('\\', '/', rtrim($rootInput, '/\\'));
+foreach (explode('/', $lexicalInput) as $segment) {
+    if ($segment === '.' || $segment === '..') {
+        fwrite(STDERR, "Build directory is missing or unsafe.\n");
+
+        exit(1);
+    }
+}
+$ancestor = rtrim($rootInput, '/\\');
+while ($ancestor !== '' && $ancestor !== '.' && $ancestor !== DIRECTORY_SEPARATOR) {
+    if (is_link($ancestor)) {
+        fwrite(STDERR, "Build directory is missing or unsafe.\n");
+
+        exit(1);
+    }
+    $parent = dirname($ancestor);
+    if ($parent === $ancestor) {
+        break;
+    }
+    $ancestor = rtrim($parent, '/\\');
+}
+
+$inputStat = @lstat($rootInput);
+if (is_link($rootInput)
+    || ! is_array($inputStat)
+    || (($inputStat['mode'] ?? 0) & 0170000) !== 0040000
+) {
+    fwrite(STDERR, "Build directory is missing or unsafe.\n");
+
+    exit(1);
+}
+
+$root = realpath($rootInput);
+if ($root === false || ! is_dir($root)) {
+    fwrite(STDERR, "Build directory is missing or unsafe.\n");
+
+    exit(1);
+}
+
+$htmlFiles = [];
+$unsafeArtifactEntries = [];
+$iterator = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
+    RecursiveIteratorIterator::SELF_FIRST,
+);
+foreach ($iterator as $file) {
+    $path = $file->getPathname();
+    $relativeEntry = str_replace('\\', '/', substr($path, strlen($root) + 1));
+    if ($file->isLink() || is_link($path)) {
+        $unsafeArtifactEntries[] = $relativeEntry;
+
+        continue;
+    }
+    if ($file->isFile()) {
+        $stat = @lstat($path);
+        if (! is_array($stat)
+            || (($stat['mode'] ?? 0) & 0170000) !== 0100000
+            || ($stat['nlink'] ?? 1) > 1
+        ) {
+            $unsafeArtifactEntries[] = $relativeEntry;
+
+            continue;
+        }
+
+        if (strtolower($file->getExtension()) === 'html') {
+            $htmlFiles[] = $path;
+        }
+
+        continue;
+    }
+    if (! $file->isDir()) {
+        $unsafeArtifactEntries[] = $relativeEntry;
+    }
+}
+sort($htmlFiles, SORT_STRING);
+sort($unsafeArtifactEntries, SORT_STRING);
+
+$deploymentBase = '/';
+$manifestDirectory = $root . '/.docara';
+$manifestPath = $root . '/.docara/resolved-page-plans.json';
+$manifestError = null;
+$manifestOutputs = [];
+$contentPageOutputs = [];
+$manifestPageRecords = [];
+$searchEnabled = false;
+$expectedSearchSurfaceCount = 0;
+$expectedSearchDocuments = [];
+$expectedFrameworkPair = null;
+$expectedFrameworkProviderRevision = null;
+$expectedFrameworkSmartRevision = null;
+$expectedSupportedComponents = null;
+$expectedConsumerPolicyHash = null;
+$expectedFrameworkLock = null;
+$expectedBuildLocale = null;
+$expectedDocumentationVersion = null;
+$expectedBuildComponentCatalogHash = null;
+$expectedRedirectSource = null;
+$redirectSourceInitialized = false;
+$trustedCatalog = null;
+$trustedCatalogVerified = false;
+$manifestDirectoryStat = @lstat($manifestDirectory);
+if (is_link($manifestDirectory)
+    || ! is_array($manifestDirectoryStat)
+    || (($manifestDirectoryStat['mode'] ?? 0) & 0170000) !== 0040000
+) {
+    $manifestError = 'Resolved page-plan manifest is missing or unsafe.';
+} else {
+    $manifestStat = @lstat($manifestPath);
+    if (is_link($manifestPath)
+        || ! is_array($manifestStat)
+        || (($manifestStat['mode'] ?? 0) & 0170000) !== 0100000
+        || ($manifestStat['nlink'] ?? 1) > 1
+    ) {
+        $manifestError = 'Resolved page-plan manifest is missing or unsafe.';
+    } else {
+        try {
+            $manifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
+            if (! is_array($manifest) || ($manifest['schema'] ?? null) !== 'docara.resolved_page_plans.v1') {
+                throw new RuntimeException('Resolved page-plan manifest has an unsupported schema.');
+            }
+            $pages = $manifest['pages'] ?? null;
+            if (! is_array($pages) || ! array_is_list($pages) || $pages === []) {
+                throw new RuntimeException('Resolved page-plan manifest must contain a non-empty page list.');
+            }
+            $bases = [];
+            $outputs = [];
+            foreach ($pages as $index => $page) {
+                if (! is_array($page)) {
+                    throw new RuntimeException("Resolved page-plan record [$index] must be an object.");
+                }
+                $configuration = $page['resolved_page_plan']['configuration'] ?? null;
+                if (! is_array($configuration)) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has no configuration.");
+                }
+                $base = $configuration['base_url'] ?? null;
+                if (! is_string($base) || $base === '') {
+                    throw new RuntimeException("Resolved page-plan record [$index] is missing base_url.");
+                }
+                $bases[$base] = true;
+                $pageLocale = $configuration['locale']
+                    ?? $configuration['default_locale']
+                    ?? 'en';
+                $buildLocale = $configuration['default_locale']
+                    ?? $configuration['locale']
+                    ?? 'en';
+                $documentationVersion = $configuration['documentation_version'] ?? 'current';
+                if (! is_string($pageLocale)
+                    || ! is_string($buildLocale)
+                    || ! is_string($documentationVersion)
+                    || ! LocaleTag::isWellFormed($pageLocale)
+                    || ! LocaleTag::isWellFormed($buildLocale)
+                    || preg_match('/\A[A-Za-z0-9](?:[A-Za-z0-9._-]{0,62}[A-Za-z0-9])?\z/D', $documentationVersion) !== 1
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has invalid locale or documentation version metadata.");
+                }
+                $configuredLocales = $configuration['locales'] ?? null;
+                if (is_array($configuredLocales)
+                    && (! isset($configuredLocales[$pageLocale]) || ! isset($configuredLocales[$buildLocale]))
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] references a locale outside its registry.");
+                }
+                $redirectSource = $configuration['redirects_file'] ?? null;
+                if ($redirectSource !== null
+                    && (! is_string($redirectSource) || ! docaraCatalogSafePath($redirectSource))
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has an unsafe redirect source.");
+                }
+                if (! $redirectSourceInitialized) {
+                    $expectedRedirectSource = $redirectSource;
+                    $redirectSourceInitialized = true;
+                } elseif ($redirectSource !== $expectedRedirectSource) {
+                    throw new RuntimeException('Resolved pages do not share one redirect source contract.');
+                }
+                $expectedBuildLocale ??= $buildLocale;
+                $expectedDocumentationVersion ??= $documentationVersion;
+                if ($buildLocale !== $expectedBuildLocale
+                    || $documentationVersion !== $expectedDocumentationVersion
+                ) {
+                    throw new RuntimeException('Resolved pages do not share one locale and documentation version.');
+                }
+
+                $output = $page['output'] ?? null;
+                if (! is_string($output)
+                    || preg_match('#\A(?:[A-Za-z0-9][A-Za-z0-9._~-]*/)*[A-Za-z0-9][A-Za-z0-9._~-]*\.html\z#', $output) !== 1
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has an unsafe output.");
+                }
+                if (isset($outputs[$output])) {
+                    throw new RuntimeException("Resolved page-plan output [$output] is duplicated.");
+                }
+                $outputs[$output] = true;
+                $manifestPageRecords[] = $page;
+
+                $inputChain = $page['input_chain'] ?? null;
+                $trace = is_array($inputChain) ? ($inputChain['trace'] ?? null) : null;
+                if (! is_array($inputChain)
+                    || ! docaraExactKeys($inputChain, [
+                        'resolved_plan_sha256',
+                        'trace',
+                        'document_ir_sha256',
+                        'framework_lock_sha256',
+                        'component_runtime_sha256',
+                    ])
+                    || ! is_array($trace)
+                    || ! array_is_list($trace)
+                    || $trace === []
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has no exact input chain.");
+                }
+                foreach ([
+                    'resolved_plan_sha256',
+                    'document_ir_sha256',
+                    'framework_lock_sha256',
+                    'component_runtime_sha256',
+                ] as $hashField) {
+                    if (! is_string($inputChain[$hashField] ?? null)
+                        || preg_match('/\A[a-f0-9]{64}\z/D', $inputChain[$hashField]) !== 1
+                    ) {
+                        throw new RuntimeException("Resolved page-plan record [$index] has an invalid [$hashField].");
+                    }
+                }
+                foreach ($trace as $traceIndex => $traceRecord) {
+                    if (! is_array($traceRecord)
+                        || ! is_string($traceRecord['role'] ?? null)
+                        || ! is_string($traceRecord['source'] ?? null)
+                        || ! docaraCatalogSafePath($traceRecord['source'])
+                        || ! is_string($traceRecord['sha256'] ?? null)
+                        || preg_match('/\A[a-f0-9]{64}\z/D', $traceRecord['sha256']) !== 1
+                    ) {
+                        throw new RuntimeException("Resolved page-plan trace [$index:$traceIndex] is incomplete or unsafe.");
+                    }
+                }
+
+                $diagnostics = $page['component_runtime']['diagnostics'] ?? null;
+                $runtimePair = is_array($diagnostics) ? ($diagnostics['runtime_pair'] ?? null) : null;
+                $providerRevision = is_array($diagnostics) ? ($diagnostics['provider_revision'] ?? null) : null;
+                $supportedComponents = is_array($diagnostics) ? ($diagnostics['supported_components'] ?? null) : null;
+                $consumerPolicyHash = is_array($diagnostics) ? ($diagnostics['consumer_policy_sha256'] ?? null) : null;
+                $frameworkLock = $page['resolved_page_plan']['framework_lock'] ?? null;
+                $smartRevision = is_array($frameworkLock)
+                    ? ($frameworkLock['runtime']['ui_smart']['commit'] ?? null)
+                    : null;
+                if (! is_string($runtimePair)
+                    || preg_match('/\A[a-z0-9][a-z0-9._-]+\z/D', $runtimePair) !== 1
+                    || ! is_string($providerRevision)
+                    || preg_match('/\A[a-f0-9]{40}\z/D', $providerRevision) !== 1
+                    || ! is_array($supportedComponents)
+                    || ! array_is_list($supportedComponents)
+                    || $supportedComponents === []
+                    || ! is_string($consumerPolicyHash)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $consumerPolicyHash) !== 1
+                    || ! is_array($frameworkLock)
+                    || array_is_list($frameworkLock)
+                    || ! is_string($smartRevision)
+                    || preg_match('/\A[a-f0-9]{40}\z/D', $smartRevision) !== 1
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has an incomplete component runtime contract.");
+                }
+                foreach ($supportedComponents as $component) {
+                    if (! is_string($component)
+                        || preg_match('/\Aui(?:\.[a-z][a-z0-9_]*)+\z/D', $component) !== 1
+                    ) {
+                        throw new RuntimeException("Resolved page-plan record [$index] has an invalid supported component.");
+                    }
+                }
+                $sortedSupportedComponents = array_values(array_unique($supportedComponents));
+                sort($sortedSupportedComponents, SORT_STRING);
+                if ($supportedComponents !== $sortedSupportedComponents) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has unsorted or duplicate supported components.");
+                }
+                $expectedFrameworkPair ??= $runtimePair;
+                $expectedFrameworkProviderRevision ??= $providerRevision;
+                $expectedFrameworkSmartRevision ??= $smartRevision;
+                $expectedSupportedComponents ??= $supportedComponents;
+                $expectedConsumerPolicyHash ??= $consumerPolicyHash;
+                $expectedFrameworkLock ??= $frameworkLock;
+                if ($runtimePair !== $expectedFrameworkPair
+                    || $providerRevision !== $expectedFrameworkProviderRevision
+                    || $smartRevision !== $expectedFrameworkSmartRevision
+                    || $supportedComponents !== $expectedSupportedComponents
+                    || $consumerPolicyHash !== $expectedConsumerPolicyHash
+                    || docaraCanonicalJson($frameworkLock) !== docaraCanonicalJson($expectedFrameworkLock)
+                ) {
+                    throw new RuntimeException('Resolved pages do not share one exact component runtime contract.');
+                }
+
+                $outputPath = $root . '/' . $output;
+                $outputStat = @lstat($outputPath);
+                $realOutput = realpath($outputPath);
+                if (is_link($outputPath)
+                    || ! is_array($outputStat)
+                    || (($outputStat['mode'] ?? 0) & 0170000) !== 0100000
+                    || ($outputStat['nlink'] ?? 1) > 1
+                    || $realOutput === false
+                    || ($realOutput !== $root && ! str_starts_with($realOutput, $root . DIRECTORY_SEPARATOR))
+                ) {
+                    throw new RuntimeException("Resolved page-plan output [$output] is missing or unsafe.");
+                }
+            }
+            $manifestOutputs = array_keys($outputs);
+            sort($manifestOutputs, SORT_STRING);
+            $contentPageOutputs = $manifestOutputs;
+            if (count($bases) !== 1) {
+                throw new RuntimeException('Resolved plans must contain one deployment base.');
+            }
+            $configuredBase = (string) array_key_first($bases);
+            if (preg_match('#\A(?:/|/[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)*/?)\z#', $configuredBase) !== 1) {
+                throw new RuntimeException('Resolved deployment base is unsafe.');
+            }
+            foreach (explode('/', trim($configuredBase, '/')) as $segment) {
+                if ($segment === '.' || $segment === '..') {
+                    throw new RuntimeException('Resolved deployment base is unsafe.');
+                }
+            }
+            $deploymentBase = $configuredBase === '/' ? '/' : '/' . trim($configuredBase, '/') . '/';
+            $manifestBuild = $manifest['build'] ?? null;
+            if (is_array($manifestBuild) && ($manifestBuild['purpose'] ?? null) === 'preview') {
+                throw new RuntimeException(
+                    '[PREVIEW_BUILD_PURPOSE_FORBIDDEN] Preview-purpose output cannot be accepted as a production static build.',
+                );
+            }
+            $baseBuildKeys = [
+                'purpose',
+                'locale',
+                'documentation_version',
+                'engine',
+                'dependencies',
+                'framework',
+                'production_inputs',
+                'component_catalog_sha256',
+                'publisher',
+                'locale_sources',
+            ];
+            $projectionBuildKeys = [...$baseBuildKeys, 'public_projections'];
+            if (! is_array($manifestBuild)
+                || (! docaraExactKeys($manifestBuild, $baseBuildKeys)
+                    && ! docaraExactKeys($manifestBuild, $projectionBuildKeys))
+            ) {
+                throw new RuntimeException(
+                    'Resolved build metadata is required and must contain the exact provenance contract.',
+                );
+            }
+            if (($manifestBuild['purpose'] ?? null) !== 'production') {
+                throw new RuntimeException('[BUILD_PURPOSE_UNSUPPORTED] Production build purpose is required.');
+            }
+            if (($manifestBuild['locale'] ?? null) !== $expectedBuildLocale
+                || ($manifestBuild['documentation_version'] ?? null) !== $expectedDocumentationVersion
+            ) {
+                throw new RuntimeException('Resolved build locale and version must match page metadata.');
+            }
+            $engine = $manifestBuild['engine'] ?? null;
+            if (! is_array($engine)
+                || ! docaraExactKeys($engine, ['schema', 'name', 'version', 'source_revision', 'tree_sha256', 'immutable'])
+                || ($engine['schema'] ?? null) !== 'docara.package_revision.v1'
+                || ($engine['name'] ?? null) !== 'simai/docara'
+                || ($engine['immutable'] ?? null) !== true
+                || ! is_string($engine['version'] ?? null)
+                || ! is_string($engine['source_revision'] ?? null)
+                || preg_match('/\A(?:[a-f0-9]{40}|sha256:[a-f0-9]{64})\z/D', $engine['source_revision']) !== 1
+                || ! is_string($engine['tree_sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $engine['tree_sha256']) !== 1
+            ) {
+                throw new RuntimeException('Resolved build engine revision is incomplete or mutable.');
+            }
+            $dependencies = $manifestBuild['dependencies'] ?? null;
+            if (! is_array($dependencies)
+                || ($dependencies['schema'] ?? null) !== 'docara.dependency_lock.v1'
+                || ($dependencies['owner'] ?? null) !== 'consumer'
+                || ($dependencies['moving_references_allowed'] ?? null) !== false
+                || ! is_string($dependencies['runtime_tuple_sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $dependencies['runtime_tuple_sha256']) !== 1
+                || ! is_array($dependencies['packages'] ?? null)
+                || array_is_list($dependencies['packages'])
+            ) {
+                throw new RuntimeException('Resolved build dependency tuple is incomplete or mutable.');
+            }
+            foreach ($dependencies['packages'] as $package => $record) {
+                if (! is_string($package)
+                    || ! is_array($record)
+                    || ! is_string($record['version'] ?? null)
+                    || ! is_string($record['reference'] ?? null)
+                    || preg_match('/\A[a-f0-9]{40}\z/D', $record['reference']) !== 1
+                ) {
+                    throw new RuntimeException('Resolved build dependency tuple contains an unpinned package.');
+                }
+            }
+            $frameworkBuild = $manifestBuild['framework'] ?? null;
+            if (! is_array($frameworkBuild)
+                || ! docaraExactKeys($frameworkBuild, ['lock_sha256', 'runtime', 'manifests', 'asset_projection', 'dynamic_asset_projection', 'shell', 'portable_smart_asset_projection'])
+                || ! is_string($frameworkBuild['lock_sha256'] ?? null)
+                || ! hash_equals(
+                    $frameworkBuild['lock_sha256'],
+                    hash('sha256', docaraCanonicalJson($expectedFrameworkLock)),
+                )
+                || ($frameworkBuild['runtime'] ?? null) !== ($expectedFrameworkLock['runtime'] ?? null)
+                || ($frameworkBuild['manifests'] ?? null) !== ($expectedFrameworkLock['manifests'] ?? null)
+                || ($frameworkBuild['asset_projection'] ?? null) !== ($expectedFrameworkLock['asset_projection'] ?? null)
+                || ($frameworkBuild['dynamic_asset_projection'] ?? null) !== ($expectedFrameworkLock['dynamic_asset_projection'] ?? null)
+            ) {
+                throw new RuntimeException('Resolved build Framework tuple does not match its page plans.');
+            }
+            $requiredPortableAssets = [];
+            foreach ($manifestPageRecords as $pageRecord) {
+                foreach (($pageRecord['declarative_pipeline']['assets'] ?? []) as $assetKey) {
+                    if (is_string($assetKey) && str_starts_with($assetKey, 'framework.portable.')) {
+                        $requiredPortableAssets[] = $assetKey;
+                    }
+                }
+            }
+            $expectedPortableProjection = (new FrameworkPortableAssetProjection(SmartRegistry::bundled()))
+                ->forKeys($requiredPortableAssets);
+            if (! is_array($frameworkBuild['portable_smart_asset_projection'] ?? null)
+                || ! hash_equals(
+                    hash('sha256', docaraCanonicalJson($expectedPortableProjection)),
+                    hash('sha256', docaraCanonicalJson($frameworkBuild['portable_smart_asset_projection'])),
+                )
+            ) {
+                throw new RuntimeException('Resolved build portable Framework assets do not match exact page usage.');
+            }
+            $productionInputs = $manifestBuild['production_inputs'] ?? null;
+            if (! is_array($productionInputs) || array_is_list($productionInputs) || $productionInputs === []) {
+                throw new RuntimeException('Resolved build production input hashes are missing.');
+            }
+            foreach ($productionInputs as $group => $record) {
+                if (! is_string($group)
+                    || ! is_array($record)
+                    || ! docaraExactKeys($record, ['files', 'sha256'])
+                    || ! is_int($record['files'] ?? null)
+                    || $record['files'] < 1
+                    || ! is_string($record['sha256'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $record['sha256']) !== 1
+                ) {
+                    throw new RuntimeException('Resolved build production input hashes are invalid.');
+                }
+            }
+            if (! is_string($manifestBuild['component_catalog_sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $manifestBuild['component_catalog_sha256']) !== 1
+                || ! is_string($manifestBuild['publisher'] ?? null)
+                || $manifestBuild['publisher'] === ''
+            ) {
+                throw new RuntimeException('Resolved build catalogue or publisher provenance is invalid.');
+            }
+            $expectedBuildComponentCatalogHash = $manifestBuild['component_catalog_sha256'];
+            $localeSources = $manifestBuild['locale_sources'] ?? null;
+            if (! is_array($localeSources) || array_is_list($localeSources)) {
+                throw new RuntimeException('Resolved build locale source provenance is invalid.');
+            }
+            foreach ($localeSources as $locale => $record) {
+                if (! is_string($locale)
+                    || ! LocaleTag::isWellFormed($locale)
+                    || ! is_array($record)
+                    || ! docaraExactKeys($record, ['path', 'sha256'])
+                    || ! is_string($record['path'] ?? null)
+                    || ! docaraCatalogSafePath($record['path'])
+                    || ! is_string($record['sha256'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $record['sha256']) !== 1
+                ) {
+                    throw new RuntimeException('Resolved build locale source provenance is invalid.');
+                }
+            }
+
+            foreach ($manifestPageRecords as $index => $page) {
+                $search = $page['resolved_page_plan']['configuration']['search'] ?? null;
+                if (is_array($search) && ($search['enabled'] ?? false) === true) {
+                    $searchEnabled = true;
+                    $expectedSearchSurfaceCount++;
+                }
+            }
+            if ($searchEnabled) {
+                foreach ($manifestPageRecords as $index => $page) {
+                    $configuration = $page['resolved_page_plan']['configuration'] ?? null;
+                    $search = is_array($configuration) ? ($configuration['search'] ?? null) : null;
+                    if (! is_array($search)
+                        || ! is_bool($search['enabled'] ?? null)
+                        || ! is_bool($search['indexed'] ?? null)
+                    ) {
+                        throw new RuntimeException("Resolved page-plan record [$index] has an incomplete search contract.");
+                    }
+                    if ($search['indexed'] !== true) {
+                        continue;
+                    }
+                    $url = $page['url'] ?? null;
+                    $locale = $configuration['locale'] ?? $configuration['default_locale'] ?? null;
+                    if (! is_string($url)
+                        || ! docaraSearchUrlIsSafe($url, $deploymentBase)
+                        || ! is_string($locale)
+                        || ! LocaleTag::isWellFormed($locale)
+                    ) {
+                        throw new RuntimeException("Resolved page-plan record [$index] has unsafe search identity fields.");
+                    }
+                    $expectedSearchDocuments[] = $locale . "\0" . $url;
+                }
+                sort($expectedSearchDocuments, SORT_STRING);
+                if ($expectedSearchDocuments === []) {
+                    throw new RuntimeException('Search is enabled but the manifest has no indexed page.');
+                }
+            }
+        } catch (Throwable $exception) {
+            $manifestError = $exception->getMessage();
+        }
+    }
+}
+
+$redirectError = null;
+if ($manifestError === null) {
+    try {
+        $redirectOutputs = docaraRedirectOutputs(
+            $root,
+            $deploymentBase,
+            $manifestOutputs,
+            $manifestPageRecords,
+            (string) ($expectedBuildLocale ?? 'en'),
+            (string) ($expectedDocumentationVersion ?? 'current'),
+            $expectedRedirectSource,
+        );
+        $manifestOutputs = [...$manifestOutputs, ...$redirectOutputs];
+        sort($manifestOutputs, SORT_STRING);
+    } catch (Throwable $exception) {
+        $redirectError = $exception->getMessage();
+    }
+}
+
+$localeRouteError = null;
+if ($manifestError === null) {
+    try {
+        $localeRouteOutputs = docaraLocaleRouteOutputs(
+            $root,
+            $manifestOutputs,
+            $manifestPageRecords,
+        );
+        $manifestOutputs = [...$manifestOutputs, ...$localeRouteOutputs];
+        sort($manifestOutputs, SORT_STRING);
+    } catch (Throwable $exception) {
+        $localeRouteError = $exception->getMessage();
+    }
+}
+
+$htmlBuildIdentityProblems = [];
+if ($manifestError === null) {
+    foreach ($manifestPageRecords as $page) {
+        $output = $page['output'] ?? null;
+        $configuration = $page['resolved_page_plan']['configuration'] ?? null;
+        if (! is_string($output) || ! is_array($configuration)) {
+            continue;
+        }
+        $locale = $configuration['locale']
+            ?? $configuration['default_locale']
+            ?? 'en';
+        $documentationVersion = $configuration['documentation_version']
+            ?? 'current';
+        $html = file_get_contents($root . '/' . $output);
+        try {
+            if (! is_string($locale)
+                || ! is_string($documentationVersion)
+                || ! is_string($html)
+            ) {
+                throw new RuntimeException(
+                    'Resolved page HTML identity inputs are incomplete.',
+                );
+            }
+            docaraAssertHtmlBuildIdentity($html, $locale, $documentationVersion);
+        } catch (Throwable $exception) {
+            $htmlBuildIdentityProblems[] = [
+                'page' => $output,
+                'reference' => '@page-build-identity',
+                'target' => $exception->getMessage(),
+            ];
+        }
+    }
+}
+
+$htmlIds = [];
+$htmlIdProblems = [];
+foreach ($htmlFiles as $htmlFile) {
+    $relativePage = str_replace('\\', '/', substr($htmlFile, strlen($root) + 1));
+    $html = file_get_contents($htmlFile);
+    if (! is_string($html)) {
+        continue;
+    }
+    try {
+        $inventory = docaraHtmlIdInventory($html);
+        $htmlIds[$relativePage] = $inventory['ids'];
+        foreach ($inventory['duplicates'] as $duplicate) {
+            $htmlIdProblems[] = [
+                'page' => $relativePage,
+                'reference' => '@duplicate-html-id',
+                'target' => $duplicate,
+            ];
+        }
+    } catch (Throwable $exception) {
+        $htmlIdProblems[] = [
+            'page' => $relativePage,
+            'reference' => '@html-fragment-inventory',
+            'target' => $exception->getMessage(),
+        ];
+    }
+}
+
+$checked = 0;
+$searchIndexReferences = [];
+$searchRuntimeReferences = [];
+$broken = array_map(
+    static fn (string $entry): array => [
+        'page' => '@build',
+        'reference' => '@unsafe-artifact-entry',
+        'target' => $entry,
+    ],
+    $unsafeArtifactEntries,
+);
+array_push($broken, ...$htmlIdProblems);
+array_push($broken, ...$htmlBuildIdentityProblems);
+if ($manifestError !== null) {
+    $broken[] = ['page' => '@build', 'reference' => '@resolved-page-plans', 'target' => $manifestError];
+} else {
+    if ($redirectError !== null) {
+        $broken[] = ['page' => '@build', 'reference' => '@redirect-contract', 'target' => $redirectError];
+    }
+    if ($localeRouteError !== null) {
+        $broken[] = ['page' => '@build', 'reference' => '@locale-route-contract', 'target' => $localeRouteError];
+    }
+    $actualHtmlOutputs = array_map(
+        static fn (string $path): string => str_replace('\\', '/', substr($path, strlen($root) + 1)),
+        $htmlFiles,
+    );
+    sort($actualHtmlOutputs, SORT_STRING);
+    $standaloneHtmlOutputs = [];
+    $standaloneManifestPath = $root . '/.docara/standalone-examples.json';
+    if (file_exists($standaloneManifestPath) || is_link($standaloneManifestPath)) {
+        try {
+            if (! docaraSafeRegularFile($standaloneManifestPath)) {
+                throw new RuntimeException('Standalone example manifest is unsafe.');
+            }
+            $standalone = json_decode((string) file_get_contents($standaloneManifestPath), true, 512, JSON_THROW_ON_ERROR);
+            if (! is_array($standalone)
+                || ($standalone['schema'] ?? null) !== 'docara.standalone_examples.v1'
+                || preg_match('/^[a-f0-9]{64}$/D', $standalone['generator_sha256'] ?? '') !== 1
+                || preg_match('/^[a-f0-9]{64}$/D', $standalone['inputs_sha256'] ?? '') !== 1
+                || ! is_array($standalone['files'] ?? null)
+                || ! array_is_list($standalone['files'])
+                || $standalone['files'] === []
+            ) {
+                throw new RuntimeException('Standalone example manifest is invalid.');
+            }
+            $seenExamplePaths = [];
+            foreach ($standalone['files'] as $record) {
+                $path = is_array($record) ? ($record['path'] ?? null) : null;
+                $sha256 = is_array($record) ? ($record['sha256'] ?? null) : null;
+                if (! is_string($path)
+                    || ! docaraCatalogSafePath($path)
+                    || ! str_starts_with($path, 'demos/')
+                    || isset($seenExamplePaths[$path])
+                    || ! is_string($sha256)
+                    || preg_match('/^[a-f0-9]{64}$/D', $sha256) !== 1
+                ) {
+                    throw new RuntimeException('Standalone example path or digest is invalid or duplicated.');
+                }
+                $seenExamplePaths[$path] = true;
+                $artifact = $root . '/' . $path;
+                if (! docaraSafeRegularFile($artifact) || hash_file('sha256', $artifact) !== $sha256) {
+                    throw new RuntimeException("Standalone example [$path] is missing, unsafe or changed.");
+                }
+                if (str_ends_with($path, '.html')) {
+                    $standaloneHtmlOutputs[] = $path;
+                }
+            }
+        } catch (Throwable $exception) {
+            $broken[] = ['page' => '@build', 'reference' => '@standalone-examples', 'target' => $exception->getMessage()];
+        }
+    }
+    $expectedHtmlOutputs = array_values(array_unique([
+        ...$manifestOutputs,
+        ...$standaloneHtmlOutputs,
+    ]));
+    sort($expectedHtmlOutputs, SORT_STRING);
+    if ($actualHtmlOutputs !== $expectedHtmlOutputs) {
+        $missing = array_values(array_diff($expectedHtmlOutputs, $actualHtmlOutputs));
+        $unexpected = array_values(array_diff($actualHtmlOutputs, $expectedHtmlOutputs));
+        $broken[] = [
+            'page' => '@build',
+            'reference' => '@resolved-page-plans',
+            'target' => 'Resolved page-plan and redirect outputs do not exactly match generated HTML files. '
+                . 'Missing: ' . json_encode($missing, JSON_UNESCAPED_SLASHES)
+                . '; unexpected: ' . json_encode($unexpected, JSON_UNESCAPED_SLASHES),
+        ];
+    }
+
+    try {
+        docaraBootstrapTrustedSource();
+        (new SchemaRepository)->assertValid(
+            $expectedFrameworkLock,
+            'framework-lock.schema.json',
+        );
+        // A project lock naming a superseded release is served the bundled
+        // release's files; check the build against that effective lock.
+        $effectiveFrameworkLock = FrameworkManifestRepository::bundled(
+            FrameworkLock::fromArray($expectedFrameworkLock),
+        )->effectiveLock()->toArray();
+        $projection = $effectiveFrameworkLock['asset_projection'] ?? null;
+        $files = is_array($projection) ? ($projection['files'] ?? null) : null;
+        if (! is_array($files) || array_is_list($files) || $files === []) {
+            throw new RuntimeException('Exact Framework asset projection is missing.');
+        }
+        $dynamicProjection = $effectiveFrameworkLock['dynamic_asset_projection'] ?? null;
+        $dynamicFiles = is_array($dynamicProjection) ? ($dynamicProjection['files'] ?? null) : [];
+        if (! is_array($dynamicFiles)
+            || array_is_list($dynamicFiles)
+            || (is_array($dynamicProjection) && $dynamicFiles === [])
+        ) {
+            throw new RuntimeException('Exact dynamic Framework asset projection is missing.');
+        }
+        foreach ($dynamicFiles as $relativePath => $record) {
+            if (isset($files[$relativePath])) {
+                throw new RuntimeException("Dynamic Framework asset [$relativePath] collides with the eager projection.");
+            }
+            $files[$relativePath] = $record;
+        }
+        $portableProjection = $manifestBuild['framework']['portable_smart_asset_projection'] ?? null;
+        $portableFiles = is_array($portableProjection) ? ($portableProjection['files'] ?? null) : null;
+        if (! is_array($portableFiles) || ($portableFiles !== [] && array_is_list($portableFiles))) {
+            throw new RuntimeException('Exact portable Framework asset projection is missing.');
+        }
+        $runtimeMount = (string) ($projection['mount'] ?? '');
+        if (! in_array($runtimeMount, ['_docara/framework', '_docara/framework-runtime'], true)) {
+            throw new RuntimeException('Exact Framework runtime mount is invalid.');
+        }
+        $assetBase = ($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/' . $runtimeMount;
+        $frameworkPlanner = new FrameworkAssetPlanner(
+            FrameworkManifestRepository::bundled(FrameworkLock::fromArray($expectedFrameworkLock)),
+            $assetBase,
+        );
+        $shellReceipt = $manifestBuild['framework']['shell'] ?? null;
+        if (! is_array($shellReceipt)
+            || ! docaraExactKeys($shellReceipt, ['schema', 'mode', 'plans'])
+            || ($shellReceipt['schema'] ?? null) !== 'docara.framework_asset_plans.v1'
+            || ($shellReceipt['mode'] ?? null) !== 'production_exact'
+            || ! is_array($shellReceipt['plans'] ?? null)
+            || array_is_list($shellReceipt['plans'])
+        ) {
+            throw new RuntimeException('Generated Framework page asset-plan receipt is invalid.');
+        }
+        $expectedShellUrls = [];
+        $expectedShellAssetOrders = [];
+        $expectedPreloadModes = [];
+        foreach ($manifestPageRecords as $pageRecord) {
+            $output = is_array($pageRecord) ? ($pageRecord['output'] ?? null) : null;
+            if (! is_string($output) || ! isset($shellReceipt['plans'][$output])) {
+                throw new RuntimeException('Generated Framework page asset plan is missing.');
+            }
+            $pagePath = $root . '/' . $output;
+            $pageHtml = docaraSafeRegularFile($pagePath) ? file_get_contents($pagePath) : false;
+            if (! is_string($pageHtml)) {
+                throw new RuntimeException('Generated Framework page asset plan references an unsafe page.');
+            }
+            $expectedPlan = $frameworkPlanner->planForHtml($pageHtml, []);
+            $pageReceipt = $shellReceipt['plans'][$output];
+            if (! is_array($pageReceipt)
+                || ! hash_equals(
+                    hash('sha256', docaraCanonicalJson($expectedPlan->receipt())),
+                    hash('sha256', docaraCanonicalJson($pageReceipt)),
+                )
+            ) {
+                throw new RuntimeException("Generated Framework page asset plan [$output] does not match final HTML.");
+            }
+            $generatedShellAssets = $pageReceipt['generated_assets'] ?? null;
+            if (! is_array($generatedShellAssets)
+                || ! array_is_list($generatedShellAssets)
+                || count($generatedShellAssets) !== 1
+            ) {
+                throw new RuntimeException('Generated Framework page asset plan must contain exactly one stylesheet.');
+            }
+            $generatedShellAsset = $generatedShellAssets[0];
+            if (! is_array($generatedShellAsset)
+                || ! docaraExactKeys($generatedShellAsset, ['key', 'kind', 'filename', 'url', 'sha256', 'inputs'])
+                || ($generatedShellAsset['key'] ?? null) !== 'docara.framework.shell.css'
+                || ($generatedShellAsset['kind'] ?? null) !== 'shell_css'
+                || ! is_string($generatedShellAsset['filename'] ?? null)
+                || preg_match('/\Adocara-shell\.[a-f0-9]{64}\.css\z/D', $generatedShellAsset['filename']) !== 1
+                || ! is_string($generatedShellAsset['sha256'] ?? null)
+                || $generatedShellAsset['filename'] !== 'docara-shell.' . $generatedShellAsset['sha256'] . '.css'
+                || ($generatedShellAsset['url'] ?? null) !== (($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/' . $generatedShellAsset['filename'])
+                || ! is_array($generatedShellAsset['inputs'] ?? null)
+                || ! array_is_list($generatedShellAsset['inputs'])
+                || $generatedShellAsset['inputs'] === []
+            ) {
+                throw new RuntimeException('Generated Framework page stylesheet metadata is invalid.');
+            }
+            foreach ($generatedShellAsset['inputs'] as $input) {
+                if (! is_array($input)
+                    || ! docaraExactKeys($input, ['source', 'sha256'])
+                    || ! is_string($input['source'] ?? null)
+                    || ! is_string($input['sha256'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $input['sha256']) !== 1
+                ) {
+                    throw new RuntimeException('Generated Framework page stylesheet input metadata is invalid.');
+                }
+            }
+            $generatedShellPath = $root . '/_docara/' . $generatedShellAsset['filename'];
+            if (! docaraSafeRegularFile($generatedShellPath)
+                || ! hash_equals($generatedShellAsset['sha256'], (string) hash_file('sha256', $generatedShellPath))
+            ) {
+                throw new RuntimeException('Generated Framework page stylesheet is missing, unsafe or hash-mismatched.');
+            }
+            $expectedShellUrls[$output] = $generatedShellAsset['url'];
+            $expectedShellAssetOrders[$output] = is_array($pageReceipt['preload']['asset_order'] ?? null)
+                ? $pageReceipt['preload']['asset_order']
+                : [];
+            $expectedPreloadModes[$output] = $pageReceipt['preload']['mode'] ?? null;
+        }
+        if (count($shellReceipt['plans']) !== count($manifestPageRecords)) {
+            throw new RuntimeException('Generated Framework page asset plans contain stale entries.');
+        }
+        $verifyProjection = static function (string $projectionRoot, array $projectedFiles, string $label): void {
+            $rootStat = @lstat($projectionRoot);
+            if (is_link($projectionRoot)
+                || ! is_array($rootStat)
+                || (($rootStat['mode'] ?? 0) & 0170000) !== 0040000
+            ) {
+                throw new RuntimeException("Materialized $label asset directory is missing or unsafe.");
+            }
+
+            $expectedAssets = [];
+            foreach ($projectedFiles as $relativePath => $record) {
+                if (! is_string($relativePath)
+                    || ! docaraCatalogSafePath($relativePath)
+                    || ! is_array($record)
+                    || array_is_list($record)
+                    || ! is_string($record['sha256'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $record['sha256']) !== 1
+                ) {
+                    throw new RuntimeException("Exact $label asset projection contains an invalid record.");
+                }
+                $path = $projectionRoot . '/' . $relativePath;
+                if (! docaraSafeRegularFile($path)) {
+                    throw new RuntimeException("Projected $label asset [$relativePath] is missing or unsafe.");
+                }
+                $actualSha = hash_file('sha256', $path);
+                if (! is_string($actualSha) || ! hash_equals($record['sha256'], $actualSha)) {
+                    throw new RuntimeException("Projected $label asset [$relativePath] has an incorrect SHA-256.");
+                }
+                $expectedAssets[] = $relativePath;
+            }
+            sort($expectedAssets, SORT_STRING);
+
+            $actualAssets = [];
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($projectionRoot, FilesystemIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::LEAVES_ONLY,
+            );
+            foreach ($iterator as $file) {
+                $path = $file->getPathname();
+                $relativePath = str_replace('\\', '/', substr($path, strlen($projectionRoot) + 1));
+                if (! $file->isFile() || ! docaraSafeRegularFile($path)) {
+                    throw new RuntimeException("Materialized $label asset [$relativePath] is unsafe.");
+                }
+                $actualAssets[] = $relativePath;
+            }
+            sort($actualAssets, SORT_STRING);
+            if ($actualAssets !== $expectedAssets) {
+                throw new RuntimeException(
+                    "Materialized $label assets do not exactly match the locked projection. Missing: "
+                    . json_encode(array_values(array_diff($expectedAssets, $actualAssets)), JSON_UNESCAPED_SLASHES)
+                    . '; unexpected: '
+                    . json_encode(array_values(array_diff($actualAssets, $expectedAssets)), JSON_UNESCAPED_SLASHES),
+                );
+            }
+        };
+        $verifyProjection($root . '/' . $runtimeMount, $files, 'Framework runtime');
+        // Product component packages are served from their own mount,
+        // exactly as their lock entry names them.
+        foreach (($effectiveFrameworkLock['package_projections'] ?? []) as $packageName => $packageProjection) {
+            $packageMount = is_array($packageProjection) ? ($packageProjection['mount'] ?? null) : null;
+            $packageFiles = is_array($packageProjection) ? ($packageProjection['files'] ?? null) : null;
+            if (! is_string($packageMount)
+                || preg_match('~\A_docara/framework-packages/[a-z][a-z0-9-]*/[a-f0-9]{40}\z~D', $packageMount) !== 1
+                || ! is_array($packageFiles)
+                || $packageFiles === []
+            ) {
+                throw new RuntimeException("Exact Framework package [$packageName] projection is invalid.");
+            }
+            $verifyProjection($root . '/' . $packageMount, $packageFiles, 'Framework package ' . $packageName);
+        }
+        if ($portableFiles !== []) {
+            $verifyProjection($root . '/_docara/framework', $portableFiles, 'portable Framework');
+        }
+    } catch (Throwable $exception) {
+        $reference = str_starts_with($exception->getMessage(), 'Generated Framework shell')
+            || str_starts_with($exception->getMessage(), 'Generated Framework page stylesheet')
+            ? '@framework-shell-asset'
+            : '@framework-asset-projection';
+        $broken[] = [
+            'page' => '@build',
+            'reference' => $reference,
+            'target' => $exception->getMessage(),
+        ];
+    }
+}
+foreach ($htmlFiles as $htmlFile) {
+    $relativeHtmlFile = str_replace('\\', '/', substr($htmlFile, strlen($root) + 1));
+    $html = file_get_contents($htmlFile);
+    if (! is_string($html)) {
+        $broken[] = ['page' => $htmlFile, 'reference' => '@unreadable'];
+
+        continue;
+    }
+    if (preg_match('/<\s*base\b/i', $html) === 1) {
+        $broken[] = [
+            'page' => str_replace('\\', '/', substr($htmlFile, strlen($root) + 1)),
+            'reference' => '@html-base-element',
+        ];
+    }
+    $expectedShellUrl = $expectedShellUrls[$relativeHtmlFile] ?? null;
+    if (is_string($expectedShellUrl)
+        && in_array($relativeHtmlFile, $contentPageOutputs, true)
+    ) {
+        $escapedShellUrl = htmlspecialchars($expectedShellUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        if (substr_count($html, 'href="' . $escapedShellUrl . '"') !== 1
+            || str_contains($html, 'href="' . (($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/declarative-shell.css') . '"')
+        ) {
+            $broken[] = [
+                'page' => $relativeHtmlFile,
+                'reference' => '@framework-shell-stylesheet',
+                'target' => 'The page does not reference exactly one generated shell stylesheet.',
+            ];
+        }
+        $lastAssetOffset = -1;
+        foreach (($expectedShellAssetOrders[$relativeHtmlFile] ?? []) as $assetKey) {
+            if (! is_string($assetKey)) {
+                continue;
+            }
+            $needle = 'data-docara-framework-asset="' . htmlspecialchars($assetKey, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"';
+            $offset = strpos($html, $needle);
+            if ($offset === false || $offset <= $lastAssetOffset || substr_count($html, $needle) !== 1) {
+                $broken[] = [
+                    'page' => $relativeHtmlFile,
+                    'reference' => '@framework-preload-order',
+                    'target' => "Preloaded Framework asset [$assetKey] is missing, duplicated or out of order.",
+                ];
+                break;
+            }
+            $lastAssetOffset = $offset;
+        }
+        $preloadOffset = strpos($html, 'data-docara-framework-asset="simai.framework.preloaded"');
+        $coreOffset = strpos($html, 'data-docara-framework-asset="simai.framework.core.js"');
+        if (($expectedPreloadModes[$relativeHtmlFile] ?? null) === 'production_exact'
+            && ($preloadOffset === false || $coreOffset === false || $preloadOffset >= $coreOffset)
+        ) {
+            $broken[] = [
+                'page' => $relativeHtmlFile,
+                'reference' => '@framework-preload-contract',
+                'target' => 'SF_PRELOADED must be declared exactly before Framework Core.',
+            ];
+        }
+    }
+    preg_match_all(
+        '/\bdata-docara-search-index\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i',
+        $html,
+        $searchMatches,
+        PREG_SET_ORDER,
+    );
+    foreach ($searchMatches as $match) {
+        $searchIndexReferences[] = html_entity_decode(
+            $match[1] !== '' ? $match[1] : $match[2],
+            ENT_QUOTES | ENT_HTML5,
+        );
+    }
+    preg_match_all(
+        '/<script\b(?=[^>]*\bdata-docara-search-runtime\b)[^>]*\bsrc\s*=\s*(?:"([^"]*)"|\'([^\']*)\')[^>]*>/i',
+        $html,
+        $runtimeMatches,
+        PREG_SET_ORDER,
+    );
+    foreach ($runtimeMatches as $match) {
+        $searchRuntimeReferences[] = html_entity_decode(
+            $match[1] !== '' ? $match[1] : $match[2],
+            ENT_QUOTES | ENT_HTML5,
+        );
+    }
+    $referenceHtml = preg_replace(
+        '/<(pre|code)\b[^>]*>.*?<\/\1>/isu',
+        '',
+        $html,
+    );
+    if (! is_string($referenceHtml)) {
+        $referenceHtml = $html;
+    }
+    preg_match_all('/\b(?:href|src|data-docara-search-index)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i', $referenceHtml, $matches, PREG_SET_ORDER);
+    foreach ($matches as $match) {
+        $reference = html_entity_decode($match[1] !== '' ? $match[1] : $match[2], ENT_QUOTES | ENT_HTML5);
+        if ($reference === ''
+            || str_starts_with($reference, '//')
+            || preg_match('/\A[a-z][a-z0-9+.-]*:/i', $reference) === 1
+        ) {
+            continue;
+        }
+
+        $checked++;
+        $fragmentOffset = strpos($reference, '#');
+        $encodedFragment = $fragmentOffset === false ? null : substr($reference, $fragmentOffset + 1);
+        $encodedPath = preg_split('/[?#]/', $reference, 2)[0] ?? '';
+        if (str_contains($encodedPath, '\\')
+            || preg_match('/%(?![0-9A-Fa-f]{2})/', $encodedPath) === 1
+        ) {
+            $broken[] = [
+                'page' => str_replace('\\', '/', substr($htmlFile, strlen($root) + 1)),
+                'reference' => $reference,
+                'target' => '@unsafe-percent-encoding',
+            ];
+
+            continue;
+        }
+        $decodedSegments = [];
+        $unsafeDecodedSegment = false;
+        foreach (explode('/', $encodedPath) as $encodedSegment) {
+            $decodedSegment = rawurldecode($encodedSegment);
+            if (str_contains($decodedSegment, '/')
+                || str_contains($decodedSegment, '\\')
+                || str_contains($decodedSegment, "\0")
+                || preg_match('//u', $decodedSegment) !== 1
+                || (($decodedSegment === '.' || $decodedSegment === '..') && $decodedSegment !== $encodedSegment)
+            ) {
+                $unsafeDecodedSegment = true;
+                break;
+            }
+            $decodedSegments[] = $decodedSegment;
+        }
+        if ($unsafeDecodedSegment) {
+            $broken[] = [
+                'page' => str_replace('\\', '/', substr($htmlFile, strlen($root) + 1)),
+                'reference' => $reference,
+                'target' => '@unsafe-decoded-path-segment',
+            ];
+
+            continue;
+        }
+        $path = implode('/', $decodedSegments);
+        $relativePage = str_replace('\\', '/', substr($htmlFile, strlen($root) + 1));
+        if ($path === '') {
+            $candidate = $relativePage;
+        } elseif (str_starts_with($path, '/')) {
+            $baseWithoutSlash = rtrim($deploymentBase, '/');
+            if ($deploymentBase === '/') {
+                $candidate = ltrim($path, '/');
+            } elseif ($path === $baseWithoutSlash) {
+                $candidate = '';
+            } elseif (str_starts_with($path, $deploymentBase)) {
+                $candidate = substr($path, strlen($deploymentBase));
+            } else {
+                $broken[] = [
+                    'page' => $relativePage,
+                    'reference' => $reference,
+                    'target' => '@outside-deployment-base',
+                ];
+
+                continue;
+            }
+        } else {
+            $candidate = dirname($relativePage) . '/' . $path;
+        }
+        $segments = [];
+        foreach (explode('/', str_replace('\\', '/', $candidate)) as $segment) {
+            if ($segment === '' || $segment === '.') {
+                continue;
+            }
+            if ($segment === '..') {
+                if ($segments === []) {
+                    $segments = ['@outside-root'];
+                    break;
+                }
+                array_pop($segments);
+
+                continue;
+            }
+            $segments[] = $segment;
+        }
+        $relativeTarget = implode('/', $segments);
+        if ($relativeTarget === '' || str_ends_with($path, '/')) {
+            $relativeTarget = rtrim($relativeTarget, '/') . '/index.html';
+            $relativeTarget = ltrim($relativeTarget, '/');
+        }
+        $target = $root . '/' . $relativeTarget;
+        if (is_dir($target) && is_file($target . '/index.html')) {
+            $relativeTarget = rtrim($relativeTarget, '/') . '/index.html';
+            $target = $root . '/' . $relativeTarget;
+        }
+        $realTarget = realpath($target);
+        if ($realTarget === false
+            || ! is_file($realTarget)
+            || ($realTarget !== $root && ! str_starts_with($realTarget, $root . DIRECTORY_SEPARATOR))
+        ) {
+            $broken[] = [
+                'page' => $relativePage,
+                'reference' => $reference,
+                'target' => $relativeTarget,
+            ];
+
+            continue;
+        }
+
+        if ($encodedFragment !== null && $encodedFragment !== '' && str_ends_with($relativeTarget, '.html')) {
+            if (preg_match('/%(?![0-9A-Fa-f]{2})/', $encodedFragment) === 1) {
+                $broken[] = [
+                    'page' => $relativePage,
+                    'reference' => $reference,
+                    'target' => '@unsafe-fragment-encoding',
+                ];
+
+                continue;
+            }
+            $fragment = rawurldecode($encodedFragment);
+            if (str_contains($fragment, "\0") || preg_match('//u', $fragment) !== 1) {
+                $broken[] = [
+                    'page' => $relativePage,
+                    'reference' => $reference,
+                    'target' => '@unsafe-fragment-encoding',
+                ];
+
+                continue;
+            }
+            if (! isset($htmlIds[$relativeTarget][$fragment])) {
+                $broken[] = [
+                    'page' => $relativePage,
+                    'reference' => $reference,
+                    'target' => '@missing-fragment:' . $fragment,
+                ];
+            }
+        }
+    }
+}
+
+if ($manifestError === null) {
+    $searchIndexPath = $root . '/_docara/search-index.json';
+    $searchRuntimePath = $root . '/_docara/search.js';
+    if (! $searchEnabled) {
+        if (file_exists($searchIndexPath)
+            || file_exists($searchRuntimePath)
+            || $searchIndexReferences !== []
+            || $searchRuntimeReferences !== []
+        ) {
+            $broken[] = [
+                'page' => '@build',
+                'reference' => '@search-artifacts-unexpected',
+                'target' => 'Search artifacts or references exist while search is disabled.',
+            ];
+        }
+    } elseif (! docaraSafeRegularFile($searchIndexPath) || ! docaraSafeRegularFile($searchRuntimePath)) {
+        $broken[] = [
+            'page' => '@build',
+            'reference' => '@search-artifacts-missing',
+            'target' => 'Enabled search requires safe search-index.json and search.js files.',
+        ];
+    } else {
+        try {
+            $searchIndex = json_decode(
+                (string) file_get_contents($searchIndexPath),
+                true,
+                512,
+                JSON_THROW_ON_ERROR,
+            );
+            if (! is_array($searchIndex)
+                || array_is_list($searchIndex)
+                || ! docaraExactKeys(
+                    $searchIndex,
+                    ['schema', 'version', 'algorithm', 'content_sha256', 'documents'],
+                )
+                || ($searchIndex['schema'] ?? null) !== 'docara.search_index.v1'
+                || ($searchIndex['version'] ?? null) !== 1
+                || ($searchIndex['algorithm'] ?? null) !== 'docara-prefix-v1'
+                || ! is_string($searchIndex['content_sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $searchIndex['content_sha256']) !== 1
+                || ! is_array($searchIndex['documents'] ?? null)
+                || ! array_is_list($searchIndex['documents'])
+                || $searchIndex['documents'] === []
+            ) {
+                throw new RuntimeException('Search index root contract is invalid.');
+            }
+
+            $actualSearchDocuments = [];
+            $documentIds = [];
+            $previousIdentity = null;
+            foreach ($searchIndex['documents'] as $index => $document) {
+                if (! is_array($document)
+                    || array_is_list($document)
+                    || ! docaraExactKeys(
+                        $document,
+                        ['id', 'url', 'locale', 'title', 'description', 'trail', 'headings', 'text'],
+                    )
+                    || ! is_string($document['id'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $document['id']) !== 1
+                    || ! is_string($document['url'] ?? null)
+                    || ! docaraSearchUrlIsSafe($document['url'], $deploymentBase)
+                    || ! is_string($document['locale'] ?? null)
+                    || ! LocaleTag::isWellFormed($document['locale'])
+                    || ! is_string($document['title'] ?? null)
+                    || $document['title'] === ''
+                    || ! is_string($document['description'] ?? null)
+                    || ! is_array($document['trail'] ?? null)
+                    || ! array_is_list($document['trail'])
+                    || ! is_array($document['headings'] ?? null)
+                    || ! array_is_list($document['headings'])
+                    || ! is_string($document['text'] ?? null)
+                ) {
+                    throw new RuntimeException("Search document [$index] has an invalid contract.");
+                }
+                foreach ($document['trail'] as $part) {
+                    if (! is_string($part) || $part === '') {
+                        throw new RuntimeException("Search document [$index] has an invalid trail.");
+                    }
+                }
+                foreach ($document['headings'] as $headingIndex => $heading) {
+                    if (! is_array($heading)
+                        || array_is_list($heading)
+                        || ! docaraExactKeys($heading, ['level', 'text'])
+                        || ! is_int($heading['level'] ?? null)
+                        || $heading['level'] < 1
+                        || $heading['level'] > 6
+                        || ! is_string($heading['text'] ?? null)
+                        || $heading['text'] === ''
+                    ) {
+                        throw new RuntimeException(
+                            "Search document [$index] heading [$headingIndex] has an invalid contract.",
+                        );
+                    }
+                }
+
+                $identity = $document['locale'] . "\0" . $document['url'];
+                if ($previousIdentity !== null && strcmp($previousIdentity, $identity) >= 0) {
+                    throw new RuntimeException('Search documents are not strictly sorted or contain duplicates.');
+                }
+                $previousIdentity = $identity;
+                if (isset($documentIds[$document['id']])) {
+                    throw new RuntimeException('Search document id is duplicated.');
+                }
+                $documentIds[$document['id']] = true;
+                if ($document['id'] !== hash('sha256', $identity)) {
+                    throw new RuntimeException("Search document [$index] id does not match locale and URL.");
+                }
+                $actualSearchDocuments[] = $identity;
+            }
+
+            if ($actualSearchDocuments !== $expectedSearchDocuments) {
+                throw new RuntimeException('Search documents do not exactly match indexed manifest pages.');
+            }
+            $calculatedContentHash = hash('sha256', docaraCanonicalJson($searchIndex['documents']));
+            if (! hash_equals($calculatedContentHash, $searchIndex['content_sha256'])) {
+                throw new RuntimeException('Search content_sha256 does not match canonical documents.');
+            }
+            $runtimeHash = hash_file('sha256', $searchRuntimePath);
+            if (! is_string($runtimeHash)) {
+                throw new RuntimeException('Search runtime hash could not be calculated.');
+            }
+            $expectedIndexReference = $deploymentBase . '_docara/search-index.json?docara_v='
+                . $searchIndex['content_sha256'];
+            $expectedRuntimeReference = $deploymentBase . '_docara/search.js?docara_v=' . $runtimeHash;
+            if (count($searchIndexReferences) !== $expectedSearchSurfaceCount
+                || array_values(array_unique($searchIndexReferences)) !== [$expectedIndexReference]
+            ) {
+                throw new RuntimeException('Search index references do not match the generated content revision.');
+            }
+            if (count($searchRuntimeReferences) !== $expectedSearchSurfaceCount
+                || array_values(array_unique($searchRuntimeReferences)) !== [$expectedRuntimeReference]
+            ) {
+                throw new RuntimeException('Search runtime references do not match the generated byte revision.');
+            }
+        } catch (Throwable $exception) {
+            $broken[] = [
+                'page' => '@build',
+                'reference' => '@search-index-contract',
+                'target' => $exception->getMessage(),
+            ];
+        }
+    }
+}
+
+if ($manifestError === null) {
+    $catalogPath = $root . '/_docara/component-catalog.json';
+    if (! docaraSafeRegularFile($catalogPath)) {
+        $broken[] = [
+            'page' => '@build',
+            'reference' => '@component-catalog-contract',
+            'target' => 'The effective component catalogue is missing or unsafe.',
+        ];
+    } else {
+        try {
+            $catalog = json_decode(
+                (string) file_get_contents($catalogPath),
+                true,
+                512,
+                JSON_THROW_ON_ERROR,
+            );
+            if (! is_array($catalog)
+                || array_is_list($catalog)
+                || ! docaraExactKeys(
+                    $catalog,
+                    [
+                        'schema',
+                        'version',
+                        'framework_pair',
+                        'provider_revision',
+                        'content_sha256',
+                        'entries',
+                        'nonclaims',
+                    ],
+                )
+                || ($catalog['schema'] ?? null) !== 'docara.effective_component_catalog.v1'
+                || ($catalog['version'] ?? null) !== 1
+                || ! is_string($catalog['framework_pair'] ?? null)
+                || $catalog['framework_pair'] !== $expectedFrameworkPair
+                || ! is_string($catalog['provider_revision'] ?? null)
+                || $catalog['provider_revision'] !== $expectedFrameworkProviderRevision
+                || ! is_string($catalog['content_sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $catalog['content_sha256']) !== 1
+                || ! is_array($catalog['entries'] ?? null)
+                || ! array_is_list($catalog['entries'])
+                || $catalog['entries'] === []
+            ) {
+                throw new RuntimeException('Effective component catalogue root contract is invalid.');
+            }
+            $nonclaims = $catalog['nonclaims'] ?? null;
+            if (! is_array($nonclaims)
+                || array_is_list($nonclaims)
+                || ! docaraExactKeys(
+                    $nonclaims,
+                    [
+                        'catalog_is_canonical_framework_registry',
+                        'all_framework_components_supported',
+                        'production_ready',
+                        'public_release_ready',
+                    ],
+                )
+            ) {
+                throw new RuntimeException('Effective component catalogue nonclaims are incomplete.');
+            }
+            foreach ($nonclaims as $value) {
+                if ($value !== false) {
+                    throw new RuntimeException('Effective component catalogue contains a readiness overclaim.');
+                }
+            }
+
+            $previousId = null;
+            $supportedSmart = [];
+            foreach ($catalog['entries'] as $index => $entry) {
+                if (! is_array($entry) || array_is_list($entry)) {
+                    throw new RuntimeException("Effective component catalogue entry [$index] is invalid.");
+                }
+                $contractError = docaraCatalogEntryContractError(
+                    $entry,
+                    (string) $expectedFrameworkPair,
+                    (string) $expectedFrameworkProviderRevision,
+                );
+                if ($contractError !== null) {
+                    throw new RuntimeException("Effective component catalogue entry [$index]: $contractError");
+                }
+                if ($previousId !== null && strcmp($previousId, $entry['id']) >= 0) {
+                    throw new RuntimeException('Effective component catalogue entries are not strictly sorted or contain duplicates.');
+                }
+                $previousId = $entry['id'];
+
+                $provenance = $entry['provenance'] ?? null;
+                if (! is_array($provenance) || array_is_list($provenance)) {
+                    throw new RuntimeException("Effective component catalogue entry [$index] has invalid provenance.");
+                }
+                foreach (['definition_ref', 'manifest_ref', 'admission_authority'] as $pathKey) {
+                    if (isset($provenance[$pathKey])
+                        && (! is_string($provenance[$pathKey]) || ! docaraCatalogSafePath($provenance[$pathKey]))
+                    ) {
+                        throw new RuntimeException("Effective component catalogue entry [$index] has unsafe provenance.");
+                    }
+                }
+
+                if ($entry['lifecycle'] === 'supported') {
+                    foreach (['renderer', 'tests', 'docs', 'demo'] as $evidenceKey) {
+                        if (($entry['verification'][$evidenceKey] ?? null) !== true) {
+                            throw new RuntimeException(
+                                "Supported component catalogue entry [$index] has incomplete evidence.",
+                            );
+                        }
+                    }
+                    if ($entry['family'] === 'framework_smart') {
+                        $supportedSmart[] = $entry['id'];
+                    }
+                } else {
+                    if (($entry['verification']['demo'] ?? null) !== false) {
+                        throw new RuntimeException(
+                            "Unavailable component catalogue entry [$index] incorrectly claims a live demo.",
+                        );
+                    }
+                    $gap = $entry['gap'] ?? null;
+                    foreach (['owner'] as $gapKey) {
+                        if (! is_array($gap)
+                            || ! is_string($gap[$gapKey] ?? null)
+                            || trim($gap[$gapKey]) === ''
+                        ) {
+                            throw new RuntimeException(
+                                "Unavailable component catalogue entry [$index] lacks a complete gap contract.",
+                            );
+                        }
+                    }
+                }
+            }
+            if ($supportedSmart !== $expectedSupportedComponents) {
+                throw new RuntimeException('Supported Smart catalogue entries do not match the exact runtime admission set.');
+            }
+            $calculatedContentHash = hash('sha256', docaraCanonicalJson($catalog['entries']));
+            if (! hash_equals($calculatedContentHash, $catalog['content_sha256'])) {
+                throw new RuntimeException('Effective component catalogue content_sha256 does not match canonical entries.');
+            }
+            $catalogPolicies = [];
+            foreach ($catalog['entries'] as $entry) {
+                if (($entry['family'] ?? null) === 'framework_smart') {
+                    $catalogPolicies[$entry['id']] = $entry['consumer_policy'];
+                }
+            }
+            if (hash('sha256', docaraCanonicalJson($catalogPolicies)) !== $expectedConsumerPolicyHash) {
+                throw new RuntimeException(
+                    'Smart catalogue consumer policies do not match the exact runtime policy receipt.',
+                );
+            }
+            docaraBootstrapTrustedSource();
+            $trustedCatalog = EffectiveComponentCatalogBuilder::bundled(
+                FrameworkLock::fromArray($expectedFrameworkLock),
+            )->build();
+            if (docaraCanonicalJson($catalog) !== docaraCanonicalJson($trustedCatalog)) {
+                throw new RuntimeException(
+                    'Effective component catalogue does not match the trusted source projection.',
+                );
+            }
+            if (! is_string($expectedBuildComponentCatalogHash)
+                || ! hash_equals(
+                    $expectedBuildComponentCatalogHash,
+                    hash('sha256', docaraCanonicalJson($catalog)),
+                )
+            ) {
+                throw new RuntimeException('Effective component catalogue does not match the resolved build provenance hash.');
+            }
+            $trustedCatalogVerified = true;
+            // The Smart revision the site is served: the bundled release's when
+            // the project lock names a superseded one.
+            $servedSmartRevision = FrameworkManifestRepository::bundled(
+                FrameworkLock::fromArray($expectedFrameworkLock),
+            )->effectiveLock()->runtime()['ui_smart']['commit'] ?? $expectedFrameworkSmartRevision;
+            foreach ($catalog['entries'] as $entry) {
+                if (($entry['family'] ?? null) === 'framework_smart'
+                    && ($entry['provenance']['upstream_revision'] ?? null) !== $servedSmartRevision
+                ) {
+                    throw new RuntimeException(
+                        'Supported Smart catalogue provenance does not match the exact runtime revision.',
+                    );
+                }
+            }
+            $encodedCatalog = docaraCanonicalJson($catalog);
+            if (preg_match('~(?:^|[/@])(?:main|master|latest)(?:$|[/])~i', $encodedCatalog) === 1
+                || docaraCatalogContainsAbsoluteFilesystemReference($catalog)
+            ) {
+                throw new RuntimeException('Effective component catalogue contains unsafe provenance or a moving reference.');
+            }
+        } catch (Throwable $exception) {
+            $broken[] = [
+                'page' => '@build',
+                'reference' => '@component-catalog-contract',
+                'target' => $exception->getMessage(),
+            ];
+        }
+    }
+
+    try {
+        $componentIndexReceiptPath = $root . '/.docara/component-index.json';
+        $componentIndexReceipt = (file_exists($componentIndexReceiptPath) || is_link($componentIndexReceiptPath))
+            ? docaraComponentIndexReceipt($componentIndexReceiptPath)
+            : null;
+        $expectedIndexes = [];
+        foreach ($manifestPageRecords as $page) {
+            $route = $page['url'] ?? null;
+            if (($page['page_source_kind'] ?? null) !== 'authored_markdown'
+                || ! is_string($route)
+                || preg_match('#\A/(?:[^/]+/)*components/\z#D', $route) !== 1
+            ) {
+                continue;
+            }
+            $entries = [];
+            foreach ($manifestPageRecords as $candidate) {
+                $candidateUrl = $candidate['url'] ?? null;
+                if (($candidate['page_source_kind'] ?? null) !== 'authored_markdown'
+                    || ! is_string($candidateUrl)
+                    || preg_match('#\A' . preg_quote($route, '#') . '[^/]+/\z#D', $candidateUrl) !== 1
+                ) {
+                    continue;
+                }
+                $entries[] = [
+                    'url' => $candidateUrl,
+                    'title' => trim((string) ($candidate['title'] ?? '')),
+                    'description' => trim((string) ($candidate['description'] ?? '')),
+                ];
+            }
+            usort(
+                $entries,
+                static fn (array $left, array $right): int => strnatcasecmp($left['title'], $right['title'])
+                    ?: strcmp($left['url'], $right['url']),
+            );
+            $output = $page['output'] ?? null;
+            if (! is_string($output) || ! docaraSafeRegularFile($root . '/' . $output)) {
+                throw new RuntimeException("Authored component index [$route] output is missing or unsafe.");
+            }
+            $html = (string) file_get_contents($root . '/' . $output);
+            $document = new DOMDocument('1.0', 'UTF-8');
+            $previous = libxml_use_internal_errors(true);
+            $loaded = $document->loadHTML(
+                '<?xml encoding="utf-8" ?>' . $html,
+                LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING,
+            );
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+            if ($loaded !== true) {
+                throw new RuntimeException("Authored component index [$route] HTML is invalid.");
+            }
+            $xpath = new DOMXPath($document);
+            if (is_array($componentIndexReceipt['indexes'][$route] ?? null)) {
+                $expectedIndexes[$route] = $entries;
+                $nodes = $xpath->query('//*[@data-docara-component-index-view]//li/a');
+                if ($nodes === false || $nodes->length !== count($entries)) {
+                    throw new RuntimeException("Authored component index [$route] rendered entry count is invalid.");
+                }
+                foreach ($entries as $position => $entry) {
+                    $node = $nodes->item($position);
+                    if (! $node instanceof DOMElement
+                        || $node->getAttribute('href') !== $entry['url']
+                        || trim($node->textContent) !== $entry['title']
+                    ) {
+                        throw new RuntimeException("Authored component index [$route] rendered entry is invalid.");
+                    }
+                }
+
+                continue;
+            }
+
+            $nodes = $xpath->query('//main//a[starts-with(@href, "' . $route . '")]');
+            $renderedUrls = [];
+            if ($nodes !== false) {
+                foreach ($nodes as $node) {
+                    if (! $node instanceof DOMElement) {
+                        continue;
+                    }
+                    $href = $node->getAttribute('href');
+                    if (preg_match('#\A' . preg_quote($route, '#') . '[^/]+/\z#D', $href) === 1) {
+                        $renderedUrls[$href] = true;
+                    }
+                }
+            }
+            $expectedUrls = array_column($entries, 'url');
+            $actualUrls = array_keys($renderedUrls);
+            sort($expectedUrls, SORT_STRING);
+            sort($actualUrls, SORT_STRING);
+            if ($actualUrls !== $expectedUrls) {
+                throw new RuntimeException("Authored component catalog [$route] does not link every exact component page once.");
+            }
+        }
+        ksort($expectedIndexes, SORT_STRING);
+        if ($expectedIndexes !== [] && ! is_array($componentIndexReceipt)) {
+            throw new RuntimeException('Authored component index requires a hash-bound receipt.');
+        }
+        if (is_array($componentIndexReceipt)
+            && docaraCanonicalJson($componentIndexReceipt['indexes']) !== docaraCanonicalJson($expectedIndexes)
+        ) {
+            throw new RuntimeException('Component index receipt does not match authored PageBuilder metadata.');
+        }
+    } catch (Throwable $exception) {
+        $broken[] = [
+            'page' => '@build',
+            'reference' => '@component-index-contract',
+            'target' => $exception->getMessage(),
+        ];
+    }
+}
+
+if (is_array($manifestBuild['public_projections'] ?? null)) {
+    try {
+        docaraBootstrapTrustedSource();
+        $atlasPath = $root . '/.docara/design-atlas.json';
+        $atlasReceipt = json_decode((string) file_get_contents($atlasPath), true, 512, JSON_THROW_ON_ERROR);
+        if (! docaraSafeRegularFile($atlasPath)
+            || ! is_array($atlasReceipt)
+            || ! docaraExactKeys($atlasReceipt, ['schema', 'content_sha256', 'atlas'])
+            || ($atlasReceipt['schema'] ?? null) !== 'docara.public_atlas_projection.v1'
+            || ! is_array($atlasReceipt['atlas'] ?? null)
+            || ! is_string($atlasReceipt['content_sha256'] ?? null)
+            || ! hash_equals($atlasReceipt['content_sha256'], hash('sha256', docaraCanonicalJson($atlasReceipt['atlas'])))
+        ) {
+            throw new RuntimeException('Public Atlas projection receipt is invalid.');
+        }
+        (new JsonSchemaValidator(new SchemaRepository))->assertValid($atlasReceipt['atlas'], 'design-atlas.schema.json');
+
+        $schemaPath = $root . '/.docara/schema-reference.json';
+        $schemaReceipt = json_decode((string) file_get_contents($schemaPath), true, 512, JSON_THROW_ON_ERROR);
+        $schemaFiles = [
+            'site' => 'site.schema.json',
+            'section' => 'section.schema.json',
+            'page' => 'page.schema.json',
+            'presentation' => 'presentation.schema.json',
+            'framework-lock' => 'framework-lock.schema.json',
+        ];
+        if (! docaraSafeRegularFile($schemaPath)
+            || ! is_array($schemaReceipt)
+            || ! docaraExactKeys($schemaReceipt, ['schema', 'content_sha256', 'sources'])
+            || ($schemaReceipt['schema'] ?? null) !== 'docara.public_schema_reference.v1'
+            || ! is_array($schemaReceipt['sources'] ?? null)
+            || ! hash_equals($schemaReceipt['content_sha256'] ?? '', hash('sha256', docaraCanonicalJson($schemaReceipt['sources'])))
+        ) {
+            throw new RuntimeException('Public schema-reference receipt is invalid.');
+        }
+        $repository = new SchemaRepository;
+        foreach ($schemaFiles as $name => $file) {
+            $expected = hash('sha256', docaraCanonicalJson($repository->get($file)));
+            if (! is_string($schemaReceipt['sources'][$name] ?? null)
+                || ! hash_equals($expected, $schemaReceipt['sources'][$name])
+            ) {
+                throw new RuntimeException("Public schema-reference source [$name] differs from the trusted package schema.");
+            }
+        }
+
+        $examplesPath = $root . '/.docara/examples.json';
+        $examplesReceipt = json_decode((string) file_get_contents($examplesPath), true, 512, JSON_THROW_ON_ERROR);
+        if (! docaraSafeRegularFile($examplesPath)
+            || ! is_array($examplesReceipt)
+            || ! docaraExactKeys($examplesReceipt, ['schema', 'examples', 'previews', 'content_sha256'])
+            || ($examplesReceipt['schema'] ?? null) !== 'docara.example_receipt.v1'
+            || ! is_array($examplesReceipt['examples'] ?? null)
+            || ! is_array($examplesReceipt['previews'] ?? null)
+            || ! hash_equals(
+                (string) ($examplesReceipt['content_sha256'] ?? ''),
+                hash('sha256', docaraCanonicalJson([
+                    'schema' => 'docara.example_receipt.v1',
+                    'examples' => $examplesReceipt['examples'],
+                    'previews' => $examplesReceipt['previews'],
+                ])),
+            )
+        ) {
+            throw new RuntimeException('Project example receipt is invalid.');
+        }
+        $previousExample = null;
+        foreach ($examplesReceipt['examples'] as $example) {
+            if (! is_array($example)
+                || ! docaraExactKeys($example, ['id', 'content_sha256', 'sources', 'assets', 'consumers'])
+                || preg_match('#\A[a-z0-9][a-z0-9._-]*(?:/[a-z0-9][a-z0-9._-]*)*\z#D', (string) ($example['id'] ?? '')) !== 1
+                || ! is_array($example['sources'] ?? null)
+                || ! is_array($example['assets'] ?? null)
+                || ! is_array($example['consumers'] ?? null)
+                || ($previousExample !== null && strcmp($previousExample, $example['id']) >= 0)
+            ) {
+                throw new RuntimeException('Project example records are invalid or unsorted.');
+            }
+            $previousExample = $example['id'];
+            $previousConsumer = null;
+            foreach ($example['consumers'] as $consumer) {
+                if (! is_string($consumer) || $consumer === ''
+                    || ($previousConsumer !== null && strcmp($previousConsumer, $consumer) >= 0)
+                ) {
+                    throw new RuntimeException("Project example [{$example['id']}] consumers are invalid or unsorted.");
+                }
+                $previousConsumer = $consumer;
+            }
+            $previousAsset = null;
+            foreach ($example['assets'] as $asset) {
+                if (! is_array($asset)
+                    || ! docaraExactKeys($asset, ['path', 'output', 'size', 'sha256'])
+                    || ! is_string($asset['output'] ?? null)
+                    || ($previousAsset !== null && strcmp($previousAsset, $asset['output']) >= 0)
+                ) {
+                    throw new RuntimeException("Project example [{$example['id']}] assets are invalid or unsorted.");
+                }
+                $previousAsset = $asset['output'];
+                $assetPath = $root . '/' . $asset['output'];
+                if (! docaraSafeRegularFile($assetPath)
+                    || filesize($assetPath) !== $asset['size']
+                    || ! hash_equals((string) ($asset['sha256'] ?? ''), (string) hash_file('sha256', $assetPath))
+                ) {
+                    throw new RuntimeException("Project example asset [{$asset['output']}] differs from its receipt.");
+                }
+            }
+        }
+        $previousPreview = null;
+        foreach ($examplesReceipt['previews'] as $preview) {
+            if (! is_array($preview)
+                || ! docaraExactKeys($preview, ['id', 'consumer', 'requested_preview', 'resolved_preview', 'reason', 'source_sha256'])
+                || preg_match('/\Amarkdown-example-[a-f0-9]{12}\z/D', (string) ($preview['id'] ?? '')) !== 1
+                || ! is_string($preview['consumer'] ?? null)
+                || $preview['consumer'] === ''
+                || ! in_array($preview['requested_preview'] ?? null, ['auto', 'inline', 'sandbox'], true)
+                || ! in_array($preview['resolved_preview'] ?? null, ['inline', 'sandbox'], true)
+                || preg_match('/\A[a-z][a-z0-9_]*\z/D', (string) ($preview['reason'] ?? '')) !== 1
+                || preg_match('/\A[a-f0-9]{64}\z/D', (string) ($preview['source_sha256'] ?? '')) !== 1
+            ) {
+                throw new RuntimeException('Project example preview records are invalid.');
+            }
+            $previewOrder = $preview['consumer'] . "\0" . $preview['id'];
+            if ($previousPreview !== null && strcmp($previousPreview, $previewOrder) >= 0) {
+                throw new RuntimeException('Project example preview records are unsorted or duplicated.');
+            }
+            $previousPreview = $previewOrder;
+        }
+        $performancePath = $root . '/.docara/performance.json';
+        if (! docaraSafeRegularFile($performancePath)) {
+            throw new RuntimeException('Performance receipt is missing or unsafe.');
+        }
+        $performanceReceipt = json_decode(
+            (string) file_get_contents($performancePath),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        (new SchemaRepository)->assertValid($performanceReceipt, 'performance-receipt.schema.json');
+        $expectedPerformanceReceipt = (new PortablePerformanceReceipt(new Filesystem))->build(
+            $root,
+            $deploymentBase,
+            $manifestPageRecords,
+        );
+        if (! is_array($performanceReceipt)
+            || ! hash_equals(
+                hash('sha256', docaraCanonicalJson($expectedPerformanceReceipt)),
+                hash('sha256', docaraCanonicalJson($performanceReceipt)),
+            )
+        ) {
+            throw new RuntimeException('Performance receipt does not match generated initial resources.');
+        }
+
+        $projectionContract = $manifestBuild['public_projections'];
+        if (! docaraExactKeys($projectionContract, ['design_atlas_sha256', 'examples_sha256', 'performance_sha256', 'schema_reference_sha256'])
+            || ! hash_equals((string) ($projectionContract['design_atlas_sha256'] ?? ''), $atlasReceipt['content_sha256'])
+            || ! hash_equals((string) ($projectionContract['examples_sha256'] ?? ''), $examplesReceipt['content_sha256'])
+            || ! hash_equals((string) ($projectionContract['performance_sha256'] ?? ''), $performanceReceipt['content_sha256'])
+            || ! hash_equals((string) ($projectionContract['schema_reference_sha256'] ?? ''), $schemaReceipt['content_sha256'])
+        ) {
+            throw new RuntimeException('Public projections do not match the accepted build receipt.');
+        }
+    } catch (Throwable $exception) {
+        $broken[] = [
+            'page' => '@build',
+            'reference' => '@public-registry-schema-projections',
+            'target' => $exception->getMessage(),
+        ];
+    }
+}
+
+$result = [
+    'schema' => 'docara.static_build_verification.v1',
+    'deployment_base' => $deploymentBase,
+    'html_pages' => count($htmlFiles),
+    'local_references_checked' => $checked,
+    'broken' => $broken,
+];
+fwrite(STDOUT, json_encode($result, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
+
+exit($broken === [] ? 0 : 1);

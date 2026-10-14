@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.view",
+  "smart": "variant.card",
+  "code": "compact",
+  "template": "default",
+  "props": {"dense": true}
+}

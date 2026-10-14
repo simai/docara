@@ -1,0 +1,11 @@
+@layer sf.utilities {
+  .isolate {
+    isolation: isolate;
+  }
+  .isolation-auto {
+    isolation: auto;
+  }
+  .auto {
+    isolation: auto;
+  }
+}

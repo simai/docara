@@ -1,0 +1,46 @@
+name: Bug report
+description: Something in Docara does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. For a security problem, do not open an issue: see SECURITY.md.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: The commands you ran and the smallest page or docara.json that shows the problem.
+      placeholder: |
+        php vendor/bin/docara init . --lang=en
+        # edit content/en/index.md: ...
+        php vendor/bin/docara build production
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: The full error message or command output. Add --json where the command supports it.
+      render: text
+  - type: input
+    id: docara-version
+    attributes:
+      label: Docara version
+      description: Output of `php vendor/bin/docara --version`.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: PHP, Node.js and operating system
+      placeholder: PHP 8.3.12, Node.js 20.19, macOS 15
+    validations:
+      required: true

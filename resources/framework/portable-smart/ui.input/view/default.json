@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.view",
+  "smart": "ui.input",
+  "code": "default",
+  "title": "Default input",
+  "template": "default",
+  "props": {}
+}

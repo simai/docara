@@ -1,0 +1,127 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Simai\Docara\PortableSite;
+
+use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
+use Simai\Docara\Document\DocumentRenderContext;
+use Simai\Docara\Document\DocumentRendererRegistry;
+use Simai\Docara\Document\MarkdownCompiler;
+use Simai\Docara\Framework\FrameworkComponentRuntime;
+use Simai\Docara\Portable\ResolvedPagePlan;
+
+final readonly class PageBuilder
+{
+    private DocumentRendererRegistry $renderers;
+
+    public function __construct(
+        private PortableMarkdownRenderer $markdown,
+        ?MarkdownCompiler $compiler = null,
+        ?DocumentRendererRegistry $renderers = null,
+        ?SmartRenderer $smartRenderer = null,
+    ) {
+        $this->compiler = $compiler ?? new MarkdownCompiler(smarts: $markdown->componentGateway());
+        $this->renderers = $renderers ?? DocumentRendererRegistry::bundled(
+            $markdown,
+            $smartRenderer ?? $markdown->smartRenderer(),
+        );
+    }
+
+    private MarkdownCompiler $compiler;
+
+    public function build(
+        ResolvedPagePlan $plan,
+        string $root,
+        FrameworkComponentRuntime $runtime,
+        int $tocDepth,
+        ?array $compositionRecipe = null,
+    ): PageBuilderResult {
+        $document = $this->compiler->compile(
+            $compositionRecipe === null ? $plan->markdown : '<!-- Content is supplied by Composition Recipe. -->',
+            $plan->page,
+        );
+        $rendered = $this->renderers->render(
+            $document,
+            new DocumentRenderContext(
+                $root,
+                $root . '/' . ltrim($plan->page, '/'),
+                is_array($plan->configuration['examples'] ?? null)
+                    ? $plan->configuration['examples']
+                    : [],
+                is_array($plan->configuration['code'] ?? null)
+                    ? $plan->configuration['code']
+                    : [],
+            ),
+        );
+        $renderedMarkdown = $rendered['document']->html;
+        if ($compositionRecipe !== null) {
+            if (! is_string($compositionRecipe['html'] ?? null)
+                || $compositionRecipe['html'] === ''
+                || ! is_array($compositionRecipe['document'] ?? null)
+                || ! is_array($compositionRecipe['dependencyReceipt'] ?? null)
+                || ! is_string($compositionRecipe['dependencyReceipt']['documentDigest'] ?? null)
+            ) {
+                throw new \InvalidArgumentException('COMPOSITION_RECIPE_PAGE_RESULT_INVALID');
+            }
+            $renderedMarkdown = $compositionRecipe['html'];
+        }
+        $componentArtifacts = $rendered['components'];
+        $outline = (new PortableDocumentOutlineBuilder)->build(
+            $renderedMarkdown,
+            $tocDepth,
+            PortableDocumentIds::reserved(),
+        );
+
+        $contentHtml = $outline['html'];
+        $frameworkCalls = [];
+        foreach ($componentArtifacts as $artifact) {
+            if (($artifact->hydration['runtime'] ?? null) !== 'simai-framework') {
+                continue;
+            }
+            $frameworkCalls[] = [
+                'schema' => 'docara.component_call.v1',
+                'id' => (string) $artifact->hydration['smart'],
+                'props' => $artifact->hydration['props'] ?? [],
+                'ordinal' => (int) ($artifact->hydration['ordinal'] ?? 0),
+                'line' => (int) ($artifact->hydration['source']['line'] ?? 0),
+                'node_id' => (string) ($artifact->hydration['node_id'] ?? ''),
+                'html_sha256' => hash('sha256', $artifact->html),
+                'manifest_version' => (string) ($artifact->provenance['manifest_version'] ?? ''),
+                'provider' => (string) ($artifact->provenance['provider'] ?? ''),
+                'provider_revision' => (string) ($artifact->provenance['provider_revision'] ?? ''),
+            ];
+        }
+        $framework = $runtime->recordGatewayCalls($plan->markdown, $frameworkCalls);
+        $recipeProvenance = $compositionRecipe === null ? [] : [
+            'composition_recipe' => [
+                'document_digest' => $compositionRecipe['dependencyReceipt']['documentDigest'],
+                'dependency_receipt' => $compositionRecipe['dependencyReceipt'],
+            ],
+        ];
+        $documentArtifact = new RenderArtifact(
+            $contentHtml,
+            $rendered['document']->assets,
+            $rendered['document']->hydration + [
+                'document_ir' => $document->toArray(),
+                'components' => array_map(
+                    static fn (RenderArtifact $artifact): array => $artifact->hydration,
+                    $componentArtifacts,
+                ),
+            ],
+            $rendered['document']->provenance + $recipeProvenance + [
+                'document_ir_sha256' => hash('sha256', json_encode($document->toArray(), JSON_THROW_ON_ERROR)),
+            ],
+        );
+
+        return new PageBuilderResult(
+            $contentHtml,
+            $documentArtifact,
+            $outline,
+            $framework,
+            $document,
+            $componentArtifacts,
+        );
+    }
+}

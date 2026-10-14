@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Разработка Docara",
+  "description": "Быстрый путь maintainer, архитектура, развитие возможностей, Vite, Framework-контракты и тестирование.",
+  "navigation": {
+    "order": 60
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart",
+  "code": "ui.input",
+  "title": "Simai Framework Input",
+  "description": "Portable text input rendered by an admitted host and hydrated by Simai Framework.",
+  "family": "input",
+  "category": "form",
+  "render": {
+    "mode": "server-first",
+    "strategy": "client-owned",
+    "template": "default",
+    "hydration": "required",
+    "domStrategy": "host-attributes",
+    "updateStrategy": "rerender",
+    "initialHtml": "host-only",
+    "frontendOwnership": "dom"
+  },
+  "props": {
+    "size": {"type": "string", "default": "1"},
+    "type": {"type": "string", "default": "bordered"},
+    "label": {"type": "string", "default": ""},
+    "required": {"type": "boolean", "default": false},
+    "placeholder": {"type": "string", "default": ""},
+    "hint": {"type": "string", "default": ""},
+    "value": {"type": "string", "default": ""},
+    "defaultValue": {"type": "string", "default": ""},
+    "name": {"type": "string", "default": ""},
+    "leftIcon": {"type": "string", "default": ""},
+    "rightText": {"type": "string", "default": ""},
+    "hintIcon": {"type": "string", "default": ""},
+    "disabled": {"type": "boolean", "default": false},
+    "readonly": {"type": "boolean", "default": false},
+    "error": {"type": "boolean", "default": false},
+    "mask": {"type": "boolean", "default": false},
+    "maskPattern": {"type": "string", "default": ""},
+    "maskPlaceholderChar": {"type": "string", "default": ""},
+    "maskOptions": {"type": "string", "default": ""},
+    "rootClass": {"type": "string", "default": ""},
+    "maskLazy": {"type": "boolean", "default": false}
+  },
+  "slots": {},
+  "assets": {
+    "css": [],
+    "js": [],
+    "depends": ["simai.ui", "simai.ui.smart"]
+  },
+  "cache": {"fragment": true, "tags": ["smart:ui.input"], "varyBy": ["props", "design", "locale"]},
+  "ai": {
+    "useWhen": "Use for one-line text-like form input.",
+    "avoidWhen": "Use a textarea for multi-line text.",
+    "composeWith": ["form.field"],
+    "tags": ["form", "input", "field"]
+  },
+  "meta": {
+    "owner": "Simai Framework",
+    "sourceComponent": "inputs",
+    "sourceRevision": "f615583112c16d05ba75dbc7e0f99eadd4c4d9d9",
+    "sourcePath": "src/smart/inputs"
+  }
+}

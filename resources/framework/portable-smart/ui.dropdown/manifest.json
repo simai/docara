@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart",
+  "code": "ui.dropdown",
+  "title": "Simai Framework Dropdown",
+  "description": "Portable controlled-value selector rendered by an admitted host and hydrated by Simai Framework.",
+  "family": "input",
+  "category": "form",
+  "render": {
+    "mode": "server-first",
+    "strategy": "client-owned",
+    "template": "default",
+    "hydration": "required",
+    "domStrategy": "host-attributes",
+    "updateStrategy": "rerender",
+    "initialHtml": "host-only",
+    "frontendOwnership": "dom"
+  },
+  "props": {
+    "size": {"type": "string", "default": "1"},
+    "type": {"type": "string", "default": "outlined"},
+    "mode": {"type": "string", "default": "select"},
+    "multiple": {"type": "boolean", "default": false},
+    "portal": {"type": "boolean", "default": false},
+    "value": {"type": "string", "default": ""},
+    "name": {"type": "string", "default": ""},
+    "label": {"type": "string", "default": ""},
+    "required": {"type": "boolean", "default": false},
+    "placeholder": {"type": "string", "default": ""},
+    "searchPlaceholder": {"type": "string", "default": "Placeholder"},
+    "search": {"type": "boolean", "default": true},
+    "disabled": {"type": "boolean", "default": false},
+    "ariaLabel": {"type": "string", "default": ""},
+    "templateName": {"type": "string", "default": "default"}
+  },
+  "slots": {
+    "options": {"accepts": ["ui.list-item"], "required": false, "multiple": true}
+  },
+  "assets": {
+    "css": [],
+    "js": [],
+    "depends": ["simai.ui", "simai.ui.smart"]
+  },
+  "cache": {"fragment": true, "tags": ["smart:ui.dropdown"], "varyBy": ["props", "design", "locale"]},
+  "ai": {
+    "useWhen": "Use for selecting values from a controlled list.",
+    "avoidWhen": "Use input for free text.",
+    "composeWith": ["form.field", "filter.panel"],
+    "tags": ["form", "dropdown", "select"]
+  },
+  "meta": {
+    "owner": "Simai Framework",
+    "sourceComponent": "dropdown",
+    "sourceRevision": "f615583112c16d05ba75dbc7e0f99eadd4c4d9d9",
+    "sourcePath": "src/smart/dropdown",
+    "slotDependency": "ui.list-item"
+  }
+}

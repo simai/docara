@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="<?= $view->locale ?>" dir="<?= $view->direction ?>" class="theme-light" data-docara-documentation-version="<?= $view->documentationVersion ?>">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docara:documentation-version" content="<?= $view->documentationVersion ?>">
+<?php if ($view->description !== null) { ?>
+    <meta name="description" content="<?= $view->description ?>">
+<?php } ?>
+<?php if ($view->favicon !== null) { ?>
+    <link rel="icon" href="<?= $view->favicon ?>"<?php if ($view->faviconType !== null) { ?> type="<?= $view->faviconType ?>"<?php } ?>>
+<?php } ?>
+    <link rel="canonical" href="<?= $view->canonicalUrl ?>">
+<?php foreach ($view->alternates as $alternate) { ?>
+    <link rel="alternate" hreflang="<?= $alternate['locale'] ?>" href="<?= $alternate['url'] ?>">
+<?php } ?>
+    <title><?= $view->documentTitle ?></title>
+<?= $view->headHtml ?>
+    <link rel="stylesheet" href="<?= $view->shellCssUrl ?>" data-docara-declarative-shell-style>
+<?= $view->themeBootstrap ?>
+<?= $view->chrome['head'] ?>
+</head>
+<body class="bg-surface <?= $view->containerClass ?>" data-docara-shell>
+    <a class="docara-skip-link bg-surface-0 border radius-1 p-1" href="#docara-main"><?= $view->copy['shell.skip_to_content'] ?></a>
+    <header class="docara-header sticky top-0 z-2 bg-surface-0 border-bottom-1 border-outline-variant" data-docara-region="header">
+        <div class="docara-header-row container w-full m-inline-auto flex items-cross-center content-main-between gap-2 p-1">
+            <?= $view->regions['header'] ?>
+            <?= $view->chrome['header_actions'] ?>
+        </div>
+        <?= $view->chrome['mobile_navigation'] ?>
+    </header>
+<?php if ($view->preset === 'landing') { ?>
+    <main id="docara-main" tabindex="-1" class="docara-landing" data-docara-region="main">
+        <article class="docara-content docara-prose container w-full m-inline-auto min-w-0<?= $view->contentGap === 0 ? '' : ' flex flex-col gap-' . $view->contentGap ?>"><?= $view->regions['main'] ?></article>
+    </main>
+<?php } else { ?>
+    <div class="docara-docs-layout container w-full m-inline-auto gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>" data-mobile-toc="<?= $view->mobileTocState ?>">
+<?php if ($view->regions['sidebar'] !== '') { ?>
+        <aside class="docara-sidebar" data-docara-region="sidebar" data-sf-observer="ignore">
+            <div class="docara-sidebar-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
+                <div class="sf-scrollbar__viewport" tabindex="0" aria-label="<?= $view->copy['navigation.sections'] ?>"><?= $view->regions['sidebar'] ?></div>
+            </div>
+        </aside>
+<?php } ?>
+        <div class="docara-reading-column flex min-w-0 flex-col gap-2 p-3">
+            <div class="docara-reading-toolbar flex items-cross-center gap-1 min-w-0"><div class="docara-reading-toolbar__location flex-1 min-w-0"><?= $view->chrome['breadcrumbs'] ?></div><?= $view->chrome['reading_actions'] ?></div>
+            <?= $view->chrome['mobile_toc'] ?>
+            <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-docara-region="main">
+                <article class="docara-prose min-w-0<?= $view->contentGap === 0 ? '' : ' flex flex-col gap-' . $view->contentGap ?>"><?= $view->regions['main'] ?></article>
+                <?= $view->chrome['pager'] ?>
+            </main>
+        </div>
+<?php if ($view->regions['outline'] !== '') { ?>
+        <aside id="docara-outline" class="docara-outline-rail" data-docara-region="outline">
+            <div class="docara-outline-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
+                <div class="sf-scrollbar__viewport" tabindex="0" aria-label="<?= $view->copy['navigation.outline'] ?>"><?= $view->regions['outline'] ?></div>
+            </div>
+        </aside>
+<?php } ?>
+    </div>
+<?php } ?>
+<?php if ($view->regions['footer'] !== '') { ?>
+    <footer class="container w-full m-inline-auto" data-docara-region="footer"><?= $view->regions['footer'] ?></footer>
+<?php } ?>
+    <?= $view->chrome['search_dialog'] ?>
+    <?= $view->chrome['reader_settings'] ?>
+    <script type="application/json" id="docara-runtime-copy"><?= $view->runtimeCopyJson ?></script>
+    <script src="<?= $view->shellRuntimeUrl ?>" data-docara-shell-controller></script>
+</body>
+</html>

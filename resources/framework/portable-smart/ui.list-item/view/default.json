@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.view",
+  "smart": "ui.list-item",
+  "code": "default",
+  "title": "Default list item",
+  "template": "default",
+  "props": {}
+}

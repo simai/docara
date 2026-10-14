@@ -1,0 +1,15 @@
+{
+    "schema": "docara.content_component.v1",
+    "id": "docara.alert",
+    "aliases": ["alert"],
+    "props": {
+        "type": {"default": "info", "enum": ["clear", "info", "success", "warning", "danger"]},
+        "variant": {"default": "default", "enum": ["default", "flat", "outlined"]}
+    },
+    "slots": {
+        "default": {"required": true, "kind": "document", "heading_levels": [2, 3, 4, 5]}
+    },
+    "renderer": "docara.content.template",
+    "template": "templates/alert.php",
+    "assets": []
+}

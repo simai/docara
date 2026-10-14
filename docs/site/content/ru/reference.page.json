@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Справочник",
+  "description": "Точные команды, схемы, resolved plan, Framework lock и безопасность переносимого Docara.",
+  "navigation": {
+    "order": 50
+  }
+}

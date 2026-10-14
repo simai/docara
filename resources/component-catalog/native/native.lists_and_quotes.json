@@ -1,0 +1,31 @@
+{
+    "id": "native.lists_and_quotes",
+    "family": "native_markdown",
+    "category": "prose",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "markdown",
+        "call": "- item and > quote",
+        "jobs": [
+            "list_items",
+            "quote_content"
+        ],
+        "parameters": [
+            {"name": "author", "type": "string", "required": false},
+            {"name": "source", "type": "string", "required": false},
+            {"name": "url", "type": "string", "required": false}
+        ]
+    },
+    "states": [],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/authoring/markdown.md",
+    "provenance": {
+        "source_kind": "portable_markdown_profile",
+        "profile_id": "docara.portable_markdown_profile.v1"
+    }
+}

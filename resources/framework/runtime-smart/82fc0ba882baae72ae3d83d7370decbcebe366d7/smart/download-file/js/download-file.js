@@ -1,0 +1,891 @@
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "92b137c03f44"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   bindDownloadFile: () => (/* binding */ bindDownloadFile),
+/* harmony export */   initExistingDownloadFiles: () => (/* binding */ initExistingDownloadFiles),
+/* harmony export */   unbindDownloadFile: () => (/* binding */ unbindDownloadFile)
+/* harmony export */ });
+/* harmony import */ var _core_js_ComponentObserver__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("d7f974466839");
+/* harmony import */ var _register_helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("58661bec99a6");
+/* harmony import */ var _json_download_file_utility_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("8ea1dd3302c4");
+
+
+
+const DOWNLOAD_FILE_SELECTOR = '.sf-download-file';
+const DOWNLOAD_FILE_BOUND_FLAG = 'sfDownloadFileBound';
+
+function toBoolean(value, fallback = false) {
+  if (value === undefined || value === null || value === '') return fallback;
+  if (typeof value === 'boolean') return value;
+  return ['1', 'true', 'yes', 'on', 'disabled', 'download'].includes(String(value).toLowerCase());
+}
+
+function normalizeSize(value) {
+  const normalized = String(value || '').toLowerCase();
+  const supported = ['1/3', '1/2', '1', '2', '3'];
+  return supported.includes(normalized) ? normalized : '1';
+}
+
+function buildAnchorDownload(href, filename = '') {
+  if (!href) return;
+  const anchor = document.createElement('a');
+  anchor.href = href;
+
+  if (filename) {
+    anchor.download = filename;
+  }
+
+  anchor.target = '_blank';
+  anchor.rel = 'noopener noreferrer';
+  document.body.append(anchor);
+  anchor.click();
+  anchor.remove();
+}
+
+function formatFileSize(bytes) {
+  const size = Number(bytes);
+  if (!Number.isFinite(size) || size < 0) return '';
+  if (size < 1024) return `${size} B`;
+  const units = ['KB', 'MB', 'GB', 'TB'];
+  let value = size / 1024;
+  let unitIndex = 0;
+
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+
+  const formatted = value >= 10 ? value.toFixed(0) : value.toFixed(1);
+  return `${formatted}${units[unitIndex]}`;
+}
+
+async function resolveRemoteFileSize(href) {
+  if (!href) return '';
+
+  try {
+    const response = await fetch(href, {
+      method: 'HEAD',
+      credentials: 'same-origin'
+    });
+
+    if (!response.ok) {
+      return '';
+    }
+
+    const contentLength = response.headers.get('content-length');
+
+    if (!contentLength) {
+      return '';
+    }
+
+    return formatFileSize(contentLength);
+  } catch {
+    return '';
+  }
+}
+
+function getRootLink(root) {
+  if (!root || !(root instanceof HTMLElement)) return null;
+  return root.tagName.toLowerCase() === 'a' ? root : root.querySelector('a.sf-download-file');
+}
+
+function getSizeNode(root) {
+  return root?.querySelector?.('.sf-download-file-file-size') || null;
+}
+
+function getRootHref(root) {
+  const href = root?.getAttribute?.('href');
+  if (href) return href;
+  const link = getRootLink(root);
+  return link?.getAttribute?.('href') || '';
+}
+
+function isDisabledRoot(root) {
+  if (!root) return false;
+  return root.classList.contains('disabled') || root.hasAttribute('disabled') || root.getAttribute('aria-disabled') === 'true';
+}
+
+async function resolveAndApplyFileSize(root) {
+  if (!root || isDisabledRoot(root)) return;
+  const sizeNode = getSizeNode(root);
+  if (!sizeNode) return;
+  if (String(sizeNode.textContent || '').trim()) return;
+  const href = getRootHref(root);
+  if (!href) return;
+  const resolvedSize = await resolveRemoteFileSize(href);
+  if (!resolvedSize || !sizeNode.isConnected) return;
+  sizeNode.textContent = resolvedSize;
+}
+
+function emitDownloadFileClick(root, href, fileName, download) {
+  root?.dispatchEvent(new CustomEvent('sf-download-file:click', {
+    bubbles: true,
+    detail: {
+      href,
+      fileName,
+      download
+    }
+  }));
+}
+
+function bindDownloadFile(root) {
+  if (!root || root.dataset[DOWNLOAD_FILE_BOUND_FLAG] === '1') return;
+
+  const handleClick = event => {
+    if (isDisabledRoot(root)) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    const href = getRootHref(root);
+    const fileName = root.getAttribute('download') || root.dataset.fileName || root.querySelector('.sf-download-file__name, .sf-download-file-file-name')?.textContent?.trim() || '';
+    const download = root.hasAttribute('download') || root.dataset.download === 'true';
+    emitDownloadFileClick(root, href, fileName, download);
+
+    if (root.tagName.toLowerCase() === 'a') {
+      return;
+    }
+
+    if (!href) {
+      return;
+    }
+
+    event.preventDefault();
+    buildAnchorDownload(href, download ? fileName : '');
+  };
+
+  root.addEventListener('click', handleClick);
+  root.__sfDownloadFileClick = handleClick;
+  root.dataset[DOWNLOAD_FILE_BOUND_FLAG] = '1';
+  resolveAndApplyFileSize(root);
+}
+
+function unbindDownloadFile(root) {
+  if (!root || root.dataset[DOWNLOAD_FILE_BOUND_FLAG] !== '1') return;
+
+  if (root.__sfDownloadFileClick) {
+    root.removeEventListener('click', root.__sfDownloadFileClick);
+  }
+
+  delete root.__sfDownloadFileClick;
+  delete root.dataset[DOWNLOAD_FILE_BOUND_FLAG];
+}
+
+function initExistingDownloadFiles(target = document) {
+  target.querySelectorAll(DOWNLOAD_FILE_SELECTOR).forEach(bindDownloadFile);
+}
+
+class DownloadFile extends _core_js_ComponentObserver__WEBPACK_IMPORTED_MODULE_0__.ComponentObserver {
+  static componentName = 'DownloadFile';
+  static utilityMap = _json_download_file_utility_json__WEBPACK_IMPORTED_MODULE_2__;
+  html = null;
+
+  constructor(props) {
+    super(props);
+    const {
+      size = '1',
+      fileName = 'File.pdf',
+      fileSize = '36MB',
+      icon = 'download',
+      href = '',
+      download = false,
+      disabled = false,
+      target = '_blank'
+    } = this.params || {};
+    const className = this.attrs.class || this.attrs.className;
+    const isDisabled = toBoolean(disabled, false);
+    const canLink = Boolean(href) && !isDisabled;
+    const root = document.createElement(canLink ? 'a' : 'button');
+
+    if (this.id) {
+      root.id = this.id;
+    }
+
+    if (canLink) {
+      root.href = String(href);
+      root.target = String(target || '_blank');
+      root.rel = 'noopener noreferrer';
+
+      if (toBoolean(download, false)) {
+        root.download = String(fileName || '');
+      }
+    } else {
+      root.type = 'button';
+    } // Size 1 is the block's own rule; there is no --size-1 class to write, and
+    // writing one left a class no sheet answers.
+
+
+    root.classList.add('sf-download-file');
+    if (normalizeSize(size) !== '1') root.classList.add(`sf-download-file--size-${normalizeSize(size)}`);
+
+    if (!isDisabled) {
+      root.classList.add('cursor-pointer', 'transition');
+    } else {
+      root.classList.add('disabled');
+      root.setAttribute('aria-disabled', 'true');
+      root.tabIndex = -1;
+    }
+
+    if (className) {
+      root.classList.add(...String(className).split(' ').filter(Boolean));
+    }
+
+    const wrap = document.createElement('span');
+    wrap.classList.add('sf-download-file__body', 'sf-download-file-wrap');
+    const container = document.createElement('span');
+    container.classList.add('sf-download-file__main', 'sf-download-file-container');
+    const iconNode = document.createElement('i');
+    iconNode.classList.add('sf-download-file__icon', 'sf-icon');
+    iconNode.setAttribute('aria-hidden', 'true');
+    iconNode.textContent = String(icon || 'download');
+    const fileNameNode = document.createElement('span');
+    fileNameNode.classList.add('sf-download-file__name', 'sf-download-file-file-name');
+    fileNameNode.textContent = String(fileName || '');
+    container.append(iconNode, fileNameNode);
+    const fileSizeNode = document.createElement('span');
+    fileSizeNode.classList.add('sf-download-file__size', 'sf-download-file-file-size');
+    fileSizeNode.textContent = String(fileSize || '');
+    wrap.append(container, fileSizeNode);
+    root.append(wrap);
+    this.href = String(href || '');
+    this.download = toBoolean(download, false);
+    this.fileName = String(fileName || '');
+    this.fileSize = String(fileSize || '');
+    this.disabled = isDisabled;
+    this.fileSizeNode = fileSizeNode;
+    this.template = root;
+    this.applyLayoutUtilities(root, '.sf-download-file');
+    this.applyLayoutUtilities(wrap, '.sf-download-file .sf-download-file-wrap');
+  }
+
+  init() {
+    bindDownloadFile(this.template);
+  }
+
+  handleClick = event => {
+    if (this.disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    if (this.template?.tagName?.toLowerCase() === 'a') {
+      this.template.dispatchEvent(new CustomEvent('sf-download-file:click', {
+        bubbles: true,
+        detail: {
+          href: this.href,
+          fileName: this.fileName,
+          download: this.download
+        }
+      }));
+      return;
+    }
+
+    if (this.href) {
+      event.preventDefault();
+      buildAnchorDownload(this.href, this.download ? this.fileName : '');
+    }
+
+    this.template?.dispatchEvent(new CustomEvent('sf-download-file:click', {
+      bubbles: true,
+      detail: {
+        href: this.href,
+        fileName: this.fileName,
+        download: this.download
+      }
+    }));
+  };
+
+  destroyInternal() {
+    unbindDownloadFile(this.template);
+  }
+
+}
+
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => initExistingDownloadFiles(), {
+      once: true
+    });
+  } else {
+    initExistingDownloadFiles();
+  }
+} // A public bind, as the other bound components have: markup added by a script
+// that the observer has not reached yet, or a root rebound after a change. The
+// binders were exported for bundles only, so a page had none.
+
+
+if (typeof window !== 'undefined') {
+  window.SF = window.SF || {};
+  window.SF.DownloadFile = window.SF.DownloadFile || {};
+  window.SF.DownloadFile.bind = bindDownloadFile;
+  window.SF.DownloadFile.unbind = unbindDownloadFile;
+  window.SF.DownloadFile.initAll = initExistingDownloadFiles;
+}
+
+
+(0,_register_helper__WEBPACK_IMPORTED_MODULE_1__["default"])('DownloadFile', DownloadFile);
+
+/***/ },
+
+/***/ "58661bec99a6"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   registerComponent: () => (/* binding */ registerComponent)
+/* harmony export */ });
+// Simple helper to register a component in one call.
+// Usage inside component bundle:
+//   import register from './register-helper';
+//   register('Buttons', Buttons);
+function registerComponent(name, cls) {
+  if (!name || !cls) return;
+
+  if (typeof window !== 'undefined' && typeof window.registerSfComponent === 'function') {
+    window.registerSfComponent(name, cls);
+    return;
+  }
+
+  if (typeof window !== 'undefined' && window.SF?.Loader?.registerComponent) {
+    window.SF.Loader.registerComponent(name, cls);
+    return;
+  }
+
+  if (typeof window !== 'undefined') {
+    const pending = window.SF_PENDING_COMPONENTS = window.SF_PENDING_COMPONENTS || [];
+    pending.push([name, cls]);
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (registerComponent);
+
+/***/ },
+
+/***/ "d7f974466839"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ComponentObserver: () => (/* binding */ ComponentObserver)
+/* harmony export */ });
+class ComponentObserver {
+  // Components name themselves with a static field (static componentName =
+  // 'Modal'), and the Loader writes the name on the prototype only when it
+  // registers the class; the lifecycle events read the instance, so an
+  // instance made before that announced itself as `undefined:render`. Not a
+  // getter: the Loader assigns the prototype property, and an accessor
+  // without a setter made that assignment throw.
+  lifecycleName() {
+    return this.componentName ?? this.constructor.componentName;
+  }
+
+  constructor(props) {
+    this.props = props;
+    this.id = props?.id;
+    this.params = props?.param;
+    this.attrs = props?.attrs || {};
+    this.template = null;
+    window.dispatchEvent(new CustomEvent(`${this.lifecycleName()}:beforeRender`, {
+      detail: this
+    }));
+  }
+
+  getUtilityMap() {
+    return this.constructor.utilityMap || null;
+  }
+
+  extractUtilityClasses(values) {
+    if (!Array.isArray(values)) {
+      return [];
+    }
+
+    const classes = new Set();
+    values.forEach(value => {
+      if (typeof value !== 'string') {
+        return;
+      }
+
+      const matches = value.match(/\(([^)]+)\)/g);
+
+      if (!matches) {
+        return;
+      }
+
+      matches.forEach(match => {
+        const raw = match.slice(1, -1);
+        raw.split(/\s+/).filter(Boolean).forEach(cls => {
+          // Only explicit (.class) annotations are classes; the
+          // parentheses in var(--token) are CSS values, not markup.
+          if (cls.startsWith('.') && cls.length > 1) classes.add(cls.slice(1));
+        });
+      });
+    });
+    return Array.from(classes);
+  }
+
+  applyLayoutUtilities(target, selector) {
+    if (!target || !selector) {
+      return;
+    }
+
+    const map = this.getUtilityMap();
+
+    if (!map || !map[selector]) {
+      return;
+    }
+
+    const classes = this.extractUtilityClasses(map[selector]);
+    classes.forEach(cls => target.classList.add(cls));
+  }
+
+  render() {
+    this.html = this.template;
+
+    if (typeof this.init === 'function') {
+      this.init();
+    }
+
+    if (this.html) {
+      window.dispatchEvent(new CustomEvent(`${this.lifecycleName()}:render`, {
+        detail: this
+      }));
+    }
+
+    return this.html;
+  }
+
+  destroy() {
+    this.destroyInternal?.();
+    this.props = null;
+    this.id = null;
+    this.params = null;
+    this.template = null;
+
+    if (this.html) {
+      this.html.remove();
+      this.html = null;
+    }
+
+    window.dispatchEvent(new CustomEvent(`${this.lifecycleName()}:destroy`, {
+      detail: this
+    }));
+  }
+
+  destroyInternal() {}
+
+}
+
+/***/ },
+
+/***/ "c8c78be1ad16"
+(module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _component_download_file_js_download_file__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("92b137c03f44");
+/* harmony import */ var _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("fbe0570fcc69");
+/* harmony import */ var _js_templates_default__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("d5a098e10ec0");
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__, _js_templates_default__WEBPACK_IMPORTED_MODULE_2__]);
+([_core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__, _js_templates_default__WEBPACK_IMPORTED_MODULE_2__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+
+class SfDownloadFile extends (_core_js_smart_base__WEBPACK_IMPORTED_MODULE_1___default()) {
+  static get props() {
+    return {
+      templateName: {
+        attribute: 'template',
+        default: 'default'
+      },
+      size: {
+        default: '1'
+      },
+      fileName: {
+        default: 'File.pdf'
+      },
+      fileSize: {
+        default: ''
+      },
+      icon: {
+        default: 'download'
+      },
+      href: {
+        default: ''
+      },
+      download: {
+        type: Boolean,
+        default: false
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      },
+      target: {
+        default: '_blank'
+      },
+      ariaLabel: {
+        default: ''
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this._boundRoot = null;
+  }
+
+  get templateName() {
+    return this.getAttribute('template') || 'default';
+  }
+
+  get size() {
+    return this.getAttribute('size') || '1';
+  }
+
+  get fileName() {
+    return this.getAttribute('file-name') || 'File.pdf';
+  }
+
+  get fileSize() {
+    return this.getAttribute('file-size') || '';
+  }
+
+  get icon() {
+    return this.getAttribute('icon') || 'download';
+  }
+
+  get href() {
+    return this.getAttribute('href') || '';
+  }
+
+  get download() {
+    return this.getBooleanAttr('download', false);
+  }
+
+  get disabled() {
+    return this.getBooleanAttr('disabled', false);
+  }
+
+  get target() {
+    return this.getAttribute('target') || '_blank';
+  }
+
+  get ariaLabel() {
+    return this.getAttribute('aria-label') || '';
+  }
+
+  templateContext() {
+    const props = this.getPropsContext();
+    return this.createTemplateContext({ ...props,
+      component: this
+    });
+  }
+
+  template() {
+    return (0,_js_templates_default__WEBPACK_IMPORTED_MODULE_2__.renderDownloadFileTemplate)(this.templateContext());
+  }
+
+  afterRender() {
+    if (this._boundRoot) {
+      (0,_component_download_file_js_download_file__WEBPACK_IMPORTED_MODULE_0__.unbindDownloadFile)(this._boundRoot);
+      this._boundRoot = null;
+    }
+
+    this._boundRoot = this.querySelector('.sf-download-file');
+
+    if (this._boundRoot) {
+      (0,_component_download_file_js_download_file__WEBPACK_IMPORTED_MODULE_0__.bindDownloadFile)(this._boundRoot);
+    }
+  }
+
+  onDisconnected() {
+    if (this._boundRoot) {
+      (0,_component_download_file_js_download_file__WEBPACK_IMPORTED_MODULE_0__.unbindDownloadFile)(this._boundRoot);
+      this._boundRoot = null;
+    }
+  }
+
+}
+
+SfDownloadFile.define('sf-download-file');
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ },
+
+/***/ "d5a098e10ec0"
+(module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   renderDownloadFileTemplate: () => (/* binding */ renderDownloadFileTemplate)
+/* harmony export */ });
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("ddf1cdb42ecc");
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([lit__WEBPACK_IMPORTED_MODULE_0__]);
+var __webpack_async_dependencies_result__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_async_dependencies_result__[0];
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lit__WEBPACK_IMPORTED_MODULE_0__);
+
+function renderDownloadFileTemplate(context) {
+  const {
+    size,
+    fileName,
+    fileSize,
+    icon,
+    href,
+    download,
+    disabled,
+    target,
+    ariaLabel
+  } = context;
+  const tagName = href && !disabled ? 'a' : 'button';
+  const rootClasses = ['sf-download-file', `sf-download-file--size-${size}`, context.rootClass, disabled ? 'disabled' : 'cursor-pointer transition'].filter(Boolean);
+  const content = (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <span class="sf-download-file__body sf-download-file-wrap">
+      <span class="sf-download-file__main sf-download-file-container">
+        <i class="sf-download-file__icon sf-icon" aria-hidden="true">${icon}</i>
+        <span class="sf-download-file__name sf-download-file-file-name">${fileName}</span>
+      </span>
+      <span class="sf-download-file__size sf-download-file-file-size">${fileSize}</span>
+    </span>
+  `;
+
+  if (tagName === 'a') {
+    return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+      <a
+        class=${rootClasses.join(' ')}
+        style=${context.rootStyle || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        href=${href}
+        target=${download ? lit__WEBPACK_IMPORTED_MODULE_0__.nothing : target}
+        rel=${download ? lit__WEBPACK_IMPORTED_MODULE_0__.nothing : 'noopener noreferrer'}
+        download=${download ? fileName || '' : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        aria-label=${ariaLabel || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+      >
+        ${content}
+      </a>
+    `;
+  }
+
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <button
+      type="button"
+      class=${rootClasses.join(' ')}
+      style=${context.rootStyle || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+      ?disabled=${disabled}
+      aria-disabled=${disabled ? 'true' : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+      aria-label=${ariaLabel || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+    >
+      ${content}
+    </button>
+  `;
+}
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ },
+
+/***/ "ddf1cdb42ecc"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("lit") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("lit")), { once: true })));
+
+/***/ },
+
+/***/ "fbe0570fcc69"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("smart-base") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("smart-base")), { once: true })));
+
+/***/ },
+
+/***/ "8ea1dd3302c4"
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{".sf-download-file":["display/flex (.flex)","flex-direction/row (.flex-row)","flex-wrap/nowrap (.flex-nowrap)","gap/var(--sf-e5)","justify-content/space-between (.justify-between)","align-items/center (.items-center)"],".sf-download-file .sf-download-file-wrap":["display/flex (.flex)","flex-direction/row (.flex-row)","flex-wrap/nowrap (.flex-nowrap)","gap/var(--sf-download-file-wrap--gap)","justify-content/flex-start (.justify-start)","align-items/center (.items-center)"]}');
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	const __webpack_module_cache__ = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		const cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		const module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			const e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/************************************************************************/
+/******/ 	/* webpack/runtime/async module */
+/******/ 	(() => {
+/******/ 		const hasSymbol = typeof Symbol === "function";
+/******/ 		const webpackQueues = hasSymbol ? Symbol("webpack queues") : "__webpack_queues__";
+/******/ 		const webpackExports = hasSymbol ? Symbol("webpack exports") : "__webpack_exports__";
+/******/ 		const webpackError = hasSymbol ? Symbol("webpack error") : "__webpack_error__";
+/******/
+/******/ 		const resolveQueue = (queue) => {
+/******/ 			if(queue?.d < 1) {
+/******/ 				queue.d = 1;
+/******/ 				queue.forEach((fn) => (fn.r--));
+/******/ 				queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
+/******/ 			}
+/******/ 		}
+/******/ 		const wrapDeps = (deps) => (deps.map((dep) => {
+/******/ 			if(dep !== null && typeof dep === "object") {
+/******/
+/******/ 				if(dep[webpackQueues]) return dep;
+/******/ 				if(dep.then) {
+/******/ 					const queue = [];
+/******/ 					queue.d = 0;
+/******/ 					dep.then((r) => {
+/******/ 						obj[webpackExports] = r;
+/******/ 						resolveQueue(queue);
+/******/ 					}, (e) => {
+/******/ 						obj[webpackError] = e;
+/******/ 						resolveQueue(queue);
+/******/ 					});
+/******/ 					const obj = {};
+/******/
+/******/ 					obj[webpackQueues] = (fn) => (fn(queue));
+/******/ 					return obj;
+/******/ 				}
+/******/ 			}
+/******/ 			const ret = {};
+/******/ 			ret[webpackQueues] = x => {};
+/******/ 			ret[webpackExports] = dep;
+/******/ 			return ret;
+/******/ 		}));
+/******/ 		__webpack_require__.a = (module, body, hasAwait) => {
+/******/ 			let queue;
+/******/ 			hasAwait && ((queue = []).d = -1);
+/******/ 			const depQueues = new Set();
+/******/ 			const exports = module.exports;
+/******/ 			let currentDeps;
+/******/ 			let outerResolve;
+/******/ 			let reject;
+/******/ 			const promise = new Promise((resolve, rej) => {
+/******/ 				reject = rej;
+/******/ 				outerResolve = resolve;
+/******/ 			});
+/******/ 			promise[webpackExports] = exports;
+/******/ 			promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
+/******/ 			module.exports = promise;
+/******/ 			const handle = (deps) => {
+/******/ 				currentDeps = wrapDeps(deps);
+/******/ 				let fn;
+/******/ 				const getResult = () => (currentDeps.map((d) => {
+/******/
+/******/ 					if(d[webpackError]) throw d[webpackError];
+/******/ 					return d[webpackExports];
+/******/ 				}))
+/******/ 				const promise = new Promise((resolve) => {
+/******/ 					fn = () => (resolve(getResult));
+/******/ 					fn.r = 0;
+/******/ 					const fnQueue = (q) => (q !== queue && !depQueues.has(q) && (depQueues.add(q), q && !q.d && (fn.r++, q.push(fn))));
+/******/ 					currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
+/******/ 				});
+/******/ 				return fn.r ? promise : getResult();
+/******/ 			}
+/******/ 			const done = (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue))
+/******/ 			body(handle, done);
+/******/ 			queue?.d < 0 && (queue.d = 0);
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			const getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter/value functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			if(Array.isArray(definition)) {
+/******/ 				var i = 0;
+/******/ 				while(i < definition.length) {
+/******/ 					var key = definition[i++];
+/******/ 					var binding = definition[i++];
+/******/ 					if(!__webpack_require__.o(exports, key)) {
+/******/ 						if(binding === 0) {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
+/******/ 						} else {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, get: binding });
+/******/ 						}
+/******/ 					} else if(binding === 0) { i++; }
+/******/ 				}
+/******/ 			} else {
+/******/ 				for(var key in definition) {
+/******/ 					if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 					}
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/
+/************************************************************************/
+/******/
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module used 'module' so it can't be inlined
+/******/ 	let __webpack_exports__ = __webpack_require__("c8c78be1ad16");
+/******/
+/******/ })()
+;

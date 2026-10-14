@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "ui.alert",
+  "view": "default",
+  "template": "smart.ui.alert.default"
+}

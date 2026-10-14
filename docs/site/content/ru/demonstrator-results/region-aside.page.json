@@ -1,0 +1,30 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Aside с контекстом страницы",
+  "description": "Оглавление и информационный Smart-компонент в правой области.",
+  "layout": {
+    "regions": {
+      "outline": {
+        "enabled": true,
+        "sections": [
+          {"id": "page-outline", "section": "docara.outline"},
+          {
+            "id": "aside-context",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1"],
+            "blocks": [
+              {
+                "id": "note",
+                "block": "shell.smart",
+                "slot": "content",
+                "smart": "ui.alert",
+                "view": "default",
+                "props": {"type": "info", "variant": "outlined", "title": "Контекст", "supporting-text": "Оглавление построено из Markdown.", "closable": false, "aria-label": "Контекст страницы"}
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

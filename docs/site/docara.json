@@ -1,0 +1,68 @@
+{
+  "schema": "docara.site.v1",
+  "title": "Docara",
+  "preset": "docs",
+  "content_root": "content/ru",
+  "framework_lock": "simai-framework.lock.json",
+  "smart": {
+    "namespace": "project"
+  },
+  "default_locale": "ru",
+  "locales": {
+    "missing_page_policy": "skip",
+    "ru": {
+      "label": "Русский",
+      "direction": "ltr",
+      "content_root": "content/ru",
+      "public_prefix": "ru",
+      "fallbacks": []
+    }
+  },
+  "locale_routing": {
+    "strategy": "prefixed",
+    "root": "redirect",
+    "detect_browser_language": false,
+    "legacy_unprefixed_redirects": true
+  },
+  "documentation_version": "current",
+  "redirects_file": "redirects.json",
+  "base_url": "/",
+  "branding": {
+    "title": "Docara",
+    "mode": "compact",
+    "size": "large",
+    "logo": "assets/docara-mark.svg",
+    "favicon": "assets/favicon.ico"
+  },
+  "layout": {
+    "key": "docara.docs",
+    "container": {"max": 7},
+    "scrollbar": {"preset": "overlay"},
+    "content": {"gap": 0}
+  },
+  "settings": {
+    "theme": "system",
+    "modal_blur": "none",
+    "ui_radius": "default"
+  },
+  "reader_preferences": {
+    "enabled": true,
+    "view": "side-panel",
+    "groups": [
+      {
+        "id": "appearance",
+        "fields": ["appearance.theme", "appearance.font_size", "appearance.content_width"]
+      }
+    ]
+  },
+  "search": {
+    "enabled": true,
+    "indexed": true
+  },
+  "reading": {
+    "breadcrumbs": true,
+    "toc": true,
+    "toc_depth": 3,
+    "previous_next": true
+  }
+}

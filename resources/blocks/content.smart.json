@@ -1,0 +1,6 @@
+{
+  "schema": "docara.block.v1",
+  "key": "content.smart",
+  "kind": "smart",
+  "renderer": "block.smart"
+}

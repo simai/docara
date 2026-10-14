@@ -1,0 +1,19 @@
+{
+  "schema": "docara.composition_runtime_lock.v2",
+  "contract": {
+    "capability": "composition-recipe-v1",
+    "lock_path": "distr/core/contracts/composition-recipe-v1/contract.lock.json",
+    "lock_schema": "simai.composition.recipe-contract-lock.v1",
+    "edition": "1.0.1",
+    "contract_digest": "sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd",
+    "digest_mode": "sha256-of-canonical-normative-file-map-v1"
+  },
+  "runtime": {
+    "entry": "distr/core/js/composition/index.mjs",
+    "modules": [
+      "distr/core/js/composition/builtins.mjs",
+      "distr/core/js/composition/canonical.mjs",
+      "distr/core/js/composition/recipe.mjs"
+    ]
+  }
+}

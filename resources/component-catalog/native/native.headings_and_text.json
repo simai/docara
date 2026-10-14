@@ -1,0 +1,26 @@
+{
+    "id": "native.headings_and_text",
+    "family": "native_markdown",
+    "category": "prose",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "markdown",
+        "call": "# Heading",
+        "jobs": [
+            "structure_prose"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/authoring/markdown.md",
+    "provenance": {
+        "source_kind": "portable_markdown_profile",
+        "profile_id": "docara.portable_markdown_profile.v1"
+    }
+}

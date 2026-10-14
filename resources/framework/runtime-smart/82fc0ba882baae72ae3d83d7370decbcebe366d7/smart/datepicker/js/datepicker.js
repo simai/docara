@@ -1,0 +1,1936 @@
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "e6d86f2cd058"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FIELD_SIZES: () => (/* binding */ FIELD_SIZES),
+/* harmony export */   RETIRED_FIELD_SIZES: () => (/* binding */ RETIRED_FIELD_SIZES),
+/* harmony export */   fieldSize: () => (/* binding */ fieldSize),
+/* harmony export */   nearestFieldSize: () => (/* binding */ nearestFieldSize),
+/* harmony export */   retireFieldSizeClass: () => (/* binding */ retireFieldSizeClass)
+/* harmony export */ });
+/* harmony import */ var _core_js_deprecations_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("06e8cd089f28");
+// Form fields come in three sizes. 1/3 and 3 were retired: no consumer used
+// them, and they could not hold a field's own pictures, tags and targets. A
+// page written for a retired size keeps rendering at the nearest kept size, and
+// says so once in the console so the markup can be updated.
+
+const FIELD_SIZES = Object.freeze(['1/2', '1', '2']);
+const RETIRED_FIELD_SIZES = Object.freeze({
+  '1/3': '1/2',
+  '3': '2'
+});
+const warned = new Set(); // A control placed inside something with the whole scale (a list item, say)
+// takes the nearest form size, quietly: the list is not wrong to be 1/3.
+
+function nearestFieldSize(value) {
+  const size = String(value ?? '').trim().toLowerCase();
+  if (FIELD_SIZES.includes(size)) return size;
+  return Object.hasOwn(RETIRED_FIELD_SIZES, size) ? RETIRED_FIELD_SIZES[size] : '1';
+}
+function fieldSize(value, component = 'field', fallback = '1') {
+  const size = String(value ?? '').trim().toLowerCase();
+  if (FIELD_SIZES.includes(size)) return size;
+
+  if (Object.hasOwn(RETIRED_FIELD_SIZES, size)) {
+    const kept = RETIRED_FIELD_SIZES[size];
+    (0,_core_js_deprecations_js__WEBPACK_IMPORTED_MODULE_0__.noteDeprecated)({
+      component,
+      kind: 'value',
+      attribute: 'size',
+      from: size,
+      to: kept
+    });
+    const key = `${component}:${size}`;
+
+    if (!warned.has(key) && typeof console !== 'undefined') {
+      warned.add(key);
+      console.warn(`[Simai Framework] ${component}: size ${size} is retired for form fields; rendering size ${kept}.`);
+    }
+
+    return kept;
+  }
+
+  return fallback;
+} // Markup written by hand carries its size as a class, so the binder moves a
+// retired size class to the kept one before anything measures the field.
+
+function retireFieldSizeClass(root, block) {
+  if (!root?.classList) return;
+
+  for (const [retired, kept] of Object.entries(RETIRED_FIELD_SIZES)) {
+    const name = `${block}--size-${retired}`;
+    if (!root.classList.contains(name)) continue;
+    root.classList.replace(name, `${block}--size-${fieldSize(retired, block)}`);
+  }
+}
+
+/***/ },
+
+/***/ "06e8cd089f28"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clearDeprecations: () => (/* binding */ clearDeprecations),
+/* harmony export */   listDeprecations: () => (/* binding */ listDeprecations),
+/* harmony export */   noteDeprecated: () => (/* binding */ noteDeprecated)
+/* harmony export */ });
+// What a page still uses that the Framework keeps only for compatibility. Every
+// legacy attribute, value or name a component resolves is noted here once, so a
+// person, a probe or an AI upgrading a product can read the list off a running
+// page (SF.deprecations.list()) instead of searching the source for it. The
+// records behind the names are in contracts/changes/journal.json.
+//
+// Nothing is printed by default: a page opts in to console warnings with
+// <html data-sf-deprecations="warn"> or SF.deprecations.warn = true.
+//
+// Every bundle carries its own copy of this module, so a Map of its own made one
+// list per bundle, and SF.deprecations.list() answered with whichever bundle set
+// it last -- [] on a page printing seven warnings from others. The notes live on
+// one shared global instead, whichever copy writes or reads them.
+function sharedNotes() {
+  const root = globalThis.SF = globalThis.SF || {};
+
+  if (!(root.__deprecationNotes instanceof Map)) {
+    Object.defineProperty(root, '__deprecationNotes', {
+      value: new Map(),
+      configurable: true
+    });
+  }
+
+  return root.__deprecationNotes;
+}
+
+function warnEnabled() {
+  const root = globalThis.document?.documentElement;
+  return root?.dataset?.sfDeprecations === 'warn' || globalThis.SF?.deprecations?.warn === true;
+}
+
+function noteDeprecated({
+  component = '',
+  kind = 'attribute',
+  attribute = '',
+  from,
+  to = null
+} = {}) {
+  if (!from) return;
+  const key = [component, kind, attribute, from].join('|');
+  const notes = sharedNotes();
+  const existing = notes.get(key);
+
+  if (existing) {
+    existing.count += 1;
+    return;
+  }
+
+  notes.set(key, {
+    component,
+    kind,
+    attribute,
+    from,
+    to,
+    count: 1
+  });
+
+  if (warnEnabled()) {
+    const where = component ? `${component}: ` : '';
+    const what = kind === 'value' ? `${attribute}="${from}"` : `${kind} ${from}`;
+    globalThis.console?.warn?.(`[Simai Framework] ${where}${what} is a legacy name${to ? `; write ${to}` : ''}. See contracts/changes/journal.json.`);
+  }
+}
+function listDeprecations() {
+  return [...sharedNotes().values()].map(note => ({ ...note
+  }));
+}
+function clearDeprecations() {
+  sharedNotes().clear();
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {};
+  const api = globalThis.SF.deprecations || {};
+  api.list = listDeprecations;
+  api.clear = clearDeprecations;
+  api.note = noteDeprecated;
+  globalThis.SF.deprecations = api;
+}
+
+/***/ },
+
+/***/ "b9b65955223a"
+(module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("fbe0570fcc69");
+/* harmony import */ var _component_field_size__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("e6d86f2cd058");
+/* harmony import */ var _js_templates_default__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("77b2f4107e3b");
+/* harmony import */ var _core_js_position_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("5c1dc214bb5e");
+/* harmony import */ var _core_js_page_language__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("0d662e4d7d63");
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__, _js_templates_default__WEBPACK_IMPORTED_MODULE_2__, _core_js_position_js__WEBPACK_IMPORTED_MODULE_3__, _core_js_page_language__WEBPACK_IMPORTED_MODULE_4__]);
+([_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__, _js_templates_default__WEBPACK_IMPORTED_MODULE_2__, _core_js_position_js__WEBPACK_IMPORTED_MODULE_3__, _core_js_page_language__WEBPACK_IMPORTED_MODULE_4__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _core_js_position_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_core_js_position_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _core_js_page_language__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_core_js_page_language__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
+const ISO_DATE_RE = /^(\d{4})-(\d{2})-(\d{2})$/;
+const YEARS_PAGE_SIZE = 18;
+let datepickerSequence = 0;
+
+function padDatePart(value) {
+  return String(value).padStart(2, '0');
+}
+
+function formatIsoDate(date) {
+  return `${date.getFullYear()}-${padDatePart(date.getMonth() + 1)}-${padDatePart(date.getDate())}`;
+}
+
+function formatDateValue(date, format = 'YYYY.MM.DD') {
+  if (!date) {
+    return '';
+  }
+
+  const tokens = {
+    YYYY: String(date.getFullYear()),
+    YY: String(date.getFullYear()).slice(-2),
+    MM: padDatePart(date.getMonth() + 1),
+    DD: padDatePart(date.getDate())
+  };
+  return String(format || 'YYYY.MM.DD').replace(/YYYY|YY|MM|DD/g, token => tokens[token] || token);
+}
+
+function isValidDate(date) {
+  return date instanceof Date && !Number.isNaN(date.getTime());
+}
+
+function parseDate(value) {
+  if (!value) {
+    return null;
+  }
+
+  const match = String(value).match(ISO_DATE_RE);
+
+  if (!match) {
+    return null;
+  }
+
+  const [, year, month, day] = match;
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+
+  if (date.getFullYear() !== Number(year) || date.getMonth() !== Number(month) - 1 || date.getDate() !== Number(day)) {
+    return null;
+  }
+
+  return date;
+}
+
+function parseDateValue(value, format = 'DD.MM.YYYY') {
+  if (!value) {
+    return null;
+  }
+
+  if (value instanceof Date) {
+    return isValidDate(value) ? new Date(value.getFullYear(), value.getMonth(), value.getDate()) : null;
+  }
+
+  const text = String(value).trim();
+  const isoDate = parseDate(text);
+
+  if (isoDate) {
+    return isoDate;
+  }
+
+  const parts = text.match(/\d+/g);
+  const tokens = String(format || 'DD.MM.YYYY').match(/YYYY|YY|MM|DD/g);
+
+  if (!parts || !tokens || parts.length < 3 || tokens.length < 3) {
+    return null;
+  }
+
+  const values = {};
+  tokens.slice(0, 3).forEach((token, index) => {
+    values[token] = Number(parts[index]);
+  });
+  let year = values.YYYY;
+
+  if (!year && values.YY) {
+    year = values.YY + 2000;
+  }
+
+  const month = values.MM;
+  const day = values.DD;
+
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  const date = new Date(year, month - 1, day);
+
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return null;
+  }
+
+  return date;
+}
+
+function normalizeMonth(value, fallback = 0) {
+  const month = (0,_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__.toNumber)(value, fallback);
+
+  if (!Number.isFinite(month)) {
+    return fallback;
+  }
+
+  return Math.max(0, Math.min(11, month));
+}
+
+function sameDay(first, second) {
+  return first && second && first.getFullYear() === second.getFullYear() && first.getMonth() === second.getMonth() && first.getDate() === second.getDate();
+}
+
+function compareDates(first, second) {
+  if (!first || !second) {
+    return 0;
+  }
+
+  const firstTime = new Date(first.getFullYear(), first.getMonth(), first.getDate()).getTime();
+  const secondTime = new Date(second.getFullYear(), second.getMonth(), second.getDate()).getTime();
+  return firstTime - secondTime;
+}
+
+function shiftDateByMonth(date, direction) {
+  const targetMonth = new Date(date.getFullYear(), date.getMonth() + direction, 1);
+  const lastDay = new Date(targetMonth.getFullYear(), targetMonth.getMonth() + 1, 0).getDate();
+  targetMonth.setDate(Math.min(date.getDate(), lastDay));
+  return targetMonth;
+}
+
+function isBetweenDates(date, startDate, endDate) {
+  if (!date || !startDate || !endDate) {
+    return false;
+  }
+
+  return compareDates(date, startDate) > 0 && compareDates(date, endDate) < 0;
+}
+
+function normalizeLocale(value = '', node = null) {
+  const locale = String(value || '').trim();
+
+  if (locale) {
+    return locale;
+  } // The nearest [lang] first, then the document's: the rule every component
+  // follows, rather than this one's own reading of it. A date picker inside a
+  // region marked `lang="en"` on a Russian page used to name its months in
+  // Russian, because only the document was ever consulted.
+  //
+  // The region is kept -- `pageLocale`, not `pageLanguage` -- because this
+  // value also goes to Intl, and `ru-RU` and `en-GB` name months and start
+  // weeks differently from `ru` and `en`. Below this there used to be a fall
+  // back to the browser's own language and then to `ru-RU`: unreachable
+  // wherever a document exists, and a Russian default everywhere else, which
+  // is the opposite of the rule (peer session, 2026-10-11).
+
+
+  return (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_4__.pageLocale)(node ?? globalThis.document?.documentElement ?? null);
+}
+
+function capitalizeFirstLetter(value = '') {
+  const text = String(value || '');
+
+  if (!text) {
+    return '';
+  }
+
+  return `${text.charAt(0).toLocaleUpperCase()}${text.slice(1)}`;
+}
+
+function getMonthLabel(month, locale) {
+  try {
+    return capitalizeFirstLetter(new Intl.DateTimeFormat(locale, {
+      month: 'long'
+    }).format(new Date(2026, month, 1)));
+  } catch {
+    return String(month + 1);
+  }
+}
+
+function getDateLabel(date, locale) {
+  try {
+    return new Intl.DateTimeFormat(locale, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(date);
+  } catch {
+    return formatIsoDate(date);
+  }
+}
+
+function getWeekdays(locale, weekStart = 1) {
+  const sunday = new Date(2026, 0, 4);
+  return Array.from({
+    length: 7
+  }, (_, index) => {
+    const day = new Date(sunday);
+    day.setDate(sunday.getDate() + (weekStart + index) % 7);
+
+    try {
+      return new Intl.DateTimeFormat(locale, {
+        weekday: 'short'
+      }).format(day);
+    } catch {
+      return String((weekStart + index) % 7);
+    }
+  });
+} // Every word this picker says, in the languages it ships with. A product adds
+// any other through SF.language.register('sf-datepicker', code, words) -- which
+// an if/else on «ru» did not allow at all.
+
+
+const DATEPICKER_TEXT = {
+  en: {
+    previousMonth: 'Previous month',
+    nextMonth: 'Next month',
+    previousYears: 'Previous years',
+    nextYears: 'Next years',
+    chooseMonth: 'Choose a month',
+    chooseYear: 'Choose a year'
+  },
+  ru: {
+    previousMonth: 'Предыдущий месяц',
+    nextMonth: 'Следующий месяц',
+    previousYears: 'Предыдущие годы',
+    nextYears: 'Следующие годы',
+    chooseMonth: 'Выберите месяц',
+    chooseYear: 'Выберите год'
+  }
+};
+
+function getLabels(node) {
+  const keys = ['previousMonth', 'nextMonth', 'previousYears', 'nextYears', 'chooseMonth', 'chooseYear'];
+  return Object.fromEntries(keys.map(key => [key, (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_4__.pageText)(DATEPICKER_TEXT, key, node, 'sf-datepicker')]));
+}
+
+class SfDatepicker extends (_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0___default()) {
+  constructor() {
+    super();
+    this._input = null;
+    this._documentClickHandler = this.handleDocumentClick.bind(this);
+    this._documentKeydownHandler = this.handleDocumentKeydown.bind(this);
+    this._viewportHandler = this.positionPanel.bind(this);
+    this._focusCalendarOnOpen = false;
+    this._focusDateAfterRender = false;
+    this._panelId = `sf-datepicker-panel-${++datepickerSequence}`;
+    this.state = {
+      openAbove: false,
+      yearPageStart: null,
+      activeDate: ''
+    };
+    this.refs = {
+      input: this.createRef(),
+      datePickerRoot: this.createRef(),
+      datePickerPanel: this.createRef()
+    };
+  }
+
+  static get props() {
+    return {
+      templateName: {
+        attribute: 'template',
+        default: 'default'
+      },
+      value: {
+        default: ''
+      },
+      date: {
+        default: ''
+      },
+      startValue: {
+        attribute: 'start-value',
+        default: ''
+      },
+      endValue: {
+        attribute: 'end-value',
+        default: ''
+      },
+      maxDate: {
+        default: ''
+      },
+      minDate: {
+        default: ''
+      },
+      range: {
+        type: Boolean,
+        default: false
+      },
+      month: {
+        type: Number,
+        default: null
+      },
+      year: {
+        type: Number,
+        default: null
+      },
+      context: {
+        default: ''
+      },
+      weekStart: {
+        type: Number,
+        default: 1
+      },
+      locale: {
+        default: ''
+      },
+      format: {
+        default: 'DD.MM.YYYY'
+      },
+      rootClass: {
+        default: ''
+      },
+      closeOnSelect: {
+        type: Boolean,
+        default: true
+      },
+      input: {
+        type: Boolean,
+        default: true
+      },
+      open: {
+        type: Boolean,
+        default: false
+      },
+      portal: {
+        type: Boolean,
+        default: true
+      },
+      inputType: {
+        attribute: 'input-type',
+        default: 'bordered'
+      },
+      size: {
+        default: '1'
+      },
+      inputSize: {
+        attribute: 'input-size',
+        default: '1'
+      },
+      inputName: {
+        attribute: 'input-name',
+        default: ''
+      },
+      // Read by inputName after input-name; declared so the manifest names it.
+      name: {
+        attribute: 'name',
+        default: ''
+      },
+      placeholder: {
+        default: ''
+      },
+      label: {
+        default: ''
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      },
+      required: {
+        type: Boolean,
+        default: false
+      },
+      iconStart: {
+        type: String,
+        attribute: 'icon-start',
+        default: null
+      },
+      leftIcon: {
+        attribute: 'left-icon',
+        default: 'calendar_today'
+      },
+      inputRootClass: {
+        attribute: 'input-root-class',
+        default: ''
+      },
+      mask: {
+        type: Boolean,
+        default: false
+      },
+      maskPattern: {
+        attribute: 'mask-pattern',
+        default: ''
+      },
+      maskLazy: {
+        attribute: 'mask-lazy',
+        default: false
+      },
+      maskPlaceholderChar: {
+        attribute: 'mask-placeholder-char',
+        default: '_'
+      },
+      maskOptions: {
+        attribute: 'mask-options',
+        default: ''
+      }
+    };
+  }
+
+  connectedCallback() {
+    this.upgradeProperty('value');
+    super.connectedCallback();
+  }
+
+  upgradeProperty(name) {
+    if (!Object.prototype.hasOwnProperty.call(this, name)) {
+      return;
+    }
+
+    const value = this[name];
+    delete this[name];
+    this[name] = value;
+  }
+
+  get componentName() {
+    return 'datepicker';
+  }
+
+  get templateName() {
+    return this.getAttribute('template') || 'default';
+  }
+
+  get selectedDate() {
+    return parseDateValue(this.date, this.format);
+  }
+
+  get primaryDate() {
+    return this.selectedDate || this.startDate;
+  }
+
+  get startDate() {
+    return parseDateValue(this.startValue, this.format);
+  }
+
+  get endDate() {
+    return parseDateValue(this.endValue, this.format);
+  }
+
+  get date() {
+    return this.getAttribute('date') || this.getAttribute('value') || '';
+  }
+
+  get value() {
+    return this.range ? [this.startValue, this.endValue] : this.date;
+  }
+
+  set value(nextValue) {
+    if (Array.isArray(nextValue)) {
+      const [startValue = '', endValue = ''] = nextValue;
+      this.setState({
+        date: startValue || '',
+        startValue: startValue || '',
+        endValue: endValue || ''
+      });
+      return;
+    }
+
+    if (nextValue && typeof nextValue === 'object') {
+      const startValue = nextValue.start || nextValue.startValue || nextValue.date || '';
+      const endValue = nextValue.end || nextValue.endValue || '';
+      this.setState({
+        date: nextValue.date || startValue || '',
+        startValue,
+        endValue
+      });
+      return;
+    }
+
+    this.setState({
+      date: nextValue ? String(nextValue) : '',
+      startValue: '',
+      endValue: ''
+    });
+  }
+
+  setMaxDate() {
+    return parseDateValue(this.maxDate, this.format);
+  }
+
+  setMinDate() {
+    return parseDateValue(this.minDate, this.format);
+  }
+
+  get maxDate() {
+    return this.getAttribute('max-date') || '';
+  }
+
+  get minDate() {
+    return this.getAttribute('min-date') || '';
+  }
+
+  set date(nextValue) {
+    this.setState({
+      date: nextValue ? String(nextValue) : ''
+    });
+  }
+
+  get startValue() {
+    return this.getAttribute('start-value') || '';
+  }
+
+  set startValue(nextValue) {
+    this.setState({
+      startValue: nextValue ? String(nextValue) : ''
+    });
+  }
+
+  get endValue() {
+    return this.getAttribute('end-value') || '';
+  }
+
+  set endValue(nextValue) {
+    this.setState({
+      endValue: nextValue ? String(nextValue) : ''
+    });
+  }
+
+  get range() {
+    return this.getBooleanAttr('range', false);
+  }
+
+  get input() {
+    return this.getBooleanAttr('input', true);
+  }
+
+  get open() {
+    return this.getBooleanAttr('open', false);
+  }
+
+  get portal() {
+    return this.getBooleanAttr('portal', true);
+  }
+
+  get inputType() {
+    return this.getAttribute('input-type') || 'bordered';
+  } // `size` is the canonical name, as on every field; `input-size` is its
+  // legacy name and still honoured. The canonical name wins when both are set.
+
+
+  get size() {
+    return (0,_component_field_size__WEBPACK_IMPORTED_MODULE_1__.fieldSize)(this.getAttribute('size') || this.getAttribute('input-size') || '1', 'sf-datepicker');
+  }
+
+  get inputSize() {
+    return this.size;
+  }
+
+  get inputName() {
+    return this.getAttribute('input-name') || this.getAttribute('name') || '';
+  }
+
+  get placeholder() {
+    return this.getAttribute('placeholder') || '';
+  }
+
+  get label() {
+    return this.getAttribute('label') || '';
+  }
+
+  get disabled() {
+    return this.getBooleanAttr('disabled', false);
+  }
+
+  get required() {
+    return this.getBooleanAttr('required', false);
+  }
+
+  get closeOnSelect() {
+    return this.getBooleanAttr('close-on-select', true);
+  }
+
+  get leftIcon() {
+    if (this.hasAttribute('icon-start')) return this.getAttribute('icon-start');
+    return this.getAttribute('left-icon') || 'calendar_today';
+  }
+
+  get iconStart() {
+    return this.leftIcon;
+  }
+
+  get inputRootClass() {
+    return this.getAttribute('input-root-class') || '';
+  }
+
+  get mask() {
+    return this.getBooleanAttr('mask', false);
+  }
+
+  get maskPattern() {
+    return this.getAttribute('mask-pattern') || this.formatToMask(this.format);
+  }
+
+  get maskLazy() {
+    return this.hasAttribute('mask-lazy') ? this.getBooleanAttr('mask-lazy', false) : false;
+  }
+
+  get maskPlaceholderChar() {
+    return this.getAttribute('mask-placeholder-char') || '_';
+  }
+
+  get maskOptions() {
+    return this.getAttribute('mask-options') || '';
+  }
+
+  get year() {
+    const primaryDate = this.primaryDate;
+    const fallback = primaryDate ? primaryDate.getFullYear() : new Date().getFullYear();
+    return this.hasAttribute('year') ? this.getNumberAttr('year', fallback) : fallback;
+  }
+
+  set year(nextValue) {
+    this.setState({
+      year: nextValue === null || typeof nextValue === 'undefined' || nextValue === '' ? '' : String((0,_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__.toNumber)(nextValue, new Date().getFullYear()))
+    });
+  }
+
+  get month() {
+    const primaryDate = this.primaryDate;
+    const fallback = primaryDate ? primaryDate.getMonth() : new Date().getMonth();
+    return this.hasAttribute('month') ? normalizeMonth(this.getAttribute('month'), fallback) : fallback;
+  }
+
+  set month(nextValue) {
+    this.setState({
+      month: nextValue === null || typeof nextValue === 'undefined' || nextValue === '' ? '' : String(normalizeMonth(nextValue, new Date().getMonth()))
+    });
+  }
+
+  get contextMode() {
+    return this.getEnumAttr('context', ['month', 'year', ''], '');
+  }
+
+  get weekStart() {
+    const value = this.getNumberAttr('week-start', 1);
+    return value === 0 ? 0 : 1;
+  }
+
+  get locale() {
+    return normalizeLocale(this.getAttribute('locale'), this);
+  }
+
+  get format() {
+    return this.getAttribute('format') || 'DD.MM.YYYY';
+  }
+
+  get formattedValue() {
+    return formatDateValue(this.selectedDate, this.format);
+  }
+
+  get formattedStartValue() {
+    return formatDateValue(this.startDate, this.format);
+  }
+
+  get formattedEndValue() {
+    return formatDateValue(this.endDate, this.format);
+  }
+
+  get displayValue() {
+    if (!this.range) {
+      return this.formattedValue;
+    }
+
+    if (this.formattedStartValue && this.formattedEndValue) {
+      return `${this.formattedStartValue} - ${this.formattedEndValue}`;
+    }
+
+    return this.formattedStartValue || this.formattedEndValue || '';
+  }
+
+  get displayDate() {
+    return new Date(this.year, this.month, 1);
+  }
+
+  get isRtl() {
+    return (this.closest('[dir]')?.getAttribute('dir') || document.documentElement?.dir) === 'rtl';
+  }
+
+  get labels() {
+    return getLabels(this);
+  }
+
+  get weekdays() {
+    return getWeekdays(this.locale, this.weekStart);
+  }
+
+  get calendarLabel() {
+    try {
+      return new Intl.DateTimeFormat(this.locale, {
+        month: 'long',
+        year: 'numeric'
+      }).format(this.displayDate);
+    } catch {
+      return `${this.month + 1}.${this.year}`;
+    }
+  }
+
+  get activeDate() {
+    const candidate = parseDate(this.state.activeDate) || this.primaryDate || this.displayDate;
+    const minDate = this.setMinDate();
+    const maxDate = this.setMaxDate();
+    if (minDate && compareDates(candidate, minDate) < 0) return minDate;
+    if (maxDate && compareDates(candidate, maxDate) > 0) return maxDate;
+    return candidate;
+  }
+
+  get normalizedRange() {
+    const startDate = this.startDate;
+    const endDate = this.endDate;
+
+    if (!startDate || !endDate) {
+      return {
+        startDate,
+        endDate
+      };
+    }
+
+    if (compareDates(startDate, endDate) <= 0) {
+      return {
+        startDate,
+        endDate
+      };
+    }
+
+    return {
+      startDate: endDate,
+      endDate: startDate
+    };
+  }
+
+  get days() {
+    const firstDay = new Date(this.year, this.month, 1);
+    const firstWeekDay = firstDay.getDay();
+    const offset = (firstWeekDay - this.weekStart + 7) % 7;
+    const gridStartDate = new Date(this.year, this.month, 1 - offset);
+    const {
+      startDate,
+      endDate
+    } = this.normalizedRange;
+    const hasRangeEnd = Boolean(this.startValue && this.endValue);
+    const minDate = this.setMinDate();
+    const maxDate = this.setMaxDate();
+    const activeDate = this.activeDate;
+    const today = new Date();
+    return Array.from({
+      length: 42
+    }).map((_, index) => {
+      const date = new Date(gridStartDate.getFullYear(), gridStartDate.getMonth(), gridStartDate.getDate() + index);
+      const time = date.getTime();
+      const disabled = Boolean(minDate && time < minDate.getTime() || maxDate && time > maxDate.getTime());
+      return {
+        date,
+        value: formatIsoDate(date),
+        formattedValue: formatDateValue(date, this.format),
+        label: getDateLabel(date, this.locale),
+        day: date.getDate(),
+        today: sameDay(date, today),
+        currentMonth: date.getMonth() === this.month,
+        weekend: [0, 6].includes(date.getDay()),
+        disabled: disabled,
+        selected: this.range ? sameDay(date, startDate) || sameDay(date, endDate) : sameDay(date, this.selectedDate),
+        rangeStart: this.range && hasRangeEnd && sameDay(date, startDate),
+        rangeEnd: this.range && hasRangeEnd && sameDay(date, endDate),
+        rangeSelected: this.range && hasRangeEnd && isBetweenDates(date, startDate, endDate),
+        tabIndex: !disabled && sameDay(date, activeDate) ? 0 : -1
+      };
+    });
+  }
+
+  get months() {
+    const minDate = this.setMinDate();
+    const maxDate = this.setMaxDate();
+    const minMonth = minDate ? new Date(minDate.getFullYear(), minDate.getMonth(), 1) : null;
+    const maxMonth = maxDate ? new Date(maxDate.getFullYear(), maxDate.getMonth(), 1) : null;
+    return Array.from({
+      length: 12
+    }).map((_, index) => {
+      const date = new Date(this.year, index, 1);
+      const time = date.getTime();
+      const disabled = Boolean(minMonth && time < minMonth.getTime() || maxMonth && time > maxMonth.getTime());
+      return {
+        index,
+        label: getMonthLabel(index, this.locale),
+        selected: index === this.month,
+        disabled
+      };
+    });
+  }
+
+  get years() {
+    const minDate = this.setMinDate();
+    const maxDate = this.setMaxDate();
+    const start = this.yearPageStart;
+    return Array.from({
+      length: YEARS_PAGE_SIZE
+    }).map((_, index) => {
+      const year = start + index;
+      const disabled = Boolean(minDate && year < minDate.getFullYear() || maxDate && year > maxDate.getFullYear());
+      return {
+        year,
+        disabled: disabled,
+        selected: year === this.year
+      };
+    });
+  }
+
+  get yearPageStart() {
+    return this.state.yearPageStart ?? this.getYearPageStart(this.year);
+  }
+
+  get yearPageEnd() {
+    return this.yearPageStart + YEARS_PAGE_SIZE - 1;
+  }
+
+  getYearPageStart(year = this.year) {
+    const normalizedYear = (0,_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__.toNumber)(year, new Date().getFullYear());
+    return normalizedYear - normalizedYear % YEARS_PAGE_SIZE;
+  }
+
+  formatToMask = format => {
+    let mask = String(format).replace(/[A-Za-z]/g, '0');
+
+    if (this.range) {
+      mask += ` - ${mask}`;
+    }
+
+    return mask;
+  };
+
+  setContext(nextContext = '') {
+    this.setState({
+      context: nextContext || ''
+    });
+    return this;
+  }
+
+  toggleContext(nextContext) {
+    const nextMode = this.contextMode === nextContext ? '' : nextContext;
+    const nextState = {
+      context: nextMode
+    };
+
+    if (nextMode === 'year') {
+      nextState.yearPageStart = this.getYearPageStart(this.year);
+    }
+
+    this.setState(nextState);
+    return this;
+  }
+
+  shiftYearPage(direction = 1) {
+    this.set({
+      yearPageStart: this.yearPageStart + YEARS_PAGE_SIZE * direction
+    });
+    return this;
+  }
+
+  shiftMonth(direction = 1) {
+    const next = new Date(this.year, this.month + direction, 1);
+    const minDate = this.setMinDate();
+    const maxDate = this.setMaxDate();
+    if (minDate && next < new Date(minDate.getFullYear(), minDate.getMonth(), 1)) return this;
+    if (maxDate && next > new Date(maxDate.getFullYear(), maxDate.getMonth(), 1)) return this;
+    this.setState({
+      year: next.getFullYear(),
+      month: next.getMonth(),
+      context: ''
+    });
+    this.set({
+      activeDate: formatIsoDate(next)
+    });
+    return this;
+  }
+
+  setActiveDate(value) {
+    const date = parseDate(value);
+    if (!date || this.state.activeDate === value) return this;
+    this.set({
+      activeDate: formatIsoDate(date)
+    });
+    return this;
+  }
+
+  moveActiveDate(days) {
+    const next = new Date(this.activeDate);
+    next.setDate(next.getDate() + days);
+    const minDate = this.setMinDate();
+    const maxDate = this.setMaxDate();
+    if (minDate && compareDates(next, minDate) < 0) return this;
+    if (maxDate && compareDates(next, maxDate) > 0) return this;
+    this._focusDateAfterRender = true;
+    this.setState({
+      year: next.getFullYear(),
+      month: next.getMonth(),
+      context: ''
+    });
+    this.set({
+      activeDate: formatIsoDate(next)
+    });
+    return this;
+  }
+
+  openPanel({
+    focusCalendar = false
+  } = {}) {
+    if (this.disabled) return this;
+    this._focusCalendarOnOpen = focusCalendar;
+
+    if (!this.state.activeDate) {
+      this.set({
+        activeDate: formatIsoDate(this.activeDate)
+      });
+    }
+
+    if (this.open) {
+      this.positionPanel();
+      return this;
+    }
+
+    this.setState({
+      open: true
+    });
+    return this;
+  }
+
+  closePanel({
+    restoreFocus = false
+  } = {}) {
+    if (!this.open) {
+      return this;
+    }
+
+    this.setState({
+      open: false,
+      context: ''
+    });
+    if (restoreFocus) requestAnimationFrame(() => this._input?.focus?.());
+    return this;
+  }
+
+  togglePanel() {
+    return this.open ? this.closePanel() : this.openPanel();
+  }
+
+  handleInputClick(event) {
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    this.openPanel();
+  }
+
+  handleInputKeydown(event) {
+    if (!['ArrowDown', 'Enter', ' '].includes(event.key)) return;
+    event.preventDefault();
+    this.openPanel({
+      focusCalendar: true
+    });
+  }
+
+  handleDayKeydown(event, day) {
+    const horizontal = this.isRtl ? -1 : 1;
+    const keySteps = {
+      ArrowLeft: -horizontal,
+      ArrowRight: horizontal,
+      ArrowUp: -7,
+      ArrowDown: 7
+    };
+
+    if (Object.prototype.hasOwnProperty.call(keySteps, event.key)) {
+      event.preventDefault();
+      this.moveActiveDate(keySteps[event.key]);
+      return;
+    }
+
+    if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault();
+      const date = day?.date || this.activeDate;
+      const offset = (date.getDay() - this.weekStart + 7) % 7;
+      this.moveActiveDate(event.key === 'Home' ? -offset : 6 - offset);
+      return;
+    }
+
+    if (event.key === 'PageUp' || event.key === 'PageDown') {
+      event.preventDefault();
+      const direction = event.key === 'PageUp' ? -1 : 1;
+      let next = shiftDateByMonth(this.activeDate, direction);
+      const minDate = this.setMinDate();
+      const maxDate = this.setMaxDate();
+      if (minDate && compareDates(next, minDate) < 0) next = minDate;
+      if (maxDate && compareDates(next, maxDate) > 0) next = maxDate;
+      this._focusDateAfterRender = true;
+      this.setState({
+        year: next.getFullYear(),
+        month: next.getMonth()
+      });
+      this.set({
+        activeDate: formatIsoDate(next)
+      });
+    }
+  }
+
+  handlePanelClick(event) {
+    event?.stopPropagation?.();
+  }
+
+  handleDocumentClick(event) {
+    if (!this.open) {
+      return;
+    }
+
+    const target = event.target;
+
+    if (this.contains(target) || this.refs.datePickerPanel.value?.contains?.(target)) {
+      return;
+    }
+
+    this.closePanel();
+  }
+
+  handleDocumentKeydown(event) {
+    if (!this.open || event.key !== 'Escape') {
+      return;
+    }
+
+    event.preventDefault();
+
+    if (this.contextMode) {
+      this.setContext('');
+      return;
+    }
+
+    this.closePanel();
+    requestAnimationFrame(() => this._input?.focus?.());
+  }
+
+  syncOverlayListeners() {
+    if (this.input && this.open) {
+      document.addEventListener('click', this._documentClickHandler);
+      document.addEventListener('keydown', this._documentKeydownHandler);
+      return;
+    }
+
+    this.removeOverlayListeners();
+  }
+
+  removeOverlayListeners() {
+    document.removeEventListener('click', this._documentClickHandler);
+    document.removeEventListener('keydown', this._documentKeydownHandler);
+    this.stopPanelPosition();
+    window.removeEventListener('resize', this._viewportHandler);
+    document.removeEventListener('scroll', this._viewportHandler, true);
+    window.visualViewport?.removeEventListener('resize', this._viewportHandler);
+    window.visualViewport?.removeEventListener('scroll', this._viewportHandler);
+  }
+
+  positionPanel() {
+    const panel = this.refs.datePickerPanel.value; // Anchor to the visible field frame, not the bare text input inside it.
+
+    const trigger = this._input?.closest('.sf-input-field') || this._input || this.querySelector('sf-input'); // A deferred call after disconnect must not start tracking detached nodes.
+
+    if (!this.isConnected || !this.input || !this.portal || !this.open || !panel?.isConnected || !trigger) {
+      this.stopPanelPosition();
+      return;
+    } // Shared Framework geometry (SF.Position on Floating UI): below the
+    // field, flipped above when it does not fit, shifted and height-limited
+    // inside the viewport, following scroll and resize on its own.
+
+
+    if (!this._panelAnchor || this._panelAnchorPanel !== panel || this._panelAnchorTrigger !== trigger) {
+      this.stopPanelPosition();
+      Object.assign(panel.style, {
+        overflowY: 'auto',
+        zIndex: 'var(--sf-z-index-9)'
+      });
+      this._panelAnchorPanel = panel;
+      this._panelAnchorTrigger = trigger;
+      this._panelAnchor = (globalThis.SF?.Position || (_core_js_position_js__WEBPACK_IMPORTED_MODULE_3___default())).anchor(trigger, panel, {
+        side: 'block-end',
+        align: 'start',
+        onPosition: ({
+          side
+        }) => {
+          const openAbove = side === 'block-start';
+          if (Boolean(this.state.openAbove) !== openAbove) this.set({
+            openAbove
+          });
+        }
+      });
+      return;
+    }
+
+    this._panelAnchor.update();
+  }
+
+  stopPanelPosition() {
+    this._panelAnchor?.stop();
+    this._panelAnchor = null;
+    this._panelAnchorPanel = null;
+    this._panelAnchorTrigger = null;
+  }
+
+  selectDate(day) {
+    if (!day?.date || day.disabled) {
+      return this;
+    }
+
+    if (this.range) {
+      this.selectRangeDate(day);
+      return this;
+    }
+
+    this.setState({
+      year: day.date.getFullYear(),
+      month: day.date.getMonth(),
+      date: day.value,
+      context: ''
+    });
+    this.set({
+      activeDate: day.value
+    });
+    this.emitChange();
+    if (this.closeOnSelect) this.closePanel({
+      restoreFocus: true
+    });
+    return this;
+  }
+
+  selectRangeDate(day) {
+    if (!this.startValue || this.startValue && this.endValue) {
+      this.setState({
+        year: day.date.getFullYear(),
+        month: day.date.getMonth(),
+        startValue: day.value,
+        endValue: '',
+        date: day.value,
+        context: ''
+      });
+      this.set({
+        activeDate: day.value
+      });
+      this.emitChange();
+      return this;
+    }
+
+    const startDate = this.startDate;
+    const nextState = {
+      year: day.date.getFullYear(),
+      month: day.date.getMonth(),
+      context: ''
+    };
+
+    if (startDate && compareDates(day.date, startDate) < 0) {
+      nextState.startValue = day.value;
+      nextState.endValue = this.startValue;
+      nextState.date = day.value;
+    } else {
+      nextState.endValue = day.value;
+      nextState.date = this.startValue;
+    }
+
+    this.setState(nextState);
+    this.set({
+      activeDate: day.value
+    });
+    this.emitChange();
+    if (this.closeOnSelect) this.closePanel({
+      restoreFocus: true
+    });
+    return this;
+  }
+
+  selectMonth(month) {
+    if (!month || month.disabled) {
+      return this;
+    }
+
+    this.setState({
+      month: month.index,
+      context: ''
+    });
+    this.set({
+      activeDate: formatIsoDate(new Date(this.year, month.index, 1))
+    });
+    return this;
+  }
+
+  selectYear(year) {
+    if (!year || year.disabled) {
+      return this;
+    }
+
+    const nextState = {
+      year: year.year,
+      context: ''
+    };
+    const nextMonth = this.getClosestEnabledMonth(year.year, this.month);
+
+    if (nextMonth !== this.month) {
+      nextState.month = nextMonth;
+    }
+
+    this.setState(nextState);
+    this.set({
+      activeDate: formatIsoDate(new Date(year.year, nextMonth, 1))
+    });
+    return this;
+  }
+
+  getClosestEnabledMonth(year, month) {
+    const minDate = this.setMinDate();
+    const maxDate = this.setMaxDate();
+
+    if (minDate && year === minDate.getFullYear() && month < minDate.getMonth()) {
+      return minDate.getMonth();
+    }
+
+    if (maxDate && year === maxDate.getFullYear() && month > maxDate.getMonth()) {
+      return maxDate.getMonth();
+    }
+
+    return month;
+  }
+
+  emitChange() {
+    const detail = this.range ? {
+      value: [this.startValue, this.endValue],
+      date: this.formattedValue,
+      startValue: this.startValue,
+      endValue: this.endValue,
+      formattedValue: this.displayValue,
+      formattedStartValue: this.formattedStartValue,
+      formattedEndValue: this.formattedEndValue,
+      isoValue: this.date,
+      startIsoValue: this.startValue,
+      endIsoValue: this.endValue,
+      range: true,
+      format: this.format
+    } : {
+      value: this.date,
+      date: this.date,
+      formattedValue: this.formattedValue,
+      isoValue: this.date,
+      range: false,
+      format: this.format
+    };
+    this.dispatchEvent(new CustomEvent('change', {
+      bubbles: true,
+      composed: true,
+      detail
+    }));
+    this.dispatchEvent(new CustomEvent('sf-datepicker-change', {
+      bubbles: true,
+      composed: true,
+      detail
+    })); // The legacy sf-change carries the change detail, as its manifest says; it
+    // carried the whole state (open, portal, locale, month...), which no
+    // handler of a change wants and which changed with every refactor.
+
+    this.emitComponentEvent('change', detail);
+  }
+
+  templateContext() {
+    const props = this.getPropsContext();
+    return this.createTemplateContext({ ...props,
+      component: this,
+      date: this.date,
+      formattedValue: this.formattedValue,
+      displayValue: this.displayValue,
+      startValue: this.startValue,
+      formattedStartValue: this.formattedStartValue,
+      endValue: this.endValue,
+      formattedEndValue: this.formattedEndValue,
+      range: this.range,
+      format: this.format,
+      selectedDate: this.selectedDate,
+      startDate: this.startDate,
+      endDate: this.endDate,
+      year: this.year,
+      month: this.month,
+      monthLabel: getMonthLabel(this.month, this.locale),
+      calendarLabel: this.calendarLabel,
+      labels: this.labels,
+      weekdays: this.weekdays,
+      panelId: this._panelId,
+      previousIcon: this.isRtl ? 'chevron_right' : 'chevron_left',
+      nextIcon: this.isRtl ? 'chevron_left' : 'chevron_right',
+      context: this.contextMode,
+      locale: this.locale,
+      days: this.days,
+      months: this.months,
+      years: this.years,
+      yearPageStart: this.yearPageStart,
+      yearPageEnd: this.yearPageEnd,
+      rootClass: this.getRootClass(),
+      rootStyle: this.getRootStyle(),
+      openAbove: Boolean(this.state.openAbove),
+      input: this.input,
+      open: this.open,
+      portal: this.portal,
+      inputType: this.inputType,
+      inputSize: this.inputSize,
+      inputName: this.inputName,
+      placeholder: this.placeholder,
+      label: this.label,
+      disabled: this.disabled,
+      required: this.required,
+      leftIcon: this.leftIcon,
+      iconStart: this.leftIcon,
+      inputRootClass: this.inputRootClass,
+      mask: this.mask,
+      maskPattern: this.maskPattern,
+      maskLazy: this.maskLazy,
+      maskPlaceholderChar: this.maskPlaceholderChar,
+      maskOptions: this.maskOptions
+    });
+  }
+
+  template() {
+    return (0,_js_templates_default__WEBPACK_IMPORTED_MODULE_2__.renderDatepickerTemplate)(this.templateContext());
+  }
+
+  afterRender() {
+    this._input = this.refs.input?.value?.querySelector('input') || null;
+
+    if (this._input) {
+      this._input.setAttribute('aria-haspopup', 'dialog');
+
+      this._input.setAttribute('aria-expanded', this.open ? 'true' : 'false');
+
+      this._input.setAttribute('aria-controls', this._panelId);
+    }
+
+    const monthToggle = this.querySelector('.sf-datepicker-month-toggle button');
+    const yearToggle = this.querySelector('.sf-datepicker-year-toggle button');
+    monthToggle?.setAttribute('aria-expanded', this.contextMode === 'month' ? 'true' : 'false');
+    yearToggle?.setAttribute('aria-expanded', this.contextMode === 'year' ? 'true' : 'false');
+    this.syncOverlayListeners();
+    requestAnimationFrame(() => {
+      this.positionPanel();
+
+      if (this._focusCalendarOnOpen || this._focusDateAfterRender) {
+        const active = this.querySelector(`.sf-datepicker-day[data-date="${formatIsoDate(this.activeDate)}"]`);
+        active?.focus?.();
+        this._focusCalendarOnOpen = false;
+        this._focusDateAfterRender = false;
+      }
+    });
+  }
+
+  onDisconnected() {
+    this.removeOverlayListeners();
+    super.onDisconnected();
+  }
+
+  get data() {
+    return {
+      value: this.value,
+      date: this.date,
+      formattedValue: this.formattedValue,
+      displayValue: this.displayValue,
+      startValue: this.startValue,
+      formattedStartValue: this.formattedStartValue,
+      endValue: this.endValue,
+      formattedEndValue: this.formattedEndValue,
+      range: this.range,
+      format: this.format,
+      year: this.year,
+      month: this.month,
+      context: this.contextMode,
+      maxDate: this.maxDate,
+      minDate: this.minDate,
+      locale: this.locale,
+      input: this.input,
+      open: this.open,
+      portal: this.portal,
+      mask: this.mask,
+      maskPattern: this.maskPattern,
+      maskOptions: this.maskOptions
+    };
+  }
+
+}
+
+SfDatepicker.define('sf-datepicker');
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ },
+
+/***/ "77b2f4107e3b"
+(module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   renderDatepickerTemplate: () => (/* binding */ renderDatepickerTemplate)
+/* harmony export */ });
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("ddf1cdb42ecc");
+/* harmony import */ var lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("5a8eddcd589d");
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([lit__WEBPACK_IMPORTED_MODULE_0__, lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1__]);
+([lit__WEBPACK_IMPORTED_MODULE_0__, lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lit__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+function joinClasses(...tokens) {
+  return tokens.flat().filter(Boolean).join(' ');
+}
+
+function renderYearTop(context) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <div class="sf-datepicker-top flex content-main-between items-cross-center">
+            <sf-icon-button appearance="link" scheme="on-surface" size="1"
+                icon=${context.previousIcon} aria-label=${context.labels.previousYears}
+                @click=${() => context.component.shiftYearPage(-1)}></sf-icon-button>
+            <div class="sf-datepicker-range-title" aria-live="polite">
+                ${context.yearPageStart}–${context.yearPageEnd}
+            </div>
+            <sf-icon-button appearance="link" scheme="on-surface" size="1"
+                icon=${context.nextIcon} aria-label=${context.labels.nextYears}
+                @click=${() => context.component.shiftYearPage(1)}></sf-icon-button>
+        </div>`;
+}
+
+function renderTop(context) {
+  if (context.context === 'year') return renderYearTop(context);
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <div class="sf-datepicker-top grid items-cross-center">
+            <sf-icon-button appearance="link" scheme="on-surface" size="1"
+                icon=${context.previousIcon} aria-label=${context.labels.previousMonth}
+                @click=${() => context.component.shiftMonth(-1)}></sf-icon-button>
+            <div class="sf-datepicker-period flex content-main-center items-cross-center gap-1/4">
+                <sf-button class="sf-datepicker-month-toggle" appearance="link" scheme="on-surface" spacing="compact"
+                    text=${context.monthLabel}
+                    aria-expanded=${context.context === 'month' ? 'true' : 'false'}
+                    @click=${() => context.component.toggleContext('month')}></sf-button>
+                <sf-button class="sf-datepicker-year-toggle" appearance="link" scheme="on-surface" spacing="compact"
+                    text=${String(context.year)}
+                    aria-expanded="false"
+                    @click=${() => context.component.toggleContext('year')}></sf-button>
+            </div>
+            <sf-icon-button appearance="link" scheme="on-surface" size="1"
+                icon=${context.nextIcon} aria-label=${context.labels.nextMonth}
+                @click=${() => context.component.shiftMonth(1)}></sf-icon-button>
+        </div>`;
+}
+
+function renderMonthContext(context) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <div class="sf-datepicker-context absolute top-0 bottom-0 inline-start-0 inline-end-0 grid grid-col-3 content-cross-start items-cross-start overflow-auto gap-1/4"
+             aria-label=${context.labels.chooseMonth}>
+            ${context.months.map(month => (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                <button class=${joinClasses('sf-datepicker-text flex content-main-center items-cross-center', month.selected ? 'active' : '', month.disabled ? 'disabled' : '')}
+                    ?disabled=${month.disabled} aria-pressed=${month.selected ? 'true' : 'false'}
+                    type="button" @click=${() => context.component.selectMonth(month)}>
+                    <span class="sf-datepicker-text-date">${month.label}</span>
+                </button>`)}
+        </div>`;
+}
+
+function renderYearContext(context) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <div class="sf-datepicker-context absolute top-0 bottom-0 inline-start-0 inline-end-0 grid grid-col-3 content-cross-start items-cross-start overflow-auto gap-1/4"
+             aria-label=${context.labels.chooseYear}>
+            ${context.years.map(year => (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                <button class=${joinClasses('sf-datepicker-text flex content-main-center items-cross-center', year.selected ? 'active' : '', year.disabled ? 'disabled' : '')}
+                    type="button" ?disabled=${year.disabled} aria-pressed=${year.selected ? 'true' : 'false'}
+                    @click=${() => context.component.selectYear(year)}>
+                    <span class="sf-datepicker-text-date">${year.year}</span>
+                </button>`)}
+        </div>`;
+}
+
+function renderContext(context) {
+  if (context.context === 'month') return renderMonthContext(context);
+  if (context.context === 'year') return renderYearContext(context);
+  return lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+}
+
+function renderDatepickerInput(context) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <sf-input class="sf-datepicker-input" ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1__.ref)(context.component.refs.input)}
+            appearance=${context.inputType} size=${context.inputSize}
+            label=${context.label || lit__WEBPACK_IMPORTED_MODULE_0__.nothing} name=${context.inputName || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+            placeholder=${context.placeholder || lit__WEBPACK_IMPORTED_MODULE_0__.nothing} icon-start=${context.iconStart || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+            root-class=${context.inputRootClass || lit__WEBPACK_IMPORTED_MODULE_0__.nothing} value=${context.displayValue || ''}
+            ?disabled=${context.disabled} ?required=${context.required} ?mask=${context.mask}
+            mask-pattern=${context.maskPattern || lit__WEBPACK_IMPORTED_MODULE_0__.nothing} mask-lazy=${String(context.maskLazy)}
+            mask-placeholder-char=${context.maskPlaceholderChar || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+            mask-options=${context.maskOptions || lit__WEBPACK_IMPORTED_MODULE_0__.nothing} readonly
+            @click=${event => context.component.handleInputClick(event)}
+            @keydown=${event => context.component.handleInputKeydown(event)}></sf-input>`;
+}
+
+function renderDay(day, context) {
+  const classes = joinClasses('sf-datepicker-day', day.weekend ? 'sf-datepicker-day-off' : '', day.selected ? 'active' : '', day.rangeStart ? 'sf-datepicker-day-start' : '', day.rangeSelected ? 'sf-datepicker-day-selected' : '', day.rangeEnd ? 'sf-datepicker-day-end' : '', day.currentMonth ? '' : 'sf-datepicker-another-month', day.disabled ? 'disabled' : '');
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <button class=${classes} type="button" ?disabled=${day.disabled}
+            data-date=${day.value} aria-label=${day.label}
+            aria-current=${day.today ? 'date' : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+            aria-pressed=${day.selected ? 'true' : 'false'} tabindex=${day.tabIndex}
+            @click=${() => context.component.selectDate(day)}
+            @focus=${() => context.component.setActiveDate(day.value)}
+            @keydown=${event => context.component.handleDayKeydown(event, day)}>
+            <span class="sf-datepicker-day-date">${day.day}</span>
+        </button>`;
+}
+
+function renderDatepickerPanel(context) {
+  const rootClasses = joinClasses('sf-datepicker inline-flex', context.rootClass);
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <div ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1__.ref)(context.component.refs.datePickerPanel)} id=${context.panelId}
+            class=${rootClasses} style=${context.rootStyle || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+            role=${context.input ? 'dialog' : 'group'} aria-label=${context.calendarLabel}
+            @click=${event => context.component.handlePanelClick(event)}>
+            <div class="sf-datepicker-container flex flex-col">
+                ${renderTop(context)}
+                <div class="sf-datepicker-weekdays grid grid-col-7" aria-hidden="true">
+                    ${context.weekdays.map(weekday => (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<span class="sf-datepicker-weekday">${weekday}</span>`)}
+                </div>
+                <div class="sf-datepicker-main relative">
+                    ${renderContext(context)}
+                    <div class="sf-datepicker-grid grid grid-col-7">
+                        ${context.days.map(day => renderDay(day, context))}
+                    </div>
+                </div>
+            </div>
+        </div>`;
+}
+
+function renderDatepickerTemplate(context) {
+  if (!context.input) return renderDatepickerPanel(context);
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <div class=${joinClasses('sf-datepicker-wrap inline-flex flex-col relative', context.open ? 'is-open' : '', context.openAbove ? 'sf-datepicker-wrap--drop-up' : 'sf-datepicker-wrap--drop-down')}
+            ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1__.ref)(context.component.refs.datePickerRoot)} data-portal=${context.portal ? 'true' : 'false'}>
+            ${renderDatepickerInput(context)}
+            ${context.open ? renderDatepickerPanel(context) : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        </div>`;
+}
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ },
+
+/***/ "5a8eddcd589d"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("lit/directives/ref.js") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("lit/directives/ref.js")), { once: true })));
+
+/***/ },
+
+/***/ "ddf1cdb42ecc"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("lit") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("lit")), { once: true })));
+
+/***/ },
+
+/***/ "0d662e4d7d63"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("page-language") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("page-language")), { once: true })));
+
+/***/ },
+
+/***/ "5c1dc214bb5e"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("position") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("position")), { once: true })));
+
+/***/ },
+
+/***/ "fbe0570fcc69"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("smart-base") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("smart-base")), { once: true })));
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	const __webpack_module_cache__ = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		const cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		const module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			const e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/************************************************************************/
+/******/ 	/* webpack/runtime/async module */
+/******/ 	(() => {
+/******/ 		const hasSymbol = typeof Symbol === "function";
+/******/ 		const webpackQueues = hasSymbol ? Symbol("webpack queues") : "__webpack_queues__";
+/******/ 		const webpackExports = hasSymbol ? Symbol("webpack exports") : "__webpack_exports__";
+/******/ 		const webpackError = hasSymbol ? Symbol("webpack error") : "__webpack_error__";
+/******/
+/******/ 		const resolveQueue = (queue) => {
+/******/ 			if(queue?.d < 1) {
+/******/ 				queue.d = 1;
+/******/ 				queue.forEach((fn) => (fn.r--));
+/******/ 				queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
+/******/ 			}
+/******/ 		}
+/******/ 		const wrapDeps = (deps) => (deps.map((dep) => {
+/******/ 			if(dep !== null && typeof dep === "object") {
+/******/
+/******/ 				if(dep[webpackQueues]) return dep;
+/******/ 				if(dep.then) {
+/******/ 					const queue = [];
+/******/ 					queue.d = 0;
+/******/ 					dep.then((r) => {
+/******/ 						obj[webpackExports] = r;
+/******/ 						resolveQueue(queue);
+/******/ 					}, (e) => {
+/******/ 						obj[webpackError] = e;
+/******/ 						resolveQueue(queue);
+/******/ 					});
+/******/ 					const obj = {};
+/******/
+/******/ 					obj[webpackQueues] = (fn) => (fn(queue));
+/******/ 					return obj;
+/******/ 				}
+/******/ 			}
+/******/ 			const ret = {};
+/******/ 			ret[webpackQueues] = x => {};
+/******/ 			ret[webpackExports] = dep;
+/******/ 			return ret;
+/******/ 		}));
+/******/ 		__webpack_require__.a = (module, body, hasAwait) => {
+/******/ 			let queue;
+/******/ 			hasAwait && ((queue = []).d = -1);
+/******/ 			const depQueues = new Set();
+/******/ 			const exports = module.exports;
+/******/ 			let currentDeps;
+/******/ 			let outerResolve;
+/******/ 			let reject;
+/******/ 			const promise = new Promise((resolve, rej) => {
+/******/ 				reject = rej;
+/******/ 				outerResolve = resolve;
+/******/ 			});
+/******/ 			promise[webpackExports] = exports;
+/******/ 			promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
+/******/ 			module.exports = promise;
+/******/ 			const handle = (deps) => {
+/******/ 				currentDeps = wrapDeps(deps);
+/******/ 				let fn;
+/******/ 				const getResult = () => (currentDeps.map((d) => {
+/******/
+/******/ 					if(d[webpackError]) throw d[webpackError];
+/******/ 					return d[webpackExports];
+/******/ 				}))
+/******/ 				const promise = new Promise((resolve) => {
+/******/ 					fn = () => (resolve(getResult));
+/******/ 					fn.r = 0;
+/******/ 					const fnQueue = (q) => (q !== queue && !depQueues.has(q) && (depQueues.add(q), q && !q.d && (fn.r++, q.push(fn))));
+/******/ 					currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
+/******/ 				});
+/******/ 				return fn.r ? promise : getResult();
+/******/ 			}
+/******/ 			const done = (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue))
+/******/ 			body(handle, done);
+/******/ 			queue?.d < 0 && (queue.d = 0);
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			const getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter/value functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			if(Array.isArray(definition)) {
+/******/ 				var i = 0;
+/******/ 				while(i < definition.length) {
+/******/ 					var key = definition[i++];
+/******/ 					var binding = definition[i++];
+/******/ 					if(!__webpack_require__.o(exports, key)) {
+/******/ 						if(binding === 0) {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
+/******/ 						} else {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, get: binding });
+/******/ 						}
+/******/ 					} else if(binding === 0) { i++; }
+/******/ 				}
+/******/ 			} else {
+/******/ 				for(var key in definition) {
+/******/ 					if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 					}
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/
+/************************************************************************/
+/******/
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module used 'module' so it can't be inlined
+/******/ 	let __webpack_exports__ = __webpack_require__("b9b65955223a");
+/******/
+/******/ })()
+;

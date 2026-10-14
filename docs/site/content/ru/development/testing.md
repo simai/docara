@@ -1,0 +1,67 @@
+# Тестирование
+
+Перед передачей изменения запустите проверки от узкой к полной.
+
+## Portable-контур
+
+```bash
+vendor/bin/phpunit --do-not-cache-result \
+  tests/Unit/PortableConfigurationTest.php \
+  tests/Unit/PortableDocumentOutlineBuilderTest.php \
+  tests/Unit/PortableMarkdownRendererTest.php \
+  tests/Unit/PortableNavigationBuilderTest.php \
+  tests/Unit/StaticBuildVerifierTest.php \
+  tests/Unit/FrameworkComponentRuntimeTest.php \
+  tests/Unit/EffectiveComponentCatalogTest.php \
+  tests/Unit/DocumentationContractTest.php \
+  tests/Unit/DocumentationExamplesTest.php \
+  tests/PortableSiteBuilderTest.php \
+  tests/PortableInitCommandTest.php \
+  tests/PortableDocumentationSiteTest.php
+```
+
+## Репозиторий
+
+```bash
+vendor/bin/phpunit --do-not-cache-result
+vendor/bin/pint --test
+composer validate --strict --no-check-publish
+git diff --check
+```
+
+Дополнительно проверяйте JSON parsing, clean init/build, детерминированность,
+исходные и rendered links, отсутствие moving references и browser matrix для
+обоих preset, тем и основных viewport.
+
+## Документация
+
+```bash
+cd docs/site
+php ../../docara build production
+php ../../docara verify-static build_production
+php ../../docara serve production --host=localhost --port=8000 --no-build
+```
+
+Документация должна иметь один H1 на authored page, ровно один физический
+Markdown-owner для каждого публичного route, ноль generated page owners и
+ноль сломанных локальных ссылок. Проверяйте, что все записи диагностического
+receipt имеют `main_source=pagebuilder_document_ir`, а full/single HTML
+совпадает. Machine-readable component catalog остаётся производным output; он
+не создаёт публичные страницы.
+
+Файл `.docara/performance.json` — детерминированный отчёт, а не ещё один
+status engine. Он показывает для каждой страницы начальные CSS, шрифты и
+JavaScript, число запросов, локальный объём и крупнейшие общие ресурсы.
+`verify-static` пересчитывает этот receipt и отвергает устаревшие размеры или
+хеши. Пороговые бюджеты задавайте на уровне конкретного проекта после замеров,
+поскольку один универсальный лимит для справочника, лендинга и простого сайта
+оказывается ложным.
+
+Для контекста чтения обязательны отрицательные проверки глубины 1/7,
+повторяющихся HTML `id`, отсутствующего fragment и неправильной
+percent-кодировки. Browser matrix должна подтверждать правое оглавление на
+широком экране, native details на tablet/mobile, нативные ссылки, focus-visible
+и складывание previous/next без горизонтального overflow.
+
+Длинные тесты этого репозитория следует запускать последовательно: часть
+legacy-suite использует общий временный fixture-каталог.

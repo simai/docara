@@ -1,0 +1,7 @@
+{
+  "id": "header",
+  "node": {
+    "type": "layout.section",
+    "slots": { "default": [{ "id": "title", "node": { "type": "content.heading", "data": { "level": { "literal": 1 }, "content": { "literal": [{ "type": "text", "value": "Расширенная шапка" }] } } } }] }
+  }
+}

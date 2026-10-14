@@ -44,13 +44,17 @@ final readonly class PreviewKernel
             $this->writes->directoryPath($root, $generated);
         }
         $receipt = BuildReceipts::existing($cache) . '/resolved-page-plans.json';
-        $buildMode = is_file($receipt) ? 'single_page' : 'full_site';
-        if (! is_file($receipt)) {
+        // Receipts left next to a cache that is gone describe nothing.
+        $incremental = is_file($receipt) && is_dir($cache) && ! is_link($cache);
+        $buildMode = $incremental ? 'single_page' : 'full_site';
+        if (! $incremental) {
             $this->builder->build($root, $cache, purpose: BuildPurpose::Preview);
         } else {
             $this->builder->build($root, $cache, $page, BuildPurpose::Preview);
         }
 
+        // The build moved the receipts next to the cache; read them there.
+        $receipt = BuildReceipts::existing($cache) . '/resolved-page-plans.json';
         $record = $this->record($receipt, $page);
         $output = $record['output'] ?? null;
         if (! is_string($output) || ! $this->safeRelative($output)) {

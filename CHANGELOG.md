@@ -6,6 +6,17 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.0.3] - 2026-10-15
+
+### Changed
+
+- Install from this repository. The README and the documentation site add
+  the repository to the project before `composer require simai/docara:^3.0`
+  (a one-line `composer.json` for a new project, `composer config
+  repositories.docara vcs https://github.com/simai/docara.git` for an
+  existing one): the Packagist entry for simai/docara lists only 2.x until
+  its maintainership moves, so a bare `composer require` would install 2.x.
+
 ## [3.0.2] - 2026-10-14
 
 Fewer stylesheet requests. A page links a few shared first-frame stylesheets

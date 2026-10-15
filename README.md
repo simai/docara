@@ -25,18 +25,24 @@ the web server needs neither PHP nor Node.js.
 
 ## Install
 
-Install Docara into the project that will hold your site. This pins the
-exact version in your `composer.lock`, and `docara upgrade` can update it
-later:
+Install Docara into the project that will hold your site. Composer takes it
+straight from this GitHub repository, pins the exact version in your
+`composer.lock`, and `docara upgrade` can update it later:
 
 ```bash
 mkdir my-docs && cd my-docs
+echo '{"repositories": [{"type": "vcs", "url": "https://github.com/simai/docara.git"}]}' > composer.json
 composer require simai/docara:^3.0
 ```
 
-Run it as `php vendor/bin/docara`. A global install
-(`composer global require simai/docara:^3.0`, then `docara`) also works for
-`init`, `build` and `serve`; `upgrade` only manages a project-local install.
+The first line tells Composer where Docara lives. In a project that already
+has a `composer.json`, add the repository instead:
+`composer config repositories.docara vcs https://github.com/simai/docara.git`.
+(The Packagist entry for simai/docara lists only 2.x for now; install from
+this repository to get 3.x.)
+
+Run it as `php vendor/bin/docara`. `upgrade` manages this project-local
+install.
 
 ## Quick start
 

@@ -84,8 +84,12 @@ git status --short
 ### 2. Установите Docara 3.0
 
 ```bash
+composer config repositories.docara vcs https://github.com/simai/docara.git
 composer require simai/docara:^3.0 -W
 ```
+
+Первая команда добавляет в проект репозиторий Docara на GitHub: версия 3
+ставится оттуда.
 
 `-W` разрешает Composer обновить зависимости Docara вместе с ней.
 

@@ -386,6 +386,7 @@ php vendor/bin/docara qa --verify=<plan-sha256> [--json]
 ```bash
 mkdir /path/to/site
 cd /path/to/site
+echo '{"repositories": [{"type": "vcs", "url": "https://github.com/simai/docara.git"}]}' > composer.json
 composer require simai/docara:^3.0
 php vendor/bin/docara init . --lang=ru
 php vendor/bin/docara capabilities --json

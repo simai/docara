@@ -6,6 +6,18 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.0.4] - 2026-10-16
+
+### Fixed
+
+- **Smart components that name each other build.** A component's `requires`
+  lists the Smart elements it may render, which the Loader resolves lazily, so
+  two components may name each other: from Framework release ui-7cbf3a19a7a7
+  a context menu renders tabs in its panel head and tabs render a context menu
+  for their overflow. The runtime closure stopped the build with
+  `FRAMEWORK_RUNTIME_DEPENDENCY_CYCLE`; it now reaches every tag of the cycle
+  once, in a stable order, and projects the same files.
+
 ## [3.0.3] - 2026-10-15
 
 ### Changed

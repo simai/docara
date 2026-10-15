@@ -20,6 +20,13 @@ final class FrameworkRuntimeClosure
      * Every tag the given roots reach through `requires`, each dependency
      * before the tag that needs it.
      *
+     * `requires` lists the Smart elements a component may render, which the
+     * Loader resolves lazily, so two components may name each other (a context
+     * menu with tabs, tabs whose overflow is a context menu). Custom elements
+     * upgrade whenever they are defined, so such a cycle is legal: its tags
+     * are all reached, in depth-first order from the sorted roots, and the
+     * back edge is not followed again.
+     *
      * @param  array<string, mixed>  $runtime
      * @param  list<string>  $tags
      * @return list<string>
@@ -103,7 +110,7 @@ final class FrameworkRuntimeClosure
             return;
         }
         if (isset($visiting[$tag])) {
-            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_DEPENDENCY_CYCLE', $tag);
+            return;
         }
 
         $component = $runtime['components'][$tag] ?? null;

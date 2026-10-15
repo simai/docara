@@ -7,7 +7,6 @@ namespace Tests\Unit;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Framework\FrameworkAssetPlanner;
-use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkRuntimeClosure;
@@ -48,11 +47,19 @@ final class FrameworkRuntimeClosureTest extends TestCase
             'smart/modal/js/modal.js',
         ], FrameworkRuntimeClosure::eagerSmartFiles($runtime, ['sf-alert', 'sf-button']));
 
+        // Lazy relations may name each other: a cycle is reached once, in a
+        // stable order, and projects the same files.
         $cyclic = $runtime;
         $cyclic['components']['sf-close']['requires'] = ['sf-icon-button'];
-        $this->expectException(FrameworkComponentException::class);
-        $this->expectExceptionMessage('FRAMEWORK_RUNTIME_DEPENDENCY_CYCLE');
-        FrameworkRuntimeClosure::eagerSmartFiles($cyclic, ['sf-alert']);
+        self::assertSame(
+            FrameworkRuntimeClosure::eagerSmartFiles($runtime, ['sf-alert', 'sf-button']),
+            FrameworkRuntimeClosure::eagerSmartFiles($cyclic, ['sf-alert', 'sf-button']),
+        );
+        $ordered = FrameworkRuntimeClosure::orderedTags($cyclic, ['sf-alert']);
+        self::assertSame($ordered, array_values(array_unique($ordered)));
+        self::assertContains('sf-close', $ordered);
+        self::assertContains('sf-icon-button', $ordered);
+        self::assertSame($ordered, FrameworkRuntimeClosure::orderedTags($cyclic, ['sf-alert']));
     }
 
     #[Test]

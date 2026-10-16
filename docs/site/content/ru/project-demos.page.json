@@ -1,7 +1,10 @@
 {
   "schema": "docara.page.v1",
   "title": "Полезные компоненты проекта",
-  "description": "Project-owned install builder, configurator and footer contribution without engine changes.",
+  "description": "Компоненты, которые сайт подключает из своего каталога smart/: конструктор команды установки, конфигуратор и ссылки в подвале.",
+  "navigation": {
+    "hidden": true
+  },
   "layout": {
     "regions": {
       "footer": {

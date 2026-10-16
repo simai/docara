@@ -66,6 +66,7 @@ class PortableInitCommandTest extends TestCase
         $this->assertFileDoesNotExist($this->tmpPath('vite.config.js'));
 
         $this->assertStringContainsString('Docara project was initialized', $console->getDisplay());
+        $this->assertStringContainsString('Next, build, check and preview the site', $console->getDisplay());
     }
 
     #[Test]
@@ -113,6 +114,33 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame(Command::FAILURE, $status);
         $this->assertStringContainsString('Target path is not a directory', $console->getDisplay());
         $this->assertSame('occupied', file_get_contents($target));
+    }
+
+    #[Test]
+    public function portable_init_treats_version_control_metadata_as_empty_but_not_other_files(): void
+    {
+        $target = $this->tmpPath('fresh-repository');
+        $this->filesystem->ensureDirectoryExists($target . '/.git');
+        file_put_contents($target . '/.gitignore', "/vendor/\n");
+        file_put_contents($target . '/.DS_Store', '');
+
+        [$status, $console] = $this->executeInit(['path' => $target], false);
+
+        $this->assertSame(Command::SUCCESS, $status, $console->getDisplay());
+        $this->assertFileExists($target . '/docara.json');
+        $this->assertSame("/vendor/\n", file_get_contents($target . '/.gitignore'));
+        $this->assertStringContainsString('cd ' . $target, $console->getDisplay());
+        $this->assertStringContainsString('docara build production', $console->getDisplay());
+
+        $occupied = $this->tmpPath('occupied');
+        $this->filesystem->ensureDirectoryExists($occupied . '/.git');
+        file_put_contents($occupied . '/notes.txt', 'mine');
+
+        [$status, $console] = $this->executeInit(['path' => $occupied], false);
+
+        $this->assertSame(Command::FAILURE, $status);
+        $this->assertStringContainsString('requires an empty target directory', $console->getDisplay());
+        $this->assertFileDoesNotExist($occupied . '/docara.json');
     }
 
     #[Test]

@@ -1334,7 +1334,7 @@ final readonly class PortableSiteBuilder
         if (! is_string($node) || $node === '') {
             throw new PortableConfigurationException(
                 'COMPOSITION_RECIPE_RUNTIME_REQUIRED',
-                'Docara build requires a Node.js binary for the exact Composition Recipe runtime.',
+                'Docara build needs Node.js 20 or newer to run the SIMAI Framework page composition code, and no node was found on PATH. Install Node.js, or set DOCARA_NODE_BINARY to the path of the node binary.',
             );
         }
 

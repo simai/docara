@@ -13,6 +13,12 @@ use Throwable;
 
 final class InitCommand extends Command
 {
+    /**
+     * Entries a directory may already hold and still count as empty: version
+     * control and file-manager metadata. The starter never writes these names.
+     */
+    private const IGNORABLE_ENTRIES = ['.git', '.gitattributes', '.gitignore', '.DS_Store', 'Thumbs.db', 'desktop.ini'];
+
     private string $base;
 
     public function __construct(
@@ -108,7 +114,7 @@ final class InitCommand extends Command
             return self::FAILURE;
         }
         if ($this->files->isDirectory($target)
-            && ($entries = array_values(array_diff(scandir($target) ?: [], ['.', '..']))) !== []
+            && ($entries = array_values(array_diff(scandir($target) ?: [], ['.', '..', ...self::IGNORABLE_ENTRIES]))) !== []
             && ! $this->isProjectLocalComposerRuntime($target, $entries)
         ) {
             $this->console->error('Initialization requires an empty target directory. No files were changed.');
@@ -130,9 +136,24 @@ final class InitCommand extends Command
             ->comment("Starter files: copied={$result['copied']}, preserved={$result['preserved']}")
             ->comment("Package-owned state: files={$result['engine_files']}, sha256={$result['engine_sha256']}")
             ->info('Your Docara project was initialized successfully.')
-            ->comment('Next: build it with "docara build production", check it with "docara verify-static build_production", and preview it with "docara serve production --no-build".');
+            ->comment($this->nextSteps($target));
 
         return self::SUCCESS;
+    }
+
+    /** The commands to run next, spelled the way this project runs Docara. */
+    private function nextSteps(string $target): string
+    {
+        $docara = is_file($target . '/vendor/bin/docara') ? 'php vendor/bin/docara' : 'docara';
+        $steps = [];
+        if ((realpath($target) ?: $target) !== (realpath($this->base) ?: $this->base)) {
+            $steps[] = 'cd ' . $target;
+        }
+        $steps[] = $docara . ' build production';
+        $steps[] = $docara . ' verify-static build_production';
+        $steps[] = $docara . ' serve production --no-build';
+
+        return "Next, build, check and preview the site:\n  " . implode("\n  ", $steps);
     }
 
     private function targetDirectory(): string

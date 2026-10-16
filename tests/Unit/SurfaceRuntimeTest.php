@@ -250,6 +250,7 @@ MD);
             self::assertFileExists($destination . '/_docara/smart/project.product-configurator/assets/product-configurator.css');
         } finally {
             (new Filesystem)->deleteDirectory($destination);
+            (new Filesystem)->deleteDirectory($destination . '.docara');
         }
     }
 

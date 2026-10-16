@@ -6,6 +6,42 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **`init` in a fresh Git repository.** A directory that holds only `.git`,
+  `.gitignore`, `.gitattributes` or file-manager files (`.DS_Store`,
+  `Thumbs.db`, `desktop.ini`) counts as empty, so `git init` before
+  `docara init` works. The starter never writes those names, and other files
+  still stop `init` with no change.
+- **`init` prints the commands to run next** the way the project runs Docara:
+  `php vendor/bin/docara ...` for a Composer install, with `cd <path>` when the
+  site was created in another directory.
+- **A build without Node.js says how to fix it:** install Node.js 20 or newer,
+  or set `DOCARA_NODE_BINARY`. The error code is unchanged
+  (`COMPOSITION_RECIPE_RUNTIME_REQUIRED`).
+- The documentation site keeps the project demo page (`/ru/project-demos/`)
+  out of the menu, like the demonstrator results; the extensions example still
+  links to it. Its text no longer uses internal terms.
+
+### Documentation
+
+- README and the quick start say what to commit, with a `.gitignore` to copy,
+  and list `contracts/generated/` in the project layout.
+- Troubleshooting covers Composer finding only 2.x, a missing PHP extension,
+  `init` refusing a directory, and Node.js not found.
+
+### Development
+
+- `composer.json` `archive.exclude` also leaves out `docs/site/.gitignore`, as
+  `.gitattributes` does; a test now fails when the two lists name different
+  tracked paths.
+- `actions/setup-node` is pinned to a commit, like the other CI actions.
+- Tests and one fixture named after internal project phases (`Goal3*`,
+  `GoalC*`, `FrameworkPortableWave`, `Sf5CrossHost`, `m5-multilingual-site`)
+  are renamed after what they check.
+- The surface runtime test removes the build receipts it wrote into
+  `docs/site` (about 40 MB per run).
+
 ## [3.0.4] - 2026-10-16
 
 ### Fixed

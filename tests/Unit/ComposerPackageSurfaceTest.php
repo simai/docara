@@ -75,6 +75,42 @@ final class ComposerPackageSurfaceTest extends TestCase
     }
 
     #[Test]
+    public function composer_archive_and_git_export_leave_out_the_same_tracked_paths(): void
+    {
+        $root = dirname(__DIR__, 2);
+        if (! is_dir($root . '/.git') && ! is_file($root . '/.git')) {
+            self::markTestSkipped('Not a Git checkout.');
+        }
+        $composer = json_decode((string) file_get_contents($root . '/composer.json'), true, 512, JSON_THROW_ON_ERROR);
+        $archive = $composer['archive']['exclude'] ?? [];
+        self::assertIsArray($archive);
+
+        $exported = [];
+        foreach (preg_split('/\R/', (string) file_get_contents($root . '/.gitattributes')) ?: [] as $line) {
+            if (preg_match('#^(/\S+)\s+export-ignore\s*$#', trim($line), $match) === 1) {
+                $exported[] = $match[1];
+            }
+        }
+        self::assertNotSame([], $exported);
+
+        foreach ($exported as $path) {
+            self::assertContains($path, $archive, "Composer archive.exclude must also leave out [$path].");
+        }
+
+        foreach ($archive as $path) {
+            if (! is_string($path) || ! str_starts_with($path, '/') || $path === '/.git') {
+                continue;
+            }
+            $tracked = [];
+            exec('git -C ' . escapeshellarg($root) . ' ls-files -- ' . escapeshellarg(ltrim($path, '/')) . ' 2>&1', $tracked, $status);
+            self::assertSame(0, $status, implode("\n", $tracked));
+            if ($tracked !== []) {
+                self::assertContains($path, $exported, ".gitattributes must also export-ignore the tracked path [$path].");
+            }
+        }
+    }
+
+    #[Test]
     public function optional_mcp_is_packaged_but_not_registered_as_a_normal_runtime_binary_or_dependency(): void
     {
         $root = dirname(__DIR__, 2);

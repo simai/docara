@@ -71,6 +71,7 @@
             "/.vscode",
             "/CONTRIBUTING.md",
             "/composer.lock",
+            "/docs/site/.gitignore",
             "/output",
             "/phpunit.xml",
             "/pint.json",

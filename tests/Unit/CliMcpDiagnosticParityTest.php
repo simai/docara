@@ -15,7 +15,7 @@ use Simai\Docara\Portable\SchemaRepository;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tests\TestCase;
 
-final class Goal3DiagnosticParityTest extends TestCase
+final class CliMcpDiagnosticParityTest extends TestCase
 {
     protected function setUp(): void
     {

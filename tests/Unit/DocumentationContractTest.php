@@ -285,17 +285,9 @@ final class DocumentationContractTest extends TestCase
             self::assertStringContainsString('composer require simai/docara:^3.0', $contents);
             self::assertStringNotContainsString('dev-main', $contents);
             self::assertDoesNotMatchRegularExpression(
-                '/dev-codex\/docara-consolidation#[0-9a-f]{40}/',
+                '/dev-[A-Za-z0-9._\/-]+#[0-9a-f]{40}/',
                 $contents,
-                $this->relativeToRepository($path) . ' must not embed an obsolete candidate SHA.',
-            );
-        }
-
-        foreach ([$this->repositoryRoot() . '/README.md', ...$this->markdownDocuments()] as $path) {
-            self::assertStringNotContainsString(
-                '2640503ba14913aa83bc3b4343c86966a807e29f',
-                (string) file_get_contents($path),
-                $this->relativeToRepository($path) . ' contains the retired portable candidate.',
+                $this->relativeToRepository($path) . ' must install a release, not a branch commit.',
             );
         }
     }
@@ -411,7 +403,7 @@ final class DocumentationContractTest extends TestCase
                     }
                 } else {
                     copy(
-                        $this->repositoryRoot() . "/tests/fixtures/m5-multilingual-site/content/$locale/lang.json",
+                        $this->repositoryRoot() . "/tests/fixtures/multilingual-site/content/$locale/lang.json",
                         $temporary . "/content/$locale/lang.json",
                     );
                 }

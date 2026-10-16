@@ -14,7 +14,7 @@ use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
 use Simai\Docara\Smart\SmartRegistry;
 use Symfony\Component\Process\Process;
 
-final class Sf5CrossHostSmartCompatibilityTest extends TestCase
+final class CrossHostSmartCompatibilityTest extends TestCase
 {
     private string $temporaryRoot;
 

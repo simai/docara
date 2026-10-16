@@ -11,7 +11,7 @@ use Simai\Docara\PortableSite\PortableAtlasIndexHydrator;
 use Simai\Docara\PortableSite\PortableMarkdownProfile;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
-final class GoalCPublicDocumentationTest extends TestCase
+final class DocumentationSiteStructureTest extends TestCase
 {
     #[Test]
     public function components_root_has_six_catalogue_categories_and_only_real_component_pages(): void

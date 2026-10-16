@@ -17,7 +17,7 @@ final class PortableMultilingualProductTest extends TestCase
     public function physical_english_ltr_and_arabic_rtl_routes_use_the_same_full_and_single_pipeline(): void
     {
         $this->filesystem->copyDirectory(dirname(__DIR__) . '/stubs/portable', $this->tmp);
-        $fixture = __DIR__ . '/fixtures/m5-multilingual-site/content';
+        $fixture = __DIR__ . '/fixtures/multilingual-site/content';
         foreach (['en', 'ar'] as $locale) {
             $this->filesystem->copyDirectory($fixture . '/' . $locale, $this->tmpPath('content/' . $locale));
         }

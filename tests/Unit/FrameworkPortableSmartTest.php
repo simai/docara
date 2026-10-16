@@ -26,7 +26,7 @@ use Simai\Docara\Smart\Provider\SmartProviderException;
 use Simai\Docara\Smart\SmartRegistry;
 use Tests\TestCase;
 
-final class FrameworkPortableWaveTest extends TestCase
+final class FrameworkPortableSmartTest extends TestCase
 {
     private const FORM_PACKET = '83551f972ad0b1a6e2037f61583769e32a4a78081e01ed0a0fe888b1187baca1';
 
@@ -230,7 +230,7 @@ final class FrameworkPortableWaveTest extends TestCase
     }
 
     #[Test]
-    public function exact_framework_assets_are_published_only_when_the_page_uses_the_portable_wave(): void
+    public function exact_framework_assets_are_published_only_when_the_page_uses_framework_smart_components(): void
     {
         $build = $this->tmpPath('unused-assets');
         (new PortablePublisherAssetPublisher(new Filesystem, SmartRegistry::bundled()))->publish($build, []);

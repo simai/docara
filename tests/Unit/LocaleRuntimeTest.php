@@ -203,10 +203,10 @@ HTML;
         );
 
         self::assertSame('Continuer', $translator->message('fr-ca', 'common.continue'));
-        self::assertSame('Bonjour, Rim!', $translator->message('fr-CA', 'common.greeting', ['name' => 'Rim']));
+        self::assertSame('Bonjour, Ada!', $translator->message('fr-CA', 'common.greeting', ['name' => 'Ada']));
         self::assertSame('English fallback', $translator->message('fr-CA', 'common.only_en'));
         self::assertSame('Default {missing}', $translator->messageOr('fr-CA', 'code.copy', 'Default {missing}'));
-        self::assertSame('Default Rim', $translator->messageOr('fr-CA', 'code.copy', 'Default {name}', ['name' => 'Rim']));
+        self::assertSame('Default Ada', $translator->messageOr('fr-CA', 'code.copy', 'Default {name}', ['name' => 'Ada']));
     }
 
     public function test_content_language_is_the_public_ui_overlay_without_owning_component_prose(): void
@@ -227,7 +227,7 @@ HTML;
             new ContentLanguageRepository($this->root),
         );
 
-        self::assertSame('Content owner: Rim', $translator->message('ru', 'common.greeting', ['name' => 'Rim']));
+        self::assertSame('Content owner: Ada', $translator->message('ru', 'common.greeting', ['name' => 'Ada']));
         self::assertSame(
             'Ссылаются на эту страницу',
             $translator->message('ru', 'navigation.backlinks_heading'),

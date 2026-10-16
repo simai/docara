@@ -11,7 +11,7 @@ use Simai\Docara\Console\ApplicationFactory;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tests\TestCase;
 
-final class GoalCExecutableJourneyTest extends TestCase
+final class DeveloperJourneyCommandsTest extends TestCase
 {
     private const PAGE = '/ru/project-demos/';
 

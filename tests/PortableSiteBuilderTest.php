@@ -2951,7 +2951,7 @@ MD;
 
     private function installTestContentLanguage(string $locale, string $target): void
     {
-        $fixture = dirname(__DIR__) . "/tests/fixtures/m5-multilingual-site/content/$locale/lang.json";
+        $fixture = dirname(__DIR__) . "/tests/fixtures/multilingual-site/content/$locale/lang.json";
         if (is_file($fixture)) {
             copy($fixture, $target);
 

@@ -1,4 +1,4 @@
-# M5 multilingual product fixture
+# Multilingual site fixture
 
 This fixture adds one physical English LTR route and one physical Arabic RTL
 route to the standard initialized site. Tests copy these files into a disposable

@@ -10,7 +10,7 @@ use Simai\Docara\Portable\CanonicalJson;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tests\TestCase;
 
-final class Goal3WriteContainmentTest extends TestCase
+final class SymlinkWriteContainmentTest extends TestCase
 {
     private string $project;
 

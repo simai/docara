@@ -25,7 +25,9 @@ php vendor/bin/docara init .
 Composer фиксирует точную установленную версию в `composer.lock`, а
 `vendor/bin/docara` всегда относится именно к этому проекту. `init` допускает
 пустой каталог или каталог, где уже находятся только проверенные
-`composer.json`, `composer.lock` и `vendor/` с `simai/docara`.
+`composer.json`, `composer.lock` и `vendor/` с `simai/docara`. Служебные
+`.git/`, `.gitignore`, `.gitattributes` и `.DS_Store` не мешают: `init` их не
+трогает.
 
 ## Выберите заготовку
 
@@ -178,6 +180,22 @@ content/
 описано в разделе [Мультиязычный сайт](/authoring/multilingual-site/). Для
 другой версии документации создайте отдельный site variant и output, а не
 смешивайте страницы в одной сборке.
+
+## Что хранить в Git
+
+Храните в репозитории всё, что создал `init`, включая `.docara/engine/`:
+по этим файлам `docara update` и `docara upgrade` проверяют проект. Не храните
+зависимости и результаты сборки. Подойдёт такой `.gitignore`:
+
+```text
+/vendor/
+/build_*/
+/.docara-preview/
+/.docara-qa/
+```
+
+`build_production.docara/` рядом с готовым сайтом содержит отчёты сборки для
+`verify-static`; правило `/build_*/` исключает и его.
 
 ## Что читать дальше
 

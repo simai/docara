@@ -88,6 +88,7 @@ content/en/                 your pages (Markdown) and optional settings files
   writing.page.json         settings for one page (optional)
   lang.json                 interface strings for this language
 assets/                     logo, favicon and other files you reference
+contracts/generated/        Framework component contracts the build reads (copied by init)
 redirects.json              old URL -> new URL
 simai-framework.lock.json   the SIMAI Framework release the site uses
 .docara/                    files Docara manages; do not edit
@@ -98,6 +99,17 @@ build_production.docara/    build receipts for verify-static (generated; not pub
 Settings are inherited: `docara.json`, then each `section.json` from the
 language root down to the page, then the page's own `<page>.page.json`. Most
 pages need no JSON file at all.
+
+Commit everything `init` created, including `.docara/engine/`: `update` and
+`upgrade` check the project against it. Keep dependencies and builds out of
+version control:
+
+```gitignore
+/vendor/
+/build_*/
+/.docara-preview/
+/.docara-qa/
+```
 
 ## docara.json in brief
 
@@ -140,7 +152,7 @@ output.
 
 | Command | What it does |
 |---|---|
-| `init [path] [--template=minimal\|showcase] [--lang=en\|ru]` | Create a new site in an empty directory. |
+| `init [path] [--template=minimal\|showcase] [--lang=en\|ru]` | Create a new site in an empty directory (Composer files, `.git/` and `.gitignore` may already be there). |
 | `build [environment] [--page=/url/]` | Build the site into `build_<environment>/` (default `local`). `--page` rebuilds one existing page after a full build. |
 | `serve [environment] [--host=localhost] [--port=8000] [--no-build]` | Build, then serve the site over HTTP. |
 | `verify-static [directory]` | Check a built folder (default `build_production`): pages, links, assets, search index and build receipts. |

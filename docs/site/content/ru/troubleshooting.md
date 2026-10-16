@@ -4,6 +4,49 @@
 Не правьте файлы внутри `build_local` или `build_production`: следующая сборка
 заменит их.
 
+## Composer не находит версию 3.x
+
+Сообщение `Root composer.json requires simai/docara ^3.0, found
+simai/docara[... v2.18.2] but it does not match the constraint` означает, что
+Composer ищет пакет только в Packagist, где пока опубликована ветка 2.x.
+Добавьте репозиторий Docara и повторите установку:
+
+```bash
+composer config repositories.docara vcs https://github.com/simai/docara.git
+composer require simai/docara:^3.0
+```
+
+## Composer требует расширение PHP
+
+Сообщение вида `simai/docara requires ext-intl * -> it is missing from your
+system` означает, что в PHP нет нужного расширения. Docara использует `ctype`,
+`dom`, `intl`, `json`, `libxml` и `mbstring`. Установите расширение для той
+версии PHP, которую запускает `php -v`, и проверьте его командой `php -m`.
+
+## `init` отказывается создавать проект
+
+`Initialization requires an empty target directory` означает, что в каталоге
+уже есть файлы. `init` принимает пустой каталог, каталог только с
+`composer.json`, `composer.lock` и `vendor/` после `composer require`, а также
+служебные `.git/`, `.gitignore`, `.gitattributes` и `.DS_Store`. Создайте
+проект в новом каталоге или перенесите посторонние файлы.
+
+`Detected an existing Docara project` означает, что проект уже создан. Для
+обновления служебных файлов используйте [`docara update`](/build/update/).
+
+## Сборка не находит Node.js
+
+Код `COMPOSITION_RECIPE_RUNTIME_REQUIRED` означает, что команда `node` не
+найдена. Сборка запускает код композиции страниц SIMAI Framework в Node.js 20
+или новее. Установите Node.js или укажите путь к нему:
+
+```bash
+export DOCARA_NODE_BINARY=/path/to/node
+php vendor/bin/docara build production
+```
+
+Готовому сайту Node.js не нужен: он требуется только на машине сборки.
+
 ## Сборка остановилась на проверке JSON
 
 В сообщении об ошибке найдите имя файла, JSON Pointer и код

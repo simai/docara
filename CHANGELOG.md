@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.0.5] - 2026-10-16
+
 ### Changed
 
 - **`init` in a fresh Git repository.** A directory that holds only `.git`,

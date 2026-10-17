@@ -1066,6 +1066,9 @@ final readonly class FrameworkAssetPlanner
                 if (! is_string($dependency)) {
                     throw new FrameworkComponentException('FRAMEWORK_RUNTIME_DEPENDENCY_INVALID', $name);
                 }
+                if (self::isLazyRelation($relation)) {
+                    continue;
+                }
                 $visit($dependency);
             }
             unset($visiting[$name]);
@@ -1238,6 +1241,7 @@ final readonly class FrameworkAssetPlanner
             foreach (($rule['relation'] ?? []) as $relation) {
                 $dependency = is_array($relation) ? ($relation['name'] ?? null) : null;
                 if (is_string($dependency)
+                    && ! self::isLazyRelation($relation)
                     && (($loadedPlugins[$dependency]['ready'] ?? false) !== true)
                 ) {
                     $modulePreloaded = false;
@@ -1410,6 +1414,18 @@ final readonly class FrameworkAssetPlanner
         sort($expected, SORT_STRING);
 
         return $actual === $expected;
+    }
+
+    /**
+     * A lazy relation (`"lazy": true`, release ui-45384c434d3f and later) is
+     * something a component may render later. The Loader does not hold the
+     * page for it: it fetches it once the page is ready, or when it is asked
+     * for. It is therefore no part of the first-frame closure, and a module
+     * whose lazy relations are not preloaded is still fully preloaded.
+     */
+    private static function isLazyRelation(mixed $relation): bool
+    {
+        return is_array($relation) && ($relation['lazy'] ?? false) === true;
     }
 
     /** @return array{source:string,path:string,sha256:string,content:string,root:string} */

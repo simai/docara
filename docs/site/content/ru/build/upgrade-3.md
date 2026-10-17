@@ -9,9 +9,10 @@ Docara 3.0 — новая major-версия. Команда `docara upgrade` р
 
 ### Framework входит в пакет
 
-Docara 3.0 содержит закреплённый релиз SIMAI Framework `ui-82fc0ba882ba`
-(публичный репозиторий `simai/ui`: Core из `distr/`, Smart из `distr/smart/`
-того же коммита) вместе со средой выполнения Composition Recipe. Для сборки
+Docara 3.0 содержит закреплённый релиз SIMAI Framework из публичного
+репозитория `simai/ui` (Core из `distr/`, Smart из `distr/smart/` того же
+коммита) вместе со средой выполнения Composition Recipe: `ui-82fc0ba882ba` в
+версиях 3.0.0–3.0.5, `ui-45384c434d3f` начиная со следующего выпуска. Для сборки
 больше не нужны отдельная копия Framework и переменные окружения:
 `DOCARA_SIMAI_UI_ROOT` и `SIMAI_UI_ROOT` можно убрать из окружения сборки и
 CI. Эти переменные остаются необязательными и нужны только для сборки с другой
@@ -115,9 +116,9 @@ php vendor/bin/docara update --apply
 php -r 'echo json_decode(file_get_contents("simai-framework.lock.json"), true)["runtime"]["pair_id"], PHP_EOL;'
 ```
 
-Значения `ui-82fc0ba882ba` (релиз Docara 3.0) и
-`ui-4f5e5067afeb-smart-7d932ed51408` (lock Docara 2.18) собираются с релизом
-пакета. При любом другом значении замените lock:
+Значения `ui-45384c434d3f` (текущий релиз), `ui-82fc0ba882ba` (Docara
+3.0.0–3.0.5) и `ui-4f5e5067afeb-smart-7d932ed51408` (lock Docara 2.18)
+собираются с релизом пакета. При любом другом значении замените lock:
 
 ```bash
 cp vendor/simai/docara/stubs/portable/simai-framework.lock.json simai-framework.lock.json

@@ -441,7 +441,7 @@
         "source": "larena/ui",
         "runtime_lock": "resources/sf/runtime-lock.json",
         "upstream_component": "simai/ui:distr/smart/buttons",
-        "upstream_revision": "82fc0ba882baae72ae3d83d7370decbcebe366d7",
+        "upstream_revision": "45384c434d3f0827935efe9871f062d1dd134e95",
         "reference_status": "source_backed"
     }
 }

@@ -26,7 +26,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($project));
 
-        self::assertSame('ui-82fc0ba882ba', $repository->runtime()['pair_id']);
+        self::assertSame('ui-45384c434d3f', $repository->runtime()['pair_id']);
     }
 
     #[Test]
@@ -40,7 +40,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         );
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
-        self::assertSame('ui-82fc0ba882ba', $repository->runtime()['pair_id']);
+        self::assertSame('ui-45384c434d3f', $repository->runtime()['pair_id']);
         self::assertSame(1385, $repository->runtimeProjection()['files']);
         self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $previous['runtime']['pair_id']);
 
@@ -61,10 +61,30 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-4f5e5067afeb-smart-7d932ed51408', $previous['runtime']['pair_id']);
-        self::assertSame('ui-82fc0ba882ba', $repository->runtime()['pair_id']);
+        self::assertSame('ui-45384c434d3f', $repository->runtime()['pair_id']);
         self::assertSame(1385, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 6144;
+        $this->expectException(FrameworkComponentException::class);
+        FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
+    }
+
+    #[Test]
+    public function the_lock_docara_3_0_5_shipped_builds_with_the_bundled_release(): void
+    {
+        $previous = json_decode(
+            (string) file_get_contents(dirname(__DIR__) . '/fixtures/framework/simai-framework-3.0.5.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+
+        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
+        self::assertSame('ui-82fc0ba882ba', $previous['runtime']['pair_id']);
+        self::assertSame('ui-45384c434d3f', $repository->runtime()['pair_id']);
+        self::assertSame(1385, $repository->runtimeProjection()['files']);
+
+        $previous['runtime']['ui']['files'] = 8090;
         $this->expectException(FrameworkComponentException::class);
         FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
     }
@@ -246,7 +266,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertStringNotContainsString('.min.', $relativePath);
         }
         self::assertSame(
-            'f6cce2676a79eb5bd38209498046e2adefd56ea3782778662888f68be6432e2c',
+            'a472ea5a4f15f8d2b5c18086ee5240deef9d51fd557efa0706c7761c492e2577',
             $runtime['packet_sha256'],
         );
         $coreLoader = $repository->bundledRuntimeAsset('core/js/core-loader.js');
@@ -256,7 +276,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertStringNotContainsString('cdn.jsdelivr.net', $assets['simai.framework.boot']['content']);
         foreach (['simai.framework.smart_base.js', 'simai.framework.core.js'] as $assetKey) {
             self::assertStringStartsWith('/_docara/vendor/simai-framework/runtime/', $assets[$assetKey]['url']);
-            self::assertSame('82fc0ba882baae72ae3d83d7370decbcebe366d7', $assets[$assetKey]['source_revision']);
+            self::assertSame('45384c434d3f0827935efe9871f062d1dd134e95', $assets[$assetKey]['source_revision']);
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
@@ -431,6 +451,15 @@ final class FrameworkTypographyProjectionTest extends TestCase
             );
         }
 
+        // cl-tabs names cl-context-menu, cl-sortable and cl-checkbox as lazy
+        // relations: the Loader fetches them after the page is ready, so the
+        // first frame neither waits for them nor carries them.
+        $tabsPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml('<sf-tabs></sf-tabs>', []);
+        self::assertContains('cl-tabs', $tabsPlan->preload['modules']);
+        foreach (['cl-context-menu', 'cl-sortable', 'cl-checkbox'] as $lazy) {
+            self::assertNotContains($lazy, $tabsPlan->preload['modules']);
+        }
+
         $nested = (new FrameworkAssetPlanner($repository, '/project~/docs/_docara/framework-runtime'))->plan([]);
         $nestedAssets = array_column($nested->assets, null, 'key');
         self::assertStringStartsWith(
@@ -438,7 +467,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $nestedAssets['simai.framework.core.css']['url'],
         );
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/82fc0ba882baae72ae3d83d7370decbcebe366d7/distr/core/js/core.js?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/45384c434d3f0827935efe9871f062d1dd134e95/distr/core/js/core.js?sf_v=',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }

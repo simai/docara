@@ -6,6 +6,20 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Framework release `ui-45384c434d3f`.** Docara bundles the SIMAI Framework
+  release `ui-45384c434d3f` (`simai/ui` 45384c43, contract registry bound in
+  173fbfdc) in place of `ui-82fc0ba882ba`: the Core runtime packet, the Smart
+  entrypoints (75 files, 54 components, `sf-theme-generator` among them), the
+  Composition Recipe runtime, the generated contracts and the starter and
+  documentation-site locks. A project lock that pins `ui-82fc0ba882ba` (Docara
+  3.0.0 to 3.0.5) builds with the bundled release without editing it.
+- The first-frame planner follows the Loader on lazy relations
+  (`"lazy": true`, new in this release): a lazy relation is fetched after the
+  page is ready, so it is not part of the first-frame closure and does not
+  keep the module that names it dynamic (`sf-tabs` and `sf-context-menu`).
+
 ## [3.0.5] - 2026-10-16
 
 ### Changed

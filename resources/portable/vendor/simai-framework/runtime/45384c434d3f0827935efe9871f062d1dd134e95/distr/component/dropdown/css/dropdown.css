@@ -1,0 +1,2631 @@
+/* A row's divider is inside its control height: the bottom padding gives the
+   border back, so a standalone row and the same row in a list without
+   dividers stand equally tall. The width is registered as a length, so a
+   unitless 0 written by a list still subtracts; unregistered, it would
+   invalidate the padding. Measured before: a standalone row stood one pixel
+   taller than the control height at every size. */
+@property --sf-list-item--border-bottom-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0;
+}
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list-item {
+    padding-left: var(--sf-list-item--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-list-item {
+    padding-left: var(--sf-list-item--padding-inline-start);
+    }
+  }
+  .sf-list-item:where(:dir(ltr)) {
+    padding-left: var(--sf-list-item--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list-item {
+    padding-right: var(--sf-list-item--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  [dir="rtl"] .sf-list-item {
+    padding-right: var(--sf-list-item--padding-inline-start);
+    }
+  }
+  .sf-list-item:where(:dir(rtl)) {
+    padding-right: var(--sf-list-item--padding-inline-start);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list-item {
+    padding-right: var(--sf-list-item--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-list-item {
+    padding-right: var(--sf-list-item--padding-inline-end);
+    }
+  }
+  .sf-list-item:where(:dir(ltr)) {
+    padding-right: var(--sf-list-item--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list-item {
+    padding-left: var(--sf-list-item--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  [dir="rtl"] .sf-list-item {
+    padding-left: var(--sf-list-item--padding-inline-end);
+    }
+  }
+  .sf-list-item:where(:dir(rtl)) {
+    padding-left: var(--sf-list-item--padding-inline-end);
+  }
+  .sf-list-item {
+    -webkit-padding-start: var(--sf-list-item--padding-inline-start);
+            padding-inline-start: var(--sf-list-item--padding-inline-start);
+    padding-top: var(--sf-list-item--padding-top);
+    -webkit-padding-end: var(--sf-list-item--padding-inline-end);
+            padding-inline-end: var(--sf-list-item--padding-inline-end);
+    padding-bottom: calc(var(--sf-list-item--padding-bottom) - var(--sf-list-item--border-bottom-width));
+    background-color: var(--sf-list-item--background-color);
+    border-color: transparent;
+    border-color: var(--sf-list-item--border-color, transparent);
+    border-bottom-width: var(--sf-list-item--border-bottom-width);
+    border-style: solid;
+    border-style: var(--sf-list-item--border-style, solid);
+    box-shadow: var(--sf-list-item--box-shadow);
+    --sf-list-item--background-color: var(--sf-elevation-1--surface);
+    --sf-on-surface-variant: var(--sf-on-elevation-1--variant);
+    --sf-list-item--border-color: var(--sf-outline-variant);
+    --sf-list-item--border-bottom-width: var(--sf-px);
+    --sf-list-item--border-style: solid;
+    min-width: 0;
+    min-inline-size: 0;
+    transition-property: background-color, border-color, box-shadow, color;
+    transition-duration: var(--sf-duration-fast);
+    transition-timing-function: var(--sf-animation);
+  }
+  /* The wrap lays out its own row: it fills the option, so the selected mark
+     that follows it sits at the end, and its picture and label share one centre
+     line. Markup without the flex utilities used to shrink it to the label and
+     put the mark right after the text. */
+  .sf-list-item .sf-list-item-wrap {
+    background-color: var(--sf-list-item-wrap--background-color);
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list-item .sf-list-item-container {
+    padding-right: var(--sf-list-item-container--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-list-item .sf-list-item-container {
+    padding-right: var(--sf-list-item-container--padding-inline-end);
+    }
+  }
+  .sf-list-item .sf-list-item-container:where(:dir(ltr)) {
+    padding-right: var(--sf-list-item-container--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list-item .sf-list-item-container {
+    padding-left: var(--sf-list-item-container--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  [dir="rtl"] .sf-list-item .sf-list-item-container {
+    padding-left: var(--sf-list-item-container--padding-inline-end);
+    }
+  }
+  .sf-list-item .sf-list-item-container:where(:dir(rtl)) {
+    padding-left: var(--sf-list-item-container--padding-inline-end);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list-item .sf-list-item-container {
+    padding-left: var(--sf-list-item-container--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-list-item .sf-list-item-container {
+    padding-left: var(--sf-list-item-container--padding-inline-start);
+    }
+  }
+  .sf-list-item .sf-list-item-container:where(:dir(ltr)) {
+    padding-left: var(--sf-list-item-container--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list-item .sf-list-item-container {
+    padding-right: var(--sf-list-item-container--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  [dir="rtl"] .sf-list-item .sf-list-item-container {
+    padding-right: var(--sf-list-item-container--padding-inline-start);
+    }
+  }
+  .sf-list-item .sf-list-item-container:where(:dir(rtl)) {
+    padding-right: var(--sf-list-item-container--padding-inline-start);
+  }
+  .sf-list-item .sf-list-item-container {
+    background-color: var(--sf-list-item-container--background-color);
+    color: var(--sf-list-item-container--color);
+    font-family: var(--sf-list-item-container--font-family);
+    font-size: var(--sf-list-item-container--font-size);
+    font-weight: var(--sf-list-item-container--font-weight);
+    line-height: var(--sf-list-item-container--line-height);
+    -webkit-padding-end: var(--sf-list-item-container--padding-inline-end);
+            padding-inline-end: var(--sf-list-item-container--padding-inline-end);
+    -webkit-padding-start: var(--sf-list-item-container--padding-inline-start);
+            padding-inline-start: var(--sf-list-item-container--padding-inline-start);
+    min-width: 0;
+    min-inline-size: 0;
+    word-wrap: anywhere;
+  }
+  .sf-list-item .sf-tag {
+    background-color: var(--sf-tag--background-color);
+  }
+  .sf-list-item .sf-tag-container {
+    font-size: var(--sf-tag-container--font-size);
+    line-height: var(--sf-tag-container--line-height);
+  }
+  .sf-list-item .sf-icon {
+    color: var(--sf-on-surface-variant);
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+    font-size: var(--sf-text-size-3);
+    font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
+    height: var(--sf-text-size-3);
+    height: var(--sf-icon--height, var(--sf-text-size-3));
+    width: var(--sf-text-size-3);
+    width: var(--sf-icon--width, var(--sf-text-size-3));
+    flex-shrink: 0;
+  }
+  .sf-list-item .sf-avatar-label-group-title {
+    color: var(--sf-avatar-label-group-title--color);
+    font-size: var(--sf-avatar-label-group-title--font-size);
+    line-height: var(--sf-avatar-label-group-title--line-height);
+  }
+  .sf-list-item .sf-list-item-selected-item {
+    background-color: var(--sf-list-item-selected-item--background-color);
+  }
+  .sf-list-item .sf-avatar {
+    opacity: var(--sf-avatar--opacity);
+  }
+  .sf-list-item .sf-checkbox-box {
+    border-color: transparent;
+    border-color: var(--sf-checkbox-box--border-color, transparent);
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1 .sf-list-item-container {
+    --sf-list-item-container--padding-inline-end: var(--sf-ui-1--text-space-x);
+    --sf-list-item-container--padding-inline-start: var(--sf-ui-1--text-space-x);
+    --sf-list-item-container--font-size: var(--sf-text-size-1);
+    --sf-list-item-container--line-height: var(--sf-text-height-1);
+  }
+  .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1 .sf-list-item-container, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 .sf-list-item-container {
+    --sf-list-item-container--font-family: var(--sf-text--family);
+    --sf-list-item-container--font-weight: var(--sf-font-weight-regular);
+  }
+  .sf-list-item.sf-list-item--checkbox .sf-list-item-container, .sf-list-item.sf-list-item--text .sf-list-item-container, .sf-list-item.sf-list-item--icon .sf-list-item-container {
+    --sf-list-item-container--color: var(--sf-on-surface);
+  }
+  .sf-list-item.sf-list-item--icon.sf-list-item--size-1 > .sf-list-item-wrap > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+  }
+  .sf-list-item.selected.sf-list-item--text .sf-list-item-selected-item, .sf-list-item.selected.sf-list-item--icon .sf-list-item-selected-item {
+    --sf-list-item-selected-item--background-color: transparent;
+  }
+  .sf-list-item.selected.sf-list-item--text.sf-list-item--size-1 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-1 > .sf-list-item-selected-item > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+  }
+  .sf-list-item.selected.sf-list-item--text > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon > .sf-list-item-selected-item > .sf-icon {
+    --sf-icon--color: var(--sf-primary);
+  }
+  .sf-list-item.disabled.sf-list-item--checkbox .sf-list-item-container, .sf-list-item.disabled.sf-list-item--text .sf-list-item-container, .sf-list-item.disabled.sf-list-item--icon .sf-list-item-container {
+    --sf-list-item-container--color: var(--sf-on-disable);
+  }
+  .sf-list-item.disabled.sf-list-item--avatar .sf-avatar-label-group-title {
+    --sf-avatar-label-group-title--color: var(--sf-on-disable);
+  }
+  .sf-list-item.disabled.sf-list-item--icon > .sf-list-item-wrap > .sf-icon {
+    --sf-icon--color: var(--sf-on-disable);
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-list-item.sf-list-item--checkbox.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-2 .sf-list-item-container {
+    --sf-list-item-container--padding-inline-end: var(--sf-ui-2--text-space-x);
+    --sf-list-item-container--padding-inline-start: var(--sf-ui-2--text-space-x);
+    --sf-list-item-container--font-size: var(--sf-text-size-2);
+    --sf-list-item-container--line-height: var(--sf-text-height-2);
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-2 .sf-tag-container {
+    --sf-tag-container--font-size: var(--sf-text-size-2);
+    --sf-tag-container--line-height: var(--sf-text-height-2);
+  }
+  .sf-list-item.sf-list-item--icon.sf-list-item--size-2 > .sf-list-item-wrap > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+  }
+  .sf-list-item.selected.sf-list-item--text.sf-list-item--size-2 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-2 > .sf-list-item-selected-item > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+  }
+  .sf-list-item.disabled.sf-list-item--checkbox .sf-checkbox-box {
+    --sf-checkbox-box--border-color: var(--sf-on-disable);
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-list-item.sf-list-item--checkbox.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-3 .sf-list-item-container {
+    --sf-list-item-container--padding-inline-end: var(--sf-ui-3--text-space-x);
+    --sf-list-item-container--padding-inline-start: var(--sf-ui-3--text-space-x);
+    --sf-list-item-container--font-size: var(--sf-text-size-3);
+    --sf-list-item-container--line-height: var(--sf-text-height-3);
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-3 .sf-tag-container {
+    --sf-tag-container--font-size: var(--sf-text-size-3);
+    --sf-tag-container--line-height: var(--sf-text-height-3);
+  }
+  .sf-list-item.sf-list-item--icon.sf-list-item--size-3 > .sf-list-item-wrap > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-3);
+    --sf-icon--height: var(--sf-text-height-3);
+    --sf-icon--width: var(--sf-text-height-3);
+  }
+  .sf-list-item.selected.sf-list-item--text.sf-list-item--size-3 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-3 > .sf-list-item-selected-item > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-3);
+    --sf-icon--height: var(--sf-text-height-3);
+    --sf-icon--width: var(--sf-text-height-3);
+  }
+  .sf-list-item.disabled.sf-list-item--avatar.sf-list-item--size-3 .sf-avatar {
+    --sf-avatar--opacity: var(--sf-opacity-30);
+  }
+  .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/3 {
+    --sf-list-item--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-list-item--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/2 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 .sf-list-item-container {
+    --sf-list-item-container--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+    --sf-list-item-container--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+    --sf-list-item-container--font-size: var(--sf-text-size-1\/2);
+    --sf-list-item-container--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/2 > .sf-list-item-wrap > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+  .sf-list-item.selected.sf-list-item--text.sf-list-item--size-1\/2 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-1\/2 > .sf-list-item-selected-item > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+  .sf-list-item.disabled.sf-list-item--checkbox.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--avatar.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--text.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--icon.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--avatar.sf-list-item--size-1\/3 {
+    --sf-list-item--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-list-item--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-1\/2, .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/3, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/3, .sf-list-item.sf-list-item--color.sf-list-item--size-1\/3, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 {
+    --sf-list-item--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
+    --sf-list-item--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+  }
+  .sf-list-item.disabled.sf-list-item--color.sf-list-item--size-1\/2, .sf-list-item.disabled.sf-list-item--checkbox.sf-list-item--size-1\/3, .sf-list-item.disabled.sf-list-item--text.sf-list-item--size-1\/3, .sf-list-item.disabled.sf-list-item--color.sf-list-item--size-1\/3, .sf-list-item.disabled.sf-list-item--icon.sf-list-item--size-1\/3 {
+    --sf-list-item--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
+    --sf-list-item--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-list-item.sf-list-item--checkbox.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--text.sf-list-item--size-1\/3 .sf-list-item-container, .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 .sf-list-item-container {
+    --sf-list-item-container--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
+    --sf-list-item-container--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
+    --sf-list-item-container--font-size: var(--sf-text-size-1\/3);
+    --sf-list-item-container--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-1\/3 .sf-tag-container {
+    --sf-tag-container--font-size: var(--sf-text-size-1\/3);
+    --sf-tag-container--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-list-item.sf-list-item--icon.sf-list-item--size-1\/3 > .sf-list-item-wrap > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/3);
+    --sf-icon--height: var(--sf-text-height-1\/3);
+    --sf-icon--width: var(--sf-text-height-1\/3);
+  }
+  .sf-list-item.selected.sf-list-item--text.sf-list-item--size-1\/3 > .sf-list-item-selected-item > .sf-icon, .sf-list-item.selected.sf-list-item--icon.sf-list-item--size-1\/3 > .sf-list-item-selected-item > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/3);
+    --sf-icon--height: var(--sf-text-height-1\/3);
+    --sf-icon--width: var(--sf-text-height-1\/3);
+  }
+  .sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/3 .sf-avatar-label-group-title {
+    --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/3);
+    --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-list-item--size-1 {
+    --sf-list-item--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-list-item--padding-inline-end: var(--sf-ui-1--space-x);
+    --sf-list-item--padding-inline-start: var(--sf-ui-1--space-x);
+    --sf-list-item--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+  .sf-list-item--size-2 {
+    --sf-list-item--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+    --sf-list-item--padding-inline-end: var(--sf-ui-2--space-x);
+    --sf-list-item--padding-inline-start: var(--sf-ui-2--space-x);
+    --sf-list-item--padding-top: var(--sf-ui-2--space-y-tightness-default);
+  }
+  .sf-list-item--size-3 {
+    --sf-list-item--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+    --sf-list-item--padding-inline-end: var(--sf-ui-3--space-x);
+    --sf-list-item--padding-inline-start: var(--sf-ui-3--space-x);
+    --sf-list-item--padding-top: var(--sf-ui-2--space-y-tightness-default);
+  }
+  .sf-list-item--size-1\/2 {
+    --sf-list-item--padding-inline-end: var(--sf-ui-1\/2--space-x);
+    --sf-list-item--padding-inline-start: var(--sf-ui-1\/2--space-x);
+  }
+  .sf-list-item--size-1\/3 {
+    --sf-list-item--padding-inline-end: var(--sf-ui-1\/3--space-x);
+    --sf-list-item--padding-inline-start: var(--sf-ui-1\/3--space-x);
+  }
+  .sf-list [role=option].sf-list-item:not(:disabled):not(.disabled):hover {
+    --sf-list-item--background-color: var(--sf-primary-container-hover);
+  }
+  .sf-list-item.selected {
+    --sf-list-item--background-color: var(--sf-primary-container-active);
+  }
+  /* An option sits flush against the options above and below it. */
+  .sf-list [role=option].sf-list-item:not(:disabled):not(.disabled).focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-list [role=option].sf-list-item:not(:disabled):not(.disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-list-item.disabled {
+    --sf-list-item--border-color: var(--sf-outline-disable);
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/space-between (.justify-between) align-items/center (.items-center) justify-content/flex-start (.justify-start) */
+  .sf-list-item--checkbox .sf-list-item-wrap, .sf-list-item--text .sf-list-item-wrap, .sf-list-item--icon .sf-list-item-wrap {
+    --sf-list-item-wrap--background-color: transparent;
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-list-item--checkbox .sf-list-item-container, .sf-list-item--text .sf-list-item-container, .sf-list-item--icon .sf-list-item-container {
+    --sf-list-item-container--background-color: transparent;
+  }
+  /* utility-hint: flex/1 (.flex-1) */
+  .sf-list-item--color .sf-tag.sf-tag--color, .sf-list [role=option].sf-list-item.sf-list-item--color:not(:disabled):not(.disabled):hover .sf-tag.sf-tag--color, .sf-list [role=option].sf-list-item.sf-list-item--color:not(:disabled):not(.disabled).focus-visible .sf-tag.sf-tag--color, .sf-list-item.disabled.sf-list-item--color .sf-tag.sf-tag--color {
+    --sf-tag--background-color: var(--sf-transparent);
+  }
+  .sf-list-item--color .sf-tag.sf-tag--color, .sf-list [role=option].sf-list-item.sf-list-item--color:not(:disabled):not(.disabled):hover .sf-tag.sf-tag--color, .sf-list [role=option].sf-list-item.sf-list-item--color:not(:disabled):not(.disabled):focus-visible .sf-tag.sf-tag--color, .sf-list-item.disabled.sf-list-item--color .sf-tag.sf-tag--color {
+    --sf-tag--background-color: var(--sf-transparent);
+  }
+  .sf-list-item .sf-checkbox {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sf-list-item {
+      transition-duration: 0s;
+    }
+  }
+}
+@layer sf.states {
+  /* A colour option is a dot and a label, like an icon option, not a tag inside
+     an option: the tag markup it is written with keeps no fill, no padding and
+     no gap, the dot takes the place of the icon and the label the place and
+     inline padding of an option label. In the states layer, because the tag's
+     own size 2 and 3 padding lives there and outranked this at those sizes. */
+  .sf-list-item.sf-list-item--color.sf-list-item--size-1\/3 {
+    --sf-list-item--padding-bottom: var(--sf-ui-1\/3--space-y-tightness-default);
+    --sf-list-item--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-1\/2 {
+    --sf-list-item--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-list-item--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-1 {
+    --sf-list-item--padding-bottom: var(--sf-ui-1--space-y-tightness-default);
+    --sf-list-item--padding-top: var(--sf-ui-1--space-y-tightness-default);
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-2 {
+    --sf-list-item--padding-bottom: var(--sf-ui-2--space-y-tightness-default);
+    --sf-list-item--padding-top: var(--sf-ui-2--space-y-tightness-default);
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-3 {
+    --sf-list-item--padding-bottom: var(--sf-ui-3--space-y-tightness-default);
+    --sf-list-item--padding-top: var(--sf-ui-3--space-y-tightness-default);
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-1\/3 .sf-tag.sf-tag {
+    --sf-tag--background-color: transparent;
+    --sf-tag--block: 0;
+    --sf-tag--inline-start: 0;
+    --sf-tag--inline-end: 0;
+    --sf-tag--label-start: var(--sf-ui-1\/3--text-space-x);
+    --sf-tag--label-end: var(--sf-ui-1\/3--text-space-x);
+    gap: 0;
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-1\/2 .sf-tag.sf-tag {
+    --sf-tag--background-color: transparent;
+    --sf-tag--block: 0;
+    --sf-tag--inline-start: 0;
+    --sf-tag--inline-end: 0;
+    --sf-tag--label-start: var(--sf-ui-1\/2--text-space-x);
+    --sf-tag--label-end: var(--sf-ui-1\/2--text-space-x);
+    gap: 0;
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-1 .sf-tag.sf-tag {
+    --sf-tag--background-color: transparent;
+    --sf-tag--block: 0;
+    --sf-tag--inline-start: 0;
+    --sf-tag--inline-end: 0;
+    --sf-tag--label-start: var(--sf-ui-1--text-space-x);
+    --sf-tag--label-end: var(--sf-ui-1--text-space-x);
+    gap: 0;
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-2 .sf-tag.sf-tag {
+    --sf-tag--background-color: transparent;
+    --sf-tag--block: 0;
+    --sf-tag--inline-start: 0;
+    --sf-tag--inline-end: 0;
+    --sf-tag--label-start: var(--sf-ui-2--text-space-x);
+    --sf-tag--label-end: var(--sf-ui-2--text-space-x);
+    gap: 0;
+  }
+  .sf-list-item.sf-list-item--color.sf-list-item--size-3 .sf-tag.sf-tag {
+    --sf-tag--background-color: transparent;
+    --sf-tag--block: 0;
+    --sf-tag--inline-start: 0;
+    --sf-tag--inline-end: 0;
+    --sf-tag--label-start: var(--sf-ui-3--text-space-x);
+    --sf-tag--label-end: var(--sf-ui-3--text-space-x);
+    gap: 0;
+  }
+}
+@layer sf.states {
+  /* An avatar option is as tall as a text option of its size: the avatar takes
+     the line, like an icon, and its initials half of it. Avatar sizes are their
+     own, larger scale, which made avatar rows taller than the rest of their list. */
+  .sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/3 .sf-avatar {
+    --sf-avatar--height: var(--sf-text-height-1\/3);
+    --sf-avatar--width: var(--sf-text-height-1\/3);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1\/3) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/2 .sf-avatar {
+    --sf-avatar--height: var(--sf-text-height-1\/2);
+    --sf-avatar--width: var(--sf-text-height-1\/2);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1\/2) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-list-item.sf-list-item--avatar.sf-list-item--size-1 .sf-avatar {
+    --sf-avatar--height: var(--sf-text-height-1);
+    --sf-avatar--width: var(--sf-text-height-1);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-1);
+  }
+  .sf-list-item.sf-list-item--avatar.sf-list-item--size-2 .sf-avatar {
+    --sf-avatar--height: var(--sf-text-height-2);
+    --sf-avatar--width: var(--sf-text-height-2);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-2) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-2);
+  }
+  .sf-list-item.sf-list-item--avatar.sf-list-item--size-3 .sf-avatar {
+    --sf-avatar--height: var(--sf-text-height-3);
+    --sf-avatar--width: var(--sf-text-height-3);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-3) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-3);
+  }
+}
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-end (.items-end) */
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list {
+    border-bottom-right-radius: var(--sf-radius--surface);
+    border-bottom-right-radius: var(--sf-list--border-bottom-right-radius, var(--sf-radius--surface));
+  }
+  @supports not (border-end-end-radius: initial) {
+  html:not([dir="rtl"]) .sf-list {
+    border-bottom-right-radius: var(--sf-radius--surface);
+    border-bottom-right-radius: var(--sf-list--border-bottom-right-radius, var(--sf-radius--surface));
+    }
+  }
+  .sf-list:where(:dir(ltr)) {
+    border-bottom-right-radius: var(--sf-radius--surface);
+    border-bottom-right-radius: var(--sf-list--border-bottom-right-radius, var(--sf-radius--surface));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list {
+    border-bottom-left-radius: var(--sf-radius--surface);
+    border-bottom-left-radius: var(--sf-list--border-bottom-right-radius, var(--sf-radius--surface));
+  }
+  @supports not (border-end-end-radius: initial) {
+  [dir="rtl"] .sf-list {
+    border-bottom-left-radius: var(--sf-radius--surface);
+    border-bottom-left-radius: var(--sf-list--border-bottom-right-radius, var(--sf-radius--surface));
+    }
+  }
+  .sf-list:where(:dir(rtl)) {
+    border-bottom-left-radius: var(--sf-radius--surface);
+    border-bottom-left-radius: var(--sf-list--border-bottom-right-radius, var(--sf-radius--surface));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list {
+    border-bottom-left-radius: var(--sf-radius--surface);
+    border-bottom-left-radius: var(--sf-list--border-bottom-left-radius, var(--sf-radius--surface));
+  }
+  @supports not (border-end-start-radius: initial) {
+  html:not([dir="rtl"]) .sf-list {
+    border-bottom-left-radius: var(--sf-radius--surface);
+    border-bottom-left-radius: var(--sf-list--border-bottom-left-radius, var(--sf-radius--surface));
+    }
+  }
+  .sf-list:where(:dir(ltr)) {
+    border-bottom-left-radius: var(--sf-radius--surface);
+    border-bottom-left-radius: var(--sf-list--border-bottom-left-radius, var(--sf-radius--surface));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list {
+    border-bottom-right-radius: var(--sf-radius--surface);
+    border-bottom-right-radius: var(--sf-list--border-bottom-left-radius, var(--sf-radius--surface));
+  }
+  @supports not (border-end-start-radius: initial) {
+  [dir="rtl"] .sf-list {
+    border-bottom-right-radius: var(--sf-radius--surface);
+    border-bottom-right-radius: var(--sf-list--border-bottom-left-radius, var(--sf-radius--surface));
+    }
+  }
+  .sf-list:where(:dir(rtl)) {
+    border-bottom-right-radius: var(--sf-radius--surface);
+    border-bottom-right-radius: var(--sf-list--border-bottom-left-radius, var(--sf-radius--surface));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list {
+    border-right-width: var(--sf-px);
+    border-right-width: var(--sf-list--border-right-width, var(--sf-list--border-width, var(--sf-px)));
+  }
+  @supports not (border-inline-end-width: initial) {
+  html:not([dir="rtl"]) .sf-list {
+    border-right-width: var(--sf-px);
+    border-right-width: var(--sf-list--border-right-width, var(--sf-list--border-width, var(--sf-px)));
+    }
+  }
+  .sf-list:where(:dir(ltr)) {
+    border-right-width: var(--sf-px);
+    border-right-width: var(--sf-list--border-right-width, var(--sf-list--border-width, var(--sf-px)));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list {
+    border-left-width: var(--sf-px);
+    border-left-width: var(--sf-list--border-right-width, var(--sf-list--border-width, var(--sf-px)));
+  }
+  @supports not (border-inline-end-width: initial) {
+  [dir="rtl"] .sf-list {
+    border-left-width: var(--sf-px);
+    border-left-width: var(--sf-list--border-right-width, var(--sf-list--border-width, var(--sf-px)));
+    }
+  }
+  .sf-list:where(:dir(rtl)) {
+    border-left-width: var(--sf-px);
+    border-left-width: var(--sf-list--border-right-width, var(--sf-list--border-width, var(--sf-px)));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list {
+    border-left-width: var(--sf-px);
+    border-left-width: var(--sf-list--border-left-width, var(--sf-list--border-width, var(--sf-px)));
+  }
+  @supports not (border-inline-start-width: initial) {
+  html:not([dir="rtl"]) .sf-list {
+    border-left-width: var(--sf-px);
+    border-left-width: var(--sf-list--border-left-width, var(--sf-list--border-width, var(--sf-px)));
+    }
+  }
+  .sf-list:where(:dir(ltr)) {
+    border-left-width: var(--sf-px);
+    border-left-width: var(--sf-list--border-left-width, var(--sf-list--border-width, var(--sf-px)));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list {
+    border-right-width: var(--sf-px);
+    border-right-width: var(--sf-list--border-left-width, var(--sf-list--border-width, var(--sf-px)));
+  }
+  @supports not (border-inline-start-width: initial) {
+  [dir="rtl"] .sf-list {
+    border-right-width: var(--sf-px);
+    border-right-width: var(--sf-list--border-left-width, var(--sf-list--border-width, var(--sf-px)));
+    }
+  }
+  .sf-list:where(:dir(rtl)) {
+    border-right-width: var(--sf-px);
+    border-right-width: var(--sf-list--border-left-width, var(--sf-list--border-width, var(--sf-px)));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list {
+    border-top-right-radius: var(--sf-radius--surface);
+    border-top-right-radius: var(--sf-list--border-top-right-radius, var(--sf-radius--surface));
+  }
+  @supports not (border-start-end-radius: initial) {
+  html:not([dir="rtl"]) .sf-list {
+    border-top-right-radius: var(--sf-radius--surface);
+    border-top-right-radius: var(--sf-list--border-top-right-radius, var(--sf-radius--surface));
+    }
+  }
+  .sf-list:where(:dir(ltr)) {
+    border-top-right-radius: var(--sf-radius--surface);
+    border-top-right-radius: var(--sf-list--border-top-right-radius, var(--sf-radius--surface));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list {
+    border-top-left-radius: var(--sf-radius--surface);
+    border-top-left-radius: var(--sf-list--border-top-right-radius, var(--sf-radius--surface));
+  }
+  @supports not (border-start-end-radius: initial) {
+  [dir="rtl"] .sf-list {
+    border-top-left-radius: var(--sf-radius--surface);
+    border-top-left-radius: var(--sf-list--border-top-right-radius, var(--sf-radius--surface));
+    }
+  }
+  .sf-list:where(:dir(rtl)) {
+    border-top-left-radius: var(--sf-radius--surface);
+    border-top-left-radius: var(--sf-list--border-top-right-radius, var(--sf-radius--surface));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list {
+    border-top-left-radius: var(--sf-radius--surface);
+    border-top-left-radius: var(--sf-list--border-top-left-radius, var(--sf-radius--surface));
+  }
+  @supports not (border-start-start-radius: initial) {
+  html:not([dir="rtl"]) .sf-list {
+    border-top-left-radius: var(--sf-radius--surface);
+    border-top-left-radius: var(--sf-list--border-top-left-radius, var(--sf-radius--surface));
+    }
+  }
+  .sf-list:where(:dir(ltr)) {
+    border-top-left-radius: var(--sf-radius--surface);
+    border-top-left-radius: var(--sf-list--border-top-left-radius, var(--sf-radius--surface));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list {
+    border-top-right-radius: var(--sf-radius--surface);
+    border-top-right-radius: var(--sf-list--border-top-left-radius, var(--sf-radius--surface));
+  }
+  @supports not (border-start-start-radius: initial) {
+  [dir="rtl"] .sf-list {
+    border-top-right-radius: var(--sf-radius--surface);
+    border-top-right-radius: var(--sf-list--border-top-left-radius, var(--sf-radius--surface));
+    }
+  }
+  .sf-list:where(:dir(rtl)) {
+    border-top-right-radius: var(--sf-radius--surface);
+    border-top-right-radius: var(--sf-list--border-top-left-radius, var(--sf-radius--surface));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list {
+    padding-right: var(--sf-space-1\/3);
+    padding-right: var(--sf-list--padding-right, var(--sf-space-1\/3));
+  }
+  @supports not (padding-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-list {
+    padding-right: var(--sf-space-1\/3);
+    padding-right: var(--sf-list--padding-right, var(--sf-space-1\/3));
+    }
+  }
+  .sf-list:where(:dir(ltr)) {
+    padding-right: var(--sf-space-1\/3);
+    padding-right: var(--sf-list--padding-right, var(--sf-space-1\/3));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list {
+    padding-left: var(--sf-space-1\/3);
+    padding-left: var(--sf-list--padding-right, var(--sf-space-1\/3));
+  }
+  @supports not (padding-inline-end: initial) {
+  [dir="rtl"] .sf-list {
+    padding-left: var(--sf-space-1\/3);
+    padding-left: var(--sf-list--padding-right, var(--sf-space-1\/3));
+    }
+  }
+  .sf-list:where(:dir(rtl)) {
+    padding-left: var(--sf-space-1\/3);
+    padding-left: var(--sf-list--padding-right, var(--sf-space-1\/3));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-list {
+    padding-left: var(--sf-space-1\/3);
+    padding-left: var(--sf-list--padding-left, var(--sf-space-1\/3));
+  }
+  @supports not (padding-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-list {
+    padding-left: var(--sf-space-1\/3);
+    padding-left: var(--sf-list--padding-left, var(--sf-space-1\/3));
+    }
+  }
+  .sf-list:where(:dir(ltr)) {
+    padding-left: var(--sf-space-1\/3);
+    padding-left: var(--sf-list--padding-left, var(--sf-space-1\/3));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-list {
+    padding-right: var(--sf-space-1\/3);
+    padding-right: var(--sf-list--padding-left, var(--sf-space-1\/3));
+  }
+  @supports not (padding-inline-start: initial) {
+  [dir="rtl"] .sf-list {
+    padding-right: var(--sf-space-1\/3);
+    padding-right: var(--sf-list--padding-left, var(--sf-space-1\/3));
+    }
+  }
+  .sf-list:where(:dir(rtl)) {
+    padding-right: var(--sf-space-1\/3);
+    padding-right: var(--sf-list--padding-left, var(--sf-space-1\/3));
+  }
+  .sf-list {
+    background-color: var(--sf-surface-0);
+    background-color: var(--sf-list--background-color, var(--sf-surface-0));
+    border-width: var(--sf-px);
+    border-width: var(--sf-list--border-width, var(--sf-px));
+    border-bottom-width: var(--sf-px);
+    border-bottom-width: var(--sf-list--border-bottom-width, var(--sf-list--border-width, var(--sf-px)));
+    border-color: transparent;
+    border-color: var(--sf-list--border-color, var(--sf-outline-variant, transparent));
+    border-end-end-radius: var(--sf-radius--surface);
+    border-end-end-radius: var(--sf-list--border-bottom-right-radius, var(--sf-radius--surface));
+    border-end-start-radius: var(--sf-radius--surface);
+    border-end-start-radius: var(--sf-list--border-bottom-left-radius, var(--sf-radius--surface));
+    border-inline-end-width: var(--sf-px);
+    border-inline-end-width: var(--sf-list--border-right-width, var(--sf-list--border-width, var(--sf-px)));
+    border-inline-start-width: var(--sf-px);
+    border-inline-start-width: var(--sf-list--border-left-width, var(--sf-list--border-width, var(--sf-px)));
+    border-start-end-radius: var(--sf-radius--surface);
+    border-start-end-radius: var(--sf-list--border-top-right-radius, var(--sf-radius--surface));
+    border-start-start-radius: var(--sf-radius--surface);
+    border-start-start-radius: var(--sf-list--border-top-left-radius, var(--sf-radius--surface));
+    border-style: solid;
+    border-style: var(--sf-list--border-style, solid);
+    border-top-width: var(--sf-px);
+    border-top-width: var(--sf-list--border-top-width, var(--sf-list--border-width, var(--sf-px)));
+    gap: var(--sf-space-1\/3);
+    gap: var(--sf-list--gap, var(--sf-space-1\/3));
+    padding-bottom: var(--sf-space-1\/3);
+    padding-bottom: var(--sf-list--padding-bottom, var(--sf-space-1\/3));
+    -webkit-padding-end: var(--sf-space-1\/3);
+            padding-inline-end: var(--sf-space-1\/3);
+    -webkit-padding-end: var(--sf-list--padding-right, var(--sf-space-1\/3));
+            padding-inline-end: var(--sf-list--padding-right, var(--sf-space-1\/3));
+    -webkit-padding-start: var(--sf-space-1\/3);
+            padding-inline-start: var(--sf-space-1\/3);
+    -webkit-padding-start: var(--sf-list--padding-left, var(--sf-space-1\/3));
+            padding-inline-start: var(--sf-list--padding-left, var(--sf-space-1\/3));
+    padding-top: var(--sf-space-1\/3);
+    padding-top: var(--sf-list--padding-top, var(--sf-space-1\/3));
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) */
+  .sf-list .sf-list-wrap {
+    --sf-list-wrap--background-color: transparent;
+    background-color: var(--sf-list-wrap--background-color);
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-list .sf-list-container {
+    --sf-list-container--background-color: transparent;
+    background-color: var(--sf-list-container--background-color);
+  }
+}
+/* The popup of a dropdown is a menu surface, and it now reads like the
+   context menu, which owners and users already found right. Before, its
+   options borrowed the look of a list row: a divider under every option, a
+   highlight that ran edge to edge with square corners, and a flat panel with a
+   border instead of a lift. The same surface, lift, inset and corner the
+   context menu uses are applied here, scoped to the dropdown -- in place and
+   in the portal, where the list is wrapped in an .sf-dropdown context -- so a
+   list item anywhere else keeps its row look.
+
+   The same surface is available on its own as .sf-list--menu, because a menu
+   list is not the dropdown's property: a list of options anchored to any
+   control -- a popover's content, for one -- is the same thing, and the only
+   alternative was a consumer writing these tokens again in its own stylesheet.
+
+   The option row is laid out here as well. The dropdown's own script puts
+   the check mark into a selected option, and that mark lands in line only
+   when the option is a flex row; written without the flex class, the mark
+   fell under the label and the selected option stood twice as tall. A layout
+   the component's own script depends on is the component's to set. */
+@layer sf.components {
+  .sf-dropdown .sf-list,
+  .sf-list--menu {
+    --sf-list--border-width: 0;
+    --sf-list--background-color: var(--sf-elevation-2--surface);
+    --sf-on-surface-variant: var(--sf-on-elevation-2--variant);
+    --sf-list--padding-top: var(--sf-space-1\/4);
+    --sf-list--padding-bottom: var(--sf-space-1\/4);
+    --sf-list--padding-left: var(--sf-space-1\/4);
+    --sf-list--padding-right: var(--sf-space-1\/4);
+    /* The lift goes through the variable the dropdown stylesheet reads. Its own
+       rule set the variable only under .open, a class the script never puts
+       on the root -- it writes sf-dropdown--open, and the portal context drops
+       the open modifiers altogether -- so the list never had a shadow. */
+    --sf-list--box-shadow: var(--sf-elevation-2--shadow);
+  }
+  .sf-dropdown .sf-list .sf-list-item,
+  .sf-list--menu .sf-list-item {
+    --sf-list-item--border-bottom-width: 0;
+    --sf-list-item--background-color: transparent;
+    display: flex;
+    align-items: center;
+    border-radius: var(--sf-radius--ui);
+  }
+  .sf-dropdown .sf-list [role=option].sf-list-item:not(:disabled):not(.disabled):hover,
+  .sf-list--menu [role=option].sf-list-item:not(:disabled):not(.disabled):hover {
+    --sf-list-item--background-color: var(--sf-surface-transparent-hover);
+  }
+  .sf-dropdown .sf-list .sf-list-item.selected,
+  .sf-list--menu .sf-list-item.selected {
+    --sf-list-item--background-color: var(--sf-primary-container);
+  }
+}
+@media (forced-colors: active) {
+  .sf-dropdown .sf-list,
+  .sf-list--menu {
+    border: var(--sf-px) solid CanvasText;
+  }
+}
+/* A heading names the stretch of list under it. It is not an option: a pointer
+   passes through it, a keyboard steps over it, and a reader is told it carries
+   no choice. It stays while its stretch scrolls, because a list long enough to
+   need headings is long enough to lose which one you are inside of. */
+@layer sf.components {
+  .sf-list-heading {
+    position: sticky;
+    top: 0;
+    inset-block-start: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    /* The surface's own colour, read from the list that sets it: `inherit`
+       would take a wrapper's transparent background and the rows would scroll
+       through the heading. */
+    background-color: var(--sf-surface-0);
+    background-color: var(--sf-list--background-color, var(--sf-surface-0));
+    padding-top: var(--sf-space-1\/4);
+    padding-bottom: var(--sf-space-1\/4);
+    padding-block: var(--sf-space-1\/4);
+    padding-left: var(--sf-space-1\/2);
+    padding-right: var(--sf-space-1\/2);
+    padding-inline: var(--sf-space-1\/2);
+    padding-left: var(--sf-space-1\/2);
+    padding-left: var(--sf-list-item--padding-inline-start, var(--sf-space-1\/2));
+    padding-right: var(--sf-space-1\/2);
+    padding-right: var(--sf-list-item--padding-inline-start, var(--sf-space-1\/2));
+    padding-inline: var(--sf-list-item--padding-inline-start, var(--sf-space-1\/2));
+    color: var(--sf-on-surface-variant);
+    font-size: var(--sf-label-small--size);
+    line-height: var(--sf-label-small--height);
+    font-weight: 500;
+    font-weight: var(--sf-weight-medium, 500);
+  }
+  .sf-list-heading:not(:first-child) {
+    margin-top: var(--sf-space-1\/4);
+    -webkit-margin-before: var(--sf-space-1\/4);
+            margin-block-start: var(--sf-space-1\/4);
+    border-top: var(--sf-px) solid var(--sf-outline-variant);
+    -webkit-border-before: var(--sf-px) solid var(--sf-outline-variant);
+            border-block-start: var(--sf-px) solid var(--sf-outline-variant);
+    padding-top: var(--sf-space-1\/2);
+    -webkit-padding-before: var(--sf-space-1\/2);
+            padding-block-start: var(--sf-space-1\/2);
+  }
+  .sf-list-heading-container {
+    min-width: 0;
+    min-inline-size: 0;
+    word-wrap: anywhere;
+  }
+}
+/* Several options in a row. A hundred icons in a column is a column nobody
+   scrolls to the end of; in a grid the same hundred are read at a glance, and
+   each option keeps the row's own hit area, hover and selected tint. The label
+   is the option's code, which the search reads and a pointer sees as a title --
+   drawn in the cell it would make every cell as wide as the longest name.
+
+   Keyed off the container rather than off the dropdown's root: the open list is
+   moved into a portal, which carries the root's context but not its modifiers,
+   so a rule hung off `.sf-dropdown--grid` reached the list in place and never
+   the one a person is actually looking at. */
+@layer sf.components {
+  .sf-list-container--grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(var(--sf-list-container--columns, 6), minmax(0, 1fr));
+    grid-gap: var(--sf-px);
+    gap: var(--sf-px);
+    /* A grid asks for the width its columns need: the list otherwise takes the
+       width of the control it hangs from, and a chooser narrow enough to hold a
+       glyph made six columns of eleven pixels each. */
+    min-width: calc(6 * var(--sf-ui-1--control-height));
+    min-inline-size: calc(6 * var(--sf-ui-1--control-height));
+    min-width: calc(6 * var(--sf-ui-1--control-height));
+    min-width: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)));
+    min-inline-size: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)));
+  }
+  /* The surface holding a grid asks for the same width. The list is sized from
+     the control it hangs from, which for a chooser the width of one glyph left
+     six columns two glyphs wide. */
+  .sf-list[\:has\(.sf-list-container--grid\)] {
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-inline-size: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+    min-inline-size: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+  }
+  .sf-list[\:has\(.sf-list-container--grid\)] {
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-inline-size: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-inline-size: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+    min-inline-size: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+  }
+  .sf-list[\:has\(.sf-list-container--grid\)] {
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-inline-size: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-inline-size: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+    min-inline-size: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+  }
+  .sf-list:has(.sf-list-container--grid) {
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-inline-size: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(6 * var(--sf-ui-1--control-height) + var(--sf-space-1));
+    min-width: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+    min-inline-size: calc(var(--sf-list-container--columns, 6) * var(--sf-list--cell, var(--sf-ui-1--control-height)) + var(--sf-space-1));
+  }
+  .sf-list-container--grid .sf-list-item {
+    justify-content: center;
+    aspect-ratio: 1;
+    padding-left: 0;
+    padding-right: 0;
+    padding-inline: 0;
+  }
+  .sf-list-container--grid .sf-list-item .sf-list-item-wrap {
+    flex: 0 0 auto;
+    justify-content: center;
+    gap: 0;
+  }
+  .sf-list-container--grid .sf-list-item .sf-list-item-container {
+    display: none;
+  }
+  /* A grid is read at a glance, so it is as tall as a few rows and scrolls
+     rather than running the height of the screen: a hundred and twenty glyphs
+     six to a row is twenty rows, and twenty rows is a column again. */
+  .sf-list-container-wrap[\:has\(.sf-list-container--grid\)] {
+    max-height: 16rem;
+    max-block-size: 16rem;
+    max-height: 16rem;
+    max-height: var(--sf-dropdown--grid-height, 16rem);
+    max-block-size: var(--sf-dropdown--grid-height, 16rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow: hidden auto;
+  }
+  .sf-list-container-wrap[\:has\(.sf-list-container--grid\)] {
+    max-height: 16rem;
+    max-block-size: 16rem;
+    max-height: 16rem;
+    max-height: var(--sf-dropdown--grid-height, 16rem);
+    max-height: 16rem;
+    max-block-size: 16rem;
+    max-height: 16rem;
+    max-height: var(--sf-dropdown--grid-height, 16rem);
+    max-block-size: var(--sf-dropdown--grid-height, 16rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow: hidden auto;
+  }
+  .sf-list-container-wrap[\:has\(.sf-list-container--grid\)] {
+    max-height: 16rem;
+    max-height: 16rem;
+    max-block-size: 16rem;
+    max-height: 16rem;
+    max-height: 16rem;
+    max-height: var(--sf-dropdown--grid-height, 16rem);
+    max-height: 16rem;
+    max-block-size: 16rem;
+    max-height: 16rem;
+    max-height: var(--sf-dropdown--grid-height, 16rem);
+    max-block-size: var(--sf-dropdown--grid-height, 16rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow: hidden auto;
+  }
+  .sf-list-container-wrap:has(.sf-list-container--grid) {
+    max-height: 16rem;
+    max-block-size: 16rem;
+    max-height: 16rem;
+    max-height: var(--sf-dropdown--grid-height, 16rem);
+    max-block-size: var(--sf-dropdown--grid-height, 16rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overflow: hidden auto;
+  }
+}
+/* A list that does not hang from a field takes a width of its own: sized from
+   the control it opens under -- an icon button, say -- it would be one
+   character wide, and left to its content it grows to the longest name in it,
+   which for a list of field names is most of the panel. A width it is told,
+   and names that do not fit wrap. */
+@layer sf.components {
+  .sf-list--free-width {
+    width: 18rem;
+    inline-size: 18rem;
+    width: 18rem;
+    width: var(--sf-dropdown--list-width, 18rem);
+    inline-size: var(--sf-dropdown--list-width, 18rem);
+  }
+  /* A grid is as wide as its columns: a picker of size-1/2 icons stood in an
+     18rem panel with a third of it empty (owner, 2026-10-14). */
+  .sf-list--free-width[\:has\(.sf-list-container--grid\)] {
+    width: -webkit-min-content;
+    width: -moz-min-content;
+    width: min-content;
+    inline-size: -webkit-min-content;
+    inline-size: -moz-min-content;
+    inline-size: min-content;
+    width: min-content;
+    width: var(--sf-dropdown--list-width, -webkit-min-content);
+    width: var(--sf-dropdown--list-width, -moz-min-content);
+    width: var(--sf-dropdown--list-width, min-content);
+    inline-size: var(--sf-dropdown--list-width, -webkit-min-content);
+    inline-size: var(--sf-dropdown--list-width, -moz-min-content);
+    inline-size: var(--sf-dropdown--list-width, min-content);
+  }
+  .sf-list--free-width[\:has\(.sf-list-container--grid\)] {
+    width: -webkit-min-content;
+    width: -moz-min-content;
+    width: min-content;
+    inline-size: -webkit-min-content;
+    inline-size: -moz-min-content;
+    inline-size: min-content;
+    width: min-content;
+    width: var(--sf-dropdown--list-width, -webkit-min-content);
+    width: var(--sf-dropdown--list-width, -moz-min-content);
+    width: var(--sf-dropdown--list-width, min-content);
+    width: min-content;
+    inline-size: min-content;
+    width: min-content;
+    width: var(--sf-dropdown--list-width, min-content);
+    inline-size: var(--sf-dropdown--list-width, -webkit-min-content);
+    inline-size: var(--sf-dropdown--list-width, -moz-min-content);
+    inline-size: var(--sf-dropdown--list-width, min-content);
+  }
+  .sf-list--free-width[\:has\(.sf-list-container--grid\)] {
+    width: -webkit-min-content;
+    width: -moz-min-content;
+    width: min-content;
+    width: min-content;
+    inline-size: -webkit-min-content;
+    inline-size: -moz-min-content;
+    inline-size: min-content;
+    width: min-content;
+    width: min-content;
+    width: var(--sf-dropdown--list-width, -webkit-min-content);
+    width: var(--sf-dropdown--list-width, -moz-min-content);
+    width: var(--sf-dropdown--list-width, min-content);
+    width: min-content;
+    inline-size: min-content;
+    width: min-content;
+    width: var(--sf-dropdown--list-width, min-content);
+    inline-size: var(--sf-dropdown--list-width, -webkit-min-content);
+    inline-size: var(--sf-dropdown--list-width, -moz-min-content);
+    inline-size: var(--sf-dropdown--list-width, min-content);
+  }
+  .sf-list--free-width:has(.sf-list-container--grid) {
+    width: -webkit-min-content;
+    width: -moz-min-content;
+    width: min-content;
+    inline-size: -webkit-min-content;
+    inline-size: -moz-min-content;
+    inline-size: min-content;
+    width: min-content;
+    width: var(--sf-dropdown--list-width, -webkit-min-content);
+    width: var(--sf-dropdown--list-width, -moz-min-content);
+    width: var(--sf-dropdown--list-width, min-content);
+    inline-size: var(--sf-dropdown--list-width, -webkit-min-content);
+    inline-size: var(--sf-dropdown--list-width, -moz-min-content);
+    inline-size: var(--sf-dropdown--list-width, min-content);
+  }
+  /* Its columns are as wide as a cell, so the search field above them -- which
+     takes the panel's width and asks for none -- cannot stretch them. */
+  .sf-list--free-width[\:has\(.sf-list-container--grid\)] > .sf-input {
+    width: 0;
+    inline-size: 0;
+    min-width: 100%;
+    min-inline-size: 100%;
+  }
+  .sf-list--free-width[\:has\(.sf-list-container--grid\)] > .sf-input {
+    width: 0;
+    width: 0;
+    inline-size: 0;
+    min-width: 100%;
+    min-width: 100%;
+    min-inline-size: 100%;
+  }
+  .sf-list--free-width:has(.sf-list-container--grid) > .sf-input {
+    width: 0;
+    inline-size: 0;
+    min-width: 100%;
+    min-inline-size: 100%;
+  }
+  .sf-list--free-width .sf-list-container--grid {
+    grid-template-columns: repeat(6, var(--sf-ui-1--control-height));
+    grid-template-columns: repeat(var(--sf-list-container--columns, 6), var(--sf-list--cell, var(--sf-ui-1--control-height)));
+  }
+}
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-dropdown {
+    background-color: transparent;
+    background-color: var(--sf-dropdown--background-color, transparent);
+    gap: var(--sf-space-1\/4);
+    gap: var(--sf-dropdown--gap, var(--sf-space-1\/4));
+  }
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) gap/var(--sf-dropdown-field--gap) */
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  @supports not (border-end-end-radius: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(ltr)) {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  @supports not (border-end-end-radius: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(rtl)) {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  @supports not (border-end-start-radius: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(ltr)) {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  @supports not (border-end-start-radius: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(rtl)) {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  @supports not (border-start-end-radius: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(ltr)) {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  @supports not (border-start-end-radius: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(rtl)) {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  @supports not (border-start-start-radius: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(ltr)) {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  @supports not (border-start-start-radius: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(rtl)) {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    padding-right: var(--sf-dropdown-field--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    padding-right: var(--sf-dropdown-field--padding-inline-end);
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(ltr)) {
+    padding-right: var(--sf-dropdown-field--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    padding-left: var(--sf-dropdown-field--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    padding-left: var(--sf-dropdown-field--padding-inline-end);
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(rtl)) {
+    padding-left: var(--sf-dropdown-field--padding-inline-end);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    padding-left: var(--sf-dropdown-field--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-field {
+    padding-left: var(--sf-dropdown-field--padding-inline-start);
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(ltr)) {
+    padding-left: var(--sf-dropdown-field--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    padding-right: var(--sf-dropdown-field--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-field {
+    padding-right: var(--sf-dropdown-field--padding-inline-start);
+    }
+  }
+  .sf-dropdown .sf-dropdown-field:where(:dir(rtl)) {
+    padding-right: var(--sf-dropdown-field--padding-inline-start);
+  }
+  .sf-dropdown .sf-dropdown-field {
+    --sf-dropdown-field--border: var(--sf-px) solid;
+    background-color: var(--sf-dropdown-field--background-color);
+    border: var(--sf-dropdown-field--border);
+    border-color: transparent;
+    border-color: var(--sf-dropdown-field--border-color, transparent);
+    border-end-end-radius: var(--sf-radius--ui);
+    border-end-end-radius: var(--sf-dropdown-field--border-end-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    border-end-start-radius: var(--sf-radius--ui);
+    border-end-start-radius: var(--sf-dropdown-field--border-end-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    border-start-end-radius: var(--sf-radius--ui);
+    border-start-end-radius: var(--sf-dropdown-field--border-start-end-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    border-start-start-radius: var(--sf-radius--ui);
+    border-start-start-radius: var(--sf-dropdown-field--border-start-start-radius, var(--sf-dropdown--radius, var(--sf-radius--ui)));
+    box-shadow: var(--sf-dropdown-field--box-shadow);
+    gap: var(--sf-dropdown-field--gap);
+    padding-bottom: var(--sf-dropdown-field--padding-bottom);
+    -webkit-padding-end: var(--sf-dropdown-field--padding-inline-end);
+            padding-inline-end: var(--sf-dropdown-field--padding-inline-end);
+    -webkit-padding-start: var(--sf-dropdown-field--padding-inline-start);
+            padding-inline-start: var(--sf-dropdown-field--padding-inline-start);
+    padding-top: var(--sf-dropdown-field--padding-top);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-icon-button {
+    padding-right: var(--sf-icon-button--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-icon-button {
+    padding-right: var(--sf-icon-button--padding-inline-end);
+    }
+  }
+  .sf-dropdown .sf-icon-button:where(:dir(ltr)) {
+    padding-right: var(--sf-icon-button--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-icon-button {
+    padding-left: var(--sf-icon-button--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown .sf-icon-button {
+    padding-left: var(--sf-icon-button--padding-inline-end);
+    }
+  }
+  .sf-dropdown .sf-icon-button:where(:dir(rtl)) {
+    padding-left: var(--sf-icon-button--padding-inline-end);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-icon-button {
+    padding-left: var(--sf-icon-button--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-icon-button {
+    padding-left: var(--sf-icon-button--padding-inline-start);
+    }
+  }
+  .sf-dropdown .sf-icon-button:where(:dir(ltr)) {
+    padding-left: var(--sf-icon-button--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-icon-button {
+    padding-right: var(--sf-icon-button--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  [dir="rtl"] .sf-dropdown .sf-icon-button {
+    padding-right: var(--sf-icon-button--padding-inline-start);
+    }
+  }
+  .sf-dropdown .sf-icon-button:where(:dir(rtl)) {
+    padding-right: var(--sf-icon-button--padding-inline-start);
+  }
+  .sf-dropdown .sf-icon-button {
+    --sf-icon-button--padding-bottom: var(--sf-space-1\/4);
+    --sf-icon-button--padding-inline-end: var(--sf-space-1\/4);
+    --sf-icon-button--padding-inline-start: var(--sf-space-1\/4);
+    --sf-icon-button--padding-top: var(--sf-space-1\/4);
+    padding-bottom: var(--sf-icon-button--padding-bottom);
+    -webkit-padding-end: var(--sf-icon-button--padding-inline-end);
+            padding-inline-end: var(--sf-icon-button--padding-inline-end);
+    -webkit-padding-start: var(--sf-icon-button--padding-inline-start);
+            padding-inline-start: var(--sf-icon-button--padding-inline-start);
+    padding-top: var(--sf-icon-button--padding-top);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown input {
+    padding-right: var(--sf-dropdown-input--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown input {
+    padding-right: var(--sf-dropdown-input--padding-inline-end);
+    }
+  }
+  .sf-dropdown input:where(:dir(ltr)) {
+    padding-right: var(--sf-dropdown-input--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown input {
+    padding-left: var(--sf-dropdown-input--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown input {
+    padding-left: var(--sf-dropdown-input--padding-inline-end);
+    }
+  }
+  .sf-dropdown input:where(:dir(rtl)) {
+    padding-left: var(--sf-dropdown-input--padding-inline-end);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown input {
+    padding-left: var(--sf-dropdown-input--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-dropdown input {
+    padding-left: var(--sf-dropdown-input--padding-inline-start);
+    }
+  }
+  .sf-dropdown input:where(:dir(ltr)) {
+    padding-left: var(--sf-dropdown-input--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown input {
+    padding-right: var(--sf-dropdown-input--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  [dir="rtl"] .sf-dropdown input {
+    padding-right: var(--sf-dropdown-input--padding-inline-start);
+    }
+  }
+  .sf-dropdown input:where(:dir(rtl)) {
+    padding-right: var(--sf-dropdown-input--padding-inline-start);
+  }
+  .sf-dropdown input {
+    background-color: var(--sf-dropdown-input--background-color);
+    color: var(--sf-dropdown-input--color);
+    font-family: var(--sf-dropdown-input--font-family);
+    font-size: var(--sf-dropdown-input--font-size);
+    font-weight: var(--sf-dropdown-input--font-weight);
+    line-height: var(--sf-dropdown-input--line-height);
+    -webkit-padding-end: var(--sf-dropdown-input--padding-inline-end);
+            padding-inline-end: var(--sf-dropdown-input--padding-inline-end);
+    -webkit-padding-start: var(--sf-dropdown-input--padding-inline-start);
+            padding-inline-start: var(--sf-dropdown-input--padding-inline-start);
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-dropdown-label--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-dropdown .sf-dropdown-label {
+    --sf-dropdown-label--background-color: transparent;
+    --sf-dropdown-label--gap: var(--sf-space-1\/4);
+    background-color: var(--sf-dropdown-label--background-color);
+    gap: var(--sf-dropdown-label--gap);
+  }
+  .sf-dropdown .sf-dropdown-required {
+    --sf-dropdown-required--color: var(--sf-error);
+    --sf-dropdown-required--font-family: var(--sf-text--family);
+    --sf-dropdown-required--font-weight: var(--sf-font-weight-regular);
+    color: var(--sf-dropdown-required--color);
+    font-family: var(--sf-dropdown-required--font-family);
+    font-size: var(--sf-dropdown-required--font-size);
+    font-weight: var(--sf-dropdown-required--font-weight);
+    line-height: var(--sf-dropdown-required--line-height);
+  }
+  .sf-dropdown .sf-dropdown-text {
+    --sf-dropdown-text--color: var(--sf-on-surface-variant);
+    --sf-dropdown-text--font-family: var(--sf-text--family);
+    --sf-dropdown-text--font-weight: var(--sf-font-weight-regular);
+    color: var(--sf-dropdown-text--color);
+    font-family: var(--sf-dropdown-text--font-family);
+    font-size: var(--sf-dropdown-text--font-size);
+    font-weight: var(--sf-dropdown-text--font-weight);
+    line-height: var(--sf-dropdown-text--line-height);
+  }
+  .sf-dropdown .sf-dropdown-placeholder {
+    color: var(--sf-dropdown-placeholder--color);
+    font-family: var(--sf-dropdown-placeholder--font-family);
+    font-size: var(--sf-dropdown-placeholder--font-size);
+    line-height: var(--sf-dropdown-placeholder--line-height);
+  }
+  /* utility-hint: gap/var(--sf-dropdown-tag-container--gap) */
+  .sf-dropdown .sf-dropdown-tag-container {
+    background-color: var(--sf-dropdown-tag-container--background-color);
+    gap: var(--sf-dropdown-tag-container--gap);
+  }
+  .sf-dropdown .sf-icon {
+    color: var(--sf-on-surface-variant);
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+    font-size: var(--sf-icon-size-3);
+    font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+    height: var(--sf-icon-size-3);
+    height: var(--sf-icon--height, var(--sf-icon-size-3));
+    width: var(--sf-icon-size-3);
+    width: var(--sf-icon--width, var(--sf-icon-size-3));
+  }
+  .sf-dropdown .sf-list {
+    box-shadow: var(--sf-list--box-shadow);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-tag {
+    padding-right: var(--sf-tag--padding-inline-end);
+    padding-right: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+  }
+  @supports not (padding-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-tag {
+    padding-right: var(--sf-tag--padding-inline-end);
+    padding-right: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+    }
+  }
+  .sf-dropdown .sf-tag:where(:dir(ltr)) {
+    padding-right: var(--sf-tag--padding-inline-end);
+    padding-right: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-tag {
+    padding-left: var(--sf-tag--padding-inline-end);
+    padding-left: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+  }
+  @supports not (padding-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown .sf-tag {
+    padding-left: var(--sf-tag--padding-inline-end);
+    padding-left: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+    }
+  }
+  .sf-dropdown .sf-tag:where(:dir(rtl)) {
+    padding-left: var(--sf-tag--padding-inline-end);
+    padding-left: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-tag {
+    padding-left: var(--sf-tag--padding-inline-start);
+    padding-left: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+  }
+  @supports not (padding-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-tag {
+    padding-left: var(--sf-tag--padding-inline-start);
+    padding-left: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+    }
+  }
+  .sf-dropdown .sf-tag:where(:dir(ltr)) {
+    padding-left: var(--sf-tag--padding-inline-start);
+    padding-left: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-tag {
+    padding-right: var(--sf-tag--padding-inline-start);
+    padding-right: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+  }
+  @supports not (padding-inline-start: initial) {
+  [dir="rtl"] .sf-dropdown .sf-tag {
+    padding-right: var(--sf-tag--padding-inline-start);
+    padding-right: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+    }
+  }
+  .sf-dropdown .sf-tag:where(:dir(rtl)) {
+    padding-right: var(--sf-tag--padding-inline-start);
+    padding-right: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+  }
+  .sf-dropdown .sf-tag {
+    background-color: var(--sf-tag--background-color);
+    -webkit-padding-end: var(--sf-tag--padding-inline-end);
+            padding-inline-end: var(--sf-tag--padding-inline-end);
+    -webkit-padding-end: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+            padding-inline-end: var(--sf-tag--inline-end, var(--sf-tag--padding-inline-end));
+    -webkit-padding-start: var(--sf-tag--padding-inline-start);
+            padding-inline-start: var(--sf-tag--padding-inline-start);
+    -webkit-padding-start: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+            padding-inline-start: var(--sf-tag--inline-start, var(--sf-tag--padding-inline-start));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-tag-alt {
+    padding-right: var(--sf-tag-alt--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-tag-alt {
+    padding-right: var(--sf-tag-alt--padding-inline-end);
+    }
+  }
+  .sf-dropdown .sf-tag-alt:where(:dir(ltr)) {
+    padding-right: var(--sf-tag-alt--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-tag-alt {
+    padding-left: var(--sf-tag-alt--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown .sf-tag-alt {
+    padding-left: var(--sf-tag-alt--padding-inline-end);
+    }
+  }
+  .sf-dropdown .sf-tag-alt:where(:dir(rtl)) {
+    padding-left: var(--sf-tag-alt--padding-inline-end);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-tag-alt {
+    padding-left: var(--sf-tag-alt--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-tag-alt {
+    padding-left: var(--sf-tag-alt--padding-inline-start);
+    }
+  }
+  .sf-dropdown .sf-tag-alt:where(:dir(ltr)) {
+    padding-left: var(--sf-tag-alt--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-tag-alt {
+    padding-right: var(--sf-tag-alt--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial) {
+  [dir="rtl"] .sf-dropdown .sf-tag-alt {
+    padding-right: var(--sf-tag-alt--padding-inline-start);
+    }
+  }
+  .sf-dropdown .sf-tag-alt:where(:dir(rtl)) {
+    padding-right: var(--sf-tag-alt--padding-inline-start);
+  }
+  .sf-dropdown .sf-tag-alt {
+    background-color: var(--sf-tag-alt--background-color);
+    -webkit-padding-end: var(--sf-tag-alt--padding-inline-end);
+            padding-inline-end: var(--sf-tag-alt--padding-inline-end);
+    -webkit-padding-start: var(--sf-tag-alt--padding-inline-start);
+            padding-inline-start: var(--sf-tag-alt--padding-inline-start);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  /* utility-hint: display/flex (.flex) */
+  .sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input {
+    --sf-dropdown-input--padding-inline-end: var(--sf-text-size-4);
+    --sf-dropdown-input--padding-inline-start: var(--sf-ui-1--text-space-x);
+  }
+  .sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-webkit-input-placeholder, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-webkit-input-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-moz-placeholder, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-moz-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input:-ms-input-placeholder, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input:-ms-input-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-ms-input-placeholder, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-ms-input-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-webkit-input-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-webkit-input-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-surface-variant);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-moz-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-moz-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-surface-variant);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input:-ms-input-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input:-ms-input-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-surface-variant);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-ms-input-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-ms-input-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-surface-variant);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-surface-variant);
+  }
+  .sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text input {
+    --sf-dropdown-input--font-size: var(--sf-text-size-1);
+    --sf-dropdown-input--line-height: var(--sf-text-height-1);
+  }
+  .sf-dropdown.sf-dropdown--size-1.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1.sf-dropdown--filled.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text input {
+    --sf-dropdown-input--font-family: var(--sf-text--family);
+    --sf-dropdown-input--font-weight: var(--sf-font-weight-regular);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text input {
+    --sf-dropdown-input--color: var(--sf-on-surface);
+  }
+  .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-required {
+    --sf-dropdown-required--font-size: var(--sf-text-size-1\/2);
+    --sf-dropdown-required--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-text {
+    --sf-dropdown-text--font-size: var(--sf-text-size-1\/2);
+    --sf-dropdown-text--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field {
+    --sf-dropdown-field--border-color: var(--sf-outline-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field {
+    --sf-dropdown-field--border-color: var(--sf-outline-disable);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon {
+    --sf-icon--color: transparent;
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon {
+    --sf-icon--color: transparent;
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)][\:has\(\%3E\%20.sf-dropdown-field\:hover\)] .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)][\:has\(\%3E\%20.sf-dropdown-field\:hover\)] .sf-dropdown-field {
+    --sf-dropdown-field--border-color: var(--sf-primary-hover);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field {
+    --sf-dropdown-field--border-color: var(--sf-primary-hover);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-container);
+    --sf-dropdown-field--border-color: var(--sf-transparent-for-focus);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-container);
+    --sf-dropdown-field--border-color: var(--sf-transparent-for-focus);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag .sf-dropdown-field .sf-dropdown-tag-container .sf-tag {
+    --sf-tag--background-color: var(--sf-primary-container);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input::-webkit-input-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input::-webkit-input-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input::-moz-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input::-moz-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input:-ms-input-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input:-ms-input-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input::-ms-input-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input::-ms-input-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field input::placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::-webkit-input-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::-webkit-input-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::-moz-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::-moz-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input:-ms-input-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input:-ms-input-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::-ms-input-placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::-ms-input-placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field input::placeholder {
+    --sf-dropdown-placeholder--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] input, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] input {
+    --sf-dropdown-input--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) input, .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) input {
+    --sf-dropdown-input--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-disable);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20input\:enabled\:not\(\:disabled\)\:not\(.disabled\).focus-visible\)] .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag[\:has\(\%3E\%20.sf-dropdown-field\%20input\:enabled\:not\(\:disabled\)\:not\(.disabled\).focus-visible\)] .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-transparent-for-focus);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled).focus-visible) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled).focus-visible) .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-transparent-for-focus);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20input\:enabled\:not\(\:disabled\)\:not\(.disabled\)\:focus-visible\)] .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag[\:has\(\%3E\%20.sf-dropdown-field\%20input\:enabled\:not\(\:disabled\)\:not\(.disabled\)\:focus-visible\)] .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-transparent-for-focus);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-transparent-for-focus);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20input\:enabled\:not\(\:disabled\)\:not\(.disabled\).focus-visible\)] .sf-dropdown-field {
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled).focus-visible) .sf-dropdown-field {
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20input\:enabled\:not\(\:disabled\)\:not\(.disabled\)\:focus-visible\)] .sf-dropdown-field {
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field {
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)][\:has\(\%3E\%20.sf-dropdown-field\:hover\)] .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)][\:has\(\%3E\%20.sf-dropdown-field\:hover\)] .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-container-hover);
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--text:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:not(:has(> .sf-dropdown-field > :disabled)):has(> .sf-dropdown-field:hover) .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-container-hover);
+  }
+  /* utility-hint: display/flex (.flex) */
+  .sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input {
+    --sf-dropdown-input--padding-inline-end: var(--sf-text-size-5);
+    --sf-dropdown-input--padding-inline-start: var(--sf-ui-2--text-space-x);
+  }
+  .sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-webkit-input-placeholder, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-webkit-input-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-moz-placeholder, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-moz-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input:-ms-input-placeholder, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input:-ms-input-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-ms-input-placeholder, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-ms-input-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-dropdown.sf-dropdown--size-2.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-2.sf-dropdown--filled.sf-dropdown--text input {
+    --sf-dropdown-input--font-size: var(--sf-text-size-2);
+    --sf-dropdown-input--line-height: var(--sf-text-height-2);
+  }
+  .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-required {
+    --sf-dropdown-required--font-size: var(--sf-text-size-1);
+    --sf-dropdown-required--line-height: var(--sf-text-height-1);
+  }
+  .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-text {
+    --sf-dropdown-text--font-size: var(--sf-text-size-1);
+    --sf-dropdown-text--line-height: var(--sf-text-height-1);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag .sf-dropdown-field .sf-dropdown-tag-container .sf-tag {
+    --sf-tag--background-color: var(--sf-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag[\:has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon {
+    --sf-icon--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--outlined.sf-dropdown--text:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--outlined.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag:has(> .sf-dropdown-field > :disabled) > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon {
+    --sf-icon--color: var(--sf-on-disable);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--tag > .sf-dropdown-field > .sf-icon-button.sf-icon-button--link.sf-icon-button--icon > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field {
+    min-height: var(--sf-ui-1\/2--control-height);
+    min-block-size: var(--sf-ui-1\/2--control-height);
+    --sf-dropdown-field--gap: var(--sf-space-1\/4);
+    --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+    --sf-dropdown-field--padding-inline-end: var(--sf-ui-1\/2--space-x);
+    --sf-dropdown-field--padding-inline-start: var(--sf-ui-1\/2--space-x);
+    --sf-dropdown-field--padding-top: calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px));
+  }
+  /* utility-hint: display/flex (.flex) */
+  .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input {
+    --sf-dropdown-input--padding-inline-end: var(--sf-text-size-3);
+    --sf-dropdown-input--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-webkit-input-placeholder, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-webkit-input-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-moz-placeholder, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-moz-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input:-ms-input-placeholder, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input:-ms-input-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::-ms-input-placeholder, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::-ms-input-placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text .sf-dropdown-field input::placeholder, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text .sf-dropdown-field input::placeholder {
+    --sf-dropdown-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-dropdown-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--outlined.sf-dropdown--text input, .sf-dropdown.sf-dropdown--size-1\/2.sf-dropdown--filled.sf-dropdown--text input {
+    --sf-dropdown-input--font-size: var(--sf-text-size-1\/2);
+    --sf-dropdown-input--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-required {
+    --sf-dropdown-required--font-size: var(--sf-text-size-1\/3);
+    --sf-dropdown-required--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-text {
+    --sf-dropdown-text--font-size: var(--sf-text-size-1\/3);
+    --sf-dropdown-text--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field {
+    min-height: var(--sf-ui-1--control-height);
+    min-block-size: var(--sf-ui-1--control-height);
+    --sf-dropdown-field--gap: var(--sf-space-1\/4);
+    --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+    --sf-dropdown-field--padding-inline-end: var(--sf-ui-1--space-x);
+    --sf-dropdown-field--padding-inline-start: var(--sf-ui-1--space-x);
+    --sf-dropdown-field--padding-top: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px));
+  }
+  .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field {
+    min-height: var(--sf-ui-2--control-height);
+    min-block-size: var(--sf-ui-2--control-height);
+    --sf-dropdown-field--gap: var(--sf-space-1\/3);
+    --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+    --sf-dropdown-field--padding-inline-end: var(--sf-ui-2--space-x);
+    --sf-dropdown-field--padding-inline-start: var(--sf-ui-2--space-x);
+    --sf-dropdown-field--padding-top: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px));
+  }
+  /* The field fills the control, so its ring turns inwards. */
+  .sf-dropdown[\:has\(\%3E\%20.sf-dropdown-field\%20input\:enabled\:not\(\:disabled\)\:not\(.disabled\).focus-visible\)] .sf-dropdown-field {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-dropdown:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled).focus-visible) .sf-dropdown-field {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-dropdown[\:has\(\%3E\%20.sf-dropdown-field\%20input\:enabled\:not\(\:disabled\)\:not\(.disabled\)\:focus-visible\)] .sf-dropdown-field {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-dropdown:has(> .sf-dropdown-field input:enabled:not(:disabled):not(.disabled):focus-visible) .sf-dropdown-field {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-dropdown.open .sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-primary-active);
+  }
+  .sf-dropdown.sf-dropdown--text .sf-dropdown-field input::-webkit-input-placeholder {
+    --sf-dropdown-placeholder--font-family: var(--sf-text--family);
+  }
+  .sf-dropdown.sf-dropdown--text .sf-dropdown-field input::-moz-placeholder {
+    --sf-dropdown-placeholder--font-family: var(--sf-text--family);
+  }
+  .sf-dropdown.sf-dropdown--text .sf-dropdown-field input:-ms-input-placeholder {
+    --sf-dropdown-placeholder--font-family: var(--sf-text--family);
+  }
+  .sf-dropdown.sf-dropdown--text .sf-dropdown-field input::-ms-input-placeholder {
+    --sf-dropdown-placeholder--font-family: var(--sf-text--family);
+  }
+  .sf-dropdown.sf-dropdown--text .sf-dropdown-field input::placeholder {
+    --sf-dropdown-placeholder--font-family: var(--sf-text--family);
+  }
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-dropdown.sf-dropdown--tag .sf-dropdown-tag-container {
+    --sf-dropdown-tag-container--gap: var(--sf-space-1\/3);
+  }
+}
+/* A filled field reads as a field only by its fill, so while someone is typing
+   in it -- the list open or focus anywhere inside, by pointer or keyboard -- it becomes the
+   ordinary field: the surface of a bordered field and a visible boundary. The
+   fill comes back when focus leaves. Error, disabled and read-only fields keep
+   their own look. */
+@layer sf.components {
+  /* Doubled classes: it has to outrank the hover rule, which also matches while
+     the pointer that opened the list is still over the field. */
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled.open:not(.error)[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled.open:not(.error):not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled[focus-within]:not(.error)[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled[focus-within]:not(.error):not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled.open:not(.error)[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)] .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled.open:not(.error):not(:has(> .sf-dropdown-field > :disabled)) .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled:not(.error)[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)][focus-within] .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled:not(.error):not(:has(> .sf-dropdown-field > :disabled))[focus-within] .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled:not(.error)[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)][focus-within] .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled:not(.error)[\:not-has\(\%3E\%20.sf-dropdown-field\%20\%3E\%20\:disabled\)]:focus-within .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--filled:not(.error):not(:has(> .sf-dropdown-field > :disabled)):focus-within .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--background-color: var(--sf-surface-0);
+    --sf-dropdown-field--border-color: var(--sf-outline);
+  }
+}
+@layer sf.components {
+  .sf-dropdown {
+    position: relative;
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-dropdown > .sf-dropdown-field,
+  .sf-dropdown > .sf-dropdown-field > input:not([type=hidden]),
+  .sf-dropdown .sf-dropdown-tag-container {
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-dropdown > .sf-dropdown-field > input:not([type=hidden]) {
+    flex: 1;
+    width: 100%;
+    inline-size: 100%;
+  }
+  .sf-dropdown .sf-dropdown-tag-container {
+    flex: 1;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-tag--border-top-left-radius, var(--sf-radius--ui));
+  }
+  @supports not (border-start-start-radius: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-tag--border-top-left-radius, var(--sf-radius--ui));
+    }
+  }
+  .sf-dropdown .sf-dropdown-tag-container > .sf-tag:where(:dir(ltr)) {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-tag--border-top-left-radius, var(--sf-radius--ui));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-tag--border-top-left-radius, var(--sf-radius--ui));
+  }
+  @supports not (border-start-start-radius: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-tag--border-top-left-radius, var(--sf-radius--ui));
+    }
+  }
+  .sf-dropdown .sf-dropdown-tag-container > .sf-tag:where(:dir(rtl)) {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-tag--border-top-left-radius, var(--sf-radius--ui));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-tag--border-top-right-radius, var(--sf-radius--ui));
+  }
+  @supports not (border-start-end-radius: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-tag--border-top-right-radius, var(--sf-radius--ui));
+    }
+  }
+  .sf-dropdown .sf-dropdown-tag-container > .sf-tag:where(:dir(ltr)) {
+    border-top-right-radius: var(--sf-radius--ui);
+    border-top-right-radius: var(--sf-tag--border-top-right-radius, var(--sf-radius--ui));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-tag--border-top-right-radius, var(--sf-radius--ui));
+  }
+  @supports not (border-start-end-radius: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-tag--border-top-right-radius, var(--sf-radius--ui));
+    }
+  }
+  .sf-dropdown .sf-dropdown-tag-container > .sf-tag:where(:dir(rtl)) {
+    border-top-left-radius: var(--sf-radius--ui);
+    border-top-left-radius: var(--sf-tag--border-top-right-radius, var(--sf-radius--ui));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-radius--ui));
+  }
+  @supports not (border-end-start-radius: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-radius--ui));
+    }
+  }
+  .sf-dropdown .sf-dropdown-tag-container > .sf-tag:where(:dir(ltr)) {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-radius--ui));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-radius--ui));
+  }
+  @supports not (border-end-start-radius: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-radius--ui));
+    }
+  }
+  .sf-dropdown .sf-dropdown-tag-container > .sf-tag:where(:dir(rtl)) {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-radius--ui));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-radius--ui));
+  }
+  @supports not (border-end-end-radius: initial) {
+  html:not([dir="rtl"]) .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-radius--ui));
+    }
+  }
+  .sf-dropdown .sf-dropdown-tag-container > .sf-tag:where(:dir(ltr)) {
+    border-bottom-right-radius: var(--sf-radius--ui);
+    border-bottom-right-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-radius--ui));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-radius--ui));
+  }
+  @supports not (border-end-end-radius: initial) {
+  [dir="rtl"] .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-radius--ui));
+    }
+  }
+  .sf-dropdown .sf-dropdown-tag-container > .sf-tag:where(:dir(rtl)) {
+    border-bottom-left-radius: var(--sf-radius--ui);
+    border-bottom-left-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-radius--ui));
+  }
+  .sf-dropdown .sf-dropdown-tag-container > .sf-tag {
+    min-width: 0;
+    min-inline-size: 0;
+    max-width: 100%;
+    max-inline-size: 100%;
+    border-start-start-radius: var(--sf-radius--ui);
+    border-start-start-radius: var(--sf-tag--border-top-left-radius, var(--sf-radius--ui));
+    border-start-end-radius: var(--sf-radius--ui);
+    border-start-end-radius: var(--sf-tag--border-top-right-radius, var(--sf-radius--ui));
+    border-end-start-radius: var(--sf-radius--ui);
+    border-end-start-radius: var(--sf-tag--border-bottom-left-radius, var(--sf-radius--ui));
+    border-end-end-radius: var(--sf-radius--ui);
+    border-end-end-radius: var(--sf-tag--border-bottom-right-radius, var(--sf-radius--ui));
+  }
+  /* The label row is a flex row whatever the markup says, so its height is its
+     text's line and not the surrounding line box: a label written without the
+     flex class stood 24px tall over a 20px text and put the field 4px further
+     from it than a text field's. */
+  .sf-dropdown .sf-dropdown-label {
+    display: flex;
+  }
+  /* A tag in the field stays one line: a narrow field shortens the label with an
+     ellipsis instead of breaking it, so the field keeps its height. */
+  .sf-dropdown .sf-dropdown-tag-container .sf-tag {
+    max-width: 100%;
+    max-inline-size: 100%;
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-dropdown .sf-dropdown-tag-container .sf-tag-container {
+    min-width: 0;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* The field's text line for each size, on the root so a tag and a picture can
+     read it (the input's own variables live on the input). Pictures take the
+     whole line, the ladder size a list item gives them too (24 at size 1 on
+     desktop); the field's block padding gives up the border instead, so the
+     control stays at its height: 40 = 1 + 7 + 24 + 7 + 1. */
+  .sf-dropdown.sf-dropdown--size-1\/2 {
+    --sf-dropdown-tag-line--height: var(--sf-text-height-1\/2);
+  }
+  .sf-dropdown.sf-dropdown--size-1 {
+    --sf-dropdown-tag-line--height: var(--sf-text-height-1);
+  }
+  .sf-dropdown.sf-dropdown--size-2 {
+    --sf-dropdown-tag-line--height: var(--sf-text-height-2);
+  }
+  .sf-dropdown {
+    --sf-dropdown-tag-line--box: var(--sf-dropdown-tag-line--height);
+  }
+  /* A selected tag sits on the field's own text line, so a field holding tags is
+     as tall as one holding text. The tag itself knows how to do that: the script
+     renders it inline (sf-tag--inline) one size below the field, which gives the
+     label one text step down; the field only tells it how tall its line is.
+     Only size 1/2 does this; from size 1 up the chip has its own line. */
+  .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-tag-container {
+    --sf-tag--line: var(--sf-dropdown-tag-line--box);
+  }
+  /* From size 1 up the tag is a compact chip of the field's own size, so the
+     field keeps only the step between its default and compact padding, less the
+     border: 3px around the chips, and a field of chips is as tall as a field of
+     text. */
+  .sf-dropdown.sf-dropdown.sf-dropdown--tag.sf-dropdown--size-1 > .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--padding-top: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-ui-1--space-y-tightness-low) - var(--sf-px));
+    --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-ui-1--space-y-tightness-low) - var(--sf-px));
+    --sf-dropdown-field--padding-inline-start: calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-ui-1--space-y-tightness-low) - var(--sf-px));
+  }
+  .sf-dropdown.sf-dropdown.sf-dropdown--tag.sf-dropdown--size-2 > .sf-dropdown-field.sf-dropdown-field {
+    --sf-dropdown-field--padding-top: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-ui-2--space-y-tightness-low) - var(--sf-px));
+    --sf-dropdown-field--padding-bottom: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-ui-2--space-y-tightness-low) - var(--sf-px));
+    --sf-dropdown-field--padding-inline-start: calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-ui-2--space-y-tightness-low) - var(--sf-px));
+  }
+  .sf-dropdown .sf-dropdown-tag-container .sf-tag > button:not(.does-not-exist) {
+    flex-shrink: 0;
+  }
+  .sf-dropdown .sf-dropdown-tag-container .sf-tag > .sf-icon {
+    flex-shrink: 0;
+  }
+  .sf-dropdown .sf-dropdown-tag-container .sf-tag > .sf-avatar {
+    flex-shrink: 0;
+  }
+  .sf-dropdown .sf-dropdown-tag-container .sf-tag > .sf-tag-color-icon {
+    flex-shrink: 0;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown-field > button {
+    right: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+    right: calc(var(--sf-dropdown-field--padding-inline-end) - var(--sf-icon-button--padding-inline-end, 0px));
+  }
+  @supports not (inset-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown-field > button {
+    right: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+    right: calc(var(--sf-dropdown-field--padding-inline-end) - var(--sf-icon-button--padding-inline-end, 0px));
+    }
+  }
+  .sf-dropdown-field > button:where(:dir(ltr)) {
+    right: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+    right: calc(var(--sf-dropdown-field--padding-inline-end) - var(--sf-icon-button--padding-inline-end, 0px));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown-field > button {
+    left: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+    left: calc(var(--sf-dropdown-field--padding-inline-end) - var(--sf-icon-button--padding-inline-end, 0px));
+  }
+  @supports not (inset-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown-field > button {
+    left: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+    left: calc(var(--sf-dropdown-field--padding-inline-end) - var(--sf-icon-button--padding-inline-end, 0px));
+    }
+  }
+  .sf-dropdown-field > button:where(:dir(rtl)) {
+    left: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+    left: calc(var(--sf-dropdown-field--padding-inline-end) - var(--sf-icon-button--padding-inline-end, 0px));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown-field > button {
+    right: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+  }
+  @supports not (inset-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown-field > button {
+    right: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+    }
+  }
+  .sf-dropdown-field > button:where(:dir(ltr)) {
+    right: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown-field > button {
+    left: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+  }
+  @supports not (inset-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown-field > button {
+    left: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+    }
+  }
+  .sf-dropdown-field > button:where(:dir(rtl)) {
+    left: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+  }
+  .sf-dropdown-field > button {
+    /* The chevron's glyph, not the button around it, ends at the field's
+       padding: that is where an option's check ends in the open list, so the two
+       share an axis. The button's own padding is given back. */
+    inset-inline-end: calc(var(--sf-dropdown-field--padding-inline-end) - 0px);
+    inset-inline-end: calc(var(--sf-dropdown-field--padding-inline-end) - var(--sf-icon-button--padding-inline-end, 0px));
+    position: absolute;
+  }
+  .sf-dropdown.sf-dropdown--tag > .sf-dropdown-field > button {
+    position: static;
+    flex-shrink: 0;
+    /* In flow, so wrapped tags never run under it -- but no taller than the
+       field's text line, or a field holding tags grows past a field holding
+       text. The icon stays centred and may overhang the line; it does not take
+       part in the line height. */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--sf-dropdown-tag-line--box);
+    block-size: var(--sf-dropdown-tag-line--box);
+    width: var(--sf-dropdown-tag-line--box);
+    inline-size: var(--sf-dropdown-tag-line--box);
+    min-height: 0;
+    min-block-size: 0;
+    min-width: 0;
+    min-inline-size: 0;
+    padding: 0;
+  }
+  .sf-dropdown .sf-list {
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: calc(100% + var(--sf-space-1\/4));
+    z-index: 10;
+  }
+  .sf-dropdown.sf-dropdown--filled.sf-dropdown--tag .sf-list .sf-list-item .sf-tag {
+    --sf-tag--background-color: transparent;
+  }
+  .sf-dropdown .sf-list[hidden] {
+    display: none !important;
+  }
+  .sf-list-item {
+    position: relative;
+  }
+  .sf-list-item.focus-visible {
+    z-index: 1;
+  }
+  .sf-list-item:focus-visible {
+    z-index: 1;
+  }
+  .sf-dropdown .sf-list .sf-list-item[hidden] {
+    display: none !important;
+  }
+  .sf-dropdown-value {
+    position: absolute;
+    width: var(--sf-a1);
+    inline-size: var(--sf-a1);
+    height: var(--sf-a1);
+    block-size: var(--sf-a1);
+    overflow: hidden;
+    -webkit-clip-path: inset(50%);
+            clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sf-list [role=option] .sf-checkbox {
+    pointer-events: none;
+  }
+  .sf-list [role=option],
+  .sf-list [role=option] .sf-list-item-wrap,
+  .sf-list [role=option] .sf-list-item-container {
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-list [role=option] .sf-list-item-container {
+    word-wrap: anywhere;
+  }
+  /* A long label wraps; its picture keeps its shape. */
+  .sf-list [role=option] .sf-list-item-wrap > .sf-checkbox {
+    flex-shrink: 0;
+  }
+  .sf-list [role=option] .sf-list-item-wrap > .sf-icon {
+    flex-shrink: 0;
+  }
+  .sf-list [role=option] .sf-list-item-wrap > .sf-avatar {
+    flex-shrink: 0;
+  }
+  .sf-list [role=option] .sf-list-item-wrap > .sf-flag {
+    flex-shrink: 0;
+  }
+  .sf-list [role=option] .sf-list-item-wrap .sf-tag-color-icon {
+    flex-shrink: 0;
+  }
+}
+@layer sf.states {
+  .sf-dropdown .sf-dropdown-field[\:has\(\%3E\%20\[aria-haspopup\].focus-visible\)] {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-dropdown .sf-dropdown-field:has(> [aria-haspopup].focus-visible) {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-dropdown .sf-dropdown-field[\:has\(\%3E\%20\[aria-haspopup\]\:focus-visible\)] {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-dropdown .sf-dropdown-field:has(> [aria-haspopup]:focus-visible) {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: calc(var(--sf-focus--width) * -1);
+  }
+  .sf-dropdown .sf-dropdown-field > button[aria-haspopup].focus-visible {
+    --sf-icon-button--box-shadow: none;
+    box-shadow: none;
+    outline: none;
+  }
+  .sf-dropdown .sf-dropdown-field > button[aria-haspopup]:focus-visible {
+    --sf-icon-button--box-shadow: none;
+    box-shadow: none;
+    outline: none;
+  }
+  /* The text control inside the field gives its ring up for the same reason the
+     button does: the field already carries one for the whole control. */
+  .sf-dropdown .sf-dropdown-field input.focus-visible {
+    outline: none;
+  }
+  .sf-dropdown .sf-dropdown-field input:focus-visible {
+    outline: none;
+  }
+  @media (forced-colors: active) {
+    .sf-dropdown .sf-dropdown-field[\:has\(\%3E\%20\[aria-haspopup\].focus-visible\)],
+    .sf-list [role=option].focus-visible {
+      outline: var(--sf-focus-outline-width) solid Highlight;
+      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+    }
+    .sf-dropdown .sf-dropdown-field:has(> [aria-haspopup].focus-visible),
+    .sf-list [role=option].focus-visible {
+      outline: var(--sf-focus-outline-width) solid Highlight;
+      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+    }
+    .sf-dropdown .sf-dropdown-field[\:has\(\%3E\%20\[aria-haspopup\]\:focus-visible\)],
+    .sf-list [role=option].focus-visible {
+      outline: var(--sf-focus-outline-width) solid Highlight;
+      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+    }
+    .sf-dropdown .sf-dropdown-field[\:has\(\%3E\%20\[aria-haspopup\]\:focus-visible\)],
+    .sf-list [role=option]:focus-visible {
+      outline: var(--sf-focus-outline-width) solid Highlight;
+      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+    }
+    .sf-dropdown .sf-dropdown-field:has(> [aria-haspopup]:focus-visible),
+    .sf-list [role=option]:focus-visible {
+      outline: var(--sf-focus-outline-width) solid Highlight;
+      outline-offset: calc(-1 * var(--sf-focus-outline-width));
+    }
+  }
+}
+@layer sf.components {
+  /* The picture of a single choice, in front of its label in the field. The
+     ceiling is the field line: a picture's own box must never set the field's
+     height, whatever kind of picture comes next. */
+  .sf-dropdown .sf-dropdown-field > .sf-dropdown-field-visual {
+    flex-shrink: 0;
+    max-height: var(--sf-dropdown-tag-line--box);
+    max-block-size: var(--sf-dropdown-tag-line--box);
+  }
+  /* The label follows the picture at the size's text step, the step an option
+     label keeps from its picture, so the value and the option label start on
+     one axis. The step is the picture's margin alone: the field's own gap would
+     add 4px that the option does not have. */
+  .sf-dropdown .sf-dropdown-field[\:has\(\%3E\%20.sf-dropdown-field-visual\)] {
+    -webkit-column-gap: 0;
+       -moz-column-gap: 0;
+            column-gap: 0;
+  }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-dropdown-field-visual) {
+    -webkit-column-gap: 0;
+       -moz-column-gap: 0;
+            column-gap: 0;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-right: var(--sf-ui-1\/2--text-space-x);
+  }
+  @supports not (margin-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-right: var(--sf-ui-1\/2--text-space-x);
+    }
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual:where(:dir(ltr)) {
+    margin-right: var(--sf-ui-1\/2--text-space-x);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-left: var(--sf-ui-1\/2--text-space-x);
+  }
+  @supports not (margin-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-left: var(--sf-ui-1\/2--text-space-x);
+    }
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual:where(:dir(rtl)) {
+    margin-left: var(--sf-ui-1\/2--text-space-x);
+  }
+  .sf-dropdown.sf-dropdown--size-1\/2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    -webkit-margin-end: var(--sf-ui-1\/2--text-space-x);
+            margin-inline-end: var(--sf-ui-1\/2--text-space-x);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-right: var(--sf-ui-1--text-space-x);
+  }
+  @supports not (margin-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-right: var(--sf-ui-1--text-space-x);
+    }
+  }
+  .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual:where(:dir(ltr)) {
+    margin-right: var(--sf-ui-1--text-space-x);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-left: var(--sf-ui-1--text-space-x);
+  }
+  @supports not (margin-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-left: var(--sf-ui-1--text-space-x);
+    }
+  }
+  .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual:where(:dir(rtl)) {
+    margin-left: var(--sf-ui-1--text-space-x);
+  }
+  .sf-dropdown.sf-dropdown--size-1 .sf-dropdown-field > .sf-dropdown-field-visual {
+    -webkit-margin-end: var(--sf-ui-1--text-space-x);
+            margin-inline-end: var(--sf-ui-1--text-space-x);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-right: var(--sf-ui-2--text-space-x);
+  }
+  @supports not (margin-inline-end: initial) {
+  html:not([dir="rtl"]) .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-right: var(--sf-ui-2--text-space-x);
+    }
+  }
+  .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual:where(:dir(ltr)) {
+    margin-right: var(--sf-ui-2--text-space-x);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-left: var(--sf-ui-2--text-space-x);
+  }
+  @supports not (margin-inline-end: initial) {
+  [dir="rtl"] .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    margin-left: var(--sf-ui-2--text-space-x);
+    }
+  }
+  .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual:where(:dir(rtl)) {
+    margin-left: var(--sf-ui-2--text-space-x);
+  }
+  .sf-dropdown.sf-dropdown--size-2 .sf-dropdown-field > .sf-dropdown-field-visual {
+    -webkit-margin-end: var(--sf-ui-2--text-space-x);
+            margin-inline-end: var(--sf-ui-2--text-space-x);
+  }
+  /* A flag keeps its proportions at the optical size of an icon on the same
+     line: three quarters of it, as an icon's glyph fills about three quarters of
+     its box. The list gives its flags the same size, so they match. */
+  .sf-dropdown .sf-dropdown-field > .sf-flag.sf-dropdown-field-visual {
+    --sf-flag--size: calc(var(--sf-dropdown-tag-line--box) * 3 / 4);
+  }
+  /* No taller than the field line, or a field with a picture grows past a field
+     without one (an avatar made a size 1 field 50px, an icon 42px). The colour
+     dot is sized here because its size otherwise lives on the tag around it. */
+  .sf-dropdown .sf-dropdown-field > .sf-icon.sf-dropdown-field-visual {
+    --sf-icon--font-size: var(--sf-dropdown-tag-line--box);
+    --sf-icon--height: var(--sf-dropdown-tag-line--box);
+    --sf-icon--width: var(--sf-dropdown-tag-line--box);
+  }
+  .sf-dropdown .sf-dropdown-field > .sf-avatar.sf-dropdown-field-visual {
+    --sf-avatar--height: var(--sf-dropdown-tag-line--box);
+    --sf-avatar--width: var(--sf-dropdown-tag-line--box);
+    /* Two initials fit a line-sized circle at half its height. */
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-dropdown-tag-line--box) / 2));
+    --sf-avatar--line-height: var(--sf-dropdown-tag-line--box);
+  }
+  .sf-dropdown .sf-dropdown-field > .sf-tag-color-icon.sf-dropdown-field-visual {
+    --sf-tag-color-icon--height: var(--sf-dropdown-tag-line--box);
+    --sf-tag-color-icon--width: var(--sf-dropdown-tag-line--box);
+    --sf-tag-color-icon--border-radius: var(--sf-radius-circle);
+    border-radius: var(--sf-radius-circle);
+    height: var(--sf-dropdown-tag-line--box);
+    block-size: var(--sf-dropdown-tag-line--box);
+    width: var(--sf-dropdown-tag-line--box);
+    inline-size: var(--sf-dropdown-tag-line--box);
+  }
+  /* The picture takes the input's leading step, so the label follows it at one
+     gap instead of a gap plus the input's own padding. Doubled class: the
+     per-size input rules set the same variable. */
+  .sf-dropdown.sf-dropdown .sf-dropdown-field.sf-dropdown-field[\:has\(\%3E\%20.sf-dropdown-field-visual\)] > input:not([type=hidden]) {
+    --sf-dropdown-input--padding-inline-start: 0;
+  }
+  .sf-dropdown.sf-dropdown .sf-dropdown-field.sf-dropdown-field:has(> .sf-dropdown-field-visual) > input:not([type=hidden]) {
+    --sf-dropdown-input--padding-inline-start: 0;
+  }
+  /* A value longer than the field ends in an ellipsis rather than a cut letter. */
+  .sf-dropdown .sf-dropdown-field > input:not([type=hidden]) {
+    text-overflow: ellipsis;
+  }
+}
+@layer sf.states {
+  /* The open list lines up with its field: a picture, a label and the check sit
+     on the same vertical axes as the picture, the value and the chevron above.
+     The list adds its own inset, so an option gives that much back from its
+     padding; the field adds its border, so the option adds that. Measured
+     before: every option picture sat 3px right of the field's. */
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--avatar.sf-list-item--size-1\/2 .sf-avatar-label-group {
+    --sf-avatar-label-group--gap: var(--sf-ui-1\/2--text-space-x);
+  }
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--avatar.sf-list-item--size-1 .sf-avatar-label-group {
+    --sf-avatar-label-group--gap: var(--sf-ui-1--text-space-x);
+  }
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--avatar.sf-list-item--size-2 .sf-avatar-label-group {
+    --sf-avatar-label-group--gap: var(--sf-ui-2--text-space-x);
+  }
+  .sf-dropdown .sf-list .sf-list-item .sf-avatar-label-group > .sf-avatar {
+    flex-shrink: 0;
+  }
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--size-1\/2 {
+    --sf-list-item--padding-inline-start: calc(var(--sf-ui-1\/2--space-x) + var(--sf-px) - var(--sf-list--padding-left, 0px));
+    --sf-list-item--padding-inline-end: calc(var(--sf-ui-1\/2--space-x) + var(--sf-px) - var(--sf-list--padding-right, 0px));
+  }
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--size-1\/2 .sf-list-item-wrap > .sf-flag {
+    --sf-flag--size: calc(var(--sf-text-height-1\/2) * 3 / 4);
+  }
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--size-1 {
+    --sf-list-item--padding-inline-start: calc(var(--sf-ui-1--space-x) + var(--sf-px) - var(--sf-list--padding-left, 0px));
+    --sf-list-item--padding-inline-end: calc(var(--sf-ui-1--space-x) + var(--sf-px) - var(--sf-list--padding-right, 0px));
+  }
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--size-1 .sf-list-item-wrap > .sf-flag {
+    --sf-flag--size: calc(var(--sf-text-height-1) * 3 / 4);
+  }
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--size-2 {
+    --sf-list-item--padding-inline-start: calc(var(--sf-ui-2--space-x) + var(--sf-px) - var(--sf-list--padding-left, 0px));
+    --sf-list-item--padding-inline-end: calc(var(--sf-ui-2--space-x) + var(--sf-px) - var(--sf-list--padding-right, 0px));
+  }
+  .sf-dropdown .sf-list .sf-list-item.sf-list-item--size-2 .sf-list-item-wrap > .sf-flag {
+    --sf-flag--size: calc(var(--sf-text-height-2) * 3 / 4);
+  }
+}
+/* A trigger the consumer supplied stands as it is: the dropdown gives it the
+   press that opens the list and nothing else -- no border, no field height, no
+   chevron of its own. What it looks like is the consumer's business, which is
+   the point of handing one in. */
+@layer sf.components {
+  .sf-dropdown .sf-dropdown-trigger {
+    cursor: pointer;
+  }
+  .sf-dropdown[\:has\(\%3E\%20.sf-dropdown-trigger\)] {
+    display: inline-flex;
+    width: auto;
+    inline-size: auto;
+  }
+  .sf-dropdown[\:has\(\%3E\%20.sf-dropdown-trigger\)] {
+    display: inline-flex;
+    width: auto;
+    width: auto;
+    inline-size: auto;
+  }
+  .sf-dropdown:has(> .sf-dropdown-trigger) {
+    display: inline-flex;
+    width: auto;
+    inline-size: auto;
+  }
+}

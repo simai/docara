@@ -11,6 +11,7 @@ use Simai\Docara\Portable\FilesystemPath;
 use Simai\Docara\Portable\JsonDiagnosticLocator;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableRuntimeMetadata;
+use Simai\Docara\PortableSite\SiteTheme;
 use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class ProjectRuntime
@@ -58,6 +59,9 @@ final readonly class ProjectRuntime
         if ($namespace !== null && (! is_string($namespace) || preg_match('/^[a-z][a-z0-9_-]*$/D', $namespace) !== 1)) {
             throw new PortableConfigurationException('SDK_PROJECT_NAMESPACE_INVALID', 'docara.json smart.namespace must be a safe project namespace.');
         }
+        // docara.json `theme`: a bad colour is reported by doctor and validate,
+        // not only by the build.
+        SiteTheme::fromSite($site);
         $revision = hash_file('sha256', $config) ?: 'unavailable';
         foreach (['smart', 'design'] as $ownedRoot) {
             if (is_link($real . '/' . $ownedRoot)) {

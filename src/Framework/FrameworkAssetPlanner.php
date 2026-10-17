@@ -1417,7 +1417,7 @@ final readonly class FrameworkAssetPlanner
     }
 
     /**
-     * A lazy relation (`"lazy": true`, release ui-45384c434d3f and later) is
+     * A lazy relation (`"lazy": true`, in the releases Docara bundles) is
      * something a component may render later. The Loader does not hold the
      * page for it: it fetches it once the page is ready, or when it is asked
      * for. It is therefore no part of the first-frame closure, and a module

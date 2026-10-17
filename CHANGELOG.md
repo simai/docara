@@ -22,7 +22,11 @@ All notable changes to Docara are recorded here. The format follows
   `THEME_COLOR_INVALID`; hue and chroma give `THEME_HUE_INVALID` and
   `THEME_CHROMA_INVALID`; a lock whose release has no palette gives
   `THEME_FRAMEWORK_UNSUPPORTED`. Without the setting the published site is
-  byte-identical to before.
+  byte-identical to before. Known Framework limitation: the alpha steps
+  (`--sf-<palette>-50--alfa-N`, `-90--alfa-N`) are literal values in the
+  Framework's core.css and the palette does not write them, so container
+  fills, tonal buttons and hover or selected backgrounds keep the Framework's
+  blue until the Framework fixes it.
 - The build receipt (`resolved-page-plans.json`, `build.theme`) records the
   input, the hue and chroma used, the Framework release and the SHA-256 of the
   palette code it ran, and the stylesheet. `verify-static` checks the
@@ -34,9 +38,10 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
-- **Framework release `ui-45384c434d3f`.** Docara bundles the SIMAI Framework
-  release `ui-45384c434d3f` (`simai/ui` 45384c43, contract registry bound in
-  173fbfdc) in place of `ui-82fc0ba882ba`: the Core runtime packet, the Smart
+- **Framework release `ui-5f1d2e9e5529`.** Docara bundles the SIMAI Framework
+  release `ui-5f1d2e9e5529` (`simai/ui` 5f1d2e9e, contract registry bound in
+  242d3b92; it carries everything of `ui-45384c434d3f`, the first release
+  with the theme palette) in place of `ui-82fc0ba882ba`: the Core runtime packet, the Smart
   entrypoints (75 files, 54 components, `sf-theme-generator` among them), the
   Composition Recipe runtime, the generated contracts and the starter and
   documentation-site locks. A project lock that pins `ui-82fc0ba882ba` (Docara

@@ -6,6 +6,32 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Site colours from one colour.** `docara.json` takes
+  `"theme": {"color": "#0a7d4f"}` (owner, 2026-10-10). At build time Docara runs
+  the bundled Framework's own theme palette (`SF.ThemePalette`, Google HCT) on
+  Node.js (the runtime that already resolves Composition Recipes) and
+  publishes `themeToCss`'s rule as one content-addressed stylesheet,
+  `_docara/docara-theme.<sha256>.css`, linked by every page after its
+  first-frame stylesheets. The 128 `--sf-<palette>-<tone>` primitives change,
+  so every semantic token follows in light and dark, and example frames take
+  them with the page's other tokens. Optional `hue` (0-360) and `chroma`
+  (0-150) override how the colour is read, as in `sf-theme-generator`.
+  A colour that is not `#rgb` or `#rrggbb` stops the build with
+  `THEME_COLOR_INVALID`; hue and chroma give `THEME_HUE_INVALID` and
+  `THEME_CHROMA_INVALID`; a lock whose release has no palette gives
+  `THEME_FRAMEWORK_UNSUPPORTED`. Without the setting the published site is
+  byte-identical to before.
+- The build receipt (`resolved-page-plans.json`, `build.theme`) records the
+  input, the hue and chroma used, the Framework release and the SHA-256 of the
+  palette code it ran, and the stylesheet. `verify-static` checks the
+  stylesheet's bytes, that it holds only the 128 primitives, and that every
+  page links it once after its shell stylesheets (or that none does). A
+  one-page rebuild after the colour changed stops with
+  `PORTABLE_INCREMENTAL_THEME_CHANGED`; `docara preview` rebuilds its cache
+  whole instead.
+
 ### Changed
 
 - **Framework release `ui-45384c434d3f`.** Docara bundles the SIMAI Framework

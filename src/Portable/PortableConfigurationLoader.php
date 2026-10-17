@@ -11,6 +11,7 @@ use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleTag;
+use Simai\Docara\PortableSite\SiteTheme;
 use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
 use Simai\Docara\Smart\SmartRegistry;
 
@@ -117,6 +118,7 @@ final class PortableConfigurationLoader
             : null;
         $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];
         $localeRegistry = LocaleRegistry::fromSite($site);
+        SiteTheme::fromSite($site);
         if (! $explicitLocaleRegistry) {
             $legacyContentRoot = (string) ($site['content_root'] ?? 'content');
             if (! str_starts_with($page, $legacyContentRoot . '/')) {

@@ -30,6 +30,7 @@ use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkPortableAssetProjection;
+use Simai\Docara\Framework\FrameworkThemePalette;
 use Simai\Docara\I18n\ContentLanguageRepository;
 use Simai\Docara\I18n\LocaleInternalLinkProjector;
 use Simai\Docara\I18n\LocaleMissingPagePolicy;
@@ -105,6 +106,12 @@ final readonly class PortableSiteBuilder
         $frameworkLock = FrameworkLock::fromJsonFile(
             $root . '/' . ltrim((string) $site['framework_lock'], '/'),
         )->toArray();
+        // docara.json `theme`: the pinned Framework's palette makes the site's
+        // colours from one colour. Without the setting nothing changes.
+        $siteTheme = SiteTheme::fromSite($site);
+        $themeStylesheet = $siteTheme === null
+            ? null
+            : (new FrameworkThemePalette($recipeCompiler->nodeBinary()))->stylesheet($frameworkLock, $siteTheme);
         $projectSmart = ProjectSmartRuntime::fromSite($root, $site, $frameworkLock);
         $smartRegistry = $projectSmart?->registry ?? SmartRegistry::bundled();
         $gateway = $projectSmart?->gateway ?? SmartComponentGateway::bundled($frameworkLock);
@@ -228,6 +235,15 @@ final readonly class PortableSiteBuilder
             $existingShellStylesheets = $existingFrameworkShell['stylesheets'];
             $existingExampleReceipt = $this->existingExampleReceipt($finalDestination);
             $projectExamples->assertIncrementalCompatible($existingExampleReceipt);
+            // Receipts are written as canonical JSON (sorted keys).
+            if (CanonicalJson::encode($existingBuild['theme'] ?? null)
+                !== CanonicalJson::encode($themeStylesheet['receipt'] ?? null)
+            ) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_THEME_CHANGED',
+                    'The site theme changed after the complete build. Run a full build before rebuilding one page.',
+                );
+            }
             if (($existingBuild['purpose'] ?? null) !== $purpose->value) {
                 throw new PortableConfigurationException(
                     'PORTABLE_INCREMENTAL_BUILD_PURPOSE_CHANGED',
@@ -371,6 +387,10 @@ final readonly class PortableSiteBuilder
                 // Every locale shares one _docara directory at the deployment
                 // base; a locale prefix is a route, not a copy of the assets.
                 'asset_base' => rtrim($localeUrls->deploymentBase(), '/') . '/_docara',
+                ...($themeStylesheet === null ? [] : [
+                    'theme_stylesheet_url' => rtrim($localeUrls->deploymentBase(), '/') . '/_docara/'
+                        . $themeStylesheet['receipt']['stylesheet']['filename'],
+                ]),
                 'content_html' => $contentHtml,
                 'document_artifact' => $pageResult->documentArtifact,
                 'document_ir' => $pageResult->document,
@@ -1210,6 +1230,13 @@ final readonly class PortableSiteBuilder
             $localeRoutePublisher->publish($localeRoutePlan, $destination);
             $this->copyContentAssets($contentAssets, $destination);
             $brandPublisher->publish($brandPlan['assets'], $destination);
+            if ($themeStylesheet !== null) {
+                $this->files->ensureDirectoryExists(rtrim($destination, '/\\') . '/_docara');
+                $this->files->put(
+                    rtrim($destination, '/\\') . '/_docara/' . $themeStylesheet['receipt']['stylesheet']['filename'],
+                    $themeStylesheet['content'],
+                );
+            }
             ksort($frameworkAssetPlanReceipts, SORT_STRING);
             // The packets to publish follow the effective lock, which is the
             // bundled release's when the project lock names a superseded one.
@@ -1277,6 +1304,7 @@ final readonly class PortableSiteBuilder
                         'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),
                         'publisher' => $publisher->id(),
                         'locale_sources' => $this->localeSourceHashes($root, $contentContexts),
+                        ...($themeStylesheet === null ? [] : ['theme' => $themeStylesheet['receipt']]),
                     ],
                     'pages' => $orderedDiagnostics,
                 ]);

@@ -239,6 +239,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $languageOptions,
             json_encode($copy, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP),
             $chrome,
+            $this->themeCssUrl($page),
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
@@ -269,6 +270,30 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         }
 
         return $escaped;
+    }
+
+    /**
+     * The site theme stylesheet the page links after its first-frame
+     * stylesheets, so its :root primitives follow the Framework's own.
+     *
+     * @param  array<string, mixed>  $page
+     */
+    private function themeCssUrl(array $page): ?string
+    {
+        $url = $page['theme_stylesheet_url'] ?? null;
+        if ($url === null) {
+            return null;
+        }
+        if (! is_string($url)
+            || preg_match('#^/(?:[A-Za-z0-9._~-]+/)*_docara/docara-theme\.[a-f0-9]{64}\.css$#D', $url) !== 1
+        ) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_THEME_ASSET_INVALID',
+                'The site theme stylesheet URL is not a generated Docara theme stylesheet.',
+            );
+        }
+
+        return $this->escape($url);
     }
 
     private function publisherAssetUrl(string $assetBase, string $name): string

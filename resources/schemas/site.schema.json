@@ -89,6 +89,30 @@
         "branding": {
             "$ref": "presentation.schema.json#/$defs/branding"
         },
+        "theme": {
+            "description": "The site's colours from one main colour: color is a hex colour, #rgb or #rrggbb; hue (0-360) and chroma (0-150) override how the colour is read.",
+            "type": "object",
+            "required": [
+                "color"
+            ],
+            "properties": {
+                "color": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "hue": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 360
+                },
+                "chroma": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 150
+                }
+            },
+            "additionalProperties": false
+        },
         "layout": {
             "$ref": "presentation.schema.json#/$defs/layout"
         },

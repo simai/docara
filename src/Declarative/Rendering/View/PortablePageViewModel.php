@@ -16,6 +16,7 @@ final readonly class PortablePageViewModel
      * @param  list<array{locale:string,label:string,url:string,current:bool}>  $languageOptions
      * @param  array<string, string>  $chrome
      * @param  list<string>  $shellCssUrls
+     * @param  string|null  $themeCssUrl  the site theme stylesheet (docara.json `theme`), escaped
      */
     public function __construct(
         public string $locale,
@@ -47,5 +48,6 @@ final readonly class PortablePageViewModel
         public array $languageOptions,
         public string $runtimeCopyJson,
         public array $chrome,
+        public ?string $themeCssUrl = null,
     ) {}
 }

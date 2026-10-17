@@ -50,7 +50,17 @@ final readonly class PreviewKernel
         if (! $incremental) {
             $this->builder->build($root, $cache, purpose: BuildPurpose::Preview);
         } else {
-            $this->builder->build($root, $cache, $page, BuildPurpose::Preview);
+            try {
+                $this->builder->build($root, $cache, $page, BuildPurpose::Preview);
+            } catch (PortableConfigurationException $exception) {
+                // A new site theme colour restyles every page, so the cache is
+                // rebuilt whole rather than one page of it.
+                if ($exception->errorCode !== 'PORTABLE_INCREMENTAL_THEME_CHANGED') {
+                    throw $exception;
+                }
+                $buildMode = 'full_site';
+                $this->builder->build($root, $cache, purpose: BuildPurpose::Preview);
+            }
         }
 
         // The build moved the receipts next to the cache; read them there.

@@ -19,6 +19,9 @@
 <?php foreach ($view->shellCssUrls as $shellCssUrl) { ?>
     <link rel="stylesheet" href="<?= $shellCssUrl ?>" data-docara-declarative-shell-style>
 <?php } ?>
+<?php if ($view->themeCssUrl !== null) { ?>
+    <link rel="stylesheet" href="<?= $view->themeCssUrl ?>" data-docara-site-theme>
+<?php } ?>
 <?= $view->themeBootstrap ?>
 <?= $view->chrome['head'] ?>
 </head>

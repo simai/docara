@@ -135,6 +135,72 @@ function docaraVerifyShellStylesheets(
     return $urls;
 }
 
+/**
+ * Check the site theme (docara.json `theme`): the receipt names one
+ * content-addressed stylesheet under _docara/, its bytes are the receipt's
+ * hash and nothing but the 128 Framework primitives under :root, and no other
+ * theme stylesheet is published. Returns the URL every content page must link
+ * once, or null when the build has no theme (then no page may link one).
+ */
+function docaraVerifySiteTheme(string $root, mixed $receipt, string $deploymentBase): ?string
+{
+    if ($receipt === null) {
+        if ((glob($root . '/_docara/docara-theme.*.css') ?: []) !== []) {
+            throw new RuntimeException('A site theme stylesheet is published, but the build receipt names no theme.');
+        }
+
+        return null;
+    }
+    $input = is_array($receipt) ? ($receipt['input'] ?? null) : null;
+    $palette = is_array($receipt) ? ($receipt['palette'] ?? null) : null;
+    $framework = is_array($receipt) ? ($receipt['framework'] ?? null) : null;
+    $stylesheet = is_array($receipt) ? ($receipt['stylesheet'] ?? null) : null;
+    if (! is_array($receipt)
+        || ! docaraExactKeys($receipt, ['schema', 'input', 'palette', 'framework', 'stylesheet'])
+        || ($receipt['schema'] ?? null) !== 'docara.site_theme.v1'
+        || ! is_array($input)
+        || ! docaraExactKeys($input, ['color', 'hue', 'chroma'])
+        || ! is_string($input['color'] ?? null)
+        || preg_match('/\A#[0-9a-f]{6}\z/D', $input['color']) !== 1
+        || ! is_array($palette)
+        || ! docaraExactKeys($palette, ['hue', 'chroma'])
+        || ! is_int($palette['hue'] ?? null)
+        || ! is_int($palette['chroma'] ?? null)
+        || ! is_array($framework)
+        || ! docaraExactKeys($framework, ['pair_id', 'runtime', 'sha256'])
+        || ! is_string($framework['pair_id'] ?? null)
+        || ! is_string($framework['sha256'] ?? null)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $framework['sha256']) !== 1
+        || ! is_array($stylesheet)
+        || ! docaraExactKeys($stylesheet, ['filename', 'sha256', 'variables'])
+        || ! is_string($stylesheet['sha256'] ?? null)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $stylesheet['sha256']) !== 1
+        || ($stylesheet['filename'] ?? null) !== 'docara-theme.' . $stylesheet['sha256'] . '.css'
+        || ($stylesheet['variables'] ?? null) !== 128
+    ) {
+        throw new RuntimeException('Site theme receipt is invalid.');
+    }
+    $path = $root . '/_docara/' . $stylesheet['filename'];
+    $content = docaraSafeRegularFile($path) ? file_get_contents($path) : false;
+    if (! is_string($content) || ! hash_equals($stylesheet['sha256'], hash('sha256', $content))) {
+        throw new RuntimeException('Site theme stylesheet is missing, unsafe or does not hold the receipt\'s bytes.');
+    }
+    $palettes = '(?:primary|secondary|tertiary|neutral|error|warning|success|info)';
+    if (preg_match(
+        '/\A\/\* docara-theme: [^*]*\*\/\n:root \{\n(?:  --sf-' . $palettes . '-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98): #[0-9a-f]{6};\n){128}\}\n\z/D',
+        $content,
+    ) !== 1) {
+        throw new RuntimeException('Site theme stylesheet holds more than the Framework theme primitives.');
+    }
+    foreach (glob($root . '/_docara/docara-theme.*.css') ?: [] as $published) {
+        if (basename($published) !== $stylesheet['filename']) {
+            throw new RuntimeException('Site theme stylesheet [' . basename($published) . '] is not in the receipt.');
+        }
+    }
+
+    return ($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/' . $stylesheet['filename'];
+}
+
 function docaraBootstrapTrustedSource(): void
 {
     static $bootstrapped = false;
@@ -1812,6 +1878,7 @@ $manifestError = null;
 $manifestOutputs = [];
 $contentPageOutputs = [];
 $manifestPageRecords = [];
+$expectedThemeUrl = null;
 $searchEnabled = false;
 $expectedSearchSurfaceCount = 0;
 $expectedSearchDocuments = [];
@@ -2062,9 +2129,12 @@ if (is_link($manifestDirectory)
                 'locale_sources',
             ];
             $projectionBuildKeys = [...$baseBuildKeys, 'public_projections'];
+            // `theme` is present only when docara.json sets a site theme.
             if (! is_array($manifestBuild)
                 || (! docaraExactKeys($manifestBuild, $baseBuildKeys)
-                    && ! docaraExactKeys($manifestBuild, $projectionBuildKeys))
+                    && ! docaraExactKeys($manifestBuild, $projectionBuildKeys)
+                    && ! docaraExactKeys($manifestBuild, [...$baseBuildKeys, 'theme'])
+                    && ! docaraExactKeys($manifestBuild, [...$projectionBuildKeys, 'theme']))
             ) {
                 throw new RuntimeException(
                     'Resolved build metadata is required and must contain the exact provenance contract.',
@@ -2073,6 +2143,7 @@ if (is_link($manifestDirectory)
             if (($manifestBuild['purpose'] ?? null) !== 'production') {
                 throw new RuntimeException('[BUILD_PURPOSE_UNSUPPORTED] Production build purpose is required.');
             }
+            $expectedThemeUrl = docaraVerifySiteTheme($root, $manifestBuild['theme'] ?? null, $deploymentBase);
             if (($manifestBuild['locale'] ?? null) !== $expectedBuildLocale
                 || ($manifestBuild['documentation_version'] ?? null) !== $expectedDocumentationVersion
             ) {
@@ -2708,6 +2779,28 @@ foreach ($htmlFiles as $htmlFile) {
                 'page' => $relativeHtmlFile,
                 'reference' => '@framework-shell-stylesheet',
                 'target' => 'The page does not reference exactly its generated shell stylesheets in cascade order.',
+            ];
+        }
+        // The site theme, when the build has one, is linked once, after the
+        // shell stylesheets, so its :root primitives follow the Framework's.
+        preg_match_all(
+            '/<link\b(?=[^>]*\bdata-docara-site-theme\b)[^>]*\bhref="([^"]*)"[^>]*>/i',
+            $html,
+            $themeLinkMatches,
+            PREG_OFFSET_CAPTURE,
+        );
+        $themeLinks = array_column($themeLinkMatches[1], 0);
+        $expectedThemeLinks = $expectedThemeUrl === null
+            ? []
+            : [htmlspecialchars($expectedThemeUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')];
+        $lastShellLinkOffset = $shellLinkMatches[0] === [] ? -1 : strrpos($html, end($shellLinkMatches[0]));
+        if ($themeLinks !== $expectedThemeLinks
+            || ($themeLinks !== [] && $themeLinkMatches[0][0][1] < $lastShellLinkOffset)
+        ) {
+            $broken[] = [
+                'page' => $relativeHtmlFile,
+                'reference' => '@site-theme-stylesheet',
+                'target' => 'The page does not link exactly the site theme stylesheet of the build receipt, after its shell stylesheets.',
             ];
         }
         $lastAssetOffset = -1;

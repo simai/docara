@@ -164,6 +164,15 @@ final class FileRecipeCompiler
         private readonly string $recipeContractDigest = '',
     ) {}
 
+    /**
+     * The Node.js binary this runtime runs on; a build reuses it for other
+     * Framework code it runs at build time (the site theme palette).
+     */
+    public function nodeBinary(): string
+    {
+        return $this->nodeBinary;
+    }
+
     /** @return array<string, mixed> */
     public function compile(string $projectRoot, string $descriptor): array
     {

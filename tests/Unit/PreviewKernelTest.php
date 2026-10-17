@@ -128,6 +128,33 @@ final class PreviewKernelTest extends TestCase
     }
 
     #[Test]
+    public function a_new_theme_colour_rebuilds_the_preview_cache_whole(): void
+    {
+        $setTheme = function (string $color): void {
+            $site = json_decode((string) file_get_contents($this->tmpPath('docara.json')), true, 512, JSON_THROW_ON_ERROR);
+            $site['theme'] = ['color' => $color];
+            file_put_contents($this->tmpPath('docara.json'), json_encode($site, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+        };
+        $themeLink = static function (string $html): string {
+            self::assertSame(1, preg_match('#href="(/_docara/docara-theme\.[a-f0-9]{64}\.css)" data-docara-site-theme#', $html, $match));
+
+            return $match[1];
+        };
+
+        $setTheme('#0a7d4f');
+        $green = $this->kernel->render($this->tmp, '/ru/components/alert/', PreviewTarget::Page);
+        $same = $this->kernel->render($this->tmp, '/ru/components/alert/', PreviewTarget::Page);
+        self::assertSame('single_page', $same->provenance['build_mode']);
+        $setTheme('#9c27b0');
+        $purple = $this->kernel->render($this->tmp, '/ru/components/alert/', PreviewTarget::Page);
+
+        self::assertSame('full_site', $purple->provenance['build_mode']);
+        self::assertNotSame($themeLink($green->html), $themeLink($purple->html));
+        self::assertFileExists($this->tmpPath('build_preview-cache' . $themeLink($purple->html)));
+        self::assertStringContainsString('#9c27b0', (string) file_get_contents($this->tmpPath('build_preview-cache' . $themeLink($purple->html))));
+    }
+
+    #[Test]
     public function navigation_presentations_keep_preview_bound_to_the_production_page(): void
     {
         foreach (['header', 'tree', 'compact'] as $view) {

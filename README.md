@@ -126,6 +126,7 @@ version control:
   "locale_routing": {"strategy": "default_unprefixed", "root": "default_locale", "detect_browser_language": false},
   "base_url": "/",
   "branding": {"title": "My documentation", "logo": "assets/docara-mark.svg", "favicon": "assets/favicon.ico"},
+  "theme": {"color": "#0a7d4f"},
   "search": {"enabled": true, "indexed": true}
 }
 ```
@@ -135,9 +136,16 @@ version control:
   folder. One build publishes every language.
 - `base_url`: set it to `/docs/` (for example) when the site is served from a
   sub-path.
+- `theme`: the site's colours from one main colour, `#rgb` or `#rrggbb`.
+  At build time the bundled SIMAI Framework's theme palette makes the eight
+  tonal palettes from it (primary, secondary, tertiary, neutral, error,
+  warning, success, info: 128 `--sf-<palette>-<tone>` variables), and every
+  page links them as one stylesheet, in light and dark. Optional `hue` (0-360)
+  and `chroma` (0-150) override how the colour is read. Leave it out to keep
+  the Framework's own colours.
 - `layout`, `reading`, `settings` and `reader_preferences` control the page
-  layout, the outline and breadcrumbs, the theme and the reader's settings
-  panel.
+  layout, the outline and breadcrumbs, the light or dark scheme
+  (`settings.theme`) and the reader's settings panel.
 
 The full reference, generated from the JSON schemas, is in
 [the configuration guide](docs/site/content/ru/authoring/configuration.md) and

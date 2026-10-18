@@ -266,7 +266,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertStringNotContainsString('.min.', $relativePath);
         }
         self::assertSame(
-            'a472ea5a4f15f8d2b5c18086ee5240deef9d51fd557efa0706c7761c492e2577',
+            '2b6d09d914ad2fe44df62d115310a92d5e8f9884f30b62e0319f2a88f9e34ac2',
             $runtime['packet_sha256'],
         );
         $coreLoader = $repository->bundledRuntimeAsset('core/js/core-loader.js');

@@ -17,18 +17,20 @@ final class SharedSurfaceAdoptionTest extends TestCase
     public function semantic_blocks_keep_the_frozen_default_bytes_on_one_surface_presentation(): void
     {
         $renderer = new PortableMarkdownRenderer;
+        // 3.3.0 changed only the frame's padding inside the container from
+        // p-N to p-top-N p-bottom-N, so the band's text keeps the page's edge.
         $cases = [
             'hero' => [
                 ":::hero\n# Hero\n\nDescription.\n\n![Meaningful image](/assets/docara-screen.png)\n:::\n",
-                '73c2e3a980e8321c8453e6ee23a6affaa629ce62415b55dc67cde75a60b5045c',
+                '61e319c239028ffb544ec0d55f056585db6eec665b27cdf8c222b0378474ac64',
             ],
             'showcase' => [
                 ":::showcase\n## Проверяемый результат\n\nСобранная документация видна до публикации.\n\n[Открыть пример](/landing/)\n\n![Интерфейс Docara](/assets/screen.png)\n:::\n",
-                '6d855e4f010a536d947894d3fa6bebaeddd7f59641995fc36119416953349522',
+                '0b0d0b1ab3c259cc6bf1deabf497fc03438888e17a9ff066416e5e3fa750e744',
             ],
             'promo' => [
                 ":::promo\n## Соберите первый сайт\n\nСоздайте проект и получите статический результат.\n\n[Начать](/start/)\n\n![](/assets/promo.png)\n:::\n",
-                '5b90543cae3c8960ff8c066267dcd49363c9f8079075cbc3b0672f91e611e273',
+                'b117dee1817d9a43d50f28e04659df6b4c4553ac401401a66d8ddfda988fcaba',
             ],
         ];
 
@@ -74,7 +76,7 @@ final class SharedSurfaceAdoptionTest extends TestCase
         self::assertContains('docara.showcase', $typed);
         self::assertContains('docara.promo', $typed);
         self::assertSame(
-            '292f2934983f99c43bc6674011ce895522df26e2ec351671888aa4c24df4b334',
+            'b009d5553a51c833d4aeacba61942f2917b842623a3be7ccbce134d492e70d97',
             hash('sha256', $result->contentHtml),
         );
         foreach (['hero', 'showcase', 'promo'] as $block) {

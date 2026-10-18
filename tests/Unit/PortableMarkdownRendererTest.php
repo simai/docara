@@ -791,7 +791,8 @@ MD);
 MD);
 
         self::assertStringContainsString('data-docara-block="hero"', $html);
-        self::assertStringContainsString(' p-4', $html);
+        // Inside the container the padding is vertical only (3.3.0).
+        self::assertStringContainsString(' p-top-4 p-bottom-4', $html);
     }
 
     #[Test]

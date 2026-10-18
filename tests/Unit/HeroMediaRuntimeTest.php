@@ -34,7 +34,7 @@ final class HeroMediaRuntimeTest extends TestCase
         $renderer = new PortableMarkdownRenderer;
 
         $accepted = $renderer->render(":::hero\n$body\n:::\n");
-        self::assertSame('73c2e3a980e8321c8453e6ee23a6affaa629ce62415b55dc67cde75a60b5045c', hash('sha256', $accepted));
+        self::assertSame('61e319c239028ffb544ec0d55f056585db6eec665b27cdf8c222b0378474ac64', hash('sha256', $accepted));
         self::assertSame($accepted, $renderer->render(":::hero {media=auto}\n$body\n:::\n"));
     }
 

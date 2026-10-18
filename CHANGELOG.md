@@ -26,7 +26,10 @@ All notable changes to Docara are recorded here. The format follows
   (`--sf-<palette>-50--alfa-N`, `-90--alfa-N`) are literal values in the
   Framework's core.css and the palette does not write them, so container
   fills, tonal buttons and hover or selected backgrounds keep the Framework's
-  blue until the Framework fixes it.
+  blue. The Framework fixed it in ui-1cb0739a8423 (226 variables); Docara
+  already checks and publishes the translucent steps
+  (`--sf-<palette>-<tone>--alfa-<n>`, each its tone at its opacity) and takes
+  them as soon as it bundles that release.
 - The build receipt (`resolved-page-plans.json`, `build.theme`) records the
   input, the hue and chroma used, the Framework release and the SHA-256 of the
   palette code it ran, and the stylesheet. `verify-static` checks the
@@ -46,6 +49,9 @@ All notable changes to Docara are recorded here. The format follows
   Composition Recipe runtime, the generated contracts and the starter and
   documentation-site locks. A project lock that pins `ui-82fc0ba882ba` (Docara
   3.0.0 to 3.0.5) builds with the bundled release without editing it.
+- `scripts/sync-framework-composition-runtime.php` follows relative imports
+  to core modules beside the composition directory (`../schema-name.mjs`,
+  which the Recipe runtime imports from ui-1cb0739a8423).
 - The first-frame planner follows the Loader on lazy relations
   (`"lazy": true`, new in this release): a lazy relation is fetched after the
   page is ready, so it is not part of the first-frame closure and does not

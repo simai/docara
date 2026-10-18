@@ -176,7 +176,9 @@ function docaraVerifySiteTheme(string $root, mixed $receipt, string $deploymentB
         || ! is_string($stylesheet['sha256'] ?? null)
         || preg_match('/\A[a-f0-9]{64}\z/D', $stylesheet['sha256']) !== 1
         || ($stylesheet['filename'] ?? null) !== 'docara-theme.' . $stylesheet['sha256'] . '.css'
-        || ($stylesheet['variables'] ?? null) !== 128
+        || ! is_int($stylesheet['variables'] ?? null)
+        || $stylesheet['variables'] < 128
+        || $stylesheet['variables'] > 1024
     ) {
         throw new RuntimeException('Site theme receipt is invalid.');
     }
@@ -186,11 +188,15 @@ function docaraVerifySiteTheme(string $root, mixed $receipt, string $deploymentB
         throw new RuntimeException('Site theme stylesheet is missing, unsafe or does not hold the receipt\'s bytes.');
     }
     $palettes = '(?:primary|secondary|tertiary|neutral|error|warning|success|info)';
+    // The 128 tones, then (release ui-1cb0739a8423 and later) the translucent
+    // steps of those tones, as many as the receipt counts.
+    $tone = '--sf-' . $palettes . '-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98)';
     if (preg_match(
-        '/\A\/\* docara-theme: [^*]*\*\/\n:root \{\n(?:  --sf-' . $palettes . '-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98): #[0-9a-f]{6};\n){128}\}\n\z/D',
+        '/\A\/\* docara-theme: [^*]*\*\/\n:root \{\n(?:  ' . $tone . ': #[0-9a-f]{6};\n){128}'
+            . '(?:  ' . $tone . '--alfa-[1-9][0-9]?: #[0-9a-f]{8};\n){' . ($stylesheet['variables'] - 128) . '}\}\n\z/D',
         $content,
     ) !== 1) {
-        throw new RuntimeException('Site theme stylesheet holds more than the Framework theme primitives.');
+        throw new RuntimeException('Site theme stylesheet holds more than the Framework theme variables.');
     }
     foreach (glob($root . '/_docara/docara-theme.*.css') ?: [] as $published) {
         if (basename($published) !== $stylesheet['filename']) {

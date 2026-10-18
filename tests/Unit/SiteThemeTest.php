@@ -143,6 +143,40 @@ final class SiteThemeTest extends TestCase
         }
     }
 
+    #[Test]
+    public function translucent_steps_are_accepted_only_as_their_tone_at_their_opacity(): void
+    {
+        // Releases from ui-1cb0739a8423 also write --sf-<palette>-<tone>--alfa-<n>
+        // after the 128 tones.
+        $variables = [];
+        foreach (FrameworkThemePalette::PALETTES as $palette) {
+            foreach (FrameworkThemePalette::TONES as $tone) {
+                $variables["--sf-$palette-$tone"] = '#006d44';
+            }
+        }
+        self::assertSame($variables, FrameworkThemePalette::checkedVariables($variables));
+        $variables['--sf-primary-50--alfa-12'] = '#006d441f';
+        $variables['--sf-neutral-90--alfa-4'] = '#006d440a';
+        self::assertCount(130, FrameworkThemePalette::checkedVariables($variables));
+
+        foreach ([
+            ['--sf-primary-50--alfa-12', '#006d4420'],
+            ['--sf-primary-50--alfa-12', '#ffffff1f'],
+            ['--sf-primary-50--alfa-12', 'red;}body{x:y'],
+            ['--sf-brand-50--alfa-12', '#006d441f'],
+            ['--sf-primary-40', '#006d44ff'],
+        ] as [$name, $value]) {
+            $tampered = $variables;
+            $tampered[$name] = $value;
+            try {
+                FrameworkThemePalette::checkedVariables($tampered);
+                self::fail("Accepted $name: $value");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('THEME_PALETTE_RESULT_INVALID', $exception->errorCode);
+            }
+        }
+    }
+
     /** @param array<string, mixed> $theme */
     private function theme(array $theme): SiteTheme
     {

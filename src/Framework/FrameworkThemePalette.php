@@ -62,7 +62,7 @@ final class FrameworkThemePalette
             );
         }
         $result = $this->run($source, $theme);
-        $variables = $this->variables($result['variables'] ?? null);
+        $variables = self::checkedVariables($result['variables'] ?? null);
         $css = $result['css'] ?? null;
         if (! is_string($css) || $css !== self::rule($variables)) {
             throw new PortableConfigurationException(
@@ -157,8 +157,16 @@ final class FrameworkThemePalette
         return $result;
     }
 
-    /** @return array<string, string> */
-    private function variables(mixed $variables): array
+    /**
+     * The palette's variables, checked: first the 128 tones
+     * `--sf-<palette>-<tone>` in the Framework's order, each #rrggbb; then,
+     * from release ui-1cb0739a8423, the translucent steps
+     * `--sf-<palette>-<tone>--alfa-<n>`, each exactly its tone's colour with
+     * n% opacity as #rrggbbaa (alpha byte round(n * 255 / 100)).
+     *
+     * @return array<string, string>
+     */
+    public static function checkedVariables(mixed $variables): array
     {
         $expected = [];
         foreach (self::PALETTES as $palette) {
@@ -166,18 +174,30 @@ final class FrameworkThemePalette
                 $expected[] = '--sf-' . $palette . '-' . $tone;
             }
         }
-        if (! is_array($variables) || array_keys($variables) !== $expected) {
-            throw new PortableConfigurationException(
-                'THEME_PALETTE_RESULT_INVALID',
-                'The SIMAI Framework theme palette did not return the 128 --sf-<palette>-<tone> primitives.',
-            );
+        $invalid = static fn (string $why): PortableConfigurationException => new PortableConfigurationException(
+            'THEME_PALETTE_RESULT_INVALID',
+            'The SIMAI Framework theme palette returned ' . $why . '.',
+        );
+        if (! is_array($variables) || array_slice(array_keys($variables), 0, 128) !== $expected) {
+            throw $invalid('no 128 --sf-<palette>-<tone> primitives');
         }
-        foreach ($variables as $value) {
+        foreach (array_slice($variables, 0, 128, true) as $value) {
             if (! is_string($value) || preg_match('/\A#[0-9a-f]{6}\z/D', $value) !== 1) {
-                throw new PortableConfigurationException(
-                    'THEME_PALETTE_RESULT_INVALID',
-                    'The SIMAI Framework theme palette returned a value that is not a #rrggbb colour.',
-                );
+                throw $invalid('a tone that is not a #rrggbb colour');
+            }
+        }
+        $palettes = implode('|', self::PALETTES);
+        $tones = implode('|', self::TONES);
+        foreach (array_slice($variables, 128, null, true) as $name => $value) {
+            if (! is_string($name)
+                || preg_match('/\A--sf-(' . $palettes . ')-(' . $tones . ')--alfa-([1-9][0-9]?)\z/D', $name, $match) !== 1
+                || ! is_string($value)
+            ) {
+                throw $invalid('a variable that is neither a tone nor a translucent step');
+            }
+            $alpha = str_pad(dechex((int) round(((int) $match[3]) * 255 / 100)), 2, '0', STR_PAD_LEFT);
+            if ($value !== $variables['--sf-' . $match[1] . '-' . $match[2]] . $alpha) {
+                throw $invalid('a translucent step that is not its tone at its opacity');
             }
         }
 

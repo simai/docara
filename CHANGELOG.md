@@ -6,6 +6,46 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The Docara documentation site is published on GitHub Pages at
+  <https://simai.github.io/docara/> by a new `Documentation site` workflow
+  (`.github/workflows/pages.yml`): on every push to `main`, and on demand, it
+  builds `docs/site` the way the Quality workflow does, with `base_url` taken
+  from the Pages configuration, runs `verify-static` and deploys the result.
+  README links the published pages and keeps the Markdown sources as a
+  fallback.
+
+### Changed
+
+- **Smaller built sites.** The build publishes the optional parts of
+  `_docara/vendor/` only when the finished pages use them: mermaid
+  (3.4 MB) for a page with a diagram, KaTeX with its fonts (0.6 MB) for a page
+  with a formula, the Rounded (5.3 MB) and Sharp (3.5 MB) Material Symbols
+  faces for an icon whose markup, example script or site stylesheet asks for
+  that family, and the Framework's all-in-one `utility.full.css` (8.7 MB),
+  which the exact production plan never links, for a page that links it.
+  A library's licence travels with it. The icon subset and the full Outlined
+  face, the fallback for icons Smart components choose in the browser, are
+  always published. A minimal three-page site goes from 49.4 MB to 28.7 MB,
+  the Russian showcase from 53.9 MB to 42.2 MB, the Docara documentation site
+  from 73.3 MB to 65.0 MB. A one-page rebuild removes a group the site no
+  longer uses. `verify-static` recomputes the choice from the pages and
+  reports `@vendor-asset-selection` when a needed file is missing or differs
+  from the package.
+
+### Fixed
+
+- **Sites under a sub-path link correctly.** With `base_url` set to, say,
+  `/docara/`, links that authors write from the site root (`[Start](/start/)`
+  in Markdown, `href` in `header_navigation`, the frame of an internal page
+  preview) were published without the prefix and pointed outside the site.
+  The build now puts the base in front of every such link that is not
+  already inside it. A site built for `/` keeps its links; the one change
+  there is that an internal preview frame whose address is a legacy
+  unprefixed route now follows the locale route mapping, as links already
+  did.
+
 ## [3.1.0] - 2026-10-18
 
 ### Added

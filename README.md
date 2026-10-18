@@ -149,8 +149,10 @@ version control:
   (`settings.theme`) and the reader's settings panel.
 
 The full reference, generated from the JSON schemas, is in
-[the configuration guide](docs/site/content/ru/authoring/configuration.md) and
-[the settings reference](docs/site/content/ru/settings.md). Run
+[the configuration guide](https://simai.github.io/docara/ru/authoring/configuration/)
+([source](docs/site/content/ru/authoring/configuration.md)) and
+[the settings reference](https://simai.github.io/docara/ru/settings/)
+([source](docs/site/content/ru/settings.md)). Run
 `php vendor/bin/docara schema site.schema.json --json` to print the schema itself.
 
 ## Commands
@@ -181,24 +183,37 @@ output.
 | `translations status\|accept` | Report which translated pages are out of date, and record a reviewed translation. |
 | `documentation status\|accept` | Report which pages are out of date against a source project's public contract, and record a review. |
 
-`docs/site/content/ru/reference/cli.md` documents every option.
+[The command reference](https://simai.github.io/docara/ru/reference/cli/)
+([source](docs/site/content/ru/reference/cli.md)) documents every option.
 
 ## Documentation
 
 The Docara documentation site is built with Docara from
-[`docs/site`](docs/site). Its content is in Russian:
+[`docs/site`](docs/site) and published at
+<https://simai.github.io/docara/>. Its content is in Russian. Each entry
+below also links the page's Markdown source, which GitHub renders without
+Docara's components:
 
-- [Quick start](docs/site/content/ru/start.md)
-- [Writing pages](docs/site/content/ru/authoring/markdown.md) and
-  [components](docs/site/content/ru/components.md)
-- [Configuration](docs/site/content/ru/authoring/configuration.md)
-- [Multilingual sites](docs/site/content/ru/authoring/multilingual-site.md)
-- [Build, verification and publishing](docs/site/content/ru/build.md)
-- [Command reference](docs/site/content/ru/reference/cli.md)
-- [Troubleshooting](docs/site/content/ru/troubleshooting.md)
+- [Quick start](https://simai.github.io/docara/ru/start/) ([source](docs/site/content/ru/start.md))
+- [Writing pages](https://simai.github.io/docara/ru/authoring/markdown/)
+  ([source](docs/site/content/ru/authoring/markdown.md)) and
+  [components](https://simai.github.io/docara/ru/components/)
+  ([source](docs/site/content/ru/components.md))
+- [Configuration](https://simai.github.io/docara/ru/authoring/configuration/)
+  ([source](docs/site/content/ru/authoring/configuration.md))
+- [Multilingual sites](https://simai.github.io/docara/ru/authoring/multilingual-site/)
+  ([source](docs/site/content/ru/authoring/multilingual-site.md))
+- [Build, verification and publishing](https://simai.github.io/docara/ru/build/)
+  ([source](docs/site/content/ru/build.md))
+- [Command reference](https://simai.github.io/docara/ru/reference/cli/)
+  ([source](docs/site/content/ru/reference/cli.md))
+- [Troubleshooting](https://simai.github.io/docara/ru/troubleshooting/)
+  ([source](docs/site/content/ru/troubleshooting.md))
 - [Composition Recipe pages](docs/composition-recipe.md) (English)
 
-To read it as a site: `cd docs/site && php ../../docara serve production`.
+The site is rebuilt and published from `main` by the
+[Documentation site workflow](https://github.com/simai/docara/blob/main/.github/workflows/pages.yml). To read it
+locally: `cd docs/site && php ../../docara serve production`.
 
 Contributing, the test suite and the release process are described in
 [CONTRIBUTING.md](https://github.com/simai/docara/blob/main/CONTRIBUTING.md).

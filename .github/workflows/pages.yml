@@ -1,0 +1,65 @@
+name: Documentation site
+
+# Builds Docara's own documentation (docs/site) the way the Quality workflow
+# does and publishes it on GitHub Pages. The site is a project site, served
+# under the repository's path (https://simai.github.io/docara/), so the build
+# takes its base_url from the Pages configuration.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - id: pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer
+      - run: composer install --no-interaction --prefer-dist
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+      # base_path is "/docara" for the project site and empty for a custom
+      # domain; the committed docara.json keeps "/" for local builds.
+      - name: Set the site base URL
+        working-directory: docs/site
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: |
+          jq --arg base "${BASE_PATH%/}/" '.base_url = $base' docara.json > docara.json.pages
+          mv docara.json.pages docara.json
+          jq -r '.base_url' docara.json
+      - run: env -u SIMAI_UI_ROOT php ../../docara build production
+        working-directory: docs/site
+      - run: php ../../docara verify-static build_production
+        working-directory: docs/site
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: docs/site/build_production
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

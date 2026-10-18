@@ -1304,7 +1304,7 @@ MD);
 
         foreach ([
             'smart/alert/js/alert.js' => 'c2c80109299ad4483a85c69cf73eb20e5b906cc093c4527af59b7e4a67af3839',
-            'smart/buttons/js/buttons.js' => 'a0bda200a0b62596a287e22cff65667798457e2348e04982c250ef5059118b75',
+            'smart/buttons/js/buttons.js' => 'e34ccf87f8ff703fa124d021dabecd9e76d96f38c6c6c4fbb5f3b3ca74709538',
             'smart/icons/js/icons.js' => '818b2b59ba1e1585f9b941aefbdbd9700e0260cdf804ed54a6bac37160c5d60e',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);

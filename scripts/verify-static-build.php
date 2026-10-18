@@ -18,6 +18,7 @@ use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\PortableSite\PortablePerformanceReceipt;
 use Simai\Docara\PortableSite\PortableRedirectPublisher;
 use Simai\Docara\PortableSite\PortableShellStylesheets;
+use Simai\Docara\PortableSite\PortableVendorAssetSelection;
 use Simai\Docara\Smart\SmartRegistry;
 
 /**
@@ -2757,6 +2758,50 @@ if ($manifestError !== null) {
         }
         unset($shellStylesheetCheck);
     }
+}
+// The optional vendor groups (diagrams, math, icon families, the full utility
+// sheet) follow what the finished pages use. Recompute that choice and check
+// the build carries those packaged files, unchanged: a font named only from
+// CSS is not a reference the page scan below can see.
+try {
+    $vendorSelection = PortableVendorAssetSelection::fromBuild($root);
+    $packagedPortable = dirname(__DIR__) . '/resources/portable';
+    $packagedVendor = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($packagedPortable . '/vendor', FilesystemIterator::SKIP_DOTS),
+    );
+    $vendorProblems = [];
+    foreach ($packagedVendor as $packagedFile) {
+        if (! $packagedFile->isFile() || $packagedFile->isLink()) {
+            continue;
+        }
+        $relativeVendorPath = str_replace('\\', '/', substr($packagedFile->getPathname(), strlen($packagedPortable) + 1));
+        $feature = PortableVendorAssetSelection::featureOf($relativeVendorPath);
+        if ($feature === null) {
+            continue;
+        }
+        $builtVendorPath = $root . '/_docara/' . $relativeVendorPath;
+        $built = docaraSafeRegularFile($builtVendorPath);
+        if ($vendorSelection->publishes($relativeVendorPath)) {
+            // The full utility sheet of a runtime the lock does not name is
+            // never published, whatever a page links.
+            if (! $built && ($feature !== 'utility_full' || is_dir(dirname($builtVendorPath, 3)))) {
+                $vendorProblems[] = "[$feature] missing: _docara/$relativeVendorPath";
+            } elseif ($built && ! hash_equals(
+                (string) hash_file('sha256', $packagedFile->getPathname()),
+                (string) hash_file('sha256', $builtVendorPath),
+            )) {
+                $vendorProblems[] = "[$feature] changed: _docara/$relativeVendorPath";
+            }
+        }
+        // A group no page uses may still be present, from a tool that
+        // publishes the whole tree; it costs space, not correctness.
+    }
+    sort($vendorProblems, SORT_STRING);
+    foreach ($vendorProblems as $vendorProblem) {
+        $broken[] = ['page' => '@build', 'reference' => '@vendor-asset-selection', 'target' => $vendorProblem];
+    }
+} catch (Throwable $exception) {
+    $broken[] = ['page' => '@build', 'reference' => '@vendor-asset-selection', 'target' => $exception->getMessage()];
 }
 foreach ($htmlFiles as $htmlFile) {
     $relativeHtmlFile = str_replace('\\', '/', substr($htmlFile, strlen($root) + 1));

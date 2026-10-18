@@ -1250,12 +1250,27 @@ final readonly class PortableSiteBuilder
                     $smartRegistry,
                     $effectiveFrameworkLock,
                 );
+                // Pages are final here, so they decide which optional vendor
+                // groups (diagrams, math, icon families) the site carries.
                 $assetPublisher->publish(
                     $localeDestination,
                     $requiredSmartAssets,
+                    null,
+                    PortableVendorAssetSelection::fromBuild($localeDestination),
                 );
             }
             $this->runPageTransforms($root, $destination, $site['page_transforms'] ?? []);
+            if (($site['page_transforms'] ?? []) !== []) {
+                // A transform may change what the pages use.
+                foreach ($localeDestinations as $localeDestination) {
+                    (new PortablePublisherAssetPublisher($this->files, $smartRegistry, $effectiveFrameworkLock))->publish(
+                        $localeDestination,
+                        $requiredSmartAssets,
+                        null,
+                        PortableVendorAssetSelection::fromBuild($localeDestination),
+                    );
+                }
+            }
             $performanceReceipt = (new PortablePerformanceReceipt($this->files))->publish(
                 $destination,
                 (string) ($site['base_url'] ?? '/'),

@@ -49,6 +49,17 @@ final class InitTemplateBuildTest extends TestCase
         foreach ($pages as $page) {
             self::assertFileExists($site . '/build_production/' . $page);
         }
+        // The build carries the optional vendor groups its pages use: the
+        // minimal starter has no diagram, formula or icon family; the showcase
+        // has a diagram page, a math page and a Rounded icon.
+        $vendor = $site . '/build_production/_docara/vendor';
+        $showcase = $template === 'showcase';
+        self::assertSame($showcase, is_file($vendor . '/mermaid/mermaid.min.js'));
+        self::assertSame($showcase, is_file($vendor . '/katex/katex.min.js'));
+        self::assertSame($showcase, (glob($vendor . '/google/material-symbols/*/MaterialSymbolsRounded.woff2') ?: []) !== []);
+        self::assertSame([], glob($vendor . '/google/material-symbols/*/MaterialSymbolsSharp.woff2') ?: []);
+        self::assertNotSame([], glob($vendor . '/google/material-symbols/*/MaterialSymbolsOutlined.woff2') ?: []);
+        self::assertSame([], glob($vendor . '/simai-framework/runtime/*/distr/core/css/utility.full.css') ?: []);
         if ($language === 'en') {
             foreach ($pages as $page) {
                 $html = (string) file_get_contents($site . '/build_production/' . $page);

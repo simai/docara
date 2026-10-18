@@ -18,13 +18,29 @@ final readonly class PortablePublisherAssetPublisher
         private ?array $frameworkLock = null,
     ) {}
 
-    /** @param list<string>|null $requiredSmartAssets */
+    /**
+     * @param  list<string>|null  $requiredSmartAssets
+     * @param  PortableVendorAssetSelection|null  $vendorAssets  the optional vendor groups the built pages use; null publishes them all
+     */
     public function publish(
         string $destination,
         ?array $requiredSmartAssets = null,
         ?FrameworkAssetPlan $frameworkAssets = null,
+        ?PortableVendorAssetSelection $vendorAssets = null,
     ): void {
+        $vendorAssets ??= PortableVendorAssetSelection::everything();
         foreach ($this->assetNames() as $name) {
+            if (! $vendorAssets->publishes($name)) {
+                // An incremental build starts from the previous complete
+                // build, which may hold a group the site no longer uses.
+                $stale = rtrim($destination, '/\\') . '/_docara/' . $name;
+                if ((is_file($stale) || is_link($stale)) && ! $this->files->delete($stale)) {
+                    throw new PortableConfigurationException('DECLARATIVE_PUBLISHER_ASSET_PUBLICATION_FAILED', $name);
+                }
+                $this->removeEmptyParents(dirname($stale), rtrim($destination, '/\\') . '/_docara');
+
+                continue;
+            }
             $this->publishAsset(
                 dirname(__DIR__, 2) . '/resources/portable/' . $name,
                 rtrim($destination, '/\\') . '/_docara/' . $name,
@@ -128,6 +144,18 @@ final readonly class PortablePublisherAssetPublisher
                     $filename,
                 );
             }
+        }
+    }
+
+    private function removeEmptyParents(string $directory, string $stop): void
+    {
+        while (str_starts_with($directory, $stop . '/')
+            && is_dir($directory)
+            && ! is_link($directory)
+            && (scandir($directory) ?: ['.', '..', 'unreadable']) === ['.', '..']
+        ) {
+            @rmdir($directory);
+            $directory = dirname($directory);
         }
     }
 

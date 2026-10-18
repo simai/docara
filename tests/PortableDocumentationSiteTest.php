@@ -400,7 +400,15 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // stylesheets with 79 shared ones, one per source: 1869 files.
         // 3.0.2 groups those sources into 43 shared stylesheets: 1833 files.
         // The release ui-25beeb814ae8 ships 75 Smart files, 12 more: 1845.
-        self::assertCount(1845, $firstFiles);
+        // Optional vendor groups now follow the pages: this site has a
+        // diagram, a formula and both icon families, so it keeps mermaid,
+        // KaTeX and the Rounded and Sharp faces, and loses only the Framework's
+        // utility.full.css, which no production page links: 1844.
+        self::assertCount(1844, $firstFiles);
+        self::assertSame([], array_values(array_filter(
+            array_keys($firstFiles),
+            static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),
+        )), 'the full utility sheet is published only for a page that links it');
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_contains($path, 'vendor/simai-framework/typography/'),

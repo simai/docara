@@ -646,6 +646,43 @@ final readonly class FrameworkAssetPlanner
         return FrameworkRuntimeClosure::orderedTags($runtime, $tags);
     }
 
+    private const BREAKPOINT_RANK = ['default' => 0, 'sm' => 1, 'md' => 2, 'lg' => 3, 'xl' => 4, 'xxl' => 5];
+
+    /**
+     * The registry lists a utility's breakpoint variants by name (lg before
+     * md), but a wider breakpoint must come later in the cascade: with lg
+     * first, md:grid-col-2 beat lg:grid-col-4 at every width from md up.
+     * Variants of one utility keep their slots and are put in breakpoint
+     * order; every other module stays where it was.
+     *
+     * @param  list<string>  $ordered
+     * @return list<string>
+     */
+    public static function breakpointOrdered(array $ordered): array
+    {
+        $slots = [];
+        foreach ($ordered as $index => $name) {
+            $separator = strrpos($name, '/');
+            if ($separator === false) {
+                continue;
+            }
+            $variant = substr($name, $separator + 1);
+            if (isset(self::BREAKPOINT_RANK[$variant])) {
+                $slots[substr($name, 0, $separator)][] = $index;
+            }
+        }
+        foreach ($slots as $indexes) {
+            $names = array_map(static fn (int $index): string => $ordered[$index], $indexes);
+            usort($names, static fn (string $left, string $right): int => self::BREAKPOINT_RANK[substr($left, strrpos($left, '/') + 1)]
+                <=> self::BREAKPOINT_RANK[substr($right, strrpos($right, '/') + 1)]);
+            foreach ($indexes as $position => $index) {
+                $ordered[$index] = $names[$position];
+            }
+        }
+
+        return $ordered;
+    }
+
     /**
      * @param  array<string, mixed>  $runtime
      * @return array{
@@ -1085,6 +1122,7 @@ final readonly class FrameworkAssetPlanner
                 $visit($name);
             }
         }
+        $ordered = self::breakpointOrdered($ordered);
 
         $cssInputs = [];
         $dependencyAssets = [];

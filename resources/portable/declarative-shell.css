@@ -111,7 +111,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}
 .docara-landing [data-docara-container]{box-sizing:border-box;width:100%}
 .docara-surface>[data-docara-surface-background],.docara-surface>[data-docara-surface-overlay]{position:absolute;inset:0;inline-size:100%;block-size:100%;pointer-events:none}
-.docara-surface>[data-docara-container]{box-sizing:border-box;max-inline-size:100%}
+.docara-surface>[data-docara-container]{box-sizing:border-box}
+.docara-surface>[data-docara-container]:not(.docara-landing *){max-inline-size:100%}
 .docara-surface>[data-docara-surface-background]{z-index:-2}
 .docara-surface>[data-docara-surface-background][data-fit="cover"]{object-fit:cover}
 .docara-surface>[data-docara-surface-background][data-fit="contain"]{object-fit:contain}
@@ -219,7 +220,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
   .docara-reading-column{padding:var(--sf-space-2)}
   .docara-content{scroll-margin-block-start:var(--sf-d6)}
   .docara-prose h1[id]:not(:where(.docara-example-inline *)),.docara-prose h2[id]:not(:where(.docara-example-inline *)),.docara-prose h3[id]:not(:where(.docara-example-inline *)),.docara-prose h4[id]:not(:where(.docara-example-inline *)),.docara-prose h5[id]:not(:where(.docara-example-inline *)),.docara-prose h6[id]:not(:where(.docara-example-inline *)){scroll-margin-block-start:var(--sf-d6)}
-  .docara-landing [data-docara-container]{padding:var(--sf-space-2)}
+  .docara-landing [data-docara-container]{padding-block:var(--sf-space-2)}
 }
 @media(max-width:600px){
   [data-docara-example-viewer]{display:none!important}

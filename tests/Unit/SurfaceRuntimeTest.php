@@ -47,7 +47,24 @@ MD, $this->site, $this->site . '/content/ru/components/surface.md');
         self::assertStringContainsString('data-docara-surface-background alt="" aria-hidden="true"', $html);
         self::assertStringContainsString('src="../../assets/docara-screen.png" data-fit="contain" data-x="right" data-y="bottom"', $html);
         self::assertStringContainsString('data-overlay="dark" data-strength="strong" aria-hidden="true"', $html);
-        self::assertStringContainsString('container m-inline-auto p-4', $html);
+        // Inside a container the inline padding stays the container's, the one
+        // the page content uses: a full-width band's text starts at the page's
+        // content edge. The surface padding is vertical only.
+        self::assertStringContainsString('container m-inline-auto p-top-4 p-bottom-4', $html);
+        self::assertStringNotContainsString(' p-4', $html);
+        $full = (new PortableMarkdownRenderer)->render(
+            ":::surface {width=full content_width=full padding=lg}\n## Full\n\nText.\n:::\n",
+            $this->site,
+            $this->site . '/content/ru/components/surface.md',
+        );
+        self::assertStringContainsString('w-full p-3', $full);
+        // On a narrow screen the landing shell sets the vertical padding only.
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('.docara-landing [data-docara-container]{padding-block:var(--sf-space-2)}', $shell);
+        self::assertStringNotContainsString('.docara-landing [data-docara-container]{padding:', $shell);
+        // On a landing page the band's container keeps the container's own
+        // stepped maximum width, so it lines up with the page's container.
+        self::assertStringContainsString('.docara-surface>[data-docara-container]:not(.docara-landing *){max-inline-size:100%}', $shell);
     }
 
     #[Test]

@@ -30,7 +30,7 @@ final readonly class SurfacePresentation
             $publishBackgroundAsset,
             '<div data-docara-container data-docara-content-width="' . $props['content_width'] . '"',
             'docara-surface__content relative ' . $this->innerClass($props['content_width']) . ' '
-                . $this->paddingClass($props['padding']),
+                . $this->paddingClass($props['padding'], $props['content_width'] === 'container'),
         );
     }
 
@@ -65,7 +65,7 @@ final readonly class SurfacePresentation
             $publishBackgroundAsset,
             '<div data-docara-container data-docara-content-width="container"',
             'docara-surface__content relative container m-inline-auto grid grid-col-1 gap-4 items-cross-center '
-                . $this->paddingClass($props['padding']),
+                . $this->paddingClass($props['padding'], true),
         );
     }
 
@@ -95,11 +95,10 @@ final readonly class SurfacePresentation
             'muted' => 'bg-surface-container',
             default => throw new \LogicException('SURFACE_SEMANTIC_TONE_INVALID'),
         };
-        $paddingClass = match ($padding) {
-            'lg' => 'p-3',
-            'xl' => 'p-4',
-            default => throw new \LogicException('SURFACE_SEMANTIC_PADDING_INVALID'),
-        };
+        if (! in_array($padding, ['lg', 'xl'], true)) {
+            throw new \LogicException('SURFACE_SEMANTIC_PADDING_INVALID');
+        }
+        $paddingClass = $this->paddingClass($padding, true);
         $columns = $twoColumns ? 'grid-col-1 lg:grid-col-2' : 'grid-col-1';
         $variantAttribute = $variant === '' ? '' : ' data-variant="' . $variant . '"';
 
@@ -119,15 +118,22 @@ final readonly class SurfacePresentation
         };
     }
 
-    private function paddingClass(string $padding): string
+    /**
+     * Inside a container the inline padding is the container's own, the one
+     * the page's content uses, so a full-width band's text starts at the
+     * page's content edge; the surface padding is then only vertical.
+     */
+    private function paddingClass(string $padding, bool $container = false): string
     {
-        return match ($padding) {
-            'none' => 'p-0',
-            'sm' => 'p-1',
-            'lg' => 'p-3',
-            'xl' => 'p-4',
-            default => 'p-2',
+        $step = match ($padding) {
+            'none' => '0',
+            'sm' => '1',
+            'lg' => '3',
+            'xl' => '4',
+            default => '2',
         };
+
+        return $container ? 'p-top-' . $step . ' p-bottom-' . $step : 'p-' . $step;
     }
 
     private function innerClass(string $contentWidth): string

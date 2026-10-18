@@ -65,6 +65,27 @@ All notable changes to Docara are recorded here. The format follows
   each chunk was downloaded twice (about 106 KB transferred per page on the ui-doc site).
   `core.js` is now linked by its commit-addressed path without a query. This
   changes one script URL on every page.
+- **Breakpoint utilities cascade in breakpoint order.** The Framework rule
+  registry lists a utility's breakpoint variants by name, so the first-frame
+  stylesheets carried `lg:` rules before `md:` rules and `md:grid-col-2` beat
+  `lg:grid-col-4` at every width from `md` up: a four-item `:::features`
+  block (`grid-col-1 md:grid-col-2 lg:grid-col-4`) showed two columns at
+  1440 px. The planner now orders a utility's variants `default`, `sm`, `md`,
+  `lg`, `xl`, `xxl` and leaves every other module in place. This changes the
+  stylesheets of pages that use breakpoint utilities.
+- **A full-width band's text starts at the page's content edge.** In
+  `:::surface {content_width=container}` (and the semantic blocks framed the
+  same way) `padding` replaced the container's inline padding, so at 1440 px
+  the band's text started at 32 px while the page's text started at 48 px;
+  and under 800 px the landing shell padded every container 16 px on all
+  sides, against the page's 12 px. Inside a container `padding` now sets the
+  top and bottom only (`p-top-N p-bottom-N`), and the narrow-screen rule sets
+  `padding-block` only. On a landing page the band's container also keeps the
+  container's stepped maximum width instead of `max-inline-size: 100%`, so
+  between 640 and 960 px it is as wide and as centred as the page's
+  container. Measured on a landing page, the band's text now starts where the
+  page's text starts at 390, 700, 800, 900, 961, 1024 and 1440 px. With
+  `content_width=full` `padding` still applies on all sides.
 - **Example frames load lazily.** Browsers load a `srcdoc` frame with the page
   even when it is marked `loading="lazy"`, so inline-example and HTML-block
   frames now carry `loading="lazy"` and keep their document in

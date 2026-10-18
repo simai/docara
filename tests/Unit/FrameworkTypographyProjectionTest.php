@@ -454,6 +454,29 @@ final class FrameworkTypographyProjectionTest extends TestCase
         // cl-tabs names cl-context-menu, cl-sortable and cl-checkbox as lazy
         // relations: the Loader fetches them after the page is ready, so the
         // first frame neither waits for them nor carries them.
+        // Breakpoint variants follow breakpoint order whatever the registry
+        // order: md before lg, or md:grid-col-2 beats lg:grid-col-4 on wide screens.
+        $gridPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))
+            ->planForHtml('<ul class="grid grid-col-1 md:grid-col-2 lg:grid-col-4 xl:grid-col-6 sm:grid-col-1"></ul>', []);
+        $gridSources = array_values(array_filter(
+            array_map(
+                static fn (array $asset): string => preg_match('#^/\* docara-shell-source: (\S+) \*/#', (string) ($asset['content'] ?? ''), $match) === 1 ? $match[1] : '',
+                $gridPlan->generatedAssets,
+            ),
+            static fn (string $source): bool => str_contains($source, 'utility/grid-template-columns/'),
+        ));
+        self::assertSame([
+            'runtime/utility/grid-template-columns/default/css/default.css',
+            'runtime/utility/grid-template-columns/sm/css/sm.css',
+            'runtime/utility/grid-template-columns/md/css/md.css',
+            'runtime/utility/grid-template-columns/lg/css/lg.css',
+            'runtime/utility/grid-template-columns/xl/css/xl.css',
+        ], $gridSources);
+        self::assertSame(
+            ['a/default', 'b', 'a/sm', 'a/md', 'c/hover', 'a/lg', 'a/xl'],
+            FrameworkAssetPlanner::breakpointOrdered(['a/default', 'b', 'a/lg', 'a/md', 'c/hover', 'a/xl', 'a/sm']),
+        );
+
         $tabsPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml('<sf-tabs></sf-tabs>', []);
         self::assertContains('cl-tabs', $tabsPlan->preload['modules']);
         foreach (['cl-context-menu', 'cl-sortable', 'cl-checkbox'] as $lazy) {

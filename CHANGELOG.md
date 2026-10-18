@@ -6,6 +6,24 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.2.1] - 2026-10-18
+
+### Fixed
+
+- **Media under a sub-path load.** 3.2.0 put `base_url` in front of links and
+  preview frames that authors write from the site root, but not in front of
+  media: on a site built for, say, `/ui-doc/`, a Markdown image
+  `![…](/ru/guide/x.png)` was published as `/ru/guide/x.png`, which the
+  browser fetched outside the site and `verify-static` reported broken. The
+  build now rebases root-relative media the same way: `img` `src` and every
+  `srcset` candidate, `source` `src` and `srcset` (inside `picture`, `video`
+  and `audio`), `video` `src` and `poster`, `audio` and `track` `src`, and the
+  `href` of `link` icons and manifests. External, protocol-relative,
+  `data:` and relative addresses, and addresses already inside the base, are
+  left as written, and a site built for `/` is byte-identical. Docara does not
+  rewrite CSS `url()` in page or inline styles. `verify-static` now also
+  checks `poster` and each `srcset` candidate.
+
 ## [3.2.0] - 2026-10-18
 
 ### Added

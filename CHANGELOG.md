@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.2.0] - 2026-10-18
+
 ### Added
 
 - The Docara documentation site is published on GitHub Pages at

@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.1.0] - 2026-10-18
+
 ### Added
 
 - **Site colours from one colour.** `docara.json` takes

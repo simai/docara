@@ -399,7 +399,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // in build_dist.docara/) and replaced the 36 per-page shell
         // stylesheets with 79 shared ones, one per source: 1869 files.
         // 3.0.2 groups those sources into 43 shared stylesheets: 1833 files.
-        // The release ui-5f1d2e9e5529 ships 75 Smart files, 12 more: 1845.
+        // The release ui-25beeb814ae8 ships 75 Smart files, 12 more: 1845.
         self::assertCount(1845, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),

@@ -190,12 +190,21 @@ function docaraVerifySiteTheme(string $root, mixed $receipt, string $deploymentB
     $palettes = '(?:primary|secondary|tertiary|neutral|error|warning|success|info)';
     // The 128 tones, then (release ui-1cb0739a8423 and later) the translucent
     // steps of those tones, as many as the receipt counts.
+    // Checked line by line: one pattern repeated 226 times is too large for PCRE.
     $tone = '--sf-' . $palettes . '-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98)';
-    if (preg_match(
-        '/\A\/\* docara-theme: [^*]*\*\/\n:root \{\n(?:  ' . $tone . ': #[0-9a-f]{6};\n){128}'
-            . '(?:  ' . $tone . '--alfa-[1-9][0-9]?: #[0-9a-f]{8};\n){' . ($stylesheet['variables'] - 128) . '}\}\n\z/D',
-        $content,
-    ) !== 1) {
+    $lines = explode("\n", $content);
+    $themeShapeValid = count($lines) === $stylesheet['variables'] + 4
+        && preg_match('/\A\/\* docara-theme: [^*]*\*\/\z/D', $lines[0]) === 1
+        && $lines[1] === ':root {'
+        && $lines[count($lines) - 2] === '}'
+        && $lines[count($lines) - 1] === '';
+    foreach (array_slice($lines, 2, $stylesheet['variables']) as $index => $line) {
+        $pattern = $index < 128
+            ? '/\A  ' . $tone . ': #[0-9a-f]{6};\z/D'
+            : '/\A  ' . $tone . '--alfa-[1-9][0-9]?: #[0-9a-f]{8};\z/D';
+        $themeShapeValid = $themeShapeValid && preg_match($pattern, $line) === 1;
+    }
+    if (! $themeShapeValid) {
         throw new RuntimeException('Site theme stylesheet holds more than the Framework theme variables.');
     }
     foreach (glob($root . '/_docara/docara-theme.*.css') ?: [] as $published) {

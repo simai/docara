@@ -14,26 +14,22 @@ All notable changes to Docara are recorded here. The format follows
   Node.js (the runtime that already resolves Composition Recipes) and
   publishes `themeToCss`'s rule as one content-addressed stylesheet,
   `_docara/docara-theme.<sha256>.css`, linked by every page after its
-  first-frame stylesheets. The 128 `--sf-<palette>-<tone>` primitives change,
-  so every semantic token follows in light and dark, and example frames take
+  first-frame stylesheets. The 128 `--sf-<palette>-<tone>` primitives and
+  their 98 translucent steps (`--sf-<palette>-<tone>--alfa-<n>`) change, so
+  every semantic token follows in light and dark, container fills, tonal
+  buttons and hover or selected backgrounds included, and example frames take
   them with the page's other tokens. Optional `hue` (0-360) and `chroma`
   (0-150) override how the colour is read, as in `sf-theme-generator`.
   A colour that is not `#rgb` or `#rrggbb` stops the build with
   `THEME_COLOR_INVALID`; hue and chroma give `THEME_HUE_INVALID` and
   `THEME_CHROMA_INVALID`; a lock whose release has no palette gives
   `THEME_FRAMEWORK_UNSUPPORTED`. Without the setting the published site is
-  byte-identical to before. Known Framework limitation: the alpha steps
-  (`--sf-<palette>-50--alfa-N`, `-90--alfa-N`) are literal values in the
-  Framework's core.css and the palette does not write them, so container
-  fills, tonal buttons and hover or selected backgrounds keep the Framework's
-  blue. The Framework fixed it in ui-1cb0739a8423 (226 variables); Docara
-  already checks and publishes the translucent steps
-  (`--sf-<palette>-<tone>--alfa-<n>`, each its tone at its opacity) and takes
-  them as soon as it bundles that release.
+  byte-identical to before.
 - The build receipt (`resolved-page-plans.json`, `build.theme`) records the
   input, the hue and chroma used, the Framework release and the SHA-256 of the
   palette code it ran, and the stylesheet. `verify-static` checks the
-  stylesheet's bytes, that it holds only the 128 primitives, and that every
+  stylesheet's bytes, that it holds only the tones and their translucent
+  steps (each step its tone at its opacity), and that every
   page links it once after its shell stylesheets (or that none does). A
   one-page rebuild after the colour changed stops with
   `PORTABLE_INCREMENTAL_THEME_CHANGED`; `docara preview` rebuilds its cache
@@ -41,17 +37,20 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
-- **Framework release `ui-5f1d2e9e5529`.** Docara bundles the SIMAI Framework
-  release `ui-5f1d2e9e5529` (`simai/ui` 5f1d2e9e, contract registry bound in
-  242d3b92; it carries everything of `ui-45384c434d3f`, the first release
-  with the theme palette) in place of `ui-82fc0ba882ba`: the Core runtime packet, the Smart
+- **Framework release `ui-25beeb814ae8`.** Docara bundles the SIMAI Framework
+  release `ui-25beeb814ae8` (`simai/ui` 25beeb81, ui-source 94b497f5b,
+  contract registry bound in 719ceb39) in place of `ui-82fc0ba882ba`. It is
+  the first consumable release with the theme palette's translucent steps
+  (`ui-45384c434d3f` introduced the palette; `ui-1cb0739a8423` added the steps
+  but its Recipe runtime imported a module its distribution lacked). Bundled:
+  the Core runtime packet, the Smart
   entrypoints (75 files, 54 components, `sf-theme-generator` among them), the
   Composition Recipe runtime, the generated contracts and the starter and
   documentation-site locks. A project lock that pins `ui-82fc0ba882ba` (Docara
   3.0.0 to 3.0.5) builds with the bundled release without editing it.
 - `scripts/sync-framework-composition-runtime.php` follows relative imports
-  to core modules beside the composition directory (`../schema-name.mjs`,
-  which the Recipe runtime imports from ui-1cb0739a8423).
+  to core modules beside the composition directory (`../schema-name.mjs`);
+  ui-25beeb814ae8 ships the module inside the directory.
 - The first-frame planner follows the Loader on lazy relations
   (`"lazy": true`, new in this release): a lazy relation is fetched after the
   page is ready, so it is not part of the first-frame closure and does not

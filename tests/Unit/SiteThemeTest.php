@@ -96,20 +96,23 @@ final class SiteThemeTest extends TestCase
         [$comment, $css] = explode("\n", $result['content'], 2);
 
         // SF.ThemePalette.themeToCss(themeFromColor('#0a7d4f')) of ui-source
-        // b06420f5f (the release's source), run outside Docara.
-        self::assertSame('ad93e86244561be8a41a172bdd0524a37575656476e2b13914ea2de28d5a450e', hash('sha256', $css));
+        // 94b497f5b (the release's source), run outside Docara: the 128 tones
+        // and the 98 translucent steps.
+        self::assertSame('ac898d4f1168776ebabbb2f1ef2b60173c543348e6acd6992d8d22e888340edd', hash('sha256', $css));
+        self::assertStringContainsString('  --sf-primary-50--alfa-12: #0088561f;', $css);
+        self::assertStringContainsString('  --sf-neutral-90--alfa-8: #e0e3de14;', $css);
         self::assertStringContainsString('  --sf-primary-40: #006d44;', $css);
         self::assertStringContainsString('  --sf-primary-80: #00e292;', $css);
         self::assertStringContainsString('  --sf-tertiary-40: #00677d;', $css);
         self::assertStringContainsString('  --sf-neutral-98: #f7faf5;', $css);
         self::assertStringContainsString('  --sf-error-40: #bb1919;', $css);
-        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-5f1d2e9e5529 SF.ThemePalette.themeToCss */', $comment);
+        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-25beeb814ae8 SF.ThemePalette.themeToCss */', $comment);
 
         $receipt = $result['receipt'];
         self::assertSame('docara.site_theme.v1', $receipt['schema']);
         self::assertSame(['hue' => 161, 'chroma' => 85], $receipt['palette']);
-        self::assertSame('ui-5f1d2e9e5529', $receipt['framework']['pair_id']);
-        self::assertSame(128, $receipt['stylesheet']['variables']);
+        self::assertSame('ui-25beeb814ae8', $receipt['framework']['pair_id']);
+        self::assertSame(226, $receipt['stylesheet']['variables']);
         self::assertSame('docara-theme.' . hash('sha256', $result['content']) . '.css', $receipt['stylesheet']['filename']);
 
         self::assertSame($result, $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0A7D4F'])), 'The same colour gives the same bytes.');
@@ -120,7 +123,7 @@ final class SiteThemeTest extends TestCase
     {
         $result = $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0a7d4f', 'hue' => 200, 'chroma' => 40]));
 
-        // themeFromHct({hue: 200, chroma: 40}) of ui-source b06420f5f.
+        // themeFromHct({hue: 200, chroma: 40}) of ui-source 94b497f5b.
         self::assertStringContainsString('  --sf-primary-40: #00696c;', $result['content']);
         self::assertStringContainsString('  --sf-tertiary-40: #365f97;', $result['content']);
         self::assertSame(['hue' => 200, 'chroma' => 40], $result['receipt']['palette']);
@@ -133,7 +136,7 @@ final class SiteThemeTest extends TestCase
         $core = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($this->lock()))->bundledRuntimeAsset('core/css/core.css');
 
         preg_match_all('/^  (--sf-[a-z]+-[0-9]+): (#[0-9a-f]{6});$/m', $result['content'], $theme, PREG_SET_ORDER);
-        self::assertCount(128, $theme);
+        self::assertCount(128, $theme, 'The 128 tones; translucent steps are checked by the palette.');
         foreach ($theme as [, $name, $value]) {
             self::assertMatchesRegularExpression(
                 '/' . preg_quote($name, '/') . ':\s*' . preg_quote($value, '/') . ';/i',

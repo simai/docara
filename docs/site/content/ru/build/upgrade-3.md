@@ -12,7 +12,7 @@ Docara 3.0 — новая major-версия. Команда `docara upgrade` р
 Docara 3.0 содержит закреплённый релиз SIMAI Framework из публичного
 репозитория `simai/ui` (Core из `distr/`, Smart из `distr/smart/` того же
 коммита) вместе со средой выполнения Composition Recipe: `ui-82fc0ba882ba` в
-версиях 3.0.0–3.0.5, `ui-5f1d2e9e5529` начиная со следующего выпуска. Для сборки
+версиях 3.0.0–3.0.5, `ui-25beeb814ae8` начиная со следующего выпуска. Для сборки
 больше не нужны отдельная копия Framework и переменные окружения:
 `DOCARA_SIMAI_UI_ROOT` и `SIMAI_UI_ROOT` можно убрать из окружения сборки и
 CI. Эти переменные остаются необязательными и нужны только для сборки с другой
@@ -116,7 +116,7 @@ php vendor/bin/docara update --apply
 php -r 'echo json_decode(file_get_contents("simai-framework.lock.json"), true)["runtime"]["pair_id"], PHP_EOL;'
 ```
 
-Значения `ui-5f1d2e9e5529` (текущий релиз), `ui-82fc0ba882ba` (Docara
+Значения `ui-25beeb814ae8` (текущий релиз), `ui-82fc0ba882ba` (Docara
 3.0.0–3.0.5) и `ui-4f5e5067afeb-smart-7d932ed51408` (lock Docara 2.18)
 собираются с релизом пакета. При любом другом значении замените lock:
 

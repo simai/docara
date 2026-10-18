@@ -1,0 +1,81 @@
+{
+    "schema": "docara.framework_composition_runtime.v1",
+    "source": {
+        "provider": "simai/ui",
+        "revision": "25beeb814ae87b1e8e7bb5831b70a23b7cf36f96",
+        "tree_sha256": "6c33cd1be19345b997405dc7332f3db2fce28794cc0774cf71a868a5db35d621"
+    },
+    "contract": {
+        "edition": "1.0.1",
+        "contract_digest": "sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd"
+    },
+    "files": {
+        "distr/core/contracts/composition-recipe-v1/README.md": {
+            "sha256": "148b5fa148644cf4f814c511db664c40efc858226a2d8cbd7bf501c4e5ee7e0d"
+        },
+        "distr/core/contracts/composition-recipe-v1/common.schema.json": {
+            "sha256": "09945cc8485e7b1a5f8ee8add6938da720ffc6c434c6e86c13fe6f98a95b2fe4"
+        },
+        "distr/core/contracts/composition-recipe-v1/contract.lock.json": {
+            "sha256": "73fbc4f16b5a1b9e23d517c9975db6dc51f18846c074b0dece1b326374b1f871"
+        },
+        "distr/core/contracts/composition-recipe-v1/dependencies.schema.json": {
+            "sha256": "a2f3f371ace795f22bf4fb293e0005dcecbbc6c340cb669ba8e274c6e0b745e8"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/canonicalization.json": {
+            "sha256": "ab6e3aef30bbceef84bdd1314b301d20fe1196b32d6d83f59feb32e376b44239"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/limit-boundaries.json": {
+            "sha256": "c507d0f534868fea42c735e9f741aa228699a487652d4212feba9a4d40a04eb2"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/schema-negative.json": {
+            "sha256": "66d4611c4ed4699ff86d1ec3de26cfcc6e52307766b8c7844113dff838737401"
+        },
+        "distr/core/contracts/composition-recipe-v1/inputs.schema.json": {
+            "sha256": "e83e5c8ece50c4641b58256b852a3fecc33a786919279d85de5c7689d32d2af1"
+        },
+        "distr/core/contracts/composition-recipe-v1/limits.json": {
+            "sha256": "2a8b3d66ed8f4b183f721ffe257f472cfeb835c6e9829d374a3a420122025e10"
+        },
+        "distr/core/contracts/composition-recipe-v1/manifest.schema.json": {
+            "sha256": "e897974dcdb1e2428f0f808a7fa9ad7a8eef6d79128d24016a5e21fc372b730c"
+        },
+        "distr/core/contracts/composition-recipe-v1/recipe.schema.json": {
+            "sha256": "63d2f7d506be22b3f4a6060306a4d3d08e562d3720d82f13c41e69bc6ce3ffb3"
+        },
+        "distr/core/js/composition/builtins.mjs": {
+            "sha256": "62ccb18b910e34fb39019805b41f85d3208ec714a6840bd0dcc79d75f8434d7e"
+        },
+        "distr/core/js/composition/canonical.mjs": {
+            "sha256": "aa6b44b2b81fc71040a32c6d8521201b7b8f23881ba2844c5a749b2e6ba3587c"
+        },
+        "distr/core/js/composition/editor.mjs": {
+            "sha256": "ec3b17ce817b129a3751cc4087afc281bc3ff81ca2f03a285ecb2957828e1574"
+        },
+        "distr/core/js/composition/fields.mjs": {
+            "sha256": "bb31568decb5a5ec789d1f50a932c94647a39957006c3bc8dcaa3b3e73722a10"
+        },
+        "distr/core/js/composition/fragments.mjs": {
+            "sha256": "c1b96a793f55de7d702d6b64072623725c3f8d0114e318178be2da8b27b6d005"
+        },
+        "distr/core/js/composition/index.mjs": {
+            "sha256": "77e3a8a57800d4f204afb5b4d2dbc1d3d005f7cfd7f2d81a39a7a2b77de399aa"
+        },
+        "distr/core/js/composition/inline-model.mjs": {
+            "sha256": "2d584862b57ce8e1586da111399313920dd2f0e72b5a1a19b5ba3bede6269077"
+        },
+        "distr/core/js/composition/recipe.mjs": {
+            "sha256": "a7b42d27e1922c177b6ee2ddf98a4727faccd4238496ec74952bff145fb29856"
+        },
+        "distr/core/js/composition/regions.mjs": {
+            "sha256": "5f037d450e4e171ad5246f47748bea680ceba66642fd547527a10c40630c42e9"
+        },
+        "distr/core/js/composition/routing.mjs": {
+            "sha256": "5a420261903e8e1fbc6e6b5282f16143375d216149d2813cd760c75d4eb44dfb"
+        },
+        "distr/core/js/composition/schema-name.mjs": {
+            "sha256": "14a8b733e8a7659c5d1460ec4a602772c4eb0b790d96d9e27547a19ff8f05c78"
+        }
+    },
+    "packet_sha256": "02881dc6576ef3b3b18f1b2513d7562bdc3af2755bbd59baba42ad3660f8d60e"
+}

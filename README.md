@@ -139,7 +139,8 @@ version control:
 - `theme`: the site's colours from one main colour, `#rgb` or `#rrggbb`.
   At build time the bundled SIMAI Framework's theme palette makes the eight
   tonal palettes from it (primary, secondary, tertiary, neutral, error,
-  warning, success, info: 128 `--sf-<palette>-<tone>` variables), and every
+  warning, success, info: 128 `--sf-<palette>-<tone>` tones and their
+  translucent steps, 226 variables), and every
   page links them as one stylesheet, in light and dark. Optional `hue` (0-360)
   and `chroma` (0-150) override how the colour is read. Leave it out to keep
   the Framework's own colours.

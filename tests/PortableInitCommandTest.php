@@ -189,13 +189,13 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('ui-5f1d2e9e5529', $lock['runtime']['pair_id']);
-        $this->assertSame('5f1d2e9e5529e8a80d5fcf497dd8d1ff2ab9c864', $lock['runtime']['ui']['commit']);
-        $this->assertSame('5f1d2e9e5529e8a80d5fcf497dd8d1ff2ab9c864', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('242d3b92e3658a4c6204899854f3d69ff4c77ed4', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('ui-25beeb814ae8', $lock['runtime']['pair_id']);
+        $this->assertSame('25beeb814ae87b1e8e7bb5831b70a23b7cf36f96', $lock['runtime']['ui']['commit']);
+        $this->assertSame('25beeb814ae87b1e8e7bb5831b70a23b7cf36f96', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('719ceb3928dd72cd46e11147d0e8b9587a859fde', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('5f8dc4155a1df6a0b5cc7f1a36ad48138f4a05fd71c4fe51e47eed711602386b', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('f1adc5af6c1e69b0a9be0932de88318019fac83ecffcb5ea5ada519d297d3299', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('bd2531b587426def25f83687f31997564dc86cf612c624ae7de9c5a8fbdbee7b', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('6cdc318ce35957f0d9fe545a3992f5497a040c80152a55c520e44a640474c07f', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui', $lock['asset_projection']['source']['provider']);

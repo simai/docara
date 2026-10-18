@@ -57,8 +57,9 @@ final class PortableMarkdownRendererTest extends TestCase
 :::
 MD);
         // Both frames load when the reader nears them.
-        self::assertStringContainsString('sandbox loading="lazy" srcdoc=', $sandboxed);
-        self::assertStringContainsString('sandbox="allow-scripts" scrolling="no" loading="lazy" srcdoc=', $sandboxed);
+        self::assertStringContainsString('sandbox loading="lazy" data-docara-srcdoc=', $sandboxed);
+        self::assertStringContainsString('sandbox="allow-scripts" scrolling="no" loading="lazy" data-docara-srcdoc=', $sandboxed);
+        self::assertStringNotContainsString(' srcdoc=', $sandboxed);
     }
 
     #[Test]

@@ -330,6 +330,26 @@
   }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));
   var docaraExampleFrames=Array.from(document.querySelectorAll('iframe[data-docara-example-frame]'));
+  /* Example and HTML-block frames carry their document in data-docara-srcdoc: a browser loads a srcdoc frame with the page even when it is marked loading="lazy". The document moves to srcdoc when the frame comes within 600px of the screen; a frame in a hidden tab waits until the tab is shown. */
+  (function(){
+    var deferred=Array.from(document.querySelectorAll('iframe[data-docara-srcdoc]'));
+    function load(frame){
+      var source=frame.getAttribute('data-docara-srcdoc');
+      if(source===null)return;
+      frame.removeAttribute('data-docara-srcdoc');
+      frame.setAttribute('srcdoc',source);
+    }
+    if(!deferred.length)return;
+    if(typeof IntersectionObserver!=='function'){deferred.forEach(load);return}
+    var observer=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting)return;
+        observer.unobserve(entry.target);
+        load(entry.target);
+      });
+    },{rootMargin:'600px 0px'});
+    deferred.forEach(function(frame){observer.observe(frame)});
+  })();
   /* An example without its own label is named with the localized "Example": the tab, its tab list, the frame's title attribute and, through the environment, the frame document's title. */
   (function(){
     var label=message('examples.example');
@@ -504,7 +524,7 @@
     return state;
   }
   function exampleEnvironment(frame){
-    var state=exampleFrameState(frame),source=frame.getAttribute('srcdoc')||'',codepoints=exampleCodepoints(source);
+    var state=exampleFrameState(frame),source=frame.getAttribute('srcdoc')||frame.getAttribute('data-docara-srcdoc')||'',codepoints=exampleCodepoints(source);
     var icons=Boolean(state.icons.outlined||state.icons.rounded||state.icons.shape||state.icons.full);
     function fresh(key){
       if(!key||state.sent[key])return false;

@@ -887,7 +887,7 @@ final readonly class FrameworkAssetPlanner
             : $html;
         $exampleHtml = '';
         if (preg_match_all(
-            '~<iframe\b(?=[^>]*\bdata-docara-example-frame\b)[^>]*\bsrcdoc\s*=\s*(["\'])(.*?)\1[^>]*>~is',
+            '~<iframe\b(?=[^>]*\bdata-docara-example-frame\b)[^>]*\b(?:data-docara-)?srcdoc\s*=\s*(["\'])(.*?)\1[^>]*>~is',
             $scanHtml,
             $exampleMatches,
             PREG_SET_ORDER,
@@ -902,7 +902,7 @@ final readonly class FrameworkAssetPlanner
             );
         }
         $scanHtml = preg_replace(
-            '/\bsrcdoc\s*=\s*(?:"[^"]*"|\'[^\']*\')/is',
+            '/\b(?:data-docara-)?srcdoc\s*=\s*(?:"[^"]*"|\'[^\']*\')/is',
             '',
             $scanHtml,
         );

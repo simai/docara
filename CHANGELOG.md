@@ -65,10 +65,14 @@ All notable changes to Docara are recorded here. The format follows
   each chunk was downloaded twice (about 106 KB transferred per page on the ui-doc site).
   `core.js` is now linked by its commit-addressed path without a query. This
   changes one script URL on every page.
-- **Example frames load lazily:** inline-example frames and HTML-block frames
-  carry `loading="lazy"`, so frames below the first screen no longer load
-  with the page. Their height is still set by the frame's own message once it
-  loads.
+- **Example frames load lazily.** Browsers load a `srcdoc` frame with the page
+  even when it is marked `loading="lazy"`, so inline-example and HTML-block
+  frames now carry `loading="lazy"` and keep their document in
+  `data-docara-srcdoc`; the shell moves it to `srcdoc` when the frame comes
+  within 600 px of the screen (a frame in a hidden tab waits until the tab is
+  shown; without IntersectionObserver every frame loads at once). The frame's
+  own message still sets its height once it loads. Asset planning and vendor
+  selection read either attribute.
 
 ## [3.2.1] - 2026-10-18
 

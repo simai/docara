@@ -218,7 +218,7 @@ final readonly class PortableVendorAssetSelection
         $parts = [];
         $frames = [];
         if (preg_match_all(
-            '~\bsrcdoc\s*=\s*(?:"([^"]*)"|\'([^\']*)\')~is',
+            '~\b(?:data-docara-)?srcdoc\s*=\s*(?:"([^"]*)"|\'([^\']*)\')~is',
             $html,
             $matches,
             PREG_SET_ORDER,
@@ -235,7 +235,7 @@ final readonly class PortableVendorAssetSelection
                 'UTF-8',
             );
         }
-        $page = preg_replace('~\bsrcdoc\s*=\s*(?:"[^"]*"|\'[^\']*\')~is', '', $html);
+        $page = preg_replace('~\b(?:data-docara-)?srcdoc\s*=\s*(?:"[^"]*"|\'[^\']*\')~is', '', $html);
         foreach ([$page, ...$frames] as $document) {
             if (! is_string($document)) {
                 throw new PortableConfigurationException(

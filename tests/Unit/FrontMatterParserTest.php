@@ -70,10 +70,19 @@ MD, 'content/ru/components/badge.md');
     }
 
     #[Test]
+    public function noindex_keeps_a_page_out_of_search_engines(): void
+    {
+        $document = (new FrontMatterParser)->parse("---\nnoindex: true\n---\n# Internal\n", 'content/ru/internal.md');
+        self::assertTrue($document->metadata['noindex']);
+        self::assertFalse((new FrontMatterParser)->parse("---\nnoindex: false\n---\n", 'content/ru/a.md')->metadata['noindex']);
+    }
+
+    #[Test]
     public function it_rejects_invalid_draft_tags_translation_keys_and_unterminated_blocks(): void
     {
         foreach ([
             ["---\ndraft: yes\n---\n", 'FRONT_MATTER_DRAFT_INVALID'],
+            ["---\nnoindex: 1\n---\n", 'FRONT_MATTER_NOINDEX_INVALID'],
             ["---\ntags: [UI]\n---\n", 'FRONT_MATTER_TAG_INVALID'],
             ["---\ntranslation_key: Components Badge\n---\n", 'FRONT_MATTER_TRANSLATION_KEY_INVALID'],
             ["---\ntitle: Missing close\n", 'FRONT_MATTER_UNTERMINATED'],

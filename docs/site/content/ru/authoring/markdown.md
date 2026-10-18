@@ -17,9 +17,11 @@ translation_key: guide.install
 # Установка
 ```
 
-Поддерживаются только `title`, `description`, `tags`, `draft` и
+Поддерживаются только `title`, `description`, `tags`, `draft`, `noindex` и
 `translation_key`. Layout, HTML и произвольные поля здесь запрещены. Страница
-с `draft: true` не публикуется. Ошибка front matter указывает исходный файл,
+с `draft: true` не публикуется. Страница с `noindex: true` публикуется, но
+получает `<meta name="robots" content="noindex">` и не попадает в
+`sitemap.xml` и `llms.txt` (см. [Настройки сайта](/settings/site/)). Ошибка front matter указывает исходный файл,
 строку и колонку.
 
 ```markdown

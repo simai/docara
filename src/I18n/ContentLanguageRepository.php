@@ -15,6 +15,11 @@ final class ContentLanguageRepository
     /** @var array<string, array<string, string>> */
     private array $loaded = [];
 
+    private ?LocaleDefinition $sourceLocale = null;
+
+    /** @var array<string, array<string, true>> locale => message ids that show the source string */
+    private array $sourceStrings = [];
+
     public function __construct(string $projectRoot)
     {
         $resolved = realpath($projectRoot);
@@ -27,8 +32,45 @@ final class ContentLanguageRepository
         $this->projectRoot = rtrim($resolved, DIRECTORY_SEPARATOR);
     }
 
+    /**
+     * Show the source locale's string for these target message ids (used by
+     * translation_tracking mode publish-current for stale and unverified keys).
+     *
+     * @param  array<string, list<string>>  $idsByLocale
+     */
+    public function withSourceStrings(LocaleDefinition $source, array $idsByLocale): self
+    {
+        $this->sourceLocale = $source;
+        $this->sourceStrings = [];
+        foreach ($idsByLocale as $locale => $ids) {
+            foreach ($ids as $id) {
+                $this->sourceStrings[LocaleTag::from((string) $locale)->value()][(string) $id] = true;
+            }
+        }
+
+        return $this;
+    }
+
     /** @return array<string, string> */
     public function messages(LocaleDefinition $locale): array
+    {
+        $messages = $this->ownMessages($locale);
+        $overrides = $this->sourceStrings[$locale->tag->value()] ?? [];
+        if ($overrides === [] || ! $this->sourceLocale instanceof LocaleDefinition) {
+            return $messages;
+        }
+        $source = $this->ownMessages($this->sourceLocale);
+        foreach (array_keys($overrides) as $id) {
+            if (isset($source[$id])) {
+                $messages[$id] = $source[$id];
+            }
+        }
+
+        return $messages;
+    }
+
+    /** @return array<string, string> */
+    private function ownMessages(LocaleDefinition $locale): array
     {
         $tag = $locale->tag->value();
         if (isset($this->loaded[$tag])) {

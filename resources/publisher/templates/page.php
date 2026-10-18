@@ -7,12 +7,18 @@
 <?php if ($view->description !== null) { ?>
     <meta name="description" content="<?= $view->description ?>">
 <?php } ?>
+<?php if ($view->robots !== null) { ?>
+    <meta name="robots" content="<?= $view->robots ?>">
+<?php } ?>
 <?php if ($view->favicon !== null) { ?>
     <link rel="icon" href="<?= $view->favicon ?>"<?php if ($view->faviconType !== null) { ?> type="<?= $view->faviconType ?>"<?php } ?>>
 <?php } ?>
     <link rel="canonical" href="<?= $view->canonicalUrl ?>">
 <?php foreach ($view->alternates as $alternate) { ?>
     <link rel="alternate" hreflang="<?= $alternate['locale'] ?>" href="<?= $alternate['url'] ?>">
+<?php } ?>
+<?php if ($view->socialMeta !== null) { ?>
+<?= $view->socialMeta ?>
 <?php } ?>
     <title><?= $view->documentTitle ?></title>
 <?= $view->headHtml ?>

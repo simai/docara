@@ -54,6 +54,10 @@ Docara проверит accepted full-build receipts, выберет route до 
 переименования страниц, изменения меню, `docara.json` либо Framework lock
 выполняйте обычную полную сборку без `--page`.
 
+Если в `docara.json` задан `site_url`, сборка также пишет `sitemap.xml`,
+`robots.txt` и `llms.txt`, абсолютные `canonical`/`hreflang` и теги Open Graph;
+см. [Настройки сайта](/settings/site/).
+
 ## `verify-static`
 
 ```text
@@ -66,6 +70,11 @@ php vendor/bin/docara verify-static [directory] [--receipts=DIR]
 PHP-код: она читает статический каталог, receipts и manifest и выводит JSON с
 `html_pages`, `local_references_checked` и списком `broken`. Подробности — в
 разделе [Проверка статического результата](/build/verify/).
+
+Для сайта с `site_url` проверка также читает `sitemap.xml`, `robots.txt` и
+`llms.txt`: файлы корректны, каждый адрес лежит под `site_url`, каждый адрес
+sitemap ведёт на собранную индексируемую страницу и каждая такая страница есть
+в sitemap. Ошибки выводятся с `reference: "@discovery-files"`.
 
 ## `serve`
 
@@ -301,21 +310,35 @@ php vendor/bin/docara documentation accept \
 ```text
 php vendor/bin/docara translations status [--locale=en] [--status=stale] [--kind=page|lang] [--json]
 php vendor/bin/docara translations accept --locale=en --key=<key> --review=ai_verified --dry-run --json
+php vendor/bin/docara translations accept --locale=en [--key=<key> ...] [--prefix=<prefix>] [--status=<status>] [--kind=page|lang] --dry-run --json
 php vendor/bin/docara translations accept --apply=<plan-sha256> --json
 ```
 
 Действие: `status` или `accept`.
 
 - `--locale` — целевая локаль;
-- `--status` — фильтр отчёта по статусу;
+- `--status` — фильтр отчёта по статусу; для `accept` — принять всё, что
+  показывает такой отфильтрованный отчёт;
 - `--kind` — `page` (по умолчанию) или `lang` для ключей `lang.json`;
-- `--key` — ключ перевода;
+- `--key` — ключ перевода; повторите, чтобы принять набор ключей;
+- `--prefix` — принять все `unverified` и `stale` ключи, начинающиеся с
+  префикса, например раздел `guide/`;
 - `--review` — `ai_verified` (по умолчанию) или `human_reviewed`;
 - `--exclude-reason` — намеренно исключить пару локаль/ключ; всегда требует
   содержательную причину;
 - `--dry-run` — создать проверяемый план принятия;
 - `--apply` — атомарно применить точный план по SHA-256;
 - `--json` — результат в JSON.
+
+Один `--key` без `--prefix` и `--status` создаёт прежний план для одного
+ключа (с ним работает `--exclude-reason`). Несколько ключей, префикс или
+статус создают план набора: в `accepted` — принимаемые `unverified` и `stale`
+пункты, в `skipped` — пункты выборки в других статусах, которые не меняются.
+Пустая выборка — ошибка `TRANSLATION_ACCEPT_SELECTION_EMPTY`.
+
+При `translation_tracking.mode: "publish-current"` сборка публикует только
+актуальные переводы и выводит список задержанных страниц и строк; см.
+[Мультиязычный сайт](/authoring/multilingual-site/).
 
 `status` только читает исходники и lock-файл. При включённом
 `translation_tracking` обычная сборка также создаёт квитанцию

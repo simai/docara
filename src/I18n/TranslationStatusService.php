@@ -195,12 +195,140 @@ final class TranslationStatusService
         usort($lock['exclusions'], static fn (array $left, array $right): int => [$left['locale'], $left['kind'], $left['key']] <=> [$right['locale'], $right['kind'], $right['key']]);
         (new SchemaRepository)->assertValid($lock, 'translation-lock.schema.json');
         $inputHashes = $this->inputHashes($root, $lockPath, $item);
-        $core = [
+
+        return $this->writePlan($root, [
             'schema' => 'docara.translation_accept_plan.v1',
             'lock_file' => $lockPath,
             'input_hashes' => $inputHashes,
             'lock' => $lock,
-        ];
+        ]);
+    }
+
+    /**
+     * One hash-bound plan that accepts a reviewed set of translations: every
+     * `unverified` or `stale` item of one target locale and kind that matches
+     * the given keys, key prefix (a section such as `guide/`) and status
+     * filter. Items in other statuses are listed under `skipped` and keep
+     * their state. Apply the plan with apply(), exactly like a single-key plan.
+     *
+     * @param  list<string>  $keys
+     * @return array<string,mixed>
+     */
+    public function planAcceptSet(
+        string $root,
+        string $locale,
+        string $review,
+        array $keys = [],
+        ?string $prefix = null,
+        ?string $status = null,
+        string $kind = 'page',
+    ): array {
+        [$root, , $tracking] = $this->configuration($root);
+        if (($tracking['enabled'] ?? false) !== true) {
+            throw new PortableConfigurationException('TRANSLATION_TRACKING_DISABLED', 'Enable translation_tracking before accepting translation state.');
+        }
+        if (! in_array($review, ['ai_verified', 'human_reviewed'], true)) {
+            throw new PortableConfigurationException('TRANSLATION_REVIEW_INVALID', 'Review must be ai_verified or human_reviewed.');
+        }
+        if (! in_array($kind, ['page', 'lang'], true)) {
+            throw new PortableConfigurationException('TRANSLATION_KIND_INVALID', 'Translation kind must be page or lang.');
+        }
+        if ($keys === [] && ($prefix === null || $prefix === '') && $status === null) {
+            throw new PortableConfigurationException(
+                'TRANSLATION_ACCEPT_SELECTION_REQUIRED',
+                'Name the reviewed set: one or more keys, a key prefix or a status filter.',
+            );
+        }
+        $sourceLocale = (string) $tracking['source_locale'];
+        if ($locale === $sourceLocale) {
+            throw new PortableConfigurationException('TRANSLATION_TARGET_LOCALE_INVALID', 'Target locale must differ from source_locale.');
+        }
+        $keys = array_values(array_unique($keys));
+        sort($keys, SORT_STRING);
+        $report = $this->report($root, $locale, $status);
+        $selected = array_values(array_filter(
+            $report['items'],
+            static fn (array $item): bool => $item['kind'] === $kind
+                && ($keys === [] || in_array($item['key'], $keys, true))
+                && ($prefix === null || $prefix === '' || str_starts_with($item['key'], $prefix)),
+        ));
+        $unknown = array_values(array_diff($keys, array_column($selected, 'key')));
+        if ($unknown !== [] && $status === null) {
+            throw new PortableConfigurationException('TRANSLATION_ACCEPT_TARGET_INVALID', 'Unknown translation key(s): ' . implode(', ', $unknown) . '.');
+        }
+        $accepted = [];
+        $skipped = [];
+        foreach ($selected as $item) {
+            if (in_array($item['status'], ['unverified', 'stale'], true)
+                && $item['source_path'] !== null
+                && $item['target_path'] !== null
+            ) {
+                $accepted[] = $item;
+            } else {
+                $skipped[] = ['key' => $item['key'], 'status' => $item['status']];
+            }
+        }
+        if ($accepted === []) {
+            throw new PortableConfigurationException(
+                'TRANSLATION_ACCEPT_SELECTION_EMPTY',
+                'The selection holds no unverified or stale translation to accept.',
+            );
+        }
+        $lockPath = (string) $tracking['lock_file'];
+        $lock = $this->lock($root, $lockPath, $sourceLocale);
+        $identity = static fn (array $entry): string => $entry['kind'] . "\0" . $entry['key'] . "\0" . $entry['locale'];
+        $replaced = [];
+        foreach ($accepted as $item) {
+            $replaced[$identity($item)] = true;
+        }
+        $lock['entries'] = array_values(array_filter($lock['entries'], static fn (array $entry): bool => ! isset($replaced[$identity($entry)])));
+        foreach ($accepted as $item) {
+            $lock['entries'][] = [
+                'kind' => $kind,
+                'key' => $item['key'],
+                'locale' => $locale,
+                'source_path' => $item['source_path'],
+                'target_path' => $item['target_path'],
+                'source_sha256' => $item['source_sha256'],
+                'target_sha256' => $item['target_sha256'],
+                'source_structure_sha256' => $item['source_structure_sha256'],
+                'target_structure_sha256' => $item['target_structure_sha256'],
+                'review' => $review,
+            ];
+        }
+        usort($lock['entries'], static fn (array $left, array $right): int => [$left['locale'], $left['kind'], $left['key']] <=> [$right['locale'], $right['kind'], $right['key']]);
+        (new SchemaRepository)->assertValid($lock, 'translation-lock.schema.json');
+        $inputHashes = [];
+        foreach ($accepted as $item) {
+            $inputHashes += $this->inputHashes($root, $lockPath, $item);
+        }
+        ksort($inputHashes, SORT_STRING);
+
+        return $this->writePlan($root, [
+            'schema' => 'docara.translation_accept_plan.v1',
+            'lock_file' => $lockPath,
+            'input_hashes' => $inputHashes,
+            'lock' => $lock,
+            'selection' => [
+                'locale' => $locale,
+                'kind' => $kind,
+                'keys' => $keys,
+                'prefix' => $prefix === '' ? null : $prefix,
+                'status' => $status,
+                'review' => $review,
+            ],
+            'accepted' => array_map(static fn (array $item): array => [
+                'key' => $item['key'],
+                'status' => $item['status'],
+                'target_sha256' => $item['target_sha256'],
+            ], $accepted),
+            'skipped' => $skipped,
+        ]);
+    }
+
+    /** @param array<string,mixed> $core @return array<string,mixed> */
+    private function writePlan(string $root, array $core): array
+    {
         $planId = hash('sha256', CanonicalJson::encode($core));
         $plan = ['plan_id' => $planId] + $core;
         $planDirectory = $root . '/.docara/translation-plans';

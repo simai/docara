@@ -20,6 +20,7 @@ use Simai\Docara\PortableSite\PortablePerformanceReceipt;
 use Simai\Docara\PortableSite\PortableRedirectPublisher;
 use Simai\Docara\PortableSite\PortableShellStylesheets;
 use Simai\Docara\PortableSite\PortableVendorAssetSelection;
+use Simai\Docara\PortableSite\SiteDiscoveryVerifier;
 use Simai\Docara\Smart\SmartRegistry;
 
 /**
@@ -3689,6 +3690,18 @@ if (is_array($manifestBuild['public_projections'] ?? null)) {
             'reference' => '@public-registry-schema-projections',
             'target' => $exception->getMessage(),
         ];
+    }
+}
+
+// sitemap.xml, robots.txt and llms.txt of a site with site_url.
+if ($manifestError === null && $manifestPageRecords !== []) {
+    try {
+        docaraBootstrapTrustedSource();
+        foreach ((new SiteDiscoveryVerifier)->verify($root, $manifestPageRecords) as $problem) {
+            $broken[] = ['page' => '@build', 'reference' => '@discovery-files', 'target' => $problem];
+        }
+    } catch (Throwable $exception) {
+        $broken[] = ['page' => '@build', 'reference' => '@discovery-files', 'target' => $exception->getMessage()];
     }
 }
 

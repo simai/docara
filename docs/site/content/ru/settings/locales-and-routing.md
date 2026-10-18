@@ -19,3 +19,10 @@ UI copy хранится только в `content/<locale>/lang.json`; page pros
 `translation_tracking` — независимый отчётный контур. Он не меняет fallback,
 route или `missing_page_policy`, а показывает `current`, `stale`, `missing`,
 `unverified`, `orphan`, `duplicate_key`, `structure_mismatch` и `excluded`.
+
+`translation_tracking.mode` принимает два значения. `report` (по умолчанию)
+только сообщает статусы и ничего не меняет в публикации. `publish-current`
+публикует перевод, только пока он `current` (или `excluded`): устаревший,
+непроверенный или структурно расходящийся перевод заменяется исходной
+страницей с уведомлением, страница без источника не публикуется. Подробно —
+в разделе [Мультиязычный сайт](/authoring/multilingual-site/).

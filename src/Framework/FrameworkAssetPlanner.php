@@ -261,7 +261,11 @@ final readonly class FrameworkAssetPlanner
         $assets[] = [
             'key' => 'simai.framework.core.js',
             'kind' => 'javascript',
-            ...$this->runtimeBootAsset($uiCommit, (string) $boot['javascript'], $cacheVersion),
+            // Core's own preload of its chunks (core-rules, core-system,
+            // core-loader) repeats core.js's query, while the chunk imports
+            // carry none: a query here made the browser fetch each chunk twice.
+            // The commit-addressed runtime path already names the release.
+            ...$this->runtimeBootAsset($uiCommit, (string) $boot['javascript'], $cacheVersion, false),
         ];
 
         $this->assertImmutable($assets);
@@ -1726,7 +1730,7 @@ final readonly class FrameworkAssetPlanner
     }
 
     /** @return array{url: string, source_revision?: string, sha256?: string} */
-    private function runtimeBootAsset(string $commit, string $lockedPath, string $cacheVersion): array
+    private function runtimeBootAsset(string $commit, string $lockedPath, string $cacheVersion, bool $cacheQuery = true): array
     {
         if ($this->repository->runtimeProjection() === null) {
             return ['url' => $this->uiUrl($commit, $lockedPath)];
@@ -1736,9 +1740,10 @@ final readonly class FrameworkAssetPlanner
             throw new FrameworkComponentException('FRAMEWORK_UI_ASSET_PATH_INVALID', $lockedPath);
         }
         $projected = $this->runtimeAsset(substr($lockedPath, strlen($prefix)));
+        $commitAddressed = str_contains($projected['url'], '/runtime/' . $commit . '/');
 
         return [
-            'url' => $projected['url'] . '?sf_v=' . rawurlencode($cacheVersion),
+            'url' => $projected['url'] . ($cacheQuery || ! $commitAddressed ? '?sf_v=' . rawurlencode($cacheVersion) : ''),
             'source_revision' => $commit,
             'sha256' => $projected['sha256'],
         ];
@@ -1904,6 +1909,18 @@ final readonly class FrameworkAssetPlanner
                     && preg_match('/^[a-f0-9]{64}$/', $asset['sha256']) === 1
                     && preg_match(
                         '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/(?:simai-framework/typography/[a-f0-9]{20}|simai-framework/runtime/[a-f0-9]{40}/distr/core/[a-f0-9]{20}|google/material-symbols/[a-f0-9]{40}/MaterialSymbolsOutlined|docara/icon-subset/[a-f0-9]{40}/material-symbols-outlined\.[a-f0-9]{20})\.woff2$#D',
+                        $url,
+                    ) === 1
+                ) {
+                    continue;
+                }
+                if (($asset['key'] ?? null) === 'simai.framework.core.js'
+                    && is_string($asset['source_revision'] ?? null)
+                    && preg_match('/^[a-f0-9]{40}$/', $asset['source_revision']) === 1
+                    && is_string($asset['sha256'] ?? null)
+                    && preg_match('/^[a-f0-9]{64}$/', $asset['sha256']) === 1
+                    && preg_match(
+                        '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/simai-framework/runtime/' . $asset['source_revision'] . '/distr/core/js/core(?:\.min)?\.js$#D',
                         $url,
                     ) === 1
                 ) {

@@ -466,8 +466,10 @@ final class FrameworkTypographyProjectionTest extends TestCase
             '/project~/docs/_docara/vendor/simai-framework/runtime/' . $uiCommit . '/distr/core/css/core.css?sf_v=',
             $nestedAssets['simai.framework.core.css']['url'],
         );
-        self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/25beeb814ae87b1e8e7bb5831b70a23b7cf36f96/distr/core/js/core.js?sf_v=',
+        // core.js carries no query: Core preloads its chunks with core.js's
+        // query while the chunk imports carry none, so a query fetched them twice.
+        self::assertSame(
+            '/project~/docs/_docara/vendor/simai-framework/runtime/25beeb814ae87b1e8e7bb5831b70a23b7cf36f96/distr/core/js/core.js',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }

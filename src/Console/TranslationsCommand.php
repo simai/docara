@@ -34,7 +34,8 @@ final class TranslationsCommand extends Command
             ->addOption('locale', null, InputOption::VALUE_REQUIRED, 'Target locale.')
             ->addOption('status', null, InputOption::VALUE_REQUIRED, 'Filter report by status.')
             ->addOption('kind', null, InputOption::VALUE_REQUIRED, 'page|lang', 'page')
-            ->addOption('key', null, InputOption::VALUE_REQUIRED, 'Translation key.')
+            ->addOption('key', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Translation key; repeat to accept a reviewed set.')
+            ->addOption('prefix', null, InputOption::VALUE_REQUIRED, 'Accept every unverified or stale key that starts with this prefix, such as guide/.')
             ->addOption('review', null, InputOption::VALUE_REQUIRED, 'ai_verified|human_reviewed', 'ai_verified')
             ->addOption('exclude-reason', null, InputOption::VALUE_REQUIRED, 'Mark this locale/key intentionally excluded.')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Create a hash-bound acceptance plan.')
@@ -67,14 +68,35 @@ final class TranslationsCommand extends Command
             if (is_string($apply) && $apply !== '') {
                 $result = $this->service->apply($this->base, $apply);
             } elseif ((bool) $this->input->getOption('dry-run')) {
-                $result = $this->service->planAccept(
-                    $this->base,
-                    (string) $this->input->getOption('locale'),
-                    (string) $this->input->getOption('key'),
-                    (string) $this->input->getOption('review'),
-                    is_string($this->input->getOption('exclude-reason')) ? $this->input->getOption('exclude-reason') : null,
-                    (string) $this->input->getOption('kind'),
-                );
+                $keys = array_values(array_filter(
+                    (array) $this->input->getOption('key'),
+                    static fn (mixed $key): bool => is_string($key) && $key !== '',
+                ));
+                $prefix = is_string($this->input->getOption('prefix')) ? $this->input->getOption('prefix') : null;
+                $status = is_string($this->input->getOption('status')) ? $this->input->getOption('status') : null;
+                $excludeReason = is_string($this->input->getOption('exclude-reason')) ? $this->input->getOption('exclude-reason') : null;
+                if (count($keys) <= 1 && $prefix === null && $status === null) {
+                    $result = $this->service->planAccept(
+                        $this->base,
+                        (string) $this->input->getOption('locale'),
+                        (string) ($keys[0] ?? ''),
+                        (string) $this->input->getOption('review'),
+                        $excludeReason,
+                        (string) $this->input->getOption('kind'),
+                    );
+                } elseif ($excludeReason !== null) {
+                    throw new \InvalidArgumentException('An exclusion names exactly one --key; it cannot apply to a set.');
+                } else {
+                    $result = $this->service->planAcceptSet(
+                        $this->base,
+                        (string) $this->input->getOption('locale'),
+                        (string) $this->input->getOption('review'),
+                        $keys,
+                        $prefix,
+                        $status,
+                        (string) $this->input->getOption('kind'),
+                    );
+                }
             } else {
                 throw new \InvalidArgumentException('Translation acceptance requires --dry-run or --apply=<plan-sha256>.');
             }

@@ -142,6 +142,7 @@ final readonly class UiCopy
             'schema.yes' => 'yes',
             'schema.no' => 'no',
             'schema.default_undeclared' => 'not declared; the effective value comes from inheritance or the runtime',
+            'language.fallback_notice' => 'This page is being translated; the original is shown ({source}).',
         ],
         'ru' => [
             'examples.preview_title' => 'Результат примера',
@@ -158,6 +159,7 @@ final readonly class UiCopy
             'schema.yes' => 'да',
             'schema.no' => 'нет',
             'schema.default_undeclared' => 'не объявлен; effective value определяется inheritance/runtime',
+            'language.fallback_notice' => 'Эта страница переводится; показан оригинал ({source}).',
         ],
     ];
 

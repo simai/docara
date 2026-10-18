@@ -95,7 +95,44 @@ final class BuildCommand extends Command
                     ['stale', 'missing', 'unverified', 'orphan', 'duplicate_key', 'structure_mismatch'],
                 ));
                 if ($issues > 0) {
-                    $this->console->comment("Translation tracking reported $issues item(s) that need attention; the build remains valid in report mode.");
+                    $this->console->comment(($report['mode'] ?? 'report') === 'publish-current'
+                        ? "Translation tracking reported $issues item(s) that need attention; publish-current mode published only current translations."
+                        : "Translation tracking reported $issues item(s) that need attention; the build remains valid in report mode.");
+                }
+            }
+        }
+        $publicationReceipt = BuildReceipts::existing($destination) . '/translation-publication.json';
+        if (is_file($publicationReceipt) && ! is_link($publicationReceipt)) {
+            $receipt = json_decode((string) file_get_contents($publicationReceipt), true);
+            if (is_array($receipt) && is_array($receipt['pages'] ?? null) && is_array($receipt['lang'] ?? null)) {
+                $heldBack = count($receipt['pages']) + count($receipt['lang']);
+                if ($heldBack === 0) {
+                    $this->console->info('Translations: every target page and string is current; nothing was held back.');
+                } else {
+                    $this->console->comment(sprintf(
+                        'Translations held back (mode publish-current): %d page(s) show the source text, %d page(s) withheld, %d string(s) show the source text.',
+                        (int) ($receipt['summary']['source_fallback'] ?? 0),
+                        (int) ($receipt['summary']['withheld'] ?? 0),
+                        (int) ($receipt['summary']['source_strings'] ?? 0),
+                    ));
+                    foreach ($receipt['pages'] as $page) {
+                        $this->console->write(sprintf(
+                            '- %-16s %-12s %s [%s] %s',
+                            (string) ($page['action'] ?? ''),
+                            (string) ($page['status'] ?? ''),
+                            (string) ($page['key'] ?? ''),
+                            (string) ($page['locale'] ?? ''),
+                            (string) ($page['target_path'] ?? ''),
+                        ));
+                    }
+                    foreach ($receipt['lang'] as $string) {
+                        $this->console->write(sprintf(
+                            '- %-16s lang:%s [%s]',
+                            (string) ($string['action'] ?? ''),
+                            (string) ($string['key'] ?? ''),
+                            (string) ($string['locale'] ?? ''),
+                        ));
+                    }
                 }
             }
         }

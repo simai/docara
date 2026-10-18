@@ -9,7 +9,7 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class FrontMatterParser
 {
-    private const KEYS = ['title', 'description', 'tags', 'draft', 'translation_key', 'profile', 'composition_recipe'];
+    private const KEYS = ['title', 'description', 'tags', 'draft', 'noindex', 'translation_key', 'profile', 'composition_recipe'];
 
     public function parse(string $markdown, string $source): FrontMatterDocument
     {
@@ -75,6 +75,13 @@ final readonly class FrontMatterParser
         if ($key === 'draft') {
             if (! in_array($value, ['true', 'false'], true)) {
                 $this->fail('FRONT_MATTER_DRAFT_INVALID', $source, $line, $column, 'Use draft: true or draft: false.');
+            }
+
+            return $value === 'true';
+        }
+        if ($key === 'noindex') {
+            if (! in_array($value, ['true', 'false'], true)) {
+                $this->fail('FRONT_MATTER_NOINDEX_INVALID', $source, $line, $column, 'Use noindex: true or noindex: false.');
             }
 
             return $value === 'true';

@@ -8,7 +8,7 @@
     "schema": {"const": "docara.translation_status.v1"},
     "enabled": {"type": "boolean"},
     "source_locale": {"type": ["string", "null"]},
-    "mode": {"const": "report"},
+    "mode": {"enum": ["report", "publish-current"]},
     "content_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "summary": {"type": "object"},
     "items": {

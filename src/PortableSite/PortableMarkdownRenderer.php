@@ -959,7 +959,9 @@ final class PortableMarkdownRenderer
         return '<iframe title="' . $this->escapeHtml($label) . '"'
             . ($defaultLabel ? ' data-docara-example-default-label' : '')
             . ($icons === [] ? '' : ' data-docara-example-icons="' . implode(' ', $icons) . '"')
-            . ' data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" scrolling="no" srcdoc="'
+            // A frame below the first screen loads when the reader nears it;
+            // its document then announces itself and the shell sizes it.
+            . ' data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" scrolling="no" loading="lazy" srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
     }
 
@@ -1809,7 +1811,7 @@ HTML;
         $document = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'
             . $match['source'] . '</body></html>';
 
-        return '<iframe data-docara-block="html" title="HTML example" class="w-full min-h-i5 border border-outline-variant radius-2 bg-surface-0 m-bottom-1" sandbox srcdoc="'
+        return '<iframe data-docara-block="html" title="HTML example" class="w-full min-h-i5 border border-outline-variant radius-2 bg-surface-0 m-bottom-1" sandbox loading="lazy" srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
     }
 

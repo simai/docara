@@ -3,7 +3,9 @@ name: Documentation site
 # Builds Docara's own documentation (docs/site) the way the Quality workflow
 # does and publishes it on GitHub Pages. The site is a project site, served
 # under the repository's path (https://simai.github.io/docara/), so the build
-# takes its base_url from the Pages configuration.
+# takes its base_url and site_url from the Pages configuration. site_url adds
+# sitemap.xml, robots.txt, llms.txt, absolute canonical addresses and
+# Open Graph tags.
 
 on:
   push:
@@ -34,15 +36,18 @@ jobs:
         with:
           node-version: "24"
       # base_path is "/docara" for the project site and empty for a custom
-      # domain; the committed docara.json keeps "/" for local builds.
-      - name: Set the site base URL
+      # domain; base_url is the full address. The committed docara.json keeps
+      # "/" and no site_url for local builds.
+      - name: Set the site base URL and site URL
         working-directory: docs/site
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          SITE_URL: ${{ steps.pages.outputs.base_url }}
         run: |
-          jq --arg base "${BASE_PATH%/}/" '.base_url = $base' docara.json > docara.json.pages
+          jq --arg base "${BASE_PATH%/}/" --arg site "${SITE_URL%/}/" \
+            '.base_url = $base | .site_url = $site' docara.json > docara.json.pages
           mv docara.json.pages docara.json
-          jq -r '.base_url' docara.json
+          jq -r '.base_url, .site_url' docara.json
       - run: env -u SIMAI_UI_ROOT php ../../docara build production
         working-directory: docs/site
       - run: php ../../docara verify-static build_production

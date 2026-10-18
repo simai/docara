@@ -20,7 +20,7 @@ final readonly class PortableBrandAssetPlanner
      * @param  list<array<string, mixed>>  $pages
      * @return array{pages: array<int, array<string, string|null>>, assets: array<string, string>}
      */
-    public function plan(string $root, array $pages, string $baseUrl, string $siteTitle): array
+    public function plan(string $root, array $pages, string $baseUrl, string $siteTitle, bool $shareImages = false): array
     {
         $resolvedPages = [];
         $assets = [];
@@ -45,7 +45,21 @@ final readonly class PortableBrandAssetPlanner
                 'favicon_type' => null,
             ];
 
-            foreach (['logo', 'logo_dark', 'favicon'] as $field) {
+            // A share image is published only for a site with site_url, where
+            // pages carry Open Graph tags that name it by absolute address.
+            if (! $shareImages) {
+                unset($branding['share_image']);
+            }
+            if (is_string($branding['share_image'] ?? null)) {
+                $extension = strtolower((string) pathinfo($branding['share_image'], PATHINFO_EXTENSION));
+                if (! in_array($extension, ['png', 'jpg', 'jpeg', 'webp'], true)) {
+                    throw new PortableConfigurationException(
+                        'BRAND_SHARE_IMAGE_TYPE_FORBIDDEN',
+                        "branding.share_image [{$branding['share_image']}] must be a PNG, JPEG or WebP file.",
+                    );
+                }
+            }
+            foreach (['logo', 'logo_dark', 'favicon', 'share_image'] as $field) {
                 if (! is_string($branding[$field] ?? null)) {
                     continue;
                 }

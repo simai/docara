@@ -6,6 +6,70 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-10-18
+
+### Added
+
+- **Site URL and discovery files.** `docara.json` takes `site_url`, the
+  site's absolute public address (origin plus `base_url`; the two must
+  agree). With it the build writes, under the deployment base:
+  `sitemap.xml` with every published indexable page as an absolute URL and
+  `xhtml:link hreflang` alternates for translated pages; `robots.txt` that
+  allows all crawlers and names the sitemap; and `llms.txt` after the
+  llmstxt.org convention: the site title and description
+  (`discovery.description`, else the home page's), the default locale's
+  top-level sections, the other languages' home pages and the machine-readable
+  files (`discovery.llms_links`, such as `ai.json`, the sitemap and
+  `_docara/page-metadata.json`). Drafts, pages with the new front matter key
+  `noindex: true`, redirects, error pages (a route ending in a 4xx or 5xx
+  code) and held-back translations are left out. `verify-static` checks the
+  three files: well-formed, every URL under `site_url`, every sitemap URL a
+  built indexable page and every such page listed, every `llms.txt` link a
+  file of the build. Content that already publishes one of these files at the
+  root stops the build (`DISCOVERY_FILE_COLLISION`).
+- **Absolute canonical, hreflang and share tags** with `site_url`: pages name
+  absolute `canonical` and `hreflang` addresses and carry Open Graph and
+  Twitter card tags (`og:title`, `og:description`, `og:url`, `og:type`,
+  `og:locale` with alternates, `og:site_name`, `twitter:card`). A new
+  `branding.share_image` (PNG, JPEG or WebP, inheritable per section and
+  page) adds `og:image` and `twitter:image`.
+- **`noindex: true` front matter** publishes a page with
+  `<meta name="robots" content="noindex">` and keeps it out of the sitemap.
+- **Strict translation mode.** `translation_tracking.mode: "publish-current"`
+  publishes a target-locale page only while its translation is `current` (or
+  `excluded`). A `stale`, `unverified` or `structure_mismatch` page shows the
+  source page at the target URL, in the target locale's shell, under a notice
+  in the target language that links to the original (wording from
+  `language.fallback_notice` in `lang.json`); such a page is `noindex`, has
+  its canonical on the original, and stays out of `hreflang`, site search and
+  the sitemap. An `orphan` target page is not published; a `duplicate_key`
+  stops the build; missing pages keep following `locales.missing_page_policy`.
+  Stale or unverified `lang.json` strings show the source locale's string.
+  The build lists what it held back and writes
+  `build_<environment>.docara/translation-publication.json`. Report mode is
+  unchanged.
+- **Accepting a reviewed set of translations.** `docara translations accept
+  --dry-run` takes a repeated `--key`, a key `--prefix` (a section such as
+  `guide/`) or a `--status` filter and writes one hash-bound plan with the
+  accepted `unverified`/`stale` items in `accepted` and the rest of the
+  selection in `skipped`; `--apply=<plan-sha256>` applies it as before.
+
+### Fixed
+
+- **A page titled like the site is not named twice:** the home page's
+  `<title>` was "Docara — Docara"; it is now "Docara". This changes the output
+  of such pages on every site, with or without `site_url`.
+- **Framework core chunks are fetched once.** Core's own preload of
+  `core-rules.js`, `core-system.js` and `core-loader.js` repeats the query of
+  `core.js`, while the chunk imports carry none, so with `?sf_v=` on `core.js`
+  each chunk was downloaded twice (about 106 KB transferred per page on the ui-doc site).
+  `core.js` is now linked by its commit-addressed path without a query. This
+  changes one script URL on every page.
+- **Example frames load lazily:** inline-example frames and HTML-block frames
+  carry `loading="lazy"`, so frames below the first screen no longer load
+  with the page. Their height is still set by the frame's own message once it
+  loads.
+
 ## [3.2.1] - 2026-10-18
 
 ### Fixed

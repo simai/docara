@@ -29,6 +29,33 @@
             "type": "string",
             "pattern": "^(?:/|/(?!\\.{1,2}(?:/|$))[A-Za-z0-9._~-]+(?:/(?!\\.{1,2}(?:/|$))[A-Za-z0-9._~-]+)*/?)$"
         },
+        "site_url": {
+            "description": "The site's absolute public address: origin plus base_url, such as https://example.com/docs/. When set, the build writes sitemap.xml, robots.txt and llms.txt.",
+            "type": "string",
+            "pattern": "^https?://[A-Za-z0-9.-]+(?::[0-9]{1,5})?(?:/|/[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)*/?)$"
+        },
+        "discovery": {
+            "description": "What llms.txt says about the site. Used only when site_url is set.",
+            "type": "object",
+            "properties": {
+                "description": {"type": "string", "minLength": 1},
+                "llms_links": {
+                    "type": "array",
+                    "maxItems": 32,
+                    "items": {
+                        "type": "object",
+                        "required": ["title", "path"],
+                        "properties": {
+                            "title": {"type": "string", "minLength": 1},
+                            "path": {"type": "string", "pattern": "^[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)*/?$"},
+                            "description": {"type": "string", "minLength": 1}
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
         "default_locale": {
             "type": "string",
             "format": "docara-bcp47"
@@ -201,7 +228,7 @@
             "properties": {
                 "enabled": {"type": "boolean"},
                 "source_locale": {"type": "string", "format": "docara-bcp47"},
-                "mode": {"type": "string", "const": "report"},
+                "mode": {"type": "string", "enum": ["report", "publish-current"]},
                 "lock_file": {
                     "type": "string",
                     "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.json$"

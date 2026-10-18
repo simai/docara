@@ -30,6 +30,11 @@
                     "type": "string",
                     "format": "docara-relative-path"
                 },
+                "share_image": {
+                    "description": "The picture shown when a page is shared (og:image, twitter:image): a PNG, JPEG or WebP file in the project. Used only when site_url is set.",
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
                 "mode": {
                     "type": "string",
                     "enum": ["full", "compact", "logo", "text"]

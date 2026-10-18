@@ -197,7 +197,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $this->escape((string) $page['locale']),
             in_array($page['direction'] ?? null, ['ltr', 'rtl'], true) ? (string) $page['direction'] : 'ltr',
             $this->escape((string) ($page['documentation_version'] ?? 'current')),
-            $this->escape((string) $page['title'] . ' — ' . $brandTitle),
+            $this->escape($this->documentTitle((string) $page['title'], $brandTitle)),
             trim((string) ($page['description'] ?? '')) === ''
                 ? null
                 : $this->escape((string) $page['description']),
@@ -240,6 +240,10 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             json_encode($copy, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP),
             $chrome,
             $this->themeCssUrl($page),
+            in_array($page['robots'] ?? null, ['noindex', 'noindex,follow'], true)
+                ? (string) $page['robots']
+                : null,
+            $this->socialMeta($page, $brandTitle, $branding),
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
@@ -554,6 +558,70 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         }
 
         return $tags === [] ? '' : "\n" . implode("\n", $tags);
+    }
+
+    /** A page titled like the site is not named twice: "Docara", not "Docara — Docara". */
+    private function documentTitle(string $title, string $brandTitle): string
+    {
+        return trim($title) === trim($brandTitle) || trim($title) === ''
+            ? $brandTitle
+            : $title . ' — ' . $brandTitle;
+    }
+
+    /**
+     * Open Graph and Twitter card tags for a site with site_url: the builder
+     * then gives every page an absolute canonical address and the site origin.
+     *
+     * @param  array<string, mixed>  $page
+     * @param  array<string, mixed>  $branding
+     */
+    private function socialMeta(array $page, string $brandTitle, array $branding): ?string
+    {
+        $origin = $page['site_origin'] ?? null;
+        $url = $page['canonical_url'] ?? null;
+        if (! is_string($origin) || ! is_string($url) || ! str_starts_with($url, $origin . '/')) {
+            return null;
+        }
+        $locale = static fn (string $tag): string => str_replace('-', '_', $tag);
+        $title = trim((string) $page['title']) === '' ? $brandTitle : (string) $page['title'];
+        $description = trim((string) ($page['description'] ?? ''));
+        $isHome = (string) $page['url'] === (string) ($page['home_url'] ?? '');
+        $tags = [
+            ['property', 'og:type', $isHome ? 'website' : 'article'],
+            ['property', 'og:site_name', $brandTitle],
+            ['property', 'og:title', $title],
+        ];
+        if ($description !== '') {
+            $tags[] = ['property', 'og:description', $description];
+        }
+        $tags[] = ['property', 'og:url', $url];
+        $tags[] = ['property', 'og:locale', $locale((string) $page['locale'])];
+        foreach (is_array($page['alternates'] ?? null) ? $page['alternates'] : [] as $alternate) {
+            $alternateLocale = (string) ($alternate['locale'] ?? '');
+            if ($alternateLocale !== 'x-default' && $alternateLocale !== (string) $page['locale']) {
+                $tags[] = ['property', 'og:locale:alternate', $locale($alternateLocale)];
+            }
+        }
+        $image = is_string($branding['share_image'] ?? null) && str_starts_with($branding['share_image'], '/')
+            ? $origin . $branding['share_image']
+            : null;
+        if ($image !== null) {
+            $tags[] = ['property', 'og:image', $image];
+        }
+        $tags[] = ['name', 'twitter:card', $image === null ? 'summary' : 'summary_large_image'];
+        $tags[] = ['name', 'twitter:title', $title];
+        if ($description !== '') {
+            $tags[] = ['name', 'twitter:description', $description];
+        }
+        if ($image !== null) {
+            $tags[] = ['name', 'twitter:image', $image];
+        }
+        $html = '';
+        foreach ($tags as [$attribute, $name, $content]) {
+            $html .= '    <meta ' . $attribute . '="' . $this->escape($name) . '" content="' . $this->escape($content) . '">' . "\n";
+        }
+
+        return $html;
     }
 
     private function escape(string $value): string

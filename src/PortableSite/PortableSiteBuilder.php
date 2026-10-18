@@ -37,6 +37,7 @@ use Simai\Docara\I18n\LocaleMissingPagePolicy;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleUrlProjector;
+use Simai\Docara\I18n\TranslationPublicationGate;
 use Simai\Docara\I18n\TranslationStatusService;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\I18n\UiCopy;
@@ -154,6 +155,16 @@ final readonly class PortableSiteBuilder
             $localeRouting,
         );
         $contentLanguages = new ContentLanguageRepository($root);
+        // translation_tracking mode publish-current: held-back translations
+        // show the source text. Other modes build exactly as before.
+        $translationGate = TranslationPublicationGate::fromSite($root, $site);
+        if ($translationGate !== null) {
+            $contentLanguages->withSourceStrings(
+                $localeRegistry->get($translationGate->sourceLocale),
+                $translationGate->languageKeys(),
+            );
+        }
+        $siteDiscovery = SiteDiscovery::fromSite($site);
         $translator = new Translator(
             $localeRegistry,
             $contentLanguages,
@@ -286,6 +297,10 @@ final readonly class PortableSiteBuilder
         $declarativePipeline = null;
         foreach ($pagePaths as $pagePath) {
             $this->observe('page.build', $pagePath);
+            $publication = $translationGate?->decision($pagePath);
+            if (($publication['action'] ?? null) === TranslationPublicationGate::WITHHELD) {
+                continue;
+            }
             $plan = $loader->resolve($pagePath);
             $pageLocale = (string) ($plan->configuration['locale'] ?? $buildLocale);
             if (! $explicitLocaleRegistry && $pageLocale !== $buildLocale) {
@@ -310,6 +325,18 @@ final readonly class PortableSiteBuilder
                 }
 
                 continue;
+            }
+            $translationKey = $this->translationKey($plan, $localeDefinition->contentRoot);
+            $translationFallback = null;
+            if (($publication['action'] ?? null) === TranslationPublicationGate::SOURCE_FALLBACK) {
+                [$plan, $translationFallback] = $this->sourceFallbackPlan(
+                    $loader,
+                    $plan,
+                    $publication,
+                    $localeRegistry,
+                    $localeUrls,
+                );
+                $translationKey = (string) $publication['key'];
             }
             $currentFrameworkLock = CanonicalJson::encode($plan->frameworkLock);
             if ($frameworkLockCanonical !== null && $frameworkLockCanonical !== $currentFrameworkLock) {
@@ -342,6 +369,13 @@ final readonly class PortableSiteBuilder
             $components = $pageResult->frameworkComponents;
             $outline = $pageResult->outline;
             $contentHtml = $pageResult->contentHtml;
+            if ($translationFallback !== null) {
+                $contentHtml = (new TranslationFallbackNotice)->render(
+                    $translator,
+                    $pageLocale,
+                    $translationFallback,
+                ) . $contentHtml;
+            }
             if (isset($outputs[$route['output']])) {
                 throw new PortableConfigurationException(
                     'PORTABLE_OUTPUT_COLLISION',
@@ -358,7 +392,10 @@ final readonly class PortableSiteBuilder
                 'description' => $this->pageDescription($plan),
                 'locale' => $pageLocale,
                 'direction' => $localeDefinition->direction,
-                'translation_key' => $this->translationKey($plan, $localeDefinition->contentRoot),
+                'translation_key' => $translationKey,
+                ...($translationFallback === null ? [] : ['translation_fallback' => $translationFallback]),
+                ...(($plan->frontMatter['noindex'] ?? false) === true || $translationFallback !== null
+                    ? ['robots' => 'noindex'] : []),
                 'tags' => $plan->frontMatter['tags'] ?? [],
                 'documentation_version' => $documentationVersion,
                 'preset' => (string) ($plan->configuration['preset'] ?? 'docs'),
@@ -439,6 +476,7 @@ final readonly class PortableSiteBuilder
             $translations[(string) ($page['translation_key'] ?? $page['page_path'])][(string) $page['locale']] = [
                 'url' => (string) $page['url'],
                 'label' => $localeRegistry->get((string) $page['locale'])->label,
+                'fallback' => ($page['translation_fallback'] ?? null) !== null,
             ];
         }
         foreach ($pages as &$page) {
@@ -458,16 +496,25 @@ final readonly class PortableSiteBuilder
             }
             $page['canonical_url'] = (string) $page['url'];
             $available = $translations[(string) ($page['translation_key'] ?? $page['page_path'])] ?? [];
+            $pageFallback = $page['translation_fallback'] ?? null;
+            if (is_array($pageFallback) && isset($available[(string) $pageFallback['source_locale']])) {
+                // The source text is the original; the held-back URL points to it.
+                $page['canonical_url'] = $available[(string) $pageFallback['source_locale']]['url'];
+            }
             $page['alternates'] = [];
             $page['language_options'] = [];
             foreach ($localeRegistry->all() as $candidateLocale => $definition) {
                 if (! isset($available[$candidateLocale])) {
                     continue;
                 }
-                $page['alternates'][] = [
-                    'locale' => $candidateLocale,
-                    'url' => $available[$candidateLocale]['url'],
-                ];
+                // hreflang names translations only: a page showing the source
+                // text is neither announced nor announces others.
+                if ($pageFallback === null && ! $available[$candidateLocale]['fallback']) {
+                    $page['alternates'][] = [
+                        'locale' => $candidateLocale,
+                        'url' => $available[$candidateLocale]['url'],
+                    ];
+                }
                 $page['language_options'][] = [
                     'locale' => $candidateLocale,
                     'label' => $definition->label,
@@ -479,6 +526,16 @@ final readonly class PortableSiteBuilder
                 'locale' => 'x-default',
                 'url' => $localeUrls->rootUrl(),
             ];
+            if ($siteDiscovery !== null) {
+                // With site_url, canonical and hreflang name absolute
+                // addresses, and the page gets Open Graph tags.
+                $page['site_origin'] = $siteDiscovery->origin;
+                $page['canonical_url'] = $siteDiscovery->absolute((string) $page['canonical_url']);
+                foreach ($page['alternates'] as &$alternate) {
+                    $alternate['url'] = $siteDiscovery->absolute((string) $alternate['url']);
+                }
+                unset($alternate);
+            }
         }
         unset($page);
         $backlinkHydrator = new PortableBacklinkHydrator;
@@ -745,6 +802,7 @@ final readonly class PortableSiteBuilder
             $pages,
             (string) ($site['base_url'] ?? '/'),
             $siteTitle,
+            $siteDiscovery !== null,
         );
         $initialFrameworkPlans = [];
         foreach ($pages as &$page) {
@@ -873,6 +931,12 @@ final readonly class PortableSiteBuilder
                 $this->files->put(
                     rtrim($destination, '/\\') . '/.docara/translation-status.json',
                     $this->prettyCanonicalJson((new TranslationStatusService)->report($root)),
+                );
+            }
+            if ($translationGate !== null) {
+                $this->files->put(
+                    rtrim($destination, '/\\') . '/.docara/translation-publication.json',
+                    $this->prettyCanonicalJson($translationGate->receipt()),
                 );
             }
             if (($site['documentation_tracking']['enabled'] ?? false) === true) {
@@ -1156,6 +1220,8 @@ final readonly class PortableSiteBuilder
                     'description' => $page['description'],
                     'locale' => $page['locale'],
                     'translation_key' => $page['translation_key'],
+                    ...(isset($page['translation_fallback']) ? ['translation_fallback' => $page['translation_fallback']] : []),
+                    ...(isset($page['robots']) ? ['robots' => $page['robots']] : []),
                     'tags' => $page['tags'] ?? [],
                     'output' => $page['output'],
                     'url' => $page['url'],
@@ -1220,6 +1286,14 @@ final readonly class PortableSiteBuilder
             }
             unset($shellClosures, $shellSegmentUrls, $shellPageUrls);
             $orderedDiagnostics = $this->orderedDiagnostics($contextPages, $diagnosticsByUrl);
+            $discoveryFiles = $siteDiscovery === null ? [] : $this->discoveryFiles(
+                $siteDiscovery,
+                $contextPages,
+                $navigations[$defaultLocale->tag->value()] ?? [],
+                $siteTitle,
+                $localeRegistry,
+                $localeUrls,
+            );
             unset($pagesToRender, $pages, $contextPages, $initialFrameworkPlans);
             gc_collect_cycles();
             foreach ($diagnosticsByUrl as $diagnosticRecord) {
@@ -1234,6 +1308,16 @@ final readonly class PortableSiteBuilder
             $localeRoutePublisher->publish($localeRoutePlan, $destination);
             $this->copyContentAssets($contentAssets, $destination);
             $brandPublisher->publish($brandPlan['assets'], $destination);
+            foreach ($discoveryFiles as $discoveryFile => $discoveryContents) {
+                $discoveryPath = rtrim($destination, '/\\') . '/' . $discoveryFile;
+                if ($selectedPageUrl === null && (file_exists($discoveryPath) || is_link($discoveryPath))) {
+                    throw new PortableConfigurationException(
+                        'DISCOVERY_FILE_COLLISION',
+                        "The site already publishes [$discoveryFile]; remove it from the content or remove site_url.",
+                    );
+                }
+                $this->files->put($discoveryPath, $discoveryContents);
+            }
             if ($themeStylesheet !== null) {
                 $this->files->ensureDirectoryExists(rtrim($destination, '/\\') . '/_docara');
                 $this->files->put(
@@ -1522,6 +1606,135 @@ final readonly class PortableSiteBuilder
         return $urls->page($locale, $encoded);
     }
 
+    /**
+     * sitemap.xml, robots.txt and llms.txt for a site with site_url.
+     *
+     * @param  list<array<string, mixed>>  $pages
+     * @param  list<array<string, mixed>>  $navigation  the default locale's visible navigation
+     * @return array<string, string>
+     */
+    private function discoveryFiles(
+        SiteDiscovery $discovery,
+        array $pages,
+        array $navigation,
+        string $siteTitle,
+        LocaleRegistry $locales,
+        LocaleUrlProjector $urls,
+    ): array {
+        $records = [];
+        $published = [];
+        foreach ($pages as $page) {
+            $record = [
+                'url' => (string) $page['url'],
+                'locale' => (string) $page['locale'],
+                'title' => (string) ($page['title'] ?? ''),
+                'description' => (string) ($page['description'] ?? ''),
+                'translation_key' => (string) ($page['translation_key'] ?? $page['url']),
+                'noindex' => ($page['robots'] ?? null) === 'noindex' && ($page['translation_fallback'] ?? null) === null,
+                'translation_fallback' => $page['translation_fallback'] ?? null,
+            ];
+            $records[] = $record;
+            if (SiteDiscovery::indexable($record)) {
+                $published[$record['url']] = $record;
+            }
+        }
+        $sections = [];
+        foreach ($navigation as $node) {
+            if (($node['key'] ?? null) === '@home') {
+                continue;
+            }
+            $url = $this->firstNavigationUrl($node);
+            if ($url !== null && isset($published[$url])) {
+                $sections[] = ['title' => (string) ($node['title'] ?? $published[$url]['title']), 'url' => $url];
+            }
+        }
+        $defaultTag = $locales->default()->tag->value();
+        $languages = [];
+        foreach ([$defaultTag, ...array_keys($locales->all())] as $locale) {
+            $home = $urls->home((string) $locale);
+            if (isset($languages[$locale]) || ! isset($published[$home])) {
+                continue;
+            }
+            $languages[$locale] = ['label' => $locales->get((string) $locale)->label, 'url' => $home, 'locale' => (string) $locale];
+        }
+        $homeDescription = $published[$urls->home($defaultTag)]['description'] ?? null;
+
+        return $discovery->files(
+            $records,
+            $sections,
+            $siteTitle,
+            is_string($homeDescription) && trim($homeDescription) !== '' ? $homeDescription : null,
+            array_values($languages),
+        );
+    }
+
+    /** @param array<string, mixed> $node */
+    private function firstNavigationUrl(array $node): ?string
+    {
+        if (is_string($node['url'] ?? null)) {
+            return $node['url'];
+        }
+        foreach (is_array($node['children'] ?? null) ? $node['children'] : [] as $child) {
+            $url = is_array($child) ? $this->firstNavigationUrl($child) : null;
+            if ($url !== null) {
+                return $url;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * The plan of a target page whose translation is held back: the target's
+     * route and settings with the source page's text. The page is kept out of
+     * the search index, hreflang and the discovery files.
+     *
+     * @param  array{action:string,status:string,key:string,locale:string,source_path:?string,target_path:string}  $publication
+     * @return array{0:ResolvedPagePlan,1:array{status:string,source_locale:string,source_path:string,source_url:string,source_label:string}}
+     */
+    private function sourceFallbackPlan(
+        PortableConfigurationLoader $loader,
+        ResolvedPagePlan $target,
+        array $publication,
+        LocaleRegistry $locales,
+        LocaleUrlProjector $urls,
+    ): array {
+        $sourcePath = (string) $publication['source_path'];
+        $source = $loader->resolve($sourcePath);
+        $sourceLocale = $locales->forPage($sourcePath);
+        $sourceUrl = $this->route($source, $sourceLocale->contentRoot, $urls, $sourceLocale->tag->value())['url'];
+        $configuration = $target->configuration;
+        $configuration['search'] = [
+            ...(is_array($configuration['search'] ?? null) ? $configuration['search'] : []),
+            'indexed' => false,
+        ];
+        $trace = $target->trace;
+        foreach ($source->trace as $record) {
+            if (($record['role'] ?? null) === 'content') {
+                $trace[] = $record;
+            }
+        }
+
+        return [
+            new ResolvedPagePlan(
+                $source->page,
+                $source->markdown,
+                $configuration,
+                $target->frameworkLock,
+                $trace,
+                $target->provenance,
+                $source->frontMatter,
+            ),
+            [
+                'status' => (string) $publication['status'],
+                'source_locale' => $sourceLocale->tag->value(),
+                'source_path' => $sourcePath,
+                'source_url' => $sourceUrl,
+                'source_label' => $sourceLocale->label,
+            ],
+        ];
+    }
+
     private function translationKey(ResolvedPagePlan $plan, string $contentRoot): string
     {
         return (string) ($plan->frontMatter['translation_key']
@@ -1732,6 +1945,8 @@ final readonly class PortableSiteBuilder
                 'description' => (string) ($record['description'] ?? ''),
                 'locale' => (string) ($record['locale'] ?? $configuration['locale'] ?? ''),
                 'translation_key' => (string) ($record['translation_key'] ?? $pagePath),
+                ...(is_array($record['translation_fallback'] ?? null) ? ['translation_fallback' => $record['translation_fallback']] : []),
+                ...(is_string($record['robots'] ?? null) ? ['robots' => $record['robots']] : []),
                 'preset' => (string) ($configuration['preset'] ?? 'docs'),
                 'navigation_hidden' => (bool) data_get($configuration, 'navigation.hidden', false),
                 'navigation_order' => data_get($configuration, 'navigation.order'),

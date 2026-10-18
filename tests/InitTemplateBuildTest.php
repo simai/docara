@@ -74,6 +74,53 @@ final class InitTemplateBuildTest extends TestCase
     }
 
     #[Test]
+    public function a_starter_builds_and_verifies_under_a_subdirectory_base_url(): void
+    {
+        // A GitHub Pages project site lives under /<repository>/. Authors
+        // still write routes from the site root, in Markdown and in header
+        // navigation; the build puts the base in front of them.
+        $site = $this->tmpPath('site-base-url');
+        $this->filesystem->ensureDirectoryExists($site);
+        $this->docara(['init', '--template=minimal', '--lang=en'], $site);
+        $configuration = json_decode((string) file_get_contents($site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
+        $configuration['base_url'] = '/docara/';
+        file_put_contents($site . '/docara.json', json_encode($configuration, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
+        $section = json_decode((string) file_get_contents($site . '/content/en/section.json'), true, 512, JSON_THROW_ON_ERROR);
+        $section['header_navigation'] = [
+            'enabled' => true,
+            'items' => [
+                ['id' => 'components', 'label' => 'Components', 'href' => '/components/'],
+                ['id' => 'writing', 'label' => 'Writing', 'href' => '/writing/'],
+            ],
+        ];
+        file_put_contents($site . '/content/en/section.json', json_encode($section, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
+        file_put_contents(
+            $site . '/content/en/features.md',
+            "# Features\n\nRead [writing pages](/writing/) first.\n\n"
+            . ":::diagram {engine=mermaid title=\"Build\"}\nflowchart LR\n  Markdown --> HTML\n:::\n\n"
+            . ":::math {display=block label=\"Pythagoras\"}\na^2 + b^2 = c^2\n:::\n",
+        );
+
+        $this->docara(['build', 'production'], $site);
+        $verification = json_decode(
+            $this->docara(['verify-static', 'build_production', '--no-ansi'], $site, jsonOutput: true),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+
+        self::assertSame('/docara/', $verification['deployment_base']);
+        self::assertSame([], $verification['broken']);
+        $html = (string) file_get_contents($site . '/build_production/features/index.html');
+        self::assertStringContainsString('href="/docara/writing/">writing pages</a>', $html);
+        self::assertMatchesRegularExpression('#<a\b[^>]*\bhref="/docara/writing/"[^>]*data-docara-menu-link|<a\b[^>]*data-docara-menu-link[^>]*\bhref="/docara/writing/"#', $html);
+        self::assertDoesNotMatchRegularExpression('#\b(?:href|src)="/(?!docara/)#', $html);
+        self::assertStringContainsString('src="/docara/_docara/vendor/mermaid/mermaid.min.js?', $html);
+        self::assertFileExists($site . '/build_production/_docara/vendor/mermaid/mermaid.min.js');
+        self::assertFileExists($site . '/build_production/_docara/vendor/katex/katex.min.js');
+    }
+
+    #[Test]
     public function a_site_pinning_the_lock_docara_2_18_shipped_builds_and_verifies(): void
     {
         $site = $this->tmpPath('site-2-18-lock');

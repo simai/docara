@@ -692,6 +692,7 @@ final readonly class PortableSiteBuilder
         foreach ($localeRegistry->all() as $locale => $_definition) {
             $localeLinkProjectors[$locale] = new LocaleInternalLinkProjector(
                 $localeLinkRoutes[$locale] ?? [],
+                $localeUrls->deploymentBase(),
             );
         }
         $navigationBuilder = new PortableNavigationBuilder;
@@ -987,7 +988,10 @@ final readonly class PortableSiteBuilder
                     $page['outline'],
                     is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [],
                     is_array($declarativePlan->configuration['header_navigation'] ?? null)
-                        ? $declarativePlan->configuration['header_navigation']
+                        ? $this->rebasedHeaderNavigation(
+                            $declarativePlan->configuration['header_navigation'],
+                            $localeUrls->deploymentBase(),
+                        )
                         : [],
                     (string) $page['url'],
                 );
@@ -1587,6 +1591,26 @@ final readonly class PortableSiteBuilder
         $description = preg_replace('/[*_`~]+/u', '', $description) ?? $description;
 
         return trim($description);
+    }
+
+    /**
+     * Header items name site routes from the site root, like Markdown links.
+     *
+     * @param  array<string, mixed>  $navigation
+     * @return array<string, mixed>
+     */
+    private function rebasedHeaderNavigation(array $navigation, string $deploymentBase): array
+    {
+        if (! is_array($navigation['items'] ?? null)) {
+            return $navigation;
+        }
+        foreach ($navigation['items'] as $index => $item) {
+            if (is_array($item) && is_string($item['href'] ?? null)) {
+                $navigation['items'][$index]['href'] = LocaleInternalLinkProjector::rebase($item['href'], $deploymentBase);
+            }
+        }
+
+        return $navigation;
     }
 
     private function homeUrl(string $baseUrl): string

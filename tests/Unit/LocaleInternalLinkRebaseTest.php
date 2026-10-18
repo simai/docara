@@ -30,7 +30,7 @@ final class LocaleInternalLinkRebaseTest extends TestCase
                 . '<a href="https://github.com/simai/docara">c</a>'
                 . '<iframe src="/docara/ru/project-demos/" title="d"></iframe>'
                 . '<iframe title="e" srcdoc="&lt;a href=&quot;/x/&quot;&gt;"></iframe>'
-                . '<img src="/logo.svg">',
+                . '<img src="/docara/logo.svg">',
             $projector->project(
                 '<a class="x" href="/start/#install">a</a>'
                 . '<a href="/ru/components/">b</a>'

@@ -12,6 +12,7 @@ use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkPortableAssetProjection;
 use Simai\Docara\Framework\ShellStylesheetBundler;
 use Simai\Docara\Framework\ShellStylesheetCascade;
+use Simai\Docara\I18n\LocaleInternalLinkProjector;
 use Simai\Docara\I18n\LocaleTag;
 use Simai\Docara\Portable\JsonSchemaValidator;
 use Simai\Docara\Portable\SchemaRepository;
@@ -2924,9 +2925,20 @@ foreach ($htmlFiles as $htmlFile) {
     if (! is_string($referenceHtml)) {
         $referenceHtml = $html;
     }
-    preg_match_all('/\b(?:href|src|data-docara-search-index)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i', $referenceHtml, $matches, PREG_SET_ORDER);
+    preg_match_all('/\b(?:href|src|poster|data-docara-search-index)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i', $referenceHtml, $matches, PREG_SET_ORDER);
+    $references = [];
     foreach ($matches as $match) {
-        $reference = html_entity_decode($match[1] !== '' ? $match[1] : $match[2], ENT_QUOTES | ENT_HTML5);
+        $references[] = html_entity_decode($match[1] !== '' ? $match[1] : $match[2], ENT_QUOTES | ENT_HTML5);
+    }
+    // Each image candidate of a srcset is a reference of its own.
+    preg_match_all('/\s(?:srcset|imagesrcset)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i', $referenceHtml, $srcsetMatches, PREG_SET_ORDER);
+    foreach ($srcsetMatches as $match) {
+        $srcset = html_entity_decode($match[1] !== '' ? $match[1] : $match[2], ENT_QUOTES | ENT_HTML5);
+        foreach (LocaleInternalLinkProjector::srcsetUrls($srcset) as [$candidate]) {
+            $references[] = $candidate;
+        }
+    }
+    foreach ($references as $reference) {
         if ($reference === ''
             || str_starts_with($reference, '//')
             || preg_match('/\A[a-z][a-z0-9+.-]*:/i', $reference) === 1

@@ -780,6 +780,27 @@ MD);
     }
 
     #[Test]
+    public function details_show_the_framework_disclosure_chevron_in_every_view(): void
+    {
+        foreach (['surface' => 'bg-surface-0 border border-outline-variant radius-2 p-2 m-bottom-1', 'lines' => 'border-bottom-1 border-bottom-solid border-outline-variant p-y-1 m-bottom-1'] as $view => $classes) {
+            $html = (new PortableMarkdownRenderer)->render(":::details {view=$view}\n### Вопрос\n\nОтвет.\n:::\n");
+
+            self::assertStringContainsString(
+                '<details data-docara-block="details" data-view="' . $view . '" class="' . $classes . '">'
+                . '<summary class="flex items-cross-center gap-1 cursor-pointer font-bold">'
+                . '<i class="sf-icon sf-icon-loaded" aria-hidden="true">chevron_right</i>'
+                . '<span class="min-w-0">Вопрос</span></summary><div class="p-top-1"><p>Ответ.</p></div></details>',
+                $html,
+            );
+        }
+
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('[data-docara-block="details"]>summary::-webkit-details-marker{display:none}', $css);
+        self::assertStringContainsString('[data-docara-block="details"][open]>summary>.sf-icon{transform:rotate(90deg)}', $css);
+        self::assertStringContainsString('[data-docara-block="details"]>summary:focus-visible{outline:', $css);
+    }
+
+    #[Test]
     public function hero_renders_a_bounded_first_screen_with_an_optional_action_and_media(): void
     {
         $html = (new PortableMarkdownRenderer)->render(<<<'MD'

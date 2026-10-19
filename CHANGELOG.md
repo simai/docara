@@ -91,6 +91,13 @@ All notable changes to Docara are recorded here. The format follows
 - Inline code, links and emphasis in a `:::features` card stay in the card's
   text instead of each becoming its own row: the card keeps its icon and
   leading bold title on their own lines and sets the rest as one text run.
+- `:::details` shows a disclosure chevron (the Framework accordion's
+  `chevron_right`, turned down when open) in both views, and its summary has
+  a visible keyboard focus ring. A flex summary had dropped the native marker,
+  so `view=lines` items looked like bold lines; that view also used border
+  and padding utilities the Framework does not define, so it now draws its
+  bottom rule and vertical padding with `border-bottom-1`, `p-y-1` and
+  `p-top-1`.
 
 ## [3.5.0] - 2026-10-19
 

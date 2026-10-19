@@ -411,7 +411,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // and its index; this site uses both icon families: 1901.
         // The home page redesign replaces two PNG renders with three WebP
         // screenshots: 1902.
-        self::assertCount(1902, $firstFiles);
+        // Details in the lines view use the Framework's border-width,
+        // border-style and padding utilities, which regroups the shared shell
+        // stylesheets into 44: 1903.
+        self::assertCount(1903, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

@@ -35,3 +35,7 @@ jobs:
         working-directory: docs/site
       - run: php ../../docara verify-static build_production
         working-directory: docs/site
+      # Page weight: HTML plus the CSS, JS, fonts and images each page makes the
+      # browser fetch, against the budgets in docs/site/page-weight.json.
+      - run: php ../../scripts/verify-page-weight.php build_production --config=page-weight.json
+        working-directory: docs/site

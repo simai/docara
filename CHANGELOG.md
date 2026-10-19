@@ -12,6 +12,19 @@ All notable changes to Docara are recorded here. The format follows
   (48 KB, the Docara mark and a screenshot of the start page), so its pages
   published with `site_url` carry `og:image`, `twitter:image` and
   `twitter:card: summary_large_image`.
+- **Page-weight check.** `scripts/verify-page-weight.php <build-dir>` adds up,
+  per page and de-duplicated, the HTML and the stylesheets, scripts,
+  preloads, images and CSS fonts and backgrounds the page makes the browser
+  fetch (an `@font-face` counts only when a rule whose classes occur on the
+  page names its family, directly or through a document-wide custom property,
+  and, with `unicode-range`, the page has a character in range; of a family's
+  weights only the one nearest 400 counts). It fails a page over `max_page_bytes` (default 3 MB), an image
+  over `max_image_bytes` (default 1 MB), a page with only shell-subset icons
+  that fetches a full Material Symbols font, and an `<img>` whose bitmap is
+  more than 2.5× its `width`/`height`. Budgets come from a JSON file with
+  per-page overrides. The Quality workflow runs it on the documentation site
+  with `docs/site/page-weight.json` (4.5 MB per page, 1.3 MB per image, and
+  explicit overrides for the icon and diagram pages).
 
 ### Changed
 

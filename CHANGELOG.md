@@ -6,6 +6,40 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- A page description derived from the Markdown no longer stops at a lead-in
+  that ends with a colon. Docara keeps the sentences before the lead-in
+  sentence or, for a one-sentence lead-in, takes the next paragraph of the
+  introduction; front matter and page `description` still take precedence.
+- The outline marks a heading as current once its top passes 35% of the
+  window height (and never above the heading's scroll margin), instead of a
+  fixed 96px. A heading reached through an outline link stays current while
+  it rests near the top, until the reader scrolls by hand.
+- Headings inside inline example previews move one level down (`h6` stays
+  `h6`) and keep their look through Framework heading and text size classes,
+  so an inline sample no longer adds a document `<h1>` or joins the page
+  outline. The Source tab shows the markup as written; sandboxed examples are
+  unchanged.
+- Reading mode sets the content column, code blocks and tables included, on
+  the prose measure and centres it; the reader wide format still uses the
+  full width.
+
+### Fixed
+
+- In the documentation navigation, a parent row and its first child are
+  spaced like sibling rows (1px) instead of 8px apart, on the desktop tree and
+  in the mobile sheet.
+- Outline and other in-page anchors stop one spacing step below the sticky
+  header instead of flush beneath it. The offset follows the tokens the header
+  is built from at every breakpoint and drops the header in reading mode.
+- The reader settings dialog is named by its panel heading through
+  `aria-labelledby` instead of the generic Framework label; the search dialog
+  drops that label too.
+- The documentation site's demonstrator result pages are marked `noindex`, so
+  they leave `sitemap.xml` and `llms.txt`, and the configuration page has a
+  proper description.
+
 ## [3.5.0] - 2026-10-19
 
 ### Added

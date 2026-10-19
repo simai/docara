@@ -8,19 +8,14 @@ HTTP. Для сборки нужны PHP 8.2+ с расширениями `ctype
 ## 1. Создайте проект
 
 Установите стабильный пакет Docara прямо в каталог будущего проекта. Composer
-берёт его из репозитория Docara на GitHub: первая команда говорит ему, где
-этот репозиторий.
+берёт его с Packagist.
 
 ```bash
 mkdir /path/to/my-docara
 cd /path/to/my-docara
-echo '{"repositories": [{"type": "vcs", "url": "https://github.com/simai/docara.git"}]}' > composer.json
 composer require simai/docara:^3.0
 php vendor/bin/docara init .
 ```
-
-В проекте, где `composer.json` уже есть, репозиторий добавляют командой
-`composer config repositories.docara vcs https://github.com/simai/docara.git`.
 
 Composer фиксирует точную установленную версию в `composer.lock`, а
 `vendor/bin/docara` всегда относится именно к этому проекту. `init` допускает

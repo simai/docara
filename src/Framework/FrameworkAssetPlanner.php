@@ -20,6 +20,21 @@ final readonly class FrameworkAssetPlanner
 
     private const ICON_SUBSET_PACKET_SHA256 = 'ab13403d3b78df4f13e35249307d09e3154b2dd43f3d004ad0ba44e7d6feff44';
 
+    /*
+     * Static instances of every icon name, one per family, weight and fill
+     * an author can ask for, made by scripts/build-icon-catalog.cjs. They
+     * replace the variable full fonts for every icon those axes describe.
+     */
+    private const ICON_CATALOG_INDEX = 'vendor/docara/icon-catalog/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/icon-catalog.json';
+
+    private const ICON_CATALOG_INDEX_SHA256 = '6084d652c50f78e38bec4a5c0ddc0215660ee239ec7dd46885d7c7ba666ede8f';
+
+    private const ICON_CATALOG_FAMILIES = ['outlined', 'rounded', 'sharp'];
+
+    private const ICON_CATALOG_WEIGHTS = [300, 400, 500];
+
+    private const ICON_FILLED_SELECTOR = ':is(.sf-icon-filled,.sf-icon--filled,.sf-icon-solid)';
+
     public function __construct(
         private FrameworkManifestRepository $repository,
         private string $assetBase,
@@ -78,6 +93,7 @@ final readonly class FrameworkAssetPlanner
         $runtimeProjection = $this->repository->runtimeProjection();
         $iconProjection = $this->repository->iconProjection();
         $iconSubset = $this->iconShellSubset();
+        $iconCatalog = $this->iconCatalog($iconSubset);
         $iconFont = $runtimeProjection === null
             ? 'component/icons/fonts/MaterialSymbols-Outlined.woff2'
             : (string) $runtimeProjection['icon_font'];
@@ -133,7 +149,7 @@ final readonly class FrameworkAssetPlanner
         $shell = $html === null
             ? $this->shellPlan($runtime, $cacheVersion)
             : $this->productionHtmlPlan($html, $runtime, $cacheVersion);
-        $shell['preload']['icons'] = $iconSubset['receipt'];
+        $shell['preload']['icons'] = [...$iconSubset['receipt'], 'catalog' => $iconCatalog['receipt']];
         $assets = [[
             'key' => 'docara.framework.storage.compatibility',
             'kind' => 'boot',
@@ -178,6 +194,12 @@ final readonly class FrameworkAssetPlanner
                 'source_revision' => $iconSubset['manifest']['source']['revision'],
                 'sha256' => $iconSubset['manifest']['files']['font']['sha256'],
             ], [
+                'key' => 'simai.framework.icon_catalog.css',
+                'kind' => 'inline_css',
+                'content' => $this->iconCatalogCss($iconSubset, $iconCatalog),
+                'source_revision' => $iconCatalog['revision'],
+                'sha256' => $iconCatalog['index_sha256'],
+            ], [
                 'key' => 'simai.framework.icon_fallback_font.css',
                 'kind' => 'inline_css',
                 'content' => $this->iconFallbackCss(
@@ -206,6 +228,7 @@ final readonly class FrameworkAssetPlanner
                 'content' => $this->iconFallbackReadyRuntime(
                     $iconProjection !== null,
                     $iconSubset,
+                    $iconCatalog,
                     $iconProjection === null
                         ? $uiBase . '/' . $iconFont
                         : $this->projectedPublicUrl((string) $iconProjection['files']['outlined']['public']),
@@ -542,7 +565,121 @@ final readonly class FrameworkAssetPlanner
                 'css_sha256' => $manifest['files']['css']['sha256'],
                 'manifest_sha256' => hash('sha256', $manifestBytes),
                 'packet_sha256' => $manifest['packet_sha256'],
-                'fallback' => 'local_full_font_on_unknown_icon',
+                'fallback' => 'icon_catalog_then_local_full_font',
+            ],
+        ];
+    }
+
+    /**
+     * The icon catalogue index and the URL of each instance, checked against
+     * the pinned index hash, each instance manifest and each font file.
+     *
+     * The index also names the characters the shell subset maps: the
+     * subset draws exactly the icon names written with them, as the script
+     * that made the index proved against these subset bytes.
+     *
+     * @param  array<string,mixed>  $subset
+     * @return array{
+     *   revision:string,
+     *   index_sha256:string,
+     *   tag:string,
+     *   subset_characters:string,
+     *   urls:array<string,array<int,array<int,string>>>,
+     *   receipt:array<string,mixed>
+     * }
+     */
+    private function iconCatalog(array $subset): array
+    {
+        $indexBytes = $this->repository->bundledPortableAsset(self::ICON_CATALOG_INDEX);
+        $indexSha256 = hash('sha256', $indexBytes);
+        if (! hash_equals(self::ICON_CATALOG_INDEX_SHA256, $indexSha256)) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_CATALOG_INDEX_HASH_MISMATCH');
+        }
+        try {
+            $index = json_decode($indexBytes, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_CATALOG_INDEX_INVALID');
+        }
+        $directory = dirname(self::ICON_CATALOG_INDEX);
+        $revision = basename($directory);
+        if (! is_array($index)
+            || ($index['schema'] ?? null) !== 'docara.icon_catalog.v1'
+            || ($index['source']['revision'] ?? null) !== $revision
+            || ($index['axes'] ?? null) !== ['GRAD' => 0, 'opsz' => 24]
+            || ! is_int($index['icons']['count'] ?? null)
+            || ! is_array($index['instances'] ?? null)
+            || ! array_is_list($index['instances'])
+            || count($index['instances']) !== count(self::ICON_CATALOG_FAMILIES) * count(self::ICON_CATALOG_WEIGHTS) * 2
+            || ($index['shell_subset']['font_sha256'] ?? null) !== $subset['manifest']['files']['font']['sha256']
+            || ! is_string($index['shell_subset']['characters'] ?? null)
+            || preg_match('/^[a-z0-9_]+$/D', $index['shell_subset']['characters']) !== 1
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_CATALOG_INDEX_INVALID');
+        }
+        $characters = $index['shell_subset']['characters'];
+        $named = count_chars(implode('', $subset['manifest']['icons']), 3);
+        if ($characters !== $named) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_CATALOG_INDEX_INVALID');
+        }
+        $urls = [];
+        foreach ($index['instances'] as $instance) {
+            $family = $instance['family'] ?? null;
+            $weight = $instance['weight'] ?? null;
+            $fill = $instance['fill'] ?? null;
+            $font = $instance['font'] ?? null;
+            $manifestRecord = $instance['manifest'] ?? null;
+            if (! in_array($family, self::ICON_CATALOG_FAMILIES, true)
+                || ! in_array($weight, self::ICON_CATALOG_WEIGHTS, true)
+                || ! in_array($fill, [0, 1], true)
+                || isset($urls[$family][$fill][$weight])
+                || ! is_array($font)
+                || ! is_string($font['path'] ?? null)
+                || preg_match('/^material-symbols-' . $family . '\.[a-f0-9]{20}\.woff2$/D', $font['path']) !== 1
+                || ! is_string($font['sha256'] ?? null)
+                || ! is_int($font['size'] ?? null)
+                || ! is_array($manifestRecord)
+                || ! is_string($manifestRecord['path'] ?? null)
+                || ! is_string($manifestRecord['sha256'] ?? null)
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_ICON_CATALOG_INDEX_INVALID');
+            }
+            $manifestBytes = $this->repository->bundledPortableAsset($directory . '/' . $manifestRecord['path']);
+            if (! hash_equals($manifestRecord['sha256'], hash('sha256', $manifestBytes))) {
+                throw new FrameworkComponentException('FRAMEWORK_ICON_CATALOG_MANIFEST_HASH_MISMATCH', $manifestRecord['path']);
+            }
+            $manifest = json_decode($manifestBytes, true, 512, JSON_THROW_ON_ERROR);
+            if (! is_array($manifest)
+                || ($manifest['schema'] ?? null) !== 'sf.icon_subset.v1'
+                || ($manifest['family'] ?? null) !== $family
+                || ($manifest['axes'] ?? null) !== ['FILL' => [$fill], 'GRAD' => [0], 'opsz' => [24], 'wght' => [$weight]]
+                || ($manifest['source']['revision'] ?? null) !== $revision
+                || ($manifest['files']['font'] ?? null) !== $font
+                || ! is_array($manifest['icons'] ?? null)
+                || count($manifest['icons']) !== $index['icons']['count']
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_ICON_CATALOG_MANIFEST_INVALID', $manifestRecord['path']);
+            }
+            $fontRelative = $directory . '/' . $font['path'];
+            if (strlen($this->repository->bundledPortableBinaryAsset($fontRelative, $font['sha256'])) !== $font['size']) {
+                throw new FrameworkComponentException('FRAMEWORK_ICON_CATALOG_FONT_SIZE_MISMATCH', $font['path']);
+            }
+            $urls[$family][$fill][$weight] = $this->projectedPublicUrl('_docara/' . $fontRelative);
+        }
+
+        return [
+            'revision' => $revision,
+            'index_sha256' => $indexSha256,
+            'tag' => substr($indexSha256, 0, 12),
+            'subset_characters' => $characters,
+            'urls' => $urls,
+            'receipt' => [
+                'schema' => 'docara.icon_catalog.v1',
+                'index_sha256' => $indexSha256,
+                'source_revision' => $revision,
+                'icons' => $index['icons']['count'],
+                'families' => self::ICON_CATALOG_FAMILIES,
+                'weights' => self::ICON_CATALOG_WEIGHTS,
+                'fills' => [0, 1],
             ],
         ];
     }
@@ -1845,6 +1982,10 @@ final readonly class FrameworkAssetPlanner
             . '"opsz" var(--sf-icon--optical-size,24)}';
     }
 
+    /**
+     * The variable Rounded and Sharp fonts, for a variant icon whose axes no
+     * catalogue instance draws: the icon runtime marks it sf-icon-full-font.
+     */
     private function iconVariantCss(string $roundedUrl, string $sharpUrl): string
     {
         $settings = 'font-feature-settings:"liga"!important;font-variation-settings:"FILL" var(--sf-icon--fill,0),'
@@ -1855,14 +1996,76 @@ final readonly class FrameworkAssetPlanner
             . '") format("woff2");font-style:normal;font-weight:100 700;font-display:block}'
             . '@font-face{font-family:"Material Symbols Sharp";src:url("' . $sharpUrl
             . '") format("woff2");font-style:normal;font-weight:100 700;font-display:block}'
-            . 'html body .sf-icon.sf-icon-rounded{--sf-icon--font-family:"Material Symbols Rounded";'
+            . 'html body .sf-icon.sf-icon-rounded.sf-icon-full-font{--sf-icon--font-family:"Material Symbols Rounded";'
             . 'font-family:"Material Symbols Rounded"!important;' . $settings
-            . 'html body .sf-icon.sf-icon-shape{--sf-icon--font-family:"Material Symbols Sharp";'
+            . 'html body .sf-icon.sf-icon-shape.sf-icon-full-font{--sf-icon--font-family:"Material Symbols Sharp";'
             . 'font-family:"Material Symbols Sharp"!important;' . $settings;
     }
 
-    /** @param array<string,mixed> $subset */
-    private function iconFallbackReadyRuntime(bool $hasVariants, array $subset, string $fullFontUrl): string
+    /** @param array<string,mixed> $catalog */
+    private function iconCatalogFamily(array $catalog, string $family, int $fill): string
+    {
+        return 'Docara Symbols ' . ucfirst($family) . ($fill === 1 ? ' Filled ' : ' ') . $catalog['tag'];
+    }
+
+    /**
+     * Every catalogue face, named by family and fill and told apart by
+     * weight, so the browser fetches only the instance an icon's computed
+     * font-weight matches. The shell subset's family gains the light and
+     * medium faces, so an outlined icon the subset names keeps the subset at
+     * regular weight. Each face is tagged with its instance for the example
+     * frame bridge, which sends a frame only the faces it asks for.
+     *
+     * @param  array<string,mixed>  $subset
+     * @param  array<string,mixed>  $catalog
+     */
+    private function iconCatalogCss(array $subset, array $catalog): string
+    {
+        $face = static fn (string $id, string $family, string $url, int $weight): string => '/*docara-icon-face:' . $id . '*/'
+            . '@font-face{font-family:"' . $family . '";src:url("' . $url . '") format("woff2");'
+            . 'font-style:normal;font-weight:' . $weight . ';font-display:block}';
+        $css = '';
+        foreach ([300, 500] as $weight) {
+            $css .= $face(
+                'outlined-' . $weight . '-0',
+                (string) $subset['manifest']['font_family'],
+                $catalog['urls']['outlined'][0][$weight],
+                $weight,
+            );
+        }
+        foreach (self::ICON_CATALOG_FAMILIES as $family) {
+            foreach ([0, 1] as $fill) {
+                foreach (self::ICON_CATALOG_WEIGHTS as $weight) {
+                    $css .= $face(
+                        $family . '-' . $weight . '-' . $fill,
+                        $this->iconCatalogFamily($catalog, $family, $fill),
+                        $catalog['urls'][$family][$fill][$weight],
+                        $weight,
+                    );
+                }
+            }
+        }
+        $rule = fn (string $selector, string $family, int $fill): string => 'html body ' . $selector . '{'
+            . '--sf-icon--font-family:"' . $this->iconCatalogFamily($catalog, $family, $fill) . '";'
+            . 'font-family:"' . $this->iconCatalogFamily($catalog, $family, $fill) . '"!important;'
+            . 'font-feature-settings:"liga"!important}';
+        $outlined = ':not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-full-font)';
+
+        return $css
+            // A name the shell subset lacks, marked by the icon runtime.
+            . $rule('.sf-icon.sf-icon-complete' . $outlined, 'outlined', 0)
+            . $rule('.sf-icon' . self::ICON_FILLED_SELECTOR . $outlined, 'outlined', 1)
+            . $rule('.sf-icon.sf-icon-rounded:not(.sf-icon-full-font)', 'rounded', 0)
+            . $rule('.sf-icon.sf-icon-rounded' . self::ICON_FILLED_SELECTOR . ':not(.sf-icon-full-font)', 'rounded', 1)
+            . $rule('.sf-icon.sf-icon-shape:not(.sf-icon-full-font)', 'sharp', 0)
+            . $rule('.sf-icon.sf-icon-shape' . self::ICON_FILLED_SELECTOR . ':not(.sf-icon-full-font)', 'sharp', 1);
+    }
+
+    /**
+     * @param  array<string,mixed>  $subset
+     * @param  array<string,mixed>  $catalog
+     */
+    private function iconFallbackReadyRuntime(bool $hasVariants, array $subset, array $catalog, string $fullFontUrl): string
     {
         $variants = $hasVariants
             ? '{rounded:"Material Symbols Rounded",shape:"Material Symbols Sharp"}'
@@ -1871,33 +2074,55 @@ final readonly class FrameworkAssetPlanner
             $subset['manifest']['font_family'],
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
         );
-        $subsetIcons = json_encode(
-            $subset['manifest']['icons'],
-            JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
-        );
+        $catalogFamilies = [];
+        foreach (['outlined' => 'outlined', 'rounded' => 'rounded', 'shape' => 'sharp'] as $variant => $family) {
+            $catalogFamilies[$variant] = [
+                $this->iconCatalogFamily($catalog, $family, 0),
+                $this->iconCatalogFamily($catalog, $family, 1),
+            ];
+        }
+        $catalogJson = json_encode($catalogFamilies, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
+        $weights = json_encode(self::ICON_CATALOG_WEIGHTS, JSON_THROW_ON_ERROR);
         $fallbackCss = json_encode(
             $this->iconFallbackCss($fullFontUrl),
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
         );
 
         return '(function(){var variants=' . $variants . ',loaded={},subsetFamily=' . $subsetFamily
-            . ',subsetIcons=new Set(' . $subsetIcons . '),fallbackCss=' . $fallbackCss . ',fallbackPending=null;'
+            . ',beyondSubset=/[^' . $catalog['subset_characters'] . ']/,catalog=' . $catalogJson . ',catalogWeights=' . $weights
+            . ',fallbackCss=' . $fallbackCss . ',fallbackPending=null,framed=document.documentElement.hasAttribute("data-docara-example-frame"),framePending={};'
             . 'function iconName(icon){return String(icon.getAttribute("icon")||icon.textContent||"").trim()}'
-            // A sandboxed example frame cannot fetch the full font from the
-            // site, so it asks the shell for it, once, at the same moment the
-            // page itself would start loading it.
-            . 'function fallbackStyle(){return document.querySelector(\'style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"],style[data-docara-example-framework-inline-style="simai.framework.icon_fallback_font.css"]\')}'
-            . 'function requestFullFont(){return new Promise(function(resolve){if(fallbackStyle()){resolve();return}var observer=new MutationObserver(function(){if(fallbackStyle()){observer.disconnect();resolve()}});observer.observe(document.head,{childList:true});parent.postMessage({type:"docara:example-icons",icons:["full"]},"*")})}'
-            . 'function ensureFullFont(){if(fallbackPending)return fallbackPending;var style=fallbackStyle();if(!style&&document.documentElement.hasAttribute("data-docara-example-frame")){fallbackPending=requestFullFont().then(function(){return document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "Material Symbols Outlined Full"\'):[true]});return fallbackPending}if(!style){style=document.createElement("style");style.dataset.docaraIconFallback="outlined";style.textContent=fallbackCss;document.head.appendChild(style)}fallbackPending=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "Material Symbols Outlined Full"\'):Promise.resolve([true]);return fallbackPending}'
-            // An icon without a name yet (a Framework checkbox mark before it
-            // is checked) has no glyph to fetch; the subset face covers it.
-            . 'function family(icon){if(icon.classList.contains("sf-icon-rounded"))return variants.rounded||null;if(icon.classList.contains("sf-icon-shape"))return variants.shape||null;var name=iconName(icon);if(name===""||subsetIcons.has(name)){icon.classList.remove("sf-icon-full-font");return subsetFamily}icon.classList.add("sf-icon-full-font");return "Material Symbols Outlined Full"}'
+            // A sandboxed example frame cannot fetch fonts from the site, so
+            // it asks the shell for each face it needs, once, and waits for
+            // the style that carries it.
+            . 'function frameStyle(key){return document.querySelector(\'style[data-docara-example-framework-inline-style="\'+key+\'"]\')}'
+            . 'function requestFrameStyle(key,token){if(framePending[key])return framePending[key];framePending[key]=new Promise(function(resolve){if(frameStyle(key)){resolve();return}var observer=new MutationObserver(function(){if(frameStyle(key)){observer.disconnect();resolve()}});observer.observe(document.head,{childList:true});parent.postMessage({type:"docara:example-icons",icons:[token]},"*")});return framePending[key]}'
+            . 'function fallbackStyle(){return document.querySelector(\'style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]\')||frameStyle("simai.framework.icon_fallback_font.css")}'
+            . 'function ensureFullFont(){if(fallbackPending)return fallbackPending;var style=fallbackStyle();if(!style&&framed){fallbackPending=requestFrameStyle("simai.framework.icon_fallback_font.css","full");return fallbackPending}if(!style){style=document.createElement("style");style.dataset.docaraIconFallback="outlined";style.textContent=fallbackCss;document.head.appendChild(style)}fallbackPending=Promise.resolve();return fallbackPending}'
+            . 'function ensureFace(face){if(face.full==="full")return ensureFullFont();if(!framed)return Promise.resolve();if(face.full)return requestFrameStyle("simai.framework.icon_variant_fonts.css",face.full);return face.id?requestFrameStyle("simai.framework.icon_catalog.css#"+face.id,"face:"+face.id):Promise.resolve()}'
+            . 'function axis(style,name,fallback){var value=parseFloat(style.getPropertyValue(name));return isNaN(value)?fallback:value}'
+            // The face follows the icon's own computed axes. A catalogue
+            // instance draws weights 300, 400 and 500, fill 0 and 1 with
+            // grade 0 and optical size 24; anything else takes the variable
+            // full font of its family. The subset draws every name written
+            // with its own characters, so only another outlined regular name
+            // takes the catalogue.
+            // An icon without a name yet (a Framework checkbox mark before
+            // it is checked) has no glyph to fetch; the subset face covers it.
+            . 'function family(icon){var variant=icon.classList.contains("sf-icon-rounded")?"rounded":icon.classList.contains("sf-icon-shape")?"shape":"outlined",name=iconName(icon),filled=icon.matches(".sf-icon-filled,.sf-icon--filled,.sf-icon-solid")?1:0,style=getComputedStyle(icon),weight=parseFloat(style.fontWeight)||400,'
+            . 'drawn=axis(style,"--sf-icon--fill",0)===filled&&axis(style,"--sf-icon--grade",0)===0&&axis(style,"--sf-icon--optical-size",24)===24&&catalogWeights.indexOf(weight)!==-1;'
+            . 'if(!drawn&&(variant==="outlined"||variants[variant])){icon.classList.remove("sf-icon-complete");icon.classList.add("sf-icon-full-font");return variant==="outlined"?{family:"Material Symbols Outlined Full",weight:weight,full:"full"}:{family:variants[variant],weight:weight,full:variant+"-full"}}'
+            . 'icon.classList.remove("sf-icon-full-font");var complete=variant==="outlined"&&!filled&&beyondSubset.test(name);icon.classList.toggle("sf-icon-complete",complete);'
+            . 'if(variant==="outlined"&&!filled&&!complete&&weight===400)return{family:subsetFamily,weight:400};'
+            // Without the variable variant fonts, the face CSS matches.
+            . 'if(catalogWeights.indexOf(weight)===-1)weight=weight<400?300:500;'
+            . 'return{family:catalog[variant][filled],weight:weight,id:(variant==="shape"?"sharp":variant)+"-"+weight+"-"+filled}}'
             // A Framework component may name an icon after it was first seen:
             // a checkbox mark is empty until the box is checked, then reads
             // `check`. The face was chosen for the empty name, so a changed
             // name is resolved again.
-            . 'function ready(icon){var current=iconName(icon);if(icon.classList.contains("sf-icon-loaded")&&icon.getAttribute("data-docara-icon-name")===current)return;icon.classList.remove("sf-icon-loaded");icon.setAttribute("data-docara-icon-name",current);var name=family(icon);if(!name)return;var promise=loaded[name]||(loaded[name]=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "\'+name+\'"\'):Promise.resolve([true]));promise.then(function(faces){if(faces&&faces.length)icon.classList.add("sf-icon-loaded")}).catch(function(){})}'
-            . 'var originalReady=ready;ready=function(icon){if(family(icon)==="Material Symbols Outlined Full"){ensureFullFont().then(function(){originalReady(icon)})}else{originalReady(icon)}};'
+            . 'function ready(icon){var current=iconName(icon);if(icon.classList.contains("sf-icon-loaded")&&icon.getAttribute("data-docara-icon-name")===current)return;icon.classList.remove("sf-icon-loaded");icon.setAttribute("data-docara-icon-name",current);var face=family(icon);'
+            . 'ensureFace(face).then(function(){var key=face.weight+\' 24px "\'+face.family+\'"\';return loaded[key]||(loaded[key]=document.fonts&&document.fonts.load?document.fonts.load(key,current||undefined):Promise.resolve([true]))}).then(function(faces){if(faces&&faces.length)icon.classList.add("sf-icon-loaded")}).catch(function(){})}'
             . 'function mark(root){if(root.nodeType===1&&root.matches(".sf-icon"))ready(root);if(root.querySelectorAll){root.querySelectorAll(".sf-icon").forEach(ready)}}'
             . 'function owner(node){var element=node&&node.nodeType===1?node:node&&node.parentElement;return element&&element.closest?element.closest(".sf-icon"):null}'
             . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark);var icon=owner(record.target);if(icon)ready(icon)})}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["icon"]})}'

@@ -18,8 +18,9 @@ use Simai\Docara\Portable\PortableConfigurationException;
  * - `diagram`: mermaid, referenced only by a page that renders a diagram;
  * - `math`: KaTeX with its fonts, referenced only by a page that renders math;
  * - `icons_rounded` / `icons_sharp`: the Rounded and Sharp Material Symbols
- *   faces, used only by an icon that asks for that family in markup, an
- *   example's own script or the site's own stylesheets and scripts. Framework
+ *   faces, variable fonts and catalogue instances alike, used only by an icon
+ *   that asks for that family in markup, an example's own script or the
+ *   site's own stylesheets and scripts. Framework
  *   Smart components choose a family only from an `sf-icon` `type` attribute,
  *   which is markup;
  * - `utility_full`: the Framework's all-in-one utility stylesheet, which the
@@ -175,8 +176,10 @@ final readonly class PortableVendorAssetSelection
             $relative === 'vendor/licenses/mermaid-LICENSE' => 'diagram',
             str_starts_with($relative, 'vendor/katex/'),
             $relative === 'vendor/licenses/katex-LICENSE' => 'math',
-            preg_match('#^vendor/google/material-symbols/[a-f0-9]{40}/MaterialSymbolsRounded\.woff2$#D', $relative) === 1 => 'icons_rounded',
-            preg_match('#^vendor/google/material-symbols/[a-f0-9]{40}/MaterialSymbolsSharp\.woff2$#D', $relative) === 1 => 'icons_sharp',
+            preg_match('#^vendor/google/material-symbols/[a-f0-9]{40}/MaterialSymbolsRounded\.woff2$#D', $relative) === 1,
+            preg_match('#^vendor/docara/icon-catalog/[a-f0-9]{40}/material-symbols-rounded\.[a-f0-9]{20}\.(?:woff2|css|manifest\.json)$#D', $relative) === 1 => 'icons_rounded',
+            preg_match('#^vendor/google/material-symbols/[a-f0-9]{40}/MaterialSymbolsSharp\.woff2$#D', $relative) === 1,
+            preg_match('#^vendor/docara/icon-catalog/[a-f0-9]{40}/material-symbols-sharp\.[a-f0-9]{20}\.(?:woff2|css|manifest\.json)$#D', $relative) === 1 => 'icons_sharp',
             preg_match('#^vendor/simai-framework/runtime/[a-f0-9]{40}/distr/core/css/utility\.full\.css$#D', $relative) === 1 => 'utility_full',
             default => null,
         };

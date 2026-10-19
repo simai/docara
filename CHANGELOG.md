@@ -6,6 +6,13 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- The documentation site sets `branding.share_image` to a 1200×630 WebP card
+  (48 KB, the Docara mark and a screenshot of the start page), so its pages
+  published with `site_url` carry `og:image`, `twitter:image` and
+  `twitter:card: summary_large_image`.
+
 ### Changed
 
 - **Icon catalogue instead of the full icon fonts.** A page with a Rounded or

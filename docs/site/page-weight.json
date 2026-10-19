@@ -1,0 +1,16 @@
+{
+  "$comment": "Page-weight budgets for the documentation site, checked in CI by scripts/verify-page-weight.php. Calibrated on 2026-10-20 (main 57686108: icon catalogue, WebP home page): 133 pages, median 2.67 MB, home 2.86 MB, heaviest ordinary page 4.02 MB (ru/examples/extensions/), largest image 1.16 MB (assets/docara-flow.png). Static estimate; headless Chrome loads 0.5-0.9 MB more per page (Framework chunks a script loads, icon weights picked at run time).",
+  "max_page_bytes": 4500000,
+  "max_image_bytes": 1300000,
+  "image_oversize_ratio": 2.5,
+  "pages": {
+    "/ru/components/icon/": {
+      "max_page_bytes": 5000000,
+      "reason": "4.32 MB: the icon page draws every family, weight and fill, so it loads catalogue faces the other pages do not."
+    },
+    "/ru/components/diagram/": {
+      "max_page_bytes": 6900000,
+      "reason": "6.24 MB: Mermaid (3.57 MB) renders the diagrams on this page."
+    }
+  }
+}

@@ -51,6 +51,8 @@ html[data-docara-focus-mode] .docara-docs-layout .docara-focus-exit{display:inli
 /* Reading mode keeps only the content column. */
 html[data-docara-focus-mode] body:has(>.docara-docs-layout)>.docara-header,html[data-docara-focus-mode] body:has(>.docara-docs-layout)>[data-docara-region="footer"],html[data-docara-focus-mode] .docara-docs-layout>.docara-sidebar,html[data-docara-focus-mode] .docara-docs-layout>.docara-outline-rail,html[data-docara-focus-mode] .docara-docs-layout .docara-outline-mobile,html[data-docara-focus-mode] .docara-outline-toggle{display:none}
 html[data-docara-focus-mode] .docara-docs-layout.docara-docs-layout{grid-template-columns:minmax(0,1fr)}
+/* Reading mode sets the whole column, toolbar, code, tables and examples alike, on the prose measure and centres it, so nothing runs wider than the text; the reader wide format keeps the full width. */
+html[data-docara-focus-mode]:not([data-docara-content-width="wide"]) .docara-docs-layout .docara-reading-column>*{inline-size:100%;max-inline-size:var(--sf-text--measure-wide);margin-inline:auto}
 @media(max-width:1152px){.docara-outline-toggle{display:none}}
 /* Reader wide format: the shell takes the Framework's widest container step (layout.container.max 8) instead of the authored one, and prose lines lose their measure limit. The container tokens exist from 960px, like max-container-N. */
 @media(min-width:960px){html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:var(--sf-container-8--size-max)}}

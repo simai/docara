@@ -256,6 +256,19 @@ final class FrameworkNativeSurfaceTest extends TestCase
     }
 
     #[Test]
+    public function navigation_rows_keep_one_gap_between_a_row_and_its_submenu(): void
+    {
+        $css = file_get_contents(dirname(__DIR__, 2) . '/resources/smart/assets/navigation.css');
+
+        self::assertIsString($css);
+        // The Framework item gap sits between a row and its submenu; it must
+        // follow the sibling gap so a parent and its first child are spaced
+        // like any two siblings.
+        self::assertStringContainsString('.docara-navigation .sf-menu{gap:var(--sf-a1)}', $css);
+        self::assertStringContainsString('.docara-navigation .sf-menu-item{--sf-menu-item--gap:var(--sf-a1)}', $css);
+    }
+
+    #[Test]
     public function header_navigation_uses_the_horizontal_menu_presentation(): void
     {
         $root = dirname(__DIR__, 2);

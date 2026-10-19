@@ -1,3 +1,7 @@
+---
+noindex: true
+---
+
 # Product Smart-компоненты Docara
 
 В шапке работает `docara.brand`, в левой области — `docara.navigation`, в

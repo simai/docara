@@ -409,7 +409,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // The portal build page adds its page and its legacy redirect: 1846.
         // The icon catalogue adds 18 instances (font, CSS and manifest each)
         // and its index; this site uses both icon families: 1901.
-        self::assertCount(1901, $firstFiles);
+        // The home page redesign replaces two PNG renders with three WebP
+        // screenshots: 1902.
+        self::assertCount(1902, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

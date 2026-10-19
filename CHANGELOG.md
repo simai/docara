@@ -53,6 +53,22 @@ All notable changes to Docara are recorded here. The format follows
 - Reading mode sets the content column, code blocks and tables included, on
   the prose measure and centres it; the reader wide format still uses the
   full width.
+- **Documentation site home page.** The home page, which is also Docara's
+  product page, now says who Docara is for and what sets it apart: a hero
+  with a real screenshot of a Docara 3 documentation page, a three-step first
+  site, three reasons to choose Docara, two showcases (the documentation
+  interface and this landing on desktop and mobile), links to example pages,
+  a FAQ in `details` blocks (including how Docara differs from VitePress and
+  Docusaurus, and the PHP, Composer and Node.js 20+ requirements) and one
+  closing call to action. The old FAQ answer that a site build needs no
+  Node.js is corrected. The page uses only typed Docara components.
+- Home page images are three real WebP screenshots (about 240 KB together)
+  instead of decorative 3D renders (about 4 MB). `docara-navigation.png` and
+  `docara-reader.png`, used only by the old home page, are removed.
+- The build-receipt note moved from the home page to *Статический результат*
+  (build/static-output), and the limits note to *Безопасность и ошибки*
+  (reference/security-and-errors), without the outdated line about public
+  release readiness.
 
 ### Fixed
 

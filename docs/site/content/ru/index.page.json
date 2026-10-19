@@ -1,7 +1,7 @@
 {
   "schema": "docara.page.v1",
   "title": "Docara",
-  "description": "Docara собирает документацию, справочники и продуктовые страницы из Markdown и JSON на SIMAI Framework.",
+  "description": "Docara собирает статический сайт документации из Markdown и JSON: ставится через Composer, работает на PHP и SIMAI Framework, публикуется на любом хостинге.",
   "preset": "landing",
   "layout": {
     "container": {"max": 7}

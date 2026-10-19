@@ -1795,9 +1795,15 @@ final readonly class PortableSiteBuilder
             return $configured;
         }
 
+        // The first plain paragraph describes the page, unless it is a lead-in
+        // that ends with a colon and introduces a list or table. Then the
+        // sentences before the lead-in sentence describe the page; a one-sentence
+        // lead-in gives way to the next paragraph of the introduction, and is
+        // used as written only when the introduction has nothing else.
+        $leadIn = null;
         $paragraph = [];
         $insideFence = false;
-        foreach (preg_split('/\R/u', $plan->markdown) ?: [] as $line) {
+        foreach ([...(preg_split('/\R/u', $plan->markdown) ?: []), ''] as $line) {
             $trimmed = trim($line);
             if (str_starts_with($trimmed, '```') || str_starts_with($trimmed, '~~~')) {
                 $insideFence = ! $insideFence;
@@ -1808,11 +1814,25 @@ final readonly class PortableSiteBuilder
                 continue;
             }
             if ($trimmed === '') {
-                if ($paragraph !== []) {
-                    break;
+                if ($paragraph === []) {
+                    continue;
                 }
+                $description = $this->plainDescription(implode(' ', $paragraph));
+                $paragraph = [];
+                if (! str_ends_with($description, ':')) {
+                    return $description;
+                }
+                $sentences = preg_split('/(?<=[.!?…])\s+/u', $description) ?: [$description];
+                array_pop($sentences);
+                if ($sentences !== []) {
+                    return trim(implode(' ', $sentences));
+                }
+                $leadIn ??= $description;
 
                 continue;
+            }
+            if ($paragraph === [] && $leadIn !== null && str_starts_with($trimmed, '#')) {
+                break;
             }
             if ($paragraph === [] && (
                 str_starts_with($trimmed, '#')
@@ -1826,7 +1846,12 @@ final readonly class PortableSiteBuilder
             $paragraph[] = $trimmed;
         }
 
-        $description = trim(implode(' ', $paragraph));
+        return $leadIn ?? '';
+    }
+
+    private function plainDescription(string $paragraph): string
+    {
+        $description = trim($paragraph);
         $description = preg_replace('/!\[([^]]*)]\([^)]*\)/u', '$1', $description) ?? $description;
         $description = preg_replace('/\[([^]]+)]\([^)]*\)/u', '$1', $description) ?? $description;
         $description = preg_replace('/[*_`~]+/u', '', $description) ?? $description;

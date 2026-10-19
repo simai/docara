@@ -97,7 +97,7 @@ SHA-256 каждого изображения.
 и не доверяет одному полю `visual_diff_pixels=0`. Report принимается только
 при полном наборе screenshots и нулевых a11y, console, overflow и visual-diff
 дефектах. `init` и `verify-static` выполняются через PHP. Команда `build`
-дополнительно использует Node.js и точную поставку Framework для сборки
+дополнительно использует Node.js 20+ и точную поставку Framework для сборки
 Recipe. Подготовка описана в [быстром старте](/start/).
 
 Для `test layout` и `qa layout` указанный route обязан фактически выбирать

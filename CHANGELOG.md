@@ -98,6 +98,10 @@ All notable changes to Docara are recorded here. The format follows
   and padding utilities the Framework does not define, so it now draws its
   bottom rule and vertical padding with `border-bottom-1`, `p-y-1` and
   `p-top-1`.
+- The documentation no longer says that building a site needs no Node.js
+  (`development`, the product Smart demonstrator result and the agent
+  journey), and the build requirements on the start, hosting, build, upgrade
+  and development pages name Node.js 20+.
 
 ## [3.5.0] - 2026-10-19
 

@@ -79,7 +79,7 @@ PageBuilder artifact; сырого `trustedMainHtml`, generated-page bypass и
 — в `resources/smart`. В `resources/portable` остаётся общая геометрия shell и
 поведение уровня документа. Builder не содержит HTML, CSS или client runtime.
 
-Для сборки нужны PHP и Node.js. Закреплённая generated-поставка SIMAI
+Для сборки нужны PHP 8.2+ и Node.js 20+. Закреплённая generated-поставка SIMAI
 Framework, включая среду выполнения Composition Recipe, входит в пакет Docara.
 Node.js запускает общий Recipe resolver один раз на всю сборку; автору не
 нужно заводить отдельный frontend-проект. Готовый сайт остаётся статическим:

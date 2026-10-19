@@ -5,7 +5,8 @@ discover → plan → preview → dry-run → hash-bound apply → validate на
 application services.
 
 Этот раздел предназначен для maintainers движка. Пользователю переносимого
-сайта не нужно устанавливать Node.js или изменять тему.
+сайта не нужно изменять тему; для сборки ему достаточно PHP, Composer и
+Node.js 20+ из [быстрого старта](/start/).
 
 ## Руководства
 

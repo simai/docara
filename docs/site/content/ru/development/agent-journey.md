@@ -49,7 +49,7 @@ Apply разрешён только после явного dry-run и повт�
 | Scaffold plan/apply | `docara scaffold …` | plan/apply tool | `ScaffoldService` |
 | Validate/test/QA | `docara validate|test|qa …` | matching tools | accepted validators/PreviewKernel |
 
-MCP stdio adapter запускается отдельно и read-only. `--allow-writes` лишь открывает тот же hash-bound apply; project-root guard и diagnostics не обходятся. Node/browser нужны только optional visual QA, не `init/build/verify-static`.
+MCP stdio adapter запускается отдельно и read-only. `--allow-writes` лишь открывает тот же hash-bound apply; project-root guard и diagnostics не обходятся. Node.js 20+ нужен для `build`; браузер нужен только optional visual QA, а `init` и `verify-static` выполняются через PHP.
 
 ## Rejected operation и recovery
 

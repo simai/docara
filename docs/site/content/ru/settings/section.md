@@ -1,3 +1,7 @@
+---
+description: section.json настраивает раздел и вложенные страницы: preset, title, locale и presentation. Какие ключи остаются только на уровне сайта.
+---
+
 # Настройки раздела
 
 `section.json` действует на соседний route и descendants. Он может переопределять preset, title, locale и presentation families, но не владеет Framework lock, content root, base URL, locale registry, documentation version, redirects или project namespace.

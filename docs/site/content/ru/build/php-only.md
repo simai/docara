@@ -1,3 +1,7 @@
+---
+description: Как собрать статический сайт: нужны PHP 8.2+, Composer и Node.js 20+, а поставка SIMAI Framework уже входит в пакет Docara.
+---
+
 # Сборка статического сайта
 
 Для сборки нужны PHP 8.2+, Composer и Node.js 20+. PHP читает Markdown и

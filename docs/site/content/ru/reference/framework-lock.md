@@ -1,3 +1,7 @@
+---
+description: Справочник simai-framework.lock.json: точные ревизии Core и Smart, manifests, политика потребителя, хеши и проекции ассетов, которые фиксирует lock.
+---
+
 # Framework lock
 
 `simai-framework.lock.json` связывает точные Core/Smart revisions, registry

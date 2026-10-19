@@ -1,3 +1,7 @@
+---
+description: Как simai-framework.lock.json закрепляет поставку SIMAI Framework, manifests и хеши файлов и какие проверки проходит каждый Smart до публикации.
+---
+
 # Framework lock и providers
 
 `simai-framework.lock.json` фиксирует immutable runtime tuple, admitted

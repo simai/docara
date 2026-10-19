@@ -1,3 +1,7 @@
+---
+description: Переход проекта с Docara 2.x на 3.0 вручную по шагам: docara upgrade не меняет major-версию, а Markdown, настройки, переводы и assets сохраняются.
+---
+
 # Переход с 2.x на 3.0
 
 Docara 3.0 — новая major-версия. Команда `docara upgrade` работает только

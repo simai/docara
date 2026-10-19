@@ -1,3 +1,7 @@
+---
+description: Что задаёт docara.json: корень контента, base_url и site_url, локали и маршрутизация, редиректы, настройки чтения, Framework lock и значения по умолчанию.
+---
+
 # Настройки сайта
 
 `docara.json` владеет site-only keys: content root, base URL, locale registry/routing, documentation version, redirects file, reader preferences, Framework lock и project Smart namespace. Presentation families можно определить здесь как defaults для всех страниц.

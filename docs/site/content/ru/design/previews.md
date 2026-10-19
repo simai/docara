@@ -1,3 +1,7 @@
+---
+description: Preview рендерит Smart, region, layout или страницу тем же путём, что и сборка, через PreviewKernel. Его результат помечен и не проходит verify-static.
+---
+
 # Production-path previews
 
 Preview не имеет собственного renderer. `PreviewKernel` вызывает те же parser/compiler, DesignRegistry, SmartComponentGateway, renderer, asset collector, LayoutComposer и PageBuilder; output помечен preview-purpose и production verifier его не принимает.

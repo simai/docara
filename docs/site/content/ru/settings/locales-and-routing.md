@@ -1,3 +1,7 @@
+---
+description: Каждая локаль — свой каталог content/<locale>, направление, публичный префикс и lang.json. missing_page_policy выбирает skip или error.
+---
+
 # Локали и routing
 
 Каждая объявленная locale имеет собственный `content/<locale>/<route>.md`, direction, public prefix и `content/<locale>/lang.json`. Silent editorial fallback запрещён; `missing_page_policy` явно выбирает `skip` или `error`.

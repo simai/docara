@@ -109,6 +109,9 @@ All notable changes to Docara are recorded here. The format follows
   (`development`, the product Smart demonstrator result and the agent
   journey), and the build requirements on the start, hosting, build, upgrade
   and development pages name Node.js 20+.
+- 34 documentation pages whose description was taken from a long first
+  paragraph (171-386 characters) have a concise front matter `description`
+  of at most 160 characters.
 
 ## [3.5.0] - 2026-10-19
 

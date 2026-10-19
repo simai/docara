@@ -1,3 +1,7 @@
+---
+description: Настройки страницы в front matter и page.json: title, description, slug, locale и разрешённые presentation overrides. Текст остаётся в Markdown.
+---
+
 # Настройки страницы
 
 Page level задаёт title/description/slug/locale и разрешённые presentation overrides. Основной prose остаётся в `<route>.md`; sidecar или front matter не становится вторым источником текста страницы.

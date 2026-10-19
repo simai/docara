@@ -517,7 +517,7 @@
   function exampleFrameState(frame){
     var state=exampleFrameStates.get(frame);
     if(!state){
-      state={sent:Object.create(null),icons:Object.create(null),generation:0,queue:Promise.resolve()};
+      state={sent:Object.create(null),icons:Object.create(null),faces:Object.create(null),generation:0,queue:Promise.resolve()};
       (frame.getAttribute('data-docara-example-icons')||'').split(/\s+/).forEach(function(token){if(token)state.icons[token]=true});
       exampleFrameStates.set(frame,state);
     }
@@ -525,7 +525,7 @@
   }
   function exampleEnvironment(frame){
     var state=exampleFrameState(frame),source=frame.getAttribute('srcdoc')||frame.getAttribute('data-docara-srcdoc')||'',codepoints=exampleCodepoints(source);
-    var icons=Boolean(state.icons.outlined||state.icons.rounded||state.icons.shape||state.icons.full);
+    var icons=Boolean(state.icons.outlined||state.icons.rounded||state.icons.shape||state.icons.full||state.icons['rounded-full']||state.icons['shape-full']||Object.keys(state.faces).length);
     function fresh(key){
       if(!key||state.sent[key])return false;
       state.sent[key]=true;
@@ -534,13 +534,25 @@
     var keyOf=function(element){return element.getAttribute('data-docara-framework-asset')||''};
     var inlineScripts=icons?Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])')):[];
     var bootScripts=Array.from(document.querySelectorAll('script[data-docara-framework-asset="docara.framework.storage.compatibility"]:not([src]),script[data-docara-framework-asset="simai.framework.boot"]:not([src]),script[data-docara-framework-asset="simai.framework.preloaded"]:not([src])'));
-    /* Like the page, a frame gets the icon subset with its first icon, the full fallback font only once its icon runtime asks for a name the subset lacks, and the variant fonts only for variant icons. */
+    /* Like the page, a frame gets the icon subset and the catalogue's family rules with its first icon, then only the catalogue faces its icon runtime asks for, and a variable full font only for an icon whose axes no catalogue face draws. */
     var subsetStyle=document.querySelector('style[data-docara-framework-asset="simai.framework.icon_font.css"]');
     var inlineStyles=icons?Array.from(document.querySelectorAll(state.icons.full?'style[data-docara-framework-asset="simai.framework.icon_font.css"],style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]':'style[data-docara-framework-asset="simai.framework.icon_font.css"]')):[];
-    if(state.icons.rounded||state.icons.shape){
+    if(state.icons['rounded-full']||state.icons['shape-full']){
       document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_variant_fonts.css"]').forEach(function(style){inlineStyles.push(style)});
     }
-    inlineStyles=inlineStyles.filter(function(style){return fresh(keyOf(style))});
+    inlineStyles=inlineStyles.map(function(style){return{key:keyOf(style),content:style.textContent||''}});
+    var catalogStyle=icons?document.querySelector('style[data-docara-framework-asset="simai.framework.icon_catalog.css"]'):null;
+    if(catalogStyle){
+      var catalog=catalogStyle.textContent||'',catalogFace=/\/\*docara-icon-face:([a-z0-9-]+)\*\/@font-face\s*\{[^}]*\}/g;
+      inlineStyles.push({key:'simai.framework.icon_catalog.css',content:catalog.replace(catalogFace,'')});
+      Object.keys(state.faces).forEach(function(id){
+        var rules=[],match;
+        catalogFace.lastIndex=0;
+        while((match=catalogFace.exec(catalog))!==null){if(match[1]===id)rules.push(match[0])}
+        if(rules.length)inlineStyles.push({key:'simai.framework.icon_catalog.css#'+id,content:rules.join('')});
+      });
+    }
+    inlineStyles=inlineStyles.filter(function(item){return fresh(item.key)});
     inlineScripts=inlineScripts.filter(function(script){return fresh(keyOf(script))});
     bootScripts=bootScripts.filter(function(script){return fresh(keyOf(script))});
     var linked=[];
@@ -561,8 +573,8 @@
       rootFontSize:getComputedStyle(document.documentElement).fontSize,
       designTokens:exampleDesignTokens()
     };
-    return Promise.all(inlineStyles.map(function(style){return portableExampleStyle(style.textContent||'',document.baseURI,codepoints).then(function(portable){
-      return{key:keyOf(style),content:portable.content,fonts:portable.fonts};
+    return Promise.all(inlineStyles.map(function(item){return portableExampleStyle(item.content,document.baseURI,codepoints).then(function(portable){
+      return{key:item.key,content:portable.content,fonts:portable.fonts};
     })})).then(function(styles){return Promise.all(inlineScripts.map(function(script){return portableExampleStyle(script.textContent||'',document.baseURI).then(function(portable){
       return{key:keyOf(script),content:portable.content,fonts:portable.fonts};
     })})).then(function(scripts){environment.inlineScripts=scripts;return styles})}).then(function(styles){
@@ -602,7 +614,9 @@
     if(!frame)return;
     var state=exampleFrameState(frame),changed=false;
     event.data.icons.forEach(function(token){
-      if(['outlined','rounded','shape','full'].indexOf(token)!==-1&&!state.icons[token]){state.icons[token]=true;changed=true}
+      if(['outlined','rounded','shape','full','rounded-full','shape-full'].indexOf(token)!==-1&&!state.icons[token]){state.icons[token]=true;changed=true}
+      var face=typeof token==='string'?/^face:((?:outlined|rounded|sharp)-(?:300|400|500)-[01])$/.exec(token):null;
+      if(face&&!state.faces[face[1]]){state.faces[face[1]]=true;changed=true}
       if(token==='full'&&!state.icons.outlined){state.icons.outlined=true;changed=true}
     });
     if(changed)requestExampleHeight(frame);

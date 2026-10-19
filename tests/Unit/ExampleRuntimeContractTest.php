@@ -101,11 +101,14 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString("root.querySelector('sf-icon,.sf-icon,[class*=\"material-symbols\"]')", $renderer);
         self::assertStringContainsString("parent.postMessage({type:'docara:example-icons',icons:icons},'*');", $renderer);
         self::assertStringContainsString("event.data.type!=='docara:example-icons'", $shell);
-        self::assertStringContainsString("['outlined','rounded','shape','full'].indexOf(token)!==-1", $shell);
+        self::assertStringContainsString("['outlined','rounded','shape','full','rounded-full','shape-full'].indexOf(token)!==-1", $shell);
         // Icon styles, the icon-ready runtime and icon faces travel only with icons.
         self::assertStringContainsString("var inlineScripts=icons?Array.from(document.querySelectorAll('script[data-docara-framework-asset=\"simai.framework.icon_font.ready\"]:not([src])')):[];", $shell);
         self::assertStringContainsString('var inlineStyles=icons?Array.from(', $shell);
-        self::assertStringContainsString('if(state.icons.rounded||state.icons.shape){', $shell);
+        // A variant icon alone no longer sends a variable variant font: the
+        // frame's icon runtime asks for that only for axes no catalogue face draws.
+        self::assertStringContainsString("if(state.icons['rounded-full']||state.icons['shape-full']){", $shell);
+        self::assertStringNotContainsString('if(state.icons.rounded||state.icons.shape){', $shell);
         self::assertStringContainsString("if(icons&&!subsetStyle&&fresh('icon-faces:'+link.href))", $shell);
         self::assertStringContainsString("return /font-family\\s*:\\s*[\"']?Material (?:Symbols|Icons)/i.test(rule)", $shell);
         self::assertStringContainsString("(faces==='text'&&exampleIconFace(rule))", $shell);
@@ -124,8 +127,24 @@ final class ExampleRuntimeContractTest extends TestCase
         // The frame document identifies itself to the Framework icon runtime.
         self::assertStringContainsString("document.documentElement.setAttribute('data-docara-example-frame','');", $renderer);
         // That runtime asks at the moment the page would load the full font.
-        self::assertStringContainsString('if(!style&&document.documentElement.hasAttribute("data-docara-example-frame")){fallbackPending=requestFullFont()', $planner);
-        self::assertStringContainsString('parent.postMessage({type:"docara:example-icons",icons:["full"]},"*")', $planner);
+        self::assertStringContainsString('framed=document.documentElement.hasAttribute("data-docara-example-frame")', $planner);
+        self::assertStringContainsString('if(!style&&framed){fallbackPending=requestFrameStyle("simai.framework.icon_fallback_font.css","full")', $planner);
+        self::assertStringContainsString('parent.postMessage({type:"docara:example-icons",icons:[token]},"*")', $planner);
+    }
+
+    public function test_a_frame_receives_only_the_catalogue_faces_its_icon_runtime_asks_for(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $planner = (string) file_get_contents($root . '/src/Framework/FrameworkAssetPlanner.php');
+
+        // The runtime asks for one face per family, weight and fill it shows.
+        self::assertStringContainsString('requestFrameStyle("simai.framework.icon_catalog.css#"+face.id,"face:"+face.id)', $planner);
+        // The shell admits only well-formed face tokens.
+        self::assertStringContainsString('/^face:((?:outlined|rounded|sharp)-(?:300|400|500)-[01])$/.exec(token)', $shell);
+        // The family rules travel with the first icon; each face separately.
+        self::assertStringContainsString("inlineStyles.push({key:'simai.framework.icon_catalog.css',content:catalog.replace(catalogFace,'')});", $shell);
+        self::assertStringContainsString("inlineStyles.push({key:'simai.framework.icon_catalog.css#'+id,content:rules.join('')});", $shell);
     }
 
     public function test_frames_receive_each_font_once_from_the_page_cache(): void

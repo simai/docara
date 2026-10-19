@@ -50,6 +50,12 @@ final class PortableVendorAssetSelectionTest extends TestCase
         self::assertFileExists($icons . '/MaterialSymbolsOutlined.woff2');
         self::assertFileExists($icons . '/LICENSE');
         self::assertNotSame([], glob($vendor . '/docara/icon-subset/*/*.woff2') ?: []);
+        // The outlined catalogue serves any outlined name at any authored
+        // weight and fill; the variant catalogues follow their families.
+        self::assertCount(6, glob($vendor . '/docara/icon-catalog/*/material-symbols-outlined.*.woff2') ?: []);
+        self::assertSame([], glob($vendor . '/docara/icon-catalog/*/material-symbols-rounded.*') ?: []);
+        self::assertSame([], glob($vendor . '/docara/icon-catalog/*/material-symbols-sharp.*') ?: []);
+        self::assertNotSame([], glob($vendor . '/docara/icon-catalog/*/icon-catalog.json') ?: []);
         self::assertSame([], glob($vendor . '/simai-framework/runtime/*/distr/core/css/utility.full.css') ?: []);
         self::assertNotSame([], glob($vendor . '/simai-framework/runtime/*/distr/core/css/core.css') ?: []);
     }
@@ -126,6 +132,9 @@ final class PortableVendorAssetSelectionTest extends TestCase
             $icons . '/MaterialSymbolsRounded.woff2',
         );
         self::assertFileDoesNotExist($icons . '/MaterialSymbolsSharp.woff2');
+        self::assertCount(6, glob($build . '/_docara/vendor/docara/icon-catalog/*/material-symbols-rounded.*.woff2') ?: []);
+        self::assertCount(6, glob($build . '/_docara/vendor/docara/icon-catalog/*/material-symbols-rounded.*.manifest.json') ?: []);
+        self::assertSame([], glob($build . '/_docara/vendor/docara/icon-catalog/*/material-symbols-sharp.*') ?: []);
     }
 
     #[Test]

@@ -407,7 +407,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // KaTeX and the Rounded and Sharp faces, and loses only the Framework's
         // utility.full.css, which no production page links: 1844.
         // The portal build page adds its page and its legacy redirect: 1846.
-        self::assertCount(1846, $firstFiles);
+        // The icon catalogue adds 18 instances (font, CSS and manifest each)
+        // and its index; this site uses both icon families: 1901.
+        self::assertCount(1901, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

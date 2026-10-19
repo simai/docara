@@ -305,12 +305,48 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $assets['simai.framework.icon_font.css']['content'],
         );
         self::assertSame(247824, $plan->preload['icons']['font_size']);
-        self::assertSame('local_full_font_on_unknown_icon', $plan->preload['icons']['fallback']);
+        self::assertSame('icon_catalog_then_local_full_font', $plan->preload['icons']['fallback']);
+        self::assertSame(
+            '6084d652c50f78e38bec4a5c0ddc0215660ee239ec7dd46885d7c7ba666ede8f',
+            $plan->preload['icons']['catalog']['index_sha256'],
+        );
+        self::assertSame(3926, $plan->preload['icons']['catalog']['icons']);
+        // Every family, weight and fill an author can ask for has a static
+        // instance of every icon; the browser picks one by font-weight.
+        $catalogCss = $assets['simai.framework.icon_catalog.css']['content'];
+        self::assertSame(20, substr_count($catalogCss, '@font-face{'));
+        foreach (['outlined', 'rounded', 'sharp'] as $family) {
+            foreach ([300, 400, 500] as $weight) {
+                foreach ([0, 1] as $fill) {
+                    self::assertStringContainsString('/*docara-icon-face:' . $family . '-' . $weight . '-' . $fill . '*/@font-face{', $catalogCss);
+                }
+            }
+        }
+        self::assertStringContainsString(
+            '/_docara/vendor/docara/icon-catalog/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-rounded.',
+            $catalogCss,
+        );
+        self::assertStringContainsString(
+            '@font-face{font-family:"Material Symbols Outlined Subset 1923885bcfbd";src:url("/_docara/vendor/docara/icon-catalog/',
+            $catalogCss,
+        );
+        self::assertStringContainsString('font-weight:300;font-display:block}', $catalogCss);
+        self::assertStringContainsString(
+            'html body .sf-icon.sf-icon-rounded:is(.sf-icon-filled,.sf-icon--filled,.sf-icon-solid):not(.sf-icon-full-font){',
+            $catalogCss,
+        );
+        self::assertStringContainsString(
+            'html body .sf-icon.sf-icon-complete:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-full-font){',
+            $catalogCss,
+        );
+        self::assertStringNotContainsString('MaterialSymbols', $catalogCss);
         self::assertStringContainsString('ensureFullFont()', $assets['simai.framework.icon_font.ready']['content']);
         // In an example frame the runtime asks the shell for the full font
         // instead of fetching it from the site.
         self::assertStringContainsString('document.documentElement.hasAttribute("data-docara-example-frame")', $assets['simai.framework.icon_font.ready']['content']);
-        self::assertStringContainsString('parent.postMessage({type:"docara:example-icons",icons:["full"]},"*")', $assets['simai.framework.icon_font.ready']['content']);
+        self::assertStringContainsString('parent.postMessage({type:"docara:example-icons",icons:[token]},"*")', $assets['simai.framework.icon_font.ready']['content']);
+        self::assertStringContainsString('requestFrameStyle("simai.framework.icon_fallback_font.css","full")', $assets['simai.framework.icon_font.ready']['content']);
+        self::assertStringContainsString('requestFrameStyle("simai.framework.icon_catalog.css#"+face.id,"face:"+face.id)', $assets['simai.framework.icon_font.ready']['content']);
         self::assertStringContainsString(
             '.sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-full-font)',
             $assets['simai.framework.icon_font.css']['content'],
@@ -328,15 +364,31 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $assets['simai.framework.icon_fallback_font.css']['content'],
         );
         self::assertStringContainsString(
-            'data-docara-example-framework-inline-style="simai.framework.icon_fallback_font.css"',
+            'style[data-docara-example-framework-inline-style="\'+key+\'"]',
             $assets['simai.framework.icon_font.ready']['content'],
         );
         self::assertStringContainsString(
             '@font-face{font-family:"Material Symbols Outlined Full"',
             $assets['simai.framework.icon_fallback_font.css']['content'],
         );
+        // Only axes no catalogue instance draws take a variable full font;
+        // a name the subset lacks takes the catalogue.
         self::assertStringContainsString(
-            'return "Material Symbols Outlined Full"',
+            '{family:"Material Symbols Outlined Full",weight:weight,full:"full"}',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
+        self::assertStringContainsString(
+            'catalogWeights.indexOf(weight)!==-1',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
+        self::assertStringContainsString(
+            'icon.classList.toggle("sf-icon-complete",complete)',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
+        // The subset draws every name written with its own characters; only
+        // a name with another character leaves it.
+        self::assertStringContainsString(
+            'beyondSubset=/[^_abcdefghijklmnoprstuvwxy]/',
             $assets['simai.framework.icon_font.ready']['content'],
         );
         // A component names an icon after it was first seen (a checkbox mark
@@ -364,11 +416,11 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $assets['simai.framework.icon_variant_fonts.css']['content'],
         );
         self::assertStringContainsString(
-            'html body .sf-icon.sf-icon-rounded',
+            'html body .sf-icon.sf-icon-rounded.sf-icon-full-font{',
             $assets['simai.framework.icon_variant_fonts.css']['content'],
         );
         self::assertStringContainsString(
-            'html body .sf-icon.sf-icon-shape',
+            'html body .sf-icon.sf-icon-shape.sf-icon-full-font{',
             $assets['simai.framework.icon_variant_fonts.css']['content'],
         );
         self::assertStringContainsString(
@@ -602,6 +654,41 @@ final class FrameworkTypographyProjectionTest extends TestCase
     }
 
     #[Test]
+    public function changed_icon_catalogue_files_fail_before_render(): void
+    {
+        $directory = '/resources/portable/vendor/docara/icon-catalog/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/';
+        $index = json_decode(
+            (string) file_get_contents(dirname(__DIR__, 2) . $directory . 'icon-catalog.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $instance = $index['instances'][0];
+        $cases = [
+            'icon-catalog.json' => 'FRAMEWORK_ICON_CATALOG_INDEX_HASH_MISMATCH',
+            $instance['manifest']['path'] => 'FRAMEWORK_ICON_CATALOG_MANIFEST_HASH_MISMATCH',
+            $instance['font']['path'] => 'FRAMEWORK_PORTABLE_ASSET_HASH_MISMATCH',
+        ];
+
+        foreach ($cases as $file => $expectedCode) {
+            [$root, $lock] = $this->fixture();
+            file_put_contents($root . $directory . $file, 'changed');
+
+            try {
+                (new FrameworkAssetPlanner(
+                    new FrameworkManifestRepository($lock, $root . '/resources/framework'),
+                    '/_docara/framework-runtime',
+                ))->plan([]);
+                self::fail('Changed icon catalogue file was admitted: ' . $file);
+            } catch (FrameworkComponentException $exception) {
+                self::assertSame($expectedCode, $exception->errorCode);
+            } finally {
+                $this->removeFixture($root);
+            }
+        }
+    }
+
+    #[Test]
     public function symlink_and_hardlink_runtime_assets_fail_closed(): void
     {
         foreach (['symlink', 'hardlink'] as $attack) {
@@ -739,8 +826,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css',
             $resources . '/portable/declarative-shell.css',
         );
-        $subsetRoot = 'portable/vendor/docara/icon-subset';
-        foreach (glob(dirname(__DIR__, 2) . '/resources/' . $subsetRoot . '/*/*') ?: [] as $source) {
+        foreach (glob(dirname(__DIR__, 2) . '/resources/portable/vendor/docara/{icon-subset,icon-catalog}/*/*', GLOB_BRACE) ?: [] as $source) {
             $relative = substr($source, strlen(dirname(__DIR__, 2) . '/resources/'));
             $target = $resources . '/' . $relative;
             if (! is_dir(dirname($target))) {

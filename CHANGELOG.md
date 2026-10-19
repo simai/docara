@@ -8,6 +8,35 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **Icon catalogue instead of the full icon fonts.** A page with a Rounded or
+  Sharp icon, a light, medium or filled icon, or an outlined name outside the
+  shell subset no longer downloads a 3.5–5.3 MB variable Material Symbols
+  font. Docara now bundles a catalogue under
+  `_docara/vendor/docara/icon-catalog/<revision>/`: 18 static instances, one
+  per family (outlined, rounded, sharp), weight (300, 400, 500) and fill (0,
+  1), each holding all 3,926 icon names at about 0.26–0.45 MB. They are
+  declared as faces of one CSS family per family and fill, told apart by
+  `font-weight`, so the browser fetches only the instance an icon's computed
+  weight matches. The documentation's icon page drops from 13.07 MB of icon
+  fonts to 1.60 MB; pages that only use the shell subset load exactly the same
+  fonts as before.
+  - The icon runtime picks a face from the icon's computed axes. Weights 300,
+    400 and 500 with fill 0 or 1, grade 0 and optical size 24 use the
+    catalogue; any other axis value (`thin`, `bold`, a custom grade or
+    optical size) still loads the family's full variable font, as before.
+  - The shell subset draws every name written only with the characters of
+    its own names (3,468 of 3,926), not just the 78 names it lists, so only
+    the remaining names (with `q`, `z` or a digit) leave the subset for the
+    catalogue.
+  - An example frame receives only the catalogue faces its icons ask for, and
+    a full variable font only for an icon whose axes no instance draws.
+  - Rounded and Sharp catalogue files ship only with a site that uses that
+    family, like the full Rounded and Sharp fonts.
+  - `scripts/build-icon-catalog.cjs` regenerates the catalogue with
+    ui-builder's icon subset generator (the one that made the shell subset),
+    checks every outline of every instance against the source font to within
+    one font unit, proves the subset's character rule by shaping every name,
+    and refuses to overwrite changed output.
 - A page description derived from the Markdown no longer stops at a lead-in
   that ends with a colon. Docara keeps the sentences before the lead-in
   sentence or, for a one-sentence lead-in, takes the next paragraph of the
@@ -39,6 +68,10 @@ All notable changes to Docara are recorded here. The format follows
 - The documentation site's demonstrator result pages are marked `noindex`, so
   they leave `sitemap.xml` and `llms.txt`, and the configuration page has a
   proper description.
+- An outlined icon with `weight=light`, `weight=medium` or `filled=true`
+  whose name is in the shell subset was drawn regular and unfilled, because
+  the subset is a static regular, unfilled instance. It now gets the matching
+  catalogue instance.
 
 ## [3.5.0] - 2026-10-19
 

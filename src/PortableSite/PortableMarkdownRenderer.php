@@ -757,11 +757,11 @@ final class PortableMarkdownRenderer
                 $defaultLabel,
             );
         } elseif ($hasMarkdown) {
-            $preview = '<div data-docara-example-inline-preview>' . $compiledPreview . '</div>';
+            $preview = '<div data-docara-example-inline-preview>' . $this->nestInlineHeadings($compiledPreview) . '</div>';
         } else {
             $preview = '<div data-docara-example-inline-preview="html"'
                 . ($exampleId === '' ? '' : ' data-docara-example-source="' . $this->escapeHtml($exampleId) . '"')
-                . ' class="docara-example-inline">' . $compiledPreview . '</div>';
+                . ' class="docara-example-inline">' . $this->nestInlineHeadings($compiledPreview) . '</div>';
         }
         $renderedSources = [];
         foreach ($sources as $language => $source) {
@@ -785,6 +785,50 @@ final class PortableMarkdownRenderer
             fullscreen: $fullscreen,
             wrap: $wrap,
         );
+    }
+
+    /**
+     * An inline example is part of the page, so its headings would join the
+     * page's own outline: a hero sample would add a second document <h1>.
+     * Each heading moves one level down (h6 stays h6) and keeps its original
+     * look through Framework classes: sf-h-N carries the hN family, weight and
+     * margins (core.css), and "text-M heading" the hN size and line height,
+     * which the Framework utilities layer otherwise sets per element (hN uses
+     * --sf-text--size-M and --sf-title--height-M, M = 7 - N). A heading that
+     * already names a heading or text size class keeps its own. The example's
+     * Source tab still shows the markup as written; a sandboxed example is a
+     * separate document and keeps its levels.
+     */
+    private function nestInlineHeadings(string $html): string
+    {
+        if (stripos($html, '<h') === false) {
+            return $html;
+        }
+
+        return preg_replace_callback(
+            '~<(?<close>/?)h(?<level>[1-6])(?<attributes>(?:\s[^>]*)?)>~i',
+            static function (array $match): string {
+                $level = (int) $match['level'];
+                $nested = min(6, $level + 1);
+                if ($match['close'] === '/') {
+                    return '</h' . $nested . '>';
+                }
+                $attributes = (string) $match['attributes'];
+                if ($nested === $level || preg_match('~\sclass\s*=\s*(?:"[^"]*|\'[^\']*)\b(?:sf-h-[1-6]|text-[0-9]+)\b~i', $attributes) === 1) {
+                    return '<h' . $nested . $attributes . '>';
+                }
+                $look = 'sf-h-' . $level . ' text-' . (7 - $level) . ' heading';
+                $classed = preg_replace('~(\sclass\s*=\s*)(["\'])~i', '$1$2' . $look . ' ', $attributes, 1, $count);
+                if (! is_string($classed) || $count === 0) {
+                    $classed = preg_match('~\sclass\s*=~i', $attributes) === 1
+                        ? $attributes
+                        : ' class="' . $look . '"' . $attributes;
+                }
+
+                return '<h' . $nested . $classed . '>';
+            },
+            $html,
+        ) ?? $html;
     }
 
     /** @return list<array{id:string,mode:string,requested_preview:string,resolved_preview:string,reason:string}> */

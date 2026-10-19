@@ -63,6 +63,40 @@ MD);
     }
 
     #[Test]
+    public function inline_example_headings_nest_under_the_page_and_keep_their_look(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $markdown = <<<'MD'
+:::example {label="Hero"}
+```markdown
+:::hero {variant=compact}
+# Short introduction
+
+A compact first screen.
+:::
+```
+:::
+
+:::example {label="Headings"}
+```html
+<section><h1 class="m-0">Title</h1><h2>Part</h2><h6>Note</h6><h3 class="sf-h-1">Big</h3></section>
+```
+:::
+MD;
+        $html = $renderer->render($markdown);
+        $previews = (string) preg_replace('~<pre\b.*?</pre>~s', '', $html);
+
+        self::assertStringNotContainsString('<h1', $previews);
+        self::assertStringContainsString('<h2 class="sf-h-1 text-6 heading m-0">Short introduction</h2>', $previews);
+        self::assertStringContainsString(
+            '<h2 class="sf-h-1 text-6 heading m-0">Title</h2><h3 class="sf-h-2 text-5 heading">Part</h3><h6>Note</h6><h4 class="sf-h-1">Big</h4>',
+            $previews,
+        );
+        // The Source tab still shows the markup as written.
+        self::assertStringContainsString('&lt;h1 class=&quot;m-0&quot;&gt;Title&lt;/h1&gt;', $html);
+    }
+
+    #[Test]
     public function example_preview_mode_is_selected_deterministically_and_can_be_overridden_safely(): void
     {
         $renderer = new PortableMarkdownRenderer;

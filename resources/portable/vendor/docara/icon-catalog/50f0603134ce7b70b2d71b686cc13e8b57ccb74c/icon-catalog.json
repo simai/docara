@@ -1,0 +1,279 @@
+{
+  "axes": {
+    "GRAD": 0,
+    "opsz": 24
+  },
+  "generator": {
+    "id": "@simai/ui-builder/subset-font@2.6.0",
+    "revision": "sha256:1ffe5e6ef676c31b96a405a5bcc1e84c07a127c4460ae90020e5d698faa79bc5"
+  },
+  "icons": {
+    "count": 3926,
+    "sha256": "623937a0e8b63b06910a4fe1861bd29a38cd4082231fc16efba2c06d0430a3e5"
+  },
+  "instances": [
+    {
+      "family": "outlined",
+      "fill": 0,
+      "font": {
+        "path": "material-symbols-outlined.723af3ac403d2ca1be3a.woff2",
+        "sha256": "723af3ac403d2ca1be3ac310b415b99c5eccdcb738f8ebb11b5850ad74c205fb",
+        "size": 300932
+      },
+      "manifest": {
+        "path": "material-symbols-outlined.723af3ac403d2ca1be3a.manifest.json",
+        "sha256": "144d65d78ad823f80d17cd7f99fa88fee00b2196c497d546617b615f67d3e335"
+      },
+      "weight": 300
+    },
+    {
+      "family": "outlined",
+      "fill": 1,
+      "font": {
+        "path": "material-symbols-outlined.2855ee31c1130ee0546f.woff2",
+        "sha256": "2855ee31c1130ee0546f32bf1f9749d169e1b8645c762027df09805fa0d7c391",
+        "size": 364008
+      },
+      "manifest": {
+        "path": "material-symbols-outlined.2855ee31c1130ee0546f.manifest.json",
+        "sha256": "dbb37c00cea0b4ad93f8b2c7ee41dbc78e0f5aa725551574f31acf923707af0a"
+      },
+      "weight": 300
+    },
+    {
+      "family": "outlined",
+      "fill": 0,
+      "font": {
+        "path": "material-symbols-outlined.e05499509b0d693ab042.woff2",
+        "sha256": "e05499509b0d693ab042112f114482b2f132b739d7a3532094f3ca2e4ee3fea8",
+        "size": 273676
+      },
+      "manifest": {
+        "path": "material-symbols-outlined.e05499509b0d693ab042.manifest.json",
+        "sha256": "9fb44e7e7bd9726b9f5d34d8bea4d232281734034ebeff092c0cc1a05c24d44e"
+      },
+      "weight": 400
+    },
+    {
+      "family": "outlined",
+      "fill": 1,
+      "font": {
+        "path": "material-symbols-outlined.189b61f9cdd98841fd66.woff2",
+        "sha256": "189b61f9cdd98841fd663406eb8f23ed98b6368cfcf311474d6307a23d12522a",
+        "size": 333260
+      },
+      "manifest": {
+        "path": "material-symbols-outlined.189b61f9cdd98841fd66.manifest.json",
+        "sha256": "f8139765ea29216262a822227593709059f6a1cb9160a132aab4065bc921672a"
+      },
+      "weight": 400
+    },
+    {
+      "family": "outlined",
+      "fill": 0,
+      "font": {
+        "path": "material-symbols-outlined.c5a2b8bbf58d0c18dba4.woff2",
+        "sha256": "c5a2b8bbf58d0c18dba452e31bfc3ccb077092e71a5e14f248367078e8b8c387",
+        "size": 304348
+      },
+      "manifest": {
+        "path": "material-symbols-outlined.c5a2b8bbf58d0c18dba4.manifest.json",
+        "sha256": "9b797255b668fc73b3e0bdf700c3afdf0a6c6653f706c42874113ce48dbda041"
+      },
+      "weight": 500
+    },
+    {
+      "family": "outlined",
+      "fill": 1,
+      "font": {
+        "path": "material-symbols-outlined.318f107d6ca933583f8e.woff2",
+        "sha256": "318f107d6ca933583f8ed35a38a1fc18017e99516309b3563e499cdd40d73232",
+        "size": 368320
+      },
+      "manifest": {
+        "path": "material-symbols-outlined.318f107d6ca933583f8e.manifest.json",
+        "sha256": "500f1771ed464db779e5a540706a4da6949aea24aea3c7366efaa77404515281"
+      },
+      "weight": 500
+    },
+    {
+      "family": "rounded",
+      "fill": 0,
+      "font": {
+        "path": "material-symbols-rounded.6774bb26f8b8b63ada04.woff2",
+        "sha256": "6774bb26f8b8b63ada049658782c37d04898c29f26407a4494ed8c9d57e4a0af",
+        "size": 360176
+      },
+      "manifest": {
+        "path": "material-symbols-rounded.6774bb26f8b8b63ada04.manifest.json",
+        "sha256": "9561243412a27235ea78d765d0ba45690661b61282dd4b4c7d419fb6ab592cc6"
+      },
+      "weight": 300
+    },
+    {
+      "family": "rounded",
+      "fill": 1,
+      "font": {
+        "path": "material-symbols-rounded.3b01cb9694dfbea26e0e.woff2",
+        "sha256": "3b01cb9694dfbea26e0ece2f7e3493bdc58daa8efa507094105b99353ab42052",
+        "size": 439088
+      },
+      "manifest": {
+        "path": "material-symbols-rounded.3b01cb9694dfbea26e0e.manifest.json",
+        "sha256": "b5d6df9039beeb73ae299fae012ddba84631809b2f983edb8174cc1b5f1cc4f4"
+      },
+      "weight": 300
+    },
+    {
+      "family": "rounded",
+      "fill": 0,
+      "font": {
+        "path": "material-symbols-rounded.ade3b97ab015d9839bda.woff2",
+        "sha256": "ade3b97ab015d9839bdaeabbfe487dd564f348d8fc2b1e2fe4d339e249158032",
+        "size": 322796
+      },
+      "manifest": {
+        "path": "material-symbols-rounded.ade3b97ab015d9839bda.manifest.json",
+        "sha256": "9feee4c2355e5425fa9f4ff11535f6a243cfc8063ab23d09c3e2bdb19cd31554"
+      },
+      "weight": 400
+    },
+    {
+      "family": "rounded",
+      "fill": 1,
+      "font": {
+        "path": "material-symbols-rounded.3b1ec43513b9ffecbbb3.woff2",
+        "sha256": "3b1ec43513b9ffecbbb3bb10c9ed06572cbb0f4b8f101c0ba5639a2db28afe40",
+        "size": 396136
+      },
+      "manifest": {
+        "path": "material-symbols-rounded.3b1ec43513b9ffecbbb3.manifest.json",
+        "sha256": "be6e69b7b5e8a5e96af2d70e039782e71690b7bde9380a924f5c5f2455ee0ead"
+      },
+      "weight": 400
+    },
+    {
+      "family": "rounded",
+      "fill": 0,
+      "font": {
+        "path": "material-symbols-rounded.4a878c271babbd27a854.woff2",
+        "sha256": "4a878c271babbd27a85426eff5d18ac64e3a449ac2e23684c7bac0837006ed1b",
+        "size": 368016
+      },
+      "manifest": {
+        "path": "material-symbols-rounded.4a878c271babbd27a854.manifest.json",
+        "sha256": "2738bebce1bead09e3b2de4e6a3d601da2387f925696166435914f3da2ae6dee"
+      },
+      "weight": 500
+    },
+    {
+      "family": "rounded",
+      "fill": 1,
+      "font": {
+        "path": "material-symbols-rounded.98be5cf7035283a9f716.woff2",
+        "sha256": "98be5cf7035283a9f71654ab48993943a250770637f7a975017cdc2bad039377",
+        "size": 447296
+      },
+      "manifest": {
+        "path": "material-symbols-rounded.98be5cf7035283a9f716.manifest.json",
+        "sha256": "e0e3da21ab466716f9b57468400db1838f131eda99712e792b96d1a1613148cb"
+      },
+      "weight": 500
+    },
+    {
+      "family": "sharp",
+      "fill": 0,
+      "font": {
+        "path": "material-symbols-sharp.7d14273dfac79bfe78a5.woff2",
+        "sha256": "7d14273dfac79bfe78a571793d2f906749f5606a08ec4e1728cc47a89b053f95",
+        "size": 278732
+      },
+      "manifest": {
+        "path": "material-symbols-sharp.7d14273dfac79bfe78a5.manifest.json",
+        "sha256": "f49fbc911a675d40377656fb612a6626f5c313988b7d3d89547810e622f6e354"
+      },
+      "weight": 300
+    },
+    {
+      "family": "sharp",
+      "fill": 1,
+      "font": {
+        "path": "material-symbols-sharp.2ceb62909f106dfa9cd1.woff2",
+        "sha256": "2ceb62909f106dfa9cd10c17188d724652948a63ed706e3833a241c6d7a620b4",
+        "size": 337472
+      },
+      "manifest": {
+        "path": "material-symbols-sharp.2ceb62909f106dfa9cd1.manifest.json",
+        "sha256": "f8bbda5b7c98b016953242756847d25ac86cf0ccf02c6d5da49cd977159100a6"
+      },
+      "weight": 300
+    },
+    {
+      "family": "sharp",
+      "fill": 0,
+      "font": {
+        "path": "material-symbols-sharp.12479e64d5ea5d870982.woff2",
+        "sha256": "12479e64d5ea5d87098200fc1b6fddb3de6b9bb0a360eeb74d39aeca70be3eeb",
+        "size": 257612
+      },
+      "manifest": {
+        "path": "material-symbols-sharp.12479e64d5ea5d870982.manifest.json",
+        "sha256": "1fc1e41445d4125450535de83e4efe3d1d09faab94f3d8e7c50f8f3f80fe86f5"
+      },
+      "weight": 400
+    },
+    {
+      "family": "sharp",
+      "fill": 1,
+      "font": {
+        "path": "material-symbols-sharp.b3d074029845342f79d9.woff2",
+        "sha256": "b3d074029845342f79d965abac3e774ec763c5435c9f10c90c04f33bd9704886",
+        "size": 313628
+      },
+      "manifest": {
+        "path": "material-symbols-sharp.b3d074029845342f79d9.manifest.json",
+        "sha256": "22ef91705ba44354d04f65da9495a12da95cc8c9d4626a90163c7a1709d15c28"
+      },
+      "weight": 400
+    },
+    {
+      "family": "sharp",
+      "fill": 0,
+      "font": {
+        "path": "material-symbols-sharp.0735a218c8d1047a3d64.woff2",
+        "sha256": "0735a218c8d1047a3d644cda7b288166f9a6eced57f40f7acaf65b5e1ae8ed6e",
+        "size": 284160
+      },
+      "manifest": {
+        "path": "material-symbols-sharp.0735a218c8d1047a3d64.manifest.json",
+        "sha256": "e0b57829070300bd9f4cddd142ead26d5ea64b8a7912a1ee3dfb95aa778c14ae"
+      },
+      "weight": 500
+    },
+    {
+      "family": "sharp",
+      "fill": 1,
+      "font": {
+        "path": "material-symbols-sharp.2859fa4e9719a1122930.woff2",
+        "sha256": "2859fa4e9719a11229304f414e8371e1a370f3876226eab73876df937e31bb1d",
+        "size": 343584
+      },
+      "manifest": {
+        "path": "material-symbols-sharp.2859fa4e9719a1122930.manifest.json",
+        "sha256": "1b023b525c2610d4550b96cd7ea30fcfccb5ed525600d9312d269cdc770044a2"
+      },
+      "weight": 500
+    }
+  ],
+  "license": "Apache-2.0",
+  "schema": "docara.icon_catalog.v1",
+  "shell_subset": {
+    "characters": "_abcdefghijklmnoprstuvwxy",
+    "covered": 3468,
+    "font_sha256": "1923885bcfbdb6f0ece375c0cada4bc180b77ba6336359718312f6db9ec93699"
+  },
+  "source": {
+    "provider": "google/material-design-icons",
+    "revision": "50f0603134ce7b70b2d71b686cc13e8b57ccb74c"
+  }
+}

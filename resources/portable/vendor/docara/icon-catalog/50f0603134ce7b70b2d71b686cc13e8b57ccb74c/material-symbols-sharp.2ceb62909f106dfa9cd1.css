@@ -1,0 +1,14 @@
+@font-face {
+  font-family: 'Material Symbols Sharp Subset 2ceb62909f10';
+  src: url('/_docara/vendor/docara/icon-catalog/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-sharp.2ceb62909f106dfa9cd1.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+}
+
+.sf-icon.sf-icon-shape {
+  --sf-icon--font-family: 'Material Symbols Sharp Subset 2ceb62909f10';
+  font-family: 'Material Symbols Sharp Subset 2ceb62909f10';
+  font-feature-settings: 'liga';
+  font-variation-settings: 'FILL' var(--sf-icon--fill, 1), 'wght' var(--sf-icon--weight, 300), 'GRAD' var(--sf-icon--grade, 0), 'opsz' var(--sf-icon--optical-size, 24);
+}

@@ -121,8 +121,15 @@ if (preg_match('#^distr/core/contracts/[a-z0-9.-]+/contract\.lock\.json$#D', $co
 $contractLockBytes = $read($contractLockPath);
 $files[$contractLockPath] = $contractLockBytes;
 $contractLock = json_decode($contractLockBytes, true, 512, JSON_THROW_ON_ERROR);
-if (($contractLock['version'] ?? null) !== ($recipeLock['contract']['edition'] ?? null)
-    || ($contractLock['contractDigest'] ?? null) !== ($recipeLock['contract']['contract_digest'] ?? null)
+// The release must declare one of the accepted editions with its exact digest.
+$acceptedDigest = null;
+foreach ((array) ($recipeLock['contract']['editions'] ?? []) as $accepted) {
+    if (is_array($accepted) && ($accepted['edition'] ?? null) === ($contractLock['version'] ?? null)) {
+        $acceptedDigest = $accepted['contract_digest'] ?? null;
+    }
+}
+if (! is_string($acceptedDigest)
+    || ($contractLock['contractDigest'] ?? null) !== $acceptedDigest
     || ! is_array($contractLock['normativeFiles'] ?? null)
 ) {
     throw new RuntimeException('FRAMEWORK_COMPOSITION_CONTRACT_EDITION_MISMATCH');

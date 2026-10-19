@@ -43,17 +43,19 @@ final class FileRecipeCompiler
     }
 
     /**
-     * Accept a Framework distribution that implements the Recipe specification
-     * this Docara was built against.
+     * Accept a Framework distribution that implements a Recipe specification
+     * edition this Docara is proven compatible with.
      *
      * What is verified is the specification, not the runtime bytes. The runtime
      * grows with every Framework pair — regions, routing, field kinds, editor
      * surfaces — while the specification stays at its edition, so pinning the
      * bytes made every pair unusable until Docara was released again. The
      * distribution's own contract lock is read, its declared edition and digest
-     * must be the expected ones, and that digest is recomputed here from the
-     * normative files the distribution carries, so a lock claiming an edition it
-     * does not implement is rejected. Runtime modules only have to be real files.
+     * must be one of the accepted pairs in the runtime lock, and that digest is
+     * recomputed here from the normative files the distribution carries, so a
+     * lock claiming an edition it does not implement is rejected. Runtime
+     * modules only have to be real files. The digest of the edition the
+     * distribution actually implements is what the execution contract records.
      */
     public static function fromFrameworkDistribution(string $nodeBinary, string $frameworkRoot): self
     {
@@ -61,12 +63,11 @@ final class FileRecipeCompiler
         $lock = json_decode((string) file_get_contents(dirname(__DIR__, 4) . '/resources/contracts/composition/runtime-lock.json'), true, 512, JSON_THROW_ON_ERROR);
         $contract = $lock['contract'] ?? null;
         $runtime = $lock['runtime'] ?? null;
-        if (($lock['schema'] ?? null) !== 'docara.composition_runtime_lock.v2'
+        if (($lock['schema'] ?? null) !== 'docara.composition_runtime_lock.v3'
             || ! is_array($contract)
             || ! is_string($contract['lock_path'] ?? null)
             || ! is_string($contract['lock_schema'] ?? null)
-            || ! is_string($contract['edition'] ?? null)
-            || ! is_string($contract['contract_digest'] ?? null)
+            || self::acceptedEditions($contract) === []
             || ! is_array($runtime)
             || ! is_string($runtime['entry'] ?? null)
             || ! is_array($runtime['modules'] ?? null)
@@ -85,23 +86,54 @@ final class FileRecipeCompiler
             }
         }
 
-        self::verifySpecification($root, $contract);
+        $digest = self::verifySpecification($root, $contract);
 
         return new self(
             $nodeBinary,
             $entry,
             frameworkRoot: $root,
             recipeContract: $contract,
-            recipeContractDigest: $contract['contract_digest'],
+            recipeContractDigest: $digest,
         );
     }
 
     /**
-     * The distribution must implement the expected specification, and prove it.
+     * The specification editions Docara is proven compatible with, each with
+     * its exact contract digest. The runtime lock lists them under `editions`;
+     * a contract naming one `edition` and `contract_digest` is one such pair.
+     * Anything malformed yields no accepted edition, so nothing is accepted.
+     *
+     * @param  array<string, mixed>  $contract
+     * @return array<string, string> edition => contract digest
+     */
+    private static function acceptedEditions(array $contract): array
+    {
+        $pairs = is_array($contract['editions'] ?? null)
+            ? $contract['editions']
+            : [['edition' => $contract['edition'] ?? null, 'contract_digest' => $contract['contract_digest'] ?? null]];
+        $accepted = [];
+        foreach ($pairs as $pair) {
+            $edition = is_array($pair) ? ($pair['edition'] ?? null) : null;
+            $digest = is_array($pair) ? ($pair['contract_digest'] ?? null) : null;
+            if (! is_string($edition) || preg_match('/\A\d+\.\d+\.\d+\z/D', $edition) !== 1
+                || ! is_string($digest) || preg_match('/\Asha256:[a-f0-9]{64}\z/D', $digest) !== 1
+                || isset($accepted[$edition])
+            ) {
+                return [];
+            }
+            $accepted[$edition] = $digest;
+        }
+
+        return $accepted;
+    }
+
+    /**
+     * The distribution must implement an accepted specification edition, and
+     * prove it. Returns the verified contract digest of that edition.
      *
      * @param  array<string, mixed>  $contract
      */
-    private static function verifySpecification(string $frameworkRoot, array $contract): void
+    private static function verifySpecification(string $frameworkRoot, array $contract): string
     {
         $path = $frameworkRoot . '/' . $contract['lock_path'];
         if (! is_file($path) || is_link($path)) {
@@ -118,14 +150,17 @@ final class FileRecipeCompiler
         ) {
             throw new RuntimeException('docara_composition_recipe_specification_invalid');
         }
-        if (($declared['version'] ?? null) !== $contract['edition']
-            || ($declared['contractDigest'] ?? null) !== $contract['contract_digest']
-        ) {
+        $accepted = self::acceptedEditions($contract);
+        $edition = $declared['version'] ?? null;
+        $digest = is_string($edition) ? ($accepted[$edition] ?? null) : null;
+        if ($digest === null || ($declared['contractDigest'] ?? null) !== $digest) {
             throw new RuntimeException('docara_composition_recipe_specification_edition_mismatch');
         }
-        if (self::normativeDigest($frameworkRoot, $contract['lock_path'], $declared['normativeFiles']) !== $contract['contract_digest']) {
+        if (self::normativeDigest($frameworkRoot, $contract['lock_path'], $declared['normativeFiles']) !== $digest) {
             throw new RuntimeException('docara_composition_recipe_specification_digest_mismatch');
         }
+
+        return $digest;
     }
 
     /**
@@ -218,9 +253,14 @@ final class FileRecipeCompiler
             throw new RuntimeException('docara_composition_recipe_runtime_unavailable');
         }
         // The specification is re-verified before every session, so a
-        // distribution swapped under a running build cannot slip through.
+        // distribution swapped under a running build cannot slip through —
+        // not even for another accepted edition, whose digest would make the
+        // recorded execution contract untrue.
         if ($this->frameworkRoot !== '' && $this->recipeContract !== []) {
-            self::verifySpecification($this->frameworkRoot, $this->recipeContract);
+            $digest = self::verifySpecification($this->frameworkRoot, $this->recipeContract);
+            if ($this->recipeContractDigest !== '' && $digest !== $this->recipeContractDigest) {
+                throw new RuntimeException('docara_composition_recipe_specification_edition_mismatch');
+            }
         }
 
         return [$root, $entry, $runner];

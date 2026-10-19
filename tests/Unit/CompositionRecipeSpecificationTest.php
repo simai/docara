@@ -139,11 +139,14 @@ final class CompositionRecipeSpecificationTest extends TestCase
             JSON_THROW_ON_ERROR,
         );
 
-        self::assertSame('docara.composition_runtime_lock.v2', $lock['schema']);
+        self::assertSame('docara.composition_runtime_lock.v3', $lock['schema']);
         self::assertArrayNotHasKey('files', $lock, 'the lock must not pin runtime bytes again');
         self::assertSame(self::CONTRACT, $lock['contract']['lock_path']);
-        self::assertMatchesRegularExpression('/\A\d+\.\d+\.\d+\z/', $lock['contract']['edition']);
-        self::assertMatchesRegularExpression('/\Asha256:[a-f0-9]{64}\z/', $lock['contract']['contract_digest']);
+        self::assertNotEmpty($lock['contract']['editions']);
+        foreach ($lock['contract']['editions'] as $accepted) {
+            self::assertMatchesRegularExpression('/\A\d+\.\d+\.\d+\z/', $accepted['edition']);
+            self::assertMatchesRegularExpression('/\Asha256:[a-f0-9]{64}\z/', $accepted['contract_digest']);
+        }
         foreach ($lock['runtime']['modules'] as $module) {
             self::assertStringStartsWith('distr/core/js/composition/', $module);
         }

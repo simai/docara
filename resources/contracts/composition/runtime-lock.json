@@ -1,11 +1,19 @@
 {
-  "schema": "docara.composition_runtime_lock.v2",
+  "schema": "docara.composition_runtime_lock.v3",
   "contract": {
     "capability": "composition-recipe-v1",
     "lock_path": "distr/core/contracts/composition-recipe-v1/contract.lock.json",
     "lock_schema": "simai.composition.recipe-contract-lock.v1",
-    "edition": "1.0.1",
-    "contract_digest": "sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd",
+    "editions": [
+      {
+        "edition": "1.0.1",
+        "contract_digest": "sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd"
+      },
+      {
+        "edition": "1.1.0",
+        "contract_digest": "sha256:b9eba08bffbdffcb17e2af9d1349764fc8ef279828c44af6a02fd02ce7a5d649"
+      }
+    ],
     "digest_mode": "sha256-of-canonical-normative-file-map-v1"
   },
   "runtime": {

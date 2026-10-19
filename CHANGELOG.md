@@ -6,6 +6,31 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.3.1] - 2026-10-19
+
+### Fixed
+
+- **Framework releases with Recipe 1.1.0 build.** 3.3.0 accepted only the
+  Composition Recipe specification edition 1.0.1, so a site built against a
+  SIMAI Framework release that declares edition 1.1.0, such as
+  `ui-7493766fe39e`, stopped with
+  `docara_composition_recipe_specification_edition_mismatch`. Recipe 1.1.0
+  lets the five recipe formats and the canonical-json profile be named without
+  a version; recipes in the older form resolve to the same Documents and
+  digests. Docara now accepts the editions it is proven compatible with, 1.0.1
+  and 1.1.0, each only with its exact contract digest, which is still
+  recomputed from the distribution's normative files. Any other edition, or a
+  known edition with another digest, is refused as before. The runtime lock
+  `resources/contracts/composition/runtime-lock.json` lists them under
+  `contract.editions` (schema `docara.composition_runtime_lock.v3`).
+- The execution contract of every resolved page records the digest of the
+  edition the distribution implements. With the bundled Framework (edition
+  1.0.1) this is the digest 3.3.0 recorded, and the output is unchanged; built
+  against a 1.1.0 release, a site differs only in that digest and the plan
+  hashes that cover it. A distribution replaced by another edition during a
+  build is refused.
+- The bundled Framework stays at `ui-25beeb814ae8`.
+
 ## [3.3.0] - 2026-10-18
 
 ### Added

@@ -34,6 +34,17 @@
             "type": "string",
             "pattern": "^https?://[A-Za-z0-9.-]+(?::[0-9]{1,5})?(?:/|/[A-Za-z0-9._~-]+(?:/[A-Za-z0-9._~-]+)*/?)$"
         },
+        "effects": {
+            "description": "The SIMAI Framework background effects catalogue (SF.Effects) that hero effects load from. Written to SF_BOOT_CONFIG.effects. Pin catalogue to a commit. Needs a Framework pair with SF.Effects (ui-08c07b3e938a or later).",
+            "type": "object",
+            "required": ["catalogue"],
+            "properties": {
+                "catalogue": {"type": "string", "pattern": "^https://[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?(?::[0-9]{1,5})?/(?:[A-Za-z0-9._~%@+-]+/)*$"},
+                "index": {"type": "string", "pattern": "^[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*\\.json$"},
+                "index_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+            },
+            "additionalProperties": false
+        },
         "portal": {
             "description": "Builds the site for one path of a portal, such as /ru/docara/docs/ on https://simai.io/. Needs site_url, one locale and locale_routing.strategy default_unprefixed. The build writes llms.txt but no sitemap.xml or robots.txt, refuses CNAME, .nojekyll, robots.txt, sitemap.xml and 404.html, and links back to home_url from the header. docara portal-artifact packs it.",
             "type": "object",

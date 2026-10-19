@@ -40,6 +40,9 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final class PortableMarkdownRenderer
 {
+    /** The hero's background effect attributes (SIMAI Framework SF.Effects). */
+    private const HERO_EFFECT_ATTRIBUTES = ['effect', 'effect_theme', 'effect_settings'];
+
     private MarkdownConverter $converter;
 
     private CommonMarkInspector $inspector;
@@ -2089,7 +2092,8 @@ HTML;
         int $sourceLine,
     ): string {
         $backgroundAttributes = ['background_fit', 'background_x', 'background_y', 'overlay', 'overlay_strength'];
-        $this->assertAttributes($attributes, ['variant', 'media', 'padding', ...$backgroundAttributes], 'hero');
+        $this->assertAttributes($attributes, ['variant', 'media', 'padding', ...$backgroundAttributes, ...self::HERO_EFFECT_ATTRIBUTES], 'hero');
+        $effect = $this->heroEffect($attributes);
         $variant = $this->attributeOneOf($attributes['variant'] ?? 'split', ['split', 'centered', 'compact'], 'hero', 'variant');
         $padding = $this->attributeOneOf(
             $attributes['padding'] ?? ($variant === 'compact' ? 'lg' : 'xl'),
@@ -2103,6 +2107,12 @@ HTML;
         }
         if ($mediaMode === 'side' && $variant !== 'split') {
             throw new PortableConfigurationException('MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE', 'Hero media=side requires variant=split.');
+        }
+        if ($effect !== '' && $mediaMode === 'background') {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT',
+                'A hero draws either a background effect or a background image; remove effect or media=background.',
+            );
         }
         $nodes = iterator_to_array($rendered->getDocument()->children());
         $heading = $nodes[0] ?? null;
@@ -2354,7 +2364,7 @@ HTML;
             );
         }
 
-        return $this->surfaces->renderSemanticFrame(
+        $frame = $this->surfaces->renderSemanticFrame(
             semanticBlock: 'hero',
             variant: $variant,
             tone: 'muted',
@@ -2363,6 +2373,78 @@ HTML;
             content: '<div class="min-w-0 flex flex-col gap-2' . $alignment . '">' . $content . '</div>',
             media: $image,
         );
+        if ($effect === '') {
+            return $frame;
+        }
+        $marked = preg_replace('/\A<section data-docara-block="hero"/', '<section data-docara-block="hero"' . $effect, $frame, 1, $count);
+        if (! is_string($marked) || $count !== 1) {
+            throw new \LogicException('MARKDOWN_HERO_EFFECT_ANCHOR_MISSING');
+        }
+
+        return $marked;
+    }
+
+    /**
+     * The SIMAI Framework declarative effect mount of a hero (simai.effect
+     * 1.1, SF.Effects): `effect` is a catalogue id or the https address of an
+     * effect.json, `effect_theme` the placement's theme mode and
+     * `effect_settings` a JSON object of stored settings. The Framework
+     * Loader mounts the effect and gives the hero the theme it draws, so the
+     * hero text follows that theme. Returns the escaped attributes, or ''.
+     *
+     * @param  array<string,string>  $attributes
+     */
+    private function heroEffect(array $attributes): string
+    {
+        if (! isset($attributes['effect'])) {
+            if (isset($attributes['effect_theme']) || isset($attributes['effect_settings'])) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_HERO_EFFECT_REQUIRED',
+                    'Hero effect_theme and effect_settings require effect.',
+                );
+            }
+
+            return '';
+        }
+        $reference = $attributes['effect'];
+        if (preg_match('/\A[a-z][a-z0-9-]{1,40}\z/D', $reference) !== 1
+            && (strlen($reference) > 2048
+                || preg_match('#\Ahttps://[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?(?::[0-9]{1,5})?(?:/[A-Za-z0-9._~%@+-]+)*/effect\.json\z#D', $reference) !== 1)
+        ) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_EFFECT_INVALID',
+                'Hero effect must be a catalogue id such as aurora-curtain or an https address ending in /effect.json.',
+            );
+        }
+        $html = ' data-sf-effect="' . htmlspecialchars($reference, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '"';
+        if (isset($attributes['effect_theme'])) {
+            $theme = $this->attributeOneOf($attributes['effect_theme'], ['auto', 'dark', 'light'], 'hero', 'effect_theme');
+            $html .= ' data-sf-effect-theme="' . $theme . '"';
+        }
+        if (isset($attributes['effect_settings'])) {
+            try {
+                $settings = json_decode($attributes['effect_settings'], false, 16, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $exception) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_HERO_EFFECT_SETTINGS_INVALID',
+                    'Hero effect_settings must be a JSON object.',
+                    $exception,
+                );
+            }
+            if (! $settings instanceof \stdClass) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_HERO_EFFECT_SETTINGS_INVALID',
+                    'Hero effect_settings must be a JSON object.',
+                );
+            }
+            $html .= ' data-sf-effect-settings="' . htmlspecialchars(
+                json_encode($settings, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
+                ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                'UTF-8',
+            ) . '"';
+        }
+
+        return $html;
     }
 
     /** @param array<string,string> $attributes */

@@ -10,6 +10,14 @@ final readonly class DirectiveOpeningMatcher
 {
     private const FRAMEWORK_NAME_PATTERN = '/\Aui(?:\.[a-z][a-z0-9_]*)+\z/D';
 
+    /**
+     * The text between a directive's braces: anything but a brace or a line
+     * break, where a quoted value may also hold braces, such as
+     * `{settings='{"speed": 80}'}`. A lone quote is plain text, so every line
+     * the brace-free form matched still matches with the same attributes.
+     */
+    public const ATTRIBUTES = '(?:[^}"\'\r\n]|"(?:[^"\\\\\r\n]|\\\\.)*+"|\'(?:[^\'\\\\\r\n]|\\\\.)*+\'|["\'])*';
+
     /** @param list<string> $portableNames @param list<string> $smartNames */
     public function __construct(private array $portableNames, private array $smartNames = [])
     {
@@ -49,7 +57,7 @@ final readonly class DirectiveOpeningMatcher
         // canonical-ID gate instead of becoming inert Markdown after a typo.
         $smartNames = $this->smartAlternation();
         $pattern = '/^(:{3,})(' . $names . ($smartNames !== '' ? '|' . $smartNames : '')
-            . '|ui[^\s{]*)(?:[ \t]+\{([^}\r\n]*)\})?[ \t]*$/u';
+            . '|ui[^\s{]*)(?:[ \t]+\{(' . self::ATTRIBUTES . ')\})?[ \t]*$/u';
         if (preg_match($pattern, $line, $match) !== 1) {
             return null;
         }

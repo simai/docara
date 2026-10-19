@@ -218,7 +218,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $this->preferencesBootstrap($readerPreferences, [
                 'modal_blur' => $configuredModalBlur,
                 'ui_radius' => $configuredUiRadius,
-            ]),
+            ]) . $this->effectsBootstrap($page),
             $preset,
             'max-container-' . $containerMax,
             $this->escape($scrollbarPreset),
@@ -248,6 +248,25 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
+    }
+
+    /**
+     * SF_BOOT_CONFIG.effects of a site with an effects catalogue (docara.json
+     * `effects`), built by EffectsCatalogue, or ''.
+     *
+     * @param  array<string, mixed>  $page
+     */
+    private function effectsBootstrap(array $page): string
+    {
+        $script = $page['effects_boot'] ?? null;
+        if ($script === null) {
+            return '';
+        }
+        if (! is_string($script) || preg_match('#\A<script data-docara-effects>window\.SF_BOOT_CONFIG=window\.SF_BOOT_CONFIG\|\|\{\};window\.SF_BOOT_CONFIG\.effects=\{[^<]*\};</script>\z#D', $script) !== 1) {
+            throw new PortableConfigurationException('EFFECTS_BOOT_INVALID', 'The effects boot script is not one Docara wrote.');
+        }
+
+        return $script;
     }
 
     /**

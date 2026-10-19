@@ -6,6 +6,44 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.5.0] - 2026-10-19
+
+### Added
+
+- **Hero background effects.** `:::hero` takes `effect` (a catalogue id such
+  as `aurora-curtain`, or the https address of an `effect.json` in the
+  catalogue), `effect_theme` (`auto`, `dark` or `light`) and
+  `effect_settings` (a JSON object, written in single quotes). Docara writes
+  them, escaped, as the SIMAI Framework declarative mount `data-sf-effect`,
+  `data-sf-effect-theme` and `data-sf-effect-settings` on the hero section;
+  the Framework Loader (SF.Effects) mounts the effect and gives the hero the
+  theme it draws, so the hero text follows that theme. An effect and
+  `media=background` are refused together.
+- **Effects catalogue.** `docara.json` takes `effects` with `catalogue` (an
+  https base pinned to a commit), and optional `index` and `index_sha256`.
+  The build writes them to `SF_BOOT_CONFIG.effects` as
+  `{catalogue, index, indexSha256}`. A page with a hero effect needs the
+  catalogue (`EFFECTS_CATALOGUE_REQUIRED`), and an effect named by address
+  must lie under it (`EFFECTS_OUTSIDE_CATALOGUE`).
+- Directive attributes may hold braces inside a quoted value, such as
+  `{effect_settings='{"speed": 80}'}`. Every directive line that parsed
+  before parses to the same attributes.
+
+### Changed
+
+- The **Publish verified release** workflow no longer builds or attaches the
+  documentation site's portal artifact. The documentation site is published
+  on GitHub Pages only. The `portal` section and `docara portal-artifact` stay
+  available to projects.
+
+### Requires
+
+- Effects draw only with a SIMAI Framework pair that ships SF.Effects:
+  `ui-08c07b3e938a` or later. The bundled Framework stays at
+  `ui-25beeb814ae8`, which does not: with it the attributes stay in the
+  markup and the hero renders without an effect. A site opts into a later
+  pair through its Framework lock.
+
 ## [3.4.0] - 2026-10-19
 
 ### Added

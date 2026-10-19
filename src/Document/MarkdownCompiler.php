@@ -7,6 +7,7 @@ namespace Simai\Docara\Document;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Markdown\AuthoringAttributeParser;
+use Simai\Docara\Markdown\DirectiveOpeningMatcher;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final class MarkdownCompiler
@@ -85,7 +86,7 @@ final class MarkdownCompiler
 
                     continue;
                 }
-                if (preg_match('/^(?<fence>:{3,})(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $line, $directive) === 1) {
+                if (preg_match('/^(?<fence>:{3,})(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>' . DirectiveOpeningMatcher::ATTRIBUTES . ')\})?\s*$/', $line, $directive) === 1) {
                     $this->countDirective($source, $index + 1);
                     [$node, $index] = array_key_exists((string) $directive['alias'], $this->aliases->aliases())
                         ? $this->componentBlock($lines, $index, $source)
@@ -245,7 +246,7 @@ final class MarkdownCompiler
     private function typedDirectiveBlock(array $lines, int $start, string $source): array
     {
         preg_match(
-            '/^(?<fence>:{3,})(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/',
+            '/^(?<fence>:{3,})(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>' . DirectiveOpeningMatcher::ATTRIBUTES . ')\})?\s*$/',
             $lines[$start],
             $opening,
         );
@@ -389,7 +390,7 @@ final class MarkdownCompiler
     private function componentBlock(array $lines, int $start, string $source): array
     {
         preg_match(
-            '/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/',
+            '/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>' . DirectiveOpeningMatcher::ATTRIBUTES . ')\})?\s*$/',
             $lines[$start],
             $opening,
         );
@@ -556,7 +557,7 @@ final class MarkdownCompiler
             $children[] = $code;
             if (($code->data['language'] ?? '') === 'markdown') {
                 for ($componentLine = $index + 1; $componentLine < $next - 1;) {
-                    if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $lines[$componentLine], $directive) === 1) {
+                    if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>' . DirectiveOpeningMatcher::ATTRIBUTES . ')\})?\s*$/', $lines[$componentLine], $directive) === 1) {
                         [$component, $componentLine] = array_key_exists((string) $directive['alias'], $this->aliases->aliases())
                             ? $this->componentBlock($lines, $componentLine, $source)
                             : $this->typedDirectiveBlock($lines, $componentLine, $source);

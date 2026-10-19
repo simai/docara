@@ -166,6 +166,7 @@ final readonly class PortableSiteBuilder
         }
         $siteDiscovery = SiteDiscovery::fromSite($site);
         $portal = PortalProfile::fromSite($site, $localeRegistry, $localeRouting, $siteDiscovery);
+        $effectsCatalogue = EffectsCatalogue::fromSite($site);
         $translator = new Translator(
             $localeRegistry,
             $contentLanguages,
@@ -384,6 +385,7 @@ final readonly class PortableSiteBuilder
                 );
             }
             $outputs[$route['output']] = $pagePath;
+            EffectsCatalogue::assertPage($effectsCatalogue, $contentHtml, "Page [$pagePath]");
             $title = $this->pageTitle($plan);
             $pages[] = [
                 'plan' => $plan,
@@ -423,6 +425,7 @@ final readonly class PortableSiteBuilder
                 'output' => $route['output'],
                 'home_url' => $localeUrls->home($pageLocale),
                 ...($portal === null ? [] : ['portal_home' => $portal->home()]),
+                ...($effectsCatalogue === null ? [] : ['effects_boot' => $effectsCatalogue->bootScript()]),
                 // Every locale shares one _docara directory at the deployment
                 // base; a locale prefix is a route, not a copy of the assets.
                 'asset_base' => rtrim($localeUrls->deploymentBase(), '/') . '/_docara',

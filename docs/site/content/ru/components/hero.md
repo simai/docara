@@ -104,6 +104,68 @@ Docara превращает Markdown и проверенные JSON-настро
 ```
 :::
 
+## Фоновый эффект
+
+Первый экран может рисовать фоновый эффект из каталога эффектов SIMAI
+Framework. Эффект подключает Framework (`SF.Effects`): Docara только
+записывает в секцию Hero атрибуты `data-sf-effect`, `data-sf-effect-theme` и
+`data-sf-effect-settings`, а загрузчик Framework находит секцию, проверяет
+файлы эффекта по индексу каталога и рисует его под содержимым.
+
+```markdown
+:::hero {variant=centered effect="aurora-curtain" effect_theme=auto effect_settings='{"speed": 80}'}
+# Документация, которую удобно читать
+
+Эффект рисуется под текстом и не мешает читать.
+:::
+```
+
+| Параметр | Значение |
+| --- | --- |
+| `effect` | Идентификатор эффекта в каталоге (`aurora-curtain`: строчные латинские буквы, цифры и дефис, от 2 до 41 символа) или `https`-адрес его `effect.json` внутри каталога. |
+| `effect_theme` | `auto` — как у страницы (по умолчанию), `dark` или `light`. |
+| `effect_settings` | JSON-объект сохранённых настроек эффекта. Значение пишите в одинарных кавычках. |
+
+Тему области задаёт Framework: секция получает класс `theme-dark` или
+`theme-light` той схемы, которую эффект действительно рисует, и текст Hero
+следует за ней. Если эффект не умеет рисовать нужную схему, Framework скрывает
+его, а секция получает тему страницы.
+
+Каталог задаётся один раз для сайта в `docara.json`; сборка записывает его в
+`SF_BOOT_CONFIG.effects`:
+
+```json
+{
+  "effects": {
+    "catalogue": "https://cdn.jsdelivr.net/gh/simai/ui-effects@<commit>/",
+    "index": "catalogue/index.json",
+    "index_sha256": "<64 hex>"
+  }
+}
+```
+
+`catalogue` — адрес каталога, закреплённый на коммите, а не на ветке.
+`index` и `index_sha256` необязательны: путь к индексу внутри каталога (по
+умолчанию `catalogue/index.json`) и его SHA-256, если индекс тоже нужно
+проверять.
+
+Сборка остановится, если:
+
+- значение `effect`, `effect_theme` или `effect_settings` не проходит проверку
+  (`MARKDOWN_HERO_EFFECT_INVALID`, `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID`,
+  `MARKDOWN_HERO_EFFECT_SETTINGS_INVALID`);
+- `effect_theme` или `effect_settings` заданы без `effect`
+  (`MARKDOWN_HERO_EFFECT_REQUIRED`);
+- эффект сочетается с `media=background` (`MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT`):
+  фоном служит либо эффект, либо изображение;
+- в `docara.json` нет `effects.catalogue` (`EFFECTS_CATALOGUE_REQUIRED`);
+- адрес эффекта лежит вне каталога (`EFFECTS_OUTSIDE_CATALOGUE`): Framework
+  запускает только эффекты каталога.
+
+Эффекты работают с парой SIMAI Framework, в которой есть `SF.Effects`:
+`ui-08c07b3e938a` или новее. С более ранней парой атрибуты остаются в разметке,
+но эффект не рисуется, а Hero выглядит как без эффекта.
+
 ## Содержимое
 
 Блок начинается с одного H1, затем содержит один или два абзаца. После них

@@ -12,7 +12,7 @@ jobs:
       SIMAI_UI_ROOT: ${{ github.workspace }}/.dependencies/ui
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
-      - name: Check out the exact Simai Framework distribution
+      - name: Check out the exact SIMAI Framework distribution
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: simai/ui

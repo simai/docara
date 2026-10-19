@@ -2030,6 +2030,7 @@ HTML;
             );
         }
 
+        $leadingTitles = [];
         foreach ($items as $item) {
             if (! $item instanceof ListItem) {
                 throw new PortableConfigurationException(
@@ -2100,6 +2101,11 @@ HTML;
                     'Every features block item must contain visible text.',
                 );
             }
+            $leading = $firstInline instanceof Image ? $firstInline->next() : $firstInline;
+            while ($leading instanceof Text && trim($leading->getLiteral()) === '') {
+                $leading = $leading->next();
+            }
+            $leadingTitles[] = $leading instanceof Strong;
         }
 
         $itemCount = count($items);
@@ -2119,11 +2125,39 @@ HTML;
             $content,
         ) ?? $content;
 
-        return preg_replace(
-            '/<li>/',
-            '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
+        // The card stacks its icon, title and text in a flex column. A tight
+        // list item holds its inlines directly, so every inline element
+        // (code, a link, emphasis) would become a separate flex row: the text
+        // after the optional icon and leading bold title is kept in one span.
+        $index = 0;
+
+        return preg_replace_callback(
+            '/<li>(?<body>.*?)<\/li>/su',
+            function (array $match) use (&$index, $leadingTitles): string {
+                $hasTitle = $leadingTitles[$index++] ?? false;
+
+                return '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">'
+                    . $this->featureCardBody($match['body'], $hasTitle) . '</li>';
+            },
             $content,
         ) ?? $content;
+    }
+
+    private function featureCardBody(string $body, bool $hasTitle): string
+    {
+        $icon = '';
+        if (preg_match('/^(?<icon><img data-docara-media="feature-icon"[^>]*>)\s*/u', $body, $match) === 1) {
+            $icon = $match['icon'];
+            $body = substr($body, strlen($match[0]));
+        }
+        $title = '';
+        if ($hasTitle && preg_match('/^(?<title><strong>(?:(?!<strong>).)*?<\/strong>)\s*/su', $body, $match) === 1) {
+            $title = $match['title'];
+            $body = substr($body, strlen($match[0]));
+        }
+        $body = trim($body);
+
+        return $icon . $title . ($body === '' ? '' : '<span class="min-w-0">' . $body . '</span>');
     }
 
     /** @param array<string,string> $attributes */

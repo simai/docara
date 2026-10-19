@@ -758,6 +758,28 @@ MD;
     }
 
     #[Test]
+    public function features_keep_inline_code_and_links_inside_one_text_run(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::features
+- ![](/assets/cli.png) **Build `docara build`.** Run `php docara build` and open [the output](/build/) in a browser.
+- Plain text with `inline code` and *emphasis* in one line.
+:::
+MD);
+
+        self::assertStringContainsString(
+            '<img data-docara-media="feature-icon" loading="lazy" decoding="async" src="/assets/cli.png" alt="" />'
+            . '<strong>Build <code>docara build</code>.</strong>'
+            . '<span class="min-w-0">Run <code>php docara build</code> and open <a href="/build/">the output</a> in a browser.</span></li>',
+            $html,
+        );
+        self::assertStringContainsString(
+            'flex-col gap-1"><span class="min-w-0">Plain text with <code>inline code</code> and <em>emphasis</em> in one line.</span></li>',
+            $html,
+        );
+    }
+
+    #[Test]
     public function hero_renders_a_bounded_first_screen_with_an_optional_action_and_media(): void
     {
         $html = (new PortableMarkdownRenderer)->render(<<<'MD'

@@ -88,6 +88,9 @@ All notable changes to Docara are recorded here. The format follows
   whose name is in the shell subset was drawn regular and unfilled, because
   the subset is a static regular, unfilled instance. It now gets the matching
   catalogue instance.
+- Inline code, links and emphasis in a `:::features` card stay in the card's
+  text instead of each becoming its own row: the card keeps its icon and
+  leading bold title on their own lines and sets the rest as one text run.
 
 ## [3.5.0] - 2026-10-19
 

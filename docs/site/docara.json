@@ -32,7 +32,8 @@
     "mode": "compact",
     "size": "large",
     "logo": "assets/docara-mark.svg",
-    "favicon": "assets/favicon.ico"
+    "favicon": "assets/favicon.ico",
+    "share_image": "assets/share.webp"
   },
   "layout": {
     "key": "docara.docs",

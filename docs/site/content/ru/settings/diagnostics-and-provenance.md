@@ -1,3 +1,7 @@
+---
+description: Ошибки Docara: стабильный код, уровень, путь и строка источника, владелец, provenance и подсказка. Вывод в консоль, --json и MCP — один результат.
+---
+
 # Диагностика и provenance
 
 Каждая ошибка application service имеет stable code/severity, safe source path/pointer, line/column для file-backed данных, owner, provenance и actionable suggestion. Human, `--json` и optional MCP — проекции одного `OperationResult`.

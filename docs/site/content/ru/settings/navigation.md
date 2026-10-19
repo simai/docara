@@ -1,3 +1,7 @@
+---
+description: Навигация строится из маршрутов Markdown и метаданных раздела и страницы: navigation.hidden и order, пункты header_navigation и выбор представления.
+---
+
 # Навигация
 
 Navigation topology выводится из Markdown routes и section/page metadata. `navigation.hidden/order` управляет участием страницы; `header_navigation.items` задаёт проверенные label/href. Presentation выбирает один registered binding.

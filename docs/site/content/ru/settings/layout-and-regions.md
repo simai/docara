@@ -1,3 +1,7 @@
+---
+description: layout.key выбирает принятый Layout, а контейнер, полоса прокрутки, отступы и рецепты регионов проверяются схемой и DesignRegistry.
+---
+
 # Layout и regions
 
 `layout.key` выбирает admitted Layout descriptor. Container max, scrollbar, content gap и region recipes проверяются schema + DesignRegistry; config не указывает template/file/class.

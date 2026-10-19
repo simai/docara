@@ -1,6 +1,6 @@
 # Сборка статического сайта
 
-Для сборки нужны PHP 8.2+, Composer и Node.js. PHP читает Markdown и
+Для сборки нужны PHP 8.2+, Composer и Node.js 20+. PHP читает Markdown и
 настройки, Node.js запускает среду выполнения Composition Recipe, а Docara
 записывает готовые HTML-страницы. Закреплённая поставка SIMAI Framework входит
 в пакет Docara, поэтому отдельная копия Framework не нужна.

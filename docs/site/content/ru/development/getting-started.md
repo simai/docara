@@ -14,7 +14,7 @@ composer install
 composer validate --strict --no-check-publish
 ```
 
-Для проверок сборки нужен Node.js. Закреплённая поставка SIMAI Framework
+Для проверок сборки нужен Node.js 20+. Закреплённая поставка SIMAI Framework
 входит в рабочую копию, поэтому отдельная копия Framework не нужна. Если
 Node.js отсутствует в `PATH`, задайте `DOCARA_NODE_BINARY`. Необязательная
 переменная `DOCARA_SIMAI_UI_ROOT` направляет сборку на другую поставку,

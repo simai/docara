@@ -85,3 +85,84 @@ jobs:
               --notes-file release-notes.md \
               --latest
           fi
+
+  # The documentation site built for its path on the simai.io portal
+  # (docs/site/content/ru at /ru/docara/docs/), packed with
+  # `docara portal-artifact` and attached to the same release. The portal pins
+  # the archive by the sha256 in the receipt, so an asset that already exists
+  # is never replaced: a rerun only checks that it rebuilt the same bytes.
+  portal-artifact:
+    needs: publish
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ inputs.tag }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
+        with:
+          php-version: "8.3"
+          coverage: none
+          tools: composer
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "24"
+      - name: Check the tag
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test "$(git rev-list -n 1 "$RELEASE_TAG")" = "$(git rev-parse HEAD)"
+      - run: composer install --no-interaction --prefer-dist
+      # One locale, routed without a prefix: the portal path carries the
+      # locale. The redirects map addresses the prefixed Pages site, so the
+      # portal build leaves it out.
+      - name: Configure the portal build
+        working-directory: docs/site
+        run: |
+          jq '.base_url = "/ru/docara/docs/"
+            | .site_url = "https://simai.io/ru/docara/docs/"
+            | .locales.ru.public_prefix = ""
+            | .locale_routing = {"strategy": "default_unprefixed", "root": "default_locale", "detect_browser_language": false, "legacy_unprefixed_redirects": false}
+            | del(.redirects_file)
+            | .portal = {"product": "docara-docs", "home_url": "https://simai.io/ru/", "home_label": "simai.io"}' \
+            docara.json > docara.json.portal
+          mv docara.json.portal docara.json
+      - run: env -u SIMAI_UI_ROOT php ../../docara build portal
+        working-directory: docs/site
+      - run: php ../../docara verify-static build_portal
+        working-directory: docs/site
+      - name: Pack the portal artifact
+        working-directory: docs/site
+        run: |
+          php ../../docara portal-artifact portal \
+            --release="$RELEASE_TAG" \
+            --repository="$GITHUB_REPOSITORY" \
+            --commit="$(git rev-parse HEAD)" \
+            --output="$GITHUB_WORKSPACE/portal-out"
+          cd "$GITHUB_WORKSPACE/portal-out"
+          version="${RELEASE_TAG#v}"
+          sha256sum -c "docara-docs-$version-portal.tar.gz.sha256"
+          test "$(jq -r .sha256 "docara-docs-$version-portal-receipt.json")" = "$(sha256sum "docara-docs-$version-portal.tar.gz" | cut -d' ' -f1)"
+          cat "docara-docs-$version-portal-receipt.json"
+      - name: Attach the portal artifact to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${RELEASE_TAG#v}"
+          archive="docara-docs-$version-portal.tar.gz"
+          cd portal-out
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -qx "$archive"; then
+            mkdir published
+            gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern "$archive.sha256" --dir published
+            if cmp -s "$archive.sha256" "published/$archive.sha256"; then
+              echo "The release already carries the same $archive."
+            else
+              echo "The release carries a different $archive; it is not replaced." >&2
+              exit 1
+            fi
+          else
+            gh release upload "$RELEASE_TAG" \
+              "$archive" "$archive.sha256" "docara-docs-$version-portal-receipt.json" \
+              --repo "$GITHUB_REPOSITORY"
+          fi

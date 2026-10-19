@@ -33,6 +33,7 @@ Preview блокирует терминал до `Ctrl+C`. Не использу
 - [Обновление Docara без потери сайта](/build/update/)
 - [Staged-публикация и rollback](/build/publish/)
 - [Размещение на хостинге](/build/hosting/)
+- [Сборка для портала](/build/portal/)
 - [Переход с 2.x на 3.0](/build/upgrade-3/)
 
 Vite нужен только maintainer-разработчику исходных ассетов темы. Он не входит в

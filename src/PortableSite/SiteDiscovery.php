@@ -10,6 +10,9 @@ use Simai\Docara\Portable\PortableConfigurationException;
  * The discovery files of a site with a public address (docara.json
  * `site_url`): sitemap.xml, robots.txt and llms.txt at the deployment base.
  *
+ * A portal build (docara.json `portal`) writes llms.txt only: the portal
+ * owns sitemap.xml and robots.txt.
+ *
  * A site without `site_url` gets none of them, so its output stays exactly
  * what it was. The files list only pages a search engine may index: a page
  * marked `noindex: true`, a page that shows the source text while its
@@ -36,6 +39,7 @@ final readonly class SiteDiscovery
         public string $basePath,
         public ?string $description,
         public array $llmsLinks,
+        public bool $portal = false,
     ) {}
 
     /**
@@ -89,7 +93,27 @@ final readonly class SiteDiscovery
             ];
         }
 
-        return new self($origin . $path, $origin, $path, $description === '' ? null : $description, $links);
+        // A portal build (docara.json `portal`) leaves sitemap.xml and
+        // robots.txt to the portal and keeps llms.txt.
+        return new self(
+            $origin . $path,
+            $origin,
+            $path,
+            $description === '' ? null : $description,
+            $links,
+            ($site['portal'] ?? null) !== null,
+        );
+    }
+
+    /**
+     * The discovery files this site writes: all three, or llms.txt alone for
+     * a portal build.
+     *
+     * @return list<string>
+     */
+    public function fileNames(): array
+    {
+        return $this->portal ? [self::LLMS] : self::FILES;
     }
 
     /**
@@ -128,6 +152,10 @@ final readonly class SiteDiscovery
      */
     public function files(array $pages, array $sections, string $siteTitle, ?string $homeDescription, array $languages): array
     {
+        if ($this->portal) {
+            return [self::LLMS => $this->llms($pages, $sections, $siteTitle, $homeDescription, $languages)];
+        }
+
         return [
             self::SITEMAP => $this->sitemap($pages),
             self::ROBOTS => $this->robots(),
@@ -221,7 +249,9 @@ final readonly class SiteDiscovery
         foreach ($this->llmsLinks as $link) {
             $text .= $this->item($link['title'], $this->siteUrl . $link['path'], $link['description']);
         }
-        $text .= $this->item('Sitemap', $this->siteUrl . self::SITEMAP, null);
+        if (! $this->portal) {
+            $text .= $this->item('Sitemap', $this->siteUrl . self::SITEMAP, null);
+        }
         $text .= $this->item('Page metadata', $this->siteUrl . '_docara/page-metadata.json', 'URL, title, locale and source of every page');
 
         return $text;

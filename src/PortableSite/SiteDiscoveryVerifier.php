@@ -11,7 +11,8 @@ use DOMElement;
  * Checks the discovery files of a built site against its resolved page plans:
  * sitemap.xml, robots.txt and llms.txt are well-formed, every address is
  * under site_url, every sitemap URL is a built indexable page, and every
- * indexable page is in the sitemap. A site without site_url is not checked.
+ * indexable page is in the sitemap. A portal build has llms.txt only and none
+ * of the files the portal owns. A site without site_url is not checked.
  */
 final readonly class SiteDiscoveryVerifier
 {
@@ -52,13 +53,23 @@ final readonly class SiteDiscoveryVerifier
             }
         }
         $problems = [];
-        foreach (SiteDiscovery::FILES as $file) {
+        foreach ($discovery->fileNames() as $file) {
             if (! $this->safeFile($root . '/' . $file)) {
                 $problems[] = "[$file] is missing or unsafe although site_url is set.";
             }
         }
+        if ($discovery->portal) {
+            foreach (PortalProfile::PORTAL_FILES as $file) {
+                if (file_exists($root . '/' . $file) || is_link($root . '/' . $file)) {
+                    $problems[] = "[$file] belongs to the portal; a portal build must not publish it.";
+                }
+            }
+        }
         if ($problems !== []) {
             return $problems;
+        }
+        if ($discovery->portal) {
+            return $this->llms($root, $discovery);
         }
         if ((string) file_get_contents($root . '/' . SiteDiscovery::ROBOTS) !== $discovery->robots()) {
             $problems[] = '[robots.txt] must allow all crawlers and name ' . $discovery->siteUrl . SiteDiscovery::SITEMAP . '.';

@@ -165,6 +165,7 @@ final readonly class PortableSiteBuilder
             );
         }
         $siteDiscovery = SiteDiscovery::fromSite($site);
+        $portal = PortalProfile::fromSite($site, $localeRegistry, $localeRouting, $siteDiscovery);
         $translator = new Translator(
             $localeRegistry,
             $contentLanguages,
@@ -421,6 +422,7 @@ final readonly class PortableSiteBuilder
                 'url' => $route['url'],
                 'output' => $route['output'],
                 'home_url' => $localeUrls->home($pageLocale),
+                ...($portal === null ? [] : ['portal_home' => $portal->home()]),
                 // Every locale shares one _docara directory at the deployment
                 // base; a locale prefix is a route, not a copy of the assets.
                 'asset_base' => rtrim($localeUrls->deploymentBase(), '/') . '/_docara',
@@ -743,6 +745,28 @@ final readonly class PortableSiteBuilder
             $localeLinkRoutes[$pageLocale][$legacyUrl] = $canonicalUrl;
             if ($legacyUrl !== '/') {
                 $localeLinkRoutes[$pageLocale][rtrim($legacyUrl, '/')] = rtrim($canonicalUrl, '/');
+            }
+        }
+        if ($portal !== null) {
+            // Content written for a prefixed site addresses its pages as
+            // /<locale>/...; in a portal build the portal path carries the
+            // locale, so such a link names the page without the prefix.
+            $portalBase = rtrim($localeUrls->deploymentBase(), '/');
+            $builtUrls = [];
+            foreach ($contextPages as $page) {
+                $builtUrls[(string) $page['url']] = true;
+            }
+            foreach ($contextPages as $page) {
+                $url = (string) $page['url'];
+                if (! str_starts_with($url, $portalBase . '/')) {
+                    continue;
+                }
+                $alias = $portalBase . '/' . $portal->locale . substr($url, strlen($portalBase));
+                if (isset($builtUrls[$alias]) || isset($localeLinkRoutes[$portal->locale][$alias])) {
+                    continue;
+                }
+                $localeLinkRoutes[$portal->locale][$alias] = $url;
+                $localeLinkRoutes[$portal->locale][rtrim($alias, '/')] = rtrim($url, '/') === '' ? '/' : rtrim($url, '/');
             }
         }
         $localeLinkProjectors = [];
@@ -1308,6 +1332,7 @@ final readonly class PortableSiteBuilder
             $localeRoutePublisher->publish($localeRoutePlan, $destination);
             $this->copyContentAssets($contentAssets, $destination);
             $brandPublisher->publish($brandPlan['assets'], $destination);
+            $portal?->assertNoPortalFiles($destination);
             foreach ($discoveryFiles as $discoveryFile => $discoveryContents) {
                 $discoveryPath = rtrim($destination, '/\\') . '/' . $discoveryFile;
                 if ($selectedPageUrl === null && (file_exists($discoveryPath) || is_link($discoveryPath))) {

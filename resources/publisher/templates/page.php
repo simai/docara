@@ -28,13 +28,19 @@
 <?php if ($view->themeCssUrl !== null) { ?>
     <link rel="stylesheet" href="<?= $view->themeCssUrl ?>" data-docara-site-theme>
 <?php } ?>
+<?php if ($view->portalHome !== null) { ?>
+    <style data-docara-portal>.docara-portal-home{display:inline-flex;align-items:center;flex:0 0 auto;padding-inline-end:var(--sf-space-1);border-inline-end:1px solid var(--sf-outline-variant);color:var(--sf-on-surface-variant);font-size:var(--sf-text-small--size);text-decoration:none;white-space:nowrap}.docara-portal-home:hover{color:var(--sf-on-surface)}.docara-portal-home:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}</style>
+<?php } ?>
 <?= $view->themeBootstrap ?>
 <?= $view->chrome['head'] ?>
 </head>
 <body class="bg-surface <?= $view->containerClass ?>" data-docara-shell>
     <a class="docara-skip-link bg-surface-0 border radius-1 p-1" href="#docara-main"><?= $view->copy['shell.skip_to_content'] ?></a>
-    <header class="docara-header sticky top-0 z-2 bg-surface-0 border-bottom-1 border-outline-variant" data-docara-region="header">
+    <header class="docara-header sticky top-0 z-2 bg-surface-0 border-bottom-1 border-outline-variant" data-docara-region="header"<?php if ($view->portalHome !== null) { ?> data-portal-shell="header"<?php } ?>>
         <div class="docara-header-row container w-full m-inline-auto flex items-cross-center content-main-between gap-2 p-1">
+<?php if ($view->portalHome !== null) { ?>
+            <a class="docara-portal-home" href="<?= $view->portalHome['url'] ?>" data-docara-portal-home><?= $view->portalHome['label'] ?></a>
+<?php } ?>
             <?= $view->regions['header'] ?>
             <?= $view->chrome['header_actions'] ?>
         </div>
@@ -71,7 +77,7 @@
     </div>
 <?php } ?>
 <?php if ($view->regions['footer'] !== '') { ?>
-    <footer class="container w-full m-inline-auto" data-docara-region="footer"><?= $view->regions['footer'] ?></footer>
+    <footer class="container w-full m-inline-auto" data-docara-region="footer"<?php if ($view->portalHome !== null) { ?> data-portal-shell="footer"<?php } ?>><?= $view->regions['footer'] ?></footer>
 <?php } ?>
     <?= $view->chrome['search_dialog'] ?>
     <?= $view->chrome['reader_settings'] ?>

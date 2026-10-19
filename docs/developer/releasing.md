@@ -60,6 +60,19 @@ Then run the **Publish verified release** workflow
 rebuilds and verifies the package, and creates the GitHub release with the
 `CHANGELOG.md` section as notes. Packagist reads the tag on its own.
 
+## The documentation portal artifact
+
+The publish workflow has a second job, `portal-artifact`. It builds
+`docs/site` for the simai.io portal path `/ru/docara/docs/` (one locale, no
+locale prefix, and the `portal` section, set in the CI checkout's
+`docs/site/docara.json`),
+runs `verify-static`, packs it with `docara portal-artifact` and attaches
+`docara-docs-X.Y.Z-portal.tar.gz`, its `.sha256` and
+`docara-docs-X.Y.Z-portal-receipt.json` to the release. The portal pins the
+archive by the receipt's sha256, so the job never replaces an existing asset:
+a rerun only checks that it rebuilt the same bytes. The job's configuration
+step is the exact recipe for a local portal build of the documentation.
+
 ## Static site deployment
 
 Publishing a site built with Docara is separate from releasing Docara. See

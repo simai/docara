@@ -6,6 +6,51 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.4.0] - 2026-10-19
+
+### Added
+
+- **Portal builds.** A `portal` section in `docara.json` builds a site for
+  one path of a larger portal, such as `/ru/docara/docs/` on
+  `https://simai.io/`. Its keys are `product` (the portal product id),
+  `home_url` (the portal home, absolute https) and an optional `home_label`
+  (default: the host of `home_url`). A portal build needs `site_url`, exactly
+  one locale and `locale_routing.strategy: default_unprefixed`, because the
+  portal path carries the locale. It then:
+  - gives every page an absolute canonical address under `site_url`;
+  - starts the header with a link to `home_url`, and marks the header and
+    footer `data-portal-shell="header"` / `"footer"`;
+  - writes `llms.txt` (without a sitemap link) but no `sitemap.xml` or
+    `robots.txt`, and stops with `PORTAL_FILE_COLLISION` when the content
+    would publish `CNAME`, `.nojekyll`, `robots.txt`, `sitemap.xml` or
+    `404.html`;
+  - resolves content links written for a prefixed site (`/ru/start/`) to the
+    unprefixed pages, so the same content builds for the portal.
+
+  `verify-static` checks `llms.txt` and the absence of those files for a
+  portal build. A site without `portal` builds exactly as before.
+- **`docara portal-artifact`.** Packs a portal build into the three release
+  files a portal assembles: `<product>-<version>-portal.tar.gz` (with
+  `index.html` at the top), its `.sha256` and a `simai.io.portal-artifact`
+  version 1 receipt (product, release, repository, commit, locale, base path,
+  archive, sha256, file count, Framework pair and `docara_version`). The
+  archive is reproducible: sorted entries, mtime 0, owner root, fixed modes
+  and a fixed gzip header. Before it writes, the command checks that the build
+  holds no links and none of the portal's files, and that every page has the
+  portal locale in `<html lang>`, a title, a description, a canonical address
+  under `site_url`, the link back to the portal home and one Framework pair.
+- The documentation site is published for the portal as well: the **Publish
+  verified release** workflow builds `docs/site` for `/ru/docara/docs/` and
+  attaches `docara-docs-<version>-portal.tar.gz`, its `.sha256` and its
+  receipt to the release. An asset that already exists is never replaced.
+  The Pages site at https://simai.github.io/docara/ is unchanged.
+
+### Unchanged
+
+- Builds without `portal` produce the same files as 3.3.1; only the schema
+  reference of the documentation site lists the new key.
+- The bundled Framework stays at `ui-25beeb814ae8`.
+
 ## [3.3.1] - 2026-10-19
 
 ### Fixed

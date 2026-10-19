@@ -19,6 +19,7 @@ final readonly class PortablePageViewModel
      * @param  string|null  $themeCssUrl  the site theme stylesheet (docara.json `theme`), escaped
      * @param  string|null  $socialMeta  Open Graph and Twitter card tags (site_url set), already escaped HTML
      * @param  string|null  $robots  the robots meta value (noindex pages and held-back translations), escaped
+     * @param  array{url:string,label:string}|null  $portalHome  the link back to the portal home of a portal build, escaped
      */
     public function __construct(
         public string $locale,
@@ -53,5 +54,6 @@ final readonly class PortablePageViewModel
         public ?string $themeCssUrl = null,
         public ?string $robots = null,
         public ?string $socialMeta = null,
+        public ?array $portalHome = null,
     ) {}
 }

@@ -52,6 +52,7 @@ final class ApplicationFactory
             (new PreviewCommand($preview, new PreviewShell($files, $writes)))->setBase($base),
             (new ServeCommand)->setBase($base),
             (new VerifyStaticCommand)->setBase($base),
+            (new PortalArtifactCommand)->setBase($base),
             (new DoctorCommand($discovery))->setBase($base),
             (new ListCommand($discovery))->setBase($base),
             (new InspectCommand($discovery))->setBase($base),

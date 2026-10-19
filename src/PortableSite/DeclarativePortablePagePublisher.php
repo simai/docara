@@ -244,9 +244,38 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 ? (string) $page['robots']
                 : null,
             $this->socialMeta($page, $brandTitle, $branding),
+            $this->portalHome($page),
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
+    }
+
+    /**
+     * The link back to the portal home of a portal build (docara.json
+     * `portal`), escaped, or null.
+     *
+     * @param  array<string, mixed>  $page
+     * @return array{url:string,label:string}|null
+     */
+    private function portalHome(array $page): ?array
+    {
+        $home = $page['portal_home'] ?? null;
+        if ($home === null) {
+            return null;
+        }
+        if (! is_array($home)
+            || ! is_string($home['url'] ?? null)
+            || ! str_starts_with($home['url'], 'https://')
+            || ! is_string($home['label'] ?? null)
+            || trim($home['label']) === ''
+        ) {
+            throw new PortableConfigurationException(
+                'PORTAL_HOME_INVALID',
+                'The portal home link needs an https address and a label.',
+            );
+        }
+
+        return ['url' => $this->escape($home['url']), 'label' => $this->escape($home['label'])];
     }
 
     /** @return list<string> */

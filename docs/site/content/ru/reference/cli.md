@@ -76,6 +76,21 @@ PHP-код: она читает статический каталог, receipts 
 sitemap ведёт на собранную индексируемую страницу и каждая такая страница есть
 в sitemap. Ошибки выводятся с `reference: "@discovery-files"`.
 
+## `portal-artifact`
+
+```text
+php vendor/bin/docara portal-artifact [environment] --release=TAG --repository=OWNER/NAME --commit=SHA [--product-version=VERSION] [--output=DIR]
+```
+
+Упаковывает портальную сборку (`docara.json` с секцией `portal`) из
+`build_<environment>` в архив `<product>-<version>-portal.tar.gz`, его
+`.sha256` и квитанцию `simai.io.portal-artifact`. Без аргумента читается
+`build_production`, без `--output` файлы пишутся в
+`build_<environment>.portal/`. Перед записью команда проверяет каждую страницу:
+язык, заголовок, описание, `canonical` под `site_url`, ссылку на главную
+портала и одну пару Framework. Подробности — в разделе
+[Сборка для портала](/build/portal/).
+
 ## `serve`
 
 ```text

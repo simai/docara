@@ -618,12 +618,17 @@ final class PortableMarkdownRenderer
         $content = preg_replace('/^<h[2-4][^>]*>.*?<\/h[2-4]>\s*/su', '', $content, 1) ?? $content;
 
         $classes = $view === 'lines'
-            ? 'border-block-end border-outline-variant p-block-1 m-bottom-1'
+            ? 'border-bottom-1 border-bottom-solid border-outline-variant p-y-1 m-bottom-1'
             : 'bg-surface-0 border border-outline-variant radius-2 p-2 m-bottom-1';
 
+        // The summary is a flex row, which drops the native disclosure
+        // triangle; the Framework accordion's chevron_right takes its place
+        // and turns down when the block is open (declarative-shell.css).
         return '<details data-docara-block="details" data-view="' . $view . '" class="' . $classes . '"'
             . ($open ? ' open' : '') . '><summary class="flex items-cross-center gap-1 cursor-pointer font-bold">'
-            . $this->escapeHtml($title) . '</summary><div class="p-block-start-1">' . $content . '</div></details>';
+            . '<i class="sf-icon sf-icon-loaded" aria-hidden="true">chevron_right</i>'
+            . '<span class="min-w-0">' . $this->escapeHtml($title) . '</span></summary>'
+            . '<div class="p-top-1">' . $content . '</div></details>';
     }
 
     /** @param array<string,string> $attributes */

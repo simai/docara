@@ -30,7 +30,10 @@ html[dir="rtl"] .docara-outline-rail{box-shadow:inset calc(var(--sf-px) * -1) va
 html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-inline-start:var(--sf-space-2);padding-inline-end:var(--docara-outline-indent)}
 html[dir="ltr"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]>*{direction:ltr}
 html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]>*{direction:rtl}
-.docara-content{color:var(--sf-on-surface);scroll-margin-block-start:var(--sf-d8)}
+/* The sticky header is a row of size-1 controls (--sf-d0) inside p-1 padding over a border-bottom-1, so its height follows the same tokens at every breakpoint. A jump target stops one spacing step below it; reading mode hides the header. */
+:root{--docara-header-block-size:calc(var(--sf-d0) + var(--sf-space-1) * 2 + var(--sf-a1));--docara-anchor-offset:calc(var(--docara-header-block-size) + var(--sf-space-2))}
+html[data-docara-focus-mode] body:has(>.docara-docs-layout){--docara-header-block-size:0px;--docara-anchor-offset:var(--sf-space-2)}
+.docara-content{color:var(--sf-on-surface);scroll-margin-block-start:var(--docara-anchor-offset)}
 [data-docara-region="main"]{container-type:inline-size}
 /* Reader font size: one step of the root size. Framework type, spacing, controls and container steps are rem-based, so the header, navigation, outline, breadcrumbs and content all follow, like a browser text-size change: 16px body text becomes 14px or 18px (--sf-b4 / --sf-b8 over --sf-b6). Percentages keep the reader's own browser default as the base. */
 html[data-docara-font-size="small"]{font-size:87.5%}
@@ -58,7 +61,7 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-document-link>sf-icon{flex:none}
 .docara-previous-next{margin-block-start:var(--sf-space-4);padding-block-start:var(--sf-space-2);border-block-start:1px solid var(--sf-outline-variant)}
 .docara-document-link--next{justify-content:flex-end;text-align:end}
-.docara-prose h1[id]:not(:where(.docara-example-inline *)),.docara-prose h2[id]:not(:where(.docara-example-inline *)),.docara-prose h3[id]:not(:where(.docara-example-inline *)),.docara-prose h4[id]:not(:where(.docara-example-inline *)),.docara-prose h5[id]:not(:where(.docara-example-inline *)),.docara-prose h6[id]:not(:where(.docara-example-inline *)){scroll-margin-block-start:var(--sf-d8)}
+.docara-prose h1[id]:not(:where(.docara-example-inline *)),.docara-prose h2[id]:not(:where(.docara-example-inline *)),.docara-prose h3[id]:not(:where(.docara-example-inline *)),.docara-prose h4[id]:not(:where(.docara-example-inline *)),.docara-prose h5[id]:not(:where(.docara-example-inline *)),.docara-prose h6[id]:not(:where(.docara-example-inline *)){scroll-margin-block-start:var(--docara-anchor-offset)}
 .docara-prose p:not(:where(.docara-example-inline *)),.docara-prose li:not(:where(.docara-example-inline *)){max-width:var(--sf-text--measure-wide)}
 .docara-prose img{max-inline-size:100%}
 .aspect-21x9{aspect-ratio:21/9}
@@ -218,8 +221,6 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
   .docara-docs-layout,.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(0,1fr)}
   .docara-sidebar{display:none}
   .docara-reading-column{padding:var(--sf-space-2)}
-  .docara-content{scroll-margin-block-start:var(--sf-d6)}
-  .docara-prose h1[id]:not(:where(.docara-example-inline *)),.docara-prose h2[id]:not(:where(.docara-example-inline *)),.docara-prose h3[id]:not(:where(.docara-example-inline *)),.docara-prose h4[id]:not(:where(.docara-example-inline *)),.docara-prose h5[id]:not(:where(.docara-example-inline *)),.docara-prose h6[id]:not(:where(.docara-example-inline *)){scroll-margin-block-start:var(--sf-d6)}
   .docara-landing [data-docara-container]{padding-block:var(--sf-space-2)}
 }
 @media(max-width:600px){

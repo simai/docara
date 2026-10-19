@@ -236,15 +236,17 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The mobile navigation sheet must follow the logical inline direction in LTR and RTL.',
         );
         self::assertStringContainsString(
-            'scroll-margin-block-start:var(--sf-d8)',
+            ':root{--docara-header-block-size:calc(var(--sf-d0) + var(--sf-space-1) * 2 + var(--sf-a1));'
+            . '--docara-anchor-offset:calc(var(--docara-header-block-size) + var(--sf-space-2))}',
             $shellCss,
-            'Heading anchors must reserve space for the compact sticky documentation header.',
+            'The anchor offset must follow the tokens the sticky header is built from, plus one spacing step.',
         );
         self::assertStringContainsString(
-            'scroll-margin-block-start:var(--sf-d6)',
+            '{scroll-margin-block-start:var(--docara-anchor-offset)}',
             $shellCss,
-            'Mobile heading anchors must reserve space for the compact mobile header.',
+            'Heading anchors must stop below the sticky documentation header at every breakpoint.',
         );
+        self::assertStringNotContainsString('scroll-margin-block-start:var(--sf-d', $shellCss);
         self::assertStringContainsString(
             '.docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}',
             $shellCss,

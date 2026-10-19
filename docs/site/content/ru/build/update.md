@@ -70,7 +70,6 @@ major-версии. Запрос другой major, например `upgrade -
 project-local runtime и явно примите package-owned engine:
 
 ```bash
-composer config repositories.docara vcs https://github.com/simai/docara.git
 composer require simai/docara:^3.0
 php vendor/bin/docara capabilities --json
 php vendor/bin/docara update --dry-run --adopt --json

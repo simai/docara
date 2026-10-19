@@ -8,11 +8,13 @@
 
 Сообщение `Root composer.json requires simai/docara ^3.0, found
 simai/docara[... v2.18.2] but it does not match the constraint` означает, что
-Composer ищет пакет только в Packagist, где пока опубликована ветка 2.x.
-Добавьте репозиторий Docara и повторите установку:
+Composer видит только ветку 2.x. Docara 3.x опубликована на Packagist, поэтому
+обычно дело в устаревшем кэше метаданных Composer или в записи `repositories`
+в `composer.json`, которая указывает на прежний репозиторий. Удалите такую
+запись, очистите кэш и повторите установку:
 
 ```bash
-composer config repositories.docara vcs https://github.com/simai/docara.git
+composer clear-cache
 composer require simai/docara:^3.0
 ```
 

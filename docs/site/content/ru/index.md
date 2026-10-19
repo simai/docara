@@ -15,15 +15,14 @@ Docara 3 · открытый код на [GitHub](https://github.com/simai/docar
 ![Страница документации Docara: меню разделов, поиск, текст с кодом и содержание страницы](assets/home-docs-page.webp)
 :::
 
-## Первый сайт за три шага
+## Первый сайт за три команды
 
 Установите пакет через Composer, создайте заготовку и соберите сайт. Для сборки
 нужны PHP 8.2+, Composer и Node.js 20+; готовому сайту — только статический
 веб-сервер.
 
 ```bash
-# 1. Установите Docara из репозитория на GitHub
-echo '{"repositories": [{"type": "vcs", "url": "https://github.com/simai/docara.git"}]}' > composer.json
+# 1. Установите Docara
 composer require simai/docara:^3.0
 
 # 2. Создайте заготовку сайта

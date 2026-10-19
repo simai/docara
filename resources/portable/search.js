@@ -399,6 +399,7 @@
         if (input.dataset.docaraSearchBound === 'true') return;
         input.dataset.docaraSearchBound = 'true';
         root.setAttribute('aria-labelledby', 'docara-search-title');
+        root.removeAttribute('aria-label');
         closeButton.addEventListener('click', closeSearch);
         input.addEventListener('input', function () {
             if (preparedDocuments.length) render();

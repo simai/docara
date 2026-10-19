@@ -59,8 +59,19 @@
         show();
       }
     }
+    // The Framework window names itself with a generic word; the panel heading is its name.
+    function name(event){
+      var root=event&&event.detail&&event.detail.root?event.detail.root:(typeof modal.getModalRoot==='function'?modal.getModalRoot():null);
+      if(!root||!root.setAttribute)return;
+      root.setAttribute('aria-labelledby','docara-reader-settings-title');
+      root.removeAttribute('aria-label');
+    }
+    modal.addEventListener('modal:ready',name);
+    modal.addEventListener('modal:update',name);
+    name();
     trigger.addEventListener('click',open);
     modal.addEventListener('modal:after-open',function(){
+      name();
       trigger.setAttribute('aria-expanded','true');
       sync();
       var selected=options().find(function(option){return option.checked});

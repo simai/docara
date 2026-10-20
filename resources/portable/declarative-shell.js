@@ -7,6 +7,18 @@
     Array.prototype.forEach.call(source.childNodes,function(node){section.appendChild(node.cloneNode(true))});
     Array.prototype.forEach.call(section.querySelectorAll('[id]'),function(element){element.removeAttribute('id')});
   });
+  /* The sticky sidebar and outline start under the header and fill the rest of the window. The header's height depends on the brand size and what the header holds, so the shell measures it into --docara-header-block-size; until then the stylesheet's estimate stands. */
+  (function(){
+    var header=document.querySelector('body[data-docara-shell]>.docara-header');
+    if(!header)return;
+    function measure(){
+      var size=header.getBoundingClientRect().height;
+      if(size>0)document.documentElement.style.setProperty('--docara-header-block-size',size+'px');
+    }
+    measure();
+    if(typeof ResizeObserver==='function'){new ResizeObserver(measure).observe(header)}
+    else{window.addEventListener('resize',measure)}
+  })();
   var copyNode=document.getElementById('docara-runtime-copy'),messages={};
   try{messages=JSON.parse(copyNode?copyNode.textContent:'{}')}catch(error){messages={}}
   function message(id,parameters){

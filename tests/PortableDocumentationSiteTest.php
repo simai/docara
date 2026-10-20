@@ -253,7 +253,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The desktop outline divider must span the row without clipping its active marker.',
         );
         self::assertStringContainsString(
-            '.docara-outline-scroll{position:sticky;inset-block-start:var(--sf-d8);block-size:calc(100vh - var(--sf-d8));direction:ltr}',
+            '.docara-outline-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));direction:ltr}',
             $shellCss,
             'The Framework scrollbar root must remain aligned below the header.',
         );
@@ -263,7 +263,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The desktop navigation divider must span the full layout row.',
         );
         self::assertStringContainsString(
-            '.docara-sidebar-scroll{position:sticky;inset-block-start:var(--sf-d4);block-size:calc(100vh - var(--sf-d4))}',
+            '.docara-sidebar-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size))}',
             $shellCss,
             'The navigation must use a bounded Framework scrollbar root.',
         );

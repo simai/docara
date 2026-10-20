@@ -20,12 +20,12 @@ body[data-docara-shell]{opacity:1!important}
 .docara-docs-layout[data-sidebar="false"]{grid-template-columns:minmax(0,1fr)}
 .docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr) var(--sf-f2)}
 .docara-sidebar{align-self:stretch;border-inline-end:1px solid var(--sf-outline-variant)}
-.docara-sidebar-scroll{position:sticky;inset-block-start:var(--sf-d4);block-size:calc(100vh - var(--sf-d4))}
+.docara-sidebar-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size))}
 .docara-sidebar-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-block:var(--sf-space-1);padding-inline-end:var(--sf-space-1);padding-inline-start:0}
 .docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}
 .docara-outline-rail{--docara-outline-indent:calc(var(--sf-space-2) + var(--sf-a2))}
 html[dir="rtl"] .docara-outline-rail{box-shadow:inset calc(var(--sf-px) * -1) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}
-.docara-outline-scroll{position:sticky;inset-block-start:var(--sf-d8);block-size:calc(100vh - var(--sf-d8));direction:ltr}
+.docara-outline-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));direction:ltr}
 .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding:var(--sf-space-2);padding-inline-start:var(--docara-outline-indent)}
 html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-inline-start:var(--sf-space-2);padding-inline-end:var(--docara-outline-indent)}
 html[dir="ltr"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]>*{direction:ltr}
@@ -80,8 +80,8 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-mobile-sheet{position:fixed;inset-block:0;inset-inline-start:0;inset-inline-end:auto;inline-size:min(90vw,var(--sf-g1));block-size:100dvh;max-block-size:100dvh;margin:0;border:0;border-inline-end:1px solid var(--sf-outline-variant);border-radius:0;overflow:hidden;color:var(--sf-on-surface);background:var(--sf-surface-0)}
 .docara-mobile-sheet:not([open]){display:none}
 .docara-mobile-sheet::backdrop{background:color-mix(in srgb,var(--sf-on-surface) 38%,transparent);backdrop-filter:blur(var(--sf-a2))}
-.docara-mobile-sheet-header{min-block-size:var(--sf-d4)}
-.docara-mobile-sheet-content{max-block-size:calc(100dvh - var(--sf-d4));overflow:auto;overscroll-behavior:contain}
+.docara-mobile-sheet-header{flex:0 0 auto;min-block-size:var(--sf-d4)}
+.docara-mobile-sheet[open]{display:flex;flex-direction:column}.docara-mobile-sheet-content{flex:1 1 auto;min-block-size:0;overflow:auto;overscroll-behavior:contain}
 .docara-outline-dialog{inset-inline-start:auto;inset-inline-end:0;border-inline-start:1px solid var(--sf-outline-variant);border-inline-end:0}
 .docara-code-block.bg-surface-container{background:var(--sf-surface-0)}
 .docara-code-block>.sf--highlight-head{margin:0;border-bottom:1px solid var(--sf-outline-variant)}

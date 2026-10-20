@@ -107,6 +107,15 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- The sticky sidebar and the outline column start under the header and end at
+  the bottom of the window. They assumed a 56 px (sidebar) or 72 px (outline)
+  header while the header is 73 px, so at the top of the page the last 17 px
+  of the sidebar, including its last menu item, sat below the window. The
+  shell now measures the header into `--docara-header-block-size` (on load
+  and whenever the header resizes) and both columns use it; until the script
+  runs, the stylesheet's estimate (73 px) applies. The mobile navigation sheet
+  lays out its header and content as a column, so the content no longer
+  assumes a 56 px header and its end stays inside the window.
 - In the documentation navigation, a parent row and its first child are
   spaced like sibling rows (1px) instead of 8px apart, on the desktop tree and
   in the mobile sheet.

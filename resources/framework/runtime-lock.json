@@ -80,6 +80,12 @@
                 "runtime_projection_packet_sha256": "f6cce2676a79eb5bd38209498046e2adefd56ea3782778662888f68be6432e2c",
                 "runtime_projection_files": 1385,
                 "runtime_projection_manifest_sha256": "58e69809dad25b8aea44c341f768ba46246097cb76c2879b5c099308e398e991"
+            },
+            {
+                "runtime_sha256": "6e2f08d663a710a544f37e6c61e6deaa61236254881f4da2fca1b65cfd80b75a",
+                "runtime_projection_packet_sha256": "2b6d09d914ad2fe44df62d115310a92d5e8f9884f30b62e0319f2a88f9e34ac2",
+                "runtime_projection_files": 1385,
+                "runtime_projection_manifest_sha256": "a4f9008db55cc8adcfc78de3bdb0596641ad8c6114aeef0a84e8bd4c66987b5a"
             }
         ],
         "superseded_typography_projections": [
@@ -94,44 +100,44 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "ui-25beeb814ae8",
-    "bundle_id": "ui-25beeb814ae8-registry-fb53ea72-verified-commit-candidate-v1",
+    "pair_id": "ui-32c7a64e4575",
+    "bundle_id": "ui-32c7a64e4575-registry-fe0a0dfb-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
     "tag": null,
     "ui": {
         "tag": null,
-        "commit": "25beeb814ae87b1e8e7bb5831b70a23b7cf36f96",
+        "commit": "32c7a64e457583eaf5a1860590001217a86b5af9",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "6c33cd1be19345b997405dc7332f3db2fce28794cc0774cf71a868a5db35d621",
-        "files": 8557
+        "sha256": "d6ebdfdcd4d0cc2743897b91e36e46327d2393ea56c6e054d4ac30a8ae8dfdde",
+        "files": 8563
     },
     "ui_smart": {
         "tag": null,
-        "commit": "25beeb814ae87b1e8e7bb5831b70a23b7cf36f96",
+        "commit": "32c7a64e457583eaf5a1860590001217a86b5af9",
         "tree": "distr/smart",
         "mount": "ui",
-        "sha256": "6044765a5dcd8d9f87885abd673e8ea5ab24c2df47d9eca034bfab47a2bcbddd",
+        "sha256": "19c9564f7394398528602818d0d64a759128b8115554c27708e30d2d75723b36",
         "files": 756
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "ui-25beeb814ae8",
+        "compatibility_id": "ui-32c7a64e4575",
         "profile": "plain-assets-v1",
         "relative_path": "contracts/generated/framework-contract-registry.json",
-        "file_sha256": "fb53ea724d1f6ae18aae8328155cb3fbb7bc383b447ade65d332db037080849d",
+        "file_sha256": "fe0a0dfb6627eddc47c42ea036bc75791a7e0cf46448049cb4de6a811fd12204",
         "source": {
-            "commit": "719ceb3928dd72cd46e11147d0e8b9587a859fde",
+            "commit": "efccc737657634122270ce7281a43878baa78410",
             "tree": "contracts/generated",
-            "tree_oid": "08936df3a6c95edbe19d93030b3fae8438c9f55e",
+            "tree_oid": "c3af9ca534b640838b3370150a376c07885514e2",
             "mount": "contract",
-            "sha256": "591f3064812396179fdffe435b77c8ac56b81cae5187aea33b78a42e00e9110b",
+            "sha256": "bbc909ed220b703c8d5c9d116d3110862ae7821b462d9341e48be43af1064cd7",
             "files": 2
         },
         "documentation_source": {
             "schema": "docara.documentation_source.v1",
             "relative_path": "contracts/generated/documentation-source.json",
-            "file_sha256": "c25424ee1fb5308fd53b3c2c4ecf062a6161b2ed44329a6477f1cf7b5d19ae4d"
+            "file_sha256": "cc86b818656104d58435b6d64da607e4095c9285b50fe5411b4ef97290def6bb"
         }
     },
     "boot": {
@@ -337,20 +343,27 @@
             "javascript": "smart/smart/button-group/js/button-group.js",
             "css": null,
             "attributes": [
+                "appearance",
                 "aria-label",
                 "disabled",
+                "full-width",
                 "items",
+                "name",
                 "orientation",
+                "plate",
+                "radius",
                 "root-class",
                 "scheme",
                 "size",
                 "spacing",
                 "template",
+                "theme-switch",
                 "tightness",
                 "value"
             ],
             "requires": [
-                "sf-button"
+                "sf-button",
+                "sf-icon"
             ]
         },
         "sf-checkbox": {

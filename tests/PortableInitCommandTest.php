@@ -189,13 +189,13 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('ui-25beeb814ae8', $lock['runtime']['pair_id']);
-        $this->assertSame('25beeb814ae87b1e8e7bb5831b70a23b7cf36f96', $lock['runtime']['ui']['commit']);
-        $this->assertSame('25beeb814ae87b1e8e7bb5831b70a23b7cf36f96', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('719ceb3928dd72cd46e11147d0e8b9587a859fde', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('ui-32c7a64e4575', $lock['runtime']['pair_id']);
+        $this->assertSame('32c7a64e457583eaf5a1860590001217a86b5af9', $lock['runtime']['ui']['commit']);
+        $this->assertSame('32c7a64e457583eaf5a1860590001217a86b5af9', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('efccc737657634122270ce7281a43878baa78410', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('bd2531b587426def25f83687f31997564dc86cf612c624ae7de9c5a8fbdbee7b', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('6cdc318ce35957f0d9fe545a3992f5497a040c80152a55c520e44a640474c07f', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('235e049df3d4493aebe39098fbc54e5d86cbd98edd2f9996258497900f6d8130', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('056329bb80128310728d279ce6c2374413d40b2bf81a087627f80616d2be99a7', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui', $lock['asset_projection']['source']['provider']);
@@ -205,12 +205,12 @@ class PortableInitCommandTest extends TestCase
         );
         $this->assertSame([
             'smart/alert/js/alert.js' => 'c2c80109299ad4483a85c69cf73eb20e5b906cc093c4527af59b7e4a67af3839',
-            'smart/buttons/js/buttons.js' => 'e34ccf87f8ff703fa124d021dabecd9e76d96f38c6c6c4fbb5f3b3ca74709538',
+            'smart/buttons/js/buttons.js' => '16599394e25a25bbf8f1f18fca15ce869332ad83fe2c8f7f9f9d66ae131a1c25',
             'smart/close/js/close.js' => '298d648260c74e2c7d966f18c6665a91d823bc3ae83e20d3cb555c6c8a327e81',
             'smart/icon-buttons/css/icon-buttons.css' => 'fa03db4eadc3b43d08f42226d942cb608f72f1af16be35538df44fd7777c1fb1',
-            'smart/icon-buttons/js/icon-buttons.js' => '032a62f1ae4e93c7d666359ce9508cafdd36c63e29a694300d5f6ee65927aae8',
+            'smart/icon-buttons/js/icon-buttons.js' => '8a86efe323624af6aeed20ba355e50c8e2ccbd99c82055b02932a7b6ebe6b773',
             'smart/icons/js/icons.js' => '818b2b59ba1e1585f9b941aefbdbd9700e0260cdf804ed54a6bac37160c5d60e',
-            'smart/modal/js/modal.js' => 'a5849aa0d740e7bb3592e875546eba571ae1827af2b4f553c90ae738b72a2822',
+            'smart/modal/js/modal.js' => '59697096c20f66ff35335a2ecde9fe4ec33cf51a5d6fd37c2fa4b7c606acebe4',
         ], array_map(
             static fn (array $record): string => $record['sha256'],
             $lock['asset_projection']['files'],
@@ -220,7 +220,7 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame($lock['runtime']['ui_smart']['commit'], $lock['dynamic_asset_projection']['source']['revision']);
         $this->assertCount(68, $lock['dynamic_asset_projection']['files']);
         $this->assertSame(
-            '7bea436341866f725e38bea57d4e3ed3cb3decc9f7e28edde3d419372fc7c3d0',
+            '8f1df268efe7f587a0e2b037f485aec7baca2bdc637ea949211fea6a219b8a72',
             $lock['dynamic_asset_projection']['files']['smart/inputs/js/inputs.js']['sha256'],
         );
         $this->assertSame('docara.framework_icon_projection.v1', $lock['icon_projection']['schema']);

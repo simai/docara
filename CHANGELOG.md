@@ -39,6 +39,18 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **Bundled SIMAI Framework `ui-32c7a64e4575`** (simai/ui `32c7a64e`, npm
+  `@simai-studio/ui` 5.20261019.2041; registry bound in `efccc737`) in place
+  of `ui-25beeb814ae8`. It ships `SF.Effects`, so hero background effects now
+  draw with the bundled Framework. Sites whose lock names `ui-25beeb814ae8`
+  (Docara 3.1.0–3.5.0) build with the new release without editing the lock.
+  Other changes a Docara site sees: effect areas take their theme's text
+  colour, dimmed text on container fills reads in the dark theme, the Button
+  Group gains a segmented appearance, the Inter fallback has a bold face, and
+  the Composition Recipe runtime implements specification edition 1.1.0
+  (already accepted since 3.3.1), so plan hashes that cover the contract
+  digest change. The Core packet stays at 1385 files and Smart at 75; the
+  Recipe runtime has 23 files.
 - **Icon catalogue instead of the full icon fonts.** A page with a Rounded or
   Sharp icon, a light, medium or filled icon, or an outlined name outside the
   shell subset no longer downloads a 3.5–5.3 MB variable Material Symbols

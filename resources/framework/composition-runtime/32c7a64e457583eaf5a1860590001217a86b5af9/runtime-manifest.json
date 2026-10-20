@@ -1,0 +1,84 @@
+{
+    "schema": "docara.framework_composition_runtime.v1",
+    "source": {
+        "provider": "simai/ui",
+        "revision": "32c7a64e457583eaf5a1860590001217a86b5af9",
+        "tree_sha256": "d6ebdfdcd4d0cc2743897b91e36e46327d2393ea56c6e054d4ac30a8ae8dfdde"
+    },
+    "contract": {
+        "edition": "1.1.0",
+        "contract_digest": "sha256:b9eba08bffbdffcb17e2af9d1349764fc8ef279828c44af6a02fd02ce7a5d649"
+    },
+    "files": {
+        "distr/core/contracts/composition-recipe-v1/README.md": {
+            "sha256": "841526d8466252f8354b744903a889ada4ad08abd358667e8c672f40037b5c98"
+        },
+        "distr/core/contracts/composition-recipe-v1/common.schema.json": {
+            "sha256": "09945cc8485e7b1a5f8ee8add6938da720ffc6c434c6e86c13fe6f98a95b2fe4"
+        },
+        "distr/core/contracts/composition-recipe-v1/contract.lock.json": {
+            "sha256": "271b0d8ac3f7eef42410269eb1ee1a64e7925610b591b425419f771d2e7768ed"
+        },
+        "distr/core/contracts/composition-recipe-v1/dependencies.schema.json": {
+            "sha256": "3d4508db8ba3056ad408fdf6c0ae6a497d9ab47ec1cf04cf06e70f2d5efd9cb5"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/canonicalization.json": {
+            "sha256": "ab6e3aef30bbceef84bdd1314b301d20fe1196b32d6d83f59feb32e376b44239"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/format-names.json": {
+            "sha256": "9f860084ee6abb4cabbc90bdddb402cb04f3f5ed39a170e252b3a8fce2debc78"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/limit-boundaries.json": {
+            "sha256": "c507d0f534868fea42c735e9f741aa228699a487652d4212feba9a4d40a04eb2"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/schema-negative.json": {
+            "sha256": "66d4611c4ed4699ff86d1ec3de26cfcc6e52307766b8c7844113dff838737401"
+        },
+        "distr/core/contracts/composition-recipe-v1/inputs.schema.json": {
+            "sha256": "7a05d19fa70e35a2aba0c54cdd89d2b73a3c4417456182e45dd068b9f67457bb"
+        },
+        "distr/core/contracts/composition-recipe-v1/limits.json": {
+            "sha256": "2a8b3d66ed8f4b183f721ffe257f472cfeb835c6e9829d374a3a420122025e10"
+        },
+        "distr/core/contracts/composition-recipe-v1/manifest.schema.json": {
+            "sha256": "3943213661945c3d862de7abadd99c18302b1156c233a51ca09271ca70d79536"
+        },
+        "distr/core/contracts/composition-recipe-v1/recipe.schema.json": {
+            "sha256": "08749a44701f7c3b4fbbab9f936a8b0f9939f1cffd1ba3d4fa724e9addf8d973"
+        },
+        "distr/core/js/composition/builtins.mjs": {
+            "sha256": "cecc06f437f0c247b0430c565075f2de6435546a6ef44311b366e34b9592f7ea"
+        },
+        "distr/core/js/composition/canonical.mjs": {
+            "sha256": "aa6b44b2b81fc71040a32c6d8521201b7b8f23881ba2844c5a749b2e6ba3587c"
+        },
+        "distr/core/js/composition/editor.mjs": {
+            "sha256": "ec3b17ce817b129a3751cc4087afc281bc3ff81ca2f03a285ecb2957828e1574"
+        },
+        "distr/core/js/composition/fields.mjs": {
+            "sha256": "edc7263aa8394b83d25f4510669666e8baaf7a8c57924e0b6f9b38b85d243216"
+        },
+        "distr/core/js/composition/fragments.mjs": {
+            "sha256": "7c9fed202cd6e229ad4bf7e24b1d32d352d905067465a105a57ae88a9d21c6d6"
+        },
+        "distr/core/js/composition/index.mjs": {
+            "sha256": "45a71cda246130f6dd6aa3b4c44f24ae8eda396712705ed986720c9ebc7919f9"
+        },
+        "distr/core/js/composition/inline-model.mjs": {
+            "sha256": "2d584862b57ce8e1586da111399313920dd2f0e72b5a1a19b5ba3bede6269077"
+        },
+        "distr/core/js/composition/recipe.mjs": {
+            "sha256": "855bc06ed56980350e9540c55301464fc8a4d453b6dabfbbab82812dc6992a34"
+        },
+        "distr/core/js/composition/regions.mjs": {
+            "sha256": "5f037d450e4e171ad5246f47748bea680ceba66642fd547527a10c40630c42e9"
+        },
+        "distr/core/js/composition/routing.mjs": {
+            "sha256": "82de69a1fc2734f6fe9bc6d0c6c2b609b2f394a6f25374940c29b2a80b4e92aa"
+        },
+        "distr/core/js/composition/schema-name.mjs": {
+            "sha256": "14a8b733e8a7659c5d1460ec4a602772c4eb0b790d96d9e27547a19ff8f05c78"
+        }
+    },
+    "packet_sha256": "021393ac4e650e9ae69e04a4e9ba121a3d6b5d09e2e143a2e97462c401034fbc"
+}

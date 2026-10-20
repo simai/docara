@@ -114,6 +114,11 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-prose sf-alert:not(:where(.docara-example-inline *)),.docara-prose sf-button:not(:where(.docara-example-inline *)){margin-block:var(--sf-space-2)}
 .docara-landing{display:block;min-height:auto;container-type:inline-size}
 .docara-landing [data-docara-block="hero"]:not([data-docara-surface]){background:radial-gradient(circle at 12% 18%,color-mix(in srgb,var(--sf-primary-container) 72%,transparent),transparent 46%),radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--sf-tertiary-container) 58%,transparent),transparent 38%),color-mix(in srgb,var(--sf-surface-container) 76%,transparent)}
+/* A hero with a background effect: the Framework gives the area the theme the effect draws (sf-effect-area with theme-dark or theme-light). The area takes that theme's surface and ink, so the text never keeps the page's colour over a scene of the other theme while the effect loads, draws translucently or is hidden. */
+[data-docara-block="hero"][data-sf-effect]{position:relative}
+[data-docara-block="hero"][data-sf-effect].sf-effect-area{background:var(--sf-surface-0);color:var(--sf-on-surface)}
+.docara-effect-toggle{position:absolute;inset-block-end:var(--sf-space-1);inset-inline-end:var(--sf-space-1);z-index:1;--sf-icon-button-background-color:var(--sf-surface-0);--sf-icon-button-border-color:var(--sf-outline-variant)}
+.docara-effect-toggle[hidden]{display:none}
 .docara-landing .docara-content{width:100%}
 .docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]{box-sizing:border-box;width:100%;max-width:none;margin:0;padding:0}
 .docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}

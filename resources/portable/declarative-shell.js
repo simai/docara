@@ -935,6 +935,92 @@
     });
     sync();
   })();
+  /* A hero's background effect keeps moving, so the reader can pause it (WCAG 2.2.2). The Framework does not hand out the handle of an effect it mounts from data-sf-effect, so Docara places the hero's effect itself with SF.Effects.placeEffect and the same attributes: this script runs before the deferred core.js, so its load listener runs before the Framework's declarative scan, which then skips the placed hero. The handle's pause() and resume() drive the toggle. The choice is kept for the site. With reduced motion the Framework draws one still frame and the toggle is hidden. */
+  (function(){
+    var heroes=document.querySelectorAll('[data-docara-block="hero"][data-sf-effect]');
+    if(!heroes.length)return;
+    var storageKey='docara.effects.paused';
+    var paused=false;
+    try{paused=localStorage.getItem(storageKey)==='true'}catch(error){}
+    var reducedMotion=window.matchMedia?window.matchMedia('(prefers-reduced-motion: reduce)'):null;
+    var entries=[];
+    function effects(){
+      var api=window.SF&&window.SF.Effects;
+      return api&&typeof api.placeEffect==='function'?api:null;
+    }
+    function options(hero){
+      var settings={};
+      try{
+        var parsed=JSON.parse(hero.getAttribute('data-sf-effect-settings')||'{}');
+        if(parsed&&typeof parsed==='object'&&!Array.isArray(parsed))settings=parsed;
+      }catch(error){}
+      return {effect:hero.getAttribute('data-sf-effect'),settings:settings,themeMode:hero.getAttribute('data-sf-effect-theme')||'auto'};
+    }
+    function sync(entry){
+      var running=entry.hero.getAttribute('data-sf-effect-state')==='running';
+      var reduced=Boolean(reducedMotion&&reducedMotion.matches);
+      entry.button.hidden=!running||reduced||!(entry.handle||effects());
+      var label=message(paused?'effects.play':'effects.pause');
+      if(entry.button.getAttribute('aria-label')!==label){entry.button.setAttribute('aria-label',label)}
+      if(entry.button.title!==label){entry.button.title=label}
+      var name=paused?'play_arrow':'pause';
+      if(entry.icon.textContent!==name){entry.icon.textContent=name}
+      if(entry.handle){
+        if(paused){entry.handle.pause()}else{entry.handle.resume()}
+      }
+    }
+    function place(entry){
+      var api=effects();
+      if(!api)return;
+      if(!entry.placing){
+        entry.placing=Promise.resolve(api.placeEffect(entry.hero,options(entry.hero))).then(function(handle){
+          entry.handle=handle||null;
+          sync(entry);
+        },function(){entry.placing=null});
+      }
+    }
+    Array.prototype.forEach.call(heroes,function(hero){
+      var button=document.createElement('button');
+      button.type='button';
+      button.hidden=true;
+      button.dataset.docaraEffectToggle='';
+      button.className='docara-effect-toggle sf-icon-button sf-icon-button--icon sf-icon-button--surface sf-icon-button--on-surface sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0';
+      button.innerHTML='<span aria-hidden="true" class="sf-icon sf-icon-regular">pause</span>';
+      hero.appendChild(button);
+      var entry={hero:hero,button:button,icon:button.firstChild,handle:null,placing:null};
+      entries.push(entry);
+      button.addEventListener('click',function(){
+        paused=!paused;
+        try{localStorage.setItem(storageKey,paused?'true':'false')}catch(error){}
+        entries.forEach(function(item){
+          // Mounted by the Framework before Docara could place it: placed again to get its handle.
+          if(!item.handle)place(item);
+          sync(item);
+        });
+      });
+      new MutationObserver(function(){sync(entry)}).observe(hero,{attributes:true,attributeFilter:['data-sf-effect-state']});
+      sync(entry);
+    });
+    function start(){
+      entries.forEach(function(entry){
+        if(!entry.hero.hasAttribute('data-sf-effect-state')||paused)place(entry);
+        sync(entry);
+      });
+    }
+    if(document.readyState==='complete'){start()}else{window.addEventListener('load',start,{once:true})}
+    if(reducedMotion){
+      var onMotion=function(){entries.forEach(sync)};
+      if(reducedMotion.addEventListener){reducedMotion.addEventListener('change',onMotion)}else if(reducedMotion.addListener){reducedMotion.addListener(onMotion)}
+    }
+    window.addEventListener('storage',function(event){
+      if(event.key!==storageKey)return;
+      paused=event.newValue==='true';
+      entries.forEach(function(entry){
+        if(!entry.handle&&paused)place(entry);
+        sync(entry);
+      });
+    });
+  })();
   localizeCodeCopy(document);
   if(document.body){
     new MutationObserver(function(records){

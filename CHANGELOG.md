@@ -36,6 +36,16 @@ All notable changes to Docara are recorded here. The format follows
   landing pages, do not get it. `"branding": {"credit": false}` in
   `docara.json` turns it off for the whole site, footer and border included;
   `section.json` and `*.page.json` cannot set it (`BRANDING_CREDIT_SITE_ONLY`).
+- **Pause for hero background effects.** While a hero effect runs, an icon
+  button in the hero's bottom corner pauses and resumes it (WCAG 2.2.2). Its
+  label is localized (`effects.pause`, `effects.play`; built-in English and
+  Russian, overridable in `lang.json`), and the choice is kept for the site in
+  `localStorage` (`docara.effects.paused`) when storage is available. With
+  reduced motion the Framework draws one still frame and the button is
+  hidden. Docara places the hero's effect itself through
+  `SF.Effects.placeEffect` with the same `data-sf-effect*` attributes, before
+  the Framework's declarative scan, because only that call returns the handle
+  whose `pause()` and `resume()` the button uses.
 
 ### Changed
 
@@ -51,6 +61,10 @@ All notable changes to Docara are recorded here. The format follows
   (already accepted since 3.3.1), so plan hashes that cover the contract
   digest change. The Core packet stays at 1385 files and Smart at 75; the
   Recipe runtime has 23 files.
+- A hero with a background effect takes `--sf-surface-0` as its background
+  and `--sf-on-surface` as its text colour in the theme the effect draws, so
+  its text stays readable while the effect loads or when it draws
+  translucently.
 - **Icon catalogue instead of the full icon fonts.** A page with a Rounded or
   Sharp icon, a light, medium or filled icon, or an outlined name outside the
   shell subset no longer downloads a 3.5–5.3 MB variable Material Symbols

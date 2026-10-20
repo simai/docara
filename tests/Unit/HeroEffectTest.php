@@ -7,6 +7,7 @@ namespace Tests\Unit;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\EffectsCatalogue;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
@@ -47,6 +48,36 @@ final class HeroEffectTest extends TestCase
         self::assertStringContainsString(
             'data-sf-effect-settings="{}"',
             $this->render(":::hero {effect=aurora-curtain effect_settings='{}'}\n# Hero\n\nDescription.\n:::"),
+        );
+    }
+
+    #[Test]
+    public function a_running_hero_effect_can_be_paused_with_a_localized_control(): void
+    {
+        self::assertSame('Pause background animation', UiCopy::optionalDefaults('en')['effects.pause']);
+        self::assertSame('Play background animation', UiCopy::optionalDefaults('en')['effects.play']);
+        self::assertSame('Остановить фоновую анимацию', UiCopy::optionalDefaults('ru')['effects.pause']);
+        self::assertSame('Запустить фоновую анимацию', UiCopy::optionalDefaults('ru')['effects.play']);
+
+        // The shell places the hero's effect through the Framework to hold its
+        // handle, drives pause() and resume(), keeps the choice and hides the
+        // control with reduced motion. The behaviour is checked in a browser.
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        foreach ([
+            "'[data-docara-block=\"hero\"][data-sf-effect]'",
+            'api.placeEffect(entry.hero,options(entry.hero))',
+            'entry.handle.pause()',
+            'entry.handle.resume()',
+            "'docara.effects.paused'",
+            "'(prefers-reduced-motion: reduce)'",
+            "message(paused?'effects.play':'effects.pause')",
+        ] as $needle) {
+            self::assertStringContainsString($needle, $shell);
+        }
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString(
+            '[data-docara-block="hero"][data-sf-effect].sf-effect-area{background:var(--sf-surface-0);color:var(--sf-on-surface)}',
+            $css,
         );
     }
 

@@ -55,7 +55,7 @@
 <?php if ($view->regions['sidebar'] !== '') { ?>
         <aside class="docara-sidebar" data-docara-region="sidebar" data-sf-observer="ignore">
             <div class="docara-sidebar-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
-                <div class="sf-scrollbar__viewport" tabindex="0" aria-label="<?= $view->copy['navigation.sections'] ?>"><?= $view->regions['sidebar'] ?></div>
+                <div class="sf-scrollbar__viewport<?= $view->sidebarCredit === null ? '' : ' flex flex-col' ?>" tabindex="0" aria-label="<?= $view->copy['navigation.sections'] ?>"><?= $view->regions['sidebar'] ?><?= $view->sidebarCredit ?? '' ?></div>
             </div>
         </aside>
 <?php } ?>

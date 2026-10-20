@@ -1631,6 +1631,82 @@ MD);
     }
 
     #[Test]
+    public function the_sidebar_ends_with_a_made_with_docara_line_in_the_page_language_unless_the_site_turns_it_off(): void
+    {
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        $this->filesystem->copyDirectory($this->tmpPath('content/ru'), $this->tmpPath('content/en'));
+        $this->installTestContentLanguage('en', $this->tmpPath('content/en/lang.json'));
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['locales']['en'] = $this->localeDefinition('English', 'ltr', 'content/en', 'en', []);
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $link = '<a class="color-on-surface-variant underline" href="https://docara.simai.io/" rel="noopener">Docara</a>';
+        $credit = static fn (string $text): string => '<p class="docara-sidebar-credit m-top-auto m-bottom-0 p-x-1 p-top-2 p-bottom-3 text-small color-on-surface-variant" data-docara-sidebar-credit>'
+            . str_replace('{docara}', $link, $text) . '</p></div>';
+        foreach ([
+            'ru/guides/getting-started/index.html' => 'Сделано на {docara}',
+            'en/guides/getting-started/index.html' => 'Made with {docara}',
+        ] as $output => $text) {
+            $html = (string) file_get_contents($this->tmpPath('build_local/' . $output));
+            // The line closes the sidebar viewport, after the navigation, so
+            // the mobile navigation sheet copies it with the menu.
+            self::assertSame(1, substr_count($html, 'data-docara-sidebar-credit'), $output);
+            self::assertStringContainsString($credit($text), $html, $output);
+            self::assertMatchesRegularExpression(
+                '~<div class="sf-scrollbar__viewport flex flex-col"[^>]*>.*data-docara-smart="docara.navigation".*data-docara-sidebar-credit>~s',
+                $html,
+                $output,
+            );
+            self::assertStringNotContainsString('target="_blank"', substr($html, (int) strpos($html, 'data-docara-sidebar-credit'), 400));
+        }
+        self::assertSame('Made with {docara}', UiCopy::buildText('ar', 'branding.credit'));
+        // A landing page has no sidebar and so no credit line.
+        $landing = (string) file_get_contents($this->tmpPath('build_local/ru/landing/index.html'));
+        self::assertStringNotContainsString('data-docara-region="sidebar"', $landing);
+        self::assertStringNotContainsString('data-docara-sidebar-credit', $landing);
+
+        $site['branding']['credit'] = false;
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        foreach (['ru/guides/getting-started/index.html', 'en/guides/getting-started/index.html'] as $output) {
+            $html = (string) file_get_contents($this->tmpPath('build_local/' . $output));
+            self::assertStringContainsString('data-docara-region="sidebar"', $html, $output);
+            self::assertStringNotContainsString('data-docara-sidebar-credit', $html, $output);
+            self::assertStringNotContainsString('docara.simai.io', $html, $output);
+            self::assertStringContainsString('<div class="sf-scrollbar__viewport" tabindex="0"', $html, $output);
+        }
+    }
+
+    #[Test]
+    public function a_section_or_page_cannot_set_the_site_wide_credit_switch(): void
+    {
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        $sectionPath = $this->tmpPath('content/ru/section.json');
+        $section = $this->jsonFile($sectionPath);
+        $section['branding'] = ['credit' => false];
+        file_put_contents($sectionPath, json_encode($section, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT) . "\n");
+
+        try {
+            $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+            self::fail('A section-level branding.credit must be rejected.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('BRANDING_CREDIT_SITE_ONLY', $exception->errorCode);
+            self::assertSame('content/ru/section.json', $exception->sourcePath());
+            self::assertSame('/branding/credit', $exception->sourcePointer());
+        }
+    }
+
+    #[Test]
     public function disabled_optional_regions_emit_no_empty_shell_or_mobile_navigation(): void
     {
         $this->copyPortableFixture($this->tmp);

@@ -13,6 +13,7 @@ use Simai\Docara\Declarative\Rendering\View\PortablePageViewModel;
 use Simai\Docara\Declarative\Rendering\View\PublisherChromeViewModel;
 use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
 use Simai\Docara\Framework\FrameworkAssetPlan;
+use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Preferences\ReaderPreferenceCompiler;
 use Simai\Docara\Smart\SmartRegistry;
@@ -245,6 +246,9 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 : null,
             $this->socialMeta($page, $brandTitle, $branding),
             $this->portalHome($page),
+            $documentationNavigationEnabled && ($page['sidebar_credit'] ?? true) === true
+                ? $this->sidebarCredit((string) $page['locale'])
+                : null,
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
@@ -295,6 +299,20 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         }
 
         return ['url' => $this->escape($home['url']), 'label' => $this->escape($home['label'])];
+    }
+
+    /**
+     * The "Made with Docara" line under the sidebar navigation (docara.json
+     * branding.credit). It lives inside the sidebar, so the mobile navigation
+     * sheet, which copies the sidebar, shows it too.
+     */
+    private function sidebarCredit(string $locale): string
+    {
+        $link = '<a class="color-on-surface-variant underline" href="https://docara.simai.io/" rel="noopener">Docara</a>';
+
+        return '<p class="docara-sidebar-credit m-top-auto m-bottom-0 p-x-1 p-top-2 p-bottom-3 text-small color-on-surface-variant" data-docara-sidebar-credit>'
+            . str_replace('{docara}', $link, $this->escape(UiCopy::buildText($locale, 'branding.credit')))
+            . '</p>';
     }
 
     /** @return list<string> */

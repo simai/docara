@@ -78,7 +78,7 @@ final readonly class EffectsCatalogue
             if (str_starts_with($reference, 'https://') && ! str_starts_with($reference, $catalogue->catalogue)) {
                 throw new PortableConfigurationException(
                     'EFFECTS_OUTSIDE_CATALOGUE',
-                    "$where names the effect [$reference] outside effects.catalogue {$catalogue->catalogue}; SF.Effects runs only catalogue effects.",
+                    "$where names the effect [$reference] outside effects.catalogue {$catalogue->catalogue}; Docara builds only catalogue effects (SF.Effects would run a foreign effect in a sandboxed frame, which Docara does not configure).",
                 );
             }
         }

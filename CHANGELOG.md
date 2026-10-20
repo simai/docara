@@ -150,6 +150,11 @@ All notable changes to Docara are recorded here. The format follows
   `composer require`. They are re-taken from the live site, which installs
   from Packagist, at the same 1600×900 size and file names (84 KB and 100 KB,
   down from 89 KB and 104 KB).
+- `EFFECTS_OUTSIDE_CATALOGUE` no longer says that SF.Effects runs only
+  catalogue effects: since Framework `ui-a9636b60d3e3` a foreign effect runs
+  in a sandboxed frame (`SF_BOOT_CONFIG.effects.foreign`: `sandbox` by
+  default, or `refuse`). Docara still builds only effects under
+  `effects.catalogue`; the message and the hero page now say so.
 - In the documentation navigation, a parent row and its first child are
   spaced like sibling rows (1px) instead of 8px apart, on the desktop tree and
   in the mobile sheet.

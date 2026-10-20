@@ -823,6 +823,9 @@ final readonly class PortableSiteBuilder
             $uiCopy->forLocale($buildLocale),
         );
         $siteTitle = (string) ($site['title'] ?? 'Docara');
+        // docara.json branding.credit: the "Made with Docara" line under the
+        // sidebar navigation, on unless the site turns it off.
+        $sidebarCredit = ($site['branding']['credit'] ?? true) !== false;
         $brandPublisher = new PortableBrandAssetPlanner($this->files);
         $brandPlan = $brandPublisher->plan(
             $root,
@@ -1021,6 +1024,7 @@ final readonly class PortableSiteBuilder
                 $declarative = null;
                 $pageLocale = (string) $page['locale'];
                 $page['branding'] = $brandPlan['pages'][$pageIndex];
+                $page['sidebar_credit'] = $sidebarCredit;
                 $pageTopology = $topologies[(string) $page['locale']] ?? [];
                 $pageNavigation = $navigations[(string) $page['locale']] ?? [];
                 $readingContext = $navigationBuilder->readingContextForUrl($pageTopology, (string) $page['url']);

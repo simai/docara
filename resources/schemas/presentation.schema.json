@@ -42,6 +42,10 @@
                 "size": {
                     "type": "string",
                     "enum": ["small", "medium", "large"]
+                },
+                "credit": {
+                    "description": "Show the \"Made with Docara\" line at the bottom of the left navigation. On by default; false removes it from every page. Site-wide: set it only in docara.json.",
+                    "type": "boolean"
                 }
             },
             "additionalProperties": false

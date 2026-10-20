@@ -25,6 +25,15 @@ All notable changes to Docara are recorded here. The format follows
   per-page overrides. The Quality workflow runs it on the documentation site
   with `docs/site/page-weight.json` (4.5 MB per page, 1.3 MB per image, and
   explicit overrides for the icon and diagram pages).
+- **"Made with Docara" line under the sidebar.** Every page with a left
+  navigation now ends the menu with one line of small secondary text, «Сделано
+  на Docara» on Russian pages and "Made with Docara" elsewhere, where
+  "Docara" links to <https://docara.simai.io/> in the same tab. It sits below
+  the last menu item, at the bottom of a short menu and after a long one, and
+  the mobile navigation sheet shows it too. Pages without a sidebar, such as
+  landing pages, do not get it. `"branding": {"credit": false}` in
+  `docara.json` turns it off for the whole site; `section.json` and
+  `*.page.json` cannot set it (`BRANDING_CREDIT_SITE_ONLY`).
 
 ### Changed
 

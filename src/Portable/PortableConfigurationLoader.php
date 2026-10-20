@@ -187,6 +187,7 @@ final class PortableConfigurationLoader
             }
 
             $trace[] = $sectionTrace;
+            $this->assertSiteOnlyBranding($section, $sectionFile);
             $result = $this->merger->merge(
                 $configuration,
                 $this->configurationPayload($section),
@@ -201,6 +202,7 @@ final class PortableConfigurationLoader
         [$pageConfiguration, $pageTrace] = $this->loadJson($sidecar, 'page.schema.json', 'page', false);
         if ($pageConfiguration !== null) {
             $trace[] = $pageTrace;
+            $this->assertSiteOnlyBranding($pageConfiguration, $sidecar);
             $result = $this->merger->merge(
                 $configuration,
                 $this->configurationPayload($pageConfiguration),
@@ -282,6 +284,27 @@ final class PortableConfigurationLoader
         ksort($provenance, SORT_STRING);
 
         return [$configuration, $provenance];
+    }
+
+    /**
+     * branding.credit is one switch for the whole site: the shared branding
+     * shape accepts it, but only docara.json may set it.
+     *
+     * @param  array<string, mixed>  $configuration
+     */
+    private function assertSiteOnlyBranding(array $configuration, string $source): void
+    {
+        if (is_array($configuration['branding'] ?? null)
+            && array_key_exists('credit', $configuration['branding'])
+        ) {
+            throw new PortableConfigurationException(
+                'BRANDING_CREDIT_SITE_ONLY',
+                "branding.credit in [$source] is a site-wide setting; set it in docara.json.",
+                null,
+                $source,
+                '/branding/credit',
+            );
+        }
     }
 
     /**

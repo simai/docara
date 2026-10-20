@@ -116,6 +116,12 @@ All notable changes to Docara are recorded here. The format follows
   runs, the stylesheet's estimate (73 px) applies. The mobile navigation sheet
   lays out its header and content as a column, so the content no longer
   assumes a 56 px header and its end stays inside the window.
+- The documentation home page screenshots `home-docs-page.webp` (hero) and
+  `home-landing.webp` (desktop and mobile showcase) no longer show the old
+  start-page install that added a `repositories` VCS entry before
+  `composer require`. They are re-taken from the live site, which installs
+  from Packagist, at the same 1600×900 size and file names (84 KB and 100 KB,
+  down from 89 KB and 104 KB).
 - In the documentation navigation, a parent row and its first child are
   spaced like sibling rows (1px) instead of 8px apart, on the desktop tree and
   in the mobile sheet.

@@ -414,7 +414,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // Details in the lines view use the Framework's border-width,
         // border-style and padding utilities, which regroups the shared shell
         // stylesheets into 44: 1903.
-        self::assertCount(1903, $firstFiles);
+        // The home page "Made with Docara" block adds two WebP screenshots:
+        // 1905.
+        self::assertCount(1905, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

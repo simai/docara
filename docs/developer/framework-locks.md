@@ -22,7 +22,7 @@ copy in `resources/framework/assets/`.
 ## Product component packages
 
 Beside the free release, a lock may carry `package_projections`: product
-component packages (Larena's `larena` is the first), served under their own
+component packages (commercial SIMAI packages), served under their own
 mount. A package is built by the SIMAI Framework builder (`sf-build package`)
 from a folder of the product's UI repository and taken by its package receipt
 (`simai.framework.product-package-receipt` version 1):

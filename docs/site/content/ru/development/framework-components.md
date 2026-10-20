@@ -42,7 +42,7 @@ Core runtime и utilities публикуются отдельной hash-bound �
 лениво находить chunks без сетевого fallback. Наличие файла в этой локальной
 проекции не является admission нового Smart-компонента: authoring support
 по-прежнему требует отдельный принятый manifest и consumer policy.
-Текущий portable-контур явно исключает Larena backend event bridge: Docara не
+Текущий portable-контур явно исключает backend event bridge коммерческих пакетов SIMAI: Docara не
 допускает backend handlers, data binding или выполнение эффектов. Это
 ограничение отражается в машинном каталоге, а не скрывается.
 
@@ -93,6 +93,6 @@ authoritative source: native profile, typed definition либо Smart metadata �
 `_docara/component-catalog.json` в output сборки не является каноническим
 реестром SIMAI Framework и не подтверждает production или public-release
 readiness.
-`larena.ui.smart_manifest.v1` встречается только во внутренних package-owned
+Устаревшая схема smart manifest v1 встречается только во внутренних package-owned
 артефактах старого storage adapter. Это не публичная authoring-схема и не
 альтернативный Portable Smart ABI.

@@ -3,7 +3,7 @@
 :::logos
 - SIMAI Framework
 - Docara
-- Larena
+- SIMAI Effects
 :::
 
 <!-- docara-variant:state.linked -->

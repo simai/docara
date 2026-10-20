@@ -629,7 +629,7 @@ What you get:
   back to the legacy portable Smart copy; replace it with
   `vendor/simai/docara/stubs/portable/simai-framework.lock.json`.
 - **Components removed from the free Framework release:** `sf-admin-menu` and
-  `sf-table` (they are part of the Larena package).
+  `sf-table` (they moved to a commercial SIMAI component package).
 - **`init` options.** `--template=minimal|showcase` and `--lang=en|ru`. The
   default is a small English starter (`minimal`, `en`). The starter of 2.x,
   the component catalogue with project Smart demos, is

@@ -416,7 +416,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // stylesheets into 44: 1903.
         // The home page "Made with Docara" block adds two WebP screenshots:
         // 1905.
-        self::assertCount(1905, $firstFiles);
+        // :::tabs no longer borrows the Framework class sf-tab, so no page
+        // pulls in the Framework tab component; without its stylesheet the
+        // shared shell stylesheets regroup into 42: 1903.
+        self::assertCount(1903, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

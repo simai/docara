@@ -111,9 +111,9 @@ final readonly class SurfacePresentation
     private function toneClass(string $tone): string
     {
         return match ($tone) {
-            'muted' => 'bg-surface-container-low color-on-surface',
+            'muted' => 'bg-surface-1 color-on-surface',
             'accent' => 'bg-primary-container color-on-primary-container',
-            'contrast' => 'bg-inverse-surface color-inverse-on-surface',
+            'contrast' => 'bg-surface-inverse color-on-surface-inverse',
             default => 'bg-surface-0 color-on-surface',
         };
     }

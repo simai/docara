@@ -645,7 +645,7 @@ MD;
             '<ol class="m-0 p-0">',
             $html,
         );
-        self::assertStringContainsString('class="docara-step grid items-cross-start gap-1 list-none p-block-end-2"', $html);
+        self::assertStringContainsString('class="docara-step grid items-cross-start gap-1 list-none"', $html);
         self::assertStringContainsString('class="docara-step-marker inline-flex items-cross-center content-main-center"', $html);
         self::assertStringContainsString('<div class="docara-step-content">Установите PHP-зависимости.</div>', $html);
         self::assertStringNotContainsString('absolute inset-inline-start-0', $html);
@@ -787,7 +787,7 @@ MD);
 
             self::assertStringContainsString(
                 '<details data-docara-block="details" data-view="' . $view . '" class="' . $classes . '">'
-                . '<summary class="flex items-cross-center gap-1 cursor-pointer font-bold">'
+                . '<summary class="flex items-cross-center gap-1 cursor-pointer bold">'
                 . '<i class="sf-icon sf-icon-loaded" aria-hidden="true">chevron_right</i>'
                 . '<span class="min-w-0">Вопрос</span></summary><div class="p-top-1"><p>Ответ.</p></div></details>',
                 $html,

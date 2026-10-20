@@ -162,6 +162,10 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-preview__tab{display:inline-flex;align-items:center;justify-content:center;min-block-size:var(--sf-ui-1--control-height);margin:0;padding-inline:var(--sf-space-1);border:0;border-radius:0;background:transparent;color:var(--sf-on-surface-variant);font-size:var(--sf-text-size-1);line-height:var(--sf-text-height-1);cursor:pointer}
 .docara-example-preview__tab[aria-selected="true"]{color:var(--sf-on-surface)}
 .docara-example-preview__tab:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);outline-offset:calc(var(--sf-focus--width) * -1)}
+.docara-tab{flex:0 0 auto;margin:0;border:0;border-block-end:var(--sf-a2) solid transparent;border-radius:0;background:transparent;font:inherit;font-size:var(--sf-text-size-1);line-height:var(--sf-text-height-1);white-space:nowrap;cursor:pointer}
+.docara-tab:hover,.docara-tab[aria-selected="true"]{color:var(--sf-on-surface)}
+.docara-tab[aria-selected="true"]{border-block-end-color:var(--sf-outline)}
+.docara-tab:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);outline-offset:calc(var(--sf-focus--width) * -1)}
 .docara-example-preview__indicator{position:absolute;inset-block-end:-1px;inset-inline-start:0;z-index:1;inline-size:0;block-size:var(--sf-a2);background:var(--sf-outline);pointer-events:none;transition:inset-inline-start 180ms ease,inline-size 180ms ease}
 .docara-example-preview__actions{justify-content:flex-end}
 .docara-example-preview__action,.docara-example-preview__copy{margin:0;color:var(--sf-on-surface-variant)}

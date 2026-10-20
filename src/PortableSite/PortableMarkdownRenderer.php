@@ -573,7 +573,7 @@ final class PortableMarkdownRenderer
                 $state = $index < $current ? 'complete' : ($index === $current ? 'current' : 'pending');
                 $marker = $index < $current ? '&#10003;' : (string) $index;
 
-                return '<li data-step-state="' . $state . '" class="docara-step grid items-cross-start gap-1 list-none p-block-end-2">'
+                return '<li data-step-state="' . $state . '" class="docara-step grid items-cross-start gap-1 list-none">'
                     . '<span aria-hidden="true" class="docara-step-marker inline-flex items-cross-center content-main-center">'
                     . '<span class="docara-step-marker-text">' . $marker . '</span></span>'
                     . '<div class="docara-step-content">'
@@ -625,7 +625,7 @@ final class PortableMarkdownRenderer
         // triangle; the Framework accordion's chevron_right takes its place
         // and turns down when the block is open (declarative-shell.css).
         return '<details data-docara-block="details" data-view="' . $view . '" class="' . $classes . '"'
-            . ($open ? ' open' : '') . '><summary class="flex items-cross-center gap-1 cursor-pointer font-bold">'
+            . ($open ? ' open' : '') . '><summary class="flex items-cross-center gap-1 cursor-pointer bold">'
             . '<i class="sf-icon sf-icon-loaded" aria-hidden="true">chevron_right</i>'
             . '<span class="min-w-0">' . $this->escapeHtml($title) . '</span></summary>'
             . '<div class="p-top-1">' . $content . '</div></details>';
@@ -1239,7 +1239,7 @@ HTML;
         $content = $consent === 'none'
             ? '<iframe src="' . $url . '"' . $common . '></iframe>'
             : '<div class="w-full h-full flex flex-col items-cross-center content-main-center gap-1 p-2 text-center" data-docara-embed-consent>'
-                . '<button type="button" class="sf-button sf-button--main sf-button--primary sf-button--size-1" data-docara-embed-load>'
+                . '<button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1" data-docara-embed-load>'
                 . $this->escapeHtml($loadLabel) . '</button>'
                 . '</div><template data-docara-embed-template><iframe data-src="' . $url . '"' . $common . '></iframe></template>';
 
@@ -1291,7 +1291,7 @@ HTML;
             );
         }
 
-        return '<div data-docara-block="internal-preview" class="docara-example-preview surface-0 border border-outline-variant radius-2 overflow-hidden"'
+        return '<div data-docara-block="internal-preview" class="docara-example-preview bg-surface-0 border border-outline-variant radius-2 overflow-hidden"'
             . ' data-preview-size="' . $size . '"><iframe src="' . $this->escapeHtml($url)
             . '" title="' . $this->escapeHtml($title) . '"'
             . ($defaultTitle ? ' ' . self::INTERNAL_PREVIEW_DEFAULT_TITLE_MARKER : '')
@@ -1793,13 +1793,13 @@ HTML;
             $panelId = $id . '-panel-' . $index;
             $tabs .= '<button type="button" role="tab" id="' . $tabId . '" aria-controls="' . $panelId
                 . '" aria-selected="' . ($selected ? 'true' : 'false') . '"' . ($selected ? '' : ' tabindex="-1"')
-                . ' class="sf-tab p-inline-1 p-block-1/3 color-on-surface-variant">' . $this->escapeHtml($label) . '</button>';
+                . ' class="docara-tab p-x-2 p-y-1/2 color-on-surface-variant">' . $this->escapeHtml($label) . '</button>';
             $panels .= '<div role="tabpanel" id="' . $panelId . '" aria-labelledby="' . $tabId . '"'
                 . ($selected ? '' : ' hidden') . ' class="p-2">' . $content . '</div>';
         }
 
         return '<section data-docara-block="tabs" data-docara-tabs class="border border-outline-variant radius-2 overflow-hidden m-bottom-1">'
-            . '<div role="tablist" class="flex border-bottom border-outline-variant bg-surface-0">' . $tabs . '</div>'
+            . '<div role="tablist" class="flex overflow-x-auto border-bottom-1 border-bottom-solid border-outline-variant bg-surface-0">' . $tabs . '</div>'
             . $panels . '</section>';
     }
 
@@ -1833,7 +1833,7 @@ HTML;
         }
 
         return '<figure data-docara-block="diagram" data-engine="' . $engine . '" class="border border-outline-variant radius-2 overflow-hidden m-0 m-bottom-1">'
-            . '<figcaption class="bg-surface-container p-inline-2 p-block-1/3 font-bold">' . $this->escapeHtml($title) . '</figcaption>'
+            . '<figcaption class="bg-surface-container p-x-2 p-y-1/3 bold">' . $this->escapeHtml($title) . '</figcaption>'
             . '<div class="mermaid p-2 overflow-auto" data-docara-diagram-source role="img" aria-label="'
             . $this->escapeHtml($title) . '">'
             . $this->escapeHtml($source) . '</div></figure>';
@@ -1852,7 +1852,7 @@ HTML;
         $tag = $display === 'inline' ? 'span' : 'div';
 
         return '<' . $tag . ' data-docara-block="math" data-display="' . $display . '" data-docara-math-source role="math" aria-label="'
-            . $this->escapeHtml($label) . '" class="font-mono ' . ($display === 'block' ? 'p-2 bg-surface-container radius-2 m-bottom-1 overflow-auto' : '')
+            . $this->escapeHtml($label) . '" class="mono ' . ($display === 'block' ? 'p-2 bg-surface-container radius-2 m-bottom-1 overflow-auto' : '')
             . '">' . $this->escapeHtml($source) . '</' . $tag . '>';
     }
 
@@ -1865,7 +1865,7 @@ HTML;
         $document = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'
             . $match['source'] . '</body></html>';
 
-        return '<iframe data-docara-block="html" title="HTML example" class="w-full min-h-i5 border border-outline-variant radius-2 bg-surface-0 m-bottom-1" sandbox loading="lazy" data-docara-srcdoc="'
+        return '<iframe data-docara-block="html" title="HTML example" class="w-full border border-outline-variant radius-2 bg-surface-0 m-bottom-1" sandbox loading="lazy" data-docara-srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
     }
 
@@ -3147,7 +3147,7 @@ HTML;
 
                 return '<figure data-docara-native-quote class="m-0 m-bottom-1">'
                     . '<blockquote>' . trim((string) $matches['content'])
-                    . '<footer class="color-on-surface-variant p-block-start-1">— <cite>'
+                    . '<footer class="color-on-surface-variant p-top-1">— <cite>'
                     . $citationHtml . '</cite></footer></blockquote></figure>';
             },
             $html,
@@ -3205,10 +3205,10 @@ HTML;
                     . '<div data-docara-code-actions class="docara-code-actions flex items-cross-center gap-1/3">'
                     . ($wrap ? '<button type="button" data-docara-code-wrap-toggle hidden data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow" class="docara-code-wrap sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Wrap source lines" aria-pressed="false">'
                         . '<span aria-hidden="true" class="sf-icon sf-icon-regular">wrap_text</span>'
-                        . '<span class="sf-button-text-container visually-hidden">Wrap source lines</span></button>' : '')
+                        . '<span class="sf-button-text-container sr-only">Wrap source lines</span></button>' : '')
                     . '<button type="button" data-docara-code-copy class="docara-code-copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Copy">'
                     . '<span aria-hidden="true" class="sf-icon sf-icon-regular">content_copy</span>'
-                    . '<span class="sf-button-text-container visually-hidden">Copy</span></button></div></div>'
+                    . '<span class="sf-button-text-container sr-only">Copy</span></button></div></div>'
                     . '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code'
                     . $attributes . '>' . (string) ($matches['content'] ?? '') . '</code></pre>'
                     . '</div>';

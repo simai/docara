@@ -310,7 +310,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
     {
         $link = '<a class="color-on-surface-variant underline" href="https://docara.simai.io/" rel="noopener">Docara</a>';
 
-        return '<p class="docara-sidebar-credit m-top-auto m-bottom-0 p-x-1 p-top-2 p-bottom-3 text-small color-on-surface-variant" data-docara-sidebar-credit>'
+        return '<p class="docara-sidebar-credit m-top-auto m-bottom-0 p-x-1 p-top-2 p-bottom-2 text-small color-on-surface-variant" data-docara-sidebar-credit>'
             . str_replace('{docara}', $link, $this->escape(UiCopy::buildText($locale, 'branding.credit')))
             . '</p>';
     }

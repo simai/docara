@@ -808,7 +808,7 @@ MD);
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-outline-scroll{position:sticky;inset-block-start:var(--sf-d8);block-size:calc(100vh - var(--sf-d8));direction:ltr}',
+            '.docara-outline-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));direction:ltr}',
             $shellCss,
         );
         self::assertStringContainsString(
@@ -816,7 +816,7 @@ MD);
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-sidebar-scroll{position:sticky;inset-block-start:var(--sf-d4);block-size:calc(100vh - var(--sf-d4))}',
+            '.docara-sidebar-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size))}',
             $shellCss,
         );
         self::assertStringNotContainsString('html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}', $shellCss);
@@ -1101,6 +1101,9 @@ MD);
         self::assertStringContainsString('data-docara-sheet-lazy-content', $guide);
         self::assertStringContainsString('template data-docara-sheet-template', $guide);
         self::assertStringContainsString('function hydrateSheet()', $shellRuntime);
+        // The sticky sidebar and outline are sized from the measured header.
+        self::assertStringContainsString("document.documentElement.style.setProperty('--docara-header-block-size',size+'px')", $shellRuntime);
+        self::assertStringContainsString('new ResizeObserver(measure).observe(header)', $shellRuntime);
         self::assertStringContainsString('id="docara-outline-dialog"', $guide);
         self::assertStringContainsString('data-docara-sheet-trigger', $guide);
         self::assertMatchesRegularExpression(
@@ -1646,7 +1649,7 @@ MD);
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
         $link = '<a class="color-on-surface-variant underline" href="https://docara.simai.io/" rel="noopener">Docara</a>';
-        $credit = static fn (string $text): string => '<p class="docara-sidebar-credit m-top-auto m-bottom-0 p-x-1 p-top-2 p-bottom-3 text-small color-on-surface-variant" data-docara-sidebar-credit>'
+        $credit = static fn (string $text): string => '<p class="docara-sidebar-credit m-top-auto m-bottom-0 p-x-1 p-top-2 p-bottom-2 text-small color-on-surface-variant" data-docara-sidebar-credit>'
             . str_replace('{docara}', $link, $text) . '</p></div>';
         foreach ([
             'ru/guides/getting-started/index.html' => 'Сделано на {docara}',

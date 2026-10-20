@@ -1,0 +1,122 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit;
+
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase;
+use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+
+/**
+ * The hero's padding steps: lg and xl are Framework spacing steps 3 and 4;
+ * 2xl is a fluid vertical padding drawn by the shell stylesheet between two
+ * Framework spacing tokens.
+ */
+final class HeroPaddingTest extends TestCase
+{
+    private const FLUID_RULE = '.docara-padding-2xl{padding-block:clamp(var(--sf-d2),var(--sf-c2) + 6vw,var(--sf-e4))}';
+
+    #[Test]
+    public function lg_and_xl_keep_their_framework_steps(): void
+    {
+        $lg = $this->render(":::hero {variant=compact}\n# Hero\n\nDescription.\n:::");
+        self::assertStringContainsString(' p-top-3 p-bottom-3">', $lg);
+        $xl = $this->render(":::hero {variant=centered}\n# Hero\n\nDescription.\n:::");
+        self::assertStringContainsString(' p-top-4 p-bottom-4">', $xl);
+        self::assertSame($xl, $this->render(":::hero {variant=centered padding=xl}\n# Hero\n\nDescription.\n:::"));
+        self::assertStringNotContainsString('docara-padding-2xl', $lg . $xl);
+    }
+
+    #[Test]
+    public function two_xl_puts_the_fluid_padding_on_the_hero_container_for_every_variant(): void
+    {
+        foreach (['split', 'centered', 'compact'] as $variant) {
+            $html = $this->render(":::hero {variant=$variant padding=2xl}\n# Hero\n\nDescription.\n:::");
+            self::assertStringStartsWith('<section data-docara-block="hero" data-variant="' . $variant . '"', $html);
+            self::assertMatchesRegularExpression(
+                '/<div data-docara-container class="container m-inline-auto grid [^"]* gap-4 items-cross-center docara-padding-2xl">/',
+                $html,
+                $variant,
+            );
+            self::assertDoesNotMatchRegularExpression('/\bp-(top|bottom)-\d\b/', $html, $variant);
+        }
+    }
+
+    #[Test]
+    public function two_xl_works_with_a_background_image(): void
+    {
+        $html = $this->render(":::hero {media=background padding=2xl}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::");
+        self::assertSame(1, substr_count($html, 'data-docara-surface-background'));
+        self::assertStringContainsString(
+            'class="docara-surface__content relative container m-inline-auto grid grid-col-1 gap-4 items-cross-center docara-padding-2xl"',
+            $html,
+        );
+    }
+
+    #[Test]
+    public function two_xl_works_with_a_background_effect(): void
+    {
+        $html = $this->render(":::hero {variant=centered padding=2xl effect=aurora-curtain}\n# Hero\n\nDescription.\n:::");
+        self::assertStringStartsWith('<section data-docara-block="hero" data-sf-effect="aurora-curtain" data-variant="centered"', $html);
+        // The padding sits on the container inside the effect area; the
+        // section stays the positioned box the pause button is anchored to.
+        self::assertStringContainsString('items-cross-center docara-padding-2xl">', $html);
+
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('[data-docara-block="hero"][data-sf-effect]{position:relative}', $css);
+        self::assertStringContainsString('.docara-effect-toggle{position:absolute;inset-block-end:var(--sf-space-1);inset-inline-end:var(--sf-space-1);', $css);
+    }
+
+    #[Test]
+    public function the_shell_stylesheet_grows_the_padding_between_framework_tokens(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $css = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
+        self::assertSame(1, substr_count($css, self::FLUID_RULE));
+
+        $core = (string) file_get_contents(
+            $root . '/resources/portable/vendor/simai-framework/runtime/32c7a64e457583eaf5a1860590001217a86b5af9/distr/core/css/core.css',
+        );
+        foreach (['--sf-d2: 3rem', '--sf-c2: 1.5rem', '--sf-e4: 7rem'] as $token) {
+            self::assertStringContainsString($token, $core);
+        }
+    }
+
+    #[Test]
+    public function an_unknown_padding_and_a_surface_two_xl_are_refused(): void
+    {
+        foreach ([":::hero {padding=3xl}\n# Hero\n\nDescription.\n:::", ":::surface {padding=2xl}\nText.\n:::"] as $source) {
+            try {
+                $this->render($source);
+                self::fail('Expected a refusal for ' . $source);
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID', $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
+    public function the_catalogue_definition_lists_the_same_values_as_the_renderer(): void
+    {
+        $definition = json_decode(
+            (string) file_get_contents(dirname(__DIR__, 2) . '/resources/component-catalog/typed/docara.hero.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $padding = array_values(array_filter(
+            $definition['authoring']['parameters'],
+            static fn (array $parameter): bool => $parameter['name'] === 'padding',
+        ));
+        self::assertSame(['lg', 'xl', '2xl'], $padding[0]['values']);
+    }
+
+    private function render(string $source): string
+    {
+        $site = dirname(__DIR__, 2) . '/docs/site';
+
+        return (new PortableMarkdownRenderer)->render($source, $site, $site . '/content/ru/components/hero.md');
+    }
+}

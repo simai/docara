@@ -2180,7 +2180,7 @@ HTML;
         $variant = $this->attributeOneOf($attributes['variant'] ?? 'split', ['split', 'centered', 'compact'], 'hero', 'variant');
         $padding = $this->attributeOneOf(
             $attributes['padding'] ?? ($variant === 'compact' ? 'lg' : 'xl'),
-            ['lg', 'xl'],
+            ['lg', 'xl', '2xl'],
             'hero',
             'padding',
         );

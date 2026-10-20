@@ -8,6 +8,13 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **Hero `padding=2xl`.** A taller first screen: the vertical padding grows
+  with the viewport, from 48 px (`--sf-d2`) up to a 400 px viewport to 112 px
+  (`--sf-e4`) from about 1470 px, with no breakpoint
+  (`clamp(var(--sf-d2), var(--sf-c2) + 6vw, var(--sf-e4))` in the shell
+  stylesheet, since the Framework has no fluid spacing utility). It works with
+  `media=background` and with a background `effect`, whose pause button stays
+  in the hero's bottom corner clear of the text. `lg` and `xl` are unchanged.
 - The documentation site's home page hero draws the `constellation-net`
   background effect, from the effects catalogue pinned to simai/ui-effects
   `ad508268dbf322ecaaf2820a06da8dc8285d4ec1`.

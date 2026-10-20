@@ -95,7 +95,7 @@ final readonly class SurfacePresentation
             'muted' => 'bg-surface-container',
             default => throw new \LogicException('SURFACE_SEMANTIC_TONE_INVALID'),
         };
-        if (! in_array($padding, ['lg', 'xl'], true)) {
+        if (! in_array($padding, ['lg', 'xl', '2xl'], true)) {
             throw new \LogicException('SURFACE_SEMANTIC_PADDING_INVALID');
         }
         $paddingClass = $this->paddingClass($padding, true);
@@ -125,6 +125,17 @@ final readonly class SurfacePresentation
      */
     private function paddingClass(string $padding, bool $container = false): string
     {
+        // 2xl is the hero's tall first screen. The Framework has no fluid
+        // spacing utility, so Docara's shell stylesheet grows this padding
+        // with the viewport between two Framework spacing tokens. It is
+        // vertical only, so it exists only inside a container.
+        if ($padding === '2xl') {
+            if (! $container) {
+                throw new \LogicException('SURFACE_PADDING_2XL_REQUIRES_CONTAINER');
+            }
+
+            return 'docara-padding-2xl';
+        }
         $step = match ($padding) {
             'none' => '0',
             'sm' => '1',

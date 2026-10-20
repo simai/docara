@@ -29,6 +29,14 @@ One command creates a verifiable site structure.
 [Open the button guide](../button/)
 :::
 
+<!-- docara-variant:parameter.padding.2xl -->
+<!-- docara-parameter:padding -->
+:::hero {variant=centered padding=2xl}
+# A taller first screen
+
+The vertical padding grows with the viewport, from 48 px on a phone to 112 px on a wide screen.
+:::
+
 <!-- docara-variant:state.text_with_media -->
 :::hero {variant=split}
 # Keep content and interface separate

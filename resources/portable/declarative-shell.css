@@ -117,6 +117,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 /* A hero with a background effect: the Framework gives the area the theme the effect draws (sf-effect-area with theme-dark or theme-light). The area takes that theme's surface and ink, so the text never keeps the page's colour over a scene of the other theme while the effect loads, draws translucently or is hidden. */
 [data-docara-block="hero"][data-sf-effect]{position:relative}
 [data-docara-block="hero"][data-sf-effect].sf-effect-area{background:var(--sf-surface-0);color:var(--sf-on-surface)}
+/* Hero padding=2xl: a tall first screen whose vertical padding grows with the viewport from --sf-d2 (3rem) on a phone to --sf-e4 (7rem) on a wide screen, with no breakpoint. The Framework has no fluid spacing utility; the limits are its spacing tokens. */
+.docara-padding-2xl{padding-block:clamp(var(--sf-d2),var(--sf-c2) + 6vw,var(--sf-e4))}
 .docara-effect-toggle{position:absolute;inset-block-end:var(--sf-space-1);inset-inline-end:var(--sf-space-1);z-index:1;--sf-icon-button-background-color:var(--sf-surface-0);--sf-icon-button-border-color:var(--sf-outline-variant)}
 .docara-effect-toggle[hidden]{display:none}
 .docara-landing .docara-content{width:100%}

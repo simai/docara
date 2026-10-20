@@ -165,8 +165,10 @@ Framework. Эффект подключает Framework (`SF.Effects`): Docara т
 - эффект сочетается с `media=background` (`MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT`):
   фоном служит либо эффект, либо изображение;
 - в `docara.json` нет `effects.catalogue` (`EFFECTS_CATALOGUE_REQUIRED`);
-- адрес эффекта лежит вне каталога (`EFFECTS_OUTSIDE_CATALOGUE`): Framework
-  запускает только эффекты каталога.
+- адрес эффекта лежит вне каталога (`EFFECTS_OUTSIDE_CATALOGUE`): Docara
+  собирает только эффекты каталога. Сам Framework запустил бы чужой эффект
+  в изолированном фрейме (`SF_BOOT_CONFIG.effects.foreign`), но Docara этот
+  режим не настраивает.
 
 Пока эффект рисуется, в правом нижнем углу Hero есть кнопка «Остановить
 фоновую анимацию». Она останавливает и снова запускает эффект, а выбор

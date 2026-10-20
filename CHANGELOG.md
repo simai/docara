@@ -89,6 +89,12 @@ All notable changes to Docara are recorded here. The format follows
   (build/static-output), and the limits note to *Безопасность и ошибки*
   (reference/security-and-errors), without the outdated line about public
   release readiness.
+- The home page has a *Сделано на Docara* block before the closing call to
+  action. A two-column `columns` block shows two real sites built with
+  Docara, each with a short caption, a link and a light-theme WebP
+  screenshot of an inner page: the SIMAI Framework documentation
+  (ui.simai.io, about 700 pages) and this documentation (docara.simai.io).
+  The two screenshots add about 106 KB.
 
 ### Fixed
 

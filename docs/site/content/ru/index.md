@@ -1,4 +1,4 @@
-:::hero
+:::hero {effect=constellation-net}
 # Сайт документации из Markdown — на PHP и Composer
 
 Пишите страницы в Markdown, а настройки — в JSON. Docara соберёт из них

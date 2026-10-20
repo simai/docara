@@ -8,6 +8,9 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- The documentation site's home page hero draws the `constellation-net`
+  background effect, from the effects catalogue pinned to simai/ui-effects
+  `ad508268dbf322ecaaf2820a06da8dc8285d4ec1`.
 - The documentation site sets `branding.share_image` to a 1200×630 WebP card
   (48 KB, the Docara mark and a screenshot of the start page), so its pages
   published with `site_url` carry `og:image`, `twitter:image` and

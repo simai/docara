@@ -65,5 +65,8 @@
     "toc": true,
     "toc_depth": 3,
     "previous_next": true
+  },
+  "effects": {
+    "catalogue": "https://cdn.jsdelivr.net/gh/simai/ui-effects@ad508268dbf322ecaaf2820a06da8dc8285d4ec1/"
   }
 }

@@ -216,10 +216,9 @@ final class FrameworkPortableSmartTest extends TestCase
             $manifest['files']['core/contracts/third-party-notices.v1.json']['sha256'],
             hash_file('sha256', $notices),
         );
-        self::assertSame(
-            'simai.framework.third-party-notices.v1',
-            json_decode((string) file_get_contents($notices), true, 512, JSON_THROW_ON_ERROR)['schema'],
-        );
+        $noticesDocument = json_decode((string) file_get_contents($notices), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('simai.framework.third-party-notices', $noticesDocument['schema']);
+        self::assertSame(1, $noticesDocument['schema_version']);
         self::assertFileDoesNotExist($notices . '.gz');
         self::assertDirectoryDoesNotExist($publishedDistribution . '/component/icon');
 

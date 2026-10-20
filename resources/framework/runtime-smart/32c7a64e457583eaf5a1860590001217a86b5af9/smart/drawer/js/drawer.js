@@ -1,0 +1,1123 @@
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "5f0529568b98"
+(module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("ddf1cdb42ecc");
+/* harmony import */ var _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("fbe0570fcc69");
+/* harmony import */ var _core_js_page_language__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("0d662e4d7d63");
+/* harmony import */ var _scss_index_scss__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("fefa0c5c3ed9");
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([lit__WEBPACK_IMPORTED_MODULE_0__, _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__, _core_js_page_language__WEBPACK_IMPORTED_MODULE_2__]);
+([lit__WEBPACK_IMPORTED_MODULE_0__, _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__, _core_js_page_language__WEBPACK_IMPORTED_MODULE_2__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lit__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _core_js_page_language__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_core_js_page_language__WEBPACK_IMPORTED_MODULE_2__);
+
+
+ // Every word this component says, in the languages it ships with. A product
+// adds any other through SF.language.register("sf-drawer", code, words).
+
+const DRAWER_TEXT = {
+  en: {
+    closeLabel: 'Close drawer'
+  },
+  ru: {
+    closeLabel: 'Закрыть панель'
+  }
+};
+
+const DRAWER_SELECTOR = 'sf-drawer'; // Only the edge. A foot area was tried and taken out: lit inserts a node that
+// appears later beside the markers of its siblings, and those markers move with
+// any node the drawer has already projected -- so a bar that appeared when a
+// record became editable landed inside the body, above everything. The panel
+// scrolls now, so a bar can simply stick to its bottom where it is.
+
+const DRAWER_AREAS = ['edge'];
+
+const asksFor = (node, slot) => node.nodeType === 1 && node.getAttribute('slot') === slot;
+
+const asksForArea = node => DRAWER_AREAS.some(slot => asksFor(node, slot));
+
+const PORTAL_ATTRIBUTE = 'data-sf-drawer-portal'; // A box that holds its own overlays (sf-drawer, sf-modal); the drawer's own
+// name came first and is read until the change journal retires it.
+
+const OVERLAY_CONTAINER = '[data-sf-overlay-container], [data-sf-drawer-container]';
+const FOCUSABLE_SELECTOR = ['a[href]', 'button:not([disabled])', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])'].join(',');
+const drawerStack = []; // Below this width of the dock host (or of the window, when the page names no
+// host) docked panels overlay the page instead of
+// narrowing it.
+
+const DOCK_MIN_REM = 48;
+const DOCK_MEDIA_QUERY = `(min-width: ${DOCK_MIN_REM}rem)`;
+
+function joinClasses(...parts) {
+  return parts.flat().filter(Boolean).join(' ');
+}
+
+function escapeSelector(value) {
+  if (globalThis.CSS?.escape) return globalThis.CSS.escape(value);
+  return String(value).replace(/["\\]/g, '\\$&');
+}
+
+const drawerManager = {
+  globalBound: false,
+  lockState: null,
+
+  add(drawer) {
+    this.remove(drawer, false);
+    drawerStack.push(drawer);
+    this.sync();
+    this.syncPageLock();
+  },
+
+  remove(drawer, unlock = true) {
+    const index = drawerStack.indexOf(drawer);
+    if (index >= 0) drawerStack.splice(index, 1);
+    this.sync();
+    if (unlock) this.syncPageLock();
+  },
+
+  bringToFront(drawer) {
+    if (!drawerStack.includes(drawer)) return;
+    this.remove(drawer, false);
+    drawerStack.push(drawer);
+    this.sync();
+  },
+
+  isTop(drawer) {
+    return drawerStack.at(-1) === drawer;
+  },
+
+  sync() {
+    drawerStack.forEach((drawer, index) => drawer.applyStackPosition(index));
+    this.syncDock();
+  },
+
+  // Docked drawers reserve page space: the summed widths of open docked panels
+  // per logical side are published as CSS custom properties on the root; any
+  // element with data-sf-drawer-dock-host pads itself by them.
+  syncDock() {
+    const root = document.documentElement;
+    if (!root) return;
+    this.bindDockMedia();
+    const sides = {
+      start: 0,
+      end: 0
+    };
+    const reserve = this.reservesDock();
+
+    for (const drawer of reserve ? drawerStack : []) {
+      if (!drawer.openState || !drawer.docked) continue;
+      const panel = drawer.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
+      const width = panel ? Math.round(panel.getBoundingClientRect().width) : 0;
+      sides[drawer.dockSide] += width;
+    }
+
+    for (const side of ['start', 'end']) {
+      const name = `--sf-drawer-dock-inline-${side}`;
+      if (sides[side] > 0) root.style.setProperty(name, `${sides[side]}px`);else root.style.removeProperty(name);
+    }
+  },
+
+  bindDockMedia() {
+    if (this.dockMedia === undefined) {
+      this.dockMedia = typeof globalThis.matchMedia === 'function' ? globalThis.matchMedia(DOCK_MEDIA_QUERY) : null;
+      this.dockMedia?.addEventListener?.('change', () => this.syncDock());
+    } // The host's own width decides, when the page names a host: a docked
+    // drawer inside an editor pane or a documentation example docks by the
+    // room that box has, not by the window's (DEV, 2026-10-18).
+
+
+    const host = document.querySelector('[data-sf-drawer-dock-host]');
+
+    if (host !== this.dockHost) {
+      this.dockHostObserver?.disconnect();
+      this.dockHost = host;
+      this.dockHostObserver = host && typeof ResizeObserver === 'function' ? new ResizeObserver(() => {
+        // Only a change of the answer redraws: syncDock pads the host, and
+        // the padding must not wake this observer into a loop.
+        const before = this.dockReserved;
+        if (this.reservesDock() !== before) this.syncDock();
+      }) : null;
+      this.dockHostObserver?.observe(host, {
+        box: 'border-box'
+      });
+    }
+  },
+
+  // Whether docked drawers take room from the page: the dock host is at least
+  // 48rem wide, or -- with no host on the page -- the window is.
+  reservesDock() {
+    const host = this.dockHost;
+    let reserve;
+
+    if (host?.isConnected) {
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      reserve = host.getBoundingClientRect().width >= DOCK_MIN_REM * rem;
+    } else {
+      reserve = this.dockMedia ? this.dockMedia.matches : true;
+    }
+
+    this.dockReserved = reserve;
+    return reserve;
+  },
+
+  syncPageLock() {
+    // A drawer inside an overlay container covers that box, not the page.
+    const modalDrawer = drawerStack.find(drawer => drawer.openState && drawer.modal && !drawer.closest(OVERLAY_CONTAINER));
+    if (modalDrawer) this.lockPage(modalDrawer.preserveScrollGap);else this.unlockPage();
+  },
+
+  lockPage(preserveScrollGap) {
+    const htmlElement = document.documentElement;
+    const body = document.body;
+    if (!htmlElement || !body || this.lockState) return;
+    const gap = Math.max(0, window.innerWidth - htmlElement.clientWidth);
+    this.lockState = {
+      htmlOverflow: htmlElement.style.overflow,
+      bodyOverflow: body.style.overflow,
+      bodyPaddingInlineEnd: body.style.paddingInlineEnd
+    };
+    htmlElement.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    if (preserveScrollGap && gap > 0) body.style.paddingInlineEnd = `${gap}px`;
+  },
+
+  unlockPage() {
+    if (!this.lockState) return;
+    const htmlElement = document.documentElement;
+    const body = document.body;
+    htmlElement.style.overflow = this.lockState.htmlOverflow;
+    body.style.overflow = this.lockState.bodyOverflow;
+    body.style.paddingInlineEnd = this.lockState.bodyPaddingInlineEnd;
+    this.lockState = null;
+  },
+
+  bindGlobalEvents() {
+    if (this.globalBound || typeof document === 'undefined') return;
+    document.addEventListener('click', event => {
+      if (!(event.target instanceof Element)) return;
+      const conciseTrigger = event.target.closest('[data-drawer]');
+      const openTrigger = event.target.closest('[data-sf-drawer-open]');
+      const toggleTrigger = event.target.closest('[data-sf-drawer-toggle]');
+      const closeTrigger = event.target.closest('[data-sf-drawer-close]');
+      const conciseOperation = conciseTrigger?.getAttribute('data-drawer') || '';
+      const operation = ['open', 'toggle', 'close'].includes(conciseOperation) ? conciseOperation : openTrigger ? 'open' : toggleTrigger ? 'toggle' : closeTrigger ? 'close' : '';
+      const trigger = conciseTrigger || openTrigger || toggleTrigger || closeTrigger;
+      if (!operation || !trigger) return;
+      const id = trigger.getAttribute('aria-controls') || trigger.getAttribute(`data-sf-drawer-${operation}`) || trigger.closest('[data-sf-drawer-id]')?.getAttribute('data-sf-drawer-id');
+      if (!id) return;
+      customElements.whenDefined(DRAWER_SELECTOR).then(() => {
+        document.getElementById(id)?.[operation]?.();
+      });
+    });
+    this.globalBound = true;
+  }
+
+};
+
+class SfDrawer extends (_core_js_smart_base__WEBPACK_IMPORTED_MODULE_1___default()) {
+  static get props() {
+    return {
+      templateName: {
+        attribute: 'template',
+        default: 'default'
+      },
+      opened: {
+        attribute: 'open',
+        type: Boolean,
+        default: false
+      },
+      placement: {
+        default: 'right',
+        values: ['left', 'right', 'inline-start', 'inline-end']
+      },
+      overlay: {
+        type: Boolean,
+        default: true
+      },
+      modal: {
+        type: Boolean,
+        default: true
+      },
+      docked: {
+        type: Boolean,
+        default: false
+      },
+      // The shared size ladder. The words are legacy values, still accepted:
+      // see contracts/public-api-axes.json. `full` is not a step of the ladder —
+      // it means as wide as the viewport, and drops the radius with it.
+      size: {
+        default: '1',
+        values: ['1/2', '1', '2', 'full'],
+        valueAliases: {
+          '1/2': ['small'],
+          1: ['medium'],
+          2: ['large']
+        }
+      },
+      closeOnEsc: {
+        attribute: 'close-on-esc',
+        type: Boolean,
+        default: true
+      },
+      closeOnOverlay: {
+        attribute: 'close-on-overlay',
+        type: Boolean,
+        default: true
+      },
+      preserveScrollGap: {
+        attribute: 'preserve-scroll-gap',
+        type: Boolean,
+        default: true
+      },
+      showClose: {
+        attribute: 'show-close',
+        type: Boolean,
+        default: true
+      },
+      closePlacement: {
+        attribute: 'close-placement',
+        default: 'inside',
+        values: ['inside', 'outside']
+      },
+      title: {
+        default: ''
+      },
+      label: {
+        default: ''
+      },
+      closeLabel: {
+        attribute: 'close-label',
+        default: ''
+      },
+      width: {
+        default: ''
+      },
+      stackOffset: {
+        attribute: 'stack-offset',
+        default: ''
+      },
+      gutter: {
+        default: ''
+      },
+      zIndex: {
+        attribute: 'z-index',
+        default: ''
+      },
+      overlayClass: {
+        attribute: 'overlay-class',
+        default: ''
+      },
+      panelClass: {
+        attribute: 'panel-class',
+        default: ''
+      },
+      // The panel is the drawer's own surface, and what colour it is belongs to
+      // whoever opened it: a consumer painting its content a different colour
+      // than the panel leaves the head and the gutters in the other one.
+      panelStyle: {
+        attribute: 'panel-style',
+        default: ''
+      },
+      headerClass: {
+        attribute: 'header-class',
+        default: ''
+      },
+      bodyClass: {
+        attribute: 'body-class',
+        default: ''
+      },
+      closeClass: {
+        attribute: 'close-class',
+        default: ''
+      }
+    };
+  }
+
+  static get defaultTrueAttributes() {
+    return new Set(['overlay', 'modal', 'close-on-esc', 'close-on-overlay', 'preserve-scroll-gap', 'show-close']);
+  }
+
+  constructor() {
+    super();
+    this.drawerId = '';
+    this._portalRoot = null;
+    this._contentNodes = null;
+    this._lastActive = null;
+    this._syncingOpenAttribute = false;
+    this._hasEmittedReady = false;
+    this._stackIndex = -1;
+    this._focusAfterRender = false;
+    this._emitAfterOpen = false;
+    this._dockObserver = null;
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.handleRootClick = this.handleRootClick.bind(this);
+  }
+
+  connectedCallback() {
+    if (!this._contentNodes) this._contentNodes = Array.from(this.childNodes);
+    this.drawerId = this.resolveDrawerId();
+    super.connectedCallback();
+    drawerManager.bindGlobalEvents();
+    document.addEventListener('keydown', this.onKeyDown);
+
+    if (this.openState) {
+      this._focusAfterRender = this.modal;
+      drawerManager.add(this);
+    }
+  }
+
+  disconnectedCallback() {
+    this._areaObserver?.disconnect();
+    this._areaObserver = null;
+    document.removeEventListener('keydown', this.onKeyDown);
+    this._dockObserver?.disconnect();
+    this._dockObserver = null;
+    drawerManager.remove(this);
+    this.clearPortal();
+    super.disconnectedCallback();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue) return;
+
+    if (name === 'open' && !this._syncingOpenAttribute && this._isMounted) {
+      this.syncExternalOpenState(newValue !== null);
+      return;
+    }
+
+    if ((name === 'modal' || name === 'docked') && this.openState) drawerManager.syncPageLock();
+
+    if ((name === 'docked' || name === 'placement' || name === 'size' || name === 'width') && this.openState) {
+      requestAnimationFrame(() => {
+        drawerManager.syncDock();
+        drawerManager.sync();
+      });
+    }
+
+    super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
+  get openState() {
+    return this.hasAttribute('open');
+  }
+
+  get placement() {
+    return this.getEnumAttr('placement', ['left', 'right', 'inline-start', 'inline-end'], 'right');
+  }
+
+  get overlay() {
+    return this.getBooleanAttr('overlay', true);
+  }
+
+  get modal() {
+    // A docked drawer is part of the page layout and is always modeless.
+    return !this.docked && this.getBooleanAttr('modal', true);
+  }
+
+  get docked() {
+    return this.getBooleanAttr('docked', false);
+  } // The inline gutter the head and the body share: a length, empty for the
+  // drawer's own (space-1).
+
+
+  get gutter() {
+    return this.getAttribute('gutter') || '';
+  } // How much of each drawer below shows past the one above it at the same
+  // edge: a length, empty for none (the drawers lie flush, as before).
+
+
+  get stackOffset() {
+    return this.getAttribute('stack-offset') || '';
+  } // The physical edge the panel opens from, so left and inline-start count as
+  // one edge in a left-to-right page and as two in a right-to-left one.
+
+
+  get stackEdge() {
+    const placement = this.placement;
+    if (!placement.startsWith('inline')) return placement;
+    const rtl = (this.closest('[dir]')?.getAttribute('dir') || document.documentElement.dir) === 'rtl';
+    return placement === 'inline-start' !== rtl ? 'left' : 'right';
+  }
+
+  get dockSide() {
+    const placement = this.placement;
+    if (placement === 'inline-start') return 'start';
+    if (placement === 'inline-end') return 'end';
+    const rtl = globalThis.getComputedStyle?.(document.documentElement).direction === 'rtl';
+    if (placement === 'left') return rtl ? 'end' : 'start';
+    return rtl ? 'start' : 'end';
+  }
+
+  get size() {
+    return this.getProp('size');
+  }
+
+  get closeOnEsc() {
+    return this.getBooleanAttr('close-on-esc', true);
+  }
+
+  get closeOnOverlay() {
+    return this.getBooleanAttr('close-on-overlay', true);
+  }
+
+  get preserveScrollGap() {
+    return this.getBooleanAttr('preserve-scroll-gap', true);
+  }
+
+  get showClose() {
+    return this.getBooleanAttr('show-close', true);
+  }
+
+  get closePlacement() {
+    return this.getEnumAttr('close-placement', ['inside', 'outside'], 'inside');
+  }
+
+  resolveDrawerId() {
+    const existing = this.id || this.getAttribute('drawer-id');
+
+    if (existing) {
+      if (!this.id) this.id = existing;
+      return existing;
+    }
+
+    const generated = `sf-drawer-${Math.random().toString(36).slice(2, 10)}`;
+    this.id = generated;
+    this.setAttribute('drawer-id', generated);
+    return generated;
+  }
+
+  templateContext() {
+    return this.createTemplateContext({
+      closeLabel: this.getAttribute("close-label") || (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_2__.pageText)(DRAWER_TEXT, "closeLabel", this),
+      drawerId: this.drawerId || this.resolveDrawerId(),
+      open: this.openState,
+      placement: this.placement,
+      overlay: this.overlay,
+      modal: this.modal,
+      docked: this.docked,
+      size: this.size,
+      showClose: this.showClose,
+      closePlacement: this.closePlacement,
+      title: this.getAttribute('title') || '',
+      label: this.getAttribute('label') || this.getAttribute('title') || '',
+      closeLabel: this.getAttribute('close-label') || this.defaultCloseLabel,
+      width: this.getAttribute('width') || '',
+      stackOffset: this.stackOffset,
+      gutter: this.gutter,
+      zIndex: this.drawerZIndex,
+      overlayClass: this.getAttribute('overlay-class') || '',
+      panelClass: this.getAttribute('panel-class') || '',
+      panelStyle: this.getAttribute('panel-style') || '',
+      headerClass: this.getAttribute('header-class') || '',
+      bodyClass: this.getAttribute('body-class') || '',
+      closeClass: this.getAttribute('close-class') || ''
+    });
+  }
+
+  get drawerZIndex() {
+    return this.getAttribute('z-index') || `calc(var(--sf-drawer-z-index, var(--sf-z-index-9)) + ${Math.max(0, this._stackIndex) * 2})`;
+  } // The shared rule, not a second reading of it. This asked the document
+  // directly, which misses a region that names its own language and leaves a
+  // product unable to register a third -- the same two faults admin-menu had.
+
+
+  get defaultCloseLabel() {
+    return (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_2__.pageText)(DRAWER_TEXT, 'closeLabel', this);
+  }
+
+  async renderComponent(changedAttributes = []) {
+    const token = ++this._renderToken;
+    const result = await this.resolveTemplateResult(changedAttributes);
+    if (!this._isMounted || token !== this._renderToken) return;
+    (0,lit__WEBPACK_IMPORTED_MODULE_0__.render)(result, this.resolvePortalRoot());
+    this.afterRender();
+  } // The panel is rendered at the end of the body, above the page -- or, when the
+  // drawer stands inside a [data-sf-overlay-container] (or the older
+  // [data-sf-drawer-container]), at the end of that box,
+  // which then frames it (contain: layout makes it the panel's containing
+  // block): an editor pane or a documentation example holds its own drawer
+  // without a stage of its own (DEV, 2026-10-18).
+
+
+  resolvePortalRoot() {
+    if (this._portalRoot?.isConnected) return this._portalRoot;
+    const home = this.closest(OVERLAY_CONTAINER) || document.body;
+    const selector = `[${PORTAL_ATTRIBUTE}="${escapeSelector(this.drawerId)}"]`;
+    this._portalRoot = home.querySelector(selector) || document.createElement('div');
+
+    this._portalRoot.setAttribute(PORTAL_ATTRIBUTE, this.drawerId);
+
+    if (!this._portalRoot.isConnected) home.append(this._portalRoot);
+    return this._portalRoot;
+  } // A consumer's bar or edge control may appear long after the drawer connected
+  // -- when a record becomes editable, say. The content is captured once, and
+  // the drawer renders on its own schedule, so without watching for new children
+  // such a node stands where the drawer's own children render: above everything.
+
+
+  watchForAreaChildren() {
+    if (this._areaObserver) return;
+    this._areaObserver = new MutationObserver(() => {
+      const root = this.getDrawerRoot();
+      if (root) this.projectAreas(root);
+    });
+
+    this._areaObserver.observe(this, {
+      childList: true
+    });
+  }
+
+  projectAreas(root) {
+    for (const [slot, selector] of [['edge', '[data-sf-drawer-edge]']]) {
+      const area = root.querySelector(selector);
+      if (!area) continue;
+      const waiting = [...this._contentNodes.filter(node => asksFor(node, slot) && node.parentElement !== area), ...[...this.children].filter(node => asksFor(node, slot))];
+      if (waiting.length) area.append(...new Set(waiting));
+    }
+  }
+
+  afterRender() {
+    const root = this.getDrawerRoot();
+    if (!root) return; // A child may ask for the edge, which stands beside the panel, or for the
+    // foot, which holds the bottom of it and does not scroll with the body.
+    // Everything else is the drawer's content, as before.
+    //
+    // This runs on every render, not only on the first: the content is captured
+    // once, when the element connects, and a consumer whose bar appears later --
+    // when a record becomes editable, say -- would otherwise leave it standing
+    // where the drawer's own children render, above everything.
+
+    this.projectAreas(root);
+    this.watchForAreaChildren();
+    const body = root.querySelector('[data-sf-drawer-body]');
+
+    if (body && body.dataset.sfDrawerContentReady !== '1') {
+      // A child asking for the edge goes beside the panel, not into it. Every
+      // other child is the drawer's content, as before.
+      body.replaceChildren(...this._contentNodes.filter(node => !asksForArea(node)));
+      body.dataset.sfDrawerContentReady = '1';
+    }
+
+    root.removeEventListener('click', this.handleRootClick);
+    root.addEventListener('click', this.handleRootClick);
+    this.applyStackPosition();
+    this.observeDock(root);
+    const eventName = this._hasEmittedReady ? 'drawer:update' : 'drawer:ready';
+    this.dispatchEvent(new CustomEvent(eventName, {
+      bubbles: true,
+      composed: true,
+      detail: {
+        component: this,
+        drawer: this,
+        drawerId: this.drawerId,
+        root
+      }
+    }));
+    this._hasEmittedReady = true;
+
+    if (this._focusAfterRender || this._emitAfterOpen) {
+      this._focusAfterRender = false;
+      requestAnimationFrame(() => {
+        if (this.openState && this.modal) this.focusFirst();
+        if (this._emitAfterOpen) this.emitDrawerEvent('drawer:after-open');
+        this._emitAfterOpen = false;
+      });
+    }
+  }
+
+  template() {
+    const context = this.templateContext();
+    const closeButton = context.showClose ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<button
+          type="button"
+          class=${joinClasses('sf-icon-button sf-drawer-close sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 m-0', context.closePlacement === 'outside' && 'sf-drawer-close--outside', context.closeClass)}
+          aria-label=${context.closeLabel}
+          data-drawer="close"
+          data-sf-drawer-close=${context.drawerId}
+        >
+          <span class="sf-close sf-close--size-1/3 flex justify-center items-center" aria-hidden="true">
+            <span class="sf-close-icon"></span>
+          </span>
+        </button>` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+    return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<div
+      class=${joinClasses('sf-drawer', context.open && 'is-open', context.rootClass)}
+      style=${`z-index:${context.zIndex};${context.width ? `--sf-drawer-width:${context.width};` : ''}${context.stackOffset ? `--sf-drawer-stack-offset:${context.stackOffset};` : ''}${context.rootStyle || ''}`}
+      data-sf-drawer-root
+      data-sf-drawer-id=${context.drawerId}
+      data-sf-drawer-placement=${context.placement}
+      data-sf-drawer-size=${context.size}
+      data-sf-drawer-modal=${context.modal ? 'true' : 'false'}
+      data-sf-drawer-docked=${context.docked ? 'true' : 'false'}
+      aria-hidden=${context.open ? 'false' : 'true'}
+    >
+      <div class=${joinClasses('sf-drawer-overlay', context.overlayClass)} data-sf-drawer-overlay ?hidden=${!context.modal || !context.overlay}></div>
+      <section
+        class=${joinClasses('sf-drawer-panel', context.panelClass)}
+        style=${`${context.width ? `--sf-drawer-width:${context.width};` : ''}${context.stackOffset ? `--sf-drawer-stack-offset:${context.stackOffset};` : ''}${context.gutter ? `--sf-drawer-gutter:${context.gutter};` : ''}${context.panelStyle || ''}`}
+        role=${context.docked ? 'region' : 'dialog'}
+        aria-modal=${context.modal ? 'true' : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        aria-label=${context.label || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        aria-labelledby=${context.title ? `${context.drawerId}-title` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        tabindex="-1"
+        ?inert=${!context.open}
+        data-sf-drawer-panel
+      >
+        ${context.title || context.showClose && context.closePlacement === 'inside' || context.headerClass ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                  <header class=${joinClasses('sf-drawer-head', context.headerClass)}>
+                    ${context.title ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<div class="sf-drawer-title" id=${`${context.drawerId}-title`}>${context.title}</div>` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+                    ${context.closePlacement === 'inside' ? closeButton : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+                  </header>` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        <div class=${joinClasses('sf-drawer-body', context.bodyClass)} data-sf-drawer-body></div>
+      </section>
+      <div class="sf-drawer-edge" data-sf-drawer-edge>
+        ${context.closePlacement === 'outside' ? closeButton : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+      </div>
+    </div>`;
+  }
+
+  open(options = {}) {
+    if (this.openState) {
+      drawerManager.bringToFront(this);
+      return this;
+    }
+
+    if (options.emit !== false && !this.emitDrawerEvent('drawer:before-open', true)) return this;
+    this._lastActive = document.activeElement;
+    this.syncOpenAttribute(true);
+    drawerManager.add(this);
+    this._focusAfterRender = this.modal;
+    this._emitAfterOpen = options.emit !== false;
+    this.requestComponentUpdate('open');
+    return this;
+  }
+
+  close(options = {}) {
+    if (!this.openState) return this;
+    if (options.emit !== false && !this.emitDrawerEvent('drawer:before-close', true)) return this;
+    this.syncOpenAttribute(false);
+    drawerManager.remove(this);
+    this.requestComponentUpdate('close');
+    this.restoreFocus();
+    if (options.emit !== false) this.emitDrawerEvent('drawer:after-close');
+    return this;
+  }
+
+  toggle() {
+    return this.openState ? this.close() : this.open();
+  }
+
+  setState(state = {}) {
+    if (state && typeof state === 'object' && Object.prototype.hasOwnProperty.call(state, 'open')) {
+      const {
+        open: requestedOpen,
+        ...rest
+      } = state;
+      requestedOpen ? this.open() : this.close();
+      return super.setState(rest);
+    }
+
+    return super.setState(state);
+  }
+
+  getState() {
+    return { ...this.templateContext(),
+      open: this.openState
+    };
+  }
+
+  syncExternalOpenState(open) {
+    if (open) {
+      this._lastActive = document.activeElement;
+      this._focusAfterRender = this.modal;
+      drawerManager.add(this);
+    } else {
+      drawerManager.remove(this);
+      this.restoreFocus();
+    }
+
+    this.requestComponentUpdate(open ? 'open' : 'close');
+  }
+
+  syncOpenAttribute(open) {
+    this._syncingOpenAttribute = true;
+    this.toggleAttribute('open', open);
+    this._syncingOpenAttribute = false;
+  }
+
+  getDrawerRoot() {
+    return this._portalRoot?.querySelector('[data-sf-drawer-root]') || null;
+  }
+
+  observeDock(root) {
+    const panel = root.querySelector('[data-sf-drawer-panel]');
+
+    if (!this.docked || !panel || typeof ResizeObserver !== 'function') {
+      this._dockObserver?.disconnect();
+      this._dockObserver = null;
+      if (this.docked) drawerManager.syncDock();
+      return;
+    }
+
+    if (!this._dockObserver) this._dockObserver = new ResizeObserver(() => drawerManager.syncDock());
+
+    this._dockObserver.disconnect();
+
+    this._dockObserver.observe(panel);
+
+    drawerManager.syncDock();
+  }
+
+  applyStackPosition(index = drawerStack.indexOf(this)) {
+    this._stackIndex = index;
+    const root = this.getDrawerRoot();
+
+    if (root) {
+      root.style.zIndex = this.drawerZIndex; // Depth is the number of open, undocked drawers below this one at the
+      // same edge; the panel stands that many stack offsets in from the edge.
+
+      const edge = this.stackEdge;
+      const depth = this.docked || index < 0 ? 0 : drawerStack.slice(0, index).filter(drawer => drawer.openState && !drawer.docked && drawer.stackEdge === edge).length;
+      root.style.setProperty('--sf-drawer-stack-depth', String(depth));
+    }
+
+    return this;
+  } // The panel takes the focus, not the first control inside it. A modal has to
+  // hold the focus, which is why this exists -- but handing it to whatever
+  // control happens to be first put a focus ring on a star nobody had pressed,
+  // and a person reading the panel saw a control announced instead of the panel.
+  // A consumer that wants a field focused says so with `autofocus`.
+
+
+  focusFirst() {
+    const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
+    const wanted = panel?.querySelector('[autofocus]');
+    (wanted || panel)?.focus?.();
+  }
+
+  restoreFocus() {
+    const target = this._lastActive;
+    if (!(target instanceof HTMLElement) || !target.isConnected || target.matches(':disabled,[hidden],[inert]')) return;
+    target.focus();
+  }
+
+  handleRootClick(event) {
+    const root = this.getDrawerRoot();
+
+    if (event.target === root?.querySelector('[data-sf-drawer-overlay]') && this.closeOnOverlay) {
+      this.close();
+      return;
+    }
+
+    if (event.target instanceof Element && event.target.closest('[data-sf-drawer-close]')) {
+      event.preventDefault();
+      this.close();
+    }
+  }
+
+  onKeyDown(event) {
+    // An editor or drag operation that handled Escape keeps it.
+    if (event.defaultPrevented || !this.openState || !drawerManager.isTop(this)) return; // An open popover takes Escape first; the drawer behind it stays.
+
+    if (event.key === 'Escape' && this.closeOnEsc && !document.documentElement?.dataset?.sfPopoverOpen) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.close();
+      return;
+    }
+
+    if (!this.modal) return;
+    if (event.key !== 'Tab') return;
+    const panel = this.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
+    const focusable = Array.from(panel?.querySelectorAll(FOCUSABLE_SELECTOR) || []).filter(element => element.getClientRects().length > 0);
+
+    if (focusable.length === 0) {
+      event.preventDefault();
+      panel?.focus();
+      return;
+    }
+
+    const first = focusable[0];
+    const last = focusable.at(-1);
+
+    if (!panel?.contains(document.activeElement)) {
+      event.preventDefault();
+      (event.shiftKey ? last : first).focus();
+    } else if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  emitDrawerEvent(type, cancelable = false) {
+    // Drawer events bubble like other sf-* events, so hosts can listen on the
+    // document. detail.drawer names the panel; nested drawers bubble through
+    // their ancestors.
+    return this.dispatchEvent(new CustomEvent(type, {
+      bubbles: true,
+      composed: true,
+      cancelable,
+      detail: {
+        component: this,
+        drawer: this,
+        drawerId: this.drawerId,
+        root: this.getDrawerRoot()
+      }
+    }));
+  } // The on* helpers keep their original meaning: only this drawer's events,
+  // not those bubbling up from a nested drawer.
+
+
+  ownDrawerHandler(handler) {
+    return event => {
+      if (event.detail?.drawer === this) handler.call(this, event);
+    };
+  }
+
+  onBeforeOpen(handler, options) {
+    if (typeof handler === 'function') this.addEventListener('drawer:before-open', this.ownDrawerHandler(handler), options);
+    return this;
+  }
+
+  onAfterOpen(handler, options) {
+    if (typeof handler === 'function') this.addEventListener('drawer:after-open', this.ownDrawerHandler(handler), options);
+    return this;
+  }
+
+  onBeforeClose(handler, options) {
+    if (typeof handler === 'function') this.addEventListener('drawer:before-close', this.ownDrawerHandler(handler), options);
+    return this;
+  }
+
+  onAfterClose(handler, options) {
+    if (typeof handler === 'function') this.addEventListener('drawer:after-close', this.ownDrawerHandler(handler), options);
+    return this;
+  }
+
+  clearPortal() {
+    if (!this._portalRoot) return;
+    (0,lit__WEBPACK_IMPORTED_MODULE_0__.render)(lit__WEBPACK_IMPORTED_MODULE_0__.nothing, this._portalRoot);
+
+    this._portalRoot.remove();
+
+    this._portalRoot = null;
+  }
+
+}
+
+SfDrawer.define(DRAWER_SELECTOR);
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ },
+
+/***/ "fefa0c5c3ed9"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ },
+
+/***/ "ddf1cdb42ecc"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("lit") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("lit")), { once: true })));
+
+/***/ },
+
+/***/ "0d662e4d7d63"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("page-language") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("page-language")), { once: true })));
+
+/***/ },
+
+/***/ "fbe0570fcc69"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("smart-base") : new Promise((resolve) => globalThis.addEventListener("sf-runtime-ready", () => resolve(globalThis.SF.runtimeModule("smart-base")), { once: true })));
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	const __webpack_module_cache__ = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		const cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		const module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			const e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/************************************************************************/
+/******/ 	/* webpack/runtime/async module */
+/******/ 	(() => {
+/******/ 		const hasSymbol = typeof Symbol === "function";
+/******/ 		const webpackQueues = hasSymbol ? Symbol("webpack queues") : "__webpack_queues__";
+/******/ 		const webpackExports = hasSymbol ? Symbol("webpack exports") : "__webpack_exports__";
+/******/ 		const webpackError = hasSymbol ? Symbol("webpack error") : "__webpack_error__";
+/******/
+/******/ 		const resolveQueue = (queue) => {
+/******/ 			if(queue?.d < 1) {
+/******/ 				queue.d = 1;
+/******/ 				queue.forEach((fn) => (fn.r--));
+/******/ 				queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
+/******/ 			}
+/******/ 		}
+/******/ 		const wrapDeps = (deps) => (deps.map((dep) => {
+/******/ 			if(dep !== null && typeof dep === "object") {
+/******/
+/******/ 				if(dep[webpackQueues]) return dep;
+/******/ 				if(dep.then) {
+/******/ 					const queue = [];
+/******/ 					queue.d = 0;
+/******/ 					dep.then((r) => {
+/******/ 						obj[webpackExports] = r;
+/******/ 						resolveQueue(queue);
+/******/ 					}, (e) => {
+/******/ 						obj[webpackError] = e;
+/******/ 						resolveQueue(queue);
+/******/ 					});
+/******/ 					const obj = {};
+/******/
+/******/ 					obj[webpackQueues] = (fn) => (fn(queue));
+/******/ 					return obj;
+/******/ 				}
+/******/ 			}
+/******/ 			const ret = {};
+/******/ 			ret[webpackQueues] = x => {};
+/******/ 			ret[webpackExports] = dep;
+/******/ 			return ret;
+/******/ 		}));
+/******/ 		__webpack_require__.a = (module, body, hasAwait) => {
+/******/ 			let queue;
+/******/ 			hasAwait && ((queue = []).d = -1);
+/******/ 			const depQueues = new Set();
+/******/ 			const exports = module.exports;
+/******/ 			let currentDeps;
+/******/ 			let outerResolve;
+/******/ 			let reject;
+/******/ 			const promise = new Promise((resolve, rej) => {
+/******/ 				reject = rej;
+/******/ 				outerResolve = resolve;
+/******/ 			});
+/******/ 			promise[webpackExports] = exports;
+/******/ 			promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
+/******/ 			module.exports = promise;
+/******/ 			const handle = (deps) => {
+/******/ 				currentDeps = wrapDeps(deps);
+/******/ 				let fn;
+/******/ 				const getResult = () => (currentDeps.map((d) => {
+/******/
+/******/ 					if(d[webpackError]) throw d[webpackError];
+/******/ 					return d[webpackExports];
+/******/ 				}))
+/******/ 				const promise = new Promise((resolve) => {
+/******/ 					fn = () => (resolve(getResult));
+/******/ 					fn.r = 0;
+/******/ 					const fnQueue = (q) => (q !== queue && !depQueues.has(q) && (depQueues.add(q), q && !q.d && (fn.r++, q.push(fn))));
+/******/ 					currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
+/******/ 				});
+/******/ 				return fn.r ? promise : getResult();
+/******/ 			}
+/******/ 			const done = (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue))
+/******/ 			body(handle, done);
+/******/ 			queue?.d < 0 && (queue.d = 0);
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			const getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter/value functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			if(Array.isArray(definition)) {
+/******/ 				var i = 0;
+/******/ 				while(i < definition.length) {
+/******/ 					var key = definition[i++];
+/******/ 					var binding = definition[i++];
+/******/ 					if(!__webpack_require__.o(exports, key)) {
+/******/ 						if(binding === 0) {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
+/******/ 						} else {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, get: binding });
+/******/ 						}
+/******/ 					} else if(binding === 0) { i++; }
+/******/ 				}
+/******/ 			} else {
+/******/ 				for(var key in definition) {
+/******/ 					if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 					}
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/
+/************************************************************************/
+/******/
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module used 'module' so it can't be inlined
+/******/ 	let __webpack_exports__ = __webpack_require__("5f0529568b98");
+/******/
+/******/ })()
+;

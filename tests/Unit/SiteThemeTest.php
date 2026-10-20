@@ -106,12 +106,12 @@ final class SiteThemeTest extends TestCase
         self::assertStringContainsString('  --sf-tertiary-40: #00677d;', $css);
         self::assertStringContainsString('  --sf-neutral-98: #f7faf5;', $css);
         self::assertStringContainsString('  --sf-error-40: #bb1919;', $css);
-        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-25beeb814ae8 SF.ThemePalette.themeToCss */', $comment);
+        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-32c7a64e4575 SF.ThemePalette.themeToCss */', $comment);
 
         $receipt = $result['receipt'];
         self::assertSame('docara.site_theme.v1', $receipt['schema']);
         self::assertSame(['hue' => 161, 'chroma' => 85], $receipt['palette']);
-        self::assertSame('ui-25beeb814ae8', $receipt['framework']['pair_id']);
+        self::assertSame('ui-32c7a64e4575', $receipt['framework']['pair_id']);
         self::assertSame(226, $receipt['stylesheet']['variables']);
         self::assertSame('docara-theme.' . hash('sha256', $result['content']) . '.css', $receipt['stylesheet']['filename']);
 

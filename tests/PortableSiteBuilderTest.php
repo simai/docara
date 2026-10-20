@@ -1024,7 +1024,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/25beeb814ae87b1e8e7bb5831b70a23b7cf36f96/distr/',
+                '/_docara/vendor/simai-framework/runtime/32c7a64e457583eaf5a1860590001217a86b5af9/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -1317,7 +1317,7 @@ MD);
 
         foreach ([
             'smart/alert/js/alert.js' => 'c2c80109299ad4483a85c69cf73eb20e5b906cc093c4527af59b7e4a67af3839',
-            'smart/buttons/js/buttons.js' => 'e34ccf87f8ff703fa124d021dabecd9e76d96f38c6c6c4fbb5f3b3ca74709538',
+            'smart/buttons/js/buttons.js' => '16599394e25a25bbf8f1f18fca15ce869332ad83fe2c8f7f9f9d66ae131a1c25',
             'smart/icons/js/icons.js' => '818b2b59ba1e1585f9b941aefbdbd9700e0260cdf804ed54a6bac37160c5d60e',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
@@ -1415,7 +1415,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('ui-25beeb814ae8', $componentCatalog['framework_pair']);
+        self::assertSame('ui-32c7a64e4575', $componentCatalog['framework_pair']);
         self::assertCount(38, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1986,7 +1986,7 @@ MD;
             $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-25beeb814ae8-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-32c7a64e4575-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));

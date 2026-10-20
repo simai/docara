@@ -138,7 +138,7 @@ final class InitTemplateBuildTest extends TestCase
 
         self::assertSame([], $verification['broken']);
         $catalog = json_decode((string) file_get_contents($site . '/build_production/_docara/component-catalog.json'), true, 512, JSON_THROW_ON_ERROR);
-        self::assertSame('ui-25beeb814ae8', $catalog['framework_pair'], 'The site is served the bundled release.');
+        self::assertSame('ui-32c7a64e4575', $catalog['framework_pair'], 'The site is served the bundled release.');
     }
 
     /** @param list<string> $arguments */

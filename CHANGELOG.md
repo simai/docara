@@ -6,46 +6,10 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.6.0] - 2026-10-21
+
 ### Added
 
-- **Hero `padding=2xl`.** A taller first screen: the vertical padding grows
-  with the viewport, from 48 px (`--sf-d2`) up to a 400 px viewport to 112 px
-  (`--sf-e4`) from about 1470 px, with no breakpoint
-  (`clamp(var(--sf-d2), var(--sf-c2) + 6vw, var(--sf-e4))` in the shell
-  stylesheet, since the Framework has no fluid spacing utility). It works with
-  `media=background` and with a background `effect`, whose pause button stays
-  in the hero's bottom corner clear of the text. `lg` and `xl` are unchanged.
-- The documentation site's home page hero draws the `constellation-net`
-  background effect, from the effects catalogue pinned to simai/ui-effects
-  `ad508268dbf322ecaaf2820a06da8dc8285d4ec1`.
-- The documentation site sets `branding.share_image` to a 1200×630 WebP card
-  (48 KB, the Docara mark and a screenshot of the start page), so its pages
-  published with `site_url` carry `og:image`, `twitter:image` and
-  `twitter:card: summary_large_image`.
-- **Page-weight check.** `scripts/verify-page-weight.php <build-dir>` adds up,
-  per page and de-duplicated, the HTML and the stylesheets, scripts,
-  preloads, images and CSS fonts and backgrounds the page makes the browser
-  fetch (an `@font-face` counts only when a rule whose classes occur on the
-  page names its family, directly or through a document-wide custom property,
-  and, with `unicode-range`, the page has a character in range; of a family's
-  weights only the one nearest 400 counts). It fails a page over `max_page_bytes` (default 3 MB), an image
-  over `max_image_bytes` (default 1 MB), a page with only shell-subset icons
-  that fetches a full Material Symbols font, and an `<img>` whose bitmap is
-  more than 2.5× its `width`/`height`. Budgets come from a JSON file with
-  per-page overrides. The Quality workflow runs it on the documentation site
-  with `docs/site/page-weight.json` (4.5 MB per page, 1.3 MB per image, and
-  explicit overrides for the icon and diagram pages).
-- **"Made with Docara" line under the sidebar.** Every page with a left
-  navigation now ends the sidebar with one line of small secondary text,
-  «Сделано на Docara» on Russian pages and "Made with Docara" elsewhere, where
-  "Docara" links to <https://docara.simai.io/> in the same tab. It is the
-  sidebar's footer: pinned to the bottom of the sticky sidebar under a
-  hairline `outline-variant` border, always visible while the menu scrolls
-  above it, however long the menu is. The mobile navigation sheet pins the
-  same footer under its scrolling content. Pages without a sidebar, such as
-  landing pages, do not get it. `"branding": {"credit": false}` in
-  `docara.json` turns it off for the whole site, footer and border included;
-  `section.json` and `*.page.json` cannot set it (`BRANDING_CREDIT_SITE_ONLY`).
 - **Pause for hero background effects.** While a hero effect runs, an icon
   button in the hero's bottom corner pauses and resumes it (WCAG 2.2.2). Its
   label is localized (`effects.pause`, `effects.play`; built-in English and
@@ -56,6 +20,44 @@ All notable changes to Docara are recorded here. The format follows
   `SF.Effects.placeEffect` with the same `data-sf-effect*` attributes, before
   the Framework's declarative scan, because only that call returns the handle
   whose `pause()` and `resume()` the button uses.
+- **Hero `padding=2xl`.** A taller first screen: the vertical padding grows
+  with the viewport, from 48 px (`--sf-d2`) up to a 400 px viewport to 112 px
+  (`--sf-e4`) from about 1470 px, with no breakpoint
+  (`clamp(var(--sf-d2), var(--sf-c2) + 6vw, var(--sf-e4))` in the shell
+  stylesheet, since the Framework has no fluid spacing utility). It works with
+  `media=background` and with a background `effect`, whose pause button stays
+  in the hero's bottom corner clear of the text. `lg` and `xl` are unchanged.
+- **"Made with Docara" line under the sidebar.** Every page with a left
+  navigation ends the sidebar with one line of small secondary text,
+  «Сделано на Docara» on Russian pages and "Made with Docara" elsewhere, where
+  "Docara" links to <https://docara.simai.io/> in the same tab. It is pinned
+  to the bottom of the sticky sidebar under a hairline `outline-variant`
+  border and stays visible while the menu scrolls above it, however long the
+  menu is; the mobile navigation sheet pins the same footer under its
+  scrolling content. Pages without a sidebar, such as landing pages, do not
+  get it. `"branding": {"credit": false}` in `docara.json` turns it off for
+  the whole site, footer and border included; `section.json` and
+  `*.page.json` cannot set it (`BRANDING_CREDIT_SITE_ONLY`).
+- **Page-weight check.** `scripts/verify-page-weight.php <build-dir>` adds up,
+  per page and de-duplicated, the HTML and the stylesheets, scripts,
+  preloads, images and CSS fonts and backgrounds the page makes the browser
+  fetch. An `@font-face` counts only when a rule whose classes occur on the
+  page names its family, directly or through a document-wide custom property,
+  and, with `unicode-range`, the page has a character in range; of a family's
+  weights only the one nearest 400 counts. It fails a page over
+  `max_page_bytes` (default 3 MB), an image over `max_image_bytes` (default
+  1 MB), a page with only shell-subset icons that fetches a full Material
+  Symbols font, and an `<img>` whose bitmap is more than 2.5× its
+  `width`/`height`. Budgets come from a JSON file with per-page overrides.
+  The Quality workflow runs it on the documentation site with
+  `docs/site/page-weight.json` (4.5 MB per page, 1.3 MB per image, and
+  explicit overrides for the icon and diagram pages).
+- **Documentation site.** The home page hero draws the `constellation-net`
+  background effect, from the effects catalogue pinned to simai/ui-effects
+  `ad508268dbf322ecaaf2820a06da8dc8285d4ec1`. The site sets
+  `branding.share_image` to a 1200×630 WebP card (48 KB, the Docara mark and a
+  screenshot of the start page), so its pages published with `site_url` carry
+  `og:image`, `twitter:image` and `twitter:card: summary_large_image`.
 
 ### Changed
 
@@ -120,6 +122,12 @@ All notable changes to Docara are recorded here. The format follows
 - Reading mode sets the content column, code blocks and tables included, on
   the prose measure and centres it; the reader wide format still uses the
   full width.
+- **Install from Packagist.** Packagist lists simai/docara 3.x, so the README
+  and the documentation (home page, quick start, CLI reference, update and
+  3.0 upgrade pages) install Docara 3 with `composer require
+  simai/docara:^3.0` alone, without a `repositories` entry. Troubleshooting
+  now points a "found 2.x only" error at a stale Composer cache or an old
+  `repositories` entry.
 - **Documentation site home page.** The home page, which is also Docara's
   product page, now says who Docara is for and what sets it apart: a hero
   with a real screenshot of a Docara 3 documentation page, a three-step first
@@ -127,77 +135,24 @@ All notable changes to Docara are recorded here. The format follows
   interface and this landing on desktop and mobile), links to example pages,
   a FAQ in `details` blocks (including how Docara differs from VitePress and
   Docusaurus, and the PHP, Composer and Node.js 20+ requirements) and one
-  closing call to action. The old FAQ answer that a site build needs no
-  Node.js is corrected. The page uses only typed Docara components.
-- Home page images are three real WebP screenshots (about 240 KB together)
-  instead of decorative 3D renders (about 4 MB). `docara-navigation.png` and
-  `docara-reader.png`, used only by the old home page, are removed.
-- The build-receipt note moved from the home page to *Статический результат*
-  (build/static-output), and the limits note to *Безопасность и ошибки*
-  (reference/security-and-errors), without the outdated line about public
-  release readiness.
-- The home page has a *Сделано на Docara* block before the closing call to
-  action. A two-column `columns` block shows two real sites built with
-  Docara, each with a short caption, a link and a light-theme WebP
-  screenshot of an inner page: the SIMAI Framework documentation
-  (ui.simai.io, about 700 pages) and this documentation (docara.simai.io).
-  The two screenshots add about 106 KB.
+  closing call to action. The page uses only typed Docara components.
+  - Before the closing call to action, a *Сделано на Docara* block shows two
+    real sites built with Docara, each with a short caption, a link and a
+    light-theme WebP screenshot of an inner page: the SIMAI Framework
+    documentation (ui.simai.io, about 700 pages) and this documentation
+    (docara.simai.io).
+  - Its images are real WebP screenshots (about 240 KB for the three main
+    ones, plus about 106 KB for the two showcase sites) instead of decorative
+    3D renders (about 4 MB). `docara-navigation.png` and `docara-reader.png`,
+    used only by the old home page, are removed.
+  - The old FAQ answer that a site build needs no Node.js is corrected.
+  - The build-receipt note moved from the home page to *Статический
+    результат* (build/static-output), and the limits note to *Безопасность и
+    ошибки* (reference/security-and-errors), without the outdated line about
+    public release readiness.
 
 ### Fixed
 
-- The sticky sidebar and the outline column start under the header and end at
-  the bottom of the window. They assumed a 56 px (sidebar) or 72 px (outline)
-  header while the header is 73 px, so at the top of the page the last 17 px
-  of the sidebar, including its last menu item, sat below the window. The
-  shell now measures the header into `--docara-header-block-size` (on load
-  and whenever the header resizes) and both columns use it; until the script
-  runs, the stylesheet's estimate (73 px) applies. The mobile navigation sheet
-  lays out its header and content as a column, so the content no longer
-  assumes a 56 px header and its end stays inside the window.
-- The documentation home page screenshots `home-docs-page.webp` (hero) and
-  `home-landing.webp` (desktop and mobile showcase) no longer show the old
-  start-page install that added a `repositories` VCS entry before
-  `composer require`. They are re-taken from the live site, which installs
-  from Packagist, at the same 1600×900 size and file names (84 KB and 100 KB,
-  down from 89 KB and 104 KB).
-- `EFFECTS_OUTSIDE_CATALOGUE` no longer says that SF.Effects runs only
-  catalogue effects: since Framework `ui-a9636b60d3e3` a foreign effect runs
-  in a sandboxed frame (`SF_BOOT_CONFIG.effects.foreign`: `sandbox` by
-  default, or `refuse`). Docara still builds only effects under
-  `effects.catalogue`; the message and the hero page now say so.
-- In the documentation navigation, a parent row and its first child are
-  spaced like sibling rows (1px) instead of 8px apart, on the desktop tree and
-  in the mobile sheet.
-- Outline and other in-page anchors stop one spacing step below the sticky
-  header instead of flush beneath it. The offset follows the tokens the header
-  is built from at every breakpoint and drops the header in reading mode.
-- The reader settings dialog is named by its panel heading through
-  `aria-labelledby` instead of the generic Framework label; the search dialog
-  drops that label too.
-- The documentation site's demonstrator result pages are marked `noindex`, so
-  they leave `sitemap.xml` and `llms.txt`, and the configuration page has a
-  proper description.
-- An outlined icon with `weight=light`, `weight=medium` or `filled=true`
-  whose name is in the shell subset was drawn regular and unfilled, because
-  the subset is a static regular, unfilled instance. It now gets the matching
-  catalogue instance.
-- Inline code, links and emphasis in a `:::features` card stay in the card's
-  text instead of each becoming its own row: the card keeps its icon and
-  leading bold title on their own lines and sets the rest as one text run.
-- `:::details` shows a disclosure chevron (the Framework accordion's
-  `chevron_right`, turned down when open) in both views, and its summary has
-  a visible keyboard focus ring. A flex summary had dropped the native marker,
-  so `view=lines` items looked like bold lines; that view also used border
-  and padding utilities the Framework does not define, so it now draws its
-  bottom rule and vertical padding with `border-bottom-1`, `p-y-1` and
-  `p-top-1`.
-- The documentation no longer says that building a site needs no Node.js
-  (`development`, the product Smart demonstrator result and the agent
-  journey), and the build requirements on the start, hosting, build, upgrade
-  and development pages name Node.js 20+.
-- 34 documentation pages whose description was taken from a long first
-  paragraph (171-386 characters) have a concise front matter `description`
-  of at most 160 characters.
 - `:::tabs` renders as tabs again: labels with padding, the page's text size,
   a divider under the tab list and an underline on the selected tab, in both
   themes. The tab buttons used utilities the bundled SIMAI Framework does not
@@ -212,6 +167,60 @@ All notable changes to Docara are recorded here. The format follows
   tones, the embed load button, the tree folder toggle and the code blocks'
   screen-reader labels (`sr-only`). A unit test now fails when a renderer
   emits a class the bundled Framework CSS does not define.
+- `:::details` shows a disclosure chevron (the Framework accordion's
+  `chevron_right`, turned down when open) in both views, and its summary has
+  a visible keyboard focus ring. A flex summary had dropped the native marker,
+  so `view=lines` items looked like bold lines; that view also used border
+  and padding utilities the Framework does not define, so it now draws its
+  bottom rule and vertical padding with `border-bottom-1`, `p-y-1` and
+  `p-top-1`.
+- Inline code, links and emphasis in a `:::features` card stay in the card's
+  text instead of each becoming its own row: the card keeps its icon and
+  leading bold title on their own lines and sets the rest as one text run.
+- An outlined icon with `weight=light`, `weight=medium` or `filled=true`
+  whose name is in the shell subset was drawn regular and unfilled, because
+  the subset is a static regular, unfilled instance. It now gets the matching
+  catalogue instance.
+- The sticky sidebar and the outline column start under the header and end at
+  the bottom of the window. They assumed a 56 px (sidebar) or 72 px (outline)
+  header while the header is 73 px, so at the top of the page the last 17 px
+  of the sidebar, including its last menu item, sat below the window. The
+  shell now measures the header into `--docara-header-block-size` (on load
+  and whenever the header resizes) and both columns use it; until the script
+  runs, the stylesheet's estimate (73 px) applies. The mobile navigation sheet
+  lays out its header and content as a column, so the content no longer
+  assumes a 56 px header and its end stays inside the window.
+- In the documentation navigation, a parent row and its first child are
+  spaced like sibling rows (1px) instead of 8px apart, on the desktop tree and
+  in the mobile sheet.
+- Outline and other in-page anchors stop one spacing step below the sticky
+  header instead of flush beneath it. The offset follows the tokens the header
+  is built from at every breakpoint and drops the header in reading mode.
+- The reader settings dialog is named by its panel heading through
+  `aria-labelledby` instead of the generic Framework label; the search dialog
+  drops that label too.
+- `EFFECTS_OUTSIDE_CATALOGUE` no longer says that SF.Effects runs only
+  catalogue effects: since Framework `ui-a9636b60d3e3` a foreign effect runs
+  in a sandboxed frame (`SF_BOOT_CONFIG.effects.foreign`: `sandbox` by
+  default, or `refuse`). Docara still builds only effects under
+  `effects.catalogue`; the message and the hero page now say so.
+- **Documentation site.**
+  - The documentation no longer says that building a site needs no Node.js
+    (`development`, the product Smart demonstrator result and the agent
+    journey), and the build requirements on the start, hosting, build,
+    upgrade and development pages name Node.js 20+.
+  - 34 pages whose description was taken from a long first paragraph
+    (171-386 characters) have a concise front matter `description` of at
+    most 160 characters.
+  - The demonstrator result pages are marked `noindex`, so they leave
+    `sitemap.xml` and `llms.txt`, and the configuration page has a proper
+    description.
+  - The home page screenshots `home-docs-page.webp` (hero) and
+    `home-landing.webp` (desktop and mobile showcase) no longer show the old
+    start-page install that added a `repositories` VCS entry before
+    `composer require`. They are re-taken from the live site, which installs
+    from Packagist, at the same 1600×900 size and file names (84 KB and
+    100 KB, down from 89 KB and 104 KB).
 
 ## [3.5.0] - 2026-10-19
 

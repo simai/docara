@@ -263,9 +263,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The desktop navigation divider must span the full layout row.',
         );
         self::assertStringContainsString(
-            '.docara-sidebar-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size))}',
+            '.docara-sidebar-panel{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));display:flex;flex-direction:column}',
             $shellCss,
-            'The navigation must use a bounded Framework scrollbar root.',
+            'The navigation panel must be bounded to the window under the header.',
         );
         foreach ($unavailable as $entry) {
             self::assertStringNotContainsString(

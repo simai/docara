@@ -1,12 +1,18 @@
 (function(){
   /* The documentation sheet shows the sidebar navigation. The page carries that tree once: before any other script can change it, the sheet template takes a copy of the sidebar as the server rendered it, without element ids. */
   document.querySelectorAll('template[data-docara-sheet-template][data-docara-sheet-source="sidebar"]').forEach(function(template){
-    var source=document.querySelector('aside[data-docara-region="sidebar"]>.docara-sidebar-scroll>.sf-scrollbar__viewport');
+    var source=document.querySelector('aside[data-docara-region="sidebar"]>.docara-sidebar-panel>.docara-sidebar-scroll>.sf-scrollbar__viewport');
     var section=template.content.firstElementChild;
     if(!source||!section)return;
     Array.prototype.forEach.call(source.childNodes,function(node){section.appendChild(node.cloneNode(true))});
     Array.prototype.forEach.call(section.querySelectorAll('[id]'),function(element){element.removeAttribute('id')});
   });
+  /* The sidebar's "Made with Docara" footer stays under the menu in the sheet too: a copy closes the sheet, after its scrolling content. */
+  (function(){
+    var credit=document.querySelector('aside[data-docara-region="sidebar"]>.docara-sidebar-panel>[data-docara-sidebar-credit]');
+    var sheet=document.getElementById('docara-mobile-navigation');
+    if(credit&&sheet&&!sheet.querySelector(':scope>[data-docara-sidebar-credit]')){sheet.appendChild(credit.cloneNode(true))}
+  })();
   /* The sticky sidebar and outline start under the header and fill the rest of the window. The header's height depends on the brand size and what the header holds, so the shell measures it into --docara-header-block-size; until then the stylesheet's estimate stands. */
   (function(){
     var header=document.querySelector('body[data-docara-shell]>.docara-header');

@@ -11,7 +11,7 @@ declare(strict_types=1);
  *     --receipt /absolute/out/package-receipt.json [--from /absolute/out | /absolute/out/package-<name>.tar] \
  *     --lock /absolute/site/simai-framework.lock.json [--lock ...]
  *
- * A product component package (Larena's `larena` is the first) is built by
+ * A product component package (a commercial SIMAI package, for example) is built by
  * ui-builder (`sf-build package`) from a folder of the product's own UI
  * repository over a pinned ui-source revision. The build writes a receipt,
  * `simai.framework.product-package-receipt` version 1, beside the output: the

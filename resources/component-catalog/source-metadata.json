@@ -150,7 +150,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/logos.md",
-            "source_sha256": "5c0ce6d071d3c9d083a76cb7a7e0c1cfb2c924a4caf1d3c5df5b589e5980fb4e",
+            "source_sha256": "e3bb00bd53dd8635c9746f857e9f8b808fb2ac32afe9a95ec82fdc981da97de0",
             "release": "3.5.0",
             "source_url": "https://github.com/simai/docara/blob/v3.5.0/docs/site/content/ru/components/logos.md",
             "history_url": "https://github.com/simai/docara/commits/v3.5.0/docs/site/content/ru/components/logos.md",
@@ -517,5 +517,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "54e6f0ee2b7abe50e73b192ad98681c24a48c7200872932eaac139161c9c7bdf"
+    "content_sha256": "25f34d2ab4346b8901ea51e1f4fbec052c389fa6f85085fde9b30ce4e3bb77f9"
 }

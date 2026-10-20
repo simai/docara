@@ -919,7 +919,7 @@ MD);
 :::logos
 - [SIMAI](https://simai.io/)
 - ![Docara](/assets/docara.svg)
-- Larena
+- SIMAI Effects
 :::
 MD);
 

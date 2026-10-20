@@ -54,8 +54,14 @@
     <div class="docara-docs-layout container w-full m-inline-auto gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>" data-mobile-toc="<?= $view->mobileTocState ?>">
 <?php if ($view->regions['sidebar'] !== '') { ?>
         <aside class="docara-sidebar" data-docara-region="sidebar" data-sf-observer="ignore">
-            <div class="docara-sidebar-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
-                <div class="sf-scrollbar__viewport<?= $view->sidebarCredit === null ? '' : ' flex flex-col' ?>" tabindex="0" aria-label="<?= $view->copy['navigation.sections'] ?>"><?= $view->regions['sidebar'] ?><?= $view->sidebarCredit ?? '' ?></div>
+            <div class="docara-sidebar-panel">
+                <div class="docara-sidebar-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
+                    <div class="sf-scrollbar__viewport" tabindex="0" aria-label="<?= $view->copy['navigation.sections'] ?>"><?= $view->regions['sidebar'] ?></div>
+                </div>
+<?php if ($view->sidebarCredit !== null) { ?>
+                <?= $view->sidebarCredit ?>
+
+<?php } ?>
             </div>
         </aside>
 <?php } ?>

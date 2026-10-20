@@ -303,14 +303,15 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
 
     /**
      * The "Made with Docara" line under the sidebar navigation (docara.json
-     * branding.credit). It lives inside the sidebar, so the mobile navigation
-     * sheet, which copies the sidebar, shows it too.
+     * branding.credit). It is the sidebar's footer: pinned under the menu,
+     * which scrolls above it. The shell copies it to the foot of the mobile
+     * navigation sheet.
      */
     private function sidebarCredit(string $locale): string
     {
         $link = '<a class="color-on-surface-variant underline" href="https://docara.simai.io/" rel="noopener">Docara</a>';
 
-        return '<p class="docara-sidebar-credit m-top-auto m-bottom-0 p-x-1 p-top-2 p-bottom-2 text-small color-on-surface-variant" data-docara-sidebar-credit>'
+        return '<p class="docara-sidebar-credit text-small color-on-surface-variant" data-docara-sidebar-credit>'
             . str_replace('{docara}', $link, $this->escape(UiCopy::buildText($locale, 'branding.credit')))
             . '</p>';
     }

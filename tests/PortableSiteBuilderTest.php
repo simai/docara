@@ -816,7 +816,11 @@ MD);
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-sidebar-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size))}',
+            '.docara-sidebar-panel{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));display:flex;flex-direction:column}',
+            $shellCss,
+        );
+        self::assertStringContainsString(
+            '.docara-sidebar-scroll{flex:1 1 auto;min-block-size:0}',
             $shellCss,
         );
         self::assertStringNotContainsString('html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}', $shellCss);
@@ -1104,6 +1108,9 @@ MD);
         // The sticky sidebar and outline are sized from the measured header.
         self::assertStringContainsString("document.documentElement.style.setProperty('--docara-header-block-size',size+'px')", $shellRuntime);
         self::assertStringContainsString('new ResizeObserver(measure).observe(header)', $shellRuntime);
+        // The sheet gets a copy of the sidebar's credit footer after its scrolling content.
+        self::assertStringContainsString("document.querySelector('aside[data-docara-region=\"sidebar\"]>.docara-sidebar-panel>[data-docara-sidebar-credit]')", $shellRuntime);
+        self::assertStringContainsString('sheet.appendChild(credit.cloneNode(true))', $shellRuntime);
         self::assertStringContainsString('id="docara-outline-dialog"', $guide);
         self::assertStringContainsString('data-docara-sheet-trigger', $guide);
         self::assertMatchesRegularExpression(
@@ -1282,6 +1289,7 @@ MD);
             0,
             $navigationXpath->query(
                 '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
+                . '/*[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar-panel ")]'
                 . '/*[contains(concat(" ", normalize-space(@class), " "), " sf-scrollbar ")'
                 . ' and contains(concat(" ", normalize-space(@class), " "), " p-1 ")]',
             )?->length,
@@ -1291,6 +1299,7 @@ MD);
             1,
             $navigationXpath->query(
                 '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
+                . '/*[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar-panel ")]'
                 . '/*[contains(concat(" ", normalize-space(@class), " "), " sf-scrollbar ")]'
                 . '/*[contains(concat(" ", normalize-space(@class), " "), " sf-scrollbar__viewport ")]',
             )?->length,
@@ -1649,19 +1658,20 @@ MD);
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
         $link = '<a class="color-on-surface-variant underline" href="https://docara.simai.io/" rel="noopener">Docara</a>';
-        $credit = static fn (string $text): string => '<p class="docara-sidebar-credit m-top-auto m-bottom-0 p-x-1 p-top-2 p-bottom-2 text-small color-on-surface-variant" data-docara-sidebar-credit>'
-            . str_replace('{docara}', $link, $text) . '</p></div>';
+        $credit = static fn (string $text): string => '<p class="docara-sidebar-credit text-small color-on-surface-variant" data-docara-sidebar-credit>'
+            . str_replace('{docara}', $link, $text) . '</p>';
         foreach ([
             'ru/guides/getting-started/index.html' => 'Сделано на {docara}',
             'en/guides/getting-started/index.html' => 'Made with {docara}',
         ] as $output => $text) {
             $html = (string) file_get_contents($this->tmpPath('build_local/' . $output));
-            // The line closes the sidebar viewport, after the navigation, so
-            // the mobile navigation sheet copies it with the menu.
+            // The line is the sidebar panel's footer: a sibling after the
+            // scrolling navigation, outside it, so the menu scrolls above it.
+            // The shell copies it to the foot of the mobile navigation sheet.
             self::assertSame(1, substr_count($html, 'data-docara-sidebar-credit'), $output);
             self::assertStringContainsString($credit($text), $html, $output);
             self::assertMatchesRegularExpression(
-                '~<div class="sf-scrollbar__viewport flex flex-col"[^>]*>.*data-docara-smart="docara.navigation".*data-docara-sidebar-credit>~s',
+                '~<div class="docara-sidebar-panel">\s*<div class="docara-sidebar-scroll sf-scrollbar"[^>]*>\s*<div class="sf-scrollbar__viewport" tabindex="0"[^>]*>.*data-docara-smart="docara.navigation".*</div>\s*</div>\s*<p class="docara-sidebar-credit[^>]*>.*</p>\s*</div>\s*</aside>~s',
                 $html,
                 $output,
             );
@@ -1686,7 +1696,9 @@ MD);
             self::assertStringContainsString('data-docara-region="sidebar"', $html, $output);
             self::assertStringNotContainsString('data-docara-sidebar-credit', $html, $output);
             self::assertStringNotContainsString('docara.simai.io', $html, $output);
-            self::assertStringContainsString('<div class="sf-scrollbar__viewport" tabindex="0"', $html, $output);
+            // No empty footer is left behind: the panel ends with the menu.
+            self::assertStringNotContainsString('docara-sidebar-credit', $html, $output);
+            self::assertMatchesRegularExpression('~<div class="docara-sidebar-panel">\s*<div class="docara-sidebar-scroll sf-scrollbar"[^>]*>\s*<div class="sf-scrollbar__viewport" tabindex="0"[^>]*>.*?</div>\s*</div>\s*</div>\s*</aside>~s', $html, $output);
         }
     }
 

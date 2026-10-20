@@ -20,7 +20,9 @@ body[data-docara-shell]{opacity:1!important}
 .docara-docs-layout[data-sidebar="false"]{grid-template-columns:minmax(0,1fr)}
 .docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr) var(--sf-f2)}
 .docara-sidebar{align-self:stretch;border-inline-end:1px solid var(--sf-outline-variant)}
-.docara-sidebar-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size))}
+.docara-sidebar-panel{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));display:flex;flex-direction:column}
+.docara-sidebar-scroll{flex:1 1 auto;min-block-size:0}
+.docara-sidebar-credit{flex:0 0 auto;margin:0;padding-block:var(--sf-space-1);padding-inline:var(--sf-space-1);border-block-start:1px solid var(--sf-outline-variant)}
 .docara-sidebar-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-block:var(--sf-space-1);padding-inline-end:var(--sf-space-1);padding-inline-start:0}
 .docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}
 .docara-outline-rail{--docara-outline-indent:calc(var(--sf-space-2) + var(--sf-a2))}
@@ -82,6 +84,7 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-mobile-sheet::backdrop{background:color-mix(in srgb,var(--sf-on-surface) 38%,transparent);backdrop-filter:blur(var(--sf-a2))}
 .docara-mobile-sheet-header{flex:0 0 auto;min-block-size:var(--sf-d4)}
 .docara-mobile-sheet[open]{display:flex;flex-direction:column}.docara-mobile-sheet-content{flex:1 1 auto;min-block-size:0;overflow:auto;overscroll-behavior:contain}
+.docara-mobile-sheet>.docara-sidebar-credit{padding-inline:var(--sf-space-2)}
 .docara-outline-dialog{inset-inline-start:auto;inset-inline-end:0;border-inline-start:1px solid var(--sf-outline-variant);border-inline-end:0}
 .docara-code-block.bg-surface-container{background:var(--sf-surface-0)}
 .docara-code-block>.sf--highlight-head{margin:0;border-bottom:1px solid var(--sf-outline-variant)}

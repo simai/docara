@@ -149,6 +149,20 @@ All notable changes to Docara are recorded here. The format follows
 - 34 documentation pages whose description was taken from a long first
   paragraph (171-386 characters) have a concise front matter `description`
   of at most 160 characters.
+- `:::tabs` renders as tabs again: labels with padding, the page's text size,
+  a divider under the tab list and an underline on the selected tab, in both
+  themes. The tab buttons used utilities the bundled SIMAI Framework does not
+  define (`p-inline-1`, `p-block-1/3`, a width-less `border-bottom`) and the
+  class `sf-tab`, which belongs to the Framework's `nav > ul > li` tab
+  component and has no styles for a button; they now use `p-x-2 p-y-1/2`,
+  `border-bottom-1 border-bottom-solid` and Docara's own `docara-tab` styles.
+- Other renderer output that named non-existent utilities now gets the
+  spacing, borders and type it asked for: the `:::details` summary, the
+  diagram caption, the source line of an attributed quote, the component and
+  Atlas indexes, inline `kbd`, block math, the `muted` and `contrast` surface
+  tones, the embed load button, the tree folder toggle and the code blocks'
+  screen-reader labels (`sr-only`). A unit test now fails when a renderer
+  emits a class the bundled Framework CSS does not define.
 
 ## [3.5.0] - 2026-10-19
 

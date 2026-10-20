@@ -62,16 +62,16 @@ final class PortableComponentIndexHydrator
     {
         $items = '';
         foreach ($entries as $entry) {
-            $items .= '<li class="p-block-2 border-bottom border-outline-variant">'
-                . '<a class="font-title-medium" href="' . $this->escape($entry['url']) . '">'
+            $items .= '<li class="p-y-2 border-bottom-1 border-bottom-solid border-outline-variant">'
+                . '<a class="bold" href="' . $this->escape($entry['url']) . '">'
                 . $this->escape($entry['title']) . '</a>'
-                . ($entry['description'] === '' ? '' : '<p class="m-block-start-1 m-block-end-0 color-on-surface-variant">'
+                . ($entry['description'] === '' ? '' : '<p class="m-top-1 m-bottom-0 color-on-surface-variant">'
                     . $this->escape($entry['description']) . '</p>')
                 . '</li>';
         }
 
         return '<section data-docara-block="component-index" data-docara-component-index-view>'
-            . '<ul class="list-none p-0 m-0 border-top border-outline-variant">' . $items . '</ul></section>';
+            . '<ul class="list-none p-0 m-0 border-top-1 border-top-solid border-outline-variant">' . $items . '</ul></section>';
     }
 
     private function escape(string $value): string

@@ -64,7 +64,7 @@
           wrapButton.dataset.wrapIcon='wrap_text';
           wrapButton.dataset.unwrapIcon='format_text_overflow';
           wrapButton.className='docara-code-wrap sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0';
-          wrapButton.innerHTML='<span aria-hidden="true" class="sf-icon sf-icon-regular">wrap_text</span><span class="sf-button-text-container visually-hidden"></span>';
+          wrapButton.innerHTML='<span aria-hidden="true" class="sf-icon sf-icon-regular">wrap_text</span><span class="sf-button-text-container sr-only"></span>';
           actions.insertBefore(wrapButton,button);
         }
         if(wrapButton){
@@ -310,7 +310,7 @@
       if(!nested||tree.dataset.interactive!=='true')return;
       var toggle=document.createElement('button');
       toggle.type='button';
-      toggle.className='sf-button sf-button--text sf-button--on-surface sf-button--size-1 inline-flex items-cross-center content-main-center';
+      toggle.className='sf-button sf-button--link sf-button--on-surface sf-button--size-1 inline-flex items-cross-center content-main-center';
       toggle.setAttribute('aria-expanded','true');
       toggle.setAttribute('aria-label','Toggle folder');
       toggle.innerHTML='<sf-icon icon="expand_more" size="1"></sf-icon>';

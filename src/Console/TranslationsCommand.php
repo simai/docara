@@ -52,6 +52,8 @@ final class TranslationsCommand extends Command
                     $this->base,
                     is_string($this->input->getOption('locale')) ? $this->input->getOption('locale') : null,
                     is_string($this->input->getOption('status')) ? $this->input->getOption('status') : null,
+                    // The page default belongs to accept; status reports every kind unless --kind is given.
+                    $this->input->hasParameterOption('--kind', true) && is_string($this->input->getOption('kind')) ? $this->input->getOption('kind') : null,
                 );
                 if ((bool) $this->input->getOption('json')) {
                     $this->output->write(CanonicalJson::encodePretty($report));

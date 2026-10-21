@@ -15,8 +15,11 @@ use Simai\Docara\Portable\SchemaRepository;
 final class TranslationStatusService
 {
     /** @return array<string,mixed> */
-    public function report(string $root, ?string $locale = null, ?string $status = null): array
+    public function report(string $root, ?string $locale = null, ?string $status = null, ?string $kind = null): array
     {
+        if ($kind !== null && ! in_array($kind, ['page', 'lang'], true)) {
+            throw new PortableConfigurationException('TRANSLATION_KIND_INVALID', 'Translation kind must be page or lang.');
+        }
         [$root, $site, $tracking] = $this->configuration($root);
         if (($tracking['enabled'] ?? false) !== true) {
             return $this->finalize([
@@ -114,6 +117,9 @@ final class TranslationStatusService
                 throw new PortableConfigurationException('TRANSLATION_STATUS_FILTER_INVALID', "Unknown translation status [$status].");
             }
             $items = array_values(array_filter($items, static fn (array $item): bool => $item['status'] === $status));
+        }
+        if ($kind !== null) {
+            $items = array_values(array_filter($items, static fn (array $item): bool => $item['kind'] === $kind));
         }
         usort($items, static fn (array $left, array $right): int => [$left['locale'], $left['kind'], $left['key']] <=> [$right['locale'], $right['kind'], $right['key']]);
 

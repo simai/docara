@@ -59,6 +59,45 @@ final class TranslationsCommandTest extends TestCase
         self::assertFileExists($this->tmpPath('translations.lock.json'));
     }
 
+    #[Test]
+    public function status_filters_by_kind_only_when_kind_is_given(): void
+    {
+        $this->createSource([
+            'docara.json' => json_encode([
+                'schema' => 'docara.site.v1',
+                'preset' => 'docs',
+                'framework_lock' => 'framework.lock.json',
+                'default_locale' => 'ru',
+                'locales' => [
+                    'missing_page_policy' => 'skip',
+                    'ru' => ['label' => 'Русский', 'direction' => 'ltr', 'content_root' => 'content/ru', 'public_prefix' => 'ru'],
+                    'en' => ['label' => 'English', 'direction' => 'ltr', 'content_root' => 'content/en', 'public_prefix' => 'en'],
+                ],
+                'translation_tracking' => ['enabled' => true, 'source_locale' => 'ru', 'mode' => 'report', 'lock_file' => 'translations.lock.json'],
+            ], JSON_THROW_ON_ERROR),
+            'content/ru/index.md' => "# Начало\n",
+            'content/en/index.md' => "# Start\n",
+            'content/ru/lang.json' => '{"search":{"label":"Поиск"}}',
+            'content/en/lang.json' => '{"search":{"label":"Search"}}',
+        ]);
+        $application = new Application;
+        $application->addCommand((new TranslationsCommand(new TranslationStatusService))->setBase($this->tmp));
+        $kinds = function (array $input) use ($application): array {
+            $tester = new CommandTester($application->find('translations'));
+            self::assertSame(0, $tester->execute(['action' => 'status', '--json' => true] + $input), $tester->getDisplay());
+
+            return array_values(array_unique(array_column($this->jsonOutput($tester->getDisplay())['items'], 'kind')));
+        };
+
+        self::assertSame(['lang', 'page'], $kinds([]));
+        self::assertSame(['lang'], $kinds(['--kind' => 'lang']));
+        self::assertSame(['page'], $kinds(['--kind' => 'page']));
+
+        $invalid = new CommandTester($application->find('translations'));
+        self::assertSame(1, $invalid->execute(['action' => 'status', '--kind' => 'theme', '--json' => true]));
+        self::assertStringContainsString('TRANSLATION_KIND_INVALID', $invalid->getDisplay());
+    }
+
     /** @return array<string,mixed> */
     private function jsonOutput(string $display): array
     {

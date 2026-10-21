@@ -47,6 +47,11 @@ All notable changes to Docara are recorded here. The format follows
   as an item to review. Code spans are now skipped like fenced code, and the
   build reports only items that need a fix (missing structure, links or
   assets); `docara validate page` still shows the checklist.
+- `translations status --kind=page|lang` now filters the report by kind. The
+  option was accepted but ignored, so the report always listed both pages and
+  `lang.json` keys. Without `--kind`, `status` still lists both kinds;
+  `accept` keeps `page` as its default. An unknown kind fails with
+  `TRANSLATION_KIND_INVALID`.
 
 ## [3.6.0] - 2026-10-21
 

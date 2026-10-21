@@ -52,6 +52,11 @@ All notable changes to Docara are recorded here. The format follows
   `lang.json` keys. Without `--kind`, `status` still lists both kinds;
   `accept` keeps `page` as its default. An unknown kind fails with
   `TRANSLATION_KIND_INVALID`.
+- The hero effect's pause button labels (`effects.pause`, `effects.play`) can
+  be overridden in `content/<locale>/lang.json`, as 3.6.0 announced. The
+  `lang.json` schema and namespace allowlist had no `effects` group, so such
+  a file failed validation. A test now checks that every built-in interface
+  string can be overridden.
 
 ## [3.6.0] - 2026-10-21
 

@@ -6,6 +6,11 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Content\SourceBoundaryValidator;
+use Simai\Docara\File\Filesystem;
+use Simai\Docara\I18n\ContentLanguageRepository;
+use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\Translator;
+use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final class SourceBoundaryValidatorTest extends TestCase
@@ -80,6 +85,36 @@ final class SourceBoundaryValidatorTest extends TestCase
         self::assertSame('Скопировано', $language['code']['copied'] ?? null);
         self::assertArrayNotHasKey('components', $language);
         self::assertArrayNotHasKey('pages', $language);
+    }
+
+    public function test_every_built_in_interface_string_can_be_overridden_in_lang_json(): void
+    {
+        $language = ['schema' => 'docara.lang.v1', 'version' => 1];
+        foreach (array_keys(UiCopy::optionalDefaults('en')) as $id) {
+            [$namespace, $key] = explode('.', $id, 2);
+            $language[$namespace][$key] = 'Override ' . $id;
+        }
+        (new SourceBoundaryValidator)->assertLanguage($language);
+
+        $root = sys_get_temp_dir() . '/docara-lang-override-' . bin2hex(random_bytes(8));
+        self::assertTrue(mkdir($root . '/content/en', 0700, true));
+        try {
+            file_put_contents($root . '/content/en/lang.json', json_encode([
+                'schema' => 'docara.lang.v1',
+                'version' => 1,
+                'effects' => ['pause' => 'Freeze the backdrop', 'play' => 'Resume the backdrop'],
+            ], JSON_THROW_ON_ERROR));
+            $registry = LocaleRegistry::fromSite([
+                'default_locale' => 'en',
+                'locales' => ['en' => ['label' => 'English', 'direction' => 'ltr', 'content_root' => 'content/en', 'public_prefix' => 'en', 'fallbacks' => []]],
+            ]);
+            $translator = new Translator($registry, new ContentLanguageRepository($root));
+
+            self::assertSame('Freeze the backdrop', $translator->messageOr('en', 'effects.pause', 'default'));
+            self::assertSame('Resume the backdrop', $translator->messageOr('en', 'effects.play', 'default'));
+        } finally {
+            (new Filesystem)->deleteDirectory($root);
+        }
     }
 
     public function test_public_builder_inputs_reject_legacy_and_package_owned_message_paths(): void

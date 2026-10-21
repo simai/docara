@@ -58,6 +58,30 @@ All notable changes to Docara are recorded here. The format follows
   a file failed validation. A test now checks that every built-in interface
   string can be overridden.
 
+### Documentation
+
+- The documentation site no longer contradicts the code. `reference/cli.md`
+  shows that `qa --dry-run` needs `--page`, how `translations status --kind`
+  filters, and what `init --update` prints; `build/update.md` uses a 3.x
+  `upgrade --to` example and says that `update` without an action runs
+  `--verify`. Corrected: the `ui_radius` values (`default`, `medium`,
+  `large`), the badge's default `size` (`1/3`), how a diagram draws (the
+  bundled Mermaid on pages that have one), the embed address rules per
+  provider, the `lang.json` groups (`examples` and `effects` are allowed) and
+  an example key that Docara reads, the search error
+  `SEARCH_COMPONENT_CALL_INVALID`, receipt paths under
+  `build_<environment>.docara/`, the Framework pair shipped since 3.6.0, the
+  portal page (Docara's own docs have had no portal artifact since 3.5.0),
+  the front matter keys (`noindex`, `profile`, `composition_recipe`), a
+  Framework example limited to components in the site's lock and a landing
+  page that promised descriptions which do not exist. Navigation: Settings
+  and Design get an order and sit before Troubleshooting, the example stand
+  pages leave the sidebar but keep their addresses, and the landing and
+  project-demo pages are left out of the sitemap, `llms.txt` and search. The
+  quick start numbers its steps, builds once and moves the template choice,
+  environment, `capabilities`/`doctor` and rollback notes to the end; the
+  home page's "three commands" are three.
+
 ## [3.6.0] - 2026-10-21
 
 ### Added

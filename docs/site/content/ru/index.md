@@ -29,8 +29,7 @@ composer require simai/docara:^3.0
 php vendor/bin/docara init .
 
 # 3. Соберите сайт и откройте его в браузере
-php vendor/bin/docara build production
-php vendor/bin/docara serve production --no-build
+php vendor/bin/docara serve production
 ```
 
 Заготовки, проверка результата и публикация — в [полном быстром старте](/start/).

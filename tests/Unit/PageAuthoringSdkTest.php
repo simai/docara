@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\Application\DiscoveryService;
+use Simai\Docara\Application\PageInspectionService;
 use Simai\Docara\Application\ScaffoldService;
 use Simai\Docara\Application\ValidationService;
 use Simai\Docara\Authoring\AuthoringProfileRegistry;
@@ -190,6 +191,86 @@ MD);
         self::assertSame(0, $tester->execute(['environment' => 'authoring-invalid']));
         self::assertStringContainsString('Page authoring contract warning:', $tester->getDisplay());
         self::assertDirectoryExists($this->tmpPath('build_authoring-invalid'));
+    }
+
+    #[Test]
+    public function a_composition_recipe_page_is_validated_as_the_build_compiles_it(): void
+    {
+        // The build compiles a Recipe page's empty body as a placeholder;
+        // validation compiled the empty body itself, failed with
+        // DOCUMENT_IR_INPUT_INVALID and stopped checking the pages after it.
+        $this->filesystem->put($this->tmpPath('content/ru/aa-recipe.md'), "---\ntitle: Recipe\ncomposition_recipe: composition/descriptor.json\n---\n");
+        $this->filesystem->put($this->tmpPath('content/ru/zz-after.md'), "# After\n\nSee [the missing page](/missing-page/).\n");
+
+        $checks = (new PageInspectionService)->validateAll($this->tmp);
+
+        self::assertContains(['code' => 'PAGE_MARKDOWN_VALID', 'status' => 'pass', 'subject' => '/ru/aa-recipe/'], $checks);
+        self::assertContains(
+            ['code' => 'PAGE_LINK_TARGET_MISSING', 'status' => 'error', 'severity' => 'error', 'url' => '/missing-page/', 'subject' => '/ru/zz-after/'],
+            $checks,
+        );
+        self::assertSame(0, (new ValidationService)->validate($this->tmp, 'page', '/ru/aa-recipe/')->exitCode);
+    }
+
+    #[Test]
+    public function a_link_written_as_code_is_not_a_link_of_the_page(): void
+    {
+        $this->filesystem->put($this->tmpPath('content/ru/code-links.md'), <<<'MD'
+# Code links
+
+An image path is written as `![Scheme](/ru/guide/scheme.png)`, a link as
+``[Start](/missing-start/)``.
+
+```markdown
+[Fenced](/missing-fenced/)
+```
+
+But [this one](/missing-real/) is a link.
+MD);
+
+        $missing = array_values(array_map(
+            static fn (array $check): string => (string) $check['url'],
+            array_filter(
+                (new PageInspectionService)->validateAll($this->tmp),
+                static fn (array $check): bool => $check['code'] === 'PAGE_LINK_TARGET_MISSING' && $check['subject'] === '/ru/code-links/',
+            ),
+        ));
+
+        self::assertSame(['/missing-real/'], $missing);
+    }
+
+    #[Test]
+    public function the_build_reports_authoring_items_that_need_a_fix_but_not_the_editorial_checklist(): void
+    {
+        $this->filesystem->put($this->tmpPath('docara.authoring.json'), json_encode([
+            'schema' => 'docara.authoring.v1',
+            'audiences' => ['reader'],
+            'rules' => [['match' => 'checked.md', 'profile' => 'article']],
+        ], JSON_THROW_ON_ERROR));
+        $this->filesystem->put($this->tmpPath('content/ru/checked.md'), "# Checked\n\nIntroduction.\n\n## Part\n\nText.\n");
+        $advisory = array_values(array_filter(
+            (new PageInspectionService)->validateAll($this->tmp),
+            static fn (array $check): bool => $check['status'] !== 'pass',
+        ));
+        self::assertSame(
+            [['code' => 'PAGE_EDITORIAL_REVIEW_REQUIRED', 'status' => 'review_required', 'severity' => 'advisory', 'subject' => '/ru/checked/']],
+            $advisory,
+        );
+
+        $command = (new BuildCommand(new PortableSiteBuilder($this->filesystem, new PortableMarkdownRenderer)))->setBase($this->tmp);
+        $command->setApplication(new Application);
+        $tester = new CommandTester($command);
+
+        // Every profiled page carries the advisory checklist; alone it is not reported.
+        self::assertSame(0, $tester->execute(['environment' => 'authoring-advisory']));
+        self::assertStringNotContainsString('Page authoring', $tester->getDisplay());
+
+        $this->filesystem->put($this->tmpPath('content/ru/broken-link.md'), "# Broken link\n\nSee [the missing page](/missing-page/).\n");
+        self::assertSame(0, $tester->execute(['environment' => 'authoring-broken']));
+        self::assertStringContainsString(
+            'Page authoring reported 1 item(s) for structural review or with a missing link or asset; the build remains valid in report mode.',
+            preg_replace('/\s+/', ' ', $tester->getDisplay()),
+        );
     }
 
     #[Test]

@@ -14,6 +14,13 @@ use Simai\Docara\Portable\ResolvedPagePlan;
 
 final readonly class PageBuilder
 {
+    /**
+     * The Markdown a Composition Recipe page compiles in place of its empty
+     * body: the Recipe supplies the visible content, and the Document IR
+     * compiler refuses empty input.
+     */
+    public const RECIPE_PAGE_MARKDOWN = '<!-- Content is supplied by Composition Recipe. -->';
+
     private DocumentRendererRegistry $renderers;
 
     public function __construct(
@@ -39,7 +46,7 @@ final readonly class PageBuilder
         ?array $compositionRecipe = null,
     ): PageBuilderResult {
         $document = $this->compiler->compile(
-            $compositionRecipe === null ? $plan->markdown : '<!-- Content is supplied by Composition Recipe. -->',
+            $compositionRecipe === null ? $plan->markdown : self::RECIPE_PAGE_MARKDOWN,
             $plan->page,
         );
         $rendered = $this->renderers->render(

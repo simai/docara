@@ -32,6 +32,21 @@ All notable changes to Docara are recorded here. The format follows
   `DECLARATIVE_VIEW_UTILITY_NOT_ALLOWED`. The documentation examples use the
   Framework names, and a test keeps the allow-list and the documentation's
   layout files to classes the bundled Framework defines.
+- **Page authoring validation of Composition Recipe pages.** A Recipe page
+  keeps its Markdown body empty, and the build compiles a placeholder for it;
+  page validation compiled the empty body itself, so every build of a site
+  with such a page printed `Page authoring contract warning:
+  [DOCUMENT_IR_INPUT_INVALID] Cannot compile [...]` (the documentation site
+  since 3.0.0, for `examples/composition-recipe-compact.md`), and
+  validation stopped there, leaving the pages after it unchecked. Validation
+  now compiles the same placeholder as the build. With every page checked
+  again, two more findings surfaced and are fixed: a link written as inline
+  code (`` `![Scheme](/ru/guide/scheme.png)` ``) was checked as a page link,
+  and the build counted the advisory editorial checklist
+  (`PAGE_EDITORIAL_REVIEW_REQUIRED`, attached to every page with a profile)
+  as an item to review. Code spans are now skipped like fenced code, and the
+  build reports only items that need a fix (missing structure, links or
+  assets); `docara validate page` still shows the checklist.
 
 ## [3.6.0] - 2026-10-21
 

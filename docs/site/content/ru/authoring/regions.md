@@ -119,7 +119,7 @@ Framework и два типа вызовов:
           {
             "id": "site-footer",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
             "blocks": [
               {
                 "id": "copyright",
@@ -144,6 +144,14 @@ Framework и два типа вызовов:
 ссылку и утилиты из точной Framework projection. PHP, Blade, raw HTML,
 обработчики событий, JavaScript URL, style/class string, callback и пути к
 шаблонам остаются недоступны.
+
+Разрешённые утилиты перечислены в `resources/framework/view-utilities.json`;
+это классы SIMAI Framework, например `bg-surface-0` для фона поверхности и пара
+`border-bottom-1 border-bottom-solid` для нижней границы. Прежние имена
+`surface-0` и `border-bottom` во Framework не существуют, но Docara их
+по-прежнему принимает: на странице вместо них выводятся эти классы Framework, а
+замена отмечается в плане страницы (`deprecated_utilities`). В новых файлах
+пишите имена Framework.
 
 Для навигации доступны три зарегистрированных presentation-варианта:
 `header`, `tree` и `compact`. Они принадлежат одному `docara.navigation` и

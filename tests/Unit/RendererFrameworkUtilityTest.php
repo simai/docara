@@ -106,6 +106,54 @@ final class RendererFrameworkUtilityTest extends TestCase
         self::assertSame(['border-bottom', 'p-block-1/3', 'p-inline-1'], $unknown);
     }
 
+    #[Test]
+    public function the_declarative_view_utility_allow_list_names_only_framework_classes(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $registry = json_decode((string) file_get_contents($root . '/resources/framework/view-utilities.json'), true, 512, JSON_THROW_ON_ERROR);
+        $allowed = $registry['utilities'];
+        self::assertContains('bg-surface-0', $allowed);
+        self::assertContains('border-bottom-1', $allowed);
+        self::assertContains('border-bottom-solid', $allowed);
+        self::assertSame([], $this->unknown(array_fill_keys($allowed, true)), 'The view utility allow-list names classes the bundled SIMAI Framework does not define.');
+
+        // The deprecated names are accepted for compatibility only because
+        // the Framework does not define them; each maps to Framework classes.
+        self::assertSame(['border-bottom', 'surface-0'], array_keys($registry['deprecated']));
+        foreach ($registry['deprecated'] as $name => $entry) {
+            self::assertSame([$name], $this->unknown([$name => true]));
+            self::assertNotContains($name, $allowed);
+            self::assertSame([], array_diff($entry['replacement'], $allowed));
+        }
+    }
+
+    #[Test]
+    public function documentation_layout_files_use_framework_utility_names(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $found = [];
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root . '/docs/site/content/ru', \FilesystemIterator::SKIP_DOTS));
+        foreach ($files as $file) {
+            if (! $file instanceof \SplFileInfo || ! $file->isFile() || ! in_array($file->getExtension(), ['json', 'md'], true)) {
+                continue;
+            }
+            preg_match_all('/"utilities":\s*\[([^\]]*)\]/', (string) file_get_contents($file->getPathname()), $matches);
+            foreach ($matches[1] as $list) {
+                preg_match_all('/"([^"]+)"/', $list, $names);
+                foreach ($names[1] as $name) {
+                    $found[$name][substr($file->getPathname(), strlen($root) + 1)] = true;
+                }
+            }
+        }
+        self::assertArrayHasKey('bg-surface-0', $found);
+
+        $unknown = [];
+        foreach ($this->unknown($found) as $name) {
+            $unknown[$name] = array_keys($found[$name]);
+        }
+        self::assertSame([], $unknown, 'Documentation layout files use utility names the bundled SIMAI Framework does not define.');
+    }
+
     /** @param array<string,mixed> $classes @return list<string> */
     private function unknown(array $classes): array
     {

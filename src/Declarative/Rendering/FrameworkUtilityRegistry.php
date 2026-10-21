@@ -11,6 +11,9 @@ final class FrameworkUtilityRegistry
     /** @var array<string, true>|null */
     private ?array $utilities = null;
 
+    /** @var array<string, array{replacement:list<string>,reason:string}>|null */
+    private ?array $deprecated = null;
+
     public function __construct(
         private readonly string $path = __DIR__ . '/../../../resources/framework/view-utilities.json',
         private readonly string $runtimeLockPath = __DIR__ . '/../../../resources/framework/runtime-lock.json',
@@ -20,14 +23,58 @@ final class FrameworkUtilityRegistry
     public function assertAllowed(array $utilities): void
     {
         $allowed = $this->utilities();
+        $deprecated = $this->deprecatedUtilities();
         foreach ($utilities as $utility) {
-            if (! is_string($utility) || ! isset($allowed[$utility])) {
+            if (! is_string($utility) || (! isset($allowed[$utility]) && ! isset($deprecated[$utility]))) {
                 throw new PortableConfigurationException(
                     'DECLARATIVE_VIEW_UTILITY_NOT_ALLOWED',
                     "Framework utility [$utility] is not present in the pinned View Tree projection.",
                 );
             }
         }
+    }
+
+    /**
+     * The classes to write for an allowed utility list: a deprecated name is
+     * replaced by the Framework utilities that do what it meant, in place and
+     * without duplicates, the way a deprecated Smart alias renders its
+     * canonical component.
+     *
+     * @param  list<string>  $utilities
+     * @return list<string>
+     */
+    public function canonical(array $utilities): array
+    {
+        $this->assertAllowed($utilities);
+        $deprecated = $this->deprecatedUtilities();
+        $classes = [];
+        foreach ($utilities as $utility) {
+            foreach ($deprecated[$utility]['replacement'] ?? [$utility] as $class) {
+                $classes[$class] = true;
+            }
+        }
+
+        return array_keys($classes);
+    }
+
+    /**
+     * The deprecated names in an allowed utility list, for the plan provenance.
+     *
+     * @param  list<string>  $utilities
+     * @return list<array{utility:string,replacement:list<string>,reason:string}>
+     */
+    public function deprecations(array $utilities): array
+    {
+        $this->assertAllowed($utilities);
+        $deprecated = $this->deprecatedUtilities();
+        $found = [];
+        foreach ($utilities as $utility) {
+            if (isset($deprecated[$utility])) {
+                $found[] = ['utility' => $utility] + $deprecated[$utility];
+            }
+        }
+
+        return $found;
     }
 
     /** @return array<string, mixed> */
@@ -58,6 +105,40 @@ final class FrameworkUtilityRegistry
         }
 
         return $this->utilities = array_fill_keys($utilities, true);
+    }
+
+    /** @return array<string, array{replacement:list<string>,reason:string}> */
+    private function deprecatedUtilities(): array
+    {
+        if ($this->deprecated !== null) {
+            return $this->deprecated;
+        }
+        $allowed = $this->utilities();
+        $deprecated = $this->document()['deprecated'] ?? [];
+        if (! is_array($deprecated) || ($deprecated !== [] && array_is_list($deprecated))) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_VIEW_UTILITY_REGISTRY_INVALID',
+                'The pinned Framework View Tree utility projection is invalid.',
+            );
+        }
+        foreach ($deprecated as $utility => $entry) {
+            $replacement = is_array($entry) ? ($entry['replacement'] ?? null) : null;
+            if (! is_string($utility)
+                || isset($allowed[$utility])
+                || ! is_string($entry['reason'] ?? null)
+                || ! is_array($replacement)
+                || $replacement === []
+                || ! array_is_list($replacement)
+                || array_diff($replacement, array_keys($allowed)) !== []
+            ) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_VIEW_UTILITY_REGISTRY_INVALID',
+                    'The pinned Framework View Tree utility projection is invalid.',
+                );
+            }
+        }
+
+        return $this->deprecated = $deprecated;
     }
 
     /** @return array<string, mixed> */

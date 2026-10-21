@@ -10,7 +10,7 @@
           {
             "id": "site-footer",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
             "blocks": [
               {
                 "id": "copyright",

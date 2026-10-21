@@ -305,6 +305,7 @@ final readonly class DeclarativePageCompiler
                     [
                         'element' => $blockConfiguration['element'],
                         'source' => $configurationSource,
+                        ...$this->utilityDeprecations($blockConfiguration['element']['utilities'] ?? []),
                     ],
                     null,
                     $definition,
@@ -384,8 +385,26 @@ final readonly class DeclarativePageCompiler
             [
                 'definition' => (string) $definition['_source'],
                 'sha256' => (string) $definition['_sha256'],
+                ...$this->utilityDeprecations($configuration['utilities'] ?? []),
             ],
         );
+    }
+
+    /**
+     * Deprecated utility names stay accepted and render as their Framework
+     * replacement; like a deprecated Smart alias, the use is recorded in the
+     * plan, and only when there is one, so plans without it are unchanged.
+     *
+     * @return array{deprecated_utilities?:list<array{utility:string,replacement:list<string>,reason:string}>}
+     */
+    private function utilityDeprecations(mixed $utilities): array
+    {
+        if (! is_array($utilities) || ! array_is_list($utilities)) {
+            return [];
+        }
+        $deprecations = $this->viewTrees->utilities()->deprecations($utilities);
+
+        return $deprecations === [] ? [] : ['deprecated_utilities' => $deprecations];
     }
 
     private function configurationSource(LayoutDescriptor $layout, string $region): string

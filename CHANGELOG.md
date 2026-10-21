@@ -18,6 +18,20 @@ All notable changes to Docara are recorded here. The format follows
   is kept while the button waits for the effect to start, so nothing shifts
   when it appears, and is dropped with reduced motion, where the button never
   shows.
+- **Declarative view utilities name real Framework classes.** The allow-list
+  for View Tree and `docara.shell` utilities
+  (`resources/framework/view-utilities.json`) listed `border-bottom` and
+  `surface-0`, which the bundled SIMAI Framework does not define, so a
+  section or element using them silently got no border or background. The
+  list now has `border-bottom-1`, `border-bottom-solid` and `bg-surface-0`.
+  The old names stay accepted: they render as `border-bottom-1
+  border-bottom-solid` and `bg-surface-0` (in place, without duplicates), and,
+  as with a deprecated Smart alias, each use is recorded in the page plan
+  (`deprecated_utilities` in the section provenance or the element block
+  data). Unknown names are still refused with
+  `DECLARATIVE_VIEW_UTILITY_NOT_ALLOWED`. The documentation examples use the
+  Framework names, and a test keeps the allow-list and the documentation's
+  layout files to classes the bundled Framework defines.
 
 ## [3.6.0] - 2026-10-21
 

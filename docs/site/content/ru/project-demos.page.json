@@ -5,6 +5,9 @@
   "navigation": {
     "hidden": true
   },
+  "search": {
+    "indexed": false
+  },
   "layout": {
     "regions": {
       "footer": {

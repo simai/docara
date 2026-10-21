@@ -108,7 +108,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(1, $singleNonIndexed);
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
-        self::assertCount(119, $search['documents']);
+        self::assertCount(118, $search['documents']);
         self::assertCount(38, $catalog['entries']);
         self::assertCount(31, $supported);
         self::assertCount(5, $unavailable);

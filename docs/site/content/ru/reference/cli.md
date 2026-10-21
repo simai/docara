@@ -248,6 +248,8 @@ php vendor/bin/docara validate page /ru/start/ --json
 `explanation`. Без него проверка профиля не применяется. Проверка сообщает
 измеримые структурные пробелы и оставляет смысловой checklist со статусом
 `review_required`; она не вызывает ИИ и не меняет Markdown.
+Формат файла и профили описаны на странице
+[Профили страниц](/authoring/page-profiles/).
 
 ## `scaffold`
 

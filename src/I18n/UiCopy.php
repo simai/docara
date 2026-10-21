@@ -191,6 +191,29 @@ final readonly class UiCopy
 
     public function __construct(private Translator $translator) {}
 
+    /**
+     * Strings every locale's lang.json (or a fallback locale) must provide;
+     * Docara has no built-in text for them.
+     *
+     * @return list<string>
+     */
+    public static function requiredIds(): array
+    {
+        return self::IDS;
+    }
+
+    /** @return array<string, array<string, string>> language => id => built-in text */
+    public static function optionalDefaultsByLanguage(): array
+    {
+        return self::OPTIONAL_DEFAULTS;
+    }
+
+    /** @return array<string, array<string, string>> language => id => text written at build time */
+    public static function buildDefaultsByLanguage(): array
+    {
+        return self::BUILD_DEFAULTS;
+    }
+
     /** @return array<string, string> */
     public function forLocale(string $locale): array
     {

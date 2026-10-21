@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\PortableSite;
 
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Portable\ConfigurationDefaults;
 use Simai\Docara\Portable\FilesystemPath;
 use Simai\Docara\Portable\PortableConfigurationException;
 
@@ -37,8 +38,8 @@ final readonly class PortableBrandAssetPlanner
             $resolved = [
                 'title' => (string) ($branding['title'] ?? $siteTitle),
                 'label' => is_string($branding['label'] ?? null) ? $branding['label'] : null,
-                'mode' => is_string($branding['mode'] ?? null) ? $branding['mode'] : 'full',
-                'size' => is_string($branding['size'] ?? null) ? $branding['size'] : 'medium',
+                'mode' => is_string($branding['mode'] ?? null) ? $branding['mode'] : ConfigurationDefaults::value('branding.mode'),
+                'size' => is_string($branding['size'] ?? null) ? $branding['size'] : ConfigurationDefaults::value('branding.size'),
                 'logo' => null,
                 'logo_dark' => null,
                 'favicon' => null,

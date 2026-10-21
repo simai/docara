@@ -454,7 +454,7 @@
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.schema_reference.json",
-            "source_sha256": "6f2161371ab44cd988df60cb8508053c5c4623d1272a4ba6d88dd41bb0045cef",
+            "source_sha256": "f33cdb4e62918a6f02fbbf73f5466ca913352033bb85ca5309753b7b5dad20d5",
             "release": "3.7.0",
             "source_url": "https://github.com/simai/docara/blob/v3.7.0/resources/component-catalog/typed/docara.schema_reference.json",
             "history_url": "https://github.com/simai/docara/commits/v3.7.0/resources/component-catalog/typed/docara.schema_reference.json",
@@ -517,5 +517,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "d745b08428575a7bfe7e006532f3fc7bff77dd15475507bfdfd42b9846658d8c"
+    "content_sha256": "28561a55a00e3fb4bf50a4a20e45d319d6391a5e0844dd6ef295d0f8cf0a6c37"
 }

@@ -5,11 +5,15 @@ declare(strict_types=1);
 namespace Simai\Docara\PortableSite;
 
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Portable\ConfigurationDefaults;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
 
 final class PortableSchemaReferenceProjector
 {
+    /** Schemas whose fields fall back to ConfigurationDefaults. */
+    private const CONFIGURATION_SCHEMAS = ['site', 'section', 'page', 'presentation'];
+
     /** @var array<string,string> */
     private const SCHEMAS = [
         'site' => 'site.schema.json',
@@ -46,6 +50,7 @@ final class PortableSchemaReferenceProjector
         $records = [];
         $schema = $this->schemas->get($file);
         $this->walk($schema, $file, '', '', $scope, $records, []);
+        $configuration = in_array($name, self::CONFIGURATION_SCHEMAS, true);
         if (($schema['properties'] ?? []) === [] && is_array($schema['$defs'] ?? null)) {
             foreach ($this->publicDefinitions($file) as $definition) {
                 $node = $schema['$defs'][$definition] ?? null;
@@ -67,6 +72,25 @@ final class PortableSchemaReferenceProjector
             }
         }
         $records = array_values($records);
+        if ($configuration) {
+            $defaults = ConfigurationDefaults::all();
+            foreach ($records as &$record) {
+                // section.json and page.json fields of their own (title, slug,
+                // locale) fall back differently from the docara.json field of
+                // the same name; conditional branches are not fields.
+                $own = str_starts_with($record['provenance'], 'resources/schemas/section.schema.json#')
+                    || str_starts_with($record['provenance'], 'resources/schemas/page.schema.json#');
+                $key = $this->configurationPath($record['path']);
+                if (! $record['has_default'] && ! $own && ! str_contains($record['provenance'], '/if/')
+                    && $key !== null && array_key_exists($key, $defaults)
+                ) {
+                    $record['has_default'] = true;
+                    $record['default'] = $defaults[$key];
+                    $record['default_source'] = 'docara';
+                }
+            }
+            unset($record);
+        }
         usort($records, static fn (array $left, array $right): int => $left['path'] <=> $right['path']);
 
         return $records;
@@ -203,11 +227,44 @@ final class PortableSchemaReferenceProjector
             'scope' => $scope,
             'required' => $required,
             'type' => $type,
+            'description' => is_string($node['description'] ?? null) ? $node['description'] : null,
             'has_default' => array_key_exists('default', $node),
             'default' => $node['default'] ?? null,
+            'default_source' => array_key_exists('default', $node) ? 'schema' : null,
             'validation' => $validation === [] ? 'schema type only' : implode('; ', $validation),
             'provenance' => 'resources/schemas/' . $file . '#' . ($pointer === '' ? '/' : $pointer),
         ];
+    }
+
+    /**
+     * The first path segment of every record, such as "reading" for
+     * "/reading/toc_depth", in record order.
+     *
+     * @param  list<array<string,mixed>>  $records
+     * @return list<string>
+     */
+    public static function topLevelFields(array $records): array
+    {
+        $fields = [];
+        foreach ($records as $record) {
+            $fields[explode('/', ltrim((string) $record['path'], '/'), 2)[0]] = true;
+        }
+
+        return array_keys($fields);
+    }
+
+    /** "/locales/<pattern>/fallbacks" => "locales.*.fallbacks"; null for item paths. */
+    private function configurationPath(string $path): ?string
+    {
+        $segments = array_map(
+            static fn (string $segment): string => str_starts_with($segment, '<') ? '*' : $segment,
+            explode('/', ltrim($path, '/')),
+        );
+        if (end($segments) === '*') {
+            return null;
+        }
+
+        return implode('.', $segments);
     }
 
     private function pointerSegment(string $value): string

@@ -91,13 +91,16 @@ assets и hydration проверяются до render. Статус `supported`
 к явно принятому artifact; похожий raw Framework component автоматически не
 становится поддерживаемым.
 
-Пример вызова компонента, который принят в `simai-framework.lock.json` этого
-сайта (в нём сейчас `ui.button` и `ui.alert`):
+Пример контейнерной композиции: дочерний `ui.list-item` занимает слот
+`options` у `ui.dropdown`. Такой вызов собирается только на сайте, чей
+`simai-framework.lock.json` принимает оба компонента; в lock этого сайта
+сейчас есть `ui.button` и `ui.alert`, поэтому здесь пример только показан.
 
 ```markdown
-:::ui.button
-{"text":"Продолжить","preset":"primary"}
+::::ui.dropdown {label="Тариф"}
+:::ui.list-item {slot=options type=text value=team label="Командный"}
 :::
+::::
 ```
 
 ## Компоненты проекта

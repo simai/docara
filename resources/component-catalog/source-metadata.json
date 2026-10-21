@@ -222,7 +222,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/start/component-model.md",
-            "source_sha256": "a18782e1b2931953256e2efff4c05009da6bd289eb4ba6f529a1e440b275d087",
+            "source_sha256": "8e302a0f9d03f020b7678945fb4823344c2eb404ee3e3f3cf755e59ccf403780",
             "release": "3.6.0",
             "source_url": "https://github.com/simai/docara/blob/v3.6.0/docs/site/content/ru/start/component-model.md",
             "history_url": "https://github.com/simai/docara/commits/v3.6.0/docs/site/content/ru/start/component-model.md",
@@ -517,5 +517,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "93c462340680f0460ca5274131f112eae3601158dcbf299595acaa3dd33f2f11"
+    "content_sha256": "2ad0dbca134470ee545a48aba794d6da72743c6d42e68b63c8656ba07e058237"
 }

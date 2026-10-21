@@ -72,6 +72,15 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         if (($page['outline'] ?? []) === []) {
             $regions['outline'] = '';
         }
+        $contentLanguage = $this->contentLanguageAttributes($page);
+        if ($contentLanguage !== '') {
+            // The outline entries are the source page's headings.
+            $regions['outline'] = preg_replace(
+                '/(<ul\\b[^>]*\\bclass="docara-outline-list\\b[^"]*")/',
+                '$1' . $contentLanguage,
+                $regions['outline'],
+            ) ?? $regions['outline'];
+        }
         $regions['outline_mobile'] = $this->mobileOutlineClone($regions['outline']);
         $copy = is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [];
         if ($copy === []) {
@@ -249,9 +258,32 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $documentationNavigationEnabled && ($page['sidebar_credit'] ?? true) === true
                 ? $this->sidebarCredit((string) $page['locale'])
                 : null,
+            $contentLanguage,
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
+    }
+
+    /**
+     * ` lang` (and ` dir` when it differs from the page) of a page that shows
+     * the source text while its translation is held back, or ''. The page
+     * keeps its locale on `<html>`, so the interface reads in the page
+     * language; the article and the outline entries, which come from the
+     * source page, read in the source language.
+     *
+     * @param  array<string, mixed>  $page
+     */
+    private function contentLanguageAttributes(array $page): string
+    {
+        $fallback = $page['translation_fallback'] ?? null;
+        if (! is_array($fallback) || ! is_string($fallback['source_locale'] ?? null) || $fallback['source_locale'] === '') {
+            return '';
+        }
+        $attributes = ' lang="' . $this->escape($fallback['source_locale']) . '"';
+        $pageDirection = ($page['direction'] ?? 'ltr') === 'rtl' ? 'rtl' : 'ltr';
+        $sourceDirection = ($fallback['source_direction'] ?? 'ltr') === 'rtl' ? 'rtl' : 'ltr';
+
+        return $sourceDirection === $pageDirection ? $attributes : $attributes . ' dir="' . $sourceDirection . '"';
     }
 
     /**

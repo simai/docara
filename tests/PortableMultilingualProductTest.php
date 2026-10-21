@@ -69,6 +69,56 @@ final class PortableMultilingualProductTest extends TestCase
         self::assertStringContainsString('"broken": []', $verify->getOutput());
     }
 
+    #[Test]
+    public function a_page_showing_the_source_text_marks_that_text_with_the_source_language_and_direction(): void
+    {
+        $this->filesystem->copyDirectory(dirname(__DIR__) . '/stubs/portable', $this->tmp);
+        $this->filesystem->deleteDirectory($this->tmpPath('content/ru'));
+        $fixture = __DIR__ . '/fixtures/multilingual-site/content';
+        $this->filesystem->copyDirectory($fixture . '/en', $this->tmpPath('content/en'));
+        // A third-level heading also shows the outline in the mobile contents sheet.
+        file_put_contents($this->tmpPath('content/en/index.md'), "\n### Shortcuts\n\nTab moves between controls.\n", FILE_APPEND);
+        $this->filesystem->copyDirectory($fixture . '/en', $this->tmpPath('content/ar'));
+        copy($fixture . '/ar/lang.json', $this->tmpPath('content/ar/lang.json'));
+        file_put_contents($this->tmpPath('content/en/section.json'), "{\"schema\": \"docara.section.v1\", \"title\": \"Docs\"}\n");
+        // Every Arabic page shows the English source, so Arabic has nothing to search.
+        file_put_contents($this->tmpPath('content/ar/section.json'), "{\"schema\": \"docara.section.v1\", \"title\": \"التوثيق\", \"search\": {\"enabled\": false}}\n");
+        $site = $this->json($this->tmpPath('docara.json'));
+        $site['content_root'] = 'content/en';
+        $site['default_locale'] = 'en';
+        $site['locales'] = [
+            'missing_page_policy' => 'skip',
+            'en' => $this->locale('English', 'ltr', 'content/en', 'en'),
+            'ar' => [...$this->locale('العربية', 'rtl', 'content/ar', 'ar'), 'fallbacks' => ['en']],
+        ];
+        $site['translation_tracking'] = [
+            'enabled' => true,
+            'source_locale' => 'en',
+            'mode' => 'publish-current',
+            'lock_file' => 'translations.lock.json',
+        ];
+        file_put_contents($this->tmpPath('docara.json'), CanonicalJson::encodePretty($site));
+
+        $destination = $this->tmpPath('build_product');
+        (new PortableSiteBuilder(new Filesystem, new PortableMarkdownRenderer))->build($this->tmp, $destination);
+
+        $held = (string) file_get_contents($destination . '/ar/index.html');
+        // The interface stays in the page locale ...
+        self::assertStringContainsString('<html lang="ar" dir="rtl"', $held);
+        self::assertMatchesRegularExpression('#<aside data-docara-translation-fallback="[a-z_]+" role="note" lang="ar" dir="rtl"#', $held);
+        // ... and the source text, its headings and the outline entries read as English.
+        self::assertSame(1, preg_match_all('#<article class="docara-prose[^"]*" lang="en" dir="ltr">#', $held));
+        self::assertStringContainsString('English fixture', $held);
+        self::assertSame(2, preg_match_all('#<ul class="docara-outline-list[^"]*" lang="en" dir="ltr">#', $held));
+        self::assertStringContainsString('>Keyboard check</a>', $held);
+        self::assertStringContainsString('>Shortcuts</a>', $held);
+
+        $source = (string) file_get_contents($destination . '/en/index.html');
+        self::assertStringNotContainsString('data-docara-translation-fallback', $source);
+        self::assertMatchesRegularExpression('#<article class="docara-prose[^"]*">#', $source);
+        self::assertDoesNotMatchRegularExpression('#<(article|ul) class="(docara-prose|docara-outline-list)[^"]*" lang=#', $source);
+    }
+
     /** @return array<string, mixed> */
     private function locale(string $label, string $direction, string $contentRoot, string $prefix): array
     {

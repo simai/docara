@@ -28,6 +28,18 @@ All notable changes to Docara are recorded here. The format follows
   closes the navigation and outline sheets with the exact complement of the
   stylesheet's query (`not all and (max-width: ...)`), so the two can no
   longer disagree at a fractional width such as 1152.5 px.
+- **A page showing the source text marks that text with the source
+  language.** Under `translation_tracking.mode: "publish-current"` a held-back
+  page shows the source page with a notice, but only `<html lang>` named a
+  language, the page locale's: a screen reader read the Russian text of an
+  English URL with an English voice. The article now carries the source
+  locale's `lang` (and `dir` when the source direction differs), and so do the
+  outline entries, which are the source page's headings, in the outline rail
+  and the mobile contents sheet. The notice itself carries the page locale's
+  `lang` and `dir`, and the interface around the article stays in the page
+  locale. Navigation, breadcrumb and previous/next titles of held-back pages
+  are not marked yet.
+
 - **The hero effect's pause button no longer covers the hero media.** It was
   placed absolutely in the hero's bottom corner, so wherever the media reached
   that corner the button sat on top of it: on a 375 px phone the 36 x 36

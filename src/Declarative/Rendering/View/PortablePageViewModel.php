@@ -21,6 +21,7 @@ final readonly class PortablePageViewModel
      * @param  string|null  $robots  the robots meta value (noindex pages and held-back translations), escaped
      * @param  array{url:string,label:string}|null  $portalHome  the link back to the portal home of a portal build, escaped
      * @param  string|null  $sidebarCredit  the "Made with Docara" line under the sidebar navigation, already escaped HTML
+     * @param  string  $contentLanguage  ` lang`/` dir` attributes of the article on a page showing the source text, escaped, or ''
      */
     public function __construct(
         public string $locale,
@@ -57,5 +58,6 @@ final readonly class PortablePageViewModel
         public ?string $socialMeta = null,
         public ?array $portalHome = null,
         public ?string $sidebarCredit = null,
+        public string $contentLanguage = '',
     ) {}
 }

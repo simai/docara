@@ -8,6 +8,26 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **A landing hero with `padding=2xl` keeps its tall padding on narrow
+  screens.** On a landing page a narrow-screen rule (`max-width: 800px`) set
+  every section container's vertical padding to `--sf-space-2`, and it
+  outranked the hero's fluid `clamp()`, so up to 800 px a `:::hero
+  {padding=2xl}` got 16 px instead of the clamp: at 390 px a measured hero
+  was 324 px tall instead of 388 px (48 px of padding each side), at 768 px
+  228 px instead of 336 px. The narrow rule now skips `docara-padding-2xl`
+  containers, so 2xl follows its clamp at every width; other landing
+  sections and `lg`/`xl` hero padding still tighten to one spacing step on a
+  narrow screen, as before.
+- **Docara's own breakpoints are in rem, like the SIMAI Framework's.** The
+  shell stylesheet, the shell script and the brand stylesheet used pixel
+  media queries. They now use the same widths in rem: 72rem and 60rem (the
+  Framework's xl and lg steps, formerly 1152px and 960px), 50rem, 43.75rem,
+  40rem and 37.5rem (formerly 800, 700, 640 and 600px). At the default 16 px
+  browser text size the layout changes at exactly the same widths; with a
+  larger browser text size the breakpoints scale with it. The script now
+  closes the navigation and outline sheets with the exact complement of the
+  stylesheet's query (`not all and (max-width: ...)`), so the two can no
+  longer disagree at a fractional width such as 1152.5 px.
 - **The hero effect's pause button no longer covers the hero media.** It was
   placed absolutely in the hero's bottom corner, so wherever the media reached
   that corner the button sat on top of it: on a 375 px phone the 36 x 36

@@ -12,4 +12,4 @@
 .docara-brand--size-large .docara-brand-title{font-size:var(--sf-text-large--size);line-height:var(--sf-text-large--height)}
 .docara-brand--compact .docara-brand-label{display:none}
 .docara-brand:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
-@media(max-width:700px){.docara-brand-label{display:none}}
+@media(max-width:43.75rem){.docara-brand-label{display:none}}

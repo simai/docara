@@ -48,7 +48,7 @@
     </header>
 <?php if ($view->preset === 'landing') { ?>
     <main id="docara-main" tabindex="-1" class="docara-landing" data-docara-region="main">
-        <article class="docara-content docara-prose container w-full m-inline-auto min-w-0<?= $view->contentGap === 0 ? '' : ' flex flex-col gap-' . $view->contentGap ?>"><?= $view->regions['main'] ?></article>
+        <article class="docara-content docara-prose container w-full m-inline-auto min-w-0<?= $view->contentGap === 0 ? '' : ' flex flex-col gap-' . $view->contentGap ?>"<?= $view->contentLanguage ?>><?= $view->regions['main'] ?></article>
     </main>
 <?php } else { ?>
     <div class="docara-docs-layout container w-full m-inline-auto gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>" data-mobile-toc="<?= $view->mobileTocState ?>">
@@ -69,7 +69,7 @@
             <div class="docara-reading-toolbar flex items-cross-center gap-1 min-w-0"><div class="docara-reading-toolbar__location flex-1 min-w-0"><?= $view->chrome['breadcrumbs'] ?></div><?= $view->chrome['reading_actions'] ?></div>
             <?= $view->chrome['mobile_toc'] ?>
             <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-docara-region="main">
-                <article class="docara-prose min-w-0<?= $view->contentGap === 0 ? '' : ' flex flex-col gap-' . $view->contentGap ?>"><?= $view->regions['main'] ?></article>
+                <article class="docara-prose min-w-0<?= $view->contentGap === 0 ? '' : ' flex flex-col gap-' . $view->contentGap ?>"<?= $view->contentLanguage ?>><?= $view->regions['main'] ?></article>
                 <?= $view->chrome['pager'] ?>
             </main>
         </div>

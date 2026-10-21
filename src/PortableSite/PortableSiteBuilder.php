@@ -376,6 +376,7 @@ final readonly class PortableSiteBuilder
                     $translator,
                     $pageLocale,
                     $translationFallback,
+                    $localeDefinition->direction,
                 ) . $contentHtml;
             }
             if (isset($outputs[$route['output']])) {
@@ -1722,7 +1723,7 @@ final readonly class PortableSiteBuilder
      * the search index, hreflang and the discovery files.
      *
      * @param  array{action:string,status:string,key:string,locale:string,source_path:?string,target_path:string}  $publication
-     * @return array{0:ResolvedPagePlan,1:array{status:string,source_locale:string,source_path:string,source_url:string,source_label:string}}
+     * @return array{0:ResolvedPagePlan,1:array{status:string,source_locale:string,source_direction:string,source_path:string,source_url:string,source_label:string}}
      */
     private function sourceFallbackPlan(
         PortableConfigurationLoader $loader,
@@ -1760,6 +1761,7 @@ final readonly class PortableSiteBuilder
             [
                 'status' => (string) $publication['status'],
                 'source_locale' => $sourceLocale->tag->value(),
+                'source_direction' => $sourceLocale->direction,
                 'source_path' => $sourcePath,
                 'source_url' => $sourceUrl,
                 'source_label' => $sourceLocale->label,

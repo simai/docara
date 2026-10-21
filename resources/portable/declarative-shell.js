@@ -351,11 +351,17 @@
   /* Example and HTML-block frames carry their document in data-docara-srcdoc: a browser loads a srcdoc frame with the page even when it is marked loading="lazy". The document moves to srcdoc when the frame comes within 600px of the screen; a frame in a hidden tab waits until the tab is shown. */
   (function(){
     var deferred=Array.from(document.querySelectorAll('iframe[data-docara-srcdoc]'));
+    /* A project example's document names its folder with a path-only <base href="/…/_docara/examples/<id>/">. Chromium's preload scanner does not apply a path-only base in an about:srcdoc document and fetches every relative image against the page URL first (a 404, blocked by ORB in the sandboxed frame) before the parser applies the base. The page's origin makes the base absolute, which the scanner honours: one request per image. */
+    function absoluteBase(source){
+      var head=source.indexOf('</head>'),origin=window.location.origin;
+      if(head===-1||!origin||origin==='null')return source;
+      return source.slice(0,head).replace(/<base href="\/(?!\/)/,'<base href="'+origin+'/')+source.slice(head);
+    }
     function load(frame){
       var source=frame.getAttribute('data-docara-srcdoc');
       if(source===null)return;
       frame.removeAttribute('data-docara-srcdoc');
-      frame.setAttribute('srcdoc',source);
+      frame.setAttribute('srcdoc',absoluteBase(source));
     }
     if(!deferred.length)return;
     if(typeof IntersectionObserver!=='function'){deferred.forEach(load);return}

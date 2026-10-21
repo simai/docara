@@ -28,6 +28,18 @@ All notable changes to Docara are recorded here. The format follows
   closes the navigation and outline sheets with the exact complement of the
   stylesheet's query (`not all and (max-width: ...)`), so the two can no
   longer disagree at a fractional width such as 1152.5 px.
+- **Each relative image in an example frame is fetched once.** A project
+  example's frame document names its folder with a path-only
+  `<base href="/_docara/examples/<id>/">`, already first in `<head>`.
+  Chromium's preload scanner does not apply a path-only base in an
+  `about:srcdoc` document, so it fetched every relative image against the
+  documentation page first (a 404, then `ERR_BLOCKED_BY_ORB` in the
+  sandboxed frame) and the parser fetched it again from the right folder; 44
+  pages of ui.simai.io did this. The shell now makes the base absolute with
+  the page's origin when it moves the document into `srcdoc`, and the
+  scanner honours it. Built pages are unchanged; a page opened from
+  `file://` keeps the path-only base.
+
 - **A page showing the source text marks that text with the source
   language.** Under `translation_tracking.mode: "publish-current"` a held-back
   page shows the source page with a notice, but only `<html lang>` named a

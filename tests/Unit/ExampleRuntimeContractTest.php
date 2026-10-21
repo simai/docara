@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Docara\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Process\Process;
 
 final class ExampleRuntimeContractTest extends TestCase
 {
@@ -243,5 +245,36 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString("button.classList.toggle('active',active)", $shell);
         self::assertStringContainsString('.docara-example-preview .docara-example-preview__action:focus:not(:focus-visible)', $styles);
         self::assertStringNotContainsString('.docara-example-preview .docara-example-preview__action:focus,.docara-example-preview .docara-example-preview__action:focus-visible', $styles);
+    }
+
+    public function test_a_deferred_example_frame_gets_an_absolute_base_so_each_relative_image_is_fetched_once(): void
+    {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertSame(1, preg_match('/\n    function absoluteBase\(source\)\{\n.*?\n    \}\n/s', $shell, $match));
+        self::assertStringContainsString("frame.setAttribute('srcdoc',absoluteBase(source));", $shell);
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The shell check runs the function in Node.js.');
+
+        $cases = [
+            'path base' => ['https://docs.example', '<html><head><title>A</title><base href="/docs/_docara/examples/a/"></head><body><img src="assets/x.jpg"></body></html>'],
+            'absolute base' => ['https://docs.example', '<html><head><base href="https://cdn.example/_docara/examples/a/"></head><body></body></html>'],
+            'protocol-relative base' => ['https://docs.example', '<html><head><base href="//cdn.example/a/"></head><body></body></html>'],
+            'no base in the head' => ['https://docs.example', '<html><head></head><body><base href="/x/"></body></html>'],
+            'opaque page origin' => ['null', '<html><head><base href="/docs/_docara/examples/a/"></head><body></body></html>'],
+        ];
+        $script = $match[0] . 'const cases=' . json_encode($cases, JSON_THROW_ON_ERROR) . ';const out={};'
+            . 'for(const [name,[origin,source]] of Object.entries(cases)){globalThis.window={location:{origin}};out[name]=absoluteBase(source)}'
+            . 'process.stdout.write(JSON.stringify(out));';
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame(
+            '<html><head><title>A</title><base href="https://docs.example/docs/_docara/examples/a/"></head><body><img src="assets/x.jpg"></body></html>',
+            $result['path base'],
+        );
+        foreach (['absolute base', 'protocol-relative base', 'no base in the head', 'opaque page origin'] as $unchanged) {
+            self::assertSame($cases[$unchanged][1], $result[$unchanged], $unchanged);
+        }
     }
 }

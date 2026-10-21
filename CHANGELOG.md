@@ -42,6 +42,23 @@ All notable changes to Docara are recorded here. The format follows
 - **Documentation: settings pages are split into titled groups.** Site, page,
   section and Framework lock settings show their field tables under H2
   groups instead of one long table.
+### Fixed
+
+- **A hero with a background effect keeps its height again.** 3.7.0 gave the
+  effect's pause button its own row under the hero content, so such a hero
+  grew by 48 px on a phone and 56 px on a wide screen. The button now sits in
+  the hero's bottom padding at the inline end (left in RTL), below the content
+  and media. A `padding=2xl` hero (3rem and more) holds it as it is and keeps
+  its height: the button keeps `--sf-space-1` from the bottom, or the middle
+  of the padding where it is barely taller than the button. An `lg` or `xl`
+  padding (16 to 32 px) is lower than the 36 to 40 px button, so a hero that
+  shows the button gets a bottom padding of the button plus `--sf-space-1/3`
+  above and below it: 52 px on a phone and 56 px from 960 px, 24 to 28 px
+  more than without the button instead of 48 to 56 px. The padding is kept
+  while the button waits for the effect to start and is not grown with
+  reduced motion, where the button never shows. Measured in headless Chrome
+  at 390, 768, 1440 and 1920 px, light and dark, LTR and RTL: no overlap with
+  the hero content or media.
 
 ## [3.7.0] - 2026-10-21
 

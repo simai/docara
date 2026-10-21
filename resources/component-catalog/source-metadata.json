@@ -118,7 +118,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/hero.md",
-            "source_sha256": "5d2215ce0a8ad2221cb1886c4a982c905c69d1cfb4ac8216585f912a679d956c",
+            "source_sha256": "009a46ba29136c074328e2f81ce8bcfaa6022189d9782d5eb6279ebee7793681",
             "release": "3.7.0",
             "source_url": "https://github.com/simai/docara/blob/v3.7.0/docs/site/content/ru/components/hero.md",
             "history_url": "https://github.com/simai/docara/commits/v3.7.0/docs/site/content/ru/components/hero.md",
@@ -517,5 +517,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "28561a55a00e3fb4bf50a4a20e45d319d6391a5e0844dd6ef295d0f8cf0a6c37"
+    "content_sha256": "1c6d2f32fdd246cde69c006f20ed08f81d218743a399c4ede2a1270ab3436782"
 }

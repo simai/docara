@@ -16,7 +16,9 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
  */
 final class HeroPaddingTest extends TestCase
 {
-    private const FLUID_RULE = '.docara-padding-2xl{padding-block:clamp(var(--sf-d2),var(--sf-c2) + 6vw,var(--sf-e4))}';
+    private const FLUID_VALUE = ':root{--docara-padding-2xl:clamp(var(--sf-d2),var(--sf-c2) + 6vw,var(--sf-e4))}';
+
+    private const FLUID_RULE = '.docara-padding-2xl{padding-block:var(--docara-padding-2xl)}';
 
     #[Test]
     public function lg_and_xl_keep_their_framework_steps(): void
@@ -66,12 +68,18 @@ final class HeroPaddingTest extends TestCase
 
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
         self::assertStringContainsString('[data-docara-block="hero"][data-sf-effect]{position:relative}', $css);
-        // The pause button takes its own row under the hero content instead of
-        // floating over the corner, where it covered the hero media on phones.
-        self::assertStringContainsString('[data-docara-block="hero"]>.docara-effect-toggle,[data-docara-block="hero"]>.docara-effect-toggle[hidden]{position:relative;z-index:1;display:grid;inline-size:max-content;margin-block:0 var(--sf-space-1);margin-inline:auto var(--sf-space-1);', $css);
-        self::assertStringContainsString('[data-docara-block="hero"]>.docara-effect-toggle[hidden]{visibility:hidden}', $css);
-        self::assertStringContainsString('@media (prefers-reduced-motion:reduce){[data-docara-block="hero"]>.docara-effect-toggle[hidden]{display:none}}', $css);
-        self::assertStringNotContainsString('position:absolute;inset-block-end:var(--sf-space-1)', $css);
+        // The pause button sits in the hero's bottom padding instead of a row
+        // of its own: a 2xl padding holds it (the button keeps --sf-space-1
+        // from the bottom, or the middle of a barely taller padding), and an
+        // lg or xl padding grows to the button plus --sf-space-1/3 above and
+        // below it, but only while motion is allowed.
+        self::assertStringContainsString('[data-docara-block="hero"]>.docara-effect-toggle{position:absolute;z-index:1;inset-block-end:var(--sf-space-1\\/3);inset-inline-end:var(--sf-space-1);margin:0;', $css);
+        self::assertStringContainsString('[data-docara-block="hero"]>.docara-effect-toggle[hidden]{display:none}', $css);
+        self::assertStringContainsString('[data-docara-block="hero"]:has(>.docara-padding-2xl)>.docara-effect-toggle{inset-block-end:min(var(--sf-space-1),(var(--docara-padding-2xl) - var(--sf-ui-1--control-height))/2)}', $css);
+        self::assertStringContainsString('@media (prefers-reduced-motion:no-preference){[data-docara-block="hero"]:has(>.docara-effect-toggle)>[data-docara-container]:not(.docara-padding-2xl){padding-block-end:calc(var(--sf-ui-1--control-height) + 2*var(--sf-space-1\\/3))}}', $css);
+        // No reserved row under the hero content any more.
+        self::assertStringNotContainsString('inline-size:max-content;margin-block:0 var(--sf-space-1)', $css);
+        self::assertStringNotContainsString('.docara-effect-toggle[hidden]{visibility:hidden}', $css);
     }
 
     #[Test]
@@ -79,6 +87,7 @@ final class HeroPaddingTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         $css = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
+        self::assertSame(1, substr_count($css, self::FLUID_VALUE));
         self::assertSame(1, substr_count($css, self::FLUID_RULE));
 
         $core = (string) file_get_contents(

@@ -186,8 +186,8 @@
     dialog.addEventListener('keydown',function(event){trapDialogTab(dialog,event)});
     dialog.addEventListener('close',function(){trigger.setAttribute('aria-expanded','false');trigger.focus()});
     window.addEventListener('resize',function(){
-      var unavailable=(dialog.id==='docara-mobile-navigation'&&window.matchMedia('(min-width: 801px)').matches)
-        ||(dialog.id==='docara-outline-dialog'&&window.matchMedia('(min-width: 1153px)').matches);
+      var unavailable=(dialog.id==='docara-mobile-navigation'&&window.matchMedia('not all and (max-width: 50rem)').matches)
+        ||(dialog.id==='docara-outline-dialog'&&window.matchMedia('not all and (max-width: 72rem)').matches);
       if(unavailable&&dialog.open){closeSheet()}
     },{passive:true});
   }
@@ -399,7 +399,7 @@
       var stored=localStorage.getItem(sourceWrapStorageKey);
       if(stored==='true'||stored==='false')return stored==='true';
     }catch(error){}
-    return Boolean(window.matchMedia&&window.matchMedia('(max-width: 640px)').matches);
+    return Boolean(window.matchMedia&&window.matchMedia('(max-width: 40rem)').matches);
   }
   var sourceWrapActive=storedSourceWrap();
   function setSourceWrap(active,notify){

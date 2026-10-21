@@ -60,7 +60,7 @@ MD, $this->site, $this->site . '/content/ru/components/surface.md');
         self::assertStringContainsString('w-full p-3', $full);
         // On a narrow screen the landing shell sets the vertical padding only.
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString('.docara-landing [data-docara-container]{padding-block:var(--sf-space-2)}', $shell);
+        self::assertStringContainsString('.docara-landing [data-docara-container]:not(.docara-padding-2xl){padding-block:var(--sf-space-2)}', $shell);
         self::assertStringNotContainsString('.docara-landing [data-docara-container]{padding:', $shell);
         // On a landing page the band's container keeps the container's own
         // stepped maximum width, so it lines up with the page's container.

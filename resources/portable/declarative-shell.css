@@ -45,7 +45,7 @@ html[data-docara-font-size="large"]{font-size:112.5%}
 /* Reading mode swaps the toolbar toggle for a round Framework icon button pinned to the window corner. */
 .docara-focus-exit,html[data-docara-focus-mode] .docara-focus-toggle{display:none}
 html[data-docara-focus-mode] .docara-docs-layout .docara-focus-exit{display:inline-flex;position:fixed;z-index:3;inset-block-start:var(--sf-space-1);inset-inline-end:var(--sf-space-1)}
-@media not all and (max-width:1152px){
+@media not all and (max-width:72rem){
   html[data-docara-outline-hidden] .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}
   html[data-docara-outline-hidden] .docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr)}
   html[data-docara-outline-hidden] .docara-docs-layout>.docara-outline-rail{display:none}
@@ -55,9 +55,9 @@ html[data-docara-focus-mode] body:has(>.docara-docs-layout)>.docara-header,html[
 html[data-docara-focus-mode] .docara-docs-layout.docara-docs-layout{grid-template-columns:minmax(0,1fr)}
 /* Reading mode sets the whole column, toolbar, code, tables and examples alike, on the prose measure and centres it, so nothing runs wider than the text; the reader wide format keeps the full width. */
 html[data-docara-focus-mode]:not([data-docara-content-width="wide"]) .docara-docs-layout .docara-reading-column>*{inline-size:100%;max-inline-size:var(--sf-text--measure-wide);margin-inline:auto}
-@media(max-width:1152px){.docara-outline-toggle{display:none}}
-/* Reader wide format: the shell takes the Framework's widest container step (layout.container.max 8) instead of the authored one, and prose lines lose their measure limit. The container tokens exist from 960px, like max-container-N. */
-@media(min-width:960px){html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:var(--sf-container-8--size-max)}}
+@media(max-width:72rem){.docara-outline-toggle{display:none}}
+/* Reader wide format: the shell takes the Framework's widest container step (layout.container.max 8) instead of the authored one, and prose lines lose their measure limit. The container tokens exist from the Framework lg breakpoint (60rem), like max-container-N. */
+@media(min-width:60rem){html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:var(--sf-container-8--size-max)}}
 html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:where(.docara-example-inline *)),html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose li:not(:where(.docara-example-inline *)){max-width:none}
 .docara-document-link{overflow-wrap:anywhere;background:transparent;transition:background-color 120ms ease}
 .docara-document-link:hover{background:var(--sf-surface-container-hover)}
@@ -232,7 +232,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-step-content>p{margin:0;color:var(--sf-on-surface-variant)}
 .docara-step-content strong{color:var(--sf-on-surface);font-weight:700}
 .docara-skip-link:focus-visible,.docara-document-link:focus-visible,[data-docara-component-details-summary]:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
-@media(max-width:1152px){
+/* Shell breakpoints are in rem, like the Framework's own (32, 44, 60, 72, 80rem), so they follow the reader's browser text size. 72rem is the Framework xl step; 50rem and 37.5rem are the shell's own narrow steps (800px and 600px at the default 16px), kept so the layout changes at the same widths as before. */
+@media(max-width:72rem){
   .docara-header-navigation{display:none}
   .docara-mobile-navigation-trigger--primary{display:inline-flex}
   .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}
@@ -240,14 +241,15 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
   .docara-outline-rail{display:none}
   .docara-outline-mobile{display:block}
 }
-@media(max-width:800px){
+@media(max-width:50rem){
   .docara-mobile-navigation-trigger{display:inline-flex}
   .docara-docs-layout,.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(0,1fr)}
   .docara-sidebar{display:none}
   .docara-reading-column{padding:var(--sf-space-2)}
-  .docara-landing [data-docara-container]{padding-block:var(--sf-space-2)}
+  /* Landing sections and stepped hero padding (lg, xl) tighten to one spacing step on a narrow screen; a hero with padding=2xl keeps its fluid clamp at every width. */
+  .docara-landing [data-docara-container]:not(.docara-padding-2xl){padding-block:var(--sf-space-2)}
 }
-@media(max-width:600px){
+@media(max-width:37.5rem){
   [data-docara-example-viewer]{display:none!important}
   .docara-previous-next{flex-direction:column}
   .docara-document-link--next{order:-1;justify-content:flex-start;text-align:start}
@@ -269,7 +271,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 /* Key chips follow the hint text size instead of the browser's smaller monospace default. */
 .docara-search-help kbd{font-size:inherit;line-height:inherit;color:var(--sf-on-surface);background:var(--sf-surface-container);border-radius:var(--sf-radius-1)}
 .docara-search-status[data-state="error"]{color:var(--sf-error)}
-@media(max-width:800px){.docara-search-trigger>.sf-button-text-container,.docara-search-shortcut{display:none}.docara-search-help{display:none}.docara-search-results{max-block-size:min(64vh,var(--sf-g7))}}
+@media(max-width:50rem){.docara-search-trigger>.sf-button-text-container,.docara-search-shortcut{display:none}.docara-search-help{display:none}.docara-search-results{max-block-size:min(64vh,var(--sf-g7))}}
 /* Product-owned composition around the Framework icon primitive. */
 .docara-icon {
   --docara-icon-color: var(--sf-on-surface);

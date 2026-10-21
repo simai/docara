@@ -90,6 +90,48 @@ final class HeroPaddingTest extends TestCase
     }
 
     #[Test]
+    public function a_landing_page_keeps_the_two_xl_clamp_on_a_narrow_screen(): void
+    {
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+
+        // The narrow-screen landing step tightens section and lg/xl hero
+        // padding, but never a 2xl hero: its clamp already starts at 3rem on
+        // a phone, and the step used to cut it to --sf-space-2.
+        $narrow = $this->mediaBlock($css, '@media(max-width:50rem){');
+        self::assertStringContainsString(
+            '.docara-landing [data-docara-container]:not(.docara-padding-2xl){padding-block:var(--sf-space-2)}',
+            $narrow,
+        );
+
+        // No rule in the shell sets the vertical padding of a container that
+        // could carry docara-padding-2xl, except the clamp itself.
+        $rulesOnly = (string) preg_replace('#/\*.*?\*/#s', '', $css);
+        preg_match_all('/([^{}]+)\{([^{}]*)\}/', $rulesOnly, $rules, PREG_SET_ORDER);
+        $checked = 0;
+        foreach ($rules as [, $selectors, $declarations]) {
+            if (preg_match('/(^|;)\s*padding(-block|-top|-bottom)?\s*:/', $declarations) !== 1) {
+                continue;
+            }
+            foreach (explode(',', $selectors) as $selector) {
+                $selector = trim($selector);
+                if (! str_contains($selector, '[data-docara-container]') && ! str_contains($selector, 'docara-padding-2xl')) {
+                    continue;
+                }
+                $checked++;
+                if ($selector === '.docara-padding-2xl') {
+                    continue;
+                }
+                self::assertStringContainsString(':not(.docara-padding-2xl)', $selector, $selector . '{' . $declarations . '}');
+            }
+        }
+        self::assertGreaterThanOrEqual(2, $checked);
+
+        // The landing hero still renders the clamp class on its container.
+        $html = $this->render(":::hero {variant=centered padding=2xl effect=aurora-curtain}\n# Hero\n\nDescription.\n:::");
+        self::assertMatchesRegularExpression('/<div data-docara-container [^>]*class="[^"]*\bdocara-padding-2xl"/', $html);
+    }
+
+    #[Test]
     public function an_unknown_padding_and_a_surface_two_xl_are_refused(): void
     {
         foreach ([":::hero {padding=3xl}\n# Hero\n\nDescription.\n:::", ":::surface {padding=2xl}\nText.\n:::"] as $source) {
@@ -116,6 +158,21 @@ final class HeroPaddingTest extends TestCase
             static fn (array $parameter): bool => $parameter['name'] === 'padding',
         ));
         self::assertSame(['lg', 'xl', '2xl'], $padding[0]['values']);
+    }
+
+    private function mediaBlock(string $css, string $opening): string
+    {
+        $start = strpos($css, $opening);
+        self::assertNotFalse($start, $opening);
+        $depth = 0;
+        for ($index = $start; $index < strlen($css); $index++) {
+            if ($css[$index] === '{') {
+                $depth++;
+            } elseif ($css[$index] === '}' && --$depth === 0) {
+                return substr($css, $start, $index - $start + 1);
+            }
+        }
+        self::fail('Unclosed ' . $opening);
     }
 
     private function render(string $source): string

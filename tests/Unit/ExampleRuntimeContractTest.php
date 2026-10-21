@@ -228,7 +228,7 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('syncSourceWrapIcon(button,active)', $shell);
         self::assertStringContainsString('syncSourceWrapIcon(wrapButton,active)', $shell);
         self::assertStringContainsString("block.dataset.docaraCodeWrapActive=active?'true':'false'", $shell);
-        self::assertStringContainsString("window.matchMedia('(max-width: 640px)').matches", $shell);
+        self::assertStringContainsString("window.matchMedia('(max-width: 40rem)').matches", $shell);
         self::assertStringContainsString("var lines=Array.from(code.querySelectorAll('.hljs-ln-code'))", $shell);
         self::assertStringContainsString('[data-docara-example-wrap-active="true"]', $styles);
         self::assertStringContainsString('[data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll code{min-inline-size:0;white-space:pre-wrap;overflow-wrap:anywhere}', $styles);

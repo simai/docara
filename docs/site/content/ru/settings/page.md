@@ -6,11 +6,40 @@ description: Настройки страницы в front matter и page.json: t
 
 Page level задаёт title/description/slug/locale и разрешённые presentation overrides. Основной prose остаётся в `<route>.md`; sidecar или front matter не становится вторым источником текста страницы.
 
-:::schema_reference {schema=page scope=page}
+
+## Как читать таблицы полей
+
+Если поле не задано здесь, действует значение уровнем выше: из ближайшего
+`section.json` или из `docara.json`. Столбец «По умолчанию» показывает,
+откуда берётся значение, и встроенное значение Docara, если поле не задано
+нигде. В «Технических данных» под описанием — тип, правило проверки и место
+в схеме.
+
+## Основное
+
+:::schema_reference {schema=page scope=page fields=schema,version,title,description,slug,locale,preset}
 :::
 
-Front matter принимает только эти ключи; любой другой останавливает сборку с
-`FRONT_MATTER_KEY_UNKNOWN`:
+## Внешний вид
+
+:::schema_reference {schema=page scope=page fields=branding,settings,layout}
+:::
+
+## Меню, чтение и поиск
+
+:::schema_reference {schema=page scope=page fields=navigation,header_navigation,reading,search}
+:::
+
+## Примеры и код
+
+:::schema_reference {schema=page scope=page fields=examples,code}
+:::
+
+## Front matter
+
+Front matter — блок между строками `---` в начале страницы. Он принимает
+только эти ключи; любой другой останавливает сборку с
+[`FRONT_MATTER_KEY_UNKNOWN`](/reference/errors/content/#заголовок-страницы-front-matter):
 
 - `title` и `description` — заголовок и описание страницы;
 - `tags` — список в одну строку, например `tags: [ui, status]`;

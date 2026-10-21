@@ -103,9 +103,49 @@ mv docara.json.pages docara.json
 страницы совпадает с названием сайта (обычно на главной), название не
 повторяется: `<title>Docara</title>`, а не «Docara — Docara».
 
-## Exhaustive schema reference
+## Как читать таблицы полей
 
-:::schema_reference {schema=site scope=site}
+Таблицы ниже строятся при сборке из JSON Schema и кода Docara, поэтому в них
+есть каждое поле `docara.json`. Столбец «По умолчанию» показывает значение,
+которое Docara использует, если поле не задано. Прочерк значит, что значения
+по умолчанию нет: поле обязательное или без него функция выключена. Под
+описанием поля в «Технических данных» указаны тип, правило проверки и место в
+схеме.
+
+Поля оформления, меню и чтения также можно задать в `section.json` и
+`<page>.page.json`: см. [настройки раздела](/settings/section/) и
+[страницы](/settings/page/).
+
+## Основное
+
+:::schema_reference {schema=site scope=site fields=schema,version,title,preset,framework_lock,content_root,documentation_version}
 :::
 
-`Default: не объявлен` означает, что JSON Schema не приписывает скрытое значение: effective value приходит из принятого runtime/preset/inheritance и проверяется через inspect/receipt. Это честнее, чем дублировать runtime default в prose.
+## Адрес и публикация
+
+:::schema_reference {schema=site scope=site fields=base_url,site_url,discovery,redirects_file,not_found,page_transforms,portal}
+:::
+
+## Языки и переводы
+
+Подробнее — в разделе [Локали и маршрутизация](/settings/locales-and-routing/).
+
+:::schema_reference {schema=site scope=site fields=locale,default_locale,locales,locale_routing,translation_tracking}
+:::
+
+## Внешний вид
+
+Подробнее — в разделе [Бренд и тема](/settings/branding-and-theme/).
+
+:::schema_reference {schema=site scope=site fields=theme,branding,settings,layout,effects}
+:::
+
+## Меню, чтение и поиск
+
+:::schema_reference {schema=site scope=site fields=navigation,header_navigation,reading,search,reader_preferences}
+:::
+
+## Примеры, код и расширения
+
+:::schema_reference {schema=site scope=site fields=examples,code,documentation_tracking,smart}
+:::

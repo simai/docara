@@ -10,6 +10,7 @@ use Simai\Docara\Application\DesignAtlasService;
 use Simai\Docara\PortableSite\PortableAtlasIndexHydrator;
 use Simai\Docara\PortableSite\PortableMarkdownProfile;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortableSchemaReferenceProjector;
 
 final class DocumentationSiteStructureTest extends TestCase
 {
@@ -146,10 +147,24 @@ final class DocumentationSiteStructureTest extends TestCase
             self::assertStringContainsString('/ru/settings/' . $route . '/', $root);
         }
         self::assertStringContainsString(':::schema_reference {schema=presentation scope=shared}', $root);
-        self::assertStringContainsString(':::schema_reference {schema=site scope=site}', (string) file_get_contents($base . '/site.md'));
-        self::assertStringContainsString(':::schema_reference {schema=section scope=section}', (string) file_get_contents($base . '/section.md'));
-        self::assertStringContainsString(':::schema_reference {schema=page scope=page}', (string) file_get_contents($base . '/page.md'));
-        self::assertStringContainsString(':::schema_reference {schema=framework-lock scope=lock}', (string) file_get_contents($base . '/framework-lock-and-providers.md'));
+        // A long reference is shown in titled parts; together they still list
+        // every top-level field once.
+        foreach ([
+            'site' => ['site', 'site'],
+            'section' => ['section', 'section'],
+            'page' => ['page', 'page'],
+            'framework-lock-and-providers' => ['framework-lock', 'lock'],
+        ] as $route => [$schema, $scope]) {
+            $markdown = (string) file_get_contents($base . '/' . $route . '.md');
+            preg_match_all('/^:::schema_reference \{schema=' . preg_quote($schema, '/') . ' scope=' . $scope . ' fields=([a-z0-9_,]+)\}$/m', $markdown, $matches);
+            $listed = array_merge(...array_map(static fn (string $fields): array => explode(',', $fields), $matches[1] ?: ['']));
+            $known = PortableSchemaReferenceProjector::topLevelFields((new PortableSchemaReferenceProjector)->project($schema, $scope));
+            sort($known);
+            $sortedListed = $listed;
+            sort($sortedListed);
+            self::assertSame($known, $sortedListed, "settings/$route.md must list every top-level field exactly once.");
+            self::assertGreaterThanOrEqual(4, preg_match_all('/^## /m', $markdown), "settings/$route.md needs titled groups.");
+        }
     }
 
     #[Test]

@@ -45,9 +45,9 @@ final class PortableSchemaReferenceProjectorTest extends TestCase
             ['locale' => 'ru', 'content_html' => $placeholder],
         ]);
 
-        self::assertStringContainsString('<th>Field</th><th>Scope</th><th>Req.</th><th>Type</th>', $pages[0]['content_html']);
+        self::assertStringContainsString('<th>Field</th><th>What it does</th><th>Default</th>', $pages[0]['content_html']);
         self::assertDoesNotMatchRegularExpression('/[А-Яа-яЁё]/u', $pages[0]['content_html']);
-        self::assertStringContainsString('<th>Поле</th><th>Scope</th><th>Обяз.</th><th>Тип</th>', $pages[1]['content_html']);
+        self::assertStringContainsString('<th>Поле</th><th>Что задаёт</th><th>По умолчанию</th>', $pages[1]['content_html']);
     }
 
     #[Test]
@@ -76,14 +76,71 @@ final class PortableSchemaReferenceProjectorTest extends TestCase
     }
 
     #[Test]
-    public function typed_placeholder_hydrates_scope_default_validation_and_provenance(): void
+    public function typed_placeholder_hydrates_description_default_and_technical_details(): void
     {
         $placeholder = (new PortableMarkdownRenderer)->render(":::schema_reference {schema=page scope=page}\n:::\n");
         $html = (new PortableSchemaReferenceHydrator)->hydrate([['locale' => 'ru', 'content_html' => $placeholder]])[0]['content_html'];
-        foreach (['Поле', 'Scope', 'Default', 'Validation', 'Provenance', '/description', 'resources/schemas/page.schema.json'] as $marker) {
+        foreach (['Поле', 'Что задаёт', 'По умолчанию', '<details><summary>Технические данные</summary>', 'Проверка', '/description', 'resources/schemas/page.schema.json'] as $marker) {
             self::assertStringContainsString($marker, $html);
         }
-        self::assertStringContainsString('effective value определяется inheritance/runtime', $html);
+        self::assertStringNotContainsString('effective value', $html);
+        // A section or page field inherits; the built-in value shows what applies when nothing sets it.
+        self::assertMatchesRegularExpression('~<code>/reading/toc_depth</code></td><td>[^<]*<details>.*?</details></td><td>наследуется, иначе <code>3</code></td>~u', $html);
+        self::assertMatchesRegularExpression('~<code>/slug</code></td><td>Свой адрес страницы[^<]*<code>guides/install</code>~u', $html);
+    }
+
+    #[Test]
+    public function site_fields_show_the_value_the_build_applies(): void
+    {
+        $records = [];
+        foreach ((new PortableSchemaReferenceProjector)->project('site', 'site') as $record) {
+            $records[$record['path']] = $record;
+        }
+        foreach ([
+            '/settings/theme' => 'system',
+            '/settings/ui_radius' => 'default',
+            '/reading/toc_depth' => 3,
+            '/search/enabled' => false,
+            '/layout/container/max' => 7,
+            '/branding/mode' => 'full',
+            '/locales/missing_page_policy' => 'skip',
+            '/not_found/enabled' => true,
+        ] as $path => $expected) {
+            self::assertTrue($records[$path]['has_default'], $path);
+            self::assertSame($expected, $records[$path]['default'], $path);
+            self::assertSame('docara', $records[$path]['default_source'], $path);
+        }
+        self::assertFalse($records['/framework_lock']['has_default']);
+        self::assertSame(
+            'site.schema.json#/properties/site_url',
+            substr($records['/site_url']['provenance'], strlen('resources/schemas/')),
+        );
+        self::assertIsString($records['/site_url']['description']);
+    }
+
+    #[Test]
+    public function fields_keep_only_the_named_top_level_fields(): void
+    {
+        $placeholder = (new PortableMarkdownRenderer)->render(":::schema_reference {schema=site scope=site fields=reading,search}\n:::\n");
+        $html = (new PortableSchemaReferenceHydrator)->hydrate([['locale' => 'ru', 'content_html' => $placeholder]])[0]['content_html'];
+        preg_match_all('~<tr><td><code>(/[^<]+)</code>~', $html, $paths);
+
+        self::assertContains('/reading/toc_depth', $paths[1]);
+        self::assertContains('/search/indexed', $paths[1]);
+        foreach ($paths[1] as $path) {
+            self::assertMatchesRegularExpression('~^/(reading|search)(/|$)~', $path);
+        }
+    }
+
+    #[Test]
+    public function unknown_fields_fail_while_the_page_renders(): void
+    {
+        try {
+            (new PortableMarkdownRenderer)->render(":::schema_reference {schema=page scope=page fields=reading,base_url}\n:::\n");
+            self::fail('A field of another schema must be rejected.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_SCHEMA_REFERENCE_FIELDS_INVALID', $exception->errorCode);
+        }
     }
 
     #[Test]

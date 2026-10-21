@@ -42,6 +42,7 @@ use Simai\Docara\I18n\TranslationStatusService;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Portable\ConfigurationDefaults;
 use Simai\Docara\Portable\FilesystemPath;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
@@ -177,7 +178,7 @@ final readonly class PortableSiteBuilder
         $engineRevision = $runtimeMetadata->package();
         $dependencyLock = $runtimeMetadata->dependencies();
         $buildLocale = $localeRegistry->default()->tag->value();
-        $documentationVersion = (string) ($site['documentation_version'] ?? 'current');
+        $documentationVersion = (string) ($site['documentation_version'] ?? ConfigurationDefaults::value('documentation_version'));
         $defaultLocale = $localeRegistry->default();
         $contentRoot = $defaultLocale->contentRoot;
         $contentPath = $this->confinedDirectory($root, $contentRoot);
@@ -445,9 +446,9 @@ final readonly class PortableSiteBuilder
                 'tags' => $plan->frontMatter['tags'] ?? [],
                 'documentation_version' => $documentationVersion,
                 'preset' => (string) ($plan->configuration['preset'] ?? 'docs'),
-                'theme' => (string) data_get($plan->configuration, 'settings.theme', 'system'),
-                'modal_blur' => (string) data_get($plan->configuration, 'settings.modal_blur', 'none'),
-                'ui_radius' => (string) data_get($plan->configuration, 'settings.ui_radius', 'default'),
+                'theme' => (string) data_get($plan->configuration, 'settings.theme', ConfigurationDefaults::value('settings.theme')),
+                'modal_blur' => (string) data_get($plan->configuration, 'settings.modal_blur', ConfigurationDefaults::value('settings.modal_blur')),
+                'ui_radius' => (string) data_get($plan->configuration, 'settings.ui_radius', ConfigurationDefaults::value('settings.ui_radius')),
                 'reader_preferences' => is_array($plan->configuration['reader_preferences'] ?? null)
                     ? $plan->configuration['reader_preferences']
                     : ReaderPreferenceCompiler::defaultConfiguration(),
@@ -869,10 +870,10 @@ final readonly class PortableSiteBuilder
             $documentationVersion,
             $uiCopy->forLocale($buildLocale),
         );
-        $siteTitle = (string) ($site['title'] ?? 'Docara');
+        $siteTitle = (string) ($site['title'] ?? ConfigurationDefaults::value('title'));
         // docara.json branding.credit: the "Made with Docara" line under the
         // sidebar navigation, on unless the site turns it off.
-        $sidebarCredit = ($site['branding']['credit'] ?? true) !== false;
+        $sidebarCredit = ($site['branding']['credit'] ?? ConfigurationDefaults::value('branding.credit')) !== false;
         $brandPublisher = new PortableBrandAssetPlanner($this->files);
         $brandPlan = $brandPublisher->plan(
             $root,
@@ -1120,7 +1121,7 @@ final readonly class PortableSiteBuilder
                 $pageNavigation = $navigationBuilder->scoped(
                     $pageNavigation,
                     $navigationActiveUrl,
-                    (string) data_get($declarativePlan->configuration, 'navigation.scope', 'site'),
+                    (string) data_get($declarativePlan->configuration, 'navigation.scope', ConfigurationDefaults::value('navigation.scope')),
                 );
                 $activeNavigation = $navigationBuilder->activate($pageNavigation, $navigationActiveUrl);
                 $composition = PageCompositionContext::fromBuilder(

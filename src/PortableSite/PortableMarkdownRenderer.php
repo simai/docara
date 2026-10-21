@@ -1527,7 +1527,7 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderSchemaReference(array $attributes): string
     {
-        $this->assertAttributes($attributes, ['schema', 'scope'], 'schema_reference');
+        $this->assertAttributes($attributes, ['schema', 'scope', 'fields'], 'schema_reference');
         $schema = $this->attributeOneOf(
             $attributes['schema'] ?? '',
             ['site', 'section', 'page', 'presentation', 'framework-lock'],
@@ -1541,9 +1541,28 @@ HTML;
             'scope',
         );
 
+        // fields=reading,search keeps the rows of those top-level fields, so
+        // a long settings page can show its table in titled parts.
+        $fields = trim($attributes['fields'] ?? '');
+        if ($fields !== '') {
+            $names = explode(',', $fields);
+            $known = PortableSchemaReferenceProjector::topLevelFields(
+                (new PortableSchemaReferenceProjector)->project($schema, $scope),
+            );
+            foreach ($names as $name) {
+                if (preg_match('/^[a-z][a-z0-9_]*$/D', $name) !== 1 || ! in_array($name, $known, true)) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_SCHEMA_REFERENCE_FIELDS_INVALID',
+                        "schema_reference fields [$fields] must list top-level fields of [$schema], separated by commas without spaces.",
+                    );
+                }
+            }
+        }
+
         return '<div data-docara-block="schema-reference" data-docara-schema-reference'
             . ' data-schema-name="' . $this->escapeHtml($schema) . '"'
-            . ' data-schema-scope="' . $this->escapeHtml($scope) . '"></div>';
+            . ' data-schema-scope="' . $this->escapeHtml($scope) . '"'
+            . ($fields === '' ? '' : ' data-schema-fields="' . $this->escapeHtml($fields) . '"') . '></div>';
     }
 
     /** @param array<string,string> $attributes */

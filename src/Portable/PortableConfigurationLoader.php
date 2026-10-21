@@ -175,27 +175,11 @@ final class PortableConfigurationLoader
             designs: DesignRegistry::bundled($this->root, $projectNamespace),
         );
 
+        // Key order as before the defaults moved to ConfigurationDefaults.
         $result = $this->merger->merge([], [
-            'content_root' => 'content',
+            'content_root' => ConfigurationDefaults::INHERITED['content_root'],
             'layout' => RegionCompositionResolver::defaults($definitions),
-            'search' => [
-                'enabled' => false,
-                'indexed' => true,
-            ],
-            'reading' => [
-                'breadcrumbs' => true,
-                'toc' => true,
-                'mobile_toc' => 'auto',
-                'toc_depth' => 3,
-                'previous_next' => true,
-            ],
-            'examples' => [
-                'fullscreen' => true,
-                'wrap' => true,
-            ],
-            'code' => [
-                'wrap' => true,
-            ],
+            ...ConfigurationDefaults::INHERITED,
         ], '@defaults');
         $configuration = $result->configuration;
         $provenance = $result->provenance;

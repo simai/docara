@@ -31,8 +31,9 @@ php vendor/bin/docara init [path] [--template=minimal|showcase] [--lang=en|ru]
 - `--lang` (`-l`) — язык содержимого заготовки: `en` (по умолчанию) или `ru`.
   `showcase` доступна только с `--lang=ru`; сочетание с `--lang=en`
   завершается ошибкой и ничего не записывает.
-- `--update` (`-u`) — защитный флаг: команда отказывается и подсказывает
-  явный порядок `upgrade`/`update`.
+- `--update` (`-u`) — защитный флаг: команда завершается ошибкой, ничего не
+  создаёт и подсказывает явный порядок `update --verify`, затем `--dry-run`,
+  затем `--apply`.
 
 ## `build`
 
@@ -166,6 +167,8 @@ php vendor/bin/docara update [path] --rollback=<id|latest>
 ```
 
 Синхронизирует package-owned `.docara/engine` с установленной версией.
+Без флага действия выполняется `--verify`; одновременно можно указать только
+одно действие.
 
 - `--verify` проверяет ownership и сообщает наличие изменений;
 - `--dry-run` создаёт hash-bound план и показывает точные операции; `--diff` —
@@ -338,7 +341,8 @@ php vendor/bin/docara translations accept --apply=<plan-sha256> --json
 - `--locale` — целевая локаль;
 - `--status` — фильтр отчёта по статусу; для `accept` — принять всё, что
   показывает такой отфильтрованный отчёт;
-- `--kind` — `page` (по умолчанию) или `lang` для ключей `lang.json`;
+- `--kind` — `page` или `lang` для ключей `lang.json`; `status` без `--kind`
+  показывает оба вида, `accept` без `--kind` работает со страницами (`page`);
 - `--key` — ключ перевода; повторите, чтобы принять набор ключей;
 - `--prefix` — принять все `unverified` и `stale` ключи, начинающиеся с
   префикса, например раздел `guide/`;
@@ -406,7 +410,7 @@ route для production-контекста, `--json` выводит резуль
 ## `qa`
 
 ```bash
-php vendor/bin/docara qa [kind] [id] [--page=/route/] --dry-run [--json]
+php vendor/bin/docara qa [kind] [id] --page=/route/ --dry-run [--json]
 php vendor/bin/docara qa --finalize-reference=<draft> [--json]
 php vendor/bin/docara qa --verify=<plan-sha256> [--json]
 ```
@@ -415,9 +419,11 @@ php vendor/bin/docara qa --verify=<plan-sha256> [--json]
 на изолированном preview по production-пути. `kind`: `smart`, `region` или
 `layout`.
 
-- `--page` — публичный route страницы для проверки;
+- `--page` — публичный route страницы для проверки; обязателен вместе с
+  `--dry-run`;
 - `--dry-run` — опубликовать preview и создать детерминированный план
-  сценариев;
+  сценариев. Без `--dry-run` и непустого `--page` (и без `--verify` или
+  `--finalize-reference`) команда возвращает `QA_DRY_RUN_REQUIRED`;
 - `--finalize-reference` — проверить записанный черновик эталона и привязать
   его manifest к новому неизменяемому плану;
 - `--verify` — проверить внешний QA-отчёт по SHA-256 плана;

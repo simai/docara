@@ -43,7 +43,7 @@ Builder применяет `base_url` самостоятельно.
 При симметричной языковой маршрутизации отдельный publisher создаёт `/` →
 `/<default_locale>/` и, если включён `legacy_unprefixed_redirects`, redirect для
 каждой прежней страницы без языкового префикса. Эти записи находятся в
-`.docara/locale-routes.json`; вручную дублировать их в `redirects.json` не нужно.
+`build_<environment>.docara/locale-routes.json`; вручную дублировать их в `redirects.json` не нужно.
 
 ## Что создаёт сборка
 
@@ -54,7 +54,7 @@ Builder применяет `base_url` самостоятельно.
 - meta refresh;
 - обычной видимой ссылкой на тот же target.
 
-Дополнительно `.docara/redirects.json` фиксирует SHA-256 канонически
+Дополнительно `build_<environment>.docara/redirects.json` фиксирует SHA-256 канонически
 нормализованного source, locale, `documentation_version`, `base_url`, output и
 итоговые URL. Это receipt для `verify-static` и публикации. Форматирование JSON
 и порядок записей не меняют этот хэш.

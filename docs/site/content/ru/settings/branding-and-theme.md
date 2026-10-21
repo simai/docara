@@ -13,7 +13,7 @@ Branding отвечает за title/label/logo/favicons/mode/size. Настро
 }
 ```
 
-`ui_radius` выбирает Framework-owned CSS variable `--sf-radius--ui`: compact/default/comfortable меняют один токен, а components используют свои variables с fallback на него. `modal_blur=none` убирает backdrop blur поиска и настроек по умолчанию. Произвольный CSS из config не принимается: `theme` принимает только цвет, а стили строит Framework.
+`ui_radius` выбирает Framework-owned CSS variable `--sf-radius--ui`: `default` оставляет значение Framework, `medium` задаёт `--sf-radius-1/2`, `large` — `--sf-radius-1`. Меняется один токен, а components используют свои variables с fallback на него. `modal_blur=none` убирает backdrop blur поиска и настроек по умолчанию. Произвольный CSS из config не принимается: `theme` принимает только цвет, а стили строит Framework.
 
 ## Строка «Сделано на Docara»
 

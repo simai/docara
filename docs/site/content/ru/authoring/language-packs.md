@@ -17,8 +17,8 @@ description: Подписи интерфейса локали хранятся �
 {
   "schema": "docara.lang.v1",
   "version": 1,
-  "common": {
-    "continue": "Continuer"
+  "search": {
+    "placeholder": "Rechercher dans la documentation"
   },
   "code": {
     "copy": "Copier",
@@ -28,8 +28,12 @@ description: Подписи интерфейса локали хранятся �
 ```
 
 Корневые группы ограничены общей UI-лексикой из
-`resources/schemas/lang.schema.json`. Группы `pages`, `components`, `catalog`
-и `examples` запрещены: пользовательский текст для них принадлежит Markdown.
+`resources/schemas/lang.schema.json`: `accessibility`, `code`, `common`,
+`copy`, `effects`, `examples`, `language`, `navigation`, `reader`, `redirect`,
+`search`, `shell`, `toc` и `transitions`. Группа `examples` содержит только
+подписи интерфейса примеров, например кнопку адаптивного просмотра. Группы
+`pages`, `components` и `catalog` запрещены: текст страниц и описания
+компонентов принадлежат Markdown.
 
 ## Объявите локаль
 

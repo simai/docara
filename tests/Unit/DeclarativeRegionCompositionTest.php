@@ -117,7 +117,7 @@ final class DeclarativeRegionCompositionTest extends TestCase
                     'element' => [
                         'tag' => 'p',
                         'text' => 'Docara — документация как код',
-                        'utilities' => ['m-0', 'p-2', 'surface-0'],
+                        'utilities' => ['m-0', 'p-2', 'bg-surface-0'],
                     ],
                 ], [
                     'id' => 'home',
@@ -151,9 +151,107 @@ final class DeclarativeRegionCompositionTest extends TestCase
         self::assertSame('ui.button', $plan->regions['header'][1]->blocks[0]->smart?->smart);
         self::assertSame('content/shell.page.json', $plan->regions['footer'][0]->blocks[0]->data['source']);
         self::assertStringContainsString('<sf-button', $html);
-        self::assertStringContainsString('Docara — документация как код', $html);
+        self::assertStringContainsString('<p class="m-0 p-2 bg-surface-0">Docara — документация как код</p>', $html);
+        self::assertArrayNotHasKey('deprecated_utilities', $plan->regions['footer'][0]->blocks[0]->data);
+        self::assertArrayNotHasKey('deprecated_utilities', $plan->regions['footer'][0]->provenance);
         self::assertStringContainsString('<a href="/" aria-label="На главную страницу">На главную</a>', $html);
         self::assertStringContainsString('data-docara-region="footer"', $html);
+    }
+
+    public function test_deprecated_utility_names_render_as_framework_classes_and_are_recorded(): void
+    {
+        $layout = RegionCompositionResolver::defaults();
+        $layout['regions']['footer'] = [
+            'enabled' => true,
+            'sections' => [[
+                'id' => 'site-footer',
+                'section' => 'docara.shell',
+                'utilities' => ['p-2', 'surface-0', 'border-bottom', 'border-bottom-1'],
+                'blocks' => [[
+                    'id' => 'copyright',
+                    'block' => 'shell.element',
+                    'slot' => 'content',
+                    'element' => [
+                        'tag' => 'p',
+                        'text' => 'Docara — документация как код',
+                        'utilities' => ['surface-0', 'bg-surface-0', 'm-0'],
+                    ],
+                ]],
+            ]],
+        ];
+
+        $plan = DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+            (new DocumentParser)->parse('# Shell', 'content/shell.md'),
+            'shell',
+            'Shell',
+            3,
+            $this->context(),
+            $layout,
+            ['/layout/regions/footer/sections' => 'content/shell.page.json'],
+        );
+        $html = (new DeclarativePageRenderer(new PortableMarkdownRenderer))->render($plan)->html;
+
+        // The old names are replaced in place by the classes the Framework
+        // defines, without duplicates.
+        self::assertStringContainsString('<p class="bg-surface-0 m-0">Docara — документация как код</p>', $html);
+        self::assertStringContainsString(
+            '<section id="site-footer" data-docara-section="docara.shell" data-docara-region-owner="footer" class="p-2 bg-surface-0 border-bottom-1 border-bottom-solid">',
+            $html,
+        );
+        preg_match_all('/\sclass="([^"]*)"/', $html, $classes);
+        foreach ($classes[1] as $value) {
+            $tokens = preg_split('/\s+/', $value, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+            self::assertNotContains('surface-0', $tokens);
+            self::assertNotContains('border-bottom', $tokens);
+            self::assertSame($tokens, array_values(array_unique($tokens)));
+        }
+
+        // Like a deprecated Smart alias, each use is recorded in the plan.
+        $section = $plan->regions['footer'][0];
+        self::assertSame(
+            [
+                ['utility' => 'surface-0', 'replacement' => ['bg-surface-0']],
+                ['utility' => 'border-bottom', 'replacement' => ['border-bottom-1', 'border-bottom-solid']],
+            ],
+            array_map(
+                static fn (array $entry): array => ['utility' => $entry['utility'], 'replacement' => $entry['replacement']],
+                $section->provenance['deprecated_utilities'],
+            ),
+        );
+        self::assertSame('surface-0', $section->blocks[0]->data['deprecated_utilities'][0]['utility']);
+        self::assertCount(1, $section->blocks[0]->data['deprecated_utilities']);
+    }
+
+    public function test_unknown_utilities_are_still_refused(): void
+    {
+        $layout = RegionCompositionResolver::defaults();
+        $layout['regions']['footer'] = [
+            'enabled' => true,
+            'sections' => [[
+                'id' => 'site-footer',
+                'section' => 'docara.shell',
+                'utilities' => ['surface-1'],
+                'blocks' => [[
+                    'id' => 'copyright',
+                    'block' => 'shell.element',
+                    'slot' => 'content',
+                    'element' => ['tag' => 'p', 'text' => 'Docara'],
+                ]],
+            ]],
+        ];
+
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('Framework utility [surface-1] is not present in the pinned View Tree projection.');
+
+        DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+            (new DocumentParser)->parse('# Shell', 'content/shell.md'),
+            'shell',
+            'Shell',
+            3,
+            $this->context(),
+            $layout,
+            ['/layout/regions/footer/sections' => 'content/shell.page.json'],
+        );
     }
 
     public function test_shell_regions_reject_unregistered_smart_and_executable_element_surface(): void

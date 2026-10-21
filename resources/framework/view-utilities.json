@@ -3,7 +3,9 @@
     "compatibility_id": "ui-32c7a64e4575",
     "registry_sha256": "fe0a0dfb6627eddc47c42ea036bc75791a7e0cf46448049cb4de6a811fd12204",
     "utilities": [
-        "border-bottom",
+        "bg-surface-0",
+        "border-bottom-1",
+        "border-bottom-solid",
         "border-outline-variant",
         "flex",
         "flex-col",
@@ -14,7 +16,21 @@
         "min-h-screen",
         "p-0",
         "p-2",
-        "surface-0",
         "w-full"
-    ]
+    ],
+    "deprecated": {
+        "border-bottom": {
+            "replacement": [
+                "border-bottom-1",
+                "border-bottom-solid"
+            ],
+            "reason": "SIMAI Framework has no border-bottom utility; a bottom border is its width utility plus its style utility."
+        },
+        "surface-0": {
+            "replacement": [
+                "bg-surface-0"
+            ],
+            "reason": "SIMAI Framework has no surface-0 utility; the surface background is bg-surface-0."
+        }
+    }
 }

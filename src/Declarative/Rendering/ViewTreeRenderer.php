@@ -116,7 +116,7 @@ final readonly class ViewTreeRenderer
                 'View Tree utilities must be a list.',
             );
         }
-        $this->utilities->assertAllowed($utilities);
+        $utilities = $this->utilities->canonical($utilities);
         $attributes = $node['attributes'] ?? [];
         if (! is_array($attributes)) {
             throw new PortableConfigurationException(

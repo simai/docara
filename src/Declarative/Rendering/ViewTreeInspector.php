@@ -14,6 +14,11 @@ final readonly class ViewTreeInspector
         private FrameworkUtilityRegistry $utilities = new FrameworkUtilityRegistry,
     ) {}
 
+    public function utilities(): FrameworkUtilityRegistry
+    {
+        return $this->utilities;
+    }
+
     /**
      * @param  array<string, mixed>  $tree
      * @return array{regions:list<string>,slots:list<string>,nodes:int,utility_registry:array<string,mixed>}

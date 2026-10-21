@@ -25,7 +25,7 @@
           {
             "id": "page-footer",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
             "blocks": [
               {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "Footer включён только для этой страницы.", "utilities": ["m-0"]}}
             ]

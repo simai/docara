@@ -34,7 +34,7 @@ final readonly class SafeElementRenderer
                 'Declarative element data is invalid.',
             );
         }
-        $this->utilities->assertAllowed($classes);
+        $classes = $this->utilities->canonical($classes);
         $attributes = [];
         if ($classes !== []) {
             $attributes['class'] = implode(' ', $classes);

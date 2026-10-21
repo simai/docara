@@ -65,7 +65,7 @@ Portable builder работает fail closed. Он не пытается уга
 | `SEARCH_RUNTIME_MISSING` | Закреплённый локальный search runtime отсутствует или не читается |
 | `SEARCH_RUNTIME_INVALID_UTF8` | Search runtime содержит невалидный UTF-8 |
 | `SEARCH_TEXT_INVALID_UTF8` | Видимый текст страницы нельзя безопасно индексировать |
-| `SEARCH_COMPONENT_TEXT_PROJECTION_MISSING` | Для нового Smart-компонента не определены индексируемые текстовые props |
+| `SEARCH_COMPONENT_CALL_INVALID` | Внутренние данные вызова компонента для поискового индекса повреждены: нет строкового `id` или объекта `props` |
 | `SEARCH_INDEX_LOCALE_EMPTY` | Поиск включён для locale, но в нём не осталось ни одной индексируемой страницы |
 | `SEARCH_DOCUMENT_OUTSIDE_BASE` | URL индексируемой страницы находится вне `base_url` сайта |
 | `DOCUMENT_OUTLINE_DEPTH_INVALID` | Глубина оглавления находится вне диапазона 2–6 |

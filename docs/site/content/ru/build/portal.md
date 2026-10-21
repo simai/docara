@@ -4,8 +4,8 @@ description: Сборка сайта Docara для одного пути пор�
 
 # Сборка для портала
 
-Портал собирает несколько продуктов в один сайт, например `https://simai.io/`:
-каждый продукт занимает свой путь (`/ru/docara/docs/`), а портал владеет
+Портал собирает несколько продуктов в один сайт, например `https://portal.example.com/`:
+каждый продукт занимает свой путь (`/ru/acme/docs/`), а портал владеет
 главной страницей, языковым префиксом и файлами хостинга. Секция `portal` в
 `docara.json` собирает сайт для такого пути, а команда `portal-artifact`
 упаковывает результат в три файла релиза, которые портал скачивает, проверяет и
@@ -34,12 +34,12 @@ description: Сборка сайта Docara для одного пути пор�
     "detect_browser_language": false,
     "legacy_unprefixed_redirects": false
   },
-  "base_url": "/ru/docara/docs/",
-  "site_url": "https://simai.io/ru/docara/docs/",
+  "base_url": "/ru/acme/docs/",
+  "site_url": "https://portal.example.com/ru/acme/docs/",
   "portal": {
-    "product": "docara-docs",
-    "home_url": "https://simai.io/ru/",
-    "home_label": "simai.io"
+    "product": "acme-docs",
+    "home_url": "https://portal.example.com/ru/",
+    "home_label": "portal.example.com"
   }
 }
 ```
@@ -76,7 +76,7 @@ description: Сборка сайта Docara для одного пути пор�
   `PORTAL_FILE_COLLISION`.
 - Ссылки контента, написанного для сайта с языковым префиксом, ведут на
   страницы без префикса: `[Старт](/ru/start/)` в сборке для
-  `/ru/docara/docs/` становится `/ru/docara/docs/start/`. Ссылки от корня сайта
+  `/ru/acme/docs/` становится `/ru/acme/docs/start/`. Ссылки от корня сайта
   (`/start/`) работают так же.
 - Поисковый индекс, ассеты, медиа и кадры примеров лежат внутри сборки и
   адресуются под `base_url`.
@@ -111,8 +111,8 @@ php vendor/bin/docara portal-artifact [environment] --release=TAG --repository=O
 
 ```bash
 php vendor/bin/docara portal-artifact portal \
-  --release=v3.4.0 \
-  --repository=simai/docara \
+  --release=v1.2.0 \
+  --repository=acme/docs \
   --commit="$(git rev-parse HEAD)" \
   --output=portal-out
 ```
@@ -123,17 +123,17 @@ php vendor/bin/docara portal-artifact portal \
 {
     "schema": "simai.io.portal-artifact",
     "version": 1,
-    "product": "docara-docs",
-    "release": "v3.4.0",
-    "repository": "simai/docara",
+    "product": "acme-docs",
+    "release": "v1.2.0",
+    "repository": "acme/docs",
     "commit": "<40 hex>",
     "locale": "ru",
-    "base_path": "/ru/docara/docs/",
-    "archive": "docara-docs-3.4.0-portal.tar.gz",
+    "base_path": "/ru/acme/docs/",
+    "archive": "acme-docs-1.2.0-portal.tar.gz",
     "sha256": "<64 hex>",
     "files": 1706,
     "framework_pair": "ui-<12 hex>",
-    "docara_version": "3.4.0"
+    "docara_version": "3.6.0"
 }
 ```
 
@@ -167,14 +167,19 @@ php vendor/bin/docara portal-artifact portal \
   неопределённой операционной системой.
 
 Сжатые байты зависят от реализации zlib, поэтому сравнивайте архивы,
-собранные на одной платформе. Каноническим считается архив из CI; портал
-закрепляет его SHA-256 из квитанции.
+собранные на одной платформе. Собирайте канонический архив в одном месте,
+например в CI своего проекта; портал закрепляет его SHA-256 из квитанции.
+
+Сама документация Docara с версии 3.5.0 публикуется только на GitHub Pages:
+workflow выпуска Docara больше не собирает и не прикладывает к релизу её
+портальный архив. Секция `portal` и команда `portal-artifact` остаются
+доступны проектам.
 
 Проверка после скачивания:
 
 ```bash
-sha256sum -c docara-docs-3.4.0-portal.tar.gz.sha256
-jq -r .sha256 docara-docs-3.4.0-portal-receipt.json
+sha256sum -c acme-docs-1.2.0-portal.tar.gz.sha256
+jq -r .sha256 acme-docs-1.2.0-portal-receipt.json
 ```
 
 Оба значения должны совпасть.

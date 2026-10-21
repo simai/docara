@@ -33,7 +33,7 @@ assets, настройки, переводы, Smart/design-источники и
 
 ```bash
 php vendor/bin/docara upgrade --check --json
-php vendor/bin/docara upgrade --to=2.7.0 --dry-run --json
+php vendor/bin/docara upgrade --to=3.6.0 --dry-run --json
 php vendor/bin/docara upgrade --apply=<plan-sha256> --json
 ```
 
@@ -96,9 +96,11 @@ php vendor/bin/docara update --apply --json
 php vendor/bin/docara update --rollback=latest
 ```
 
-Он не запускает Composer и не меняет dependency lock. Не редактируйте
+`update` без флага действия выполняет `--verify`. Он не запускает Composer и
+не меняет dependency lock. Не редактируйте
 `.docara`, `vendor/` или `build_production` вручную. Его `--dry-run` и
 `--apply` связаны неизменяемым hash-bound plan.
 
-`init --update` не является сокращением этого процесса: команда отключена и
-только подсказывает безопасный `upgrade`/`update` workflow.
+`init --update` не является сокращением этого процесса: команда отключена,
+завершается ошибкой и подсказывает порядок `update --verify`, затем
+`--dry-run`, затем явный `--apply`.

@@ -9,7 +9,7 @@ unknown fields, неверные типы и unsafe paths.
 | `docara.section.v1` | `section.json` | Наследуемый section contract |
 | `docara.page.v1` | `<page>.page.json` | Page contract |
 | `docara.redirects.v1` | Файл из `redirects_file` | Декларативные внутренние redirects |
-| `docara.redirect_receipt.v1` | `.docara/redirects.json` | Проверяемый результат публикации redirects |
+| `docara.redirect_receipt.v1` | `build_<environment>.docara/redirects.json` | Проверяемый результат публикации redirects |
 | `docara.component_call.v1` | Нормализованный вызов | Форма ID/props; admission определяет runtime |
 | `docara.framework_lock.v1` | `simai-framework.lock.json` | Immutable runtime/manifests/assets |
 | `https://schemas.simai.io/docara/component-catalog-entry/v1` | Package source record | Одна запись component catalog |
@@ -18,10 +18,10 @@ unknown fields, неверные типы и unsafe paths.
 | `docara.search_index.v1` | `_docara/search-index.json` | Локальный search index |
 | `docara.lang.v1` | `content/<locale>/lang.json` | Только общие UI-подписи локали |
 | `docara.translation_lock.v1` | `translations.lock.json` | Принятые hashes переводов, уровень проверки и исключения |
-| `docara.translation_status.v1` | `.docara/translation-status.json` | Детерминированный отчёт о страницах и ключах локали |
+| `docara.translation_status.v1` | `build_<environment>.docara/translation-status.json` | Детерминированный отчёт о страницах и ключах локали |
 | `docara.documentation_source.v1` | Source-owned JSON или встроенный provider | Нейтральный публичный контракт документируемых сущностей |
 | `docara.documentation_lock.v1` | `documentation.lock.json` | Принятые связи страниц, примеров и отпечатков исходного API |
-| `docara.documentation_status.v1` | `.docara/documentation-status.json` | Производный отчёт актуальности документации по исходному коду |
+| `docara.documentation_status.v1` | `build_<environment>.docara/documentation-status.json` | Производный отчёт актуальности документации по исходному коду |
 
 ## Исполняемые примеры schema
 

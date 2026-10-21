@@ -91,7 +91,7 @@ Docara не ограничивает проект русским и англий
 `default_locale`. Автоматический выбор языка браузера намеренно выключен:
 один URL имеет одну стабильную языковую идентичность. При
 `legacy_unprefixed_redirects: true` builder создаёт redirect для каждого
-прежнего URL без префикса и фиксирует их в `.docara/locale-routes.json`.
+прежнего URL без префикса и фиксирует их в `build_<environment>.docara/locale-routes.json`.
 
 Существующие проекты можно не мигрировать сразу. Режим
 `strategy: "default_unprefixed"` оставляет пустой префикс основной локали и

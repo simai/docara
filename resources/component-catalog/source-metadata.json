@@ -70,7 +70,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/diagram.md",
-            "source_sha256": "869f68aa69d8e7ed45ed12da0846a1c9919168369281a479803bfa80c3332f71",
+            "source_sha256": "336b13d1e3fec4c12ccd1de752765c82ba53af78a5eec8bd357b36c2e433aa56",
             "release": "3.6.0",
             "source_url": "https://github.com/simai/docara/blob/v3.6.0/docs/site/content/ru/components/diagram.md",
             "history_url": "https://github.com/simai/docara/commits/v3.6.0/docs/site/content/ru/components/diagram.md",
@@ -86,7 +86,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/embed.md",
-            "source_sha256": "e3a31d663412469e71a539f6122b5182af6bc748048fbf4677161f17d97e181d",
+            "source_sha256": "f995d6a82739dd541a063ad517424198bb9945dbb23a9e0042ffbd66afedc619",
             "release": "3.6.0",
             "source_url": "https://github.com/simai/docara/blob/v3.6.0/docs/site/content/ru/components/embed.md",
             "history_url": "https://github.com/simai/docara/commits/v3.6.0/docs/site/content/ru/components/embed.md",
@@ -94,7 +94,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/example.md",
-            "source_sha256": "e8d1104a4caff23d6ba401a0db2ed9e8f7c4a3fa0b02462129845c4320ddb367",
+            "source_sha256": "ff0f24d30766fec4e6d87b47212e1ab7ea6c8d915766e49cf3fea598ad71f934",
             "release": "3.6.0",
             "source_url": "https://github.com/simai/docara/blob/v3.6.0/docs/site/content/ru/components/example.md",
             "history_url": "https://github.com/simai/docara/commits/v3.6.0/docs/site/content/ru/components/example.md",
@@ -222,7 +222,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/start/component-model.md",
-            "source_sha256": "209fe53012d450c63cbfda046f56f9734149a88fd268b2a53be809d61c51e6fb",
+            "source_sha256": "a18782e1b2931953256e2efff4c05009da6bd289eb4ba6f529a1e440b275d087",
             "release": "3.6.0",
             "source_url": "https://github.com/simai/docara/blob/v3.6.0/docs/site/content/ru/start/component-model.md",
             "history_url": "https://github.com/simai/docara/commits/v3.6.0/docs/site/content/ru/start/component-model.md",
@@ -517,5 +517,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "0f390a4bfc34aaabcc3bad9ccbd5e7ca7d0cde3918f7142c8c06e5dd0dd74e52"
+    "content_sha256": "93c462340680f0460ca5274131f112eae3601158dcbf299595acaa3dd33f2f11"
 }

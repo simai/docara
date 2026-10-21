@@ -40,7 +40,7 @@ authoring contract, manifest, dependencies, host renderer, accessibility,
 tests и consumer policy.
 
 Точную identity текущего сайта смотрите в самом
-`simai-framework.lock.json`, в `.docara/resolved-page-plans.json` и
+`simai-framework.lock.json`, в `build_<environment>.docara/resolved-page-plans.json` и
 `_docara/component-catalog.json`. Не переносите commits, pair IDs и список
 компонентов в ручной справочник: generated artifacts отражают конкретную
 сборку без drift.

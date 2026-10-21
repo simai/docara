@@ -352,7 +352,7 @@ final class DocumentationContractTest extends TestCase
                 ],
             ]);
             $translator = new Translator($registry, new ContentLanguageRepository($temporary));
-            self::assertSame('Continuer', $translator->message('fr-CA', 'common.continue'));
+            self::assertSame('Rechercher dans la documentation', $translator->message('fr-CA', 'search.placeholder'));
             self::assertSame(
                 'Open navigation',
                 $translator->message('fr-CA', 'navigation.open'),

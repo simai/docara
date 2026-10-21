@@ -119,8 +119,10 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 [data-docara-block="hero"][data-sf-effect].sf-effect-area{background:var(--sf-surface-0);color:var(--sf-on-surface)}
 /* Hero padding=2xl: a tall first screen whose vertical padding grows with the viewport from --sf-d2 (3rem) on a phone to --sf-e4 (7rem) on a wide screen, with no breakpoint. The Framework has no fluid spacing utility; the limits are its spacing tokens. */
 .docara-padding-2xl{padding-block:clamp(var(--sf-d2),var(--sf-c2) + 6vw,var(--sf-e4))}
-.docara-effect-toggle{position:absolute;inset-block-end:var(--sf-space-1);inset-inline-end:var(--sf-space-1);z-index:1;--sf-icon-button-background-color:var(--sf-surface-0);--sf-icon-button-border-color:var(--sf-outline-variant)}
-.docara-effect-toggle[hidden]{display:none}
+/* The pause button takes its own row under the hero content, at the inline end, instead of floating over it: an absolutely placed corner button covered the hero media wherever the media reaches the hero's bottom corner (on phones always). The row is kept while the button waits for the effect to start, so the page does not shift when it appears; with reduced motion the button never shows and the row is not kept. */
+[data-docara-block="hero"]>.docara-effect-toggle,[data-docara-block="hero"]>.docara-effect-toggle[hidden]{position:relative;z-index:1;display:grid;inline-size:max-content;margin-block:0 var(--sf-space-1);margin-inline:auto var(--sf-space-1);--sf-icon-button-background-color:var(--sf-surface-0);--sf-icon-button-border-color:var(--sf-outline-variant)}
+[data-docara-block="hero"]>.docara-effect-toggle[hidden]{visibility:hidden}
+@media (prefers-reduced-motion:reduce){[data-docara-block="hero"]>.docara-effect-toggle[hidden]{display:none}}
 .docara-landing .docara-content{width:100%}
 .docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]{box-sizing:border-box;width:100%;max-width:none;margin:0;padding:0}
 .docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}

@@ -6,6 +6,19 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **The hero effect's pause button no longer covers the hero media.** It was
+  placed absolutely in the hero's bottom corner, so wherever the media reached
+  that corner the button sat on top of it: on a 375 px phone the 36 x 36
+  button covered the corner of the home page screenshot, and at 1440 px it
+  still overlapped the image edge. The button now takes its own row under the
+  hero content, at the inline end (left in RTL), with the same
+  `--sf-space-1` inset; the hero grows by that row (48 px on a phone). The row
+  is kept while the button waits for the effect to start, so nothing shifts
+  when it appears, and is dropped with reduced motion, where the button never
+  shows.
+
 ## [3.6.0] - 2026-10-21
 
 ### Added

@@ -61,12 +61,17 @@ final class HeroPaddingTest extends TestCase
         $html = $this->render(":::hero {variant=centered padding=2xl effect=aurora-curtain}\n# Hero\n\nDescription.\n:::");
         self::assertStringStartsWith('<section data-docara-block="hero" data-sf-effect="aurora-curtain" data-variant="centered"', $html);
         // The padding sits on the container inside the effect area; the
-        // section stays the positioned box the pause button is anchored to.
+        // section stays the positioned box the effect draws in.
         self::assertStringContainsString('items-cross-center docara-padding-2xl">', $html);
 
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
         self::assertStringContainsString('[data-docara-block="hero"][data-sf-effect]{position:relative}', $css);
-        self::assertStringContainsString('.docara-effect-toggle{position:absolute;inset-block-end:var(--sf-space-1);inset-inline-end:var(--sf-space-1);', $css);
+        // The pause button takes its own row under the hero content instead of
+        // floating over the corner, where it covered the hero media on phones.
+        self::assertStringContainsString('[data-docara-block="hero"]>.docara-effect-toggle,[data-docara-block="hero"]>.docara-effect-toggle[hidden]{position:relative;z-index:1;display:grid;inline-size:max-content;margin-block:0 var(--sf-space-1);margin-inline:auto var(--sf-space-1);', $css);
+        self::assertStringContainsString('[data-docara-block="hero"]>.docara-effect-toggle[hidden]{visibility:hidden}', $css);
+        self::assertStringContainsString('@media (prefers-reduced-motion:reduce){[data-docara-block="hero"]>.docara-effect-toggle[hidden]{display:none}}', $css);
+        self::assertStringNotContainsString('position:absolute;inset-block-end:var(--sf-space-1)', $css);
     }
 
     #[Test]

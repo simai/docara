@@ -59,6 +59,9 @@ description: Коды ошибок Docara с причиной и способо�
 | `COMPOSITION_RECIPE_RUNTIME_REQUIRED` | Не найдена команда `node` или код композиции страниц SIMAI Framework. Сборке нужен Node.js 20 или новее, готовому сайту — нет. | Установите Node.js 20 или новее либо укажите путь в переменной `DOCARA_NODE_BINARY`. |
 | `PORTABLE_PAGE_TRANSFORM_FAILED` | Команда из `page_transforms` завершилась с ошибкой. В сообщении есть её код выхода и вывод. | Исправьте команду или её входные данные. Команда получает каталог собранного сайта последним аргументом. |
 | `PORTABLE_INCREMENTAL_BASE_MISSING` | Сборка одной страницы (`--page`) запущена без готовой полной сборки. | Сначала выполните полную сборку без `--page`. |
+| `AUTHORING_JSON_INVALID`, `AUTHORING_SCHEMA_INVALID`, `AUTHORING_FILE_UNSAFE`, `AUTHORING_RULE_CONFLICT`, `AUTHORING_PROFILE_UNKNOWN` | Ошибка в `docara.authoring.json`: неверный JSON, ссылка вместо файла, два правила с разными профилями для одной страницы или неизвестный профиль. | См. [Профили страниц](/authoring/page-profiles/#ошибки-файла). |
+| `PAGE_PROFILE_ONE_H1_MISSING`, `PAGE_PROFILE_INTRODUCTION_MISSING`, `PAGE_PROFILE_MULTIPLE_SECTIONS_MISSING`, `PAGE_PROFILE_MAIN_MATERIAL_MISSING`, `PAGE_PROFILE_ORDERED_STEPS_MISSING`, `PAGE_PROFILE_STRUCTURED_REFERENCE_MISSING`, `PAGE_PROFILE_ACTION_MISSING` | Предупреждение `docara validate page`: странице не хватает части, которую требует её профиль. Сборка продолжается. | Добавьте недостающую часть или смените профиль. См. [Профили страниц](/authoring/page-profiles/#профили-и-что-они-проверяют). |
+| `PAGE_EDITORIAL_REVIEW_REQUIRED` | Напоминание `docara validate page`: смысловые вопросы профиля проверяет человек. | Пройдите список вопросов из отчёта. Это не ошибка. |
 | `QA_DRY_RUN_REQUIRED` | `docara qa` запущена без `--dry-run` и точной `--page`. | Запустите `docara qa --dry-run --page=<адрес>`. |
 
 ## Если кода нет в справочнике

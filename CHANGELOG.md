@@ -6,6 +6,32 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **A 404 page.** The build now writes `404.html` at the deployment base: a
+  "Page not found" page in the default locale with the site's normal header,
+  navigation, search and theme, a short text, a link to the home page and a
+  link that opens search (`a[data-docara-search-open]`, handled by
+  `_docara/search.js`; without JavaScript it leads home). The text comes from
+  the new `error.not_found.*` strings, built in for English and Russian and
+  overridable in the default locale's `lang.json` (`error` is a new
+  `lang.json` group). A site replaces the content with its own `404.md` at the
+  root of the default locale's content, which is published as `404.html`
+  instead of `<locale>/404/`. `docara.json` `"not_found": {"enabled": false}`
+  turns the page off, and the build is then what it was before. Everything
+  the page links to is addressed from the site root with `base_url`, and a
+  relative URL in a site's `404.md` is resolved from `<locale>/404/`, so the
+  page works at whatever missing path the host serves it. It is `noindex`, has
+  no `hreflang` alternates, and is left out of the navigation, backlinks,
+  search index, `sitemap.xml`, `llms.txt` and `_docara/page-metadata.json`;
+  `resolved-page-plans.json` lists it with `"not_found": true`, and
+  `verify-static` checks it like any page. A portal build still has no
+  `404.html` (the portal owns it), and `not_found.enabled: true` there stops
+  the build with `PORTAL_NOT_FOUND_PAGE_FORBIDDEN`. Sites with several
+  locales get one root `404.html` in the default locale. The documentation's
+  hosting page shows how to serve it on nginx (`error_page 404 /404.html;`),
+  Apache (`ErrorDocument 404 /404.html`) and GitHub Pages (automatic).
+
 ### Fixed
 
 - **A landing hero with `padding=2xl` keeps its tall padding on narrow

@@ -7,6 +7,7 @@ Framework-ассеты. Рядом с ним Docara кладёт квитанц�
 ```text
 build_production/                  публикуется целиком
   index.html
+  404.html                         страница для отсутствующих адресов
   section/page/index.html
   _docara/search-index.json
   _docara/search.js
@@ -71,6 +72,12 @@ Verifier требует exact schema manifest, непустой список с�
 Отсутствующий, дублированный, лишний, symlink- или hardlink-output отклоняется.
 Элемент HTML `<base>` запрещён, чтобы относительные quoted `href`/`src` всегда
 разрешались одинаково verifier-ом и браузером.
+
+`404.html` — страница «Страница не найдена» в оболочке сайта. Она есть в
+`resolved-page-plans.json` с `"not_found": true`, все её адреса записаны от
+корня сайта, и её нет в поисковом индексе, `sitemap.xml`, `llms.txt` и
+`_docara/page-metadata.json`. Настройка и подключение на сервере описаны в
+разделе [Размещение на хостинге](/build/hosting/#страница-404).
 
 Если `redirects_file` не пуст, квитанция `redirects.json` фиксирует SHA-256
 source, locale, версию документации, `base_url`, source/target URL и output

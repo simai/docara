@@ -609,7 +609,9 @@ MD);
 
         $result = $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        self::assertCount(39, $result);
+        // 39 authored pages and 404.html.
+        self::assertCount(40, $result);
+        self::assertTrue($result->get('/404.html')['not_found'] ?? false);
         self::assertFileExists($this->tmpPath('build_local/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/getting-started/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
@@ -1334,10 +1336,10 @@ MD);
         $shellReceipt = $diagnostics['build']['framework']['shell'];
         self::assertSame('docara.framework_asset_plans.v2', $shellReceipt['schema']);
         self::assertSame('production_exact', $shellReceipt['mode']);
-        self::assertCount(39, $shellReceipt['plans']);
+        self::assertCount(40, $shellReceipt['plans']);
         $performance = $this->jsonFile($this->tmpPath('build_local.docara/performance.json'));
         self::assertSame('docara.performance_receipt.v1', $performance['schema']);
-        self::assertSame(39, $performance['site']['page_count']);
+        self::assertSame(40, $performance['site']['page_count']);
         self::assertSame(
             $performance['content_sha256'],
             $diagnostics['build']['public_projections']['performance_sha256'],
@@ -1373,7 +1375,7 @@ MD);
             'utility.full.css',
             (string) file_get_contents($this->tmpPath('build_local/index.html')),
         );
-        self::assertCount(39, $diagnostics['pages']);
+        self::assertCount(40, $diagnostics['pages']);
         $indexPlan = collect($diagnostics['pages'])->firstWhere('output', 'index.html');
         self::assertIsArray($indexPlan);
         self::assertSame('published', $indexPlan['declarative_pipeline']['status']);
@@ -2839,7 +2841,7 @@ MD;
         // browser; the page does not carry a second copy of it.
         $records = $this->jsonFile($output . '.docara/resolved-page-plans.json')['pages'];
         $guideRecord = collect($records)->first(
-            static fn (array $record): bool => str_contains(
+            static fn (array $record): bool => ($record['not_found'] ?? false) !== true && str_contains(
                 (string) file_get_contents($output . '/' . $record['output']),
                 'data-docara-sheet-template',
             ),

@@ -138,7 +138,7 @@ Resolver начинает с небольшого встроенного наб�
 | `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
 | `reader_preferences` | ✓ | — | — |
 | `framework_lock`, `content_root`, `base_url`, `default_locale` | ✓ | — | — |
-| `documentation_version`, `redirects_file`, `page_transforms` | ✓ | — | — |
+| `documentation_version`, `redirects_file`, `page_transforms`, `not_found` | ✓ | — | — |
 | `description`, `slug` | — | — | ✓ |
 
 `schema` обязателен на каждом уровне. `version` необязателен и, если указан,

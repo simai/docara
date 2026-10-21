@@ -205,7 +205,17 @@ final readonly class PortableSiteBuilder
                 ...array_map(static fn (PageSource $source): string => $source->path, $localePageSources),
             );
         }
-        $this->assertMissingPagePolicy($pageSources, $localeRegistry, $missingPagePolicy);
+        // docara.json `not_found`: 404.html at the deployment base, from the
+        // default locale's 404.md or from Docara's own text.
+        $notFoundPage = NotFoundPage::fromSite($site, $portal, $defaultLocale, $localeUrls);
+        $this->assertMissingPagePolicy(
+            $notFoundPage === null ? $pageSources : array_values(array_filter(
+                $pageSources,
+                static fn (PageSource $source): bool => $source->path !== $notFoundPage->sourcePath,
+            )),
+            $localeRegistry,
+            $missingPagePolicy,
+        );
         sort($pagePaths, SORT_STRING);
         $this->assertDestinationInputBoundary(
             $root,
@@ -292,6 +302,13 @@ final readonly class PortableSiteBuilder
                 break;
             }
         }
+        $notFoundGenerated = false;
+        if ($notFoundPage !== null && $selectedPageUrl === null && ! in_array($notFoundPage->sourcePath, $pagePaths, true)) {
+            $pagePaths[] = $notFoundPage->sourcePath;
+            sort($pagePaths, SORT_STRING);
+            $notFoundGenerated = true;
+        }
+        $notFoundCopy = $notFoundPage?->copy($translator);
         $pages = [];
         $outputs = [];
         $frameworkLockCanonical = null;
@@ -299,11 +316,22 @@ final readonly class PortableSiteBuilder
         $declarativePipeline = null;
         foreach ($pagePaths as $pagePath) {
             $this->observe('page.build', $pagePath);
-            $publication = $translationGate?->decision($pagePath);
+            $isNotFound = $notFoundPage !== null && $pagePath === $notFoundPage->sourcePath;
+            $publication = $isNotFound && $notFoundGenerated ? null : $translationGate?->decision($pagePath);
             if (($publication['action'] ?? null) === TranslationPublicationGate::WITHHELD) {
                 continue;
             }
-            $plan = $loader->resolve($pagePath);
+            $plan = $isNotFound && $notFoundGenerated && is_array($notFoundCopy)
+                ? $loader->resolveGenerated(
+                    $pagePath,
+                    NotFoundPage::GENERATED_SOURCE,
+                    $notFoundPage->markdown($notFoundCopy),
+                    $notFoundPage->frontMatter($notFoundCopy),
+                )
+                : $loader->resolve($pagePath);
+            if ($isNotFound) {
+                $plan = $notFoundPage->plan($plan);
+            }
             $pageLocale = (string) ($plan->configuration['locale'] ?? $buildLocale);
             if (! $explicitLocaleRegistry && $pageLocale !== $buildLocale) {
                 throw new PortableConfigurationException(
@@ -312,7 +340,7 @@ final readonly class PortableSiteBuilder
                 );
             }
             $localeDefinition = $localeRegistry->get($pageLocale);
-            $route = $this->route(
+            $route = $isNotFound ? $notFoundPage->route() : $this->route(
                 $plan,
                 $localeDefinition->contentRoot,
                 $localeUrls,
@@ -328,7 +356,9 @@ final readonly class PortableSiteBuilder
 
                 continue;
             }
-            $translationKey = $this->translationKey($plan, $localeDefinition->contentRoot);
+            $translationKey = $isNotFound
+                ? NotFoundPage::TRANSLATION_KEY
+                : $this->translationKey($plan, $localeDefinition->contentRoot);
             $translationFallback = null;
             if (($publication['action'] ?? null) === TranslationPublicationGate::SOURCE_FALLBACK) {
                 [$plan, $translationFallback] = $this->sourceFallbackPlan(
@@ -371,6 +401,15 @@ final readonly class PortableSiteBuilder
             $components = $pageResult->frameworkComponents;
             $outline = $pageResult->outline;
             $contentHtml = $pageResult->contentHtml;
+            if ($isNotFound) {
+                $contentHtml = $notFoundPage->absolutize($contentHtml);
+                if ($notFoundGenerated && is_array($notFoundCopy)) {
+                    $contentHtml .= $notFoundPage->linksHtml(
+                        $notFoundCopy,
+                        (bool) data_get($plan->configuration, 'search.enabled', false),
+                    );
+                }
+            }
             if ($translationFallback !== null) {
                 $contentHtml = (new TranslationFallbackNotice)->render(
                     $translator,
@@ -391,7 +430,10 @@ final readonly class PortableSiteBuilder
             $pages[] = [
                 'plan' => $plan,
                 'page_path' => $pagePath,
-                'page_source_kind' => $compositionRecipe === null ? 'authored_markdown' : 'composition_recipe',
+                'page_source_kind' => $isNotFound && $notFoundGenerated
+                    ? NotFoundPage::GENERATED_KIND
+                    : ($compositionRecipe === null ? 'authored_markdown' : 'composition_recipe'),
+                ...($isNotFound ? ['not_found' => true] : []),
                 'title' => $title,
                 'description' => $this->pageDescription($plan),
                 'locale' => $pageLocale,
@@ -532,6 +574,10 @@ final readonly class PortableSiteBuilder
                 'locale' => 'x-default',
                 'url' => $localeUrls->rootUrl(),
             ];
+            if (($page['not_found'] ?? false) === true) {
+                // The page answers any missing address; it has no translations.
+                $page['alternates'] = [];
+            }
             if ($siteDiscovery !== null) {
                 // With site_url, canonical and hreflang name absolute
                 // addresses, and the page gets Open Graph tags.
@@ -578,7 +624,7 @@ final readonly class PortableSiteBuilder
             }
             $pages = $backlinkHydrator->hydrate($pages, $backlinkReceipt['targets']);
         } else {
-            $backlinkTargets = $backlinkHydrator->index($pages);
+            $backlinkTargets = $backlinkHydrator->index(self::withoutNotFound($pages));
             $backlinkReceipt = [
                 'schema' => 'docara.backlinks.v1',
                 'content_sha256' => hash('sha256', CanonicalJson::encode($backlinkTargets)),
@@ -739,7 +785,7 @@ final readonly class PortableSiteBuilder
         }
         unset($hydratedPage);
         $localeLinkRoutes = [];
-        foreach ($contextPages as $page) {
+        foreach (self::withoutNotFound($contextPages) as $page) {
             $pageLocale = (string) $page['locale'];
             $canonicalUrl = (string) $page['url'];
             $legacyUrl = $localeUrls->unprefixed($pageLocale, $canonicalUrl);
@@ -787,7 +833,7 @@ final readonly class PortableSiteBuilder
         $contentAssets = [];
         foreach ($contentContexts as $locale => $context) {
             $localePages = array_values(array_filter(
-                $contextPages,
+                self::withoutNotFound($contextPages),
                 static fn (array $page): bool => ($page['locale'] ?? null) === $locale,
             ));
             $topologies[$locale] = $navigationBuilder->build($localePages, $context['root'], $context['path']);
@@ -1001,7 +1047,7 @@ final readonly class PortableSiteBuilder
                 $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
                 $this->files->put(
                     $docaraOutputDirectory . '/page-metadata.json',
-                    $this->prettyCanonicalJson($this->pageMetadata($pages, $root, $documentationVersion)),
+                    $this->prettyCanonicalJson($this->pageMetadata(self::withoutNotFound($pages), $root, $documentationVersion)),
                 );
             }
             // Shared assets are published once, under the deployment base.
@@ -1254,6 +1300,7 @@ final readonly class PortableSiteBuilder
                     'translation_key' => $page['translation_key'],
                     ...(isset($page['translation_fallback']) ? ['translation_fallback' => $page['translation_fallback']] : []),
                     ...(isset($page['robots']) ? ['robots' => $page['robots']] : []),
+                    ...(($page['not_found'] ?? false) === true ? ['not_found' => true] : []),
                     'tags' => $page['tags'] ?? [],
                     'output' => $page['output'],
                     'url' => $page['url'],
@@ -1959,6 +2006,21 @@ final readonly class PortableSiteBuilder
         return $segments === [] ? '/' : '/' . implode('/', $segments) . '/';
     }
 
+    /**
+     * The pages without the not-found page, which has no place in the
+     * navigation, backlinks, locale link routes or page metadata.
+     *
+     * @param  list<array<string, mixed>>  $pages
+     * @return list<array<string, mixed>>
+     */
+    private static function withoutNotFound(array $pages): array
+    {
+        return array_values(array_filter(
+            $pages,
+            static fn (array $page): bool => ($page['not_found'] ?? false) !== true,
+        ));
+    }
+
     private function observe(string $event, string $subject): void
     {
         if ($this->observer instanceof \Closure) {
@@ -2006,6 +2068,7 @@ final readonly class PortableSiteBuilder
                 'translation_key' => (string) ($record['translation_key'] ?? $pagePath),
                 ...(is_array($record['translation_fallback'] ?? null) ? ['translation_fallback' => $record['translation_fallback']] : []),
                 ...(is_string($record['robots'] ?? null) ? ['robots' => $record['robots']] : []),
+                ...(($record['not_found'] ?? false) === true ? ['not_found' => true] : []),
                 'preset' => (string) ($configuration['preset'] ?? 'docs'),
                 'navigation_hidden' => (bool) data_get($configuration, 'navigation.hidden', false),
                 'navigation_order' => data_get($configuration, 'navigation.order'),

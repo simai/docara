@@ -429,6 +429,17 @@
             dialog.onAfterClose(function () {
                 trigger.setAttribute('aria-expanded', 'false');
             });
+            // A link that opens search (the not-found page has one); without
+            // the script it leads to its href.
+            document.addEventListener('click', function (event) {
+                var opener = event.target instanceof Element
+                    ? event.target.closest('a[data-docara-search-open]')
+                    : null;
+                if (!opener || event.defaultPrevented || event.button !== 0
+                    || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
+                openSearch();
+            });
             document.addEventListener('keydown', function (event) {
                 if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
                     event.preventDefault();

@@ -109,6 +109,19 @@
             "type": "string",
             "format": "docara-relative-path"
         },
+        "not_found": {
+            "description": "The 404.html page at the deployment base, in the default locale, with the site's header, navigation, search and theme. Built unless enabled is false. The content is the error.not_found.* strings of the default locale's lang.json (Docara has English and Russian ones), or the site's 404.md at the root of the default locale's content. The page is noindex and stays out of the navigation, search, sitemap.xml and llms.txt. A portal build has none: the portal owns 404.html, and enabled true there is an error.",
+            "type": "object",
+            "required": [
+                "enabled"
+            ],
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        },
         "page_transforms": {
             "description": "Commands run over the written site before Docara measures it: each gets the site's directory as its last argument and runs in the project root; a failure fails the build.",
             "type": "array",

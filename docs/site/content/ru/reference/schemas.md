@@ -59,7 +59,7 @@ Invalid-пример документирует ожидаемую ошибку;
 | `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
 | `reader_preferences` | ✓ | — | — |
 | `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales`, `locale_routing`, `translation_tracking`, `documentation_tracking` | ✓ | — | — |
-| `documentation_version`, `redirects_file` | ✓ | — | — |
+| `documentation_version`, `redirects_file`, `not_found` | ✓ | — | — |
 | `description`, `slug` | — | — | ✓ |
 
 `schema` обязателен. Optional `version`, если присутствует, равен `1` и

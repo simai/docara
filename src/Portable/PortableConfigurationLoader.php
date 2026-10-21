@@ -89,6 +89,35 @@ final class PortableConfigurationLoader
         );
     }
 
+    /**
+     * The plan of a page Docara writes itself, such as the not-found page:
+     * the configuration a Markdown file at $page would inherit, with
+     * Markdown and front matter that come from Docara instead of a file.
+     *
+     * @param  array{title?:string,description?:string,noindex?:bool}  $frontMatter
+     */
+    public function resolveGenerated(string $page, string $source, string $markdown, array $frontMatter): ResolvedPagePlan
+    {
+        $page = $this->normalizePage($page);
+        [$configuration, $frameworkLock, $trace, $provenance] =
+            $this->resolveInheritedConfiguration($page);
+        $trace[] = $this->trace('content', $source, $markdown, null);
+        foreach (array_keys($frontMatter) as $field) {
+            $provenance['/front_matter/' . $field] = $source;
+        }
+        ksort($provenance, SORT_STRING);
+
+        return new ResolvedPagePlan(
+            $page,
+            $markdown,
+            $configuration,
+            $frameworkLock,
+            $trace,
+            $provenance,
+            $frontMatter,
+        );
+    }
+
     private function normalizePage(string $page): string
     {
         $page = $this->normalizeRelativePath($page);

@@ -148,6 +148,10 @@ final readonly class UiCopy
             'schema.default_undeclared' => 'not declared; the effective value comes from inheritance or the runtime',
             'language.fallback_notice' => 'This page is being translated; the original is shown ({source}).',
             'branding.credit' => 'Made with {docara}',
+            'error.not_found.title' => 'Page not found',
+            'error.not_found.message' => 'There is no page at this address. It may have moved, or the address has a typo.',
+            'error.not_found.home' => 'Go to the home page',
+            'error.not_found.search' => 'Search the documentation',
         ],
         'ru' => [
             'examples.preview_title' => 'Результат примера',
@@ -166,6 +170,10 @@ final readonly class UiCopy
             'schema.default_undeclared' => 'не объявлен; effective value определяется inheritance/runtime',
             'language.fallback_notice' => 'Эта страница переводится; показан оригинал ({source}).',
             'branding.credit' => 'Сделано на {docara}',
+            'error.not_found.title' => 'Страница не найдена',
+            'error.not_found.message' => 'По этому адресу страницы нет. Возможно, её перенесли или в адресе опечатка.',
+            'error.not_found.home' => 'На главную',
+            'error.not_found.search' => 'Искать в документации',
         ],
     ];
 

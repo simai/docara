@@ -9,7 +9,8 @@
 | Формат проекта | [Схемы JSON](/reference/schemas/) |
 | Объяснение результата | [Resolved page plan](/reference/resolved-plan/) |
 | Версии ассетов | [Framework lock](/reference/framework-lock/) |
-| Ограничения | [Безопасность и ошибки](/reference/security-and-errors/) |
+| Коды ошибок | [Причина и исправление](/reference/errors/) |
+| Ограничения | [Безопасность](/reference/security-and-errors/) |
 
 Текущая версия формата строго отклоняет неизвестные поля, опасные пути и
 движущиеся ссылки вроде `main` или `latest`.

@@ -6,6 +6,7 @@ namespace Simai\Docara\Application;
 
 use Simai\Docara\Authoring\AuthoringContract;
 use Simai\Docara\Authoring\AuthoringProfileRegistry;
+use Simai\Docara\Content\FrontMatterDocument;
 use Simai\Docara\Content\FrontMatterParser;
 use Simai\Docara\Content\PageSource;
 use Simai\Docara\Content\PageSourceLocator;
@@ -19,6 +20,7 @@ use Simai\Docara\I18n\LocaleUrlProjector;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
 use Simai\Docara\PortableSite\ExamplePreviewPolicy;
+use Simai\Docara\PortableSite\PageBuilder;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\ProjectExampleRepository;
 use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
@@ -108,7 +110,7 @@ final readonly class PageInspectionService
                 $this->facts($document->markdown),
                 $contract->present || isset($document->metadata['profile']),
             );
-            $compiler->compile($document->markdown, $source->path);
+            $compiler->compile($this->compiledMarkdown($document), $source->path);
             foreach ($this->examples($runtime, $source, $document->markdown) as $example) {
                 if ($example['mode'] === 'reusable') {
                     $exampleRepository->load($example['id'], $source->path);
@@ -168,7 +170,7 @@ final readonly class PageInspectionService
         $examples = $this->examples($runtime, $source, $document->markdown);
         $links = $this->links($document->markdown);
         if ($full) {
-            $this->compileMarkdown($runtime, $source, $document->markdown);
+            $this->compileMarkdown($runtime, $source, $this->compiledMarkdown($document));
             foreach ($examples as $example) {
                 if ($example['mode'] === 'reusable') {
                     (new ProjectExampleRepository($runtime->root, (string) ($runtime->site['base_url'] ?? '/')))->load($example['id'], $source->path);
@@ -320,7 +322,7 @@ final readonly class PageInspectionService
     /** @return list<array{url:string}> */
     private function links(string $markdown): array
     {
-        $markdown = $this->withoutFencedCode($markdown);
+        $markdown = $this->withoutCode($markdown);
         preg_match_all('/\[[^]]+]\(([^)]+)\)/', $markdown, $matches);
 
         return array_map(static fn (string $url): array => ['url' => $url], array_values(array_unique($matches[1] ?? [])));
@@ -329,6 +331,18 @@ final readonly class PageInspectionService
     private function withoutFencedCode(string $markdown): string
     {
         return preg_replace('/^(?:`{3,}|~{3,}).*?^(?:`{3,}|~{3,})\h*$/ms', '', $markdown) ?? $markdown;
+    }
+
+    /**
+     * Markdown without fenced code and code spans: a link written as code,
+     * such as `![Scheme](/ru/guide/scheme.png)` in prose, is an example and
+     * not a link of the page.
+     */
+    private function withoutCode(string $markdown): string
+    {
+        $markdown = $this->withoutFencedCode($markdown);
+
+        return preg_replace('/(?<!`)(`+)(?!`).+?(?<!`)\1(?!`)/s', '', $markdown) ?? $markdown;
     }
 
     /** @param list<array{url:string}> $links @return list<array<string, mixed>> */
@@ -366,7 +380,7 @@ final readonly class PageInspectionService
                 $diagnostics[] = ['code' => 'PAGE_LINK_TARGET_MISSING', 'status' => 'error', 'severity' => 'error', 'url' => $url];
             }
         }
-        preg_match_all('/!\[[^]]*]\(([^)]+)\)/', $this->withoutFencedCode($markdown), $images);
+        preg_match_all('/!\[[^]]*]\(([^)]+)\)/', $this->withoutCode($markdown), $images);
         foreach ($images[1] ?? [] as $asset) {
             if (str_contains($asset, '://') || str_starts_with($asset, 'data:') || str_starts_with($asset, '/')) {
                 continue;
@@ -380,6 +394,19 @@ final readonly class PageInspectionService
         }
 
         return $diagnostics;
+    }
+
+    /**
+     * The Markdown the build compiles for a page. A Composition Recipe page
+     * keeps its body empty (the build refuses one with content) and compiles
+     * the same placeholder the build does; checking its empty body against
+     * the Document IR compiler failed every validation from that page on.
+     */
+    private function compiledMarkdown(FrontMatterDocument $document): string
+    {
+        return is_string($document->metadata['composition_recipe'] ?? null) && trim($document->markdown) === ''
+            ? PageBuilder::RECIPE_PAGE_MARKDOWN
+            : $document->markdown;
     }
 
     private function compileMarkdown(ProjectRuntime $runtime, PageSource $source, string $markdown): void

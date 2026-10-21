@@ -75,12 +75,17 @@ final class BuildCommand extends Command
         try {
             $contract = AuthoringContract::load($this->base);
             if ($contract->present) {
+                // Every page with a profile carries the advisory editorial
+                // checklist (PAGE_EDITORIAL_REVIEW_REQUIRED); `docara validate
+                // page` shows it. The build reports only what needs a fix:
+                // missing structure, links and assets.
                 $profileIssues = count(array_filter(
                     (new PageInspectionService)->validateAll($this->base),
-                    static fn (array $check): bool => ($check['status'] ?? 'pass') !== 'pass',
+                    static fn (array $check): bool => ($check['status'] ?? 'pass') !== 'pass'
+                        && ($check['severity'] ?? null) !== 'advisory',
                 ));
                 if ($profileIssues > 0) {
-                    $this->console->comment("Page authoring reported $profileIssues item(s) for structural or editorial review; the build remains valid in report mode.");
+                    $this->console->comment("Page authoring reported $profileIssues item(s) for structural review or with a missing link or asset; the build remains valid in report mode.");
                 }
             }
         } catch (Throwable $exception) {

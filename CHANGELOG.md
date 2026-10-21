@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.7.0] - 2026-10-21
+
 ### Added
 
 - **A 404 page.** The build now writes `404.html` at the deployment base: a

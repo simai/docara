@@ -6,13 +6,6 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
-### Changed
-
-- The starter templates (`docara init`), the component catalogue examples and
-  the documentation's image examples use the new blue Docara mark instead of
-  the old red one, and the starter `favicon.ico` is redrawn from it (16, 32
-  and 48 px). File names are unchanged, so sites and links need no edit.
-
 ### Added
 
 - **Settings tables explain each field.** `:::schema_reference` tables show
@@ -44,11 +37,6 @@ All notable changes to Docara are recorded here. The format follows
   `scripts/capture-lang-reference.php`. A new page documents
   `docara.authoring.json` and the six page profiles.
 
-### Changed
-
-- **Documentation: settings pages are split into titled groups.** Site, page,
-  section and Framework lock settings show their field tables under H2
-  groups instead of one long table.
 - **A Markdown link that opens search: `[text](#docara-search)`.** Any page,
   including a site's own `404.md`, can now link to the search dialog the way
   the built-in 404 page does. The reserved fragment works in paragraphs,
@@ -58,6 +46,43 @@ All notable changes to Docara are recorded here. The format follows
   On a page with `search.enabled: false` it is an ordinary link to the home
   page. Documented on the search authoring page and in the 404 section of
   build/hosting.
+
+### Changed
+
+- The starter templates (`docara init`), the component catalogue examples and
+  the documentation's image examples use the new blue Docara mark instead of
+  the old red one, and the starter `favicon.ico` is redrawn from it (16, 32
+  and 48 px). File names are unchanged, so sites and links need no edit.
+- **Documentation: settings pages are split into titled groups.** Site, page,
+  section and Framework lock settings show their field tables under H2
+  groups instead of one long table.
+- **A brand in `logo` mode keeps the logo's proportions.** The header brand
+  box was square in every mode, so a wide logo (mark and wordmark) shrank to
+  fit the square. In `branding.mode: "logo"` the box now takes the logo's own
+  width and `size` sets only its height (`small` 24 px, `medium` 32 px,
+  `large` 40 px); square logos look the same as before. The other modes are
+  unchanged.
+- **The documentation home page has no screenshots.** The site will be
+  translated, so the home page drops the images that carry text: the hero
+  relies on its background effect, the two showcase blocks become a
+  "Documentation out of the box" features grid with Material Symbols icons,
+  the feature cards use icons instead of PNG pictures, and the "Made with
+  Docara" showcase is gone (the documentation itself is built with Docara).
+  The five unused screenshots and three feature images are deleted.
+- **The "Made with Docara" credit shows the Docara logo.** Under the sidebar
+  navigation the credit now reads "Made with" (Russian: «Сделано на») followed
+  by the small Docara logo (14 px high) instead of the word "Docara". The
+  logo is an inline SVG drawn with `currentColor`: the wordmark takes the
+  credit's `on-surface-variant` colour and the mark a lighter mix of it
+  (`--docara-credit-wordmark`, `--docara-credit-mark`), so one logo serves
+  the light and the dark theme. The whole line is one link to
+  <https://docara.simai.io/> with the accessible name and tooltip
+  "Made with Docara", no underline, a darker colour on hover and a visible
+  focus ring. `branding.credit: false`, the pinned sidebar footer and the copy
+  in the mobile navigation sheet work as before.
+- **Docara's own documentation uses the new Docara logo.** The header shows the
+  full logo (`mode: "logo"`, 24 px high, a light and a dark file), the favicon
+  is the SVG mark, and the share card shows the new logo.
 
 ### Fixed
 
@@ -92,36 +117,6 @@ All notable changes to Docara are recorded here. The format follows
   inline glyph inside the text. An icon later in the text stays inline, and
   other inline components (a badge) are never lifted. Material Symbols icons
   replace raster images that only served as icons.
-
-### Changed
-
-- **A brand in `logo` mode keeps the logo's proportions.** The header brand
-  box was square in every mode, so a wide logo (mark and wordmark) shrank to
-  fit the square. In `branding.mode: "logo"` the box now takes the logo's own
-  width and `size` sets only its height (`small` 24 px, `medium` 32 px,
-  `large` 40 px); square logos look the same as before. The other modes are
-  unchanged.
-- **The documentation home page has no screenshots.** The site will be
-  translated, so the home page drops the images that carry text: the hero
-  relies on its background effect, the two showcase blocks become a
-  "Documentation out of the box" features grid with Material Symbols icons,
-  the feature cards use icons instead of PNG pictures, and the "Made with
-  Docara" showcase is gone (the documentation itself is built with Docara).
-  The five unused screenshots and three feature images are deleted.
-- **The "Made with Docara" credit shows the Docara logo.** Under the sidebar
-  navigation the credit now reads "Made with" (Russian: «Сделано на») followed
-  by the small Docara logo (14 px high) instead of the word "Docara". The
-  logo is an inline SVG drawn with `currentColor`: the wordmark takes the
-  credit's `on-surface-variant` colour and the mark a lighter mix of it
-  (`--docara-credit-wordmark`, `--docara-credit-mark`), so one logo serves
-  the light and the dark theme. The whole line is one link to
-  <https://docara.simai.io/> with the accessible name and tooltip
-  "Made with Docara", no underline, a darker colour on hover and a visible
-  focus ring. `branding.credit: false`, the pinned sidebar footer and the copy
-  in the mobile navigation sheet work as before.
-- **Docara's own documentation uses the new Docara logo.** The header shows the
-  full logo (`mode: "logo"`, 24 px high, a light and a dark file), the favicon
-  is the SVG mark, and the share card shows the new logo.
 
 ## [3.7.0] - 2026-10-21
 

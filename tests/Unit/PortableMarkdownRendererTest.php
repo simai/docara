@@ -780,6 +780,31 @@ MD);
     }
 
     #[Test]
+    public function a_leading_icon_component_becomes_the_feature_card_icon(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::features
+- :icon[bolt]{size=1 container=square variant=tonal scheme=primary} **Fast.** Static output.
+- Text with :icon[search] inline and :badge[New]{type=main} after it.
+- :badge[Beta]{type=main} **Badge first.** A badge is not lifted.
+:::
+MD);
+
+        $icon = '<span class="docara-icon inline-grid" data-docara-icon-container="square" data-docara-icon-variant="tonal" data-docara-icon-scheme="primary" data-docara-icon-size="1">'
+            . '<i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">bolt</i></span>';
+        // The icon is a flex row of its own, like a feature image, so the
+        // shell rule [data-docara-block="features"]>li>.docara-icon reaches it.
+        self::assertStringContainsString(
+            'flex-col gap-1">' . $icon . '<strong>Fast.</strong><span class="min-w-0">Static output.</span></li>',
+            $html,
+        );
+        // An icon later in the text stays inline, and only an icon is lifted.
+        self::assertMatchesRegularExpression('~flex-col gap-1"><span class="min-w-0">Text with <span class="docara-icon[^>]*><i[^>]*>search</i></span> inline~', $html);
+        self::assertMatchesRegularExpression('~flex-col gap-1"><span class="min-w-0"><span class="sf-badge[^"]*"[^>]*>~', $html);
+        self::assertStringNotContainsString('DOCARA_INLINE_', $html);
+    }
+
+    #[Test]
     public function details_show_the_framework_disclosure_chevron_in_every_view(): void
     {
         foreach (['surface' => 'bg-surface-0 border border-outline-variant radius-2 p-2 m-bottom-1', 'lines' => 'border-bottom-1 border-bottom-solid border-outline-variant p-y-1 m-bottom-1'] as $view => $classes) {

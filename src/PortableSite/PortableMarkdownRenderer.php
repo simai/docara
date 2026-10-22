@@ -237,6 +237,12 @@ final class PortableMarkdownRenderer
             $this->diagnosticSource($sourceRoot, $sourceFile),
         );
         $markdown = $inline['markdown'];
+        // A features card may open with an :icon[] instead of an image; the
+        // card lifts that icon out of its text run (renderFeatures).
+        $iconPlaceholders = array_keys(array_filter(
+            $inline['replacements'],
+            static fn (string $replacement): bool => str_starts_with($replacement, '<span class="docara-icon '),
+        ));
         $inspection = $this->inspectDirectives($markdown);
         $this->assertDirectivePlacement($markdown, $inspection);
         [$markdown, $blocks, $referenceMarkdown] = $this->extractBlocks($markdown, $inspection['directives']);
@@ -265,7 +271,7 @@ final class PortableMarkdownRenderer
                 ),
                 TypedRendererId::Steps => $this->renderSteps($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Cta => $this->renderCta($this->converter->convert($blockMarkdown)),
-                TypedRendererId::Features => $this->renderFeatures($this->converter->convert($blockMarkdown)),
+                TypedRendererId::Features => $this->renderFeatures($this->converter->convert($blockMarkdown), $iconPlaceholders),
                 TypedRendererId::Hero => $this->renderHero(
                     $this->converter->convert($blockMarkdown),
                     $block['attributes'],
@@ -2025,7 +2031,8 @@ HTML;
             . $match['label'] . '</span></a>';
     }
 
-    private function renderFeatures(RenderedContentInterface $rendered): string
+    /** @param list<string> $iconPlaceholders placeholders of the :icon[] inline components on the page */
+    private function renderFeatures(RenderedContentInterface $rendered, array $iconPlaceholders = []): string
     {
         $root = $rendered->getDocument()->firstChild();
         $listCount = 0;
@@ -2126,6 +2133,12 @@ HTML;
                 );
             }
             $leading = $firstInline instanceof Image ? $firstInline->next() : $firstInline;
+            if (! $firstInline instanceof Image
+                && $leading instanceof Text
+                && in_array(trim($leading->getLiteral()), $iconPlaceholders, true)
+            ) {
+                $leading = $leading->next();
+            }
             while ($leading instanceof Text && trim($leading->getLiteral()) === '') {
                 $leading = $leading->next();
             }
@@ -2157,20 +2170,28 @@ HTML;
 
         return preg_replace_callback(
             '/<li>(?<body>.*?)<\/li>/su',
-            function (array $match) use (&$index, $leadingTitles): string {
+            function (array $match) use (&$index, $leadingTitles, $iconPlaceholders): string {
                 $hasTitle = $leadingTitles[$index++] ?? false;
 
                 return '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">'
-                    . $this->featureCardBody($match['body'], $hasTitle) . '</li>';
+                    . $this->featureCardBody($match['body'], $hasTitle, $iconPlaceholders) . '</li>';
             },
             $content,
         ) ?? $content;
     }
 
-    private function featureCardBody(string $body, bool $hasTitle): string
+    /** @param list<string> $iconPlaceholders */
+    private function featureCardBody(string $body, bool $hasTitle, array $iconPlaceholders = []): string
     {
         $icon = '';
         if (preg_match('/^(?<icon><img data-docara-media="feature-icon"[^>]*>)\s*/u', $body, $match) === 1) {
+            $icon = $match['icon'];
+            $body = substr($body, strlen($match[0]));
+        } elseif (preg_match('/^(?<icon>DOCARA_INLINE_[A-Z0-9]+)\s*/u', $body, $match) === 1
+            && in_array($match['icon'], $iconPlaceholders, true)
+        ) {
+            // A leading :icon[] is the card's icon, a flex row of its own like
+            // an image; the placeholder becomes the icon after the block renders.
             $icon = $match['icon'];
             $body = substr($body, strlen($match[0]));
         }

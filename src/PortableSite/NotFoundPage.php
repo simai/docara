@@ -148,7 +148,7 @@ final readonly class NotFoundPage
         $html = '<ul class="docara-not-found-links" data-docara-not-found-links>'
             . '<li><a href="' . $home . '">' . self::escapeHtml($copy['error.not_found.home']) . '</a></li>';
         if ($searchEnabled) {
-            $html .= '<li><a href="' . $home . '" data-docara-search-open>'
+            $html .= '<li><a href="' . $home . '" ' . SearchOpenLink::ATTRIBUTE . '>'
                 . self::escapeHtml($copy['error.not_found.search']) . '</a></li>';
         }
 

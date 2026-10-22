@@ -31,5 +31,12 @@ final readonly class PublisherChromeViewModel
         public bool $documentationNavigationEnabled,
         public bool $readerPreferencesEnabled,
         public string $readerPreferencesHtml,
+        /**
+         * The reading mode toggle. The 404 page has none: reading mode hides
+         * the header, whose search and home links are what a reader who
+         * landed there needs. Its exit button stays, for a reader who
+         * arrives with reading mode on.
+         */
+        public bool $readingModeToggleEnabled = true,
     ) {}
 }

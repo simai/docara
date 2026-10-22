@@ -54,6 +54,16 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **The 404 page has no lone reading toolbar button.** The button reported as
+  the 404 page's contents toggle is the reading mode toggle (the `article`
+  icon): the outline toggle is already rendered only for a page with outline
+  entries, on the 404 page and on any page without headings (checked on the
+  documentation build: 107 pages have the toggle, none of them without an
+  outline). Reading mode on the 404 page would hide the header with the
+  search, so that page no longer renders the reading mode toggle; the exit
+  button stays for a reader who arrives in reading mode, and
+  `declarative-shell.js` now binds it when the page has no toggles. Ordinary
+  pages without headings keep the reading mode toggle.
 - **A hero with a background effect keeps its height again.** 3.7.0 gave the
   effect's pause button its own row under the hero content, so such a hero
   grew by 48 px on a phone and 56 px on a wide screen. The button now sits in

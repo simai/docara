@@ -52,6 +52,13 @@ final class NotFoundPageBuildTest extends TestCase
         self::assertMatchesRegularExpression('#data-docara-search-index="/docs/_docara/search-index\.json\?docara_v=[a-f0-9]{64}"#', $page);
         self::assertStringContainsString('<!-- docara:pager empty -->', $page);
         self::assertStringNotContainsString('data-docara-breadcrumbs', $page);
+        // No outline, so no outline toggle; no reading mode toggle either,
+        // since reading mode would hide the header with search. The exit
+        // button stays for a reader who arrives in reading mode.
+        self::assertStringNotContainsString('data-docara-outline-toggle', $page);
+        self::assertStringNotContainsString('data-docara-focus-toggle', $page);
+        self::assertStringContainsString('<button type="button" data-docara-focus-exit', $page);
+        self::assertStringNotContainsString('id="docara-outline"', $page);
 
         // The host serves the page at any depth: nothing is addressed relatively.
         preg_match_all('/\s(?:href|src|srcset|poster|action|data-docara-search-index)="([^"]*)"/', $page, $urls);
@@ -163,6 +170,9 @@ final class NotFoundPageBuildTest extends TestCase
             $site . '/content/ru/components.md',
             (string) file_get_contents($site . '/content/ru/components.md') . "\n[Поиск](#docara-search)\n",
         );
+        // A page without headings: no outline and no outline toggle, while
+        // the reading mode toggle stays on an ordinary page.
+        file_put_contents($site . '/content/ru/plain.md', "---\ntitle: Без заголовков\n---\n\nТолько абзац текста.\n");
         $components = $this->readJson($site . '/content/ru/components.page.json');
         $components['search'] = ['enabled' => false];
         $this->writeJson($site . '/content/ru/components.page.json', $components);
@@ -176,6 +186,12 @@ final class NotFoundPageBuildTest extends TestCase
         $components = (string) file_get_contents($build . '/components/index.html');
         self::assertStringContainsString('<a href="/docs/">Поиск</a>', $components);
         self::assertStringNotContainsString('data-docara-search-open', $components);
+        self::assertMatchesRegularExpression('#<button type="button" data-docara-outline-toggle#', $writing);
+        self::assertMatchesRegularExpression('#<button type="button" data-docara-focus-toggle#', $writing);
+        $plain = (string) file_get_contents($build . '/plain/index.html');
+        self::assertStringNotContainsString('data-docara-outline-toggle', $plain);
+        self::assertStringNotContainsString('id="docara-outline"', $plain);
+        self::assertMatchesRegularExpression('#<button type="button" data-docara-focus-toggle#', $plain);
         foreach ([$writing, $components] as $page) {
             self::assertStringNotContainsString('#docara-search', $page);
         }

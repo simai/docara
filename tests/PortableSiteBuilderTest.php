@@ -1659,26 +1659,38 @@ MD);
 
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        $link = '<a class="color-on-surface-variant underline" href="https://docara.simai.io/" rel="noopener">Docara</a>';
-        $credit = static fn (string $text): string => '<p class="docara-sidebar-credit text-small color-on-surface-variant" data-docara-sidebar-credit>'
-            . str_replace('{docara}', $link, $text) . '</p>';
+        $logo = trim((string) file_get_contents(dirname(__DIR__) . '/resources/publisher/credit-logo.svg'));
+        // The words stay text; the Docara logo is an inline SVG in their
+        // place, and the link names the whole sentence for assistive tech.
+        $credit = static fn (string $words, string $name): string => '<p class="docara-sidebar-credit text-small color-on-surface-variant" data-docara-sidebar-credit>'
+            . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.simai.io/" rel="noopener" aria-label="' . $name . '" title="' . $name . '">'
+            . '<span class="docara-sidebar-credit-text docara-sidebar-credit-text--before">' . $words . '</span>' . $logo . '</a></p>';
+        self::assertStringStartsWith('<svg class="docara-sidebar-credit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1356 320" width="60" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path class="docara-sidebar-credit-mark" d="', $logo);
+        self::assertStringNotContainsString('#', $logo);
         foreach ([
-            'ru/guides/getting-started/index.html' => 'Сделано на {docara}',
-            'en/guides/getting-started/index.html' => 'Made with {docara}',
-        ] as $output => $text) {
+            'ru/guides/getting-started/index.html' => ['Сделано на', 'Сделано на Docara'],
+            'en/guides/getting-started/index.html' => ['Made with', 'Made with Docara'],
+        ] as $output => [$words, $name]) {
             $html = (string) file_get_contents($this->tmpPath('build_local/' . $output));
             // The line is the sidebar panel's footer: a sibling after the
             // scrolling navigation, outside it, so the menu scrolls above it.
             // The shell copies it to the foot of the mobile navigation sheet.
             self::assertSame(1, substr_count($html, 'data-docara-sidebar-credit'), $output);
-            self::assertStringContainsString($credit($text), $html, $output);
+            self::assertStringContainsString($credit($words, $name), $html, $output);
             self::assertMatchesRegularExpression(
                 '~<div class="docara-sidebar-panel">\s*<div class="docara-sidebar-scroll sf-scrollbar"[^>]*>\s*<div class="sf-scrollbar__viewport" tabindex="0"[^>]*>.*data-docara-smart="docara.navigation".*</div>\s*</div>\s*<p class="docara-sidebar-credit[^>]*>.*</p>\s*</div>\s*</aside>~s',
                 $html,
                 $output,
             );
             self::assertStringNotContainsString('target="_blank"', substr($html, (int) strpos($html, 'data-docara-sidebar-credit'), 400));
+            self::assertSame(1, substr_count($html, 'docara-sidebar-credit-logo'), $output);
         }
+        // One logo for both themes: the wordmark takes the link colour and
+        // the mark a lighter mix of it, as in the owner's gray logo files.
+        $shellCss = (string) file_get_contents(dirname(__DIR__) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b4);--docara-credit-wordmark:currentColor;--docara-credit-mark:color-mix(in srgb,currentColor 55%,transparent);color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-link:focus-visible{outline:', $shellCss);
         self::assertSame('Made with {docara}', UiCopy::buildText('ar', 'branding.credit'));
         // A landing page has no sidebar and so no credit line.
         $landing = (string) file_get_contents($this->tmpPath('build_local/ru/landing/index.html'));

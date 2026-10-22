@@ -94,6 +94,17 @@ All notable changes to Docara are recorded here. The format follows
   width and `size` sets only its height (`small` 24 px, `medium` 32 px,
   `large` 40 px); square logos look the same as before. The other modes are
   unchanged.
+- **The "Made with Docara" credit shows the Docara logo.** Under the sidebar
+  navigation the credit now reads "Made with" (Russian: «Сделано на») followed
+  by the small Docara logo (14 px high) instead of the word "Docara". The
+  logo is an inline SVG drawn with `currentColor`: the wordmark takes the
+  credit's `on-surface-variant` colour and the mark a lighter mix of it
+  (`--docara-credit-wordmark`, `--docara-credit-mark`), so one logo serves
+  the light and the dark theme. The whole line is one link to
+  <https://docara.simai.io/> with the accessible name and tooltip
+  "Made with Docara", no underline, a darker colour on hover and a visible
+  focus ring. `branding.credit: false`, the pinned sidebar footer and the copy
+  in the mobile navigation sheet work as before.
 - **Docara's own documentation uses the new Docara logo.** The header shows the
   full logo (`mode: "logo"`, 24 px high, a light and a dark file), the favicon
   is the SVG mark, and the share card shows the new logo.

@@ -335,18 +335,49 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
     }
 
     /**
-     * The "Made with Docara" line under the sidebar navigation (docara.json
+     * The "Made with Docara" credit under the sidebar navigation (docara.json
      * branding.credit). It is the sidebar's footer: pinned under the menu,
      * which scrolls above it. The shell copies it to the foot of the mobile
      * navigation sheet.
+     *
+     * The words around {docara} stay visible text and the Docara logo is an
+     * inline SVG in the place of {docara}, drawn with currentColor so one
+     * logo follows the light and dark theme. The whole line is one link whose
+     * accessible name and tooltip are the full sentence ("Made with Docara").
      */
     private function sidebarCredit(string $locale): string
     {
-        $link = '<a class="color-on-surface-variant underline" href="https://docara.simai.io/" rel="noopener">Docara</a>';
+        $sentence = UiCopy::buildText($locale, 'branding.credit');
+        $name = $this->escape(trim(str_replace('{docara}', 'Docara', $sentence)));
+        [$before, $after] = array_pad(explode('{docara}', $sentence, 2), 2, '');
+        $words = static fn (string $text, string $side): string => trim($text) === ''
+            ? ''
+            : '<span class="docara-sidebar-credit-text docara-sidebar-credit-text--' . $side . '">'
+                . htmlspecialchars(trim($text), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>';
 
         return '<p class="docara-sidebar-credit text-small color-on-surface-variant" data-docara-sidebar-credit>'
-            . str_replace('{docara}', $link, $this->escape(UiCopy::buildText($locale, 'branding.credit')))
-            . '</p>';
+            . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.simai.io/" rel="noopener"'
+            . ' aria-label="' . $name . '" title="' . $name . '">'
+            . $words($before, 'before') . $this->creditLogo() . $words($after, 'after')
+            . '</a></p>';
+    }
+
+    private function creditLogo(): string
+    {
+        static $logo = null;
+        if ($logo === null) {
+            $path = dirname(__DIR__, 2) . '/resources/publisher/credit-logo.svg';
+            $svg = is_file($path) && ! is_link($path) ? file_get_contents($path) : false;
+            if (! is_string($svg) || ! str_starts_with($svg, '<svg ')) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_PUBLISHER_ASSET_INVALID',
+                    'Declarative publisher asset [credit-logo.svg] cannot be read.',
+                );
+            }
+            $logo = trim($svg);
+        }
+
+        return $logo;
     }
 
     /** @return list<string> */

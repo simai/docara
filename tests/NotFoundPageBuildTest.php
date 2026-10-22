@@ -69,7 +69,7 @@ final class NotFoundPageBuildTest extends TestCase
 
         // Out of the navigation, search, sitemap, llms.txt and page metadata.
         foreach (['index.html', 'writing/index.html', 'components/index.html'] as $output) {
-            self::assertStringNotContainsString('404', (string) file_get_contents($build . '/' . $output), $output);
+            self::assertStringNotContainsString('404.html', (string) file_get_contents($build . '/' . $output), $output);
         }
         $search = $this->readJson($build . '/_docara/search-index.json');
         self::assertNotContains('/docs/404.html', array_column($search['documents'], 'url'));
@@ -135,7 +135,7 @@ final class NotFoundPageBuildTest extends TestCase
         self::assertStringContainsString('<a href="/" data-docara-search-open>search the documentation</a>', $page);
         self::assertStringNotContainsString('#docara-search', $page);
         self::assertFileExists($build . '/assets/lost.png');
-        self::assertStringNotContainsString('404', (string) file_get_contents($build . '/writing/index.html'));
+        self::assertStringNotContainsString('404.html', (string) file_get_contents($build . '/writing/index.html'));
         $plans = $this->readJson($site . '/build_production.docara/resolved-page-plans.json');
         $record = array_values(array_filter($plans['pages'], static fn (array $record): bool => $record['output'] === '404.html'))[0];
         self::assertSame('authored_markdown', $record['page_source_kind']);

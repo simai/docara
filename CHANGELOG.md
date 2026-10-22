@@ -79,6 +79,12 @@ All notable changes to Docara are recorded here. The format follows
   reduced motion, where the button never shows. Measured in headless Chrome
   at 390, 768, 1440 and 1920 px, light and dark, LTR and RTL: no overlap with
   the hero content or media.
+- **A features card can open with an icon.** In a `:::features` item, an
+  `:icon[...]` placed first (where an image would go) becomes the card's icon:
+  a row of its own above the bold title, like a feature image, instead of an
+  inline glyph inside the text. An icon later in the text stays inline, and
+  other inline components (a badge) are never lifted. Material Symbols icons
+  replace raster images that only served as icons.
 
 ## [3.7.0] - 2026-10-21
 

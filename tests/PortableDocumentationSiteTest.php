@@ -424,7 +424,12 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // The error code reference (an overview and four pages) and the page
         // profiles page add six pages, each with its page and its legacy
         // redirect: 1917.
-        self::assertCount(1917, $firstFiles);
+        // The new logo replaces the home page screenshots and feature images
+        // (five WebP and three PNG files) with icons and a text-only layout.
+        // The brand has a light and a dark logo and an SVG favicon instead of
+        // the mark and favicon.ico, and the content assets gain the new mark
+        // for the image example: 1911.
+        self::assertCount(1911, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

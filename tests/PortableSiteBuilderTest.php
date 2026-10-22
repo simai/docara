@@ -651,6 +651,10 @@ MD);
                 $this->tmpPath('build_local/_docara/smart/preferences.js'),
             ],
         ));
+        // A logo-mode brand keeps a wide logo's proportions: the box takes
+        // the logo's width and the image is as high as the brand size.
+        self::assertStringContainsString('.docara-brand--logo .docara-brand-mark{inline-size:auto}', $smartSurface);
+        self::assertStringContainsString('.docara-brand--logo .docara-brand-logo{block-size:var(--docara-brand-mark-size);inline-size:auto;max-inline-size:none}', $smartSurface);
         self::assertStringContainsString("document.addEventListener('docara:preferences-ready',boot)", $smartSurface);
         self::assertStringContainsString("component.dataset.docaraPreferencesRuntime='ready'", $smartSurface);
         self::assertStringContainsString("document.addEventListener('change',selectOption,true)", $smartSurface);

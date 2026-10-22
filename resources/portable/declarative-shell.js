@@ -889,7 +889,8 @@
     var outlineButton=document.querySelector('[data-docara-outline-toggle]');
     var focusButton=document.querySelector('[data-docara-focus-toggle]');
     var exitButton=document.querySelector('[data-docara-focus-exit]');
-    if(!outlineButton&&!focusButton)return;
+    // The 404 page has no reading mode toggle but keeps the exit button.
+    if(!outlineButton&&!focusButton&&!exitButton)return;
     var root=document.documentElement;
     var store=window.DocaraReadingLayout||null;
     function state(){return{outline:root.hasAttribute('data-docara-outline-hidden')?'hidden':'shown',focus:root.hasAttribute('data-docara-focus-mode')}}

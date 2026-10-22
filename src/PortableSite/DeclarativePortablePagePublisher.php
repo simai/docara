@@ -201,6 +201,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $documentationNavigationEnabled,
             $readerPreferences['enabled'],
             $readerPreferencesArtifact?->html ?? '',
+            ($page['not_found'] ?? false) !== true,
         ));
 
         $view = new PortablePageViewModel(

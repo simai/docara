@@ -6,6 +6,43 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Settings tables explain each field.** `:::schema_reference` tables show
+  the field, what it does and its default; type, level, validation rule and
+  schema pointer move into a "Technical details" disclosure under each row.
+  Russian descriptions for all 180 `docara.json`, `section.json` and
+  `page.json` fields ship in `resources/schema-descriptions/ru.json`, keyed by
+  schema pointer; other languages show the schema's English `description`.
+  Defaults are the values the build applies, taken from the new
+  `ConfigurationDefaults` (the loader's `@defaults` layer and the fallbacks for
+  `settings.*`, `branding.mode`/`size`/`credit`, `navigation.scope`, `title`
+  and `documentation_version` now read from it). Pattern keys such as
+  `<^[a-z][a-z0-9_.-]+$>` show as `<region>` or `<locale>`, with the exact
+  path in the details.
+- **`schema_reference` takes `fields=`**, a comma-separated list of top-level
+  fields, so a long reference can be split under headings; an unknown field
+  stops the build with `MARKDOWN_SCHEMA_REFERENCE_FIELDS_INVALID`.
+- **Documentation: error code reference.** A new Reference > Error codes
+  section gives a cause and a fix for 375 codes and all 31 `verify-static`
+  markers: pages and Markdown, site settings (redirects, locales, `lang.json`,
+  translations, search, effects, 404 page, `site_url`, theme, brand, portal)
+  and upgrade. Troubleshooting, security and verify pages link to it. A test
+  collects the codes from `src/` and fails when the docs name a code Docara
+  no longer raises or when a code of the common families has no entry;
+  `docs/diagnostic-code-coverage.json` lists the codes not documented yet.
+- **Documentation: every `lang.json` string.** Authoring > Language packs
+  lists all interface strings with where they show and their English and
+  Russian text, generated from `UiCopy` by
+  `scripts/capture-lang-reference.php`. A new page documents
+  `docara.authoring.json` and the six page profiles.
+
+### Changed
+
+- **Documentation: settings pages are split into titled groups.** Site, page,
+  section and Framework lock settings show their field tables under H2
+  groups instead of one long table.
+
 ## [3.7.0] - 2026-10-21
 
 ### Added

@@ -8,10 +8,16 @@ Branding отвечает за title/label/logo/favicons/mode/size. Настро
 
 ```json
 {
-  "branding": {"title": "Docara", "mode": "compact", "size": "large", "logo": "assets/docara-mark.svg", "favicon": "assets/favicon.ico"},
+  "branding": {"title": "Docara", "mode": "logo", "size": "small", "logo": "assets/docara-logo.svg", "logo_dark": "assets/docara-logo-dark.svg", "favicon": "assets/docara-icon.svg"},
   "settings": {"theme": "system", "modal_blur": "none", "ui_radius": "default"}
 }
 ```
+
+Режим `logo` показывает в шапке только логотип, без текстового названия;
+`title` остаётся доступным именем ссылки на главную. Логотип рисуется через
+`<img>`, поэтому для тёмной темы задайте отдельный файл в `logo_dark`. Высоту
+задаёт `size`: `small` — 24 px, `medium` — 32 px, `large` — 40 px; ширина
+широкого логотипа следует его пропорциям. Favicon может быть SVG, PNG или ICO.
 
 `ui_radius` выбирает Framework-owned CSS variable `--sf-radius--ui`: `default` оставляет значение Framework, `medium` задаёт `--sf-radius-1/2`, `large` — `--sf-radius-1`. Меняется один токен, а components используют свои variables с fallback на него. `modal_blur=none` убирает backdrop blur поиска и настроек по умолчанию. Произвольный CSS из config не принимается: `theme` принимает только цвет, а стили строит Framework.
 

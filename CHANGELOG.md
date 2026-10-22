@@ -86,6 +86,18 @@ All notable changes to Docara are recorded here. The format follows
   other inline components (a badge) are never lifted. Material Symbols icons
   replace raster images that only served as icons.
 
+### Changed
+
+- **A brand in `logo` mode keeps the logo's proportions.** The header brand
+  box was square in every mode, so a wide logo (mark and wordmark) shrank to
+  fit the square. In `branding.mode: "logo"` the box now takes the logo's own
+  width and `size` sets only its height (`small` 24 px, `medium` 32 px,
+  `large` 40 px); square logos look the same as before. The other modes are
+  unchanged.
+- **Docara's own documentation uses the new Docara logo.** The header shows the
+  full logo (`mode: "logo"`, 24 px high, a light and a dark file), the favicon
+  is the SVG mark, and the share card shows the new logo.
+
 ## [3.7.0] - 2026-10-21
 
 ### Added

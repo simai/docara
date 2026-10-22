@@ -29,10 +29,11 @@
   "base_url": "/",
   "branding": {
     "title": "Docara",
-    "mode": "compact",
-    "size": "large",
-    "logo": "assets/docara-mark.svg",
-    "favicon": "assets/favicon.ico",
+    "mode": "logo",
+    "size": "small",
+    "logo": "assets/docara-logo.svg",
+    "logo_dark": "assets/docara-logo-dark.svg",
+    "favicon": "assets/docara-icon.svg",
     "share_image": "assets/share.webp"
   },
   "layout": {

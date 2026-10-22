@@ -107,6 +107,7 @@ final class NotFoundPageBuildTest extends TestCase
             $site . '/content/en/404.md',
             "---\ndescription: Nothing lives here.\n---\n\n# Lost in the docs\n\n"
             . "Try [writing pages](../writing/), the [components](/components/) or the [home page](../?from=404).\n\n"
+            . "Or [search the documentation](#docara-search).\n\n"
             . "![Lost](/assets/lost.png)\n",
         );
         $this->docara(['build', 'production'], $site);
@@ -123,6 +124,9 @@ final class NotFoundPageBuildTest extends TestCase
         self::assertStringContainsString('href="/components/"', $page);
         self::assertStringContainsString('href="/?from=404"', $page);
         self::assertStringContainsString('src="/assets/lost.png"', $page);
+        // [text](#docara-search) opens search; without JavaScript it leads home.
+        self::assertStringContainsString('<a href="/" data-docara-search-open>search the documentation</a>', $page);
+        self::assertStringNotContainsString('#docara-search', $page);
         self::assertFileExists($build . '/assets/lost.png');
         self::assertStringNotContainsString('404', (string) file_get_contents($build . '/writing/index.html'));
         $plans = $this->readJson($site . '/build_production.docara/resolved-page-plans.json');
@@ -138,6 +142,43 @@ final class NotFoundPageBuildTest extends TestCase
         // Off: the build is what it was before 404.html existed.
         self::assertFileDoesNotExist($build . '/404.html');
         self::assertFileExists($build . '/404/index.html');
+        self::assertSame([], $this->verify($site)['broken']);
+    }
+
+    #[Test]
+    public function any_page_links_to_search_with_the_reserved_fragment(): void
+    {
+        $site = $this->tmpPath('site');
+        $this->filesystem->ensureDirectoryExists($site);
+        $this->docara(['init', '--template=minimal', '--lang=ru'], $site);
+        $configuration = $this->readJson($site . '/docara.json');
+        $configuration['base_url'] = '/docs/';
+        $configuration['site_url'] = 'https://example.org/docs/';
+        $this->writeJson($site . '/docara.json', $configuration);
+        file_put_contents(
+            $site . '/content/ru/writing.md',
+            (string) file_get_contents($site . '/content/ru/writing.md') . "\nНе нашли ответ? [Откройте поиск](#docara-search).\n",
+        );
+        file_put_contents(
+            $site . '/content/ru/components.md',
+            (string) file_get_contents($site . '/content/ru/components.md') . "\n[Поиск](#docara-search)\n",
+        );
+        $components = $this->readJson($site . '/content/ru/components.page.json');
+        $components['search'] = ['enabled' => false];
+        $this->writeJson($site . '/content/ru/components.page.json', $components);
+
+        $this->docara(['build', 'production'], $site);
+        $build = $site . '/build_production';
+        $writing = (string) file_get_contents($build . '/writing/index.html');
+        self::assertStringContainsString('<a href="/docs/" data-docara-search-open>Откройте поиск</a>', $writing);
+        self::assertMatchesRegularExpression('#<script defer src="/docs/_docara/search\.js\?docara_v=[a-f0-9]{64}" data-docara-search-runtime>#', $writing);
+        // A page without search has no dialog to open: the link only leads home.
+        $components = (string) file_get_contents($build . '/components/index.html');
+        self::assertStringContainsString('<a href="/docs/">Поиск</a>', $components);
+        self::assertStringNotContainsString('data-docara-search-open', $components);
+        foreach ([$writing, $components] as $page) {
+            self::assertStringNotContainsString('#docara-search', $page);
+        }
         self::assertSame([], $this->verify($site)['broken']);
     }
 

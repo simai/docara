@@ -401,7 +401,11 @@ final readonly class PortableSiteBuilder
             }
             $components = $pageResult->frameworkComponents;
             $outline = $pageResult->outline;
-            $contentHtml = $pageResult->contentHtml;
+            $contentHtml = SearchOpenLink::apply(
+                $pageResult->contentHtml,
+                $localeUrls->home($pageLocale),
+                (bool) data_get($plan->configuration, 'search.enabled', false),
+            );
             if ($isNotFound) {
                 $contentHtml = $notFoundPage->absolutize($contentHtml);
                 if ($notFoundGenerated && is_array($notFoundCopy)) {

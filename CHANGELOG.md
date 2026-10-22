@@ -42,6 +42,16 @@ All notable changes to Docara are recorded here. The format follows
 - **Documentation: settings pages are split into titled groups.** Site, page,
   section and Framework lock settings show their field tables under H2
   groups instead of one long table.
+- **A Markdown link that opens search: `[text](#docara-search)`.** Any page,
+  including a site's own `404.md`, can now link to the search dialog the way
+  the built-in 404 page does. The reserved fragment works in paragraphs,
+  lists, hero actions and CTAs. The build turns the link into a link to the
+  page locale's home page marked `data-docara-search-open`, which
+  `_docara/search.js` opens the dialog for; without JavaScript it leads home.
+  On a page with `search.enabled: false` it is an ordinary link to the home
+  page. Documented on the search authoring page and in the 404 section of
+  build/hosting.
+
 ### Fixed
 
 - **A hero with a background effect keeps its height again.** 3.7.0 gave the

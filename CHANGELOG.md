@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.8.0] - 2026-10-23
+
 ### Added
 
 - **Settings tables explain each field.** `:::schema_reference` tables show

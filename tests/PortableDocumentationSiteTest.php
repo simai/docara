@@ -83,7 +83,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             ),
         ));
 
-        self::assertCount(134, $pages);
+        self::assertCount(140, $pages);
         $performanceProjection = json_decode(
             (string) file_get_contents($build . '.docara/performance.json'),
             true,
@@ -100,7 +100,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
-        self::assertCount(274, $htmlPages);
+        self::assertCount(286, $htmlPages);
         $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
         $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
         $singleNonIndexed = $this->documentationBuilder($filesystem)
@@ -108,7 +108,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(1, $singleNonIndexed);
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
-        self::assertCount(118, $search['documents']);
+        self::assertCount(124, $search['documents']);
         self::assertCount(38, $catalog['entries']);
         self::assertCount(31, $supported);
         self::assertCount(5, $unavailable);
@@ -123,7 +123,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             )->count(),
         );
         self::assertCount(7, $redirectReceipt['redirects']);
-        self::assertCount(133, $localeRouteReceipt['redirects']);
+        self::assertCount(139, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -295,7 +295,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(274, $report['html_pages'] ?? null);
+        self::assertSame(286, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
 
@@ -335,7 +335,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         );
 
         $pages = $builder->build($site, $site . '/build_test');
-        self::assertCount(134, $pages);
+        self::assertCount(140, $pages);
         self::assertStringContainsString(
             'Поиск из content lang',
             (string) file_get_contents($site . '/build_test/ru/index.html'),
@@ -421,7 +421,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // shared shell stylesheets regroup into 42: 1903.
         // The 404 page adds 404.html and the one shared shell stylesheet only
         // it links: 1905.
-        self::assertCount(1905, $firstFiles);
+        // The error code reference (an overview and four pages) and the page
+        // profiles page add six pages, each with its page and its legacy
+        // redirect: 1917.
+        self::assertCount(1917, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),
@@ -443,7 +446,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertArrayHasKey('performance.json', $this->treeHashes($firstBuild . '.docara'));
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
-        self::assertCount(133, $metadata['pages']);
+        self::assertCount(139, $metadata['pages']);
         foreach ($metadata['pages'] as $page) {
             self::assertNull($page['updated_at']);
             self::assertNull($page['revision']);

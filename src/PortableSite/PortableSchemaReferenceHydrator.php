@@ -50,9 +50,9 @@ final class PortableSchemaReferenceHydrator
     }
 
     /**
-     * One row per field: the path, what the field does and its default. The
-     * type, level, validation rule and schema source sit in a disclosure under
-     * the description, out of the reader's way.
+     * One row per field: the path, then what the field does with its default
+     * on a second line. The type, level, validation rule and schema source sit
+     * in a disclosure under it, out of the reader's way.
      *
      * @param  list<array<string,mixed>>  $records
      * @param  array<string,string>  $copy
@@ -61,28 +61,33 @@ final class PortableSchemaReferenceHydrator
     {
         $rows = '';
         foreach ($records as $record) {
-            $field = '<code>' . $this->escape((string) $record['path']) . '</code>';
+            $path = (string) $record['path'];
+            $display = $this->displayPath($path, $copy);
+            $field = '<code>' . $this->escape($display) . '</code>';
             if (($record['required'] ?? false) === true) {
                 $field .= '<br><small>' . $this->escape($copy['schema.required']) . '</small>';
             }
             $description = $this->descriptions->description($record, $locale);
             $details = '<details><summary>' . $this->escape($copy['schema.details']) . '</summary>'
+                . ($display === $path ? '' : '<p>' . $this->escape($copy['schema.path']) . ': <code>' . $this->escape($path) . '</code></p>')
                 . '<p>' . $this->escape($copy['schema.type']) . ': <code>' . $this->escape((string) $record['type']) . '</code>'
                 . ' · ' . $this->escape($copy['schema.scope']) . ': <code>' . $this->escape((string) $record['scope']) . '</code></p>'
                 . '<p>' . $this->escape($copy['schema.validation']) . ': <code>' . $this->escape((string) $record['validation']) . '</code></p>'
                 . '<p>' . $this->escape($copy['schema.provenance']) . ': <code>' . $this->escape((string) $record['provenance']) . '</code></p>'
                 . '</details>';
+            $default = $this->defaultCell($record, $copy, $locale);
             $rows .= '<tr><td>' . $field . '</td>'
                 . '<td>' . ($description === null
                     ? $this->escape($copy['schema.description_missing'])
-                    : $this->inlineCode($description)) . $details . '</td>'
-                . '<td>' . $this->defaultCell($record, $copy, $locale) . '</td></tr>';
+                    : $this->inlineCode($description))
+                . ($default === null ? '' : '<br>' . $this->escape($copy['schema.default']) . ': ' . $default)
+                . $details . '</td></tr>';
         }
 
         return '<div data-docara-schema-reference-view class="overflow-auto"><table><thead><tr>'
             . implode('', array_map(
                 fn (string $id): string => '<th>' . $this->escape($copy[$id]) . '</th>',
-                ['schema.field', 'schema.description', 'schema.default'],
+                ['schema.field', 'schema.description'],
             ))
             . '</tr></thead><tbody>' . $rows . '</tbody></table></div>';
     }
@@ -91,7 +96,7 @@ final class PortableSchemaReferenceHydrator
      * @param  array<string,mixed>  $record
      * @param  array<string,string>  $copy
      */
-    private function defaultCell(array $record, array $copy, string $locale): string
+    private function defaultCell(array $record, array $copy, string $locale): ?string
     {
         $inheritable = in_array($record['scope'] ?? '', ['section', 'page', 'shared'], true)
             && str_starts_with((string) $record['provenance'], 'resources/schemas/presentation.schema.json#')
@@ -108,7 +113,31 @@ final class PortableSchemaReferenceHydrator
             return $this->inlineCode($derived);
         }
 
-        return $this->escape($inheritable ? $copy['schema.inherited'] : $copy['schema.default_none']);
+        return $inheritable ? $this->escape($copy['schema.inherited']) : null;
+    }
+
+    /**
+     * Shows a pattern key such as "<^[a-z][a-z0-9_.-]+$>" by what it names:
+     * "<region>" under regions, "<locale>" under locales. The exact pattern
+     * stays in the technical details.
+     *
+     * @param  array<string,string>  $copy
+     */
+    private function displayPath(string $path, array $copy): string
+    {
+        $segments = explode('/', $path);
+        foreach ($segments as $index => $segment) {
+            if (! str_starts_with($segment, '<')) {
+                continue;
+            }
+            $segments[$index] = '<' . match ($segments[$index - 1] ?? '') {
+                'regions' => $copy['schema.key_region'],
+                'locales' => $copy['schema.key_locale'],
+                default => $copy['schema.key_any'],
+            } . '>';
+        }
+
+        return implode('/', $segments);
     }
 
     /** Escapes text and turns `code` spans of the description catalogue into <code>. */

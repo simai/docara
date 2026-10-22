@@ -45,9 +45,9 @@ final class PortableSchemaReferenceProjectorTest extends TestCase
             ['locale' => 'ru', 'content_html' => $placeholder],
         ]);
 
-        self::assertStringContainsString('<th>Field</th><th>What it does</th><th>Default</th>', $pages[0]['content_html']);
+        self::assertStringContainsString('<th>Field</th><th>What it does</th></tr>', $pages[0]['content_html']);
         self::assertDoesNotMatchRegularExpression('/[А-Яа-яЁё]/u', $pages[0]['content_html']);
-        self::assertStringContainsString('<th>Поле</th><th>Что задаёт</th><th>По умолчанию</th>', $pages[1]['content_html']);
+        self::assertStringContainsString('<th>Поле</th><th>Что задаёт</th></tr>', $pages[1]['content_html']);
     }
 
     #[Test]
@@ -85,8 +85,11 @@ final class PortableSchemaReferenceProjectorTest extends TestCase
         }
         self::assertStringNotContainsString('effective value', $html);
         // A section or page field inherits; the built-in value shows what applies when nothing sets it.
-        self::assertMatchesRegularExpression('~<code>/reading/toc_depth</code></td><td>[^<]*<details>.*?</details></td><td>наследуется, иначе <code>3</code></td>~u', $html);
+        self::assertMatchesRegularExpression('~<code>/reading/toc_depth</code></td><td>[^<]*<br>По умолчанию: наследуется, иначе <code>3</code><details>~u', $html);
         self::assertMatchesRegularExpression('~<code>/slug</code></td><td>Свой адрес страницы[^<]*<code>guides/install</code>~u', $html);
+        // A pattern key reads as what it names; the exact pattern stays in the details.
+        self::assertStringContainsString('<code>/layout/regions/&lt;область&gt;/enabled</code>', $html);
+        self::assertStringContainsString('Путь: <code>/layout/regions/&lt;^[a-z][a-z0-9_.-]+$&gt;/enabled</code>', $html);
     }
 
     #[Test]

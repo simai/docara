@@ -127,7 +127,7 @@ final class LangReference
         'branding.credit' => 'Подпись «Сделано на Docara»; `{docara}` — ссылка',
         'schema.field' => 'Заголовок столбца «Поле» в справочнике настроек',
         'schema.description' => 'Заголовок столбца описания в справочнике настроек',
-        'schema.default' => 'Заголовок столбца значения по умолчанию',
+        'schema.default' => 'Подпись значения по умолчанию под описанием поля',
         'schema.required' => 'Отметка обязательного поля',
         'schema.details' => 'Подпись раскрывающихся технических данных поля',
         'schema.type' => 'Подпись типа поля',
@@ -135,9 +135,12 @@ final class LangReference
         'schema.validation' => 'Подпись правила проверки',
         'schema.provenance' => 'Подпись места в схеме',
         'schema.description_missing' => 'Текст, когда у поля нет описания',
-        'schema.default_none' => 'Значение по умолчанию отсутствует',
         'schema.inherited' => 'Значение наследуется',
         'schema.default_inherited' => 'Значение наследуется, иначе встроенное; `{value}` — встроенное',
+        'schema.path' => 'Подпись точного пути поля',
+        'schema.key_region' => 'Имя области в пути поля',
+        'schema.key_locale' => 'Код языка в пути поля',
+        'schema.key_any' => 'Произвольный ключ в пути поля',
     ];
 
     public function __construct(private readonly string $root) {}
@@ -222,10 +225,10 @@ final class LangReference
      */
     private function table(array $ids, callable $text): string
     {
-        $rows = "| Ключ | Где видно | English | Русский |\n| --- | --- | --- | --- |\n";
+        $rows = "| Ключ и где видно | English | Русский |\n| --- | --- | --- |\n";
         foreach ($ids as $id) {
             $meaning = self::MEANINGS[$id] ?? throw new \RuntimeException("No meaning for lang string [$id].");
-            $rows .= '| `' . $id . '` | ' . $meaning . ' | ' . $this->cell($text($id, 'en')) . ' | ' . $this->cell($text($id, 'ru')) . " |\n";
+            $rows .= '| `' . $id . '` — ' . $meaning . ' | ' . $this->cell($text($id, 'en')) . ' | ' . $this->cell($text($id, 'ru')) . " |\n";
         }
 
         return $rows;

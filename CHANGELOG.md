@@ -6,6 +6,13 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- The starter templates (`docara init`), the component catalogue examples and
+  the documentation's image examples use the new blue Docara mark instead of
+  the old red one, and the starter `favicon.ico` is redrawn from it (16, 32
+  and 48 px). File names are unchanged, so sites and links need no edit.
+
 ### Added
 
 - **Settings tables explain each field.** `:::schema_reference` tables show

@@ -94,6 +94,13 @@ All notable changes to Docara are recorded here. The format follows
   width and `size` sets only its height (`small` 24 px, `medium` 32 px,
   `large` 40 px); square logos look the same as before. The other modes are
   unchanged.
+- **The documentation home page has no screenshots.** The site will be
+  translated, so the home page drops the images that carry text: the hero
+  relies on its background effect, the two showcase blocks become a
+  "Documentation out of the box" features grid with Material Symbols icons,
+  the feature cards use icons instead of PNG pictures, and the "Made with
+  Docara" showcase is gone (the documentation itself is built with Docara).
+  The five unused screenshots and three feature images are deleted.
 - **The "Made with Docara" credit shows the Docara logo.** Under the sidebar
   navigation the credit now reads "Made with" (Russian: «Сделано на») followed
   by the small Docara logo (14 px high) instead of the word "Docara". The

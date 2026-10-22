@@ -26,7 +26,7 @@
 
 ## Изображение и пропорции
 
-![Знак Docara в рамке 16:9](../../assets/docara-mark.svg){ratio=16x9 fit=contain}
+![Знак Docara в рамке 16:9](../../assets/docara-icon.svg){ratio=16x9 fit=contain}
 
 | Параметр | Значения | Назначение |
 | --- | --- | --- |

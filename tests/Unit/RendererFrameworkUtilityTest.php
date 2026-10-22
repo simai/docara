@@ -50,6 +50,12 @@ final class RendererFrameworkUtilityTest extends TestCase
             $markdown = preg_replace('/\A---\n.*?\n---\n/s', '', (string) file_get_contents($file)) ?? '';
             $html .= $renderer->render($markdown, $root . '/docs/site', $file);
         }
+        // The home page no longer has showcase or columns blocks; their
+        // component catalogue examples keep those renderers in the fixture.
+        foreach (['docara.showcase.md', 'docara.columns.md'] as $example) {
+            $file = $root . '/resources/component-catalog/examples/' . $example;
+            $html .= $renderer->render((string) file_get_contents($file), $root . '/docs/site', $file);
+        }
         $html .= $this->componentIndexHtml() . $this->atlasIndexHtml();
 
         // The pages exercise the blocks whose utilities once did not exist.

@@ -30,7 +30,7 @@ final class LangReferenceTest extends TestCase
             'Run php scripts/capture-lang-reference.php after changing an interface string.',
         );
         foreach ($this->reference->ids() as $id) {
-            self::assertStringContainsString('| `' . $id . '` |', $page, $id);
+            self::assertStringContainsString('| `' . $id . '` — ', $page, $id);
         }
     }
 

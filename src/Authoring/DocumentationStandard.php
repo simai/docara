@@ -236,6 +236,35 @@ final readonly class DocumentationStandard
         return $front . $this->body($profile, $language, $title);
     }
 
+    /**
+     * Lines of the page templates that a finished page must not keep: the
+     * description placeholders and every prose or list line of every
+     * template, without list markers. Headings and table rows are left out
+     * because a real page may share them.
+     *
+     * @return list<string>
+     */
+    public function placeholderLines(): array
+    {
+        $lines = [
+            'Одно предложение: что читатель узнает или сделает на этой странице.',
+            'One sentence: what the reader learns or does on this page.',
+        ];
+        foreach (self::TEMPLATES as $templates) {
+            foreach ($templates as $template) {
+                foreach (explode("\n", $template) as $line) {
+                    $line = trim((string) preg_replace('/^(?:[-*+]|\d+[.)])\s+/', '', trim($line)));
+                    if ($line === '' || str_starts_with($line, '#') || str_starts_with($line, '|') || mb_strlen($line) < 25) {
+                        continue;
+                    }
+                    $lines[] = $line;
+                }
+            }
+        }
+
+        return array_values(array_unique($lines));
+    }
+
     /** Body of a page template, from the `#` title down. */
     public function body(string $profile, string $language, string $title): string
     {

@@ -10,7 +10,11 @@ use Simai\Docara\Portable\SchemaRepository;
 
 final readonly class AuthoringContract
 {
-    /** @param list<string> $audiences @param list<array{match:string,profile:string}> $rules */
+    /**
+     * @param  list<string>  $audiences
+     * @param  list<array{match:string,profile:string}>  $rules
+     * @param  array{min_score?:int,glossary?:string,exclude?:list<string>}  $quality
+     */
     private function __construct(
         public bool $present,
         public array $audiences = [],
@@ -18,6 +22,7 @@ final readonly class AuthoringContract
         public array $rules = [],
         public ?string $sha256 = null,
         public bool $inferProfiles = false,
+        public array $quality = [],
     ) {}
 
     public static function load(string $root): self
@@ -47,6 +52,7 @@ final readonly class AuthoringContract
             $data['rules'] ?? [],
             hash_file('sha256', $path) ?: null,
             ($data['infer_profiles'] ?? true) === true,
+            $data['quality'] ?? [],
         );
     }
 
@@ -84,6 +90,18 @@ final readonly class AuthoringContract
         }
 
         return ['profile' => null, 'source' => 'none', 'matches' => []];
+    }
+
+    /** Whether a content-root-relative page path matches a quality.exclude pattern. */
+    public function excludedFromQuality(string $relativePath): bool
+    {
+        foreach ($this->quality['exclude'] ?? [] as $pattern) {
+            if ($this->matches($pattern, $relativePath)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function assertProfile(string $profile): void

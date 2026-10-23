@@ -74,16 +74,20 @@ final class PortableDocumentationSiteTest extends PHPUnit
             static fn (string $path): string => pathinfo($path, PATHINFO_FILENAME),
             $this->filesWithExtension($source . '/content/ru/components', 'md'),
         );
+        // Every supported entry has an authored page: its own component page
+        // or, for the native Markdown constructions, the Markdown guide that
+        // its catalogue entry cites.
         $projectedSupported = array_values(array_filter(
             $supported,
             static fn (array $entry): bool => ! in_array(
                 PublicComponentPage::slug($entry),
                 $authoredComponentAliases,
                 true,
-            ),
+            ) && ! ($entry['family'] === 'native_markdown'
+                && ($entry['docs_ref'] ?? null) === 'docs/site/content/ru/authoring/markdown.md'),
         ));
 
-        self::assertCount(143, $pages);
+        self::assertCount(116, $pages);
         $performanceProjection = json_decode(
             (string) file_get_contents($build . '.docara/performance.json'),
             true,
@@ -100,7 +104,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
-        self::assertCount(292, $htmlPages);
+        self::assertCount(320, $htmlPages);
         $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
         $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
         $singleNonIndexed = $this->documentationBuilder($filesystem)
@@ -108,22 +112,23 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(1, $singleNonIndexed);
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
-        self::assertCount(127, $search['documents']);
+        self::assertCount(84, $search['documents']);
         self::assertCount(38, $catalog['entries']);
         self::assertCount(31, $supported);
         self::assertCount(5, $unavailable);
         self::assertFileDoesNotExist($build . '.docara/component-catalog-pages.json');
         self::assertFileDoesNotExist($build . '.docara/declarative-example-pages.json');
         self::assertFileDoesNotExist($build . '/_docara/declarative-examples.json');
+        // The example stands; their overview moved to /ru/development/examples/.
         self::assertSame(
-            15,
+            14,
             $pages->filter(
                 static fn (array $page): bool => str_starts_with((string) ($page['url'] ?? ''), '/ru/examples/')
                     && ($page['page_source_kind'] ?? null) === 'authored_markdown',
             )->count(),
         );
-        self::assertCount(7, $redirectReceipt['redirects']);
-        self::assertCount(142, $localeRouteReceipt['redirects']);
+        self::assertCount(89, $redirectReceipt['redirects']);
+        self::assertCount(115, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -132,7 +137,8 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame('/ru/', $rootLocaleRoutes[0]['target_url']);
         $extensionsSearchDocument = array_values(array_filter(
             $search['documents'],
-            static fn (array $document): bool => $document['url'] === '/ru/development/extensions/',
+            // The extension levels are a part of the development overview.
+            static fn (array $document): bool => $document['url'] === '/ru/development/',
         ));
         self::assertCount(1, $extensionsSearchDocument);
         self::assertStringContainsString(
@@ -170,7 +176,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString('SIMAI Framework', $componentModel);
         self::assertStringContainsString('Компоненты проекта', $componentModel);
         self::assertStringContainsString('MARKDOWN_RAW_HTML_FORBIDDEN', $componentModel);
-        $settingsReference = (string) file_get_contents($build . '/ru/settings/index.html');
+        // The shared presentation table lives in the section.json and
+        // page.json reference.
+        $settingsReference = (string) file_get_contents($build . '/ru/reference/section-and-page/index.html');
         self::assertStringContainsString('/layout/regions/', $settingsReference);
         self::assertStringContainsString('uniqueItems=true', $settingsReference);
         self::assertStringContainsString('minimum=0', $settingsReference);
@@ -181,7 +189,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $examplePage = (string) file_get_contents($build . '/ru/components/example/index.html');
         self::assertSame(7, substr_count($catalogIndex, 'data-docara-table-scroll'));
         preg_match_all('~href="(/ru/components/[a-z0-9-]+/)"~', $catalogIndex, $componentLinks);
-        self::assertSame(34, count(array_unique($componentLinks[1] ?? [])));
+        self::assertSame(29, count(array_unique($componentLinks[1] ?? [])));
         self::assertStringContainsString('Текст и Markdown', $catalogIndex);
         self::assertStringContainsString('Содержательные блоки', $catalogIndex);
         self::assertStringContainsString('Код и данные', $catalogIndex);
@@ -296,7 +304,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(292, $report['html_pages'] ?? null);
+        self::assertSame(320, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
 
@@ -336,7 +344,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         );
 
         $pages = $builder->build($site, $site . '/build_test');
-        self::assertCount(143, $pages);
+        self::assertCount(116, $pages);
         self::assertStringContainsString(
             'Поиск из content lang',
             (string) file_get_contents($site . '/build_test/ru/index.html'),
@@ -433,7 +441,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // The background effects, landing blocks and Smart ui.* pages add
         // three pages and three legacy redirects, and the shared shell
         // stylesheets regroup from 43 into 49 (nine new, three gone): 1923.
-        self::assertCount(1923, $firstFiles);
+        // The documentation restructure removes 27 pages with their legacy
+        // redirects (54 files) and adds 82 redirects for their old addresses;
+        // the shared shell stylesheets regroup from 49 into 47: 1949.
+        self::assertCount(1949, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),
@@ -455,7 +466,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertArrayHasKey('performance.json', $this->treeHashes($firstBuild . '.docara'));
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
-        self::assertCount(142, $metadata['pages']);
+        self::assertCount(115, $metadata['pages']);
         foreach ($metadata['pages'] as $page) {
             self::assertNull($page['updated_at']);
             self::assertNull($page['revision']);

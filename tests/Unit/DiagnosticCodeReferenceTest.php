@@ -132,7 +132,7 @@ final class DiagnosticCodeReferenceTest extends TestCase
     {
         $root = dirname(__DIR__, 2) . '/docs/site/content/ru';
         foreach (['troubleshooting.md', 'reference/security-and-errors.md', 'build/verify.md', 'reference.md'] as $page) {
-            self::assertStringContainsString('(/reference/errors/', (string) file_get_contents($root . '/' . $page), $page);
+            self::assertMatchesRegularExpression('~\((?:/ru)?/reference/errors/~', (string) file_get_contents($root . '/' . $page), $page);
         }
         // The old partial code table moved to the reference.
         self::assertStringNotContainsString('| Код | Причина |', (string) file_get_contents($root . '/reference/security-and-errors.md'));

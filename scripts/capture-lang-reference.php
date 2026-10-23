@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Rewrites the table of lang.json strings on
- * docs/site/content/ru/authoring/language-packs.md from UiCopy and the init
+ * docs/site/content/ru/reference/lang-json.md from UiCopy and the init
  * templates. Run it after adding or renaming an interface string.
  *
  * Usage: php scripts/capture-lang-reference.php [--check]

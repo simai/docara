@@ -28,13 +28,15 @@ final class DocumentationSiteStructureTest extends TestCase
             self::assertStringNotContainsString('/ru/components/' . $entry . '/', $index);
         }
         $pages = glob($root . '/*.md') ?: [];
-        self::assertSame(34, count($pages));
-        self::assertSame(34, preg_match_all('#/ru/components/[a-z0-9-]+/#', $index));
+        self::assertSame(29, count($pages));
+        self::assertSame(29, preg_match_all('#/ru/components/[a-z0-9-]+/#', $index));
         foreach (['Текст и Markdown', 'Содержательные блоки', 'Код и данные', 'Макет', 'Медиа', 'Inline и действия', 'SIMAI Framework'] as $category) {
             self::assertStringContainsString('## ' . $category, $index);
         }
-        // Every component page is listed once, with a one-line description.
-        self::assertSame(7, substr_count($index, "| Компонент | Для чего |\n| --- | --- |"));
+        // Every component page is listed once, with a one-line description;
+        // the Markdown constructions point at the Markdown guide instead.
+        self::assertSame(6, substr_count($index, "| Компонент | Для чего |\n| --- | --- |"));
+        self::assertSame(1, substr_count($index, "| Конструкция | Для чего |\n| --- | --- |"));
         foreach ($pages as $page) {
             $slug = basename($page, '.md');
             self::assertMatchesRegularExpression(
@@ -49,18 +51,23 @@ final class DocumentationSiteStructureTest extends TestCase
     #[Test]
     public function native_markdown_guide_covers_every_enabled_profile_capability(): void
     {
-        $guide = (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/content/ru/components.md');
+        $content = dirname(__DIR__, 2) . '/docs/site/content/ru';
+        $guide = (string) file_get_contents($content . '/components.md');
+        $markdown = (string) file_get_contents($content . '/authoring/markdown.md');
+        // Each native capability is listed in the catalogue and described in
+        // its own part of the Markdown guide; fenced code also has a page.
         $refs = [
-            'native.code' => '/ru/components/code/',
-            'native.footnotes_and_sources' => '/ru/components/footnotes-and-sources/',
-            'native.headings_and_text' => '/ru/components/headings-and-text/',
-            'native.links_and_images' => '/ru/components/links-and-images/',
-            'native.lists_and_quotes' => '/ru/components/lists-and-quotes/',
-            'native.table' => '/ru/components/table/',
+            'native.code' => ['/ru/components/code/', '## Код'],
+            'native.footnotes_and_sources' => ['/ru/authoring/markdown/#сноски-и-источники', '## Сноски и источники'],
+            'native.headings_and_text' => ['/ru/authoring/markdown/#заголовки-и-текст', '## Заголовки и текст'],
+            'native.links_and_images' => ['/ru/authoring/markdown/#ссылки-и-изображения', '## Ссылки и изображения'],
+            'native.lists_and_quotes' => ['/ru/authoring/markdown/#списки-и-цитаты', '## Списки и цитаты'],
+            'native.table' => ['/ru/authoring/markdown/#таблицы', '## Таблицы'],
         ];
         self::assertSame(array_keys($refs), array_column(PortableMarkdownProfile::bundled()->entries(), 'id'));
-        foreach ($refs as $route) {
+        foreach ($refs as [$route, $heading]) {
             self::assertStringContainsString($route, $guide);
+            self::assertMatchesRegularExpression('/^' . preg_quote($heading, '/') . '$/mu', $markdown);
         }
         self::assertStringContainsString(
             'MARKDOWN_RAW_HTML_FORBIDDEN',
@@ -114,13 +121,12 @@ final class DocumentationSiteStructureTest extends TestCase
     }
 
     #[Test]
-    public function design_root_maps_every_shell_surface_and_real_insertion_file(): void
+    public function composition_page_maps_every_shell_surface_and_real_insertion_file(): void
     {
-        $base = dirname(__DIR__, 2) . '/docs/site/content/ru/design';
-        foreach (['composition', 'interface', 'project-shell', 'previews'] as $route) {
-            self::assertFileExists($base . '/' . $route . '.md');
-        }
-        $composition = (string) file_get_contents($base . '/composition.md');
+        $root = dirname(__DIR__, 2) . '/docs/site/content/ru';
+        self::assertDirectoryDoesNotExist($root . '/design');
+        // The former design overview and its four pages are one page now.
+        $composition = (string) file_get_contents($root . '/development/composition.md');
         foreach ([
             'resources/layouts/docara.docs.json',
             'resources/views/layout.docara.docs.json',
@@ -132,48 +138,51 @@ final class DocumentationSiteStructureTest extends TestCase
         ] as $marker) {
             self::assertStringContainsString($marker, $composition);
         }
-        $interface = (string) file_get_contents($base . '/interface.md');
         foreach (['Brand', 'Header navigation', 'Sidebar tree', 'Mobile/compact navigation', 'Outline / TOC', 'Search', 'Breadcrumbs', 'Previous/next pager', 'Reader preferences', 'Footer', 'Outer document'] as $surface) {
-            self::assertStringContainsString($surface, $interface);
+            self::assertStringContainsString($surface, $composition);
         }
-        $previews = (string) file_get_contents($base . '/previews.md');
-        self::assertSame(3, substr_count($previews, ':::internal_preview'));
-        self::assertStringContainsString('PREVIEW_BUILD_PURPOSE_FORBIDDEN', $previews);
+        self::assertSame(3, substr_count($composition, ':::internal_preview'));
+        self::assertStringContainsString('PREVIEW_BUILD_PURPOSE_FORBIDDEN', $composition);
     }
 
     #[Test]
     public function settings_root_implements_the_complete_route_map_and_schema_derived_references(): void
     {
-        $base = dirname(__DIR__, 2) . '/docs/site/content/ru/settings';
+        $content = dirname(__DIR__, 2) . '/docs/site/content/ru';
         $routes = [
-            'levels-and-inheritance', 'site', 'section', 'page', 'locales-and-routing',
-            'branding-and-theme', 'layout-and-regions', 'navigation', 'search-and-reading',
-            'reader-preferences', 'framework-lock-and-providers', 'security',
-            'diagnostics-and-provenance',
+            'levels-and-inheritance', 'site-address', 'branding-and-theme', 'layout-and-regions',
+            'search', 'reading', 'reader-preferences',
         ];
-        $root = (string) file_get_contents(dirname($base) . '/settings.md');
+        $root = (string) file_get_contents($content . '/settings.md');
         foreach ($routes as $route) {
-            self::assertFileExists($base . '/' . $route . '.md');
+            self::assertFileExists($content . '/settings/' . $route . '.md');
             self::assertStringContainsString('/ru/settings/' . $route . '/', $root);
         }
-        self::assertStringContainsString(':::schema_reference {schema=presentation scope=shared}', $root);
+        self::assertCount(count($routes), glob($content . '/settings/*.md') ?: []);
+        // The schema-derived tables live in the reference, one place per file.
+        self::assertStringContainsString(
+            ':::schema_reference {schema=presentation scope=shared}',
+            (string) file_get_contents($content . '/reference/section-and-page.md'),
+        );
         // A long reference is shown in titled parts; together they still list
         // every top-level field once.
         foreach ([
-            'site' => ['site', 'site'],
-            'section' => ['section', 'section'],
-            'page' => ['page', 'page'],
-            'framework-lock-and-providers' => ['framework-lock', 'lock'],
-        ] as $route => [$schema, $scope]) {
-            $markdown = (string) file_get_contents($base . '/' . $route . '.md');
-            preg_match_all('/^:::schema_reference \{schema=' . preg_quote($schema, '/') . ' scope=' . $scope . ' fields=([a-z0-9_,]+)\}$/m', $markdown, $matches);
-            $listed = array_merge(...array_map(static fn (string $fields): array => explode(',', $fields), $matches[1] ?: ['']));
-            $known = PortableSchemaReferenceProjector::topLevelFields((new PortableSchemaReferenceProjector)->project($schema, $scope));
-            sort($known);
-            $sortedListed = $listed;
-            sort($sortedListed);
-            self::assertSame($known, $sortedListed, "settings/$route.md must list every top-level field exactly once.");
-            self::assertGreaterThanOrEqual(4, preg_match_all('/^## /m', $markdown), "settings/$route.md needs titled groups.");
+            'docara-json' => [['site', 'site']],
+            'section-and-page' => [['section', 'section'], ['page', 'page']],
+            'framework-lock' => [['framework-lock', 'lock']],
+        ] as $route => $tables) {
+            $markdown = (string) file_get_contents($content . '/reference/' . $route . '.md');
+            foreach ($tables as [$schema, $scope]) {
+                preg_match_all('/^:::schema_reference \{schema=' . preg_quote($schema, '/') . ' scope=' . $scope . ' fields=([a-z0-9_,]+)\}$/m', $markdown, $matches);
+                $listed = array_merge(...array_map(static fn (string $fields): array => explode(',', $fields), $matches[1] ?: ['']));
+                $known = PortableSchemaReferenceProjector::topLevelFields((new PortableSchemaReferenceProjector)->project($schema, $scope));
+                sort($known);
+                $sortedListed = $listed;
+                sort($sortedListed);
+                self::assertSame($known, $sortedListed, "reference/$route.md must list every top-level $schema field exactly once.");
+                self::assertGreaterThanOrEqual(4, count($matches[1]), "reference/$route.md needs titled groups for $schema.");
+            }
+            self::assertGreaterThanOrEqual(4, preg_match_all('/^#{2,3} /m', $markdown), "reference/$route.md needs titled groups.");
         }
     }
 
@@ -229,7 +238,8 @@ final class DocumentationSiteStructureTest extends TestCase
     public function agent_journey_and_extension_demos_preserve_safe_service_and_support_boundaries(): void
     {
         $root = dirname(__DIR__, 2) . '/docs/site/content/ru';
-        $journey = (string) file_get_contents($root . '/development/agent-journey.md');
+        // The agent journey is a part of the SDK page.
+        $journey = (string) file_get_contents($root . '/development/developer-sdk.md');
         foreach (['discover', 'plan', 'preview', 'dry-run', 'Hash-bound apply', 'DesignAtlasService', 'ScaffoldService', 'SDK_WRITE_PATH_UNSAFE', '--allow-writes'] as $marker) {
             self::assertStringContainsStringIgnoringCase($marker, $journey);
         }

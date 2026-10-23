@@ -512,8 +512,36 @@
                 "line": 71
             },
             "type": "example"
+        },
+        {
+            "children": [],
+            "data": {
+                "level": 2,
+                "text": "См. также"
+            },
+            "source": {
+                "column": 1,
+                "end_line": 79,
+                "file": "content/ru/components/badge.md",
+                "line": 79
+            },
+            "type": "heading"
+        },
+        {
+            "children": [],
+            "data": {
+                "ordered": false
+            },
+            "source": {
+                "column": 1,
+                "end_line": 83,
+                "file": "content/ru/components/badge.md",
+                "line": 81
+            },
+            "type": "list"
         }
     ],
     "schema": "docara.document_ir.v1",
     "source": "content/ru/components/badge.md"
 }
+

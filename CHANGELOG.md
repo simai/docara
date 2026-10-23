@@ -36,6 +36,39 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **The documentation site has nine sections, and each topic lives on one
+  page.** The menu now runs Начало работы, Написание страниц, Компоненты,
+  Настройка сайта, Сборка и публикация, Справочник, Решение проблем, Миграция
+  and Разработка Docara, every page ordered with `navigation.order`, and has
+  83 entries instead of 114.
+  - The pages that the writing, settings, reference and design sections
+    repeated are merged: configuration, inheritance and the levels page
+    become one settings page; branding, regions, search, reading context and
+    the reader panel each have one page under Настройка сайта; the
+    schema-derived field tables live only in the reference (docara.json,
+    section.json and page.json, lang.json, Framework lock); the menu,
+    hierarchy and navigation pages become Меню и разделы, and the locale
+    pages join the multilingual site guide.
+  - The five native Markdown component pages join the Markdown page, the
+    build output and determinism pages join the build page, and the 2.x
+    upgrade guide joins the update page.
+  - The design section becomes one composition page under Разработка
+    Docara, the layout examples overview moves there too, and the example
+    stands stay built but leave the menu and the search index.
+  - New pages: Что такое Docara (when to choose it, limits, requirements and
+    a comparison with VitePress, Docusaurus and MkDocs), the init templates
+    page split out of the quick start, and a glossary of the terms that stay
+    English.
+  - Menu titles are Russian ("Бренд и тема", "Области макета", "Публикация
+    и откат"), and every page that had no link in its text ends with a
+    "См. также" list.
+  - Every old address still works: `redirects.json` redirects the 41 moved
+    pages under `/ru/` and under the unprefixed address the locale
+    publisher made for them, and a test checks every HTML output of the
+    site built before the restructure against the new pages and redirects.
+  - The component catalogue cites the new pages (`docara.internal_preview`
+    the composition page, `docara.schema_reference` the docara.json
+    reference), and the README links the new addresses.
 - **An unknown icon name stops the build.** `:icon[setings]` used to render
   the letters of the name instead of an icon. The build now checks the name
   against the bundled icon catalogue and stops with

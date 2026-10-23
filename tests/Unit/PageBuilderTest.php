@@ -130,7 +130,7 @@ final class PageBuilderTest extends TestCase
                 ]))->types(),
         );
         self::assertSame(
-            'd637e3c11574dbbed593fa9e42ab79a2e01e02dac843c04b598ee4b63ef26f92',
+            '6319cf5f548989d07058bae611d06f05b6e156a268a6867ba855e5bee27a18fb',
             hash('sha256', $result->contentHtml),
         );
         foreach ($result->componentArtifacts as $artifact) {
@@ -145,18 +145,15 @@ final class PageBuilderTest extends TestCase
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
         foreach ([
-            'backlinks' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
-            'banner' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
-            'code' => ['heading', 'paragraph', 'table', 'code_block'],
-            'details' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
-            'download' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
-            'footnotes-and-sources' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
-            'headings-and-text' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
-            'lists-and-quotes' => ['heading', 'paragraph', 'list', 'blockquote', 'code_block', 'example'],
-            'links-and-images' => ['heading', 'paragraph', 'list', 'image', 'table', 'code_block', 'example'],
-            'table' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
+            'components/backlinks' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
+            'components/banner' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
+            'components/code' => ['heading', 'paragraph', 'list', 'table', 'code_block'],
+            'components/details' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
+            'components/download' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
+            // The native Markdown constructions share one guide page.
+            'authoring/markdown' => ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example'],
         ] as $slug => $expectedTypes) {
-            $plan = (new PortableConfigurationLoader($root))->resolve("content/ru/components/$slug.md");
+            $plan = (new PortableConfigurationLoader($root))->resolve("content/ru/$slug.md");
             $result = (new PageBuilder(new PortableMarkdownRenderer))->build(
                 $plan,
                 $root,
@@ -172,8 +169,8 @@ final class PageBuilderTest extends TestCase
             sort($types, SORT_STRING);
             sort($expectedTypes, SORT_STRING);
             self::assertSame($expectedTypes, $types, $slug);
-            if ($slug === 'table') {
-                self::assertStringContainsString('Когда использовать', $result->contentHtml);
+            if ($slug === 'authoring/markdown') {
+                self::assertStringContainsString('Таблица полезна для параметров', $result->contentHtml);
                 self::assertStringContainsString('Полная сборка', $result->contentHtml);
                 self::assertStringContainsString('Первая строка задаёт заголовки', $result->contentHtml);
             }

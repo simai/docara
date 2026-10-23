@@ -43,7 +43,8 @@ final class MarkdownCompilerTest extends TestCase
             'code_block' => 4,
             'component' => 16,
             'example' => 4,
-            'heading' => 4,
+            'heading' => 5,
+            'list' => 1,
             'paragraph' => 4,
             'table' => 3,
         ], $counts);

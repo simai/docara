@@ -141,11 +141,12 @@ version control:
   layout, the outline and breadcrumbs, the light or dark scheme
   (`settings.theme`) and the reader's settings panel.
 
-The full reference, generated from the JSON schemas, is in
-[the configuration guide](https://simai.github.io/docara/ru/authoring/configuration/)
-([source](docs/site/content/ru/authoring/configuration.md)) and
-[the settings reference](https://simai.github.io/docara/ru/settings/)
-([source](docs/site/content/ru/settings.md)). Run
+How the settings levels inherit is explained in
+[the settings guide](https://simai.github.io/docara/ru/settings/levels-and-inheritance/)
+([source](docs/site/content/ru/settings/levels-and-inheritance.md)); every field,
+generated from the JSON schemas, is in
+[the docara.json reference](https://simai.github.io/docara/ru/reference/docara-json/)
+([source](docs/site/content/ru/reference/docara-json.md)). Run
 `php vendor/bin/docara schema site.schema.json --json` to print the schema itself.
 
 ## Commands
@@ -187,13 +188,16 @@ The Docara documentation site is built with Docara from
 below also links the page's Markdown source, which GitHub renders without
 Docara's components:
 
-- [Quick start](https://simai.github.io/docara/ru/start/) ([source](docs/site/content/ru/start.md))
+- [What Docara is](https://simai.github.io/docara/ru/start/what-is-docara/)
+  ([source](docs/site/content/ru/start/what-is-docara.md)) and the
+  [quick start](https://simai.github.io/docara/ru/start/quick-start/)
+  ([source](docs/site/content/ru/start/quick-start.md))
 - [Writing pages](https://simai.github.io/docara/ru/authoring/markdown/)
   ([source](docs/site/content/ru/authoring/markdown.md)) and
   [components](https://simai.github.io/docara/ru/components/)
   ([source](docs/site/content/ru/components.md))
-- [Configuration](https://simai.github.io/docara/ru/authoring/configuration/)
-  ([source](docs/site/content/ru/authoring/configuration.md))
+- [Site settings](https://simai.github.io/docara/ru/settings/)
+  ([source](docs/site/content/ru/settings.md))
 - [Multilingual sites](https://simai.github.io/docara/ru/authoring/multilingual-site/)
   ([source](docs/site/content/ru/authoring/multilingual-site.md))
 - [Build, verification and publishing](https://simai.github.io/docara/ru/build/)

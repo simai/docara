@@ -8,14 +8,14 @@ use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\PortableSite\NotFoundPage;
 
 /**
- * The table of lang.json strings on authoring/language-packs.md, built from
+ * The table of lang.json strings on reference/lang-json.md, built from
  * UiCopy (which strings exist, which are required, built-in English and
  * Russian text) and from the init templates (the text `docara init` writes
  * for required strings). Only the meaning column is written by hand, here.
  */
 final class LangReference
 {
-    public const PAGE = 'docs/site/content/ru/authoring/language-packs.md';
+    public const PAGE = 'docs/site/content/ru/reference/lang-json.md';
 
     public const START = '<!-- docara:lang-reference:start -->';
 

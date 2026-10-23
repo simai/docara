@@ -98,6 +98,8 @@ final readonly class DocumentationStandard
             ['command' => $docara . ' validate project', 'purpose' => 'Check every page and the project registries.'],
             ['command' => $docara . ' build production', 'purpose' => 'Build the site; it prints one line when pages need attention.'],
             ['command' => $docara . ' verify-static build_production', 'purpose' => 'Check the built site for broken links and assets.'],
+            ['command' => $docara . ' qa report --env=production', 'purpose' => 'Score the documentation from 0 to 100 and list what to fix first.'],
+            ['command' => $docara . ' qa review-packet <route> --env=production', 'purpose' => 'Write the questions a reviewer answers about one page: accuracy, clarity, task and examples.'],
         ];
     }
 
@@ -192,6 +194,13 @@ final readonly class DocumentationStandard
         $lines[] = 'a type gets a guessed one (`PAGE_PROFILE_INFERRED`); set `profile:` to confirm';
         $lines[] = 'it. `PAGE_EDITORIAL_REVIEW_REQUIRED` lists questions only a reader can answer:';
         $lines[] = 'reread the page against them.';
+        $lines[] = '';
+        $lines[] = '`qa report` scores the built site (completeness, freshness, findability,';
+        $lines[] = 'readability, accessibility, links) and lists what to fix first. For every page';
+        $lines[] = 'you wrote or changed, run `qa review-packet <route>` and answer each question of';
+        $lines[] = 'the packet (`build_production.docara/review-packets/`): is every statement true';
+        $lines[] = 'to its sources, is it clear for its audience, does it solve the task, do the';
+        $lines[] = 'examples work. Fix the page where the answer is no. Docara itself never calls an AI.';
         $lines[] = '';
         $lines[] = 'The machine-readable form of this guide: `' . $docara . ' capabilities --json`,';
         $lines[] = 'field `documentation_standard`.';

@@ -24,7 +24,8 @@ final readonly class McpAdapter
                     'serverInfo' => ['name' => 'docara-local-sdk', 'version' => '1.0.0'],
                     'instructions' => 'Project-local Docara SDK adapter. Apply is disabled unless the process starts with --allow-writes. '
                         . 'Before writing documentation, call docara_authoring_standard: it returns the page types, their required parts, '
-                        . 'the writing rules and the commands that check a page.',
+                        . 'the writing rules and the commands that check a page. After writing, call docara_qa_report on a built site '
+                        . 'and docara_qa_review_packet for each changed page, and answer the review questions.',
                 ]);
             }
             if ($method === 'notifications/initialized') {
@@ -82,12 +83,15 @@ final readonly class McpAdapter
         foreach ($this->operations() as $name => $operation) {
             $tools[] = [
                 'name' => $name,
-                'description' => $operation === 'authoring.standard'
-                    ? 'Return the Docara documentation standard: page types, required parts, writing rules, the page template command and the quality checks.'
-                    : 'Delegate Docara application operation ' . $operation . '.',
+                'description' => match ($operation) {
+                    'authoring.standard' => 'Return the Docara documentation standard: page types, required parts, writing rules, the page template command and the quality checks.',
+                    'qa.report' => 'Score the documentation quality of a built site (build_<env>/) and write build_<env>.docara/quality-report.json; returns the site score, group scores and the fix-first list.',
+                    'qa.review_packet' => 'Prepare the semantic review of one page (page: its route) or of the site: questions on accuracy, clarity, task and examples with the page text, profile, sources and checklist. Answer them; Docara does not judge them.',
+                    default => 'Delegate Docara application operation ' . $operation . '.',
+                },
                 'inputSchema' => ['type' => 'object', 'additionalProperties' => false, 'properties' => $this->properties($operation)],
                 'annotations' => [
-                    'readOnlyHint' => ! in_array($operation, ['scaffold.plan', 'scaffold.apply', 'qa.plan', 'qa.finalize_reference', 'documentation.plan', 'documentation.apply'], true),
+                    'readOnlyHint' => ! in_array($operation, ['scaffold.plan', 'scaffold.apply', 'qa.plan', 'qa.finalize_reference', 'qa.report', 'qa.review_packet', 'documentation.plan', 'documentation.apply'], true),
                     'destructiveHint' => false,
                     'idempotentHint' => true,
                     'openWorldHint' => false,
@@ -109,6 +113,7 @@ final readonly class McpAdapter
             'docara_scaffold_plan' => 'scaffold.plan', 'docara_scaffold_apply' => 'scaffold.apply',
             'docara_validate' => 'validate', 'docara_test' => 'test', 'docara_qa_plan' => 'qa.plan',
             'docara_qa_finalize_reference' => 'qa.finalize_reference', 'docara_qa_verify' => 'qa.verify',
+            'docara_qa_report' => 'qa.report', 'docara_qa_review_packet' => 'qa.review_packet',
             'docara_documentation_status' => 'documentation.status', 'docara_documentation_plan' => 'documentation.plan',
             'docara_documentation_apply' => 'documentation.apply',
         ];
@@ -126,6 +131,8 @@ final readonly class McpAdapter
             'scaffold.plan' => ['kind' => $string, 'id' => $string, 'locale' => $string, 'title' => $string, 'profile' => $string, 'source' => $string, 'entity' => $string],
             'scaffold.apply', 'qa.finalize_reference', 'qa.verify' => ['plan_id' => $string],
             'test', 'qa.plan' => ['kind' => $string, 'id' => $string, 'page' => $string],
+            'qa.report' => ['env' => $string, 'min_score' => ['type' => 'integer', 'minimum' => 0, 'maximum' => 100], 'top' => ['type' => 'integer', 'minimum' => 0], 'html' => ['type' => 'boolean']],
+            'qa.review_packet' => ['page' => $string, 'env' => $string],
             'documentation.status' => ['source' => $string, 'kind' => $string, 'status' => $string],
             'documentation.plan' => ['source' => $string, 'key' => $string, 'route' => $string, 'review' => $string, 'examples' => ['type' => 'object'], 'exclude_reason' => $string],
             'documentation.apply' => ['plan_id' => $string],

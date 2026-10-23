@@ -6,6 +6,8 @@ namespace Simai\Docara\Application;
 
 use Simai\Docara\Authoring\DocumentationStandard;
 use Simai\Docara\Documentation\DocumentationStatusService;
+use Simai\Docara\Quality\QualityReportService;
+use Simai\Docara\Quality\ReviewPacketService;
 
 final readonly class SdkService
 {
@@ -18,6 +20,8 @@ final readonly class SdkService
         public DesignAtlasService $atlas,
         public DocumentationStatusService $documentation,
         public CapabilitiesService $capabilities,
+        public QualityReportService $quality = new QualityReportService,
+        public ReviewPacketService $review = new ReviewPacketService,
     ) {}
 
     /** @param array<string, mixed> $arguments */
@@ -43,6 +47,14 @@ final readonly class SdkService
             'qa.plan' => $this->qa->plan($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id'), $this->string($arguments, 'page')),
             'qa.finalize_reference' => $this->qa->finalizeReference($root, $this->string($arguments, 'plan_id')),
             'qa.verify' => $this->qa->verify($root, $this->string($arguments, 'plan_id')),
+            'qa.report' => $this->quality->run(
+                $root,
+                $this->optionalString($arguments, 'env') ?? 'local',
+                is_int($arguments['min_score'] ?? null) ? $arguments['min_score'] : null,
+                is_int($arguments['top'] ?? null) ? max(0, $arguments['top']) : 10,
+                ($arguments['html'] ?? false) === true,
+            ),
+            'qa.review_packet' => $this->review->run($root, $this->optionalString($arguments, 'page'), $this->optionalString($arguments, 'env') ?? 'local'),
             'documentation.status' => OperationResult::success('documentation.status', $this->optionalString($arguments, 'source'), $this->documentation->report(
                 $root,
                 $this->optionalString($arguments, 'source'),

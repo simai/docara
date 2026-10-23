@@ -14,6 +14,7 @@ use Simai\Docara\Console\BuildCommand;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
+use Simai\Docara\Quality\QualityReportService;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tests\TestCase;
@@ -262,16 +263,18 @@ MD);
         $command->setApplication(new Application);
         $tester = new CommandTester($command);
 
-        // Every profiled page carries the advisory checklist; alone it is not reported.
+        // The build prints one quality line; the advisory checklist is not a finding.
         self::assertSame(0, $tester->execute(['environment' => 'authoring-advisory']));
-        self::assertStringNotContainsString('Page authoring', $tester->getDisplay());
+        self::assertMatchesRegularExpression('/Documentation quality: \d+\/100, \d+ page\(s\) need attention \(docara qa report --env=authoring-advisory\)\./', preg_replace('/\s+/', ' ', $tester->getDisplay()));
+        $before = (new QualityReportService)->analyze($this->tmp, $this->tmpPath('build_authoring-advisory'));
+        self::assertNotContains('PAGE_EDITORIAL_REVIEW_REQUIRED', array_merge(...array_map(static fn (array $page): array => array_column($page['findings'], 'code'), $before['pages'])));
 
         $this->filesystem->put($this->tmpPath('content/ru/broken-link.md'), "# Broken link\n\nSee [the missing page](/missing-page/).\n");
         self::assertSame(0, $tester->execute(['environment' => 'authoring-broken']));
-        self::assertStringContainsString(
-            'Page authoring reported 1 item(s) for structural review or with a missing link or asset; the build remains valid in report mode.',
-            preg_replace('/\s+/', ' ', $tester->getDisplay()),
-        );
+        $after = (new QualityReportService)->analyze($this->tmp, $this->tmpPath('build_authoring-broken'));
+        $page = array_values(array_filter($after['pages'], static fn (array $page): bool => $page['url'] === '/ru/broken-link/'))[0];
+        self::assertContains('QUALITY_LINK_BROKEN', array_column($page['findings'], 'code'));
+        self::assertSame($before['site']['pages_needing_attention'] + 1, $after['site']['pages_needing_attention']);
     }
 
     #[Test]

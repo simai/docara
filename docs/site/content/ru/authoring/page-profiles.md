@@ -89,3 +89,9 @@ php vendor/bin/docara validate page /ru/start/ --json
 | `AUTHORING_FILE_UNSAFE` | Файл — символическая или жёсткая ссылка. **Что сделать:** Замените его обычным файлом. |
 | `AUTHORING_RULE_CONFLICT` | Странице подходят правила с разными профилями. **Что сделать:** Уточните пути в `match`. |
 | `AUTHORING_PROFILE_UNKNOWN` | Неизвестный профиль. **Что сделать:** Используйте один из шести профилей. |
+
+## См. также
+
+- [Метаданные страницы](/ru/authoring/markdown/#метаданные-страницы) — ключ `profile`
+- [Актуальность документации](/ru/authoring/documentation-tracking/)
+- [Схемы JSON](/ru/reference/schemas/) — схема `docara.authoring.v1`

@@ -98,3 +98,9 @@
 
 Допустимые значения `type`: `clear`, `info`, `success`, `warning`, `danger`.
 Допустимые значения `variant`: `default`, `flat`, `outlined`.
+
+## См. также
+
+- [Баннер](/ru/components/banner/) — объявление для всей страницы
+- [Компоненты SIMAI Framework ui.*](/ru/components/smart-ui/) — уведомление `ui.alert`
+- [Как устроены компоненты](/ru/start/component-model/)

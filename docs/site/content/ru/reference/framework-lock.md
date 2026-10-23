@@ -98,3 +98,9 @@ Framework lock доказывает ограниченный consumer contract �
 не допускает произвольный raw Framework-компонент только потому, что его файл
 есть в локальном пакете, и не доказывает готовность всей экосистемы,
 production, public release или право распространить другие upstream bytes.
+
+## См. также
+
+- [Схемы JSON](/ru/reference/schemas/)
+- [Обновление Docara](/ru/build/update/) — как меняется закреплённая версия
+- [Smart-компоненты](/ru/development/smart-components/) — допуск компонента через lock

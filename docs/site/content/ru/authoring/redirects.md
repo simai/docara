@@ -93,3 +93,9 @@ php vendor/bin/docara verify-static build_production
 ```
 
 Проверьте source URL и обычный target по HTTP из того же output.
+
+## См. также
+
+- [Меню и разделы](/ru/authoring/navigation/) — когда меняется адрес страницы
+- [Мультиязычный сайт](/ru/authoring/multilingual-site/) — перенаправления адресов без языкового префикса
+- [Коды ошибок перенаправлений](/ru/reference/errors/site/#перенаправления)

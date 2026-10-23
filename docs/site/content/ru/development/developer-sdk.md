@@ -98,7 +98,7 @@ SHA-256 каждого изображения.
 при полном наборе screenshots и нулевых a11y, console, overflow и visual-diff
 дефектах. `init` и `verify-static` выполняются через PHP. Команда `build`
 дополнительно использует Node.js 20+ и точную поставку Framework для сборки
-Recipe. Подготовка описана в [быстром старте](/start/).
+Recipe. Подготовка описана в [быстром старте](/ru/start/quick-start/).
 
 Для `test layout` и `qa layout` указанный route обязан фактически выбирать
 этот layout. Несовпадение останавливается кодом

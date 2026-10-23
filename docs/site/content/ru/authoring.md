@@ -20,7 +20,7 @@
 
 ## Путь автора
 
-1. [Разберитесь с файлами проекта](/authoring/project-files/).
+1. [Разберитесь с файлами проекта](/ru/start/project-files/).
 2. [Напишите страницу в Markdown](/authoring/markdown/).
 3. [Настройте сайт, раздел или страницу](/authoring/configuration/).
 4. [Добавьте название, логотип и favicon](/authoring/branding/).

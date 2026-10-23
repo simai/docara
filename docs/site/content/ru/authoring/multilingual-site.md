@@ -116,7 +116,7 @@ Markdown-контент не переводится fallback-механизмо�
   "header_navigation": {
     "enabled": true,
     "items": [
-      {"id": "start", "label": "Быстрый старт", "href": "/ru/start/"},
+      {"id": "start", "label": "Быстрый старт", "href": "/ru/start/quick-start/"},
       {"id": "github", "label": "GitHub", "href": "https://github.com/simai/docara"}
     ]
   }

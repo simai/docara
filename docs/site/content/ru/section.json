@@ -9,7 +9,7 @@
     "enabled": true,
     "items": [
       {"id": "home", "label": "Главная", "href": "/ru/"},
-      {"id": "start", "label": "Быстрый старт", "href": "/ru/start/"},
+      {"id": "start", "label": "Быстрый старт", "href": "/ru/start/quick-start/"},
       {"id": "components", "label": "Компоненты", "href": "/ru/components/"},
       {"id": "github", "label": "GitHub", "href": "https://github.com/simai/docara"}
     ]

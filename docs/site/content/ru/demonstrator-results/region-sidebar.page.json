@@ -23,7 +23,7 @@
                 "id": "install-link",
                 "block": "shell.element",
                 "slot": "content",
-                "element": {"tag": "a", "text": "Открыть установку", "href": "/start/", "aria_label": "Открыть руководство по установке"}
+                "element": {"tag": "a", "text": "Открыть установку", "href": "/ru/start/quick-start/", "aria_label": "Открыть руководство по установке"}
               }
             ]
           }

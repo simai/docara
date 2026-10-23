@@ -13,5 +13,5 @@ noindex: true
 :::
 
 :::cta
-[Перейти к документации](/start/)
+[Перейти к документации](/ru/start/quick-start/)
 :::

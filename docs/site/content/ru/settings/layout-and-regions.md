@@ -1,13 +1,374 @@
 ---
-description: layout.key выбирает принятый Layout, а контейнер, полоса прокрутки, отступы и рецепты регионов проверяются схемой и DesignRegistry.
+description: Вид страницы docs или landing, ширина контейнера и отступы, полосы прокрутки и пять областей макета — header, sidebar, main, outline и footer — с их включением и наполнением.
+tags: [макет, layout, области, регионы, preset, лендинг, ширина]
 ---
 
-# Layout и regions
+# Области макета
 
-`layout.key` выбирает admitted Layout descriptor. Container max, scrollbar, content gap и region recipes проверяются schema + DesignRegistry; config не указывает template/file/class.
+Макет задаёт каркас страницы: вид страницы, ширину сетки, полосы прокрутки и
+области, из которых собирается страница. Всё это задаётся данными в JSON и
+проверяется схемой до отрисовки.
+
+## Два вида страниц
+
+Один формат содержимого поддерживает два вида страниц (`preset`):
+
+| Вид | Когда использовать | Что видит читатель |
+| --- | --- | --- |
+| `docs` | Руководство, справочник, база знаний | Меню, хлебные крошки, содержание страницы, переходы к соседним страницам |
+| `landing` | Главная промостраница или сфокусированный вход | Содержимое без меню документации |
+
+Оба вида используют тот же Markdown, JSON, Framework lock и правила
+безопасности. Вид задаётся в `docara.json`, `section.json` или
+`<page>.page.json` полем `preset`.
+
+## Рецепт документационной страницы
+
+Создайте `content/guides/install.md`, затем соседний
+`content/guides/install.page.json`:
+
+```json
+{
+  "schema": "docara.page.v1",
+  "title": "Установка",
+  "description": "Установка проекта с нуля.",
+  "preset": "docs",
+  "layout": { "container": { "max": 6 } },
+  "navigation": { "order": 20 },
+  "reading": {
+    "breadcrumbs": true,
+    "toc": true,
+    "toc_depth": 3,
+    "previous_next": true
+  }
+}
+```
+
+Соберите сайт и проверьте, что страница есть в меню, путь к ней раскрыт,
+хлебные крошки ведут к обзору раздела, а содержание страницы содержит H2/H3.
+
+## Рецепт лендинга
+
+Создайте `content/landing.md` и sidecar:
+
+```json
+{
+  "schema": "docara.page.v1",
+  "title": "Лендинг",
+  "preset": "landing",
+  "layout": { "container": { "max": 7 } },
+  "navigation": { "hidden": true },
+  "search": { "enabled": false, "indexed": false }
+}
+```
+
+Содержание остаётся Markdown, а композицию задают блоки лендинга:
+
+- [hero](/ru/components/hero/) создаёт полноширинный первый экран;
+- [grid](/ru/components/grid/) и [card](/ru/components/card/) собирают
+  ряд возможностей без отдельного специального компонента;
+- [figure](/ru/components/figure/) или [media](/ru/components/media/)
+  показывают продуктовый скриншот;
+- [logos](/ru/components/logos/) выводит участников или клиентов;
+- [banner](/ru/components/banner/) с [button](/ru/components/button/)
+  завершает страницу понятным действием.
+
+Обычные заголовки, текст и код остаются во внутреннем контейнере. Только
+зарегистрированные полноширинные блоки занимают всю ширину landing-области;
+автор не добавляет отрицательные отступы, CSS-классы и размеры media.
+
+Готовые блоки преимуществ, показа результата и призыва к действию описаны на
+странице [«Блоки лендинга»](/ru/components/landing-blocks/).
+[Открыть главную страницу этой документации](/ru/).
+
+## Проверка обоих рецептов
+
+```bash
+php vendor/bin/docara build production
+php vendor/bin/docara verify-static build_production
+php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
+```
+
+Проверьте `/guides/install/` и `/landing/` по HTTP, затем нажмите `Ctrl+C`.
+
+## Ширина, отступы и полосы прокрутки
 
 ```json
 {"layout":{"key":"docara.docs","container":{"max":7},"scrollbar":{"preset":"overlay"},"content":{"gap":0}}}
 ```
 
-Regions принадлежат layout descriptor, а compatible Sections/slots/Blocks видны в [Design Atlas](/ru/design/composition/). Unknown region, incompatible section/block, invalid View Tree utility или unsafe path отклоняется до render.
+- `layout.key` выбирает зарегистрированный макет; сейчас доступен
+  `docara.docs`. Настройки не указывают шаблон, файл или класс.
+- `layout.container.max` — целое число `1..8`. Docara преобразует его в класс
+  SIMAI Framework `max-container-N`; фактическая ширина берётся из системного
+  токена Framework, а не дублируется в CSS Docara. Значение `7` подходит для
+  большинства сайтов: меньшее число сужает общую сетку, большее расширяет её.
+  Шапка, документационная сетка, футер и внутреннее содержимое полноширинных
+  блоков лендинга выровнены по одной сетке.
+- `layout.content.gap` — расстояние между соседними блоками статьи по шкале
+  `gap-0..gap-8` SIMAI Framework. Для обычной документации используйте `0`:
+  статья остаётся в обычном блочном потоке, поэтому вертикальные отступы
+  соседних заголовков, абзацев, списков и других элементов схлопываются по
+  стандартным правилам CSS и сохраняют собственный ритм. Значения `1..8` нужны
+  только для страниц, где блоки намеренно собираются в свободный вертикальный
+  стек, например в лендинге.
+- `layout.scrollbar.preset` — полосы прокрутки левого меню и содержания
+  страницы.
+
+Docara не рисует собственные полосы прокрутки: левое дерево и содержание
+страницы используют компонент `sf-scrollbar` закреплённого SIMAI Framework.
+
+| Режим | Поведение |
+| --- | --- |
+| `overlay` | По умолчанию. Тонкая полоса не занимает место в сетке, появляется при прокрутке, расширяется при наведении и скрывается после паузы |
+| `persistent` | Та же компактная полоса остаётся видимой постоянно |
+| `standard` | Используется стандартная полоса браузера и операционной системы |
+| `hidden` | Полоса скрыта визуально, но содержимое по-прежнему прокручивается |
+
+Если ветки `layout.scrollbar` нет, используется `overlay`. Настройку можно
+унаследовать на уровне раздела или заменить для отдельной страницы. Цвет,
+ширина, наведение, перетаскивание, таймер скрытия, клавиатурная прокрутка и
+направление `ltr/rtl` принадлежат Framework и не переопределяются CSS-кодом
+проекта.
+
+Схема, размытие и закругление описаны в разделе
+[«Бренд и тема»](/ru/settings/branding-and-theme/#светлая-и-тёмная-схема-размытие-и-закругление).
+
+## Пять областей
+
+Макет `docara.docs` состоит из пяти именованных областей:
+
+| Область | Содержимое по умолчанию | Обязательна |
+| --- | --- | :---: |
+| `header` | Бренд и ссылка на главную | — |
+| `sidebar` | Многоуровневое меню | — |
+| `main` | Markdown текущей страницы | ✓ |
+| `outline` | Содержание страницы: ссылки на заголовки H2–H6 | — |
+| `footer` | Пусто | — |
+
+`sidebar` и `outline` выводятся семантическими элементами `aside`. `outline` —
+устойчивое техническое имя правой области; в интерфейсе она называется
+«Содержание страницы». Отдельной области с именем `aside` нет.
+
+## Простое включение и отключение
+
+Чтобы отключить левое меню и правое оглавление на отдельной странице, добавьте
+в её sidecar:
+
+```json
+{
+  "schema": "docara.page.v1",
+  "layout": {
+    "regions": {
+      "sidebar": { "enabled": false },
+      "outline": { "enabled": false }
+    }
+  }
+}
+```
+
+В результате остаётся шапка и основное содержимое, а оба `aside` и мобильная
+кнопка меню отсутствуют в HTML. [Открыть живой пример, результат и точные
+исходники](/examples/regions-disabled/).
+
+Настройку можно положить в:
+
+- `docara.json` — для всего сайта;
+- `section.json` — для раздела и всех потомков;
+- `<page>.page.json` — только для соседней Markdown-страницы.
+
+Поздний уровень меняет только явно указанные области.
+
+Сравнить включённые области, готовые рецепты оболочки, наследование, оба вида
+страниц и Smart-компоненты можно в
+[примерах для разработчиков](/ru/development/examples/). Их результаты
+собираются тем же генератором, что и весь сайт.
+
+## Из чего собирается область
+
+Расширенная форма использует ту же последовательность, что и коммерческие пакеты SIMAI:
+
+```text
+Page -> Region -> Section -> Block -> Smart
+```
+
+Например, стандартная левая навигация описывается так:
+
+```json
+{
+  "layout": {
+    "regions": {
+      "sidebar": {
+        "enabled": true,
+        "sections": [
+          {
+            "id": "docs-navigation",
+            "section": "docara.navigation"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Стандартные секции содержат только устойчивый ID экземпляра и ссылку на
+зарегистрированную секцию. Слоты, блок `shell.smart`, Smart-компонент,
+`maximum_depth` и привязка данных находятся в определении
+`resources/sections/docara.navigation.json`, а не копируются на каждую
+страницу:
+
+| Область | Секция | Smart-компонент | Данные |
+| --- | --- | --- | --- |
+| `header` | `docara.header` | `docara.brand` | `docara.branding` |
+| `sidebar` | `docara.navigation` | `docara.navigation` | `docara.navigation` |
+| `outline` | `docara.outline` | `docara.toc` | `docara.outline` |
+
+Секция — это зарегистрированный рецепт наполнения области. Smart-компонент —
+самостоятельный интерфейсный элемент с manifest, props, views, шаблонами,
+assets и readiness. Поэтому `docara.header` сохранён как имя секции, но
+компонент бренда называется `docara.brand`; `docara.outline` сохранён как имя
+секции, а компонент содержания страницы называется `docara.toc`.
+
+Другую комбинацию стандартной секции сборка отклонит.
+
+## Собственная композиция области
+
+Для практического наполнения используйте зарегистрированную секцию
+`docara.shell`. Она принимает устойчивые ID блоков, проверенные утилиты Simai
+Framework и два типа вызовов:
+
+- `shell.element` — один безопасный семантический элемент с текстом и, для
+  `a`, локальным `href`;
+- `shell.smart` — зарегистрированный Smart с props, проверенными по его точному
+  manifest. Если Smart читает данные оболочки, `bind` выбирается только из
+  typed `BindingRegistry` и должен соответствовать capability области.
+
+Минимальный footer:
+
+```json
+{
+  "layout": {
+    "regions": {
+      "footer": {
+        "enabled": true,
+        "sections": [
+          {
+            "id": "site-footer",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
+            "blocks": [
+              {
+                "id": "copyright",
+                "block": "shell.element",
+                "slot": "content",
+                "element": {
+                  "tag": "p",
+                  "text": "Docara — документация как код.",
+                  "utilities": ["m-0"]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Это не строка HTML. Автор выбирает только разрешённый тег, текст, локальную
+ссылку и утилиты из точной Framework projection. PHP, Blade, raw HTML,
+обработчики событий, JavaScript URL, style/class string, callback и пути к
+шаблонам остаются недоступны.
+
+Разрешённые утилиты перечислены в `resources/framework/view-utilities.json`;
+это классы SIMAI Framework, например `bg-surface-0` для фона поверхности и пара
+`border-bottom-1 border-bottom-solid` для нижней границы. Прежние имена
+`surface-0` и `border-bottom` во Framework не существуют, но Docara их
+по-прежнему принимает: на странице вместо них выводятся эти классы Framework, а
+замена отмечается в плане страницы (`deprecated_utilities`). В новых файлах
+пишите имена Framework.
+
+Для навигации доступны три зарегистрированных presentation-варианта:
+`header`, `tree` и `compact`. Они принадлежат одному `docara.navigation` и
+проходят тот же Gateway. Пример блока внутри совместимой секции:
+
+```json
+{
+  "id": "navigation",
+  "block": "shell.smart",
+  "slot": "content",
+  "smart": "docara.navigation",
+  "view": "compact",
+  "bind": "docara.navigation",
+  "props": {"maximum_depth": 4}
+}
+```
+
+Поля `items`, `label`, `expand_label`, `collapse_label` и
+`contains_current_label` принадлежат binding и не задаются вручную.
+
+Живые исходники:
+
+- [брендированный header](/examples/region-header/);
+- [sidebar с дополнительным блоком](/examples/region-sidebar/);
+- [aside с оглавлением и Alert](/examples/region-aside/);
+- [footer из безопасных элементов](/examples/region-footer/).
+
+## Как формируется разметка
+
+Layout и Section ссылаются на зарегистрированные безопасные View Tree:
+
+```text
+Layout View Tree -> Region
+Section View Tree -> Slot -> Block -> Smart
+```
+
+View Tree хранится в `resources/views/*.json`. Он допускает только ограниченный
+набор семантических тегов, безопасные атрибуты и точную проекцию утилит Simai
+Framework. Неизвестный класс, тег, повторная область или повторный слот
+завершают сборку ошибкой. Сложные presentation leaves могут использовать Blade
+только через внутренний реестр Docara; путь к Blade никогда не поступает из
+авторского файла.
+
+## Что нельзя отключить
+
+`main` обязателен для `docara.docs`. Значение
+`layout.regions.main.enabled: false` завершает сборку ошибкой
+`DECLARATIVE_REQUIRED_REGION_DISABLED`.
+
+Если нужен принципиально другой каркас, следует зарегистрировать другой
+layout, а не нарушать контракт существующего.
+
+## Наследование и происхождение значений
+
+`sections` является массивом: поздний массив целиком заменяет унаследованный.
+Частичное изменение `enabled` не затрагивает унаследованный список секций.
+ID секций и блоков обязаны быть уникальными и сохраняют детерминированный
+порядок массива. [Живой пример трёх уровней с reset](/examples/composition-inheritance/)
+показывает итог `docara.json → section.json → page.page.json`.
+
+Итог и владеющий файл находятся в:
+
+```text
+build_<environment>.docara/resolved-page-plans.json
+```
+
+Проверьте `configuration.layout.regions` и соответствующие pointers вида
+`/layout/regions/sidebar/enabled` в `provenance`.
+
+:::ui.alert
+{"type":"info","title":"Области уже являются данными","supporting-text":"Компилятор получает разрешённый layout contract и больше не выбирает header, sidebar и outline жёстко по коду."}
+:::
+
+Совместимые с областями секции, слоты и блоки перечислены в
+[композиции интерфейса](/ru/development/composition/). Неизвестная область,
+несовместимая секция или блок, недопустимая утилита View Tree или небезопасный
+путь отклоняются до отрисовки.
+
+## См. также
+
+- [Наследование областей](/ru/settings/levels-and-inheritance/#области-макета)
+- [Smart-компоненты](/ru/development/smart-components/) — как устроены компоненты шапки, меню и содержания
+- [Живой пример Smart-компонентов Docara](/ru/examples/product-smart-runtime/)

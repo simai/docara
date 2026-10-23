@@ -1,35 +1,43 @@
 ---
-description: Настройки Docara — проверяемые JSON-файлы трёх уровней: сайт, раздел, страница. С чего начать, какой файл менять и как проверить итоговый план.
+description: Настройка сайта Docara — уровни настроек, адрес сайта, бренд и тема, области макета, поиск, контекст чтения и панель читателя. С чего начать и как проверить результат.
+tags: [настройки, настройка, конфигурация, docara-json]
 ---
 
-# Настройки
+# Настройка сайта
 
-Настройки Docara — это проверяемые JSON-данные с тремя уровнями inheritance. Начните с задачи, меняйте только разрешённый project-owned файл, затем проверяйте effective plan и provenance.
+Настройки Docara — это проверяемые JSON-файлы трёх уровней: сайт
+(`docara.json`), раздел (`section.json`) и страница (`<page>.page.json`).
+Начните с задачи, измените только нужный файл проекта и проверьте итоговый
+план страницы.
 
-## Карта
+## Разделы
 
-- [Уровни и inheritance](/ru/settings/levels-and-inheritance/)
-- [Сайт](/ru/settings/site/), [раздел](/ru/settings/section/), [страница](/ru/settings/page/)
-- [Локали и routing](/ru/authoring/multilingual-site/)
-- [Branding и тема](/ru/settings/branding-and-theme/)
-- [Layout и regions](/ru/settings/layout-and-regions/)
-- [Навигация](/ru/authoring/navigation/)
-- [Поиск и чтение](/ru/settings/search-and-reading/)
-- [Настройки читателя](/ru/settings/reader-preferences/)
-- [Framework lock и providers](/ru/settings/framework-lock-and-providers/)
-- [Безопасность](/ru/settings/security/)
-- [Диагностика и provenance](/ru/settings/diagnostics-and-provenance/)
+- [Сайт, раздел и страница](/ru/settings/levels-and-inheritance/) — что
+  задаётся на каждом уровне, наследование и сброс, откуда пришло значение.
+- [Адрес сайта и поисковые системы](/ru/settings/site-address/) —
+  `base_url`, `site_url`, `sitemap.xml`, `robots.txt` и `llms.txt`.
+- [Бренд и тема](/ru/settings/branding-and-theme/) — логотип, название,
+  favicon, цвета и светлая или тёмная схема.
+- [Области макета](/ru/settings/layout-and-regions/) — вид страницы, ширина,
+  полосы прокрутки, шапка, меню, содержание и подвал.
+- [Поиск](/ru/settings/search/) — индекс, исключение страниц и синонимы.
+- [Контекст чтения](/ru/settings/reading/) — хлебные крошки, содержание
+  страницы и переходы.
+- [Панель читателя](/ru/settings/reader-preferences/) — тема, размер шрифта и
+  ширина текста, которые выбирает читатель.
 
-## Безопасный workflow
+Языки и переводы описаны в разделе
+[«Мультиязычный сайт»](/ru/authoring/multilingual-site/), меню — в разделе
+[«Меню и разделы»](/ru/authoring/navigation/). Полный список полей с типами и
+значениями по умолчанию — в справочнике: [docara.json](/ru/reference/docara-json/)
+и [section.json и page.json](/ru/reference/section-and-page/).
 
-1. Найдите поле в schema-derived reference ниже.
-2. Проверьте scope и effective provenance.
-3. Измените `docara.json`, ближайший `section.json`, page sidecar/front matter или locale `lang.json` — только согласно schema.
-4. Выполните `docara doctor`, выбранный `build --page` и static verify; при изменении глобальной структуры сделайте full build.
+## Безопасный порядок работы
 
-## Общие presentation-поля
-
-Таблица строится из `presentation.schema.json`; prose выше лишь объясняет задачу.
-
-:::schema_reference {schema=presentation scope=shared}
-:::
+1. Найдите поле в справочнике и проверьте, на каком уровне его можно задать.
+2. Измените `docara.json`, ближайший `section.json`, файл страницы или
+   метаданные Markdown — только так, как разрешает схема.
+3. Выполните `docara doctor`, сборку одной страницы `build --page` и
+   `verify-static`; при изменении общей структуры сделайте полную сборку.
+4. Если значение не то, которое ожидалось, найдите его источник в
+   [плане страницы](/ru/settings/levels-and-inheritance/#откуда-пришло-значение).

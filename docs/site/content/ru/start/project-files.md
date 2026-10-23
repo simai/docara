@@ -71,5 +71,5 @@ targets.
 можно хранить рядом с Markdown. Брендовые пути указываются в `docara.json` и
 проверяются до очистки предыдущей сборки.
 
-Далее: [конфигурация](/authoring/configuration/) и
-[наследование](/authoring/inheritance/).
+Далее: [конфигурация](/ru/settings/levels-and-inheritance/) и
+[наследование](/ru/settings/levels-and-inheritance/).

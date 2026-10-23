@@ -87,7 +87,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
                 && ($entry['docs_ref'] ?? null) === 'docs/site/content/ru/authoring/markdown.md'),
         ));
 
-        self::assertCount(116, $pages);
+        self::assertCount(118, $pages);
         $performanceProjection = json_decode(
             (string) file_get_contents($build . '.docara/performance.json'),
             true,
@@ -104,7 +104,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
-        self::assertCount(320, $htmlPages);
+        self::assertCount(324, $htmlPages);
         $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
         $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
         $singleNonIndexed = $this->documentationBuilder($filesystem)
@@ -112,7 +112,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(1, $singleNonIndexed);
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
-        self::assertCount(84, $search['documents']);
+        self::assertCount(86, $search['documents']);
         self::assertCount(38, $catalog['entries']);
         self::assertCount(31, $supported);
         self::assertCount(5, $unavailable);
@@ -128,7 +128,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             )->count(),
         );
         self::assertCount(89, $redirectReceipt['redirects']);
-        self::assertCount(115, $localeRouteReceipt['redirects']);
+        self::assertCount(117, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -304,7 +304,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(320, $report['html_pages'] ?? null);
+        self::assertSame(324, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
 
@@ -344,7 +344,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         );
 
         $pages = $builder->build($site, $site . '/build_test');
-        self::assertCount(116, $pages);
+        self::assertCount(118, $pages);
         self::assertStringContainsString(
             'Поиск из content lang',
             (string) file_get_contents($site . '/build_test/ru/index.html'),
@@ -444,7 +444,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // The documentation restructure removes 27 pages with their legacy
         // redirects (54 files) and adds 82 redirects for their old addresses;
         // the shared shell stylesheets regroup from 49 into 47: 1949.
-        self::assertCount(1949, $firstFiles);
+        // The documentation quality page and the quality error codes page
+        // add two pages and their two legacy redirects: 1953.
+        self::assertCount(1953, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),
@@ -466,7 +468,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertArrayHasKey('performance.json', $this->treeHashes($firstBuild . '.docara'));
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
-        self::assertCount(115, $metadata['pages']);
+        self::assertCount(117, $metadata['pages']);
         foreach ($metadata['pages'] as $page) {
             self::assertNull($page['updated_at']);
             self::assertNull($page['revision']);

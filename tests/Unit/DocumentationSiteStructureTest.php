@@ -27,12 +27,22 @@ final class DocumentationSiteStructureTest extends TestCase
             self::assertFileDoesNotExist($root . '/' . $entry . '.md');
             self::assertStringNotContainsString('/ru/components/' . $entry . '/', $index);
         }
-        self::assertSame(31, count(glob($root . '/*.md') ?: []));
+        $pages = glob($root . '/*.md') ?: [];
+        self::assertSame(31, count($pages));
         self::assertSame(31, preg_match_all('#/ru/components/[a-z0-9-]+/#', $index));
         foreach (['Текст и Markdown', 'Содержательные блоки', 'Код и данные', 'Макет', 'Медиа', 'Inline и действия'] as $category) {
-            self::assertStringContainsString($category, $index);
+            self::assertStringContainsString('## ' . $category, $index);
         }
-        self::assertSame(2, substr_count($index, '| --- | --- | --- |'));
+        // Every component page is listed once, with a one-line description.
+        self::assertSame(6, substr_count($index, "| Компонент | Для чего |\n| --- | --- |"));
+        foreach ($pages as $page) {
+            $slug = basename($page, '.md');
+            self::assertMatchesRegularExpression(
+                '#^\| \[[^]]+\]\(/ru/components/' . preg_quote($slug, '#') . '/\) \| \S[^|]* \|$#mu',
+                $index,
+                $slug,
+            );
+        }
         self::assertStringContainsString('/ru/start/component-model/', $index);
     }
 

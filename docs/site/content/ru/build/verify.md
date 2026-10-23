@@ -2,7 +2,7 @@
 description: verify-static проверяет собранный сайт: читает статические файлы, не выполняет PHP проекта и не исправляет результат, а сообщает о нарушенном контракте.
 ---
 
-# Проверка статического результата
+# Проверка сборки
 
 `verify-static` проверяет уже собранный portable output. Команда не выполняет
 project PHP configuration и не исправляет результат; она читает статические
@@ -142,4 +142,4 @@ php vendor/simai/docara/scripts/verify-page-weight.php build_production --config
 два пустых destination и сравните canonical tree digest. Mutable worktree или
 старый ignored `build_*` не является exact evidence.
 
-[Почему output должен быть детерминированным](/build/determinism/).
+[Почему output должен быть детерминированным](/ru/build/php-only/#воспроизводимость).

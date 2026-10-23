@@ -155,7 +155,7 @@ dependencies, engine и verified build.
 
 Major, moving reference и stale plan отклоняются; запрос другой major
 возвращает `MAJOR_UPGRADE_REQUIRED`. Переход между major описан на странице
-[Переход с 2.x на 3.0](/build/upgrade-3/).
+[Переход с 2.x на 3.0](/ru/build/update/#переход-с-2-x-на-3-0).
 
 ## `update`
 

@@ -25,16 +25,13 @@ Preview блокирует терминал до `Ctrl+C`. Не использу
 
 ## Руководства
 
-- [Сборка статического сайта](/build/php-only/)
-- [Локальный просмотр](/build/local-preview/)
-- [Статический результат](/build/static-output/)
-- [Воспроизводимость](/build/determinism/)
-- [Проверка output](/build/verify/)
-- [Обновление Docara без потери сайта](/build/update/)
-- [Staged-публикация и rollback](/build/publish/)
-- [Размещение на хостинге](/build/hosting/)
-- [Сборка для портала](/build/portal/)
-- [Переход с 2.x на 3.0](/build/upgrade-3/)
+- [Сборка сайта](/ru/build/php-only/) — команды, готовый каталог и воспроизводимость
+- [Локальный просмотр](/ru/build/local-preview/)
+- [Проверка сборки](/ru/build/verify/)
+- [Размещение на хостинге](/ru/build/hosting/)
+- [Публикация и откат](/ru/build/publish/)
+- [Сборка для портала](/ru/build/portal/)
+- [Обновление Docara](/ru/build/update/) — в том числе переход с 2.x на 3.0
 
 Vite нужен только maintainer-разработчику исходных ассетов темы. Он не входит в
 portable author/build path.

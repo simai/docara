@@ -42,6 +42,14 @@ All notable changes to Docara are recorded here. The format follows
   `CONTENT_COMPONENT_ICON_UNKNOWN`, naming the file and line. Names in HTML
   examples and Smart component props are not checked.
 
+### Fixed
+
+- **Builds no longer depend on the libxml version.** libxml before 2.14
+  wrote an attribute value that contains a double quote in single quotes,
+  2.14 and later in double quotes with `&quot;`, so the same page built to
+  different bytes on different machines. Docara now writes such values in
+  double quotes with `&quot;` on every libxml version.
+
 ## [3.8.0] - 2026-10-23
 
 ### Added

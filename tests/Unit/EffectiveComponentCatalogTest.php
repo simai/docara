@@ -413,9 +413,9 @@ final class EffectiveComponentCatalogTest extends TestCase
             'native.links_and_images' => 'docs/site/content/ru/authoring/markdown.md',
             'native.lists_and_quotes' => 'docs/site/content/ru/authoring/markdown.md',
             'native.table' => 'docs/site/content/ru/authoring/markdown.md',
-            'ui.alert' => 'docs/site/content/ru/start/component-model.md',
+            'ui.alert' => 'docs/site/content/ru/components/smart-ui.md',
             'ui.badge' => 'docs/site/content/ru/start/component-model.md',
-            'ui.button' => 'docs/site/content/ru/start/component-model.md',
+            'ui.button' => 'docs/site/content/ru/components/smart-ui.md',
             'ui.dataview' => 'docs/site/content/ru/start/component-model.md',
             'ui.tabs' => 'docs/site/content/ru/start/component-model.md',
         ];

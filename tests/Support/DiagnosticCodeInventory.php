@@ -15,8 +15,9 @@ use RecursiveIteratorIterator;
  * diagnostic array or passed through a variable), the CODE of a
  * "CODE:message" or "[CODE] message" literal, or a code assembled from a
  * literal prefix and suffix ('MARKDOWN_' . $block . '_LINK_REQUIRED'), which
- * is kept as a pattern. Static verifier markers are the '@marker' literals of
- * scripts/verify-static-build.php.
+ * is kept as a pattern. The codes a starter Framework lock raises for a
+ * refused prop value (consumer_policy.blocked) count too. Static verifier
+ * markers are the '@marker' literals of scripts/verify-static-build.php.
  */
 final class DiagnosticCodeInventory
 {
@@ -49,6 +50,9 @@ final class DiagnosticCodeInventory
         'MARKDOWN_LOCAL_IMAGE' => 'src/PortableSite/PortableMarkdownRenderer.php',
         'MARKDOWN_SURFACE_BACKGROUND' => 'src/PortableSite/PortableMarkdownRenderer.php',
     ];
+
+    /** The Framework lock `docara init` writes; its consumer policy names codes too. */
+    public const STARTER_LOCK = 'stubs/portable/simai-framework.lock.json';
 
     /** The error reference pages: a code named there has a cause and a fix. */
     public const REFERENCE_PAGES = 'docs/site/content/ru/reference/errors';
@@ -288,6 +292,17 @@ final class DiagnosticCodeInventory
         }
         foreach ($assembled as $index) {
             unset($patterns[$index]);
+        }
+
+        // A Framework lock refuses some prop values for a static site
+        // (consumer_policy.blocked); the build raises the code the lock names.
+        $lock = json_decode((string) file_get_contents($this->root . '/' . self::STARTER_LOCK), true);
+        foreach (is_array($lock['manifests'] ?? null) ? $lock['manifests'] : [] as $manifest) {
+            foreach ($manifest['consumer_policy']['blocked'] ?? [] as $blocked) {
+                if (is_string($blocked['code'] ?? null) && preg_match('/^' . self::CODE . '$/', $blocked['code']) === 1) {
+                    $codes[$blocked['code']][self::STARTER_LOCK] = true;
+                }
+            }
         }
 
         ksort($codes, SORT_STRING);

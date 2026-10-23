@@ -49,3 +49,9 @@ flowchart LR
 на SVG. Если JavaScript выключен, читатель видит исходник схемы. Если Mermaid
 не смог разобрать схему, исходник остаётся на месте, а блок получает атрибут
 `data-docara-render-error="diagram"`.
+
+## См. также
+
+- [Математическая формула](/ru/components/math/)
+- [Иллюстрация](/ru/components/figure/)
+- [Код](/ru/components/code/)

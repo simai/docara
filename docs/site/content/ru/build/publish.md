@@ -133,3 +133,9 @@ immutable каталог.
 license, access и change-window gates конкретного production. Legacy
 Node/Yarn workflow также не является доказательством готовности portable
 deployment.
+
+## См. также
+
+- [Проверка сборки](/ru/build/verify/)
+- [Размещение на хостинге](/ru/build/hosting/)
+- [Обновление Docara](/ru/build/update/)

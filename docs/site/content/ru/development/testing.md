@@ -65,3 +65,9 @@ percent-кодировки. Browser matrix должна подтверждать
 
 Длинные тесты этого репозитория следует запускать последовательно: часть
 legacy-suite использует общий временный fixture-каталог.
+
+## См. также
+
+- [Начало разработки](/ru/development/getting-started/)
+- [Архитектура](/ru/development/architecture/)
+- [Проверка сборки](/ru/build/verify/)

@@ -75,3 +75,9 @@
 :badge[Обычный]{size=1}
 ```
 :::
+
+## См. также
+
+- [Кнопка-ссылка](/ru/components/button/)
+- [Значок](/ru/components/icon/)
+- [Клавиатурный ввод](/ru/components/kbd/)

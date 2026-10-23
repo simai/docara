@@ -219,3 +219,9 @@ Docara пишет эти строки при сборке на английск�
 Шаблоны `docara init` записывают `reader.appearance`, `reader.appearance_description`, `reader.help`, но интерфейс Docara 3.x их сейчас не показывает.
 
 <!-- docara:lang-reference:end -->
+
+## См. также
+
+- [Мультиязычный сайт](/ru/authoring/multilingual-site/) — как устроены языки и fallback
+- [Коды ошибок lang.json](/ru/reference/errors/site/#строки-интерфейса-lang-json)
+- [Фоновые эффекты](/ru/components/effects/) — подписи кнопки паузы

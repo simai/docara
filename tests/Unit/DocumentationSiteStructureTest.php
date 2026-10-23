@@ -28,8 +28,8 @@ final class DocumentationSiteStructureTest extends TestCase
             self::assertStringNotContainsString('/ru/components/' . $entry . '/', $index);
         }
         $pages = glob($root . '/*.md') ?: [];
-        self::assertSame(32, count($pages));
-        self::assertSame(32, preg_match_all('#/ru/components/[a-z0-9-]+/#', $index));
+        self::assertSame(33, count($pages));
+        self::assertSame(33, preg_match_all('#/ru/components/[a-z0-9-]+/#', $index));
         foreach (['Текст и Markdown', 'Содержательные блоки', 'Код и данные', 'Макет', 'Медиа', 'Inline и действия'] as $category) {
             self::assertStringContainsString('## ' . $category, $index);
         }

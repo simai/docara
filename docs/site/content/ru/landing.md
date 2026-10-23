@@ -27,7 +27,8 @@ Docara и утилит SIMAI Framework.
 
 Исходный Markdown главной находится в `content/ru/index.md`. Первый экран и
 раскрывающиеся вопросы описаны на страницах [Первый экран](/components/hero/)
-и [Раскрывающийся блок](/components/details/). У блоков `cta`, `features`,
-`showcase` и `promo` отдельных страниц в справочнике пока нет: пример разметки
-`features` и `promo` — сам `index.md`. Остальные компоненты перечислены в
-[справочнике компонентов](/components/).
+и [Раскрывающийся блок](/components/details/), фоновая анимация — на странице
+[Фоновые эффекты](/components/effects/). Блоки `features`, `showcase`,
+`promo`, `columns` и `cta` с живыми примерами описаны на странице
+[Блоки лендинга](/components/landing-blocks/). Остальные компоненты
+перечислены в [справочнике компонентов](/components/).

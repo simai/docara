@@ -1,4 +1,4 @@
-# Smart-компоненты Docara
+# Smart-компоненты
 
 Smart-компонент — переносимый UI-артефакт с проверяемым manifest,
 представлениями, шаблоном и assets. Все компоненты проходят один путь:
@@ -151,3 +151,102 @@ project.name --dry-run`, затем `docara scaffold --apply=<plan_id>`. Пол�
 Full и `--page` используют один PageBuilder. После изменения структуры routes
 нужна full build; для содержимого существующей страницы доступен single-page
 rebuild.
+
+## Компонент SIMAI Framework
+
+Новый `:::ui.*` вызов нельзя добавить только изменением parser, schema или
+метаданных каталога. Единственный admission authority — точный
+`simai-framework.lock.json`.
+
+Сначала пройдите общий выбор уровня в
+[обзоре раздела](/ru/development/#как-развивать-возможности). Этот раздел
+описывает только случай, когда native Markdown и typed-компонент Docara уже не
+решают задачу.
+
+Минимальный принимаемый набор:
+
+1. подтвердить, что задачу нельзя решить native Markdown или существующим
+   typed-компонентом Docara;
+2. для нового переносимого компонента добавить manifest по публичному
+   `sf.smart_artifact_abi` / `smart.manifest.schema.json`, props и host renderer
+   и immutable upstream revision;
+3. добавить manifest в точный SIMAI Framework lock с provider revision и
+   SHA-256;
+4. описать полный immutable asset dependency plan, включая транзитивные
+   зависимости;
+5. добавить узкие consumer metadata в
+   `resources/component-catalog/smart/`: они описывают использование в Docara,
+   но не могут расширять manifest;
+6. добавить positive и negative props, constraint, dependency и lock tests;
+7. проверить в браузере поведение, клавиатуру, темы, адаптивность и
+   доступность;
+8. добавить один физический Markdown-owner публичной страницы и отдельный
+   exact fixture; manifest и `lang.json` не владеют prose страницы.
+
+Каждый critical asset из manifest должен либо присутствовать в вычисленном
+asset plan, либо быть назван в сужающей consumer-policy с конкретной причиной.
+Static verifier сверяет каждый материализованный Framework asset с точной
+проекцией lock: путь, безопасный тип файла, SHA-256 и полный набор файлов.
+До очистки каталога назначения build preflight проверяет bytes каждого
+зафиксированного файла и равенство проекции полному dependency closure всех
+допущенных компонентов.
+
+Core runtime и utilities публикуются отдельной hash-bound проекцией с
+сохранением путей относительно upstream `distr`. Это позволяет webpack и Core
+лениво находить chunks без сетевого fallback. Наличие файла в этой локальной
+проекции не является admission нового Smart-компонента: authoring support
+по-прежнему требует отдельный принятый manifest и consumer policy.
+Текущий portable-контур явно исключает backend event bridge коммерческих пакетов SIMAI: Docara не
+допускает backend handlers, data binding или выполнение эффектов. Это
+ограничение отражается в машинном каталоге, а не скрывается.
+
+Поля `authoring.parameters` в эффективном каталоге описывают ввод автора, а
+не уже нормализованные host props. `required: false` означает только, что
+автор может не указывать параметр. Поле `default` присутствует, когда точное
+базовое значение есть в `atlas.example_props`; без него свойство остаётся
+отсутствующим до явного ввода или применения preset. `preset` остаётся
+отдельным необязательным параметром. `validation` переносит строковые и
+числовые правила свойства, а `mirrors` явно показывает детерминированное
+заполнение связанного свойства (например, текста доступного имени). Поле
+`authoring.constraints` без потерь переносит
+`allowed_combinations` и `requires` из manifest, чтобы разработчик и ИИ не
+генерировали формально допустимые, но несовместимые сочетания.
+
+Сборка требует точного равенства между Smart metadata и manifest keys,
+допущенными lock. Поэтому лишний metadata-файл, отсутствующий manifest,
+несовпадающий hash или moving revision завершает сборку ошибкой. Схема
+`docara.component_call.v1` проверяет только форму `ui.*` вызова и не является
+реестром допуска.
+
+Consumer metadata не может повысить readiness или расширить название,
+категорию и состояния manifest. Поддерживаемый компонент требует
+`safe_to_suggest` и `safe_to_render`. Его состояния точно равны состояниям
+manifest в исходном порядке за вычетом
+`consumer_policy.excluded_states`; каждое исключение связано с конкретной
+запрещённой парой property/value, которая сама проверяется по точной схеме
+свойства. Описание берётся из policy-owned ограниченного контракта поведения
+Docara, а не копируется из более широкого upstream-описания.
+
+Для простых семантических конструкций сначала проверьте, достаточно ли
+обычного Markdown или typed-рецепта Docara. Точные поддерживаемые вызовы,
+параметры и примеры находятся в [справочнике компонентов](/components/).
+
+### Как зафиксировать ещё не готовую потребность
+
+Если renderer или admission-набор ещё не готов, добавьте неисполняемую запись
+в `resources/component-catalog/requirements/` с lifecycle
+`admission_pending`, `framework_gap` или `deferred`. Запись должна содержать
+owner, reason, fallback и admission condition. Она делает дефицит видимым, но
+не разрешает директиву.
+
+Requirement-запись никогда не переключается в `supported` на месте. После
+готовности она удаляется, а исполняемая возможность появляется из своего
+authoritative source: native profile, typed definition либо Smart metadata с
+точным lock admission. Для исполняемой записи обязательны renderer, тесты,
+документация и example fixture. Каталог
+`_docara/component-catalog.json` в output сборки не является каноническим
+реестром SIMAI Framework и не подтверждает production или public-release
+readiness.
+Устаревшая схема smart manifest v1 встречается только во внутренних package-owned
+артефактах старого storage adapter. Это не публичная authoring-схема и не
+альтернативный Portable Smart ABI.

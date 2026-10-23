@@ -18,7 +18,7 @@ Composition Document: тот описывает готовую страницу 
 | Короткая метка, кнопка-ссылка, значок или клавиша внутри строки | Inline Docara | [Каталог компонентов](/ru/components/) |
 | Самостоятельный смысловой фрагмент | Блочный компонент Docara | [Каталог компонентов](/ru/components/) |
 | Несколько вложенных блоков с ограничениями | Контейнер Docara | [Surface](/ru/components/surface/) и [Сетка](/ru/components/grid/) |
-| Принятый внешний UI artifact | SIMAI Framework Smart | [Framework-компоненты](/ru/development/framework-components/) |
+| Принятый внешний UI artifact | SIMAI Framework Smart | [Framework-компоненты](/ru/development/smart-components/#компонент-simai-framework) |
 | Компонент конкретного проекта | Project-owned Smart или shell contribution | [Developer/AI SDK](/ru/development/developer-sdk/) |
 
 ## Обычный Markdown

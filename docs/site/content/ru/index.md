@@ -57,7 +57,7 @@ php vendor/bin/docara serve production
 
 :::features
 - :icon[widgets]{size=2 container=square variant=tonal scheme=primary} **[Каталог компонентов](/components/).** Каждый компонент с живым примером, параметрами и кодом, который можно скопировать.
-- :icon[dashboard]{size=2 container=square variant=tonal scheme=primary} **[Примеры макетов](/examples/).** Отдельные страницы с разными областями, шапками и наследованием настроек — вместе с исходными файлами.
+- :icon[dashboard]{size=2 container=square variant=tonal scheme=primary} **[Примеры макетов](/ru/development/examples/).** Отдельные страницы с разными областями, шапками и наследованием настроек — вместе с исходными файлами.
 - :icon[extension]{size=2 container=square variant=tonal scheme=primary} **[Компоненты проекта](/project-demos/).** Собственные компоненты сайта, подключённые без изменения Docara: конструктор команды установки и конфигуратор продукта.
 :::
 
@@ -94,7 +94,7 @@ VitePress и Docusaurus — проекты на npm: сайт собираетс
 
 Да. Сначала попробуйте обычный Markdown и готовые компоненты Docara. Если их не
 хватает, подключите собственный компонент сайта по
-[документированному контракту](/development/extensions/).
+[документированному контракту](/ru/development/#как-развивать-возможности).
 :::
 
 :::details {view=lines}

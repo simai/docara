@@ -1,0 +1,10 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Примеры для разработчиков",
+  "navigation": {
+    "hidden": true
+  },
+  "search": {
+    "indexed": false
+  }
+}

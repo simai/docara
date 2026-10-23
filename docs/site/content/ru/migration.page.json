@@ -3,6 +3,6 @@
   "title": "Миграция",
   "description": "Явный и проверяемый перенос существующего сайта в Docara.",
   "navigation": {
-    "order": 70
+    "order": 80
   }
 }

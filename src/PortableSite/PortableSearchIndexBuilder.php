@@ -61,6 +61,10 @@ final readonly class PortableSearchIndexBuilder
             );
             $path = $navigationBuilder->pathForUrl($navigation, $url);
             $trail = array_column(array_slice($path, 0, -1), 'title');
+            // Front matter tags are extra words the page is found by, such as
+            // a synonym its text does not use. A page without tags keeps the
+            // document shape it always had.
+            $tags = array_values(array_map('strval', is_array($page['tags'] ?? null) ? $page['tags'] : []));
             $documents[] = [
                 'id' => hash('sha256', $locale . "\0" . $url),
                 'url' => $url,
@@ -70,6 +74,7 @@ final readonly class PortableSearchIndexBuilder
                 'trail' => array_values(array_map('strval', $trail)),
                 'headings' => $extracted['headings'],
                 'text' => $extracted['text'],
+                ...($tags === [] ? [] : ['tags' => $tags]),
             ];
         }
         usort($documents, static fn (array $left, array $right): int => [

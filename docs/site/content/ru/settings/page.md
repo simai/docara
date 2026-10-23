@@ -42,7 +42,7 @@ Front matter — блок между строками `---` в начале ст
 [`FRONT_MATTER_KEY_UNKNOWN`](/reference/errors/content/#заголовок-страницы-front-matter):
 
 - `title` и `description` — заголовок и описание страницы;
-- `tags` — список в одну строку, например `tags: [ui, status]`;
+- `tags` — список в одну строку, например `tags: [деплой, публикация]`; по меткам страницу находит [поиск](/ru/authoring/search/#синонимы-метки-страницы);
 - `draft` — `true` или `false`; черновик нельзя собрать как public `--page`;
 - `noindex` — `true` или `false`; `true` добавляет `robots: noindex` и убирает
   страницу из `sitemap.xml` и `llms.txt`. Поиск по сайту настраивается

@@ -55,6 +55,14 @@ MD, 'content/ru/components/badge.md');
     }
 
     #[Test]
+    public function tags_may_be_lowercase_words_of_any_script(): void
+    {
+        $document = (new FrontMatterParser)->parse("---\ntags: [деплой, публикация, i18n, ёлка]\n---\n# Публикация\n", 'content/ru/build/publish.md');
+
+        self::assertSame(['деплой', 'публикация', 'i18n', 'ёлка'], $document->metadata['tags']);
+    }
+
+    #[Test]
     public function it_fails_closed_with_source_line_column_and_actionable_error(): void
     {
         try {
@@ -84,6 +92,8 @@ MD, 'content/ru/components/badge.md');
             ["---\ndraft: yes\n---\n", 'FRONT_MATTER_DRAFT_INVALID'],
             ["---\nnoindex: 1\n---\n", 'FRONT_MATTER_NOINDEX_INVALID'],
             ["---\ntags: [UI]\n---\n", 'FRONT_MATTER_TAG_INVALID'],
+            ["---\ntags: [Деплой]\n---\n", 'FRONT_MATTER_TAG_INVALID'],
+            ["---\ntags: [деплой сайта]\n---\n", 'FRONT_MATTER_TAG_INVALID'],
             ["---\ntranslation_key: Components Badge\n---\n", 'FRONT_MATTER_TRANSLATION_KEY_INVALID'],
             ["---\ntitle: Missing close\n", 'FRONT_MATTER_UNTERMINATED'],
         ] as [$markdown, $code]) {

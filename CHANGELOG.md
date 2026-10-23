@@ -8,6 +8,42 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **Starters carry the documentation standard.** Every `docara init`
+  template and language (`minimal` in English and Russian, `showcase` in
+  Russian) now ships `docara.authoring.json` and a skeleton organised by page
+  type: `getting-started/` (tutorial), `how-to/` (how_to), `reference/` and
+  `explanation/`, each with one short example page of its type in the
+  starter's language. The example pages meet their types, so the starter
+  build prints no authoring summary line.
+- **Docara infers a page profile when none is set.** When a page gets no
+  profile from front matter, a path rule or `default_profile`, `docara
+  validate page` guesses one from the path and the Markdown: `index.md` is a
+  landing page, a path segment such as `how-to/` or `reference/` names the
+  type, three or more numbered steps make a how-to guide, tables, lists and
+  definitions on at least 60% of the lines make a reference page, and
+  anything else is an article. The guess is reported as the advisory
+  `PAGE_PROFILE_INFERRED`, its structural misses are advisory too, and the
+  build never counts or fails on them. Inference runs only when
+  `docara.authoring.json` exists; `"infer_profiles": false` switches it off.
+  Explicit profiles always win.
+- **`AGENTS.md` for AI assistants.** `docara init` writes an `AGENTS.md` at
+  the project root: what the project is, the page types and their required
+  parts, the writing rules, how to create a page of a type and the commands
+  to run before finishing. An existing `AGENTS.md` is never overwritten:
+  `init` accepts a directory that holds one and writes the guide to
+  `docs/AGENTS.docara.md` instead. The same standard is the
+  `documentation_standard` field of `docara capabilities --json` and the
+  read-only MCP tool `docara_authoring_standard`, which also returns the
+  project's `AGENTS.md` text. The AI contract version is now 1.2.0.
+- **Page templates by type.** `docara scaffold page --type=how_to
+  --title="..."` creates a page with the sections of its type, a
+  `description` placeholder, `profile` and `draft: true`, written in English
+  or Russian after the locale (other locales use English). `--type` is the
+  same as `--profile`, `--locale` defaults to the site's default locale, and
+  without a route the page goes into its type's skeleton directory with a
+  slug made from the title. On the command line a page is created in one
+  step; `--dry-run` keeps the reviewed plan-and-apply flow, which Smart and
+  design scaffolds still require.
 - **Search finds pages by their front matter `tags`.** A tagged page's
   search document carries a `tags` field (left out for an untagged page, so
   existing indexes do not change), and `search.js` ranks a tag match below a

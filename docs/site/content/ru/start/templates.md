@@ -67,6 +67,8 @@ Docara обновляется одной командой `php vendor/bin/docara
 
 ```text
 docara.json
+docara.authoring.json
+AGENTS.md
 composer.json
 composer.lock
 vendor/
@@ -86,10 +88,20 @@ content/
     writing.page.json
     components.md
     components.page.json
+    getting-started/
+    how-to/
+    reference/
+    explanation/
 ```
 
 С `--lang=en` содержимое лежит в `content/en/`. Сайт одноязычный, маршруты
 без языкового префикса: `/`, `/writing/`, `/components/`.
+
+Четыре каталога — каркас документации по типам страниц: урок, инструкция,
+справочник и объяснение. В каждом лежит короткий пример страницы своего типа:
+замените его своим текстом. `docara.authoring.json` включает проверку типов
+страниц, а `AGENTS.md` пересказывает тот же стандарт для ИИ-помощников. Как
+это работает, описано в [Профилях страниц](/ru/authoring/page-profiles/).
 
 ## См. также
 

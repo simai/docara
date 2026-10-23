@@ -79,8 +79,10 @@ profile: how_to
 php vendor/bin/docara validate page /ru/start/ --json
 ```
 
-После `docara build` сборка печатает, сколько страниц требуют внимания, но
-сайт всё равно собирается.
+После `docara build` сборка печатает одну строку с оценкой качества
+документации и числом страниц, которые требуют внимания, но сайт всё равно
+собирается. Подробный отчёт даёт `docara qa report`, см.
+[«Качество документации»](/ru/authoring/documentation-quality/).
 
 ## Если профиль не задан
 
@@ -155,6 +157,7 @@ Smart-компонентов.
 - [Метаданные страницы](/ru/authoring/markdown/#метаданные-страницы) — ключ `profile`
 - [Заготовки и окружение](/ru/start/templates/) — каркас по типам страниц и `AGENTS.md`
 - [Команды CLI](/ru/reference/cli/) — `scaffold page` и `validate page`
+- [Качество документации](/ru/authoring/documentation-quality/) — оценка от 0 до 100 и пакет смысловой проверки
 - [Актуальность документации](/ru/authoring/documentation-tracking/)
 - [Схемы JSON](/ru/reference/schemas/) — схема `docara.authoring.v1`
 - [Коды ошибок](/ru/reference/errors/)

@@ -56,6 +56,7 @@ docara schema smart --json
 | [Ошибки настроек сайта](/ru/reference/errors/site/) | Перенаправления, языки и переводы, поиск, фоновые эффекты, страница 404, адрес сайта, тема, бренд, портал |
 | [Ошибки обновления](/ru/reference/errors/upgrade/) | Команда `upgrade` и её откат |
 | [Отметки проверки сборки](/ru/reference/errors/verify-static/) | Отметки `verify-static`, начинающиеся с `@` |
+| [Ошибки качества документации](/ru/reference/errors/quality/) | Находки `docara qa report`: полнота, актуальность, находимость, читаемость, доступность, ссылки |
 
 ## Общие коды
 
@@ -91,7 +92,7 @@ docara schema smart --json
 | `PAGE_PROFILE_ONE_H1_MISSING`, `PAGE_PROFILE_INTRODUCTION_MISSING`, `PAGE_PROFILE_MULTIPLE_SECTIONS_MISSING`, `PAGE_PROFILE_MAIN_MATERIAL_MISSING`, `PAGE_PROFILE_ORDERED_STEPS_MISSING`, `PAGE_PROFILE_STRUCTURED_REFERENCE_MISSING`, `PAGE_PROFILE_ACTION_MISSING` | Предупреждение `docara validate page`: странице не хватает части, которую требует её профиль. Сборка продолжается. **Что сделать:** Добавьте недостающую часть или смените профиль. См. [Профили страниц](/authoring/page-profiles/#профили-и-что-они-проверяют). |
 | `PAGE_PROFILE_INFERRED` | Подсказка `docara validate page`: у страницы нет профиля, и Docara угадала его по пути и тексту. Сборка не останавливается. **Что сделать:** Если тип угадан верно, впишите `profile:` во front matter. См. [Профили страниц](/authoring/page-profiles/#если-профиль-не-задан). |
 | `PAGE_EDITORIAL_REVIEW_REQUIRED` | Напоминание `docara validate page`: смысловые вопросы профиля проверяет человек. **Что сделать:** Пройдите список вопросов из отчёта. Это не ошибка. |
-| `QA_DRY_RUN_REQUIRED` | `docara qa` запущена без `--dry-run` и точной `--page`. **Что сделать:** Запустите `docara qa --dry-run --page=<адрес>`. |
+| `QA_DRY_RUN_REQUIRED` | `docara qa` запущена без вида `report` или `review-packet` и без `--dry-run` с точной `--page`. **Что сделать:** Для оценки документации запустите `docara qa report`, для браузерной проверки — `docara qa <вид> <id> --dry-run --page=<адрес>`. |
 
 ## Если кода нет в справочнике
 

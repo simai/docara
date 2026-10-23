@@ -13,8 +13,7 @@ All notable changes to Docara are recorded here. The format follows
   Russian) now ships `docara.authoring.json` and a skeleton organised by page
   type: `getting-started/` (tutorial), `how-to/` (how_to), `reference/` and
   `explanation/`, each with one short example page of its type in the
-  starter's language. The example pages meet their types, so the starter
-  build prints no authoring summary line.
+  starter's language. The example pages meet the structure of their types.
 - **Docara infers a page profile when none is set.** When a page gets no
   profile from front matter, a path rule or `default_profile`, `docara
   validate page` guesses one from the path and the Markdown: `index.md` is a
@@ -44,6 +43,37 @@ All notable changes to Docara are recorded here. The format follows
   slug made from the title. On the command line a page is created in one
   step; `--dry-run` keeps the reviewed plan-and-apply flow, which Smart and
   design scaffolds still require.
+- **Documentation quality report.** `docara qa report` scores a built site
+  from 0 to 100 without a network and without AI. Twenty-seven checks with
+  stable `QUALITY_*` codes fall into six groups: completeness (profile parts,
+  description, stubs, scaffold leftovers, links to drafts), freshness
+  (documentation tracking), findability (menus, search, inbound and related
+  links, tags), readability (sentence and page length, subheadings, heading
+  depth, Latin share in non-Latin locales, glossary terms), accessibility
+  (alt text, generic link text, heading order and levels, table headers,
+  `lang`) and links (broken links and anchors, by the rules of
+  `verify-static`). A failed check costs its group 25 points (warning) or 10
+  (advice) once per page; the page score is the weighted mean of the groups
+  (completeness 25, freshness 10, findability 20, readability 15,
+  accessibility 15, links 15; a group that does not apply is left out) and
+  the site score the mean of the pages. The command prints the score, the
+  group scores, a "fix first" list ranked by the site points each fix gains
+  and the biggest gains by check, and writes
+  `build_<env>.docara/quality-report.json`; `--html` adds a standalone page
+  next to the build that is never published. `--min-score` or
+  `quality.min_score` in `docara.authoring.json` makes it exit 1 for CI;
+  `quality.glossary` and `quality.exclude` name the glossary page and pages
+  left out. Pages with `noindex` are not scored.
+- **Review packets for the semantic review.** `docara qa review-packet
+  [route]` writes, for one page or the whole site, the questions only a
+  reader can answer (accuracy against the sources, clarity for the audience,
+  does the page solve the task, do the examples work) with the page text,
+  its profile and editorial checklist, its tracked sources and the findings
+  of the last report, as JSON and Markdown in
+  `build_<env>.docara/review-packets/`. Docara never answers them itself. The
+  MCP adapter exposes both commands as `docara_qa_report` and
+  `docara_qa_review_packet`, the documentation standard lists them, and the
+  `AGENTS.md` that `docara init` writes asks AI assistants to run them.
 - **Search finds pages by their front matter `tags`.** A tagged page's
   search document carries a `tags` field (left out for an untagged page, so
   existing indexes do not change), and `search.js` ranks a tag match below a
@@ -71,6 +101,13 @@ All notable changes to Docara are recorded here. The format follows
   - The components overview gives every component a one-line description.
 
 ### Changed
+
+- **`docara build` prints one documentation quality line.** When the project
+  has `docara.authoring.json`, the build ends with
+  `Documentation quality: 82/100, 5 page(s) need attention (docara qa report).`
+  instead of the page authoring count. A project without that file sees
+  nothing new, and the build never fails on quality. `docara qa` without a
+  kind now points to `qa report` in its `QA_DRY_RUN_REQUIRED` message.
 
 - **The documentation site has nine sections, and each topic lives on one
   page.** The menu now runs Начало работы, Написание страниц, Компоненты,

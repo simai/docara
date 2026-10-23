@@ -417,14 +417,41 @@ route для production-контекста, `--json` выводит резуль
 ## `qa`
 
 ```bash
-php vendor/bin/docara qa [kind] [id] --page=/route/ --dry-run [--json]
+php vendor/bin/docara qa report [--env=local] [--top=10] [--html] [--min-score=N] [--json]
+php vendor/bin/docara qa review-packet [route] [--env=local] [--json]
+php vendor/bin/docara qa <smart|region|layout> <id> --page=/route/ --dry-run [--json]
 php vendor/bin/docara qa --finalize-reference=<draft> [--json]
 php vendor/bin/docara qa --verify=<plan-sha256> [--json]
 ```
 
-Планирует или проверяет необязательную браузерную, a11y и визуальную проверку
-на изолированном preview по production-пути. `kind`: `smart`, `region` или
-`layout`.
+`qa report` проверяет собранный сайт `build_<env>/` и ставит документации
+оценку от 0 до 100. Он печатает оценку, оценки групп и список «исправить в
+первую очередь» и пишет `build_<env>.docara/quality-report.json`. Сайт должен
+быть собран заранее той же командой `build <env>`.
+
+- `--env` — какую сборку проверить, по умолчанию `local`;
+- `--top` — сколько пунктов показать в списке «Fix first», по умолчанию 10;
+- `--html` — дополнительно записать `build_<env>.docara/quality-report.html`;
+  этот файл не публикуется;
+- `--min-score` — строгий режим: код выхода 1 и `QUALITY_SCORE_BELOW_MINIMUM`,
+  если оценка ниже числа. Без параметра действует `quality.min_score` из
+  `docara.authoring.json`.
+
+`qa review-packet` пишет в `build_<env>.docara/review-packets/` вопросы для
+смысловой проверки одной страницы (с адресом) или всего сайта (без адреса),
+вместе с текстом страниц, профилем и источниками. Docara на них не отвечает:
+это делает человек или ИИ-помощник. Подробности — на странице
+[«Качество документации»](/ru/authoring/documentation-quality/).
+
+```bash
+php vendor/bin/docara build production
+php vendor/bin/docara qa report --env=production --min-score=80
+php vendor/bin/docara qa review-packet /ru/start/quick-start/ --env=production
+```
+
+Виды `smart`, `region` и `layout` планируют или проверяют необязательную
+браузерную, a11y и визуальную проверку на изолированном preview по
+production-пути.
 
 - `--page` — публичный route страницы для проверки; обязателен вместе с
   `--dry-run`;

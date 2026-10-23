@@ -1,0 +1,10 @@
+{
+  "schema": "docara.authoring.v1",
+  "infer_profiles": true,
+  "rules": [
+    {"match": "getting-started/**", "profile": "tutorial"},
+    {"match": "how-to/**", "profile": "how_to"},
+    {"match": "reference/**", "profile": "reference"},
+    {"match": "explanation/**", "profile": "explanation"}
+  ]
+}

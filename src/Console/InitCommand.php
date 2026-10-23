@@ -15,9 +15,11 @@ final class InitCommand extends Command
 {
     /**
      * Entries a directory may already hold and still count as empty: version
-     * control and file-manager metadata. The starter never writes these names.
+     * control and file-manager metadata, and an AGENTS.md the user wrote for
+     * AI assistants. The starter never writes the metadata names and never
+     * overwrites AGENTS.md: it writes its guide next to it instead.
      */
-    private const IGNORABLE_ENTRIES = ['.git', '.gitattributes', '.gitignore', '.DS_Store', 'Thumbs.db', 'desktop.ini'];
+    private const IGNORABLE_ENTRIES = ['.git', '.gitattributes', '.gitignore', '.DS_Store', 'Thumbs.db', 'desktop.ini', 'AGENTS.md'];
 
     private string $base;
 
@@ -135,10 +137,23 @@ final class InitCommand extends Command
             ->comment("Template: {$template}, content language: {$language}")
             ->comment("Starter files: copied={$result['copied']}, preserved={$result['preserved']}")
             ->comment("Package-owned state: files={$result['engine_files']}, sha256={$result['engine_sha256']}")
+            ->comment($this->agentsLine($result['agents'], $result['agents_existing']))
             ->info('Your Docara project was initialized successfully.')
             ->comment($this->nextSteps($target));
 
         return self::SUCCESS;
+    }
+
+    private function agentsLine(?string $written, bool $existing): string
+    {
+        if (! $existing) {
+            return "Guide for AI assistants: {$written} (page types, writing rules and checks).";
+        }
+        if ($written !== null) {
+            return "AGENTS.md already exists and was left unchanged. The Docara guide for AI assistants is in {$written}; link it from AGENTS.md.";
+        }
+
+        return 'AGENTS.md and ' . PortableProjectInitializer::AGENTS_FALLBACK . ' already exist and were left unchanged; run "docara capabilities --json" for the documentation standard.';
     }
 
     /** The commands to run next, spelled the way this project runs Docara. */

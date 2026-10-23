@@ -1,6 +1,9 @@
 {
   "schema": "docara.authoring.v1",
   "audiences": ["reader", "author", "developer"],
+  "quality": {
+    "exclude": ["examples/*"]
+  },
   "rules": [
     {"match": "index.md", "profile": "landing"},
     {"match": "start.md", "profile": "tutorial"},

@@ -361,9 +361,11 @@ class PortableInitCommandTest extends TestCase
         $this->assertDirectoryDoesNotExist($this->tmpPath('smart'));
         $this->assertStringContainsString(':::example', (string) file_get_contents($this->tmpPath('content/en/writing.md')));
         $this->assertStringContainsString(':::ui.button', (string) file_get_contents($this->tmpPath('content/en/components.md')));
-        foreach (glob($this->tmpPath('content/en/*')) ?: [] as $file) {
-            $this->assertDoesNotMatchRegularExpression('/[А-Яа-яЁё]/u', (string) file_get_contents($file), $file);
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->tmpPath('content/en'), \FilesystemIterator::SKIP_DOTS));
+        foreach ($files as $file) {
+            $this->assertDoesNotMatchRegularExpression('/[А-Яа-яЁё]/u', (string) file_get_contents($file->getPathname()), $file->getPathname());
         }
+        $this->assertDoesNotMatchRegularExpression('/[А-Яа-яЁё]/u', (string) file_get_contents($this->tmpPath('AGENTS.md')));
     }
 
     #[Test]
@@ -381,6 +383,72 @@ class PortableInitCommandTest extends TestCase
             array_map('basename', glob(dirname(__DIR__) . '/stubs/minimal/ru/content/ru/*') ?: []),
             'Both languages of the minimal starter have the same pages.',
         );
+    }
+
+    /** @return array<string, array{string, string}> */
+    public static function everyStarter(): array
+    {
+        return [
+            'minimal, English' => ['minimal', 'en'],
+            'minimal, Russian' => ['minimal', 'ru'],
+            'showcase, Russian' => ['showcase', 'ru'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('everyStarter')]
+    public function every_starter_ships_the_documentation_standard(string $template, string $language): void
+    {
+        [$status, $console] = $this->executeInit(['--template' => $template, '--lang' => $language], showcase: false);
+
+        $this->assertSame(Command::SUCCESS, $status, $console->getDisplay());
+        $authoring = $this->json('docara.authoring.json');
+        $this->assertSame('docara.authoring.v1', $authoring['schema']);
+        $this->assertTrue($authoring['infer_profiles']);
+        $this->assertSame(
+            ['getting-started/**' => 'tutorial', 'how-to/**' => 'how_to', 'reference/**' => 'reference', 'explanation/**' => 'explanation'],
+            array_column($authoring['rules'], 'profile', 'match'),
+        );
+        $pages = [
+            'getting-started/first-page.md' => 'tutorial',
+            'how-to/publish-the-site.md' => 'how_to',
+            'reference/page-types.md' => 'reference',
+            'explanation/page-types.md' => 'explanation',
+        ];
+        foreach ($pages as $page => $profile) {
+            $source = (string) file_get_contents($this->tmpPath("content/{$language}/{$page}"));
+            $this->assertStringContainsString("profile: {$profile}\n", $source, $page);
+            $this->assertMatchesRegularExpression('/^description: "[^"]+"$/m', $source, $page);
+            $this->assertStringContainsString($language === 'ru' ? '## См. также' : '## See also', $source, $page);
+            $this->assertFileExists($this->tmpPath("content/{$language}/" . dirname($page) . '/section.json'));
+        }
+
+        $agents = (string) file_get_contents($this->tmpPath('AGENTS.md'));
+        $lines = substr_count($agents, "\n");
+        $this->assertGreaterThanOrEqual(60, $lines);
+        $this->assertLessThanOrEqual(100, $lines);
+        $this->assertStringContainsString("Pages are Markdown files in `content/{$language}/`", $agents);
+        $this->assertStringContainsString("Page language: `{$language}`", $agents);
+        foreach (['`how_to`', 'One topic per page', 'description', 'See also', 'alt text', 'No text inside images', 'scaffold page <route> --type <type>', 'validate page <route>', 'verify-static build_production'] as $needle) {
+            $this->assertStringContainsString($needle, $agents);
+        }
+        $this->assertStringContainsString('Guide for AI assistants: AGENTS.md', $console->getDisplay());
+        $this->assertFileDoesNotExist($this->tmpPath(PortableProjectInitializer::AGENTS_FALLBACK));
+    }
+
+    #[Test]
+    public function an_existing_agents_file_is_kept_and_the_guide_goes_next_to_it(): void
+    {
+        file_put_contents($this->tmpPath('AGENTS.md'), "# Our own rules\n");
+
+        [$status, $console] = $this->executeInit(['--template' => 'minimal', '--lang' => 'en'], showcase: false);
+
+        $this->assertSame(Command::SUCCESS, $status, $console->getDisplay());
+        $this->assertSame("# Our own rules\n", file_get_contents($this->tmpPath('AGENTS.md')));
+        $this->assertStringStartsWith('# Instructions for AI assistants', (string) file_get_contents($this->tmpPath('docs/AGENTS.docara.md')));
+        $display = preg_replace('/\s+/', ' ', $console->getDisplay());
+        $this->assertStringContainsString('AGENTS.md already exists and was left unchanged', $display);
+        $this->assertStringContainsString('docs/AGENTS.docara.md', $display);
     }
 
     #[Test]

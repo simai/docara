@@ -9,6 +9,7 @@ use InvalidArgumentException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
+use Simai\Docara\Authoring\DocumentationStandard;
 use Simai\Docara\File\Filesystem;
 
 final readonly class PortableProjectInitializer
@@ -36,6 +37,15 @@ final readonly class PortableProjectInitializer
      * redirect list.
      */
     private const SHARED = ['assets', 'contracts', 'redirects.json', 'simai-framework.lock.json'];
+
+    /**
+     * The guide for AI assistants. Written at the project root unless a file
+     * of that name already exists; then the fallback path is used, so a
+     * user's own AGENTS.md is never overwritten.
+     */
+    public const AGENTS_FILE = 'AGENTS.md';
+
+    public const AGENTS_FALLBACK = 'docs/AGENTS.docara.md';
 
     public function __construct(private Filesystem $files) {}
 
@@ -67,7 +77,11 @@ final readonly class PortableProjectInitializer
     }
 
     /**
-     * @return array{copied:int,preserved:int,engine_files:int,engine_sha256:string,template:string,language:string}
+     * Every template also gets the documentation standard of its language
+     * from stubs/standard: docara.authoring.json and one example page per
+     * page type (getting started, how-to guides, reference, explanation).
+     *
+     * @return array{copied:int,preserved:int,engine_files:int,engine_sha256:string,template:string,language:string,agents:?string,agents_existing:bool}
      */
     public function initialize(
         string $root,
@@ -93,6 +107,11 @@ final readonly class PortableProjectInitializer
             $sources[] = [$own, null];
             $sources[] = [$showcase, self::SHARED];
         }
+        $standard = $stubs . '/standard/' . $language;
+        if (! $this->files->isDirectory($standard)) {
+            throw new RuntimeException("Documentation standard starter was not found at {$standard}.");
+        }
+        $sources[] = [$standard, null];
 
         $copied = 0;
         $preserved = 0;
@@ -114,6 +133,7 @@ final readonly class PortableProjectInitializer
             }
         }
 
+        [$agents, $agentsExisting] = $this->writeAgentsGuide($root);
         $engine = (new PortableProjectUpdater($this->files))->installEngineState($root);
 
         return [
@@ -123,7 +143,30 @@ final readonly class PortableProjectInitializer
             'engine_sha256' => (string) $engine['current_sha256'],
             'template' => $template,
             'language' => $language,
+            'agents' => $agents,
+            'agents_existing' => $agentsExisting,
         ];
+    }
+
+    /**
+     * Writes AGENTS.md, or docs/AGENTS.docara.md when the project already has
+     * an AGENTS.md. Returns the written path (null when both exist) and
+     * whether an AGENTS.md was already there.
+     *
+     * @return array{?string, bool}
+     */
+    private function writeAgentsGuide(string $root): array
+    {
+        $existing = file_exists($root . '/' . self::AGENTS_FILE) || is_link($root . '/' . self::AGENTS_FILE);
+        $target = $existing ? self::AGENTS_FALLBACK : self::AGENTS_FILE;
+        $absolute = $root . '/' . $target;
+        if (file_exists($absolute) || is_link($absolute)) {
+            return [null, $existing];
+        }
+        $this->files->ensureDirectoryExists(dirname($absolute));
+        $this->files->put($absolute, (new DocumentationStandard)->agentsMarkdownForProject($root));
+
+        return [$target, $existing];
     }
 
     /** @return array<string, string> relative path => absolute path, sorted */

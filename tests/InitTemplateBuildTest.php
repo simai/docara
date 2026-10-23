@@ -19,10 +19,19 @@ final class InitTemplateBuildTest extends TestCase
     /** @return array<string, array{string, string, list<string>}> */
     public static function starters(): array
     {
+        // Every starter carries the documentation skeleton: one example page
+        // per page type.
+        $skeleton = [
+            'getting-started/first-page/index.html',
+            'how-to/publish-the-site/index.html',
+            'reference/page-types/index.html',
+            'explanation/page-types/index.html',
+        ];
+
         return [
-            'minimal, English' => ['minimal', 'en', ['index.html', 'writing/index.html', 'components/index.html']],
-            'minimal, Russian' => ['minimal', 'ru', ['index.html', 'writing/index.html', 'components/index.html']],
-            'showcase, Russian' => ['showcase', 'ru', ['index.html', 'guides/getting-started/index.html', 'components/index.html']],
+            'minimal, English' => ['minimal', 'en', ['index.html', 'writing/index.html', 'components/index.html', ...$skeleton]],
+            'minimal, Russian' => ['minimal', 'ru', ['index.html', 'writing/index.html', 'components/index.html', ...$skeleton]],
+            'showcase, Russian' => ['showcase', 'ru', ['index.html', 'guides/getting-started/index.html', 'components/index.html', ...$skeleton]],
         ];
     }
 
@@ -36,7 +45,10 @@ final class InitTemplateBuildTest extends TestCase
 
         $this->docara([
             'init', "--template={$template}", "--lang={$language}"], $site);
-        $this->docara(['build', 'production'], $site);
+        $build = $this->docara(['build', 'production'], $site);
+        // The starter pages meet their page types: the build prints no
+        // authoring summary line.
+        self::assertStringNotContainsString('Page authoring', $build);
         $verification = json_decode(
             $this->docara(['verify-static', 'build_production', '--no-ansi'], $site, jsonOutput: true),
             true,

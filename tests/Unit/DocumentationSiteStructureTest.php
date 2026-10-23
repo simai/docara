@@ -178,6 +178,54 @@ final class DocumentationSiteStructureTest extends TestCase
     }
 
     #[Test]
+    public function every_pre_restructure_output_still_resolves_to_a_page_or_a_redirect(): void
+    {
+        $site = dirname(__DIR__, 2) . '/docs/site';
+        $configuration = json_decode((string) file_get_contents($site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('redirect', $configuration['locale_routing']['root']);
+        self::assertTrue($configuration['locale_routing']['legacy_unprefixed_redirects']);
+
+        // What the build publishes: the root locale redirect and the built-in
+        // not-found page, every Markdown page under ru/, the legacy unprefixed
+        // redirect of every page, and every redirects.json source.
+        $outputs = ['index.html' => 'root', '404.html' => 'not_found'];
+        $pages = [];
+        $content = $site . '/content/ru';
+        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($content, \FilesystemIterator::SKIP_DOTS));
+        foreach ($iterator as $file) {
+            if (! $file instanceof \SplFileInfo || $file->getExtension() !== 'md') {
+                continue;
+            }
+            $route = substr($file->getPathname(), strlen($content) + 1, -3);
+            $sidecar = substr($file->getPathname(), 0, -3) . '.page.json';
+            if (is_file($sidecar)) {
+                $page = json_decode((string) file_get_contents($sidecar), true, 512, JSON_THROW_ON_ERROR);
+                self::assertArrayNotHasKey('slug', $page, "$route: a slug would move the page away from its file route.");
+            }
+            $route = $route === 'index' ? '' : preg_replace('#/index$#', '', $route);
+            $pages['ru' . ($route === '' ? '' : '/' . $route)] = true;
+            $outputs['ru/' . ($route === '' ? '' : $route . '/') . 'index.html'] = 'page';
+            if ($route !== '') {
+                $outputs[$route . '/index.html'] = 'legacy';
+            }
+        }
+        $redirects = json_decode((string) file_get_contents($site . '/redirects.json'), true, 512, JSON_THROW_ON_ERROR);
+        foreach ($redirects['redirects'] as $redirect) {
+            self::assertArrayHasKey($redirect['to'], $pages, "Redirect [{$redirect['from']}] must target a page.");
+            self::assertArrayNotHasKey($redirect['from'] . '/index.html', $outputs, "Redirect [{$redirect['from']}] collides with a page.");
+            $outputs[$redirect['from'] . '/index.html'] = 'redirect';
+        }
+
+        $previous = array_values(array_filter(
+            file(dirname(__DIR__) . '/fixtures/documentation-site/pre-restructure-outputs.txt', FILE_IGNORE_NEW_LINES) ?: [],
+            static fn (string $line): bool => $line !== '' && ! str_starts_with($line, '#'),
+        ));
+        self::assertCount(292, $previous);
+        $lost = array_values(array_filter($previous, static fn (string $output): bool => ! isset($outputs[$output])));
+        self::assertSame([], $lost, 'A URL published before the restructure no longer resolves; add a redirect to redirects.json.');
+    }
+
+    #[Test]
     public function agent_journey_and_extension_demos_preserve_safe_service_and_support_boundaries(): void
     {
         $root = dirname(__DIR__, 2) . '/docs/site/content/ru';

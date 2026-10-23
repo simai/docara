@@ -134,7 +134,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/icon.md",
-            "source_sha256": "4f199e6875e3e01668279c5517ac92775ae213d5fb5057e6255be779e5e39840",
+            "source_sha256": "b135f366a1723f4f6991e598b0c780c59be3e6801788eb5f53e1230178954366",
             "release": "3.8.0",
             "source_url": "https://github.com/simai/docara/blob/v3.8.0/docs/site/content/ru/components/icon.md",
             "history_url": "https://github.com/simai/docara/commits/v3.8.0/docs/site/content/ru/components/icon.md",
@@ -517,5 +517,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "be52174daddf9391c86ddf2a5e3d8c7213705d5c2d219fe12a853a84115170db"
+    "content_sha256": "50b8ebef6418d3709dbdddb0c446658a8bf8cd1a6461de568ee94fbba2df7405"
 }

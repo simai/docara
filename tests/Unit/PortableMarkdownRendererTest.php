@@ -596,6 +596,7 @@ MD);
             [':icon[search]{variant=main}', 'CONTENT_COMPONENT_PROP_COMBINATION_INVALID'],
             [':icon[search]{container=square variant=plain}', 'CONTENT_COMPONENT_PROP_COMBINATION_INVALID'],
             [':icon[not an identifier]', 'CONTENT_COMPONENT_SLOT_INVALID'],
+            [':icon[serach]', 'CONTENT_COMPONENT_ICON_UNKNOWN'],
             [':button[Run]{href=javascript:alert(1)}', 'CONTENT_COMPONENT_PROP_INVALID'],
             [':button[Run]', 'CONTENT_COMPONENT_PROP_INVALID'],
             [':kbd[Esc]{size=1}', 'CONTENT_COMPONENT_PROP_UNKNOWN'],

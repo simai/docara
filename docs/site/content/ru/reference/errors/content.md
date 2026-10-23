@@ -185,6 +185,23 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_SURFACE_OVERLAY_REQUIRED` | `overlay_strength` указан при `overlay=none`. **Что сделать:** Укажите `overlay=light` или `overlay=dark`. |
 | `MARKDOWN_SURFACE_BACKGROUND_UNSAFE`, `MARKDOWN_SURFACE_BACKGROUND_CASE_MISMATCH`, `MARKDOWN_SURFACE_BACKGROUND_CONTEXT_INVALID` | Фоновая картинка не найдена в `assets/`, путь отличается регистром или страница лежит вне `content/<язык>/`. **Что сделать:** Положите файл в `assets/` и укажите точный путь `/assets/...`. |
 
+## Строчные компоненты: значок, бейдж, кнопка, клавиша
+
+Строчные компоненты пишутся внутри абзаца: `:icon[имя]{...}`,
+`:badge[текст]{...}`, `:button[текст]{...}`, `:kbd[клавиша]`. Параметры каждого
+описаны на его странице: [значок](/ru/components/icon/),
+[бейдж](/ru/components/badge/), [кнопка-ссылка](/ru/components/button/),
+[клавиша](/ru/components/kbd/).
+
+| Код | Причина и что сделать |
+| --- | --- |
+| `CONTENT_COMPONENT_ICON_UNKNOWN` | Значка с таким именем нет в наборе Material Symbols, который поставляется с Docara. Чаще всего это опечатка: `:icon[setings]` вместо `:icon[settings]`. **Что сделать:** Найдите имя в [списке всех значков](/ru/components/icon/#все-значки) и исправьте его. |
+| `CONTENT_COMPONENT_SLOT_INVALID` | Имя значка содержит заглавные буквы, пробелы или другие символы, например `:icon[Search]`. **Что сделать:** Пишите имя строчными латинскими буквами, цифрами и `_`, например `check_circle`. |
+| `CONTENT_COMPONENT_PROP_UNKNOWN` | У компонента нет такого параметра, например `:kbd[Esc]{size=1}`. **Что сделать:** Удалите параметр или исправьте его имя по странице компонента. |
+| `CONTENT_COMPONENT_PROP_INVALID` | Значение параметра не из списка допустимых, например `:icon[search]{weight=bold}`, или у кнопки нет безопасного `href`. **Что сделать:** Возьмите значение со страницы компонента. |
+| `CONTENT_COMPONENT_PROP_COMBINATION_INVALID` | Параметры по отдельности верны, но вместе не работают, например `:icon[search]{variant=main}` без контейнера. **Что сделать:** Добавьте `container=square` или `container=circle` либо уберите `variant`. |
+| `CONTENT_COMPONENT_ICON_CATALOG_INVALID` | Файлы набора значков в установленной Docara повреждены или не совпадают друг с другом. **Что сделать:** Переустановите Docara через Composer. Если ошибка повторяется, сообщите о ней в репозиторий Docara. |
+
 ## Компоненты и их параметры
 
 Компоненты SIMAI Framework вызываются блоком с параметрами в JSON. Список

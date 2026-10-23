@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Framework;
 
+use Simai\Docara\Document\IconNameCatalog;
 use Simai\Docara\Portable\CanonicalJson;
 
 final readonly class FrameworkAssetPlanner
@@ -25,7 +26,7 @@ final readonly class FrameworkAssetPlanner
      * an author can ask for, made by scripts/build-icon-catalog.cjs. They
      * replace the variable full fonts for every icon those axes describe.
      */
-    private const ICON_CATALOG_INDEX = 'vendor/docara/icon-catalog/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/icon-catalog.json';
+    private const ICON_CATALOG_INDEX = IconNameCatalog::INDEX;
 
     private const ICON_CATALOG_INDEX_SHA256 = '6084d652c50f78e38bec4a5c0ddc0215660ee239ec7dd46885d7c7ba666ede8f';
 

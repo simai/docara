@@ -73,7 +73,8 @@ final class NotFoundPageBuildTest extends TestCase
         }
         $search = $this->readJson($build . '/_docara/search-index.json');
         self::assertNotContains('/docs/404.html', array_column($search['documents'], 'url'));
-        self::assertCount(3, $search['documents']);
+        // Home, writing, components and the four page-type examples.
+        self::assertCount(7, $search['documents']);
         self::assertStringNotContainsString('404', (string) file_get_contents($build . '/sitemap.xml'));
         self::assertStringNotContainsString('404', (string) file_get_contents($build . '/llms.txt'));
         $metadata = $this->readJson($build . '/_docara/page-metadata.json');
@@ -91,7 +92,8 @@ final class NotFoundPageBuildTest extends TestCase
 
         $verification = $this->verify($site);
         self::assertSame([], $verification['broken']);
-        self::assertSame(4, $verification['html_pages']);
+        // Seven pages and the 404 page.
+        self::assertSame(8, $verification['html_pages']);
     }
 
     #[Test]

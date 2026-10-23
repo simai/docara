@@ -21,6 +21,16 @@ final class DiscoveryAndStrictTranslationBuildTest extends TestCase
         $site = $this->tmpPath('site');
         $this->filesystem->ensureDirectoryExists($site);
         $this->docara(['init', '--template=minimal', '--lang=ru'], $site);
+        // Translation tracking is measured on the starter's three original
+        // pages: drop the page-type skeleton and the home page's links to it.
+        foreach (['getting-started', 'how-to', 'reference', 'explanation'] as $directory) {
+            $this->filesystem->deleteDirectory($site . '/content/ru/' . $directory);
+        }
+        file_put_contents($site . '/content/ru/index.md', (string) preg_replace(
+            '#^- \[[^]]+\]\((?:getting-started|how-to|reference|explanation)/[^)]*\).*\n#m',
+            '',
+            (string) file_get_contents($site . '/content/ru/index.md'),
+        ));
 
         $configuration = $this->readJson($site . '/docara.json');
         $configuration['base_url'] = '/docs/';

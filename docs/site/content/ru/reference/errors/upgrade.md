@@ -16,7 +16,7 @@ description: Коды ошибок команды docara upgrade — выбор 
 | `UPGRADE_ACTION_CONFLICT` | Указано больше одного действия: `--check`, `--dry-run`, `--apply`, `--rollback`. **Что сделать:** Оставьте одно действие. |
 | `UPGRADE_TARGET_VERSION_INVALID` | `--to` — не точная стабильная версия `X.Y.Z`, а ветка, диапазон, `latest` или предварительная версия. **Что сделать:** Укажите точную версию, например `--to=3.7.0`. |
 | `UPGRADE_CURRENT_VERSION_INVALID` | Установленная версия Docara в `composer.lock` не распознана. **Что сделать:** Выполните `composer install` и повторите. |
-| `MAJOR_UPGRADE_REQUIRED` | Запрошена другая основная версия, например 3.x для проекта на 2.x. Автоматически она не ставится. **Что сделать:** Перейдите вручную по инструкции [Переход с 2.x на 3.0](/build/upgrade-3/). |
+| `MAJOR_UPGRADE_REQUIRED` | Запрошена другая основная версия, например 3.x для проекта на 2.x. Автоматически она не ставится. **Что сделать:** Перейдите вручную по инструкции [Переход с 2.x на 3.0](/ru/build/update/#переход-с-2-x-на-3-0). |
 | `UPGRADE_DOWNGRADE_FORBIDDEN` | Запрошена версия старше установленной. **Что сделать:** Для возврата используйте `docara upgrade --rollback=latest`. |
 | `UPGRADE_TARGET_RESOLUTION_MISMATCH` | Composer выбрал не ту версию, что запрошена, обычно из-за ограничения в `composer.json`. **Что сделать:** Проверьте ограничение `simai/docara` в `composer.json`. |
 | `UPGRADE_ENGINE_ADOPTION_REQUIRED` | Проект создан до появления файла владения движком (`.docara/engine`). **Что сделать:** Один раз выполните `docara update --dry-run --adopt --json`, проверьте план, затем `docara update --apply --json` и повторите `upgrade`. |

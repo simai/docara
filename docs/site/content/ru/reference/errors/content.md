@@ -226,6 +226,7 @@ Front matter — блок между двумя строками `---` в нач
 | `FRAMEWORK_PROP_MINIMUM_INVALID`, `FRAMEWORK_PROP_MAXIMUM_INVALID` | Число меньше минимума или больше максимума. **Что сделать:** Укажите число в допустимом диапазоне. |
 | `FRAMEWORK_PROP_MIN_LENGTH_INVALID`, `FRAMEWORK_PROP_MAX_LENGTH_INVALID` | Строка короче или длиннее допустимого. **Что сделать:** Сократите или дополните текст. |
 | `FRAMEWORK_PROP_PATTERN_INVALID` | Строка не подходит под формат параметра. **Что сделать:** Проверьте формат на странице компонента. |
+| `FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME` | Значение параметра запрещено в `simai-framework.lock.json` сайта: статический сайт его не поддерживает, например `"closable": true` или `"type": "success"` у `ui.alert`. В сообщении указано `компонент:параметр`. **Что сделать:** Выберите другое значение; список запретов — на странице [Smart-компоненты ui.*](/ru/components/smart-ui/). |
 | `SMART_PROPS_INVALID` | Параметры Smart-компонента не прошли проверку. В сообщении есть путь к полю. **Что сделать:** Сверьте параметры с описанием Smart-компонента. |
 | `TYPED_COMPONENT_UNSUPPORTED` | Такого блока Docara нет. **Что сделать:** Проверьте имя блока в [каталоге компонентов](/components/). |
 

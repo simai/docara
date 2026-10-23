@@ -28,13 +28,13 @@ final class DocumentationSiteStructureTest extends TestCase
             self::assertStringNotContainsString('/ru/components/' . $entry . '/', $index);
         }
         $pages = glob($root . '/*.md') ?: [];
-        self::assertSame(33, count($pages));
-        self::assertSame(33, preg_match_all('#/ru/components/[a-z0-9-]+/#', $index));
-        foreach (['Текст и Markdown', 'Содержательные блоки', 'Код и данные', 'Макет', 'Медиа', 'Inline и действия'] as $category) {
+        self::assertSame(34, count($pages));
+        self::assertSame(34, preg_match_all('#/ru/components/[a-z0-9-]+/#', $index));
+        foreach (['Текст и Markdown', 'Содержательные блоки', 'Код и данные', 'Макет', 'Медиа', 'Inline и действия', 'SIMAI Framework'] as $category) {
             self::assertStringContainsString('## ' . $category, $index);
         }
         // Every component page is listed once, with a one-line description.
-        self::assertSame(6, substr_count($index, "| Компонент | Для чего |\n| --- | --- |"));
+        self::assertSame(7, substr_count($index, "| Компонент | Для чего |\n| --- | --- |"));
         foreach ($pages as $page) {
             $slug = basename($page, '.md');
             self::assertMatchesRegularExpression(

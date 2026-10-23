@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Application;
 
+use Simai\Docara\Authoring\DocumentationStandard;
 use Simai\Docara\Documentation\DocumentationStatusService;
 
 final readonly class SdkService
@@ -57,6 +58,9 @@ final readonly class SdkService
                 is_array($arguments['examples'] ?? null) ? $arguments['examples'] : [],
                 $this->optionalString($arguments, 'exclude_reason'),
             )),
+            'authoring.standard' => OperationResult::success('authoring.standard', 'docara', (new DocumentationStandard)->toArray() + [
+                'agents_markdown' => (new DocumentationStandard)->agentsMarkdownForProject($root),
+            ]),
             'documentation.apply' => OperationResult::success('documentation.apply', $this->string($arguments, 'plan_id'), $this->documentation->apply($root, $this->string($arguments, 'plan_id'))),
             default => throw new \InvalidArgumentException('SDK_OPERATION_UNKNOWN:' . $operation),
         };

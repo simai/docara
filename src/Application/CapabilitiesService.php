@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Application;
 
 use Composer\InstalledVersions;
+use Simai\Docara\Authoring\DocumentationStandard;
 use Simai\Docara\Console\ApplicationFactory;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\SchemaRepository;
@@ -65,6 +66,7 @@ final readonly class CapabilitiesService
             'schemas' => $schemas,
             'operation_types' => $this->operationTypes($commands),
             'tracking' => ['translations', 'documentation'],
+            'documentation_standard' => (new DocumentationStandard)->toArray(),
             'receipts' => $this->receiptSchemas($schemas),
             'lifecycle' => [
                 'engine_update' => $this->hasCommand($commands, 'update'),

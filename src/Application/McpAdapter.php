@@ -22,7 +22,9 @@ final readonly class McpAdapter
                     'protocolVersion' => '2025-03-26',
                     'capabilities' => ['tools' => ['listChanged' => false]],
                     'serverInfo' => ['name' => 'docara-local-sdk', 'version' => '1.0.0'],
-                    'instructions' => 'Project-local Docara SDK adapter. Apply is disabled unless the process starts with --allow-writes.',
+                    'instructions' => 'Project-local Docara SDK adapter. Apply is disabled unless the process starts with --allow-writes. '
+                        . 'Before writing documentation, call docara_authoring_standard: it returns the page types, their required parts, '
+                        . 'the writing rules and the commands that check a page.',
                 ]);
             }
             if ($method === 'notifications/initialized') {
@@ -80,7 +82,9 @@ final readonly class McpAdapter
         foreach ($this->operations() as $name => $operation) {
             $tools[] = [
                 'name' => $name,
-                'description' => 'Delegate Docara application operation ' . $operation . '.',
+                'description' => $operation === 'authoring.standard'
+                    ? 'Return the Docara documentation standard: page types, required parts, writing rules, the page template command and the quality checks.'
+                    : 'Delegate Docara application operation ' . $operation . '.',
                 'inputSchema' => ['type' => 'object', 'additionalProperties' => false, 'properties' => $this->properties($operation)],
                 'annotations' => [
                     'readOnlyHint' => ! in_array($operation, ['scaffold.plan', 'scaffold.apply', 'qa.plan', 'qa.finalize_reference', 'documentation.plan', 'documentation.apply'], true),
@@ -99,6 +103,7 @@ final readonly class McpAdapter
     {
         return [
             'docara_capabilities' => 'capabilities',
+            'docara_authoring_standard' => 'authoring.standard',
             'docara_doctor' => 'doctor', 'docara_list' => 'list', 'docara_inspect' => 'inspect', 'docara_schema' => 'schema',
             'docara_atlas' => 'atlas',
             'docara_scaffold_plan' => 'scaffold.plan', 'docara_scaffold_apply' => 'scaffold.apply',
@@ -115,7 +120,7 @@ final readonly class McpAdapter
         $string = ['type' => 'string', 'minLength' => 1];
 
         return match ($operation) {
-            'capabilities', 'doctor', 'atlas' => [],
+            'capabilities', 'doctor', 'atlas', 'authoring.standard' => [],
             'list', 'schema' => ['kind' => $string],
             'inspect', 'validate' => ['kind' => $string, 'id' => $string],
             'scaffold.plan' => ['kind' => $string, 'id' => $string, 'locale' => $string, 'title' => $string, 'profile' => $string, 'source' => $string, 'entity' => $string],

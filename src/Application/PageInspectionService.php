@@ -64,6 +64,51 @@ final readonly class PageInspectionService
         return $items;
     }
 
+    /**
+     * Every page source with its public route, front matter, Markdown body
+     * and the structural profile checks, without compiling the Markdown.
+     * The quality report and the review packet read pages through this.
+     *
+     * @return list<array{route:string,source:string,relative:string,locale:string,front_matter:array<string,mixed>,markdown:string,profile:?string,profile_source:string,profile_reason:?string,profile_missing:list<string>,draft:bool}>
+     */
+    public function profileReport(string $root): array
+    {
+        $runtime = ProjectRuntime::load($root);
+        $contract = AuthoringContract::load($runtime->root);
+        $locales = LocaleRegistry::fromSite($runtime->site);
+        $pages = [];
+        foreach ($this->sources($runtime) as $source) {
+            $document = (new FrontMatterParser)->parse((string) file_get_contents($runtime->root . '/' . $source->path), $source->path);
+            $relative = substr($source->path, strlen($locales->get($source->locale)->contentRoot) + 1);
+            $resolution = $contract->resolve(
+                $relative,
+                is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null,
+                $document->markdown,
+            );
+            $missing = [];
+            foreach ($this->profileDiagnostics($resolution, $this->facts($document->markdown), $contract->present || isset($document->metadata['profile'])) as $diagnostic) {
+                if (preg_match('/^PAGE_PROFILE_(.+)_MISSING$/', (string) $diagnostic['code'], $match) === 1) {
+                    $missing[] = strtolower($match[1]);
+                }
+            }
+            $pages[] = [
+                'route' => $this->publicRoute($runtime, $source),
+                'source' => $source->path,
+                'relative' => $relative,
+                'locale' => $source->locale,
+                'front_matter' => $document->metadata,
+                'markdown' => $document->markdown,
+                'profile' => $resolution['profile'],
+                'profile_source' => $resolution['source'],
+                'profile_reason' => $resolution['reason'] ?? null,
+                'profile_missing' => $missing,
+                'draft' => ($document->metadata['draft'] ?? false) === true,
+            ];
+        }
+
+        return $pages;
+    }
+
     /** @return array<string, mixed> */
     public function inspect(string $root, string $route): array
     {

@@ -12,6 +12,19 @@
     },
     "default_profile": {"$ref": "#/$defs/profile"},
     "infer_profiles": {"type": "boolean"},
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min_score": {"type": "integer", "minimum": 0, "maximum": 100},
+        "glossary": {"type": "string", "pattern": "^/"},
+        "exclude": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[a-zA-Z0-9_.*?/-]+$"}
+        }
+      }
+    },
     "rules": {
       "type": "array",
       "items": {

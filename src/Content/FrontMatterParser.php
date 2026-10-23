@@ -96,8 +96,10 @@ final readonly class FrontMatterParser
             }
             $tags = array_map('trim', explode(',', $inside));
             foreach ($tags as $tag) {
-                if (preg_match('/^[a-z0-9](?:[a-z0-9._-]{0,62}[a-z0-9])?$/D', $tag) !== 1) {
-                    $this->fail('FRONT_MATTER_TAG_INVALID', $source, $line, $column, "Tag [$tag] must be a lowercase identifier.");
+                // Lowercase letters of any script, so a Russian page can be
+                // tagged with the words its readers search for.
+                if (preg_match('/^[\p{Ll}\p{Lo}0-9](?:[\p{Ll}\p{Lo}0-9._-]{0,62}[\p{Ll}\p{Lo}0-9])?$/Du', $tag) !== 1) {
+                    $this->fail('FRONT_MATTER_TAG_INVALID', $source, $line, $column, "Tag [$tag] must be lowercase letters or digits, with ., _ or - inside.");
                 }
             }
             if (count($tags) !== count(array_unique($tags))) {

@@ -179,6 +179,20 @@ final class PortableSearchIndexBuilderTest extends TestCase
     }
 
     /** @return array<string, mixed> */
+    #[Test]
+    public function front_matter_tags_reach_the_index_only_for_tagged_pages(): void
+    {
+        $tagged = $this->page('/project/publish/', 'ru', 'Публикация', '<h1>Публикация</h1><p>Выкладка на хостинг.</p>');
+        $tagged['tags'] = ['деплой', 'публикация'];
+        $plain = $this->page('/project/start/', 'ru', 'Старт', '<h1>Старт</h1><p>Первый сайт.</p>');
+        $plain['tags'] = [];
+
+        $documents = $this->builder()->plan([$tagged, $plain], [], '/project/')->index['documents'];
+
+        self::assertSame(['деплой', 'публикация'], $documents[0]['tags']);
+        self::assertArrayNotHasKey('tags', $documents[1]);
+    }
+
     private function page(string $url, string $locale, string $title, string $html): array
     {
         return [

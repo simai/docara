@@ -135,8 +135,15 @@
         var trailValid = Array.isArray(record.trail) && record.trail.every(function (part) {
             return typeof part === 'string' && part.length > 0;
         });
+        var keys = ['id', 'url', 'locale', 'title', 'description', 'trail', 'headings', 'text'];
+        // Front matter tags are optional: a page without tags has no field.
+        var tagsValid = !isPlainRecord(record) || !Object.prototype.hasOwnProperty.call(record, 'tags')
+            || (Array.isArray(record.tags) && record.tags.length > 0 && record.tags.every(function (tag) {
+                return typeof tag === 'string' && tag.length > 0;
+            }));
         return isPlainRecord(record)
-            && hasExactKeys(record, ['id', 'url', 'locale', 'title', 'description', 'trail', 'headings', 'text'])
+            && (hasExactKeys(record, keys) || hasExactKeys(record, keys.concat(['tags'])))
+            && tagsValid
             && /^[a-f0-9]{64}$/.test(record.id || '')
             && isSafeLocalPageUrl(record.url)
             && /^[a-z]{2}(?:-[A-Z]{2})?$/.test(record.locale || '')
@@ -182,9 +189,10 @@
             title: normalize(record.title),
             headings: normalize(headings),
             description: normalize(record.description || ''),
-            body: normalize(record.text)
+            body: normalize(record.text),
+            tags: (record.tags || []).map(normalize)
         };
-        fields.all = [fields.title, fields.headings, fields.description, fields.body].join(' ');
+        fields.all = [fields.title, fields.headings, fields.description, fields.body].concat(fields.tags).join(' ');
         return { document: record, fields: fields };
     }
 
@@ -232,7 +240,11 @@
         if (fields.headings.includes(phrase)) total += 320;
         if (fields.description.includes(phrase)) total += 180;
         if (fields.body.includes(phrase)) total += 60;
+        // A tag is a word the author chose for the page, so it ranks between
+        // the title and the headings.
+        if (fields.tags.indexOf(phrase) !== -1) total += 500;
         queryTokens.forEach(function (token) {
+            if (fields.tags.some(function (tag) { return tag.startsWith(token); })) total += 120;
             if (fields.title.split(' ').some(function (word) { return word.startsWith(token); })) total += 140;
             if (fields.headings.split(' ').some(function (word) { return word.startsWith(token); })) total += 80;
             if (fields.description.includes(token)) total += 35;

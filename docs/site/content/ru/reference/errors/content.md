@@ -26,7 +26,7 @@ Front matter — блок между двумя строками `---` в нач
 | `FRONT_MATTER_DRAFT_INVALID` | `draft` имеет значение, отличное от `true` или `false`. **Что сделать:** Укажите `draft: true` или `draft: false`. |
 | `FRONT_MATTER_NOINDEX_INVALID` | `noindex` имеет значение, отличное от `true` или `false`. **Что сделать:** Укажите `noindex: true` или `noindex: false`. |
 | `FRONT_MATTER_TAGS_INVALID` | `tags` записан не списком в квадратных скобках. **Что сделать:** Пишите `tags: [ui, status]`. |
-| `FRONT_MATTER_TAG_INVALID` | Метка содержит заглавные буквы, пробелы или другие символы. **Что сделать:** Используйте строчные латинские буквы, цифры, `.`, `_` и `-`. |
+| `FRONT_MATTER_TAG_INVALID` | Метка содержит заглавные буквы, пробелы или другие символы. **Что сделать:** Используйте строчные буквы любого алфавита, цифры, `.`, `_` и `-`, например `tags: [деплой, i18n]`. |
 | `FRONT_MATTER_TAG_DUPLICATE` | Метка повторяется. **Что сделать:** Удалите повтор. |
 | `FRONT_MATTER_TRANSLATION_KEY_INVALID` | `translation_key` не является строчным идентификатором. **Что сделать:** Используйте строчные латинские буквы, цифры, `.`, `_` и `-`, например `start.install`. |
 | `FRONT_MATTER_PROFILE_INVALID` | Неизвестный профиль страницы. **Что сделать:** Укажите один из профилей: `landing`, `article`, `tutorial`, `how_to`, `reference`, `explanation`. |

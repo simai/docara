@@ -1,5 +1,6 @@
 ---
 description: Как разместить build_production на nginx, Apache, GitHub Pages, Netlify или в S3. На сервере не нужны PHP, Composer и Node.js — только на машине сборки.
+tags: [деплой, хостинг, deploy]
 ---
 
 # Размещение на хостинге

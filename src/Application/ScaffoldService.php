@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Application;
 
 use Simai\Docara\Authoring\AuthoringProfileRegistry;
+use Simai\Docara\Authoring\DocumentationStandard;
 use Simai\Docara\Documentation\DocumentationSourceRepository;
 use Simai\Docara\File\ProjectFilesystemGuard;
 use Simai\Docara\I18n\LocaleRegistry;
@@ -26,6 +27,14 @@ final readonly class ScaffoldService
             && (! is_string($options['title'] ?? null) || trim((string) $options['title']) === '')
         ) {
             $options['title'] = (new DocumentationSourceRepository)->entity($runtime->root, $options['source'], $options['entity'])['title'];
+        }
+        if ($kind === 'page') {
+            if (! is_string($options['locale'] ?? null) || $options['locale'] === '') {
+                $options['locale'] = is_string($runtime->site['default_locale'] ?? null) ? $runtime->site['default_locale'] : null;
+            }
+            if (trim($id, '/') === '' && is_string($options['title'] ?? null) && is_string($options['profile'] ?? null) && is_string($options['locale'])) {
+                $id = $this->derivedPageRoute($runtime, (string) $options['locale'], (string) $options['profile'], (string) $options['title']);
+            }
         }
         $this->assertIdentity($runtime, $kind, $id, $options);
         $files = match ($kind) {
@@ -183,7 +192,9 @@ final readonly class ScaffoldService
             'created' => array_column($plan['files'], 'path'),
             'validation' => 'registry_reload_passed',
             'preview_ready' => true,
-        ], $runtime->provenance());
+        ] + (($plan['kind'] ?? null) === 'page' && ! is_string($plan['options']['source'] ?? null)
+            ? ['next_step' => 'Replace every placeholder sentence and the description, then remove "draft: true" to publish the page.']
+            : []), $runtime->provenance());
     }
 
     /** @param array<string, mixed> $options */
@@ -262,10 +273,37 @@ final readonly class ScaffoldService
                 }
             }
         } else {
-            $body .= "Draft.\n";
+            $body = (new DocumentationStandard)->page($profile, $locale, $title);
         }
 
         return [$path => $body] + ($files ?? []);
+    }
+
+    /**
+     * A route for a page given only a type and a title: the type's skeleton
+     * directory when the locale has it (how-to/, reference/ and so on), then
+     * the title as an ASCII slug.
+     */
+    private function derivedPageRoute(ProjectRuntime $runtime, string $locale, string $profile, string $title): string
+    {
+        $slug = $title;
+        if (class_exists(\Transliterator::class)) {
+            $slug = \Transliterator::create('Any-Latin; Latin-ASCII; Lower()')?->transliterate($slug) ?: $slug;
+        }
+        $slug = trim((string) preg_replace('/[^a-z0-9]+/', '-', strtolower($slug)), '-');
+        $slug = $slug === '' ? 'page' : substr($slug, 0, 80);
+        $slug = rtrim($slug, '-');
+        $directory = DocumentationStandard::DIRECTORIES[$profile] ?? null;
+        try {
+            $contentRoot = LocaleRegistry::fromSite($runtime->site)->get($locale)->contentRoot;
+        } catch (Throwable) {
+            return $slug;
+        }
+        if ($directory !== null && is_dir($runtime->root . '/' . $contentRoot . '/' . $directory) && ! is_link($runtime->root . '/' . $contentRoot . '/' . $directory)) {
+            return $directory . '/' . $slug;
+        }
+
+        return $slug;
     }
 
     private function pageTarget(ProjectRuntime $runtime, string $path, string $locale): string

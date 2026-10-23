@@ -254,6 +254,7 @@ php vendor/bin/docara validate page /ru/start/ --json
 ## `scaffold`
 
 ```bash
+php vendor/bin/docara scaffold page [<route>] --type=how_to --title="..." [--locale=ru] [--json]
 php vendor/bin/docara scaffold <kind> <id> [--locale=ru] [--title="..."] \
   [--profile=how_to] [--source=<id>] [--entity=<key>] --dry-run [--json]
 php vendor/bin/docara scaffold --apply=<plan-sha256> [--json]
@@ -261,9 +262,13 @@ php vendor/bin/docara scaffold --apply=<plan-sha256> [--json]
 
 Создаёт hash-bound план заготовки и применяет его только явно. Вид: `smart`,
 `design` или `page`; `id` — id артефакта или locale-relative route страницы.
+Страницу без `--dry-run` команда создаёт сразу, по шаблону её типа. Без
+`<route>` адрес получается из типа и заголовка, например
+`how-to/rotate-the-keys`. См. [Профили страниц](/authoring/page-profiles/#шаблоны-страниц).
 
-- `--locale` — настроенная локаль для страницы;
+- `--locale` — настроенная локаль для страницы, по умолчанию основная локаль сайта;
 - `--title` — заголовок страницы;
+- `--type` — тип страницы, то же, что `--profile`;
 - `--profile` — встроенный профиль страницы;
 - `--source` — id настроенного источника документации;
 - `--entity` — стабильный ключ сущности источника;

@@ -6,9 +6,9 @@ tags: [development, sdk, smart, design, mcp, ai, safety]
 
 # SDK для разработчика и AI-агента
 
-SDK помогает добавить Smart-компонент или design-композицию, не меняя движок.
-Он не создаёт новый renderer: все проверки и preview используют те же
-registries, `SmartComponentGateway`, `LayoutComposer` и `PageBuilder`, что и
+SDK помогает добавить Smart-компонент или композицию оформления, не меняя
+движок. Он не создаёт нового рендерера: все проверки и предпросмотр используют
+те же реестры, `SmartComponentGateway`, `LayoutComposer` и `PageBuilder`, что и
 обычная сборка.
 
 ## Короткий LEGO-путь
@@ -29,21 +29,24 @@ docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown
 docara test smart ui.dropdown --page=/ru/project-demos/ --json
 ```
 
-`capabilities` — первая команда для любого AI-агента. Она сообщает фактические
-операции, параметры, schemas и lifecycle-возможности именно установленной в
-этом проекте версии. Агент не должен переносить предположения из другого
+`capabilities` — первая команда для любого AI-агента. Она сообщает
+операции, параметры, схемы и статусы возможностей именно той версии, которая
+установлена в этом проекте. Агент не должен переносить предположения из другого
 проекта или из более новой Docara.
 
 `--dry-run` возвращает список создаваемых файлов, SHA-256 их содержимого,
-текущие hashes входов и `plan_id`. Apply принимает только этот plan и ещё раз
-проверяет namespace, config, target paths и hashes. Если что-либо изменилось,
-команда завершится ошибкой, ничего не дописывая частично.
+текущие хеши входных файлов и `plan_id`. Применение (`--apply`) принимает
+только этот план и ещё раз проверяет пространство имён, настройки, пути
+назначения и хеши. Если что-либо изменилось, команда завершится ошибкой и
+ничего не запишет частично.
 
 ## Путь разработчика и AI-агента
 
-Все шаги ниже делегируют одним application services. Human CLI, `--json` и optional MCP не имеют отдельных validation/rendering rules.
+Все шаги ниже выполняют одни и те же внутренние службы Docara. У командной
+строки, вывода `--json` и необязательного MCP нет отдельных правил проверки
+или вывода HTML.
 
-### 1. Discover
+### 1. Найдите возможность
 
 ```bash
 docara doctor --json
@@ -53,9 +56,11 @@ docara inspect smart project.install-builder --json
 docara schema smart --json
 ```
 
-Read operations по умолчанию ничего не меняют. Result содержит stable operation/subject/code/exit, owner, safe source/location, provenance и suggestion.
+Команды чтения ничего не меняют. Результат содержит постоянные операцию,
+предмет, код и код завершения, владельца, безопасный путь и место в файле,
+происхождение значения и подсказку.
 
-### 2. Plan и preview
+### 2. Составьте план и посмотрите результат
 
 ```bash
 PLAN_SHA256="$(docara scaffold smart project.notice-card --dry-run --json | php -r '$r=json_decode(stream_get_contents(STDIN),true,512,JSON_THROW_ON_ERROR); echo $r["data"]["plan_id"];')"
@@ -63,16 +68,24 @@ docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown --json
 docara test smart ui.dropdown --page=/ru/project-demos/ --json
 ```
 
-Dry-run возвращает exact target paths/content, input hashes и `plan_id`. Preview вызывает production `PreviewKernel/PageBuilder`, публикуется изолированно и не проходит production verifier.
+Пробный запуск (`--dry-run`) возвращает точные пути и содержимое файлов, хеши
+входных файлов и `plan_id`. Предпросмотр вызывает тот же
+`PreviewKernel/PageBuilder`, что и рабочая сборка, публикуется отдельно и не
+проходит проверку рабочей сборки.
 
-### 3. Hash-bound apply
+### 3. Примените план по хешу
 
 ```bash
 docara scaffold --apply="$PLAN_SHA256" --json
 docara validate smart project.notice-card --json
 ```
 
-Apply разрешён только после явного dry-run и повторной проверки всех hashes. Stale plan, changed input, existing/case-colliding target, traversal, symlink/hardlink, engine/lock/generated/external root завершаются non-zero без partial/outside mutation.
+Применение разрешено только после явного пробного запуска и повторной
+проверки всех хешей. Устаревший план, изменённый входной файл, уже
+существующий файл или файл, отличающийся только регистром, выход за каталог
+через `..` или ссылку, запись в файлы движка, lock, результаты сборки или
+внешние каталоги завершают команду с ошибкой. Ни один файл при этом не
+меняется.
 
 ### CLI, JSON и MCP
 
@@ -84,9 +97,13 @@ Apply разрешён только после явного dry-run и повт�
 | Scaffold plan/apply | `docara scaffold …` | plan/apply tool | `ScaffoldService` |
 | Validate/test/QA | `docara validate|test|qa …` | matching tools | accepted validators/PreviewKernel |
 
-MCP stdio adapter запускается отдельно и read-only. `--allow-writes` лишь открывает тот же hash-bound apply; project-root guard и diagnostics не обходятся. Node.js 20+ нужен для `build`; браузер нужен только optional visual QA, а `init` и `verify-static` выполняются через PHP.
+Адаптер MCP запускается отдельно и по умолчанию только читает. Ключ
+`--allow-writes` открывает то же применение плана по хешу; защита корня
+проекта и диагностика при этом работают. Node.js 20+ нужен для `build`,
+браузер — только для необязательной визуальной проверки, а `init` и
+`verify-static` выполняются через PHP.
 
-### Rejected operation и recovery
+### Если операция отклонена
 
 ```text
 SDK_WRITE_PATH_UNSAFE
@@ -95,7 +112,8 @@ pointer: /operations/preview/output
 suggestion: remove the unsafe symlink and repeat dry-run
 ```
 
-Не правьте plan/report/receipt. Устраните причину в project-owned source, повторите discover/validate/dry-run и получите новый content-addressed plan.
+Не правьте план, отчёт или квитанцию. Устраните причину в исходных файлах
+проекта, повторите поиск, проверку и пробный запуск и получите новый план.
 
 ## Что можно посмотреть
 
@@ -121,10 +139,11 @@ project-owned компонентов. Поля `provider_adapter` и `template_a
 
 ## Границы записи
 
-Scaffold создаёт только новые project-owned файлы под `smart/` или `design/`.
-Он не перезаписывает существующий ID и не пишет в `src/`, `resources/`,
-`content/`, `assets/`, lock, build output либо внешний repository. Traversal,
-symlink, hardlink, duplicate namespace и stale plan отклоняются.
+`scaffold` создаёт только новые файлы проекта в `smart/` или `design/`. Он не
+перезаписывает существующий идентификатор и не пишет в `src/`, `resources/`,
+`content/`, `assets/`, lock-файл, результат сборки или внешний репозиторий.
+Выход за каталог через `..`, символические и жёсткие ссылки, повтор
+пространства имён и устаревший план отклоняются.
 
 Smart scaffold следует portable SIMAI Framework 5 Smart ABI v1. Design scaffold
 создаёт связанный docs-shell-compatible layout, layout View Tree, section,
@@ -180,7 +199,7 @@ php tools/mcp-docara/server.php
 
 ## Когда нужна полная сборка
 
-Изменение существующей Markdown-страницы можно проверить single-page build.
-Добавление, переименование или удаление route, глобальная config/lang-правка и
-изменение общих registries требуют full build, чтобы синхронно обновились menu,
-search, navigation и receipts.
+Изменение существующей Markdown-страницы можно проверить сборкой одной
+страницы. Добавление, переименование или удаление страницы, правка общих
+настроек или `lang.json` и изменение общих реестров требуют полной сборки,
+чтобы вместе обновились меню, поиск, навигация и квитанции.

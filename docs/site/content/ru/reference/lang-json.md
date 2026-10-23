@@ -7,7 +7,7 @@ tags: [lang-json, подписи, перевод, интерфейс, i18n]
 
 Каждая локаль хранит повторяющиеся подписи интерфейса в одном файле:
 `content/<locale>/lang.json`. Здесь находятся поиск, содержание, кнопка
-копирования, переходы и accessibility labels. Текст страниц и описания
+копирования, переходы и подписи для экранного доступа. Текст страниц и описания
 компонентов остаются в Markdown.
 
 ## Создайте `lang.json`
@@ -38,8 +38,8 @@ tags: [lang-json, подписи, перевод, интерфейс, i18n]
 
 ## Объявите локаль
 
-В `docara.json` укажите дерево контента, URL-префикс, направление и явные
-fallback-локали:
+В `docara.json` укажите каталог с текстами, префикс адреса, направление
+письма и явные запасные языки (`fallbacks`):
 
 ```json
 {
@@ -63,15 +63,15 @@ php vendor/bin/docara build production
 php vendor/bin/docara verify-static build_production
 ```
 
-Сборка проверяет схему `lang.json`, BCP 47, fallback-граф и наличие реально
-используемых UI-строк. Частые ошибки:
+Сборка проверяет схему `lang.json`, теги BCP 47, цепочки запасных языков и
+наличие строк интерфейса, которые реально используются. Частые ошибки:
 
-- `LOCALE_FALLBACK_NOT_CONFIGURED` — fallback не объявлен в `locales`;
-- `LOCALE_FALLBACK_CYCLE` — цепочка fallback замкнулась;
-- `MESSAGE_NOT_FOUND` — общей подписи нет в локали и её явных fallback.
+- `LOCALE_FALLBACK_NOT_CONFIGURED` — запасной язык не объявлен в `locales`;
+- `LOCALE_FALLBACK_CYCLE` — цепочка запасных языков замкнулась;
+- `MESSAGE_NOT_FOUND` — общей подписи нет ни в языке, ни в его запасных языках.
 
-Отдельного публичного language pack, поля `language_pack` и каталога
-`languages/` в Docara нет.
+Отдельного языкового пакета, поля `language_pack` и каталога `languages/` в
+Docara нет.
 
 ## Все строки интерфейса
 
@@ -222,6 +222,6 @@ Docara пишет эти строки при сборке на английск�
 
 ## См. также
 
-- [Мультиязычный сайт](/ru/authoring/multilingual-site/) — как устроены языки и fallback
+- [Мультиязычный сайт](/ru/authoring/multilingual-site/) — как устроены языки и запасные языки
 - [Коды ошибок lang.json](/ru/reference/errors/site/#строки-интерфейса-lang-json)
 - [Фоновые эффекты](/ru/components/effects/) — подписи кнопки паузы

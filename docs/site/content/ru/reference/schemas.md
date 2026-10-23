@@ -4,26 +4,27 @@ description: "Схемы JSON файлов настроек и служебны�
 
 # Схемы JSON
 
-Portable Docara использует JSON Schema Draft 2020-12 и fail closed отклоняет
-unknown fields, неверные типы и unsafe paths.
+Схемы JSON описывают каждый файл настроек и служебный файл Docara. Docara
+использует JSON Schema Draft 2020-12 и сразу отклоняет неизвестные поля,
+неверные типы значений и небезопасные пути.
 
-| Schema ID | Source/output | Назначение |
+| Идентификатор схемы | Файл | Назначение |
 | --- | --- | --- |
-| `docara.site.v1` | `docara.json` | Site contract |
-| `docara.section.v1` | `section.json` | Наследуемый section contract |
-| `docara.page.v1` | `<page>.page.json` | Page contract |
-| `docara.redirects.v1` | Файл из `redirects_file` | Декларативные внутренние redirects |
-| `docara.redirect_receipt.v1` | `build_<environment>.docara/redirects.json` | Проверяемый результат публикации redirects |
-| `docara.component_call.v1` | Нормализованный вызов | Форма ID/props; admission определяет runtime |
-| `docara.framework_lock.v1` | `simai-framework.lock.json` | Immutable runtime/manifests/assets |
-| `https://schemas.simai.io/docara/component-catalog-entry/v1` | Package source record | Одна запись component catalog |
-| `https://schemas.simai.io/docara/typed-component-definition/v1` | `resources/component-catalog/typed/*.json` | Typed owner record |
-| `docara.effective_component_catalog.v1` | `_docara/component-catalog.json` | Производный catalog exact build |
-| `docara.search_index.v1` | `_docara/search-index.json` | Локальный search index |
+| `docara.site.v1` | `docara.json` | Настройки сайта |
+| `docara.section.v1` | `section.json` | Наследуемые настройки раздела |
+| `docara.page.v1` | `<page>.page.json` | Настройки одной страницы |
+| `docara.redirects.v1` | Файл из `redirects_file` | Внутренние перенаправления |
+| `docara.redirect_receipt.v1` | `build_<environment>.docara/redirects.json` | Проверяемый итог публикации перенаправлений |
+| `docara.component_call.v1` | Нормализованный вызов компонента | Форма идентификатора и параметров; что можно вызвать, решает допуск компонента |
+| `docara.framework_lock.v1` | `simai-framework.lock.json` | Закреплённые версии среды выполнения, описаний компонентов и ассетов |
+| `https://schemas.simai.io/docara/component-catalog-entry/v1` | Запись в исходниках пакета | Одна запись каталога компонентов |
+| `https://schemas.simai.io/docara/typed-component-definition/v1` | `resources/component-catalog/typed/*.json` | Описание типизированного компонента |
+| `docara.effective_component_catalog.v1` | `_docara/component-catalog.json` | Каталог компонентов конкретной сборки |
+| `docara.search_index.v1` | `_docara/search-index.json` | Локальный поисковый индекс |
 | `docara.lang.v1` | `content/<locale>/lang.json` | Только общие UI-подписи локали |
 | `docara.translation_lock.v1` | `translations.lock.json` | Принятые hashes переводов, уровень проверки и исключения |
 | `docara.translation_status.v1` | `build_<environment>.docara/translation-status.json` | Детерминированный отчёт о страницах и ключах локали |
-| `docara.documentation_source.v1` | Source-owned JSON или встроенный provider | Нейтральный публичный контракт документируемых сущностей |
+| `docara.documentation_source.v1` | JSON из исходников проекта или встроенный поставщик | Публичный контракт того, что описывает документация |
 | `docara.documentation_lock.v1` | `documentation.lock.json` | Принятые связи страниц, примеров и отпечатков исходного API |
 | `docara.documentation_status.v1` | `build_<environment>.docara/documentation-status.json` | Производный отчёт актуальности документации по исходному коду |
 | `docara.authoring.v1` | `docara.authoring.json` | [Профили страниц](/ru/authoring/page-profiles/) для `docara validate page` |
@@ -36,7 +37,7 @@ unknown fields, неверные типы и unsafe paths.
 
 ## Проверяемые примеры
 
-Valid minimal site:
+Минимальный правильный сайт:
 
 <!-- docara-example valid schema=site.schema.json -->
 ```json
@@ -47,7 +48,7 @@ Valid minimal site:
 }
 ```
 
-Invalid site с unknown field:
+Неправильный сайт с неизвестным полем:
 
 <!-- docara-example invalid schema=site.schema.json error=SCHEMA_VALIDATION_FAILED -->
 ```json
@@ -59,7 +60,7 @@ Invalid site с unknown field:
 }
 ```
 
-Invalid-пример документирует ожидаемую ошибку; не копируйте его в проект.
+Неправильный пример показывает ожидаемую ошибку; не копируйте его в проект.
 
 ## Поля и уровни
 
@@ -78,17 +79,20 @@ Invalid-пример документирует ожидаемую ошибку;
 
 ## Каталог компонентов сборки
 
-Machine-readable catalog объединяет native Markdown, typed Docara и
-Smart-компоненты, допущенные exact Framework lock. Requirement records
-фиксируют недоступные потребности, но не callable syntax.
+Машиночитаемый каталог объединяет обычный Markdown, типизированные
+компоненты Docara и Smart-компоненты, допущенные закреплённой версией
+Framework. Записи о потребностях называют недоступные возможности, но не дают
+синтаксиса для их вызова.
 
-Root содержит immutable framework/provider identity, sorted entries,
-`content_sha256` и bounded nonclaims. Exact параметры, states, limitations и
-examples принадлежат source records/fixtures и показываются в
-[справочнике компонентов](/components/), а не повторяются здесь.
+В корне каталога — неизменяемые сведения о версии Framework и поставщике,
+отсортированные записи, `content_sha256` и короткий список того, чего каталог
+не обещает. Точные параметры, состояния, ограничения и примеры хранятся в
+исходных записях и эталонных примерах и показываются в
+[справочнике компонентов](/ru/components/), а не повторяются здесь.
 
-`_docara/component-catalog.json` является output. Автор не редактирует его и не
-может через него, Markdown или presentation JSON расширить Smart surface.
+`_docara/component-catalog.json` — результат сборки. Автор его не редактирует
+и не может ни через него, ни через Markdown или JSON оформления расширить набор
+Smart-компонентов.
 
 ## План страницы после сборки
 
@@ -101,16 +105,16 @@ examples принадлежат source records/fixtures и показывают�
 | Поле | Смысл |
 | --- | --- |
 | `resolved_page_plan.configuration` | Итог после наследования |
-| `trace` | Входные файлы, роль, schema и SHA-256 |
+| `trace` | Входные файлы, их роль, схема и SHA-256 |
 | `provenance` | Какой файл установил каждое значение |
 | `canonical_hash` | Хэш канонического плана |
-| `component_runtime` | Вызовы компонентов и asset plan |
+| `component_runtime` | Вызовы компонентов и план ассетов |
 | `output`, `url` | Физический и публичный маршруты |
 | `declarative.plan.schema` | Версия полного `docara.resolved_render_plan.v2` |
 | `declarative.plan.layout.view_tree` | Разрешённый безопасный каркас макета |
-| `declarative.plan.regions.*[].slots` | Именованные слоты экземпляра Section |
-| `declarative.plan.regions.*[].blocks` | Block calls со stable ID, slot и Smart |
-| `declarative.plan.diagnostics` | Результат композиции и View Tree validation |
+| `declarative.plan.regions.*[].slots` | Именованные слоты секции |
+| `declarative.plan.regions.*[].blocks` | Вызовы блоков с постоянным идентификатором, слотом и Smart-компонентом |
+| `declarative.plan.diagnostics` | Итог композиции и проверки View Tree |
 
 План не является вторым источником для редактирования. Это генерируемый
 диагностический и интеграционный артефакт. Изменяйте Markdown или JSON, затем
@@ -118,25 +122,25 @@ examples принадлежат source records/fixtures и показывают�
 
 Итоговые поля `/reading/breadcrumbs`, `/reading/toc`, `/reading/toc_depth` и
 `/reading/previous_next` находятся в `configuration`, а их источник — в
-`provenance`. Сами вычисленные хлебные крошки, outline и соседние ссылки в план
+`provenance`. Сами вычисленные хлебные крошки, оглавление и соседние ссылки в план
 не записываются как редактируемые настройки: они детерминированно выводятся из
 контента и канонической топологии при сборке.
 
 ## Проверки сверх схемы
 
-Schema подтверждает форму, но builder дополнительно проверяет:
+Схема подтверждает форму файла, а сборка дополнительно проверяет:
 
-- существование и confinement paths;
-- symlink и reserved destinations;
-- brand asset type/size/hash;
-- Framework lock semantics и immutable references;
-- manifest, props, dependencies и asset projection;
-- принадлежность каждой страницы объявленному locale, BCP 47 tags,
-  непересекающиеся content roots, fallback-циклы,
+- что пути существуют и не выходят за свои каталоги;
+- символические ссылки и зарезервированные каталоги результата;
+- тип, размер и хеш файлов бренда;
+- смысл Framework lock и неизменяемость ссылок на версии;
+- описания компонентов, параметры, зависимости и раскладку ассетов;
+- что каждая страница принадлежит объявленному языку, теги BCP 47,
+  непересекающиеся каталоги языков, циклы запасных языков,
   `locales.missing_page_policy` и отдельную `documentation_version`;
-- redirect target existence, collision, chain/cycle и confinement внутри
-  `base_url`;
-- output collisions.
+- что цель перенаправления существует, нет совпадений, цепочек и циклов, а
+  адреса остаются внутри `base_url`;
+- что две страницы не пишут в один файл.
 
-Поэтому schema-valid JSON ещё не гарантирует успешную сборку, если внешний
-файл или runtime contract нарушен.
+Поэтому JSON, прошедший проверку схемой, ещё не гарантирует успешную сборку,
+если внешний файл или правило сборки нарушены.

@@ -12,7 +12,7 @@
         "variant": {"default": "auto", "enum": ["auto", "plain", "main", "tonal", "outline"]},
         "scheme": {"default": "primary", "enum": ["primary", "secondary", "tertiary", "neutral", "info", "success", "warning", "danger", "on-surface"]}
     },
-    "slots": {"default": {"required": true, "kind": "plain_text", "pattern": "identifier"}},
+    "slots": {"default": {"required": true, "kind": "plain_text", "pattern": "identifier", "vocabulary": "material_symbols"}},
     "normalization": [
         {"when": {"container": "none", "variant": "auto"}, "set": {"variant": "plain"}},
         {"when": {"container": "square", "variant": "auto"}, "set": {"variant": "tonal"}},

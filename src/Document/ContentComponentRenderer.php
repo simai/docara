@@ -30,6 +30,15 @@ final readonly class ContentComponentRenderer
         ) {
             throw $this->error('CONTENT_COMPONENT_SLOT_INVALID', $node, 'The default plain-text slot must be an identifier.');
         }
+        // An icon name outside the bundled catalogue has no glyph: the reader
+        // would see its letters instead of an icon.
+        if (($slot['vocabulary'] ?? null) === 'material_symbols' && ! IconNameCatalog::bundled()->contains($label)) {
+            throw $this->error(
+                'CONTENT_COMPONENT_ICON_UNKNOWN',
+                $node,
+                "Icon [$label] is not a Material Symbols name in the bundled icon catalogue; check its spelling against the icon list.",
+            );
+        }
         $label = htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
         $html = $this->template((string) $definition['_template'], $props, label: $label);
 

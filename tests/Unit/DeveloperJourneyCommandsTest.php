@@ -104,7 +104,7 @@ final class DeveloperJourneyCommandsTest extends TestCase
     {
         $root = dirname(__DIR__, 2) . '/docs/site/content/ru';
         $documents = [
-            (string) file_get_contents($root . '/development/agent-journey.md'),
+            // The agent journey is a part of the SDK page.
             (string) file_get_contents($root . '/development/developer-sdk.md'),
             (string) file_get_contents($root . '/start/component-model.md'),
         ];

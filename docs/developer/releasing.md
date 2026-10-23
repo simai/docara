@@ -11,7 +11,7 @@ release with a verified ZIP, its manifest and checksum.
   workflow copies this section into the GitHub release notes, so write it for
   users.
 - For a new major or minor version, update the `simai/docara:^X.Y` examples in
-  `README.md`, `docs/site/content/ru/start.md`, `docs/site/content/ru/reference/cli.md`
+  `README.md`, `docs/site/content/ru/start/quick-start.md`, `docs/site/content/ru/reference/cli.md`
   and the install-builder demo (a test checks the first three).
 - Run `php scripts/capture-component-source-metadata.php`. The component
   catalogue snapshot names the release and links to the cited files under the

@@ -151,7 +151,7 @@ final class DocumentationContractTest extends TestCase
             );
         }
 
-        $guide = (string) file_get_contents($this->contentRoot() . '/authoring/language-packs.md');
+        $guide = (string) file_get_contents($this->contentRoot() . '/reference/lang-json.md');
         self::assertStringContainsString('content/<locale>/lang.json', $guide);
         self::assertStringContainsString('повторяющиеся подписи интерфейса', $guide);
         self::assertStringContainsString('Текст страниц и описания', $guide);
@@ -163,18 +163,19 @@ final class DocumentationContractTest extends TestCase
     {
         $audiencePaths = [
             'beginner' => [
-                'start.md',
+                'start/what-is-docara.md',
+                'start/quick-start.md',
                 'build/verify.md',
                 'build/local-preview.md',
             ],
             'author' => [
-                'authoring/configuration.md',
-                'authoring/inheritance.md',
-                'authoring/layout-and-navigation.md',
-                'authoring/localization.md',
-                'authoring/branding.md',
+                'authoring/markdown.md',
+                'authoring/navigation.md',
                 'authoring/multilingual-site.md',
-                'authoring/language-packs.md',
+                'settings/levels-and-inheritance.md',
+                'settings/branding-and-theme.md',
+                'settings/layout-and-regions.md',
+                'reference/lang-json.md',
                 'build/update.md',
                 'build/publish.md',
             ],
@@ -185,14 +186,14 @@ final class DocumentationContractTest extends TestCase
             'maintainer' => [
                 'development/getting-started.md',
                 'development/architecture.md',
-                'development/composition-extensions.md',
+                'development/composition.md',
                 'development/smart-components.md',
                 'development/testing.md',
             ],
             'extension_developer_or_ai' => [
                 'start/component-model.md',
-                'development/framework-components.md',
-                'development/extensions.md',
+                'development.md',
+                'development/developer-sdk.md',
             ],
         ];
 
@@ -231,7 +232,7 @@ final class DocumentationContractTest extends TestCase
     {
         $path = implode("\n", array_map(
             fn (string $relative): string => (string) file_get_contents($this->contentRoot() . '/' . $relative),
-            ['start.md', 'build/verify.md', 'build/local-preview.md'],
+            ['start/quick-start.md', 'build/verify.md', 'build/local-preview.md'],
         ));
 
         self::assertStringContainsString('docara build production', $path);
@@ -275,7 +276,7 @@ final class DocumentationContractTest extends TestCase
 
         $surfaces = [
             $this->repositoryRoot() . '/README.md',
-            $this->contentRoot() . '/start.md',
+            $this->contentRoot() . '/start/quick-start.md',
             $this->contentRoot() . '/reference/cli.md',
         ];
 
@@ -295,10 +296,10 @@ final class DocumentationContractTest extends TestCase
     #[Test]
     public function user_ready_examples_are_schema_and_runtime_valid(): void
     {
-        $branding = $this->firstJsonExample('authoring/branding.md');
+        $branding = $this->firstJsonExample('settings/branding-and-theme.md');
         (new SchemaRepository)->assertValid($branding, 'site.schema.json');
 
-        $localization = $this->firstJsonExample('authoring/localization.md');
+        $localization = $this->jsonExampleContaining('authoring/multilingual-site.md', '"fr-CA"');
         $localizationRegistry = LocaleRegistry::fromSite($localization);
         self::assertSame(['ar', 'en'], array_map(
             static fn ($locale): string => $locale->tag->value(),
@@ -315,7 +316,7 @@ final class DocumentationContractTest extends TestCase
         self::assertCount(3, $multilingualRegistry->all());
         self::assertSame('rtl', $multilingualRegistry->get('ar')->direction);
 
-        $language = $this->firstJsonExample('authoring/language-packs.md');
+        $language = $this->firstJsonExample('reference/lang-json.md');
         (new SchemaRepository)->assertValid($language, 'lang.schema.json');
         self::assertSame('docara.lang.v1', $language['schema']);
 
@@ -458,7 +459,7 @@ final class DocumentationContractTest extends TestCase
     #[Test]
     public function optional_sidecars_update_path_and_composition_registration_are_explicit(): void
     {
-        $projectFiles = (string) file_get_contents($this->contentRoot() . '/authoring/project-files.md');
+        $projectFiles = (string) file_get_contents($this->contentRoot() . '/start/project-files.md');
         self::assertMatchesRegularExpression('/page\.json.{0,120}необязател/uis', $projectFiles);
         self::assertStringContainsString('соберётся без `install.page.json`', $projectFiles);
 
@@ -472,11 +473,12 @@ final class DocumentationContractTest extends TestCase
         self::assertStringContainsString('UPGRADE_ENGINE_ADOPTION_REQUIRED', $update);
         self::assertStringContainsString('ownership manifest', $update);
         self::assertStringContainsString('composer.lock', $update);
-        self::assertStringContainsString('Rollback', $update);
+        self::assertStringContainsString('Откат без сети', $update);
         self::assertStringContainsString('hash-bound plan', $update);
 
         $composition = (string) file_get_contents(
-            $this->contentRoot() . '/development/composition-extensions.md',
+            // Project layouts and blocks are a part of the composition page.
+            $this->contentRoot() . '/development/composition.md',
         );
         foreach (['Layout', 'Section', 'Block', 'View Tree', 'Smart', 'DesignRegistry', 'design/', 'docara preview'] as $term) {
             self::assertStringContainsString($term, $composition);
@@ -739,6 +741,22 @@ final class DocumentationContractTest extends TestCase
         self::assertIsArray($decoded, $relative);
 
         return $decoded;
+    }
+
+    /** @return array<string, mixed> */
+    private function jsonExampleContaining(string $relative, string $needle): array
+    {
+        $contents = (string) file_get_contents($this->contentRoot() . '/' . $relative);
+        preg_match_all('/```json\h*\R(.*?)\R```/su', $contents, $matches);
+        foreach ($matches[1] as $json) {
+            if (str_contains($json, $needle)) {
+                $decoded = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+                self::assertIsArray($decoded, $relative);
+
+                return $decoded;
+            }
+        }
+        self::fail("$relative has no JSON example containing $needle.");
     }
 
     private function relativeToRepository(string $path): string

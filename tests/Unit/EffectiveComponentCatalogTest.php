@@ -831,14 +831,23 @@ final class EffectiveComponentCatalogTest extends TestCase
                     'docara.tabs' => 'tabs',
                     'docara.tree' => 'tree',
                     'native.code' => 'code',
-                    'native.footnotes_and_sources' => 'footnotes-and-sources',
-                    'native.headings_and_text' => 'headings-and-text',
-                    'native.links_and_images' => 'links-and-images',
-                    'native.lists_and_quotes' => 'lists-and-quotes',
-                    'native.table' => 'table',
+                    // The other native constructions share the Markdown guide.
+                    'native.footnotes_and_sources' => '../authoring/markdown#Сноски и источники',
+                    'native.headings_and_text' => '../authoring/markdown#Заголовки и текст',
+                    'native.links_and_images' => '../authoring/markdown#Ссылки и изображения',
+                    'native.lists_and_quotes' => '../authoring/markdown#Списки и цитаты',
+                    'native.table' => '../authoring/markdown#Таблицы',
                     default => 'alert',
                 };
+                [$slug, $section] = array_pad(explode('#', $slug, 2), 2, null);
                 self::assertFileExists($root . "/docs/site/content/ru/components/$slug.md");
+                if ($section !== null) {
+                    self::assertMatchesRegularExpression(
+                        '/^## ' . preg_quote($section, '/') . '$/mu',
+                        (string) file_get_contents($root . "/docs/site/content/ru/components/$slug.md"),
+                        $entry['id'],
+                    );
+                }
 
                 continue;
             }

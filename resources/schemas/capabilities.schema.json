@@ -62,6 +62,42 @@
             "additionalProperties": {"type": "array", "items": {"type": "string"}}
         },
         "tracking": {"type": "array", "items": {"type": "string"}},
+        "documentation_standard": {
+            "type": "object",
+            "required": ["schema", "summary", "page_types", "writing_rules", "create_page", "quality_commands", "profile_file", "agents_file"],
+            "properties": {
+                "schema": {"const": "docara.documentation_standard.v1"},
+                "summary": {"type": "string", "minLength": 1},
+                "page_types": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "required": ["purpose", "when", "required_parts", "sections"],
+                        "properties": {
+                            "purpose": {"type": "string"},
+                            "when": {"type": "string"},
+                            "required_parts": {"type": "array", "items": {"type": "string"}},
+                            "sections": {"type": "array", "items": {"type": "string"}}
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "writing_rules": {"type": "array", "items": {"type": "string", "minLength": 1}},
+                "create_page": {"type": "string", "minLength": 1},
+                "quality_commands": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["command", "purpose"],
+                        "properties": {"command": {"type": "string"}, "purpose": {"type": "string"}},
+                        "additionalProperties": false
+                    }
+                },
+                "profile_file": {"type": "string"},
+                "agents_file": {"type": "string"}
+            },
+            "additionalProperties": false
+        },
         "receipts": {"type": "array", "items": {"type": "string"}},
         "lifecycle": {
             "type": "object",

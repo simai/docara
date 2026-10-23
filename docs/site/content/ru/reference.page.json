@@ -1,8 +1,8 @@
 {
   "schema": "docara.page.v1",
   "title": "Справочник",
-  "description": "Точные команды, схемы, resolved plan, Framework lock и безопасность переносимого Docara.",
+  "description": "Точные команды CLI, поля docara.json, section.json, page.json и lang.json, схемы, коды ошибок, ограничения и словарь терминов.",
   "navigation": {
-    "order": 50
+    "order": 60
   }
 }

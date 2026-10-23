@@ -1,4 +1,4 @@
-# Безопасность и ошибки
+# Безопасность
 
 Portable builder работает fail closed. Он не пытается угадать намерение при
 невалидном JSON, неизвестном prop или опасном пути.
@@ -29,6 +29,22 @@ Portable builder работает fail closed. Он не пытается уга
 - Ссылки на локальные фрагменты проверяются вместе с файлами. Повторяющийся
   HTML `id`, отсутствующий якорь и небезопасная percent-кодировка делают
   статическую проверку неуспешной.
+
+## Что запрещено в настройках и проекте
+
+Docara принимает IDs и данные, но не исполняемые project hooks.
+
+Fail-closed запрещены:
+
+- traversal, absolute/output-root escape и include вне roots;
+- symlink/junction-like escape, hardlink target и case collision;
+- class, callback, PHP/template/filesystem path из Markdown/config;
+- raw HTML/CSS и external embed вне explicit allowlist/sandbox;
+- duplicate namespace/ownership и implicit package shadowing;
+- запись scaffold/QA/preview в engine, lock, generated или external roots;
+- stale/hash-mismatched apply plan.
+
+Ошибка не должна менять ни одного байта вне verified project root. Diagnostics используют safe relative path/pointer/location и не публикуют secrets/private absolute paths.
 
 ## Чего документация не обещает
 

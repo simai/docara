@@ -2,7 +2,7 @@
 description: Справочник команд docara: сборка, проверка, просмотр, обновление и SDK. Команды запускаются из каталога сайта через php vendor/bin/docara.
 ---
 
-# CLI
+# Команды CLI
 
 Команды запускаются из каталога сайта с `docara.json` и
 `simai-framework.lock.json` через project-local `php vendor/bin/docara`.
@@ -61,7 +61,7 @@ Docara проверит accepted full-build receipts, выберет route до 
 
 Если в `docara.json` задан `site_url`, сборка также пишет `sitemap.xml`,
 `robots.txt` и `llms.txt`, абсолютные `canonical`/`hreflang` и теги Open Graph;
-см. [Настройки сайта](/settings/site/).
+см. [«Адрес сайта и поисковые системы»](/ru/settings/site-address/).
 
 ## `verify-static`
 

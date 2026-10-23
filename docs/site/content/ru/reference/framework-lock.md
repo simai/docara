@@ -2,9 +2,9 @@
 description: Справочник simai-framework.lock.json: точные ревизии Core и Smart, manifests, политика потребителя, хеши и проекции ассетов, которые фиксирует lock.
 ---
 
-# Framework lock
+# Файл закрепления Framework
 
-`simai-framework.lock.json` связывает точные Core/Smart revisions, registry
+`simai-framework.lock.json` (Framework lock) связывает точные Core/Smart revisions, registry
 identity, manifests, consumer policy, hashes и asset projections. Помимо
 Smart-артефактов и типографики, lock фиксирует локальный runtime-пакет Core:
 bootstrap JavaScript, необходимые webpack/language chunks, Material Symbols,
@@ -50,7 +50,42 @@ tests и consumer policy.
 `overlay`, `persistent`, `standard` и `hidden`; Docara выбирает preset через
 `layout.scrollbar.preset`, но не копирует реализацию полосы прокрутки.
 
-## Browser storage fallback
+## Поля файла
+
+Файл создаёт `docara init` вместе с проектом. Вручную его обычно не правят:
+сборка сверяет закреплённые файлы по хешам. Таблицы ниже показывают, что
+именно закреплено.
+
+### Версия и сборка SIMAI Framework
+
+:::schema_reference {schema=framework-lock scope=lock fields=schema,version,runtime,nonclaims}
+:::
+
+### Файлы и ресурсы
+
+:::schema_reference {schema=framework-lock scope=lock fields=runtime_projection,asset_projection,dynamic_asset_projection,package_projections}
+:::
+
+### Значки и шрифты
+
+:::schema_reference {schema=framework-lock scope=lock fields=icon_projection,typography_projection}
+:::
+
+### Описания компонентов
+
+:::schema_reference {schema=framework-lock scope=lock fields=manifests}
+:::
+
+## Проверка Smart-компонентов
+
+Effective support смотрите через `docara atlas --json` и `docara inspect smart <id> --json`. Neutral identity — `sf.smart_artifact_abi / 1.0.0 / sf-smart-artifact-abi-v1`; storage compatibility alias/provider adapter/template ABI показываются отдельно.
+
+Принятый form wave: `ui.input`, `ui.dropdown`, `ui.checkbox`; populated dropdown зависит от exact-pinned text-only `ui.list-item`. Related icons/avatars/tags остаются nonclaims.
+
+Каждый Smart-компонент перед публикацией проходит проверку схемы, владельца
+поставки, пространства имён, шаблона, ассетов, гидратации и хешей.
+
+## Запасное хранилище браузера
 
 Если зафиксированный Core использует browser storage, интеграционный слой может
 предоставить ограниченный in-memory fallback только для текущей страницы. Такой

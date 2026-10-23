@@ -1,8 +1,8 @@
 {
   "schema": "docara.page.v1",
-  "title": "Модель компонентов",
-  "description": "Как выбрать Markdown, компонент Docara, контейнер, SIMAI Framework artifact или project-owned расширение.",
+  "title": "Как устроены компоненты",
+  "description": "Когда хватает обычного Markdown, а когда нужен компонент Docara, контейнер, компонент SIMAI Framework или собственный компонент проекта.",
   "navigation": {
-    "order": 20
+    "order": 50
   }
 }

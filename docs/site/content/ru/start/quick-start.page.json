@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Быстрый старт",
+  "description": "Создайте и соберите первый сайт Docara только с PHP, Composer и Node.js: четыре шага до страницы, открытой по HTTP.",
+  "navigation": {
+    "order": 20
+  }
+}

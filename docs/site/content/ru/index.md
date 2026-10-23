@@ -8,7 +8,7 @@
 Docara 3 · открытый код на [GitHub](https://github.com/simai/docara) ·
 лицензия Apache 2.0
 
-[Быстрый старт](/start/)
+[Быстрый старт](/ru/start/quick-start/)
 
 [Посмотреть пример](/components/)
 :::
@@ -30,7 +30,7 @@ php vendor/bin/docara init .
 php vendor/bin/docara serve production
 ```
 
-Заготовки, проверка результата и публикация — в [полном быстром старте](/start/).
+Заготовки, проверка результата и публикация — в [полном быстром старте](/ru/start/quick-start/).
 
 ## Почему Docara
 
@@ -110,5 +110,5 @@ VitePress и Docusaurus — проекты на npm: сайт собираетс
 
 Быстрый старт проведёт от пустого каталога до готовой страницы в браузере.
 
-[Перейти к быстрому старту](/start/)
+[Перейти к быстрому старту](/ru/start/quick-start/)
 :::

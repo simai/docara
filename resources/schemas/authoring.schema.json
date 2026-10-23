@@ -11,6 +11,7 @@
       "items": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"}
     },
     "default_profile": {"$ref": "#/$defs/profile"},
+    "infer_profiles": {"type": "boolean"},
     "rules": {
       "type": "array",
       "items": {

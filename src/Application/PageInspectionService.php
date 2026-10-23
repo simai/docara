@@ -41,9 +41,10 @@ final readonly class PageInspectionService
             $resolution = $contract->resolve(
                 $relative,
                 is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null,
+                $document->markdown,
             );
             $diagnostics = $this->profileDiagnostics(
-                $resolution['profile'],
+                $resolution,
                 $this->facts($document->markdown),
                 $contract->present || isset($document->metadata['profile']),
             );
@@ -104,9 +105,10 @@ final readonly class PageInspectionService
             $resolution = $contract->resolve(
                 $relative,
                 is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null,
+                $document->markdown,
             );
             $diagnostics = $this->profileDiagnostics(
-                $resolution['profile'],
+                $resolution,
                 $this->facts($document->markdown),
                 $contract->present || isset($document->metadata['profile']),
             );
@@ -162,9 +164,9 @@ final readonly class PageInspectionService
         $raw = (string) file_get_contents($absolute);
         $document = (new FrontMatterParser)->parse($raw, $source->path);
         $relative = substr($source->path, strlen(LocaleRegistry::fromSite($runtime->site)->get($source->locale)->contentRoot) + 1);
-        $resolution = $contract->resolve($relative, is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null);
+        $resolution = $contract->resolve($relative, is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null, $document->markdown);
         $facts = $this->facts($document->markdown);
-        $diagnostics = $this->profileDiagnostics($resolution['profile'], $facts, $contract->present || isset($document->metadata['profile']));
+        $diagnostics = $this->profileDiagnostics($resolution, $facts, $contract->present || isset($document->metadata['profile']));
         $route = $this->publicRoute($runtime, $source);
         $components = $this->components($document->markdown);
         $examples = $this->examples($runtime, $source, $document->markdown);
@@ -190,7 +192,8 @@ final readonly class PageInspectionService
             'route' => $route,
             'front_matter' => $document->metadata,
             'effective_settings' => ['configuration' => $resolved?->configuration, 'page_sidecar' => $this->sidecar($runtime->root, $source->path)],
-            'profile' => ['id' => $resolution['profile'], 'source' => $resolution['source'], 'definition' => $profile, 'review_status' => $profile === null ? 'not_configured' : 'review_required'],
+            'profile' => ['id' => $resolution['profile'], 'source' => $resolution['source'], 'definition' => $profile, 'review_status' => $profile === null ? 'not_configured' : 'review_required']
+                + (isset($resolution['reason']) ? ['inferred_from' => $resolution['reason']] : []),
             'components' => $components,
             'examples' => $examples,
             'links' => $links,
@@ -239,12 +242,22 @@ final readonly class PageInspectionService
         ];
     }
 
-    /** @param array<string, int|bool> $facts @return list<array<string, mixed>> */
-    private function profileDiagnostics(?string $profile, array $facts, bool $enabled): array
+    /**
+     * Structural checks of the resolved profile. For an inferred profile the
+     * checks are advice: they carry severity "advisory" so the build summary
+     * does not count them, and a PAGE_PROFILE_INFERRED item names the guess.
+     *
+     * @param  array{profile:?string,source:string,reason?:string}  $resolution
+     * @param  array<string, int|bool>  $facts
+     * @return list<array<string, mixed>>
+     */
+    private function profileDiagnostics(array $resolution, array $facts, bool $enabled): array
     {
+        $profile = $resolution['profile'];
         if (! $enabled || $profile === null) {
             return [];
         }
+        $inferred = $resolution['source'] === 'inferred';
         $requirements = [
             'one_h1' => $facts['h1'] === 1,
             'introduction' => $facts['has_introduction'] === true,
@@ -255,9 +268,13 @@ final readonly class PageInspectionService
             'action' => $facts['links'] + $facts['directives'] >= 1,
         ];
         $diagnostics = [];
+        if ($inferred) {
+            $diagnostics[] = ['code' => 'PAGE_PROFILE_INFERRED', 'status' => 'review_required', 'severity' => 'advisory', 'profile' => $profile, 'reason' => $resolution['reason'] ?? 'fallback'];
+        }
         foreach ((new AuthoringProfileRegistry)->all()[$profile]['structural_signals'] as $signal) {
             if (($requirements[$signal] ?? true) !== true) {
-                $diagnostics[] = ['code' => 'PAGE_PROFILE_' . strtoupper($signal) . '_MISSING', 'status' => 'not_declared', 'severity' => 'warning'];
+                $diagnostics[] = ['code' => 'PAGE_PROFILE_' . strtoupper($signal) . '_MISSING', 'status' => 'not_declared', 'severity' => $inferred ? 'advisory' : 'warning']
+                    + ($inferred ? ['profile_source' => 'inferred'] : []);
             }
         }
         $diagnostics[] = ['code' => 'PAGE_EDITORIAL_REVIEW_REQUIRED', 'status' => 'review_required', 'severity' => 'advisory'];

@@ -245,6 +245,7 @@ MD);
         $this->filesystem->put($this->tmpPath('docara.authoring.json'), json_encode([
             'schema' => 'docara.authoring.v1',
             'audiences' => ['reader'],
+            'infer_profiles' => false,
             'rules' => [['match' => 'checked.md', 'profile' => 'article']],
         ], JSON_THROW_ON_ERROR));
         $this->filesystem->put($this->tmpPath('content/ru/checked.md'), "# Checked\n\nIntroduction.\n\n## Part\n\nText.\n");

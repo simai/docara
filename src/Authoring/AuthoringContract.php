@@ -17,6 +17,7 @@ final readonly class AuthoringContract
         public ?string $defaultProfile = null,
         public array $rules = [],
         public ?string $sha256 = null,
+        public bool $inferProfiles = false,
     ) {}
 
     public static function load(string $root): self
@@ -39,11 +40,25 @@ final readonly class AuthoringContract
         }
         (new SchemaRepository)->assertValid($data, 'authoring.schema.json');
 
-        return new self(true, $data['audiences'] ?? [], $data['default_profile'] ?? null, $data['rules'] ?? [], hash_file('sha256', $path) ?: null);
+        return new self(
+            true,
+            $data['audiences'] ?? [],
+            $data['default_profile'] ?? null,
+            $data['rules'] ?? [],
+            hash_file('sha256', $path) ?: null,
+            ($data['infer_profiles'] ?? true) === true,
+        );
     }
 
-    /** @return array{profile:?string,source:string,matches:list<array{match:string,profile:string}>} */
-    public function resolve(string $relativePath, ?string $override): array
+    /**
+     * The profile of one page: front matter first, then path rules, then
+     * default_profile. When none applies and the file allows inference, the
+     * profile is guessed from the path and the Markdown (source "inferred");
+     * an inferred profile is advice only.
+     *
+     * @return array{profile:?string,source:string,matches:list<array{match:string,profile:string}>,reason?:string}
+     */
+    public function resolve(string $relativePath, ?string $override, ?string $markdown = null): array
     {
         if ($override !== null) {
             $this->assertProfile($override);
@@ -59,7 +74,16 @@ final readonly class AuthoringContract
             return ['profile' => $profiles[0], 'source' => 'path_rule', 'matches' => $matches];
         }
 
-        return ['profile' => $this->defaultProfile, 'source' => $this->defaultProfile === null ? 'none' : 'default', 'matches' => []];
+        if ($this->defaultProfile !== null) {
+            return ['profile' => $this->defaultProfile, 'source' => 'default', 'matches' => []];
+        }
+        if ($this->present && $this->inferProfiles && $markdown !== null) {
+            $inferred = (new ProfileInference)->infer($relativePath, $markdown);
+
+            return ['profile' => $inferred['profile'], 'source' => 'inferred', 'matches' => [], 'reason' => $inferred['reason']];
+        }
+
+        return ['profile' => null, 'source' => 'none', 'matches' => []];
     }
 
     private function assertProfile(string $profile): void

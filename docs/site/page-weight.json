@@ -6,7 +6,7 @@
   "pages": {
     "/ru/components/icon/": {
       "max_page_bytes": 5000000,
-      "reason": "4.32 MB: the icon page draws every family, weight and fill, so it loads catalogue faces the other pages do not."
+      "reason": "4.53 MB: the icon page draws every family, weight and fill, so it loads catalogue faces the other pages do not, and lists all 3926 icon names."
     },
     "/ru/components/diagram/": {
       "max_page_bytes": 6900000,

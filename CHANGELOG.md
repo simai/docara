@@ -6,6 +6,42 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Search finds pages by their front matter `tags`.** A tagged page's
+  search document carries a `tags` field (left out for an untagged page, so
+  existing indexes do not change), and `search.js` ranks a tag match below a
+  title match and above heading and body matches. A tag may now be lowercase
+  letters of any script, digits, `.`, `_` and `-` (`tags: [деплой, i18n]`);
+  uppercase letters and spaces are still refused with
+  `FRONT_MATTER_TAG_INVALID`. The documentation tags its install, publishing,
+  hosting, icon, effects, localization and branding pages with the words
+  readers search for ("деплой", "иконки", "анимация", "i18n", "логотип").
+- **Documentation: icons, effects, landing blocks and Smart components.**
+  - The icon page explains Material Symbols (outlined, rounded and sharp,
+    three weights, fill), the static catalogue and when the full variable
+    font loads (`thin`, `bold`, a custom grade or optical size), and lists
+    all 3,926 icon names, generated from the bundled catalogue by
+    `scripts/capture-icon-names.php` and kept current by a test.
+  - A new Background effects page covers `effects.catalogue`, choosing an
+    effect on effects.simai.io, `effect_theme`, `effect_settings`, the pause
+    button and reduced motion, what a Content-Security-Policy must allow and
+    the diagnostics; the hero page links to it.
+  - A new Landing blocks page documents `features`, `showcase`, `promo`,
+    `columns` and `cta` with live examples.
+  - A new Smart components page explains `ui.*`, how
+    `simai-framework.lock.json` admits a component and refuses values, with
+    live `ui.button` and `ui.alert` examples.
+  - The components overview gives every component a one-line description.
+
+### Changed
+
+- **An unknown icon name stops the build.** `:icon[setings]` used to render
+  the letters of the name instead of an icon. The build now checks the name
+  against the bundled icon catalogue and stops with
+  `CONTENT_COMPONENT_ICON_UNKNOWN`, naming the file and line. Names in HTML
+  examples and Smart component props are not checked.
+
 ## [3.8.0] - 2026-10-23
 
 ### Added

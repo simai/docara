@@ -1,4 +1,5 @@
 ---
+title: "Smart-компоненты ui.*"
 description: Smart-компоненты ui.* из SIMAI Framework — кнопка ui.button, уведомление ui.alert и другие: что это, как сайт разрешает их через simai-framework.lock.json и как вызвать в Markdown.
 tags: [smart, ui, framework, sf-button, sf-alert]
 ---

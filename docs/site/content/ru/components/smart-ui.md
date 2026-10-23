@@ -133,7 +133,7 @@ lock описаны в справочнике [Framework lock](/ru/reference/fra
   вызываются только на сайте, чей lock их разрешает.
 - `ui.badge`, `ui.tabs` и `ui.dataview` пока не приняты. Вместо них используйте
   [бейдж](/ru/components/badge/), [вкладки](/ru/components/tabs/) и
-  [таблицу](/ru/components/table/) Docara.
+  [таблицу](/ru/authoring/markdown/#таблицы) Docara.
 
 Какие компоненты доступны вашему сайту, покажет команда
 `php vendor/bin/docara atlas --json`, а подробности одного компонента —

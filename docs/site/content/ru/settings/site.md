@@ -128,7 +128,7 @@ mv docara.json.pages docara.json
 
 ## Языки и переводы
 
-Подробнее — в разделе [Локали и маршрутизация](/settings/locales-and-routing/).
+Подробнее — в разделе [Локали и маршрутизация](/ru/authoring/multilingual-site/).
 
 :::schema_reference {schema=site scope=site fields=locale,default_locale,locales,locale_routing,translation_tracking}
 :::

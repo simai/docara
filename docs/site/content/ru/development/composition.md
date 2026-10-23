@@ -161,8 +161,177 @@ Preview не имеет собственного renderer. `PreviewKernel` вы�
 
 Команда `docara preview smart|region|layout|page` публикует isolated tree в `.docara-preview/output/<target>/`. `verify-static` обязан вернуть `PREVIEW_BUILD_PURPOSE_FORBIDDEN`; для production нужен обычный full build.
 
+## Свои макеты и блоки проекта
+
+Проект может добавить свой Layout, Section, Block и безопасный View Tree в
+каталог `design/`. Менять движок для этого не нужно.
+
+### Цепочка проекта
+
+```text
+Layout → Region → Section → Slot → Block → Smart или безопасный element
+```
+
+Все определения читает один `DesignRegistry`. Встроенные ID принадлежат
+пакету, project ID — namespace из `docara.json`:
+
+```json
+{"smart":{"namespace":"project"}}
+```
+
+Project artifact должен начинаться с `project.`. Он не может заменить
+`docara.*`, `content.*`, `shell.*` или `ui.*`. Дубликаты, symlink, выход из
+корня и неизвестные определения останавливают сборку.
+
+Команда `docara atlas --json` показывает effective Layout, View, Section,
+Block, Smart, binding и preset из принятых registries. Atlas — только
+детерминированная проекция: редактировать его как источник регистрации нельзя.
+Для контейнеров он также показывает допустимые children, slots, порядок,
+количество и максимальную глубину.
+
+### Привязки данных оболочки
+
+Блок `shell.smart` может выбрать только зарегистрированную привязку `bind`.
+Привязка соединяет данные страницы с уже зарегистрированным Smart-компонентом;
+она не является PHP callback или путём к шаблону. Встроенный реестр содержит:
+
+| ID | Возможности | Smart |
+| --- | --- | --- |
+| `docara.branding` | `shell.brand` | `docara.brand` |
+| `docara.navigation` | `shell.primary-navigation`, `shell.secondary-navigation` | `docara.navigation` |
+| `docara.outline` | `shell.outline` | `docara.toc` |
+
+Проверьте effective descriptor и его происхождение командами:
+
+```bash
+docara list binding
+docara inspect binding docara.navigation
+docara schema binding
+```
+
+Layout region и Section объявляют совместимые capabilities. Сборка до render
+отклонит неизвестную привязку, несовместимую capability, попытку передать
+binding-owned props или подменить package ID. Project JSON не может задавать
+class, callback, PHP/template path или произвольный filesystem path.
+
+Один `docara.navigation` поддерживает presentations `header`, `tree` и
+`compact`. Вызов остаётся тем же `shell.smart`, Gateway и PageBuilder; меняется
+только зарегистрированный `view`. Если `view` явно не указан, сохраняется
+совместимое поведение по умолчанию.
+
+Starter содержит небольшой footer-пример: project Section и Block допускают
+только зарегистрированный `project.footer-links` в region `footer`. Ни config,
+ни Markdown не выбирают PHP/template path; component, View и assets разрешает
+обычный project Smart provider.
+
+### Файлы
+
+```text
+design/
+├── layouts/project.docs.json
+├── sections/project.article.json
+├── blocks/project.document.json
+└── views/
+    ├── layout.project.docs.json
+    └── section.project.article.json
+```
+
+Layout задаёт безопасный View Tree, regions, их defaults и место документа:
+
+```json
+{
+  "schema": "docara.layout.v1",
+  "key": "project.docs",
+  "default": false,
+  "view": "layout.project.docs",
+  "configuration": {
+    "container": {"max": 7},
+    "scrollbar": {"preset": "overlay"},
+    "content": {"gap": 0}
+  },
+  "document": {
+    "region": "stage",
+    "section": "project.article",
+    "slot": "content",
+    "block": "project.document"
+  },
+  "regions": {
+    "stage": {
+      "required": true,
+      "default_enabled": true,
+      "default_sections": [],
+      "section_types": ["content"]
+    }
+  },
+  "assets": []
+}
+```
+
+Section объявляет совместимые regions, slots и blocks. Block выбирает один из
+уже зарегистрированных безопасных renderer kinds. JSON не принимает PHP,
+template path, callback, произвольный HTML или CSS.
+
+Чтобы выбрать project layout, сбросьте унаследованную ветку:
+
+```json
+{
+  "layout": {
+    "$reset": true,
+    "key": "project.docs"
+  }
+}
+```
+
+### Предпросмотр
+
+Preview использует обычный `PortableSiteBuilder`, PageBuilder, registries,
+Smart gateway, renderer и layout composer. Результат изолирован в
+`.docara-preview/` и не считается production build receipt. Cache receipt
+имеет `build.purpose=preview`, поэтому `verify-static` завершится ошибкой
+`PREVIEW_BUILD_PURPOSE_FORBIDDEN`. Это защита самого receipt, а не соседний
+служебный marker.
+
+```bash
+docara preview page --page=/ru/components/alert/
+docara preview layout --page=/ru/components/alert/
+docara preview region --page=/ru/components/alert/ --selector=main
+docara preview smart --page=/ru/components/alert/ --selector=ui.alert
+```
+
+Для автоматизации добавьте `--json`. Команда watch следит за effective input
+chain выбранного route, locale UI-copy и реально разрешёнными layout, section,
+block, Smart, template и asset dependencies из package/project providers:
+
+```bash
+docara preview region --page=/ru/components/alert/ --selector=main --watch
+```
+
+`artifact.html` содержит точный выбранный fragment, `index.html` — ту же
+production page для проверки в браузере, `preview.json` — assets, provenance,
+dependencies и hashes. В том же preview-root публикуются нужные local CSS, JS,
+Framework и content assets, поэтому открывайте `index.html` через HTTP именно
+из `.docara-preview/output/<target>/`. Production receipt и прочие HTML routes
+туда не копируются. Normal `build_*` preview не перезаписывает.
+
+Изменение нерелевантного project Smart не пересобирает выбранный target.
+Изменение, появление или удаление файла внутри реально выбранного project или
+package artifact вызывает одну single-page пересборку. `target_only=true`
+выводится из scope и результата пересборки, а не задаётся константой.
+
+### Проверка
+
+```bash
+php vendor/bin/phpunit --filter 'DesignRegistryTest|ProjectDesignCompositionTest|PreviewKernelTest'
+cd docs/site
+php ../../docara build production
+php ../../docara verify-static build_production
+```
+
+Не добавляйте ID проекта в engine PHP или schema enum. Если нужен новый
+исполняемый renderer/API, это отдельное расширение платформы, а не project
+JSON.
+
 ## См. также
 
-- [Свои макеты и блоки](/ru/development/composition-extensions/)
 - [Области макета](/ru/settings/layout-and-regions/) — настройка областей автором сайта
 - [Примеры для разработчиков](/ru/development/examples/)

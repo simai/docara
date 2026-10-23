@@ -12,8 +12,7 @@ Node.js 20+ из [быстрого старта](/ru/start/quick-start/).
 
 - [Начало разработки](/ru/development/getting-started/)
 - [Архитектура](/ru/development/architecture/)
-- [Композиция интерфейса](/ru/development/composition/)
-- [Свои макеты и блоки](/ru/development/composition-extensions/)
+- [Композиция интерфейса](/ru/development/composition/) — в том числе свои макеты и блоки проекта
 - [Smart-компоненты](/ru/development/smart-components/)
 - [SDK для разработчика и AI-агента](/ru/development/developer-sdk/)
 - [Тестирование](/ru/development/testing/)

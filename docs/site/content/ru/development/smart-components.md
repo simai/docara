@@ -4,30 +4,32 @@ description: "Как устроены Smart-компоненты: кому пр�
 
 # Smart-компоненты
 
-Smart-компонент — переносимый UI-артефакт с проверяемым manifest,
-представлениями, шаблоном и assets. Все компоненты проходят один путь:
+Smart-компонент — переносимый элемент интерфейса с проверяемым описанием
+(manifest), представлениями, шаблоном и ассетами. Все компоненты проходят один
+путь:
 
 ```text
 Markdown -> typed Document IR -> renderer registry
 -> SmartComponentGateway -> LayoutComposer -> PageBuilder
 ```
 
-Docara не выбирает renderer по имени компонента. Provider registry определяет
-владельца namespace, затем Gateway проверяет manifest, view, preset, props,
-template и assets. Неизвестное или небезопасное значение останавливает сборку.
+Docara не выбирает рендерер по имени компонента. Реестр поставщиков
+определяет владельца пространства имён, затем общий вход (Gateway) проверяет
+описание, представление, пресет, параметры, шаблон и ассеты. Неизвестное или
+небезопасное значение останавливает сборку.
 
 ## Встроенные владельцы
 
-| Namespace | Provider | Назначение |
+| Пространство имён | Поставщик | Назначение |
 | --- | --- | --- |
-| `ui.*` | source-pinned `framework.lock` | Smart-компоненты SIMAI Framework |
-| `docara.*` | `docara.package` | shell и навигация Docara |
-| namespace проекта | `project.<namespace>` | компоненты конкретного сайта |
+| `ui.*` | закреплённый `framework.lock` | Smart-компоненты SIMAI Framework |
+| `docara.*` | `docara.package` | оболочка и навигация Docara |
+| пространство имён проекта | `project.<namespace>` | компоненты конкретного сайта |
 
 `ui.alert`, `ui.button`, `docara.brand`, `docara.navigation`, `docara.toc` и
-`docara.preferences` разрешаются тем же Gateway. Deprecated aliases
-`docara.header` и `docara.outline` хранятся в artifact metadata, а не в PHP
-ветвлении.
+`docara.preferences` проходят через тот же Gateway. Устаревшие имена
+`docara.header` и `docara.outline` записаны в метаданных компонента, а не в
+условиях PHP-кода.
 
 ## Компонент проекта
 
@@ -37,8 +39,8 @@ template и assets. Неизвестное или небезопасное зн�
 {"smart":{"namespace":"project"}}
 ```
 
-Корень фиксирован: `smart/`. Config и Markdown не могут выбрать PHP-класс,
-callback или путь к template.
+Корень фиксирован: `smart/`. Настройки и Markdown не могут выбрать PHP-класс,
+функцию обратного вызова или путь к шаблону.
 
 ```text
 smart/project.notice/
@@ -57,34 +59,37 @@ Manifest использует tracked SIMAI Framework Smart artifact v1. Мин�
 :::
 ```
 
-Добавление нового `project.*` артефакта не требует правок `src/`. Duplicate ID,
-чужой namespace, symlink, traversal, неизвестный view/preset/prop, template или
-asset завершают сборку ошибкой.
+Новый компонент `project.*` не требует правок в `src/`. Повтор
+идентификатора, чужое пространство имён, символическая ссылка, выход за
+каталог через `..`, неизвестные представление, пресет, параметр, шаблон или
+ассет завершают сборку ошибкой.
 
 После `docara init` страница `/ru/project-demos/` показывает два полезных
 локальных примера: `project.install-builder` только формирует и копирует
 Composer-команду, а `project.product-configurator` считает демонстрационный
-итог в браузере. Их совместимые authoring aliases —
-`project.install_builder` и `project.product_configurator`; канонические ABI IDs
-используют дефисы. Оба примера обходятся без fetch, backend, заказа, оплаты или
-выполнения команды.
+итог в браузере. Для автора они также доступны под именами
+`project.install_builder` и `project.product_configurator`, а основные
+идентификаторы пишутся через дефис. Оба примера не обращаются к серверу, ничего
+не заказывают, не принимают оплату и не выполняют команд.
 
 `project.install-builder` использует принятые `ui.input` и `ui.checkbox`.
 `project.product-configurator` показывает заполненный `ui.dropdown`; варианты
 в его slot `options` — только принятые дочерние `ui.list-item` с `type=text`.
-Все четыре Framework-компонента проходят тот же registry, Gateway и renderer,
-что и остальные Smart-компоненты. Их manifest, view, preset, template, assets
-и hydration contract проверяются по exact lock до render.
+Все четыре компонента Framework проходят тот же реестр, Gateway и рендерер,
+что и остальные Smart-компоненты. Их описание, представление, пресет, шаблон,
+ассеты и правила оживления в браузере проверяются по закреплённой версии до
+вывода HTML.
 
-Поддержка `ui.list-item` здесь намеренно узкая: это текстовый option для
-`ui.dropdown`. Icons, avatars, tags и самостоятельное использование
-`ui.list-item` не входят в контракт. Нельзя заменять options массивом `items`,
-raw-разметкой или локальной копией Framework-компонента.
+Поддержка `ui.list-item` здесь намеренно узкая: это текстовый вариант для
+`ui.dropdown`. Значки, аватары, метки и самостоятельное использование
+`ui.list-item` не поддерживаются. Нельзя заменять варианты массивом `items`,
+сырой разметкой или локальной копией компонента Framework.
 
-View выбирается одинаково для любого provider: явно указанный view имеет
-приоритет; иначе named preset выбирает зарегистрированный view; если не задано
-ни то ни другое, используется `default`. Это данные артефакта, поэтому новый
-компонент или вариант не требует условия по component ID в engine.
+Представление (view) выбирается одинаково для любого поставщика: явно
+указанное представление важнее всего; иначе его выбирает именованный пресет;
+если не задано ни то ни другое, используется `default`. Это данные
+компонента, поэтому новый компонент или вариант не требует условия по его
+идентификатору в коде движка.
 
 ## Контекст шаблона и assets
 
@@ -148,24 +153,25 @@ php ../../docara build production
 php ../../docara verify-static build_production
 ```
 
-Для нового артефакта используйте hash-bound workflow `docara scaffold smart
-project.name --dry-run`, затем `docara scaffold --apply=<plan_id>`. Полный путь
-описан в [Developer и AI SDK](/development/developer-sdk/).
+Для нового компонента сначала составьте план командой `docara scaffold smart
+project.name --dry-run`, затем примените его по хешу: `docara scaffold
+--apply=<plan_id>`. Полный путь описан на странице
+[«SDK для разработчика и AI-агента»](/ru/development/developer-sdk/).
 
-Full и `--page` используют один PageBuilder. После изменения структуры routes
-нужна full build; для содержимого существующей страницы доступен single-page
-rebuild.
+Полная сборка и сборка одной страницы (`--page`) используют один PageBuilder.
+Если изменилась структура адресов, нужна полная сборка; содержимое
+существующей страницы можно пересобрать отдельно.
 
 ## Компонент SIMAI Framework
 
-Новый `:::ui.*` вызов нельзя добавить только изменением parser, schema или
-метаданных каталога. Единственный admission authority — точный
+Новый вызов `:::ui.*` нельзя добавить, только изменив разбор Markdown, схему
+или метаданные каталога. Допуск определяет только точный
 `simai-framework.lock.json`.
 
 Сначала пройдите общий выбор уровня в
 [обзоре раздела](/ru/development/#как-развивать-возможности). Этот раздел
-описывает только случай, когда native Markdown и typed-компонент Docara уже не
-решают задачу.
+описывает только случай, когда обычный Markdown и типизированный компонент
+Docara уже не решают задачу.
 
 Минимальный принимаемый набор:
 

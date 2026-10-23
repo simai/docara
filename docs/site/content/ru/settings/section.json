@@ -1,5 +1,5 @@
 {
   "schema": "docara.section.v1",
-  "title": "Настройки",
+  "title": "Настройка сайта",
   "layout": {"container": {"max": 7}}
 }

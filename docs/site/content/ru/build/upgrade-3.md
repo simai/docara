@@ -41,7 +41,7 @@ Recipe. Если `node` нет в `PATH`, задайте `DOCARA_NODE_BINARY`. �
 Свободный релиз SIMAI Framework больше не содержит `sf-admin-menu` и
 `sf-table`: они перешли в коммерческий пакет компонентов SIMAI. Страницы, которые их используют, нужно
 изменить — например, заменить `sf-table` обычной Markdown-таблицей (см.
-[Таблица Markdown](/components/table/)).
+[Таблица Markdown](/ru/authoring/markdown/#таблицы)).
 
 ### Новый проект и командная строка
 

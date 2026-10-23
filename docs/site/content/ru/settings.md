@@ -10,10 +10,10 @@ description: Настройки Docara — проверяемые JSON-файл�
 
 - [Уровни и inheritance](/ru/settings/levels-and-inheritance/)
 - [Сайт](/ru/settings/site/), [раздел](/ru/settings/section/), [страница](/ru/settings/page/)
-- [Локали и routing](/ru/settings/locales-and-routing/)
+- [Локали и routing](/ru/authoring/multilingual-site/)
 - [Branding и тема](/ru/settings/branding-and-theme/)
 - [Layout и regions](/ru/settings/layout-and-regions/)
-- [Навигация](/ru/settings/navigation/)
+- [Навигация](/ru/authoring/navigation/)
 - [Поиск и чтение](/ru/settings/search-and-reading/)
 - [Настройки читателя](/ru/settings/reader-preferences/)
 - [Framework lock и providers](/ru/settings/framework-lock-and-providers/)

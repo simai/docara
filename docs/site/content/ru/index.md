@@ -45,7 +45,7 @@ php vendor/bin/docara serve production
 Меню, поиск и удобное чтение Docara строит сама — без своей темы и плагинов.
 
 :::features
-- :icon[account_tree]{size=2 container=square variant=tonal scheme=primary} **Меню и навигация.** Разделы, хлебные крошки, содержание страницы и переходы к соседним материалам строятся из структуры файлов. Подробнее — в разделе [«Макеты и навигация»](/authoring/layout-and-navigation/).
+- :icon[account_tree]{size=2 container=square variant=tonal scheme=primary} **Меню и навигация.** Разделы, хлебные крошки, содержание страницы и переходы к соседним материалам строятся из структуры файлов. Подробнее — в разделе [«Меню и разделы»](/ru/authoring/navigation/).
 - :icon[search]{size=2 container=square variant=tonal scheme=primary} **Поиск по сайту.** Индекс собирается при сборке и работает в браузере читателя: серверу не нужны ни база данных, ни внешний сервис.
 - :icon[tune]{size=2 container=square variant=tonal scheme=primary} **Удобно читать.** Читатель сам выбирает светлую или тёмную тему, размер шрифта и ширину текста.
 - :icon[translate]{size=2 container=square variant=tonal scheme=primary} **Несколько языков.** Каждый язык — своя папка с Markdown. Связанные страницы получают переключатель языка и `hreflang`, подробнее — в [«Многоязычном сайте»](/authoring/multilingual-site/).

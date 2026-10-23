@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Console;
 
-use Simai\Docara\Application\PageInspectionService;
 use Simai\Docara\Authoring\AuthoringContract;
 use Simai\Docara\PortableSite\BuildReceipts;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
+use Simai\Docara\Quality\QualityReportService;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Throwable;
@@ -73,23 +73,26 @@ final class BuildCommand extends Command
             microtime(true) - $startedAt,
         ));
         try {
-            $contract = AuthoringContract::load($this->base);
-            if ($contract->present) {
-                // Every page with a profile carries the advisory editorial
-                // checklist (PAGE_EDITORIAL_REVIEW_REQUIRED); `docara validate
-                // page` shows it. The build reports only what needs a fix:
-                // missing structure, links and assets.
-                $profileIssues = count(array_filter(
-                    (new PageInspectionService)->validateAll($this->base),
-                    static fn (array $check): bool => ($check['status'] ?? 'pass') !== 'pass'
-                        && ($check['severity'] ?? null) !== 'advisory',
-                ));
-                if ($profileIssues > 0) {
-                    $this->console->comment("Page authoring reported $profileIssues item(s) for structural review or with a missing link or asset; the build remains valid in report mode.");
-                }
-            }
+            $authoring = AuthoringContract::load($this->base)->present;
         } catch (Throwable $exception) {
+            $authoring = false;
             $this->console->comment('Page authoring contract warning: ' . $exception->getMessage() . ' The build remains valid in report mode.');
+        }
+        if ($authoring) {
+            // One line, and only for a project that opted into the
+            // documentation standard. The report itself is written by
+            // `docara qa report`; the build never fails on quality.
+            try {
+                $report = (new QualityReportService)->analyze($this->base, $destination, 0);
+                $this->console->comment(sprintf(
+                    'Documentation quality: %d/100, %d page(s) need attention (docara qa report%s).',
+                    $report['site']['score'],
+                    $report['site']['pages_needing_attention'],
+                    $environment === 'local' ? '' : ' --env=' . $environment,
+                ));
+            } catch (Throwable $exception) {
+                $this->console->comment('Documentation quality was not measured: ' . $exception->getMessage() . ' The build remains valid.');
+            }
         }
         $translationReport = BuildReceipts::existing($destination) . '/translation-status.json';
         if (is_file($translationReport) && ! is_link($translationReport)) {

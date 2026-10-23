@@ -18,6 +18,13 @@ final class TextStatistics
         'th', 'uk', 'ur', 'zh',
     ];
 
+    /** Common words of four letters or more that never name the topic of a page. */
+    public const TOPIC_STOP_WORDS = [
+        'этот', 'этой', 'этом', 'этого', 'эти', 'этих', 'если', 'когда', 'чтобы', 'только', 'также', 'можно', 'нужно',
+        'который', 'которая', 'которое', 'которые', 'через', 'после', 'перед', 'между', 'может', 'здесь', 'всех', 'весь',
+        'with', 'from', 'that', 'this', 'what', 'when', 'your', 'into', 'about', 'page',
+    ];
+
     /** Stand-in for inline code inside a sentence: it counts as one word. */
     public const CODE_TOKEN = "\u{2063}code\u{2063}";
 
@@ -84,22 +91,86 @@ final class TextStatistics
     }
 
     /**
-     * Lowercase stems of the words of a title or description: the first five
-     * letters of every word of four letters or more. Five letters keep a
-     * Russian word recognisable across its endings ("публикация",
-     * "публикуйте").
+     * Words of four letters or more that can name a topic: the lowercase
+     * words of a title, description or paragraph, with compound words split
+     * at the hyphen ("Smart-компоненты" gives "smart" and "компоненты") and
+     * common short words such as "этот" or "with" left out.
      *
      * @return list<string>
      */
-    public function stems(string $text): array
+    public function topicWords(string $text): array
     {
-        $stems = [];
+        $words = [];
         foreach ($this->words(mb_strtolower($text)) as $word) {
-            if (mb_strlen($word) >= 4) {
-                $stems[] = mb_substr($word, 0, 5);
+            foreach (preg_split('/[\'’-]/u', $word) ?: [] as $part) {
+                if (mb_strlen($part) >= 4 && preg_match('/\p{L}/u', $part) === 1 && ! in_array($part, self::TOPIC_STOP_WORDS, true)) {
+                    $words[$part] = true;
+                }
             }
         }
 
-        return array_values(array_unique($stems));
+        return array_keys($words);
+    }
+
+    /**
+     * Whether two lowercase words are forms of one word, by a light stemming
+     * that needs no dictionary: they share their first five letters
+     * ("публикация", "публикуйте"), or their first four letters when neither
+     * has more than three letters after them ("ошибки", "ошибок";
+     * "начало", "начать"). Words are compared whole when one of them is
+     * shorter than four letters.
+     */
+    public static function sameWordForm(string $a, string $b): bool
+    {
+        if ($a === $b) {
+            return true;
+        }
+        $shared = 0;
+        $limit = min(mb_strlen($a), mb_strlen($b));
+        while ($shared < $limit && mb_substr($a, $shared, 1) === mb_substr($b, $shared, 1)) {
+            $shared++;
+        }
+
+        return $shared >= 5 || ($shared === 4 && mb_strlen($a) - 4 <= 3 && mb_strlen($b) - 4 <= 3);
+    }
+
+    /**
+     * Whether a word of the title appears, in some form, in the text.
+     *
+     * @param  list<string>  $titleWords  from topicWords()
+     * @param  list<string>  $textWords  from topicWords()
+     */
+    public static function sharesTopicWord(array $titleWords, array $textWords): bool
+    {
+        foreach ($titleWords as $title) {
+            foreach ($textWords as $word) {
+                if (self::sameWordForm($title, $word)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * The singular of a lowercase English word by the regular plural rules:
+     * "registries" → "registry", "hashes" → "hash", "assets" → "asset".
+     * Words that only look plural ("class", "status", "canvas") keep their
+     * form. Used to treat both forms of a term as one.
+     */
+    public static function englishSingular(string $word): string
+    {
+        if (preg_match('/[^aeiou]ies$/', $word) === 1 && strlen($word) > 4) {
+            return substr($word, 0, -3) . 'y';
+        }
+        if (preg_match('/(?:ss|sh|ch|x|z)es$/', $word) === 1) {
+            return substr($word, 0, -2);
+        }
+        if (preg_match('/[^asu]s$/', $word) === 1 && strlen($word) > 3) {
+            return substr($word, 0, -1);
+        }
+
+        return $word;
     }
 }

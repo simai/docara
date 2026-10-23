@@ -164,8 +164,67 @@ final class QualityChecksTest extends TestCase
         self::assertSame(0.5, $text->latinShare('сборка build сайт site'));
         self::assertTrue(TextStatistics::usesNonLatinScript('ru-RU'));
         self::assertFalse(TextStatistics::usesNonLatinScript('de'));
-        self::assertSame(['публи'], $text->stems('Публикация'));
-        self::assertSame(['публи', 'сайт'], $text->stems('Публикуйте сайт'));
+        self::assertSame(['публикуйте', 'сайт'], $text->topicWords('Публикуйте этот сайт'));
+        self::assertSame(['smart', 'компоненты'], $text->topicWords('Smart-компоненты'));
+        self::assertSame([], $text->topicWords('Код'));
+        self::assertTrue(TextStatistics::sameWordForm('публикация', 'публикуйте'));
+        self::assertTrue(TextStatistics::sameWordForm('ошибки', 'ошибок'));
+        self::assertTrue(TextStatistics::sameWordForm('начало', 'начать'));
+        self::assertFalse(TextStatistics::sameWordForm('просмотр', 'простой'));
+        self::assertFalse(TextStatistics::sameWordForm('тестирование', 'тесты'));
+        self::assertSame('registry', TextStatistics::englishSingular('registries'));
+        self::assertSame('hash', TextStatistics::englishSingular('hashes'));
+        self::assertSame('asset', TextStatistics::englishSingular('assets'));
+        self::assertSame('status', TextStatistics::englishSingular('status'));
+        self::assertSame('class', TextStatistics::englishSingular('class'));
+    }
+
+    #[Test]
+    public function the_topic_check_reads_word_forms_compounds_and_the_first_paragraph(): void
+    {
+        $analyzer = new QualityPageAnalyzer;
+        $topic = static fn (array $page): bool => in_array('QUALITY_TOPIC_UNCLEAR', array_column($analyzer->analyze($page, self::site()), 'code'), true);
+        $page = ['locale' => 'ru', 'tags' => []] + self::page();
+        $page['facts']['lang'] = 'ru';
+
+        // Another form of a title word counts.
+        self::assertFalse($topic(['title' => 'Ошибки обновления', 'description' => 'Коды ошибок команды upgrade с причиной и способом исправления.'] + $page));
+        // A part of a hyphenated word counts.
+        self::assertFalse($topic(['title' => 'Компоненты', 'description' => 'Smart-компоненты и блоки Markdown, доступные на сайте.'] + $page));
+        // The first paragraph counts even when there is a description.
+        $withParagraph = ['title' => 'Справочник', 'description' => 'Точные команды, поля настроек, схемы и коды ошибок.'] + $page;
+        $withParagraph['facts']['blocks'] = ['Справочник нужен для точной проверки команд и полей.'];
+        self::assertFalse($topic($withParagraph));
+        // A title with no word of four letters gives nothing to compare.
+        self::assertFalse($topic(['title' => 'Код', 'description' => 'Блок с подсветкой синтаксиса и кнопкой копирования.'] + $page));
+        // A title the introduction never names is still reported.
+        self::assertTrue($topic(['title' => 'Миграция', 'description' => 'Явный и проверяемый перенос существующего сайта.'] + $page));
+    }
+
+    #[Test]
+    public function everyday_english_words_and_plural_forms_are_not_glossary_terms(): void
+    {
+        $analyzer = new QualityPageAnalyzer;
+        $terms = static function (array $blocks, array $glossary = []) use ($analyzer): ?string {
+            $page = ['locale' => 'ru'] + self::page();
+            $page['facts'] = ['lang' => 'ru', 'text' => str_repeat('Сборка сайта читает файлы ', 40), 'blocks' => $blocks] + $page['facts'];
+            $site = self::site(glossary: $glossary);
+            foreach ($analyzer->analyze($page, $site) as $finding) {
+                if ($finding['code'] === 'QUALITY_TERM_NOT_IN_GLOSSARY') {
+                    return $finding['detail'];
+                }
+            }
+
+            return null;
+        };
+
+        // source, target and output are everyday English words, not terms.
+        self::assertNull($terms(['Поле source задаёт старый адрес, target — новый, output — результат.', 'Снова source, target и output.']));
+        // A plural and its singular are one term: "assets" twice and "asset" once count as one.
+        self::assertSame('Not in the glossary: asset, provider, runtime.', $terms(['Сборка копирует assets, runtime и provider.', 'Ещё раз: assets, asset, runtime, provider.']));
+        // A glossary entry in one form defines the other; a hyphenated entry defines its parts.
+        self::assertNull($terms(['Сборка копирует assets, runtime и provider.', 'Ещё раз: assets, runtime, provider.'], ['asset' => true, 'runtime' => true, 'provider' => true]));
+        self::assertSame(['hash-bound' => true, 'hash' => true, 'bound' => true, 'apply' => true], $analyzer->glossaryWords(['Hash-bound apply']));
     }
 
     #[Test]
@@ -226,7 +285,8 @@ final class QualityChecksTest extends TestCase
     }
 
     /** @param array<string, true> $navigation @param array<string, int> $inbound */
-    private static function site(array $navigation = ['/page/' => true], array $inbound = ['/page/' => 1], bool $search = true): QualitySite
+    /** @param array<string, true>|null $glossary */
+    private static function site(array $navigation = ['/page/' => true], array $inbound = ['/page/' => 1], bool $search = true, ?array $glossary = null): QualitySite
     {
         $files = ['index.html' => true, 'page/index.html' => true, 'other/index.html' => true, 'hidden/index.html' => true, 'lonely/index.html' => true, 'unindexed/index.html' => true];
 
@@ -238,7 +298,7 @@ final class QualityChecksTest extends TestCase
             $search ? ['/page/' => true, '/hidden/' => true, '/lonely/' => true, '/' => true] : null,
             ['/draft/' => true],
             $inbound + ['/hidden/' => 1],
-            ['ru' => ['сборка' => true, 'lock' => true]],
+            ['ru' => $glossary ?? ['сборка' => true, 'lock' => true]],
             (new DocumentationStandard)->placeholderLines(),
         );
     }

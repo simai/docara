@@ -44,6 +44,36 @@ final class QualityPageAnalyzer
         'its', 'has', 'have', 'can', 'will', 'all', 'any', 'one', 'our', 'out', 'per', 'via', 'off', 'yes', 'too',
     ];
 
+    /**
+     * Everyday English words, in their singular form. They have their usual
+     * dictionary meaning in technical text (source, output, title), so they
+     * are not terms a glossary must define; QUALITY_LATIN_HEAVY still counts
+     * them as Latin. Words with a software meaning of their own (runtime,
+     * namespace, asset, slot, hash) are not on this list.
+     */
+    public const COMMON_ENGLISH_WORDS = [
+        'about', 'absolute', 'acceptance', 'access', 'action', 'add', 'address', 'advice', 'after', 'all', 'allowed',
+        'also', 'alt', 'another', 'auto', 'base', 'before', 'between', 'block', 'body', 'brand', 'browser', 'build',
+        'button', 'card', 'change', 'check', 'child', 'children', 'class', 'close', 'code', 'collision', 'color',
+        'column', 'common', 'compare', 'configuration', 'consumer', 'content', 'contract', 'control', 'copy', 'create',
+        'current', 'data', 'date', 'declared', 'default', 'definition', 'delete', 'dependency', 'deployment', 'depth',
+        'description', 'disabled', 'document', 'download', 'each', 'edit', 'element', 'empty', 'enabled', 'engine',
+        'error', 'escape', 'evidence', 'exact', 'example', 'exit', 'external', 'false', 'feature', 'field', 'file',
+        'first', 'folder', 'footer', 'form', 'format', 'fragment', 'full', 'group', 'header', 'help', 'here', 'hidden',
+        'home', 'host', 'identity', 'image', 'include', 'index', 'input', 'internal', 'isolated', 'item', 'key',
+        'label', 'language', 'last', 'level', 'line', 'link', 'list', 'live', 'local', 'location', 'logo', 'main',
+        'major', 'marker', 'max', 'member', 'menu', 'message', 'min', 'minor', 'missing', 'mode', 'more', 'name', 'new',
+        'next', 'none', 'note', 'null', 'number', 'off', 'old', 'only', 'open', 'operation', 'option', 'optional',
+        'order', 'origin', 'other', 'output', 'owner', 'package', 'page', 'pair', 'part', 'path', 'pointer', 'policy',
+        'present', 'presentation', 'previous', 'primary', 'private', 'product', 'project', 'public', 'query', 'quote',
+        'read', 'reference', 'region', 'relative', 'release', 'remove', 'report', 'required', 'requirement', 'result',
+        'root', 'row', 'run', 'same', 'search', 'secondary', 'section', 'security', 'select', 'semantic', 'set', 'show',
+        'signal', 'simple', 'size', 'small', 'source', 'start', 'state', 'status', 'step', 'stop', 'storage',
+        'structure', 'structured', 'style', 'suggestion', 'switch', 'table', 'tag', 'target', 'test', 'text', 'theme',
+        'title', 'top', 'true', 'trust', 'trusted', 'type', 'unknown', 'update', 'validation', 'value', 'version',
+        'view', 'warning', 'width', 'word', 'write',
+    ];
+
     /** Headings that open a "See also" section, in lowercase. */
     public const SEE_ALSO = ['see also', 'related', 'related pages', 'см. также', 'смотрите также', 'см также', 'по теме', 'связанные страницы'];
 
@@ -162,9 +192,12 @@ final class QualityPageAnalyzer
         if ($related === 0 && array_intersect($headings, self::SEE_ALSO) === []) {
             $add('QUALITY_NO_RELATED_LINKS', 'No link to another page and no "See also" section.');
         }
-        // Without a description, the first paragraph introduces the topic.
-        $introduction = $description !== '' ? $description : (string) ($facts['blocks'][0] ?? '');
-        if ($page['tags'] === [] && array_intersect($this->text->stems($page['title']), $this->text->stems($introduction)) === []) {
+        // The description and the first paragraph together introduce the
+        // topic. A title without a word of four letters or more ("Код")
+        // gives nothing to compare, so the check does not apply.
+        $titleWords = $this->text->topicWords($page['title']);
+        $introduction = $this->text->topicWords($description . ' ' . ($facts['blocks'][0] ?? ''));
+        if ($page['tags'] === [] && $titleWords !== [] && ! TextStatistics::sharesTopicWord($titleWords, $introduction)) {
             $add('QUALITY_TOPIC_UNCLEAR', 'No tags, and neither the description nor the first paragraph repeats a word of the title "' . $page['title'] . '".');
         }
 
@@ -287,8 +320,9 @@ final class QualityPageAnalyzer
     }
 
     /**
-     * Lowercase Latin words of a glossary page's terms: the words of its
-     * bold text, definition terms, table headers and first table column.
+     * Lowercase words of a glossary page's terms: the words of its bold
+     * text, definition terms, table headers and first table column, and the
+     * parts of hyphenated words.
      *
      * @param  list<string>  $terms
      * @return array<string, true>
@@ -299,6 +333,12 @@ final class QualityPageAnalyzer
         foreach ($terms as $term) {
             foreach ($this->text->words(mb_strtolower($term)) as $word) {
                 $words[$word] = true;
+                // "hash-bound" also defines "hash", "dry-run" defines "dry" and "run".
+                foreach (preg_split('/[\'’-]/u', $word) ?: [] as $part) {
+                    if ($part !== '') {
+                        $words[$part] = true;
+                    }
+                }
             }
         }
 
@@ -309,9 +349,10 @@ final class QualityPageAnalyzer
      * Latin words of the prose (paragraphs and list items, not tables or
      * headings) that start with a lowercase letter, are at least three
      * letters long, appear at least twice, are not English function words
-     * and are not in the glossary.
+     * or everyday English words, and are not in the glossary.
      * Capitalised words (names such as Docara or GitHub) and acronyms are not
-     * terms for this check.
+     * terms for this check. A plural and its singular ("assets", "asset")
+     * are one term, and a glossary entry in either form defines both.
      *
      * @param  array<string, true>  $glossary
      * @return list<string>
@@ -323,11 +364,20 @@ final class QualityPageAnalyzer
             if (mb_strlen($word) < 3 || ! TextStatistics::isLatinWord($word) || preg_match('/^\p{Ll}/u', $word) !== 1 || in_array($word, self::FUNCTION_WORDS, true)) {
                 continue;
             }
-            $counts[$word] = ($counts[$word] ?? 0) + 1;
+            $singular = TextStatistics::englishSingular($word);
+            if (in_array($singular, self::COMMON_ENGLISH_WORDS, true) || in_array($word, self::COMMON_ENGLISH_WORDS, true)) {
+                continue;
+            }
+            $counts[$singular] = ($counts[$singular] ?? 0) + 1;
+        }
+        $defined = [];
+        foreach (array_keys($glossary) as $entry) {
+            $defined[(string) $entry] = true;
+            $defined[TextStatistics::englishSingular((string) $entry)] = true;
         }
         $terms = [];
         foreach ($counts as $word => $count) {
-            if ($count >= self::GLOSSARY_TERM_USES && ! isset($glossary[(string) $word])) {
+            if ($count >= self::GLOSSARY_TERM_USES && ! isset($defined[(string) $word])) {
                 $terms[(string) $word] = $count;
             }
         }

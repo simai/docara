@@ -81,7 +81,7 @@ final class QualityChecks
         ],
         'QUALITY_TOPIC_UNCLEAR' => [
             'group' => 'findability', 'severity' => self::ADVICE,
-            'checks' => 'The page has no tags, and no word of its title appears in its description.',
+            'checks' => 'The page has no tags, and no word of four letters or more of its title appears, in any form, in its description or first paragraph.',
             'hint' => 'Add tags, or name the topic of the title in the description.',
         ],
         'QUALITY_SENTENCES_LONG' => [
@@ -116,7 +116,7 @@ final class QualityChecks
         ],
         'QUALITY_TERM_NOT_IN_GLOSSARY' => [
             'group' => 'readability', 'severity' => self::ADVICE,
-            'checks' => 'Three or more Latin terms used twice or more are not defined in the site glossary.',
+            'checks' => 'Three or more Latin terms used twice or more are not defined in the site glossary; everyday English words (source, output, title) are not terms.',
             'hint' => 'Define the terms in the glossary page or replace them with plain words.',
         ],
         'QUALITY_IMAGE_ALT_MISSING' => [

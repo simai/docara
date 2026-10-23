@@ -179,8 +179,8 @@ final class HeroEffectTest extends TestCase
 
             $html = (string) file_get_contents($root . '/build_test/ru/components/hero/index.html');
             self::assertStringContainsString(
-                // The page serializer quotes a JSON value with single quotes.
-                '<section data-docara-block="hero" data-sf-effect="aurora-curtain" data-sf-effect-theme="auto" data-sf-effect-settings=\'{"speed":80}\'',
+                // Attribute values are double-quoted on every libxml version.
+                '<section data-docara-block="hero" data-sf-effect="aurora-curtain" data-sf-effect-theme="auto" data-sf-effect-settings="{&quot;speed&quot;:80}"',
                 $html,
             );
             $boot = strpos($html, '<script data-docara-effects>window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.effects={"catalogue":"' . self::CATALOGUE . '"};</script>');

@@ -126,7 +126,7 @@ final readonly class PortableDocumentOutlineBuilder
             $decorated .= $fragment;
         }
 
-        return ['html' => $decorated, 'items' => $items];
+        return ['html' => HtmlAttributeQuoting::normalize($decorated), 'items' => $items];
     }
 
     private function accessibleText(DOMNode $node): string

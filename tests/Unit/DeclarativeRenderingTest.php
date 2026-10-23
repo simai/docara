@@ -52,7 +52,7 @@ MD, 'content/install.md'),
         self::assertStringContainsString('<sf-alert', $artifact->html);
         self::assertStringContainsString('title="Before &lt;install&gt;"', $artifact->html);
         self::assertStringContainsString('supporting-text=', $artifact->html);
-        self::assertStringContainsString('Create "a backup".', $artifact->html);
+        self::assertStringContainsString('Create &quot;a backup&quot;.', $artifact->html);
         self::assertStringNotContainsString('simai.framework.bridge.js', implode(',', $artifact->assets));
         self::assertContains('simai.framework.sf_alert.js', $artifact->assets);
         self::assertSame($plan->canonicalHash(), $artifact->provenance['plan_hash']);

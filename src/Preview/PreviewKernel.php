@@ -13,6 +13,7 @@ use Simai\Docara\File\ProjectFilesystemGuard;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\BuildPurpose;
 use Simai\Docara\PortableSite\BuildReceipts;
+use Simai\Docara\PortableSite\HtmlAttributeQuoting;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Smart\SmartRegistry;
 
@@ -186,7 +187,7 @@ final readonly class PreviewKernel
             );
         }
 
-        return (string) $document->saveHTML($node);
+        return HtmlAttributeQuoting::normalize((string) $document->saveHTML($node));
     }
 
     private function xpathLiteral(string $value): string

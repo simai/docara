@@ -1,3 +1,7 @@
+---
+description: "Стенд: принятые Smart-компоненты SIMAI Framework и сценарии проекта рядом с готовым результатом."
+---
+
 # Полезные Framework и project-сценарии
 
 Это не вторая gallery. Страница связывает принятые artifacts с задачей и реальным production output; support labels проецируются из Atlas.

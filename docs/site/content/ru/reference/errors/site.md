@@ -2,11 +2,11 @@
 description: Коды ошибок настроек сайта — перенаправления, языки и переводы, строки lang.json, поиск, фоновые эффекты, страница 404, адрес сайта, тема, бренд и портал — с причиной и способом исправления.
 ---
 
-# Настройки сайта
+# Ошибки настроек сайта
 
 Эти ошибки относятся к `docara.json`, `redirects.json`, `lang.json` и
 настройкам, которые действуют на весь сайт. Поля описаны в справочнике
-[настроек сайта](/settings/site/).
+[настроек сайта](/ru/reference/docara-json/).
 
 ## Перенаправления
 
@@ -59,7 +59,7 @@ description: Коды ошибок настроек сайта — перена�
 | `LOCALE_PREFIX_REQUIRED` | При `strategy: prefixed` у языка нет префикса. **Что сделать:** Задайте `public_prefix` каждому языку. |
 | `LOCALE_ROOT_REDIRECT_REQUIRED` | При `strategy: prefixed` не указан `root: redirect`. **Что сделать:** Укажите `"root": "redirect"`. |
 | `LOCALE_ROOT_REDIRECT_TARGET_INVALID` | `root: redirect`, но у основного языка пустой префикс. **Что сделать:** Задайте основному языку префикс. |
-| `LOCALE_ROUTING_INVALID`, `LOCALE_ROUTING_STRATEGY_INVALID`, `LOCALE_ROOT_ROUTE_INVALID` | `locale_routing` записан не объектом или содержит неизвестное значение. **Что сделать:** Сверьте поля с [настройками сайта](/settings/site/#языки-и-переводы). |
+| `LOCALE_ROUTING_INVALID`, `LOCALE_ROUTING_STRATEGY_INVALID`, `LOCALE_ROOT_ROUTE_INVALID` | `locale_routing` записан не объектом или содержит неизвестное значение. **Что сделать:** Сверьте поля с [настройками сайта](/ru/reference/docara-json/#языки-и-переводы). |
 | `LEGACY_LOCALE_REDIRECT_COLLISION` | Старый адрес без префикса, на который нужно поставить перенаправление, занят страницей. **Что сделать:** Переименуйте страницу или выключите `legacy_unprefixed_redirects`. |
 | `LEGACY_UNPREFIXED_REDIRECTS_REQUIRE_PREFIXED_ROUTING` | `legacy_unprefixed_redirects: true` без `strategy: prefixed`. **Что сделать:** Включайте эти перенаправления только при `prefixed` или уберите поле. |
 | `LOCALE_MISSING_PAGE_POLICY_INVALID` | `locales.missing_page_policy` не равен `skip` или `error`. **Что сделать:** Укажите `skip` или `error`. |
@@ -73,7 +73,7 @@ description: Коды ошибок настроек сайта — перена�
 ## Строки интерфейса (`lang.json`)
 
 Список всех строк и их значения по умолчанию — на странице
-[Общие подписи локали](/authoring/language-packs/#все-строки-интерфейса).
+[Общие подписи локали](/ru/reference/lang-json/#все-строки-интерфейса).
 
 | Код | Причина и что сделать |
 | --- | --- |
@@ -81,7 +81,7 @@ description: Коды ошибок настроек сайта — перена�
 | `MESSAGE_ID_INVALID`, `MESSAGE_PARAMETER_INVALID` | Внутренняя ошибка запроса строки. **Что сделать:** Сообщите о ней в репозиторий Docara. |
 | `CONTENT_LANGUAGE_INVALID` | `lang.json` не является корректным JSON или не объект. **Что сделать:** Исправьте синтаксис. |
 | `CONTENT_LANGUAGE_SOURCE_INVALID` | `lang.json` — символическая ссылка или лежит вне каталога языка. **Что сделать:** Положите настоящий файл в `content/<язык>/lang.json`. |
-| `TARGET_LANG_NAMESPACE_FORBIDDEN` | В `lang.json` есть неизвестная группа, например `pages`. **Что сделать:** Оставьте только группы интерфейса из списка на странице [Общие подписи локали](/authoring/language-packs/). |
+| `TARGET_LANG_NAMESPACE_FORBIDDEN` | В `lang.json` есть неизвестная группа, например `pages`. **Что сделать:** Оставьте только группы интерфейса из списка на странице [Общие подписи локали](/ru/reference/lang-json/). |
 | `TARGET_LANG_VALUE_INVALID` | Строка пустая, длиннее 280 символов, многострочная или содержит HTML. **Что сделать:** Сократите строку и уберите теги. |
 | `READER_PREFERENCES_COPY_MISSING` | Нет подписи для настройки в панели читателя. **Что сделать:** Добавьте строки группы `reader` в `lang.json` или запасной язык. |
 
@@ -192,7 +192,7 @@ Docara создаёт `404.html` в корне сайта, если `not_found.e
 | `READER_PREFERENCES_FIELD_DUPLICATE`, `READER_PREFERENCES_GROUP_DUPLICATE` | Настройка или группа указана дважды. **Что сделать:** Удалите повтор. |
 | `READER_PREFERENCES_FIELD_GROUP_MISMATCH` | Настройка стоит не в своей группе. **Что сделать:** Перенесите её в группу `appearance`. |
 | `READER_PREFERENCES_FIELD_HIDDEN_CONFLICT` | Настройка одновременно в группе и в `hidden_fields`. **Что сделать:** Оставьте её в одном месте. |
-| `READER_PREFERENCES_GROUP_INVALID`, `READER_PREFERENCES_HIDDEN_FIELDS_INVALID`, `READER_PREFERENCES_VIEW_INVALID` | Группа, список скрытых настроек или `view` записаны неверно. **Что сделать:** Сверьте `reader_preferences` с [настройками сайта](/settings/site/#меню-чтение-и-поиск). |
+| `READER_PREFERENCES_GROUP_INVALID`, `READER_PREFERENCES_HIDDEN_FIELDS_INVALID`, `READER_PREFERENCES_VIEW_INVALID` | Группа, список скрытых настроек или `view` записаны неверно. **Что сделать:** Сверьте `reader_preferences` с [настройками сайта](/ru/reference/docara-json/#меню-чтение-и-поиск). |
 | `READER_PREFERENCES_AUTHORED_VALUE_INVALID` | Значение по умолчанию для настройки читателя не из списка допустимых. **Что сделать:** Укажите одно из значений этой настройки. |
 
 ## Сборка для портала

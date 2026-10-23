@@ -22,8 +22,15 @@ unknown fields, неверные типы и unsafe paths.
 | `docara.documentation_source.v1` | Source-owned JSON или встроенный provider | Нейтральный публичный контракт документируемых сущностей |
 | `docara.documentation_lock.v1` | `documentation.lock.json` | Принятые связи страниц, примеров и отпечатков исходного API |
 | `docara.documentation_status.v1` | `build_<environment>.docara/documentation-status.json` | Производный отчёт актуальности документации по исходному коду |
+| `docara.authoring.v1` | `docara.authoring.json` | [Профили страниц](/ru/authoring/page-profiles/) для `docara validate page` |
 
-## Исполняемые примеры schema
+Ещё один файл проекта не имеет схемы Docara: `page-weight.json` задаёт
+бюджеты веса страниц для скрипта `verify-page-weight.php` — см.
+[«Проверка сборки»](/ru/build/verify/). Формат `redirects.json` описан в
+разделе [«Перенаправления»](/ru/authoring/redirects/), `lang.json` — в
+справочнике [«Подписи интерфейса lang.json»](/ru/reference/lang-json/).
+
+## Проверяемые примеры
 
 Valid minimal site:
 
@@ -50,92 +57,22 @@ Invalid site с unknown field:
 
 Invalid-пример документирует ожидаемую ошибку; не копируйте его в проект.
 
-## Scope
+## Поля и уровни
 
-| Поле | Site | Section | Page |
-| --- | :---: | :---: | :---: |
-| `preset`, `title`, `locale` | ✓ | ✓ | ✓ |
-| `branding`, `layout`, `settings` | ✓ | ✓ | ✓ |
-| `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
-| `reader_preferences` | ✓ | — | — |
-| `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales`, `locale_routing`, `translation_tracking`, `documentation_tracking` | ✓ | — | — |
-| `documentation_version`, `redirects_file`, `not_found` | ✓ | — | — |
-| `description`, `slug` | — | — | ✓ |
+Какие поля можно задать на уровне сайта, раздела и страницы, как они
+наследуются и какие у них встроенные значения, описано в разделе
+[«Сайт, раздел и страница»](/ru/settings/levels-and-inheritance/). Полные
+таблицы полей с типами и правилами проверки — в справочнике
+[docara.json](/ru/reference/docara-json/) и
+[section.json и page.json](/ru/reference/section-and-page/).
 
-`schema` обязателен. Optional `version`, если присутствует, равен `1` и
-обозначает версию schema, а не версию документации.
+Ветка оформления должна содержать хотя бы одно поле: `{}` и `[]`
+отклоняются. Явная очистка записывается как `{"$reset": true}`; сброс можно
+совместить с новыми ключами этой же ветки. Значения заготовки, например
+включённый поиск, приходят из поставляемого `docara.json`, а не из скрытого
+значения по умолчанию.
 
-## Presentation branches
-
-- `branding`: непустые title/label, `mode` (`full`, `compact`, `logo`, `text`),
-  `size` (`small`, `medium`, `large`) и относительные пути brand assets;
-- `layout.key`: registered value `docara.docs`;
-- `layout.container.max`: integer `1..8`, mapped to SIMAI Framework
-  `max-container-1..8`;
-- `layout.regions.<name>.enabled`: boolean;
-- `layout.regions.<name>.sections`: ordered registered
-  Section -> Block -> Smart calls;
-- `settings.theme`: `system`, `light`, `dark`;
-- `settings.modal_blur`: `none`, `small`, `medium`, `large`;
-- `settings.ui_radius`: `default`, `medium`, `large`;
-- `reader_preferences.enabled`: boolean;
-- `reader_preferences.view`: `side-panel`;
-- `reader_preferences.hidden_fields`: необязательный список встроенных полей,
-  которые не нужно показывать;
-- `reader_preferences.groups`: непустой список зарегистрированных групп и
-  полей; runtime дополнительно проверяет неизвестные ID, повторы, принадлежность
-  группе и безопасный effect contract;
-- `navigation.hidden`: boolean;
-- `navigation.order`: integer `0..2147483647`;
-- `search.enabled`, `search.indexed`: boolean;
-- `reading.breadcrumbs`, `reading.toc`, `reading.previous_next`: boolean;
-- `reading.mobile_toc`: `auto`, `always`, `never`;
-- `reading.toc_depth`: integer `2..6`.
-
-Branch должен содержать хотя бы одно поле. `{}` и `[]` отклоняются. Явная
-очистка записывается как `{"$reset": true}`; reset можно совместить с новыми
-ключами этой же ветки.
-
-## Defaults
-
-Resolver устанавливает:
-
-```json
-{
-  "content_root": "content",
-  "layout": {
-    "key": "docara.docs",
-    "regions": {
-      "header": { "enabled": true },
-      "sidebar": { "enabled": true },
-      "main": { "enabled": true },
-      "outline": { "enabled": true },
-      "footer": { "enabled": false }
-    }
-  },
-  "search": {
-    "enabled": false,
-    "indexed": true
-  },
-  "reading": {
-    "breadcrumbs": true,
-    "toc": true,
-    "mobile_toc": "auto",
-    "toc_depth": 3,
-    "previous_next": true
-  }
-}
-```
-
-Структурные defaults областей восстанавливаются после branch reset. `main`
-является обязательной областью и не может быть выключен. Допустимые
-section/block/Smart IDs и фиксированные data bindings дополнительно
-проверяются runtime resolver.
-
-Значения starter, например включённый search UI, приходят из поставляемого
-`docara.json`, а не из скрытого default.
-
-## Effective component catalog
+## Каталог компонентов сборки
 
 Machine-readable catalog объединяет native Markdown, typed Docara и
 Smart-компоненты, допущенные exact Framework lock. Requirement records
@@ -149,7 +86,39 @@ examples принадлежат source records/fixtures и показывают�
 `_docara/component-catalog.json` является output. Автор не редактирует его и не
 может через него, Markdown или presentation JSON расширить Smart surface.
 
-## Runtime checks beyond schema
+## План страницы после сборки
+
+Для каждой страницы Docara создаёт объяснимый план (resolved page plan) до записи HTML.
+
+Файл `build_<environment>.docara/resolved-page-plans.json` (квитанция сборки
+рядом с результатом, а не внутри него) содержит массив страниц со следующими
+данными:
+
+| Поле | Смысл |
+| --- | --- |
+| `resolved_page_plan.configuration` | Итог после наследования |
+| `trace` | Входные файлы, роль, schema и SHA-256 |
+| `provenance` | Какой файл установил каждое значение |
+| `canonical_hash` | Хэш канонического плана |
+| `component_runtime` | Вызовы компонентов и asset plan |
+| `output`, `url` | Физический и публичный маршруты |
+| `declarative.plan.schema` | Версия полного `docara.resolved_render_plan.v2` |
+| `declarative.plan.layout.view_tree` | Разрешённый безопасный каркас макета |
+| `declarative.plan.regions.*[].slots` | Именованные слоты экземпляра Section |
+| `declarative.plan.regions.*[].blocks` | Block calls со stable ID, slot и Smart |
+| `declarative.plan.diagnostics` | Результат композиции и View Tree validation |
+
+План не является вторым источником для редактирования. Это генерируемый
+диагностический и интеграционный артефакт. Изменяйте Markdown или JSON, затем
+пересобирайте сайт.
+
+Итоговые поля `/reading/breadcrumbs`, `/reading/toc`, `/reading/toc_depth` и
+`/reading/previous_next` находятся в `configuration`, а их источник — в
+`provenance`. Сами вычисленные хлебные крошки, outline и соседние ссылки в план
+не записываются как редактируемые настройки: они детерминированно выводятся из
+контента и канонической топологии при сборке.
+
+## Проверки сверх схемы
 
 Schema подтверждает форму, но builder дополнительно проверяет:
 

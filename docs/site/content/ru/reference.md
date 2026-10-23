@@ -1,16 +1,21 @@
 # Справочник
 
-Этот раздел нужен для точной проверки полей и поведения. Если текст расходится
-с JSON Schema или текущим CLI, источником истины остаётся исполняемый контракт.
+Этот раздел нужен для точной проверки команд, полей и сообщений. Объяснение
+каждой возможности находится в руководствах, а справочник ссылается на них.
+Если текст расходится с JSON Schema или текущим CLI, источником истины остаётся
+исполняемый контракт.
 
 | Тема | Страница |
 | --- | --- |
-| Команды | [CLI](/reference/cli/) |
-| Формат проекта | [Схемы JSON](/reference/schemas/) |
-| Объяснение результата | [Resolved page plan](/reference/resolved-plan/) |
-| Версии ассетов | [Framework lock](/reference/framework-lock/) |
-| Коды ошибок | [Причина и исправление](/reference/errors/) |
-| Ограничения | [Безопасность](/reference/security-and-errors/) |
+| Команды | [Команды CLI](/ru/reference/cli/) |
+| Настройки сайта | [docara.json](/ru/reference/docara-json/) |
+| Настройки раздела и страницы | [section.json и page.json](/ru/reference/section-and-page/) |
+| Подписи интерфейса | [lang.json](/ru/reference/lang-json/) |
+| Версия SIMAI Framework | [Файл закрепления Framework](/ru/reference/framework-lock/) |
+| Форматы файлов и квитанции сборки | [Схемы JSON](/ru/reference/schemas/) |
+| Сообщения об ошибках | [Коды ошибок](/ru/reference/errors/) |
+| Ограничения | [Безопасность](/ru/reference/security-and-errors/) |
+| Термины | [Словарь терминов](/ru/reference/glossary/) |
 
 Текущая версия формата строго отклоняет неизвестные поля, опасные пути и
 движущиеся ссылки вроде `main` или `latest`.

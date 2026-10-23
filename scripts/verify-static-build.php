@@ -3132,12 +3132,18 @@ if ($manifestError === null) {
             $documentIds = [];
             $previousIdentity = null;
             foreach ($searchIndex['documents'] as $index => $document) {
+                // `tags` (front matter tags) is written only for a tagged page.
+                $searchDocumentKeys = ['id', 'url', 'locale', 'title', 'description', 'trail', 'headings', 'text'];
                 if (! is_array($document)
                     || array_is_list($document)
-                    || ! docaraExactKeys(
-                        $document,
-                        ['id', 'url', 'locale', 'title', 'description', 'trail', 'headings', 'text'],
-                    )
+                    || ! (docaraExactKeys($document, $searchDocumentKeys)
+                        || docaraExactKeys($document, [...$searchDocumentKeys, 'tags']))
+                    || (array_key_exists('tags', $document) && (
+                        ! is_array($document['tags'])
+                        || ! array_is_list($document['tags'])
+                        || $document['tags'] === []
+                        || array_filter($document['tags'], static fn (mixed $tag): bool => is_string($tag) && $tag !== '') !== $document['tags']
+                    ))
                     || ! is_string($document['id'] ?? null)
                     || preg_match('/\A[a-f0-9]{64}\z/D', $document['id']) !== 1
                     || ! is_string($document['url'] ?? null)

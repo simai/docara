@@ -148,6 +148,36 @@ All notable changes to Docara are recorded here. The format follows
   `CONTENT_COMPONENT_ICON_UNKNOWN`, naming the file and line. Names in HTML
   examples and Smart component props are not checked.
 
+- **Two quality checks report fewer false findings.**
+  - `QUALITY_TOPIC_UNCLEAR` compares the title with the description and the
+    first paragraph together (before, the first paragraph counted only when
+    there was no description). It splits hyphenated words
+    ("Smart-компоненты"), ignores words shorter than four letters and
+    matches word forms by a light prefix rule: two words match when they
+    share five letters, or four letters with at most three more in each
+    ("ошибки" and "ошибок"). A title with no word of four letters or more
+    ("Код") is not reported.
+  - `QUALITY_TERM_NOT_IN_GLOSSARY` no longer counts everyday English words
+    such as source, target, output or title: they keep their dictionary
+    meaning and are not terms, while `QUALITY_LATIN_HEAVY` still counts
+    them. A plural and its singular ("assets", "asset") are one term, and a
+    glossary entry in either form, or a hyphenated entry such as
+    "hash-bound", defines them.
+  - The score formula is unchanged. On Docara's own docs the two checks
+    went from 29 and 23 pages to 23 and 15 before any text was changed.
+- **Docara's own documentation scores 100 instead of 93.**
+  - Every page has a description that says what the reader gets.
+  - The short component pages (code from file, isolated HTML, kbd, logos,
+    math, media) list their parameters, defaults, limits and errors.
+  - The glossary defines asset, runtime, revision, artifact, admission,
+    props and slots, namespace and provider, renderer, route, layout,
+    ownership, overlay, canonical, production and staging, as a list.
+  - Nine developer and reference pages use Russian words where a natural
+    one exists; the composition guide is still mostly English.
+  - The hidden example stands under `content/ru/examples/` are left out of
+    the score with `quality.exclude`: they are hidden from the menu and the
+    search on purpose, so scoring them only reported that intent.
+
 ### Fixed
 
 - **Builds no longer depend on the libxml version.** libxml before 2.14

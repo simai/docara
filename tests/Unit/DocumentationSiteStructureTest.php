@@ -79,13 +79,13 @@ final class DocumentationSiteStructureTest extends TestCase
     public function consolidated_component_model_exposes_container_and_framework_boundaries(): void
     {
         $model = (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/content/ru/start/component-model.md');
-        foreach (['children', 'slots', 'min_children', 'max_children', 'order'] as $field) {
+        foreach (['вложенные блоки', 'слоты', 'min_children', 'max_children', 'порядок'] as $field) {
             self::assertStringContainsString($field, $model);
         }
         self::assertStringContainsString('ui.dropdown', $model);
         self::assertStringContainsString('ui.list-item', $model);
-        self::assertStringContainsString('exact-pinned', $model);
-        self::assertStringContainsString('hash-bound plan', $model);
+        self::assertStringContainsString('точной закреплённой версии', $model);
+        self::assertStringContainsString('хеши входных файлов', $model);
         self::assertStringContainsString('MARKDOWN_RAW_HTML_FORBIDDEN', $model);
     }
 
@@ -240,10 +240,10 @@ final class DocumentationSiteStructureTest extends TestCase
         $root = dirname(__DIR__, 2) . '/docs/site/content/ru';
         // The agent journey is a part of the SDK page.
         $journey = (string) file_get_contents($root . '/development/developer-sdk.md');
-        foreach (['discover', 'plan', 'preview', 'dry-run', 'Hash-bound apply', 'DesignAtlasService', 'ScaffoldService', 'SDK_WRITE_PATH_UNSAFE', '--allow-writes'] as $marker) {
+        foreach (['Найдите возможность', 'Составьте план', 'preview', 'dry-run', 'hash-bound apply', 'DesignAtlasService', 'ScaffoldService', 'SDK_WRITE_PATH_UNSAFE', '--allow-writes'] as $marker) {
             self::assertStringContainsStringIgnoringCase($marker, $journey);
         }
-        foreach (['traversal', 'symlink/hardlink', 'engine/lock/generated/external root'] as $negative) {
+        foreach (['выход за каталог', 'символические и жёсткие ссылки', 'запись в файлы движка, lock, результаты сборки или'] as $negative) {
             self::assertStringContainsString($negative, $journey);
         }
         $demos = (string) file_get_contents($root . '/examples/extensions.md');

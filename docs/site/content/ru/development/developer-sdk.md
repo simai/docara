@@ -73,7 +73,7 @@ docara test smart ui.dropdown --page=/ru/project-demos/ --json
 `PreviewKernel/PageBuilder`, что и рабочая сборка, публикуется отдельно и не
 проходит проверку рабочей сборки.
 
-### 3. Примените план по хешу
+### 3. Примените план по хешу (hash-bound apply)
 
 ```bash
 docara scaffold --apply="$PLAN_SHA256" --json

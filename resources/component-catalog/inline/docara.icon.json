@@ -13,7 +13,7 @@
       {"name": "weight", "type": "enum", "required": false, "default": "regular", "values": ["light", "regular", "medium"]},
       {"name": "filled", "type": "boolean", "required": false, "default": false},
       {"name": "container", "type": "enum", "required": false, "default": "none", "values": ["none", "square", "circle"]},
-      {"name": "variant", "type": "enum", "required": false, "default": "plain", "values": ["plain", "main", "tonal", "outline"]},
+      {"name": "variant", "type": "enum", "required": false, "default": "auto", "values": ["auto", "plain", "main", "tonal", "outline"]},
       {"name": "scheme", "type": "enum", "required": false, "default": "primary", "values": ["primary", "secondary", "tertiary", "neutral", "info", "success", "warning", "danger", "on-surface"]},
       {"name": "label", "type": "string", "required": false}
     ]

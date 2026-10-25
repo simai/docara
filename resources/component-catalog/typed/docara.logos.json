@@ -13,7 +13,7 @@
             "show_ecosystem_members"
         ],
     "parameters": [
-      {"name": "tone", "type": "enum", "required": false, "default": "normal", "values": ["normal", "muted"]}
+      {"name": "tone", "type": "enum", "required": false, "default": "default", "values": ["default", "muted"], "deprecated_values": {"normal": "default"}}
     ]
     },
     "states": [

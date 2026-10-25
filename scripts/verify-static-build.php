@@ -894,7 +894,7 @@ function docaraCatalogEntryContractError(
         if (array_diff(['name', 'type', 'required'], $parameterKeys) !== []
             || array_diff(
                 $parameterKeys,
-                ['name', 'type', 'required', 'values', 'default', 'validation', 'mirrors', 'available_when'],
+                ['name', 'type', 'required', 'values', 'default', 'validation', 'mirrors', 'available_when', 'deprecated_names', 'deprecated_values'],
             ) !== []
             || ! is_string($parameter['name'])
             || preg_match('/\A[a-z][a-z0-9_-]*\z/D', $parameter['name']) !== 1
@@ -906,6 +906,20 @@ function docaraCatalogEntryContractError(
                 && ! docaraCatalogParameterValidation($parameter['validation'], (string) $parameter['type']))
             || (isset($parameter['available_when'])
                 && ! docaraCatalogCondition($parameter['available_when']))
+            || (isset($parameter['deprecated_names'])
+                && (! docaraCatalogStringList($parameter['deprecated_names'], true)
+                    || array_filter(
+                        $parameter['deprecated_names'],
+                        static fn (string $name): bool => preg_match('/\A[a-z][a-z0-9_-]*\z/D', $name) !== 1,
+                    ) !== []))
+            || (isset($parameter['deprecated_values'])
+                && (! is_array($parameter['deprecated_values'])
+                    || $parameter['deprecated_values'] === []
+                    || array_is_list($parameter['deprecated_values'])
+                    || array_filter(
+                        $parameter['deprecated_values'],
+                        static fn (mixed $value): bool => ! docaraCatalogScalar($value),
+                    ) !== []))
             || (isset($parameter['mirrors'])
                 && (! docaraCatalogStringList($parameter['mirrors'], true)
                     || array_filter(

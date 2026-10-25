@@ -13,7 +13,7 @@
             "primary_landing_action"
         ],
     "parameters": [
-      {"name": "variant", "type": "enum", "required": false, "default": "split", "values": ["split", "centered", "compact"]},
+      {"name": "layout", "type": "enum", "required": false, "default": "split", "values": ["split", "centered", "compact"], "deprecated_names": ["variant"]},
       {"name": "padding", "type": "enum", "required": false, "values": ["lg", "xl", "2xl"]},
       {"name": "media", "type": "enum", "required": false, "default": "auto", "values": ["auto", "side", "background", "none"]},
       {"name": "background_fit", "type": "enum", "required": false, "default": "cover", "values": ["cover", "contain", "auto"], "available_when": {"media": "background"}},

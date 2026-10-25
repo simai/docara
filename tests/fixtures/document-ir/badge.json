@@ -62,7 +62,7 @@
                     "props": {
                         "scheme": "primary",
                         "size": "1",
-                        "type": "tonal"
+                        "variant": "tonal"
                     },
                     "source": {
                         "column": 1,
@@ -146,7 +146,7 @@
                     "props": {
                         "scheme": "primary",
                         "size": "1",
-                        "type": "main"
+                        "variant": "main"
                     },
                     "source": {
                         "column": 1,
@@ -163,7 +163,7 @@
                     "props": {
                         "scheme": "primary",
                         "size": "1",
-                        "type": "tonal"
+                        "variant": "tonal"
                     },
                     "source": {
                         "column": 1,
@@ -180,7 +180,7 @@
                     "props": {
                         "scheme": "primary",
                         "size": "1",
-                        "type": "outline"
+                        "variant": "outline"
                     },
                     "source": {
                         "column": 1,
@@ -392,7 +392,7 @@
                     "props": {
                         "scheme": "on-surface",
                         "size": "1",
-                        "type": "main"
+                        "variant": "main"
                     },
                     "source": {
                         "column": 1,

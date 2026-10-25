@@ -13,7 +13,7 @@
         "parameters": [
             {"name": "author", "type": "string", "required": false},
             {"name": "source", "type": "string", "required": false},
-            {"name": "url", "type": "string", "required": false}
+            {"name": "href", "type": "string", "required": false, "deprecated_names": ["url"]}
         ]
     },
     "states": [],

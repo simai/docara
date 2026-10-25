@@ -9,7 +9,7 @@
     "jobs": ["link_as_action"],
     "parameters": [
       {"name": "href", "type": "string", "required": true},
-      {"name": "type", "type": "enum", "required": false, "default": "default", "values": ["default", "tonal", "outline", "link"]},
+      {"name": "variant", "type": "enum", "required": false, "default": "default", "values": ["default", "tonal", "outline", "link"], "deprecated_names": ["type"]},
       {"name": "scheme", "type": "enum", "required": false, "default": "primary", "values": ["primary", "secondary", "on-surface"]},
       {"name": "size", "type": "enum", "required": false, "default": "1", "values": ["1/2", "1", "2"]},
       {"name": "icon", "type": "string", "required": false}

@@ -20,6 +20,7 @@ use League\CommonMark\Node\Inline\Text;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Util\RegexHelper;
+use Simai\Docara\ComponentCatalog\ComponentParameterModel;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\ComponentCatalog\TypedRendererId;
 use Simai\Docara\Declarative\Rendering\SmartRenderer;
@@ -40,9 +41,6 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final class PortableMarkdownRenderer
 {
-    /** The hero's background effect attributes (SIMAI Framework SF.Effects). */
-    private const HERO_EFFECT_ATTRIBUTES = ['effect', 'effect_theme', 'effect_settings'];
-
     private MarkdownConverter $converter;
 
     private CommonMarkInspector $inspector;
@@ -54,6 +52,8 @@ final class PortableMarkdownRenderer
     private InlineComponentRenderer $inlineComponents;
 
     private AuthoringAttributeParser $attributes;
+
+    private ComponentParameterModel $parameters;
 
     private PortableExampleRenderer $examples;
 
@@ -82,6 +82,9 @@ final class PortableMarkdownRenderer
     ) {
         $profile ??= PortableMarkdownProfile::bundled();
         $this->definitions = $definitions ?? TypedComponentDefinitionRepository::bundled();
+        $this->parameters = $definitions === null
+            ? ComponentParameterModel::bundled()
+            : ComponentParameterModel::bundled()->withTypedDefinitions($this->definitions->all());
         $this->components = $components ?? SmartComponentGateway::content();
         $this->converter = new MarkdownConverter($profile->environment());
         $this->inspector = new CommonMarkInspector(
@@ -94,7 +97,7 @@ final class PortableMarkdownRenderer
         $this->surfaces = $surfaces ?? new SurfacePresentation;
         $this->smartRenderer = $smartRenderer ?? new SmartRenderer;
         $this->inlineComponents = new InlineComponentRenderer(components: $this->components);
-        $this->attributes = new AuthoringAttributeParser;
+        $this->attributes = new AuthoringAttributeParser($this->parameters);
         $this->examples = new PortableExampleRenderer;
         $this->projectExamples = $projectExamples;
         $this->examplePreviewPolicy = $examplePreviewPolicy ?? new ExamplePreviewPolicy;
@@ -558,8 +561,8 @@ final class PortableMarkdownRenderer
     /** @param array<string,string> $attributes */
     private function renderSteps(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['view', 'current'], 'steps');
-        $view = $this->attributeOneOf($attributes['view'] ?? 'timeline', ['list', 'timeline'], 'steps', 'view');
+        $this->assertAttributes($attributes, 'steps');
+        $view = $this->catalogueChoice($attributes['layout'] ?? 'timeline', 'steps', 'layout');
         $current = max(1, (int) ($attributes['current'] ?? '1'));
         $root = $rendered->getDocument()->firstChild();
         if (! $root instanceof ListBlock
@@ -602,9 +605,9 @@ final class PortableMarkdownRenderer
     /** @param array<string,string> $attributes */
     private function renderDetails(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['open', 'view'], 'details');
+        $this->assertAttributes($attributes, 'details');
         $open = $this->attributeBoolean($attributes['open'] ?? 'false', 'details', 'open');
-        $view = $this->attributeOneOf($attributes['view'] ?? 'surface', ['surface', 'lines'], 'details', 'view');
+        $view = $this->catalogueChoice($attributes['layout'] ?? 'surface', 'details', 'layout');
         $nodes = iterator_to_array($rendered->getDocument()->children());
         $heading = $nodes[0] ?? null;
         if (! $heading instanceof Heading || ! in_array($heading->getLevel(), [2, 3, 4], true)) {
@@ -640,8 +643,8 @@ final class PortableMarkdownRenderer
     /** @param array<string,string> $attributes */
     private function renderDownload(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['name', 'format', 'size', 'checksum', 'action'], 'download');
-        $action = $this->attributeOneOf($attributes['action'] ?? 'download', ['download', 'open'], 'download', 'action');
+        $this->assertAttributes($attributes, 'download');
+        $action = $this->catalogueChoice($attributes['action'] ?? 'download', 'download', 'action');
         $content = trim((string) $rendered);
         if (preg_match('/^<p><a(?<attributes>[^>]*)>(?<label>.+)<\/a><\/p>$/su', $content, $match) !== 1) {
             throw new PortableConfigurationException(
@@ -650,10 +653,10 @@ final class PortableMarkdownRenderer
             );
         }
 
-        $name = trim($attributes['name'] ?? '');
+        $name = trim($attributes['title'] ?? '');
         $meta = array_values(array_filter([
             trim($attributes['format'] ?? ''),
-            trim($attributes['size'] ?? ''),
+            trim($attributes['file_size'] ?? ''),
             trim($attributes['checksum'] ?? ''),
         ], static fn (string $value): bool => $value !== ''));
         $icon = $action === 'open' ? 'open_in_new' : 'download';
@@ -685,7 +688,7 @@ final class PortableMarkdownRenderer
         ?string $sourceFile,
         array $exampleSettings = [],
     ): string {
-        $this->assertAttributes($attributes, ['id', 'label', 'preview', 'fullscreen', 'wrap'], 'example');
+        $this->assertAttributes($attributes, 'example');
         $defaultLabel = ! array_key_exists('label', $attributes);
         $label = trim($attributes['label'] ?? 'Example');
         if ($label === '') {
@@ -852,7 +855,7 @@ final class PortableMarkdownRenderer
                 continue;
             }
             $attributes = $this->attributes->parse((string) ($directive['attributes'] ?? ''), 'example');
-            $this->assertAttributes($attributes, ['id', 'label', 'preview', 'fullscreen', 'wrap'], 'example');
+            $this->assertAttributes($attributes, 'example');
             if (array_key_exists('fullscreen', $attributes)) {
                 $this->attributeBoolean($attributes['fullscreen'], 'example', 'fullscreen');
             }
@@ -1211,16 +1214,15 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderEmbed(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['provider', 'id', 'ratio', 'title', 'consent'], 'embed');
-        $ratioInput = str_replace('x', '/', strtolower($attributes['ratio'] ?? '16/9'));
-        $ratio = $this->attributeOneOf($ratioInput, ['1/1', '4/3', '16/9', '21/9'], 'embed', 'ratio');
-        $provider = $this->attributeOneOf($attributes['provider'] ?? 'generic', ['generic', 'video', 'map', 'external'], 'embed', 'provider');
-        $consent = $this->attributeOneOf($attributes['consent'] ?? 'required', ['required', 'none'], 'embed', 'consent');
+        $this->assertAttributes($attributes, 'embed');
+        $ratio = $this->catalogueChoice($attributes['ratio'] ?? '16/9', 'embed', 'ratio');
+        $provider = $this->catalogueChoice($attributes['provider'] ?? 'generic', 'embed', 'provider');
+        $consent = $this->catalogueChoice($attributes['consent'] ?? 'required', 'embed', 'consent');
         $id = trim($attributes['id'] ?? '');
         if ($id !== '' && preg_match('/\A[A-Za-z0-9._-]{1,80}\z/D', $id) !== 1) {
             throw new PortableConfigurationException('MARKDOWN_EMBED_ID_INVALID', 'An embed id contains unsupported characters.');
         }
-        $title = trim($attributes['title'] ?? 'Embedded content');
+        $title = trim($attributes['label'] ?? 'Embedded content');
         $content = trim((string) $rendered);
         if (preg_match('/^<p><a href="(?<url>[^"]+)"[^>]*>(?<label>.*)<\/a><\/p>$/su', $content, $match) !== 1) {
             throw new PortableConfigurationException(
@@ -1257,13 +1259,8 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderInternalPreview(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['size', 'title'], 'internal_preview');
-        $size = $this->attributeOneOf(
-            $attributes['size'] ?? 'normal',
-            ['compact', 'normal', 'tall'],
-            'internal_preview',
-            'size',
-        );
+        $this->assertAttributes($attributes, 'internal_preview');
+        $size = $this->catalogueChoice($attributes['size'] ?? 'normal', 'internal_preview', 'size');
         // Without a title the frame gets the English default and a marker; the
         // builder replaces both with the page language's string.
         $defaultTitle = ! array_key_exists('title', $attributes);
@@ -1428,7 +1425,7 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderCode(array $attributes, ?string $sourceRoot, ?string $sourceFile, array $codeSettings = []): string
     {
-        $this->assertAttributes($attributes, ['src', 'lang', 'lines', 'title'], 'code');
+        $this->assertAttributes($attributes, 'code');
         $src = trim($attributes['src'] ?? '');
         if ($src === '' || $sourceRoot === null || $sourceFile === null) {
             throw new PortableConfigurationException(
@@ -1487,7 +1484,7 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderBacklinks(array $attributes): string
     {
-        $this->assertAttributes($attributes, ['limit'], 'backlinks');
+        $this->assertAttributes($attributes, 'backlinks');
         $limit = (int) ($attributes['limit'] ?? '5');
         if ($limit < 1 || $limit > 50) {
             throw new PortableConfigurationException('MARKDOWN_BACKLINKS_LIMIT_INVALID', 'Backlinks limit must be between 1 and 50.');
@@ -1500,7 +1497,7 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderComponentIndex(array $attributes): string
     {
-        $this->assertAttributes($attributes, [], 'component_index');
+        $this->assertAttributes($attributes, 'component_index');
 
         return '<nav data-docara-block="component-index" data-docara-component-index'
             . ' class="m-bottom-1" aria-label="Component index"></nav>';
@@ -1509,7 +1506,7 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderAtlasIndex(array $attributes): string
     {
-        $this->assertAttributes($attributes, ['kind', 'authoring', 'support', 'status', 'namespace', 'owner', 'origin', 'provider', 'ids'], 'atlas_index');
+        $this->assertAttributes($attributes, 'atlas_index');
         $serialized = '';
         foreach (['kind', 'authoring', 'support', 'status', 'namespace', 'owner', 'origin', 'provider', 'ids'] as $name) {
             $value = trim($attributes[$name] ?? '');
@@ -1532,19 +1529,9 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderSchemaReference(array $attributes): string
     {
-        $this->assertAttributes($attributes, ['schema', 'scope', 'fields'], 'schema_reference');
-        $schema = $this->attributeOneOf(
-            $attributes['schema'] ?? '',
-            ['site', 'section', 'page', 'presentation', 'framework-lock'],
-            'schema_reference',
-            'schema',
-        );
-        $scope = $this->attributeOneOf(
-            $attributes['scope'] ?? '',
-            ['site', 'section', 'page', 'shared', 'lock'],
-            'schema_reference',
-            'scope',
-        );
+        $this->assertAttributes($attributes, 'schema_reference');
+        $schema = $this->catalogueChoice($attributes['schema'] ?? '', 'schema_reference', 'schema');
+        $scope = $this->catalogueChoice($attributes['scope'] ?? '', 'schema_reference', 'scope');
 
         // fields=reading,search keeps the rows of those top-level fields, so
         // a long settings page can show its table in titled parts.
@@ -1573,9 +1560,9 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderFigure(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['ratio', 'fit'], 'figure');
-        $ratio = $this->attributeOneOf($attributes['ratio'] ?? 'auto', ['auto', '1/1', '4/3', '3/2', '16/9', '21/9'], 'figure', 'ratio');
-        $fit = $this->attributeOneOf($attributes['fit'] ?? 'cover', ['cover', 'contain'], 'figure', 'fit');
+        $this->assertAttributes($attributes, 'figure');
+        $ratio = $this->catalogueChoice($attributes['ratio'] ?? 'auto', 'figure', 'ratio');
+        $fit = $this->catalogueChoice($attributes['fit'] ?? 'cover', 'figure', 'fit');
         $content = trim((string) $rendered);
         if (preg_match('/^<p><img(?<image>[^>]*)\s*\/><\/p>(?:\s*<p>(?<caption>.*?)<\/p>)?$/su', $content, $match) !== 1) {
             throw new PortableConfigurationException(
@@ -1597,9 +1584,9 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderGrid(string $markdown, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['columns', 'gap'], 'grid');
-        $columns = $this->attributeOneOf($attributes['columns'] ?? '3', ['1', '2', '3', '4'], 'grid', 'columns');
-        $gap = $this->attributeOneOf($attributes['gap'] ?? '2', ['0', '1', '2', '3', '4'], 'grid', 'gap');
+        $this->assertAttributes($attributes, 'grid');
+        $columns = $this->catalogueChoice($attributes['columns'] ?? '3', 'grid', 'columns');
+        $gap = $this->catalogueChoice($attributes['gap'] ?? '2', 'grid', 'gap');
         $inspection = $this->inspectDirectives($markdown);
         $remainingLines = preg_split('/\r\n|\n|\r/u', $markdown);
         if (! is_array($remainingLines)) {
@@ -1628,9 +1615,9 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderGridContent(string $html, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['columns', 'gap'], 'grid');
-        $columns = $this->attributeOneOf($attributes['columns'] ?? '3', ['1', '2', '3', '4'], 'grid', 'columns');
-        $gap = $this->attributeOneOf($attributes['gap'] ?? '2', ['0', '1', '2', '3', '4'], 'grid', 'gap');
+        $this->assertAttributes($attributes, 'grid');
+        $columns = $this->catalogueChoice($attributes['columns'] ?? '3', 'grid', 'columns');
+        $gap = $this->catalogueChoice($attributes['gap'] ?? '2', 'grid', 'gap');
         $cardRoot = '<section data-docara-block="card"';
         $count = substr_count($html, $cardRoot);
         if ($count < 1) {
@@ -1671,9 +1658,9 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderMedia(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['side', 'ratio'], 'media');
-        $side = $this->attributeOneOf($attributes['side'] ?? 'right', ['left', 'right'], 'media', 'side');
-        $ratio = $this->attributeOneOf($attributes['ratio'] ?? '16/9', ['1/1', '4/3', '3/2', '16/9'], 'media', 'ratio');
+        $this->assertAttributes($attributes, 'media');
+        $side = $this->catalogueChoice($attributes['side'] ?? 'right', 'media', 'side');
+        $ratio = $this->catalogueChoice($attributes['ratio'] ?? '16/9', 'media', 'ratio');
         $content = trim((string) $rendered);
         $image = '';
         $content = preg_replace_callback(
@@ -1703,7 +1690,7 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderTree(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['interactive'], 'tree');
+        $this->assertAttributes($attributes, 'tree');
         $interactive = $this->attributeBoolean($attributes['interactive'] ?? 'true', 'tree', 'interactive');
         $root = $rendered->getDocument()->firstChild();
         if (! $root instanceof ListBlock
@@ -1744,19 +1731,9 @@ HTML;
         array $attributes,
         ?string $sourceFile,
     ): string {
-        $this->assertAttributes($attributes, ['type', 'variant'], 'alert');
-        $type = $this->attributeOneOf(
-            $attributes['type'] ?? 'info',
-            ['clear', 'info', 'success', 'warning', 'danger'],
-            'alert',
-            'type',
-        );
-        $variant = $this->attributeOneOf(
-            $attributes['variant'] ?? 'default',
-            ['default', 'flat', 'outlined'],
-            'alert',
-            'variant',
-        );
+        $this->assertAttributes($attributes, 'alert');
+        $type = $this->catalogueChoice($attributes['type'] ?? 'info', 'alert', 'type');
+        $variant = $this->catalogueChoice($attributes['variant'] ?? 'default', 'alert', 'variant');
         $nodes = iterator_to_array($rendered->getDocument()->children());
         $heading = $nodes[0] ?? null;
         if (! $heading instanceof Heading || ! in_array($heading->getLevel(), [2, 3, 4, 5], true)) {
@@ -1830,8 +1807,8 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderBanner(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['type'], 'banner');
-        $type = $this->attributeOneOf($attributes['type'] ?? 'info', ['info', 'success', 'warning', 'danger'], 'banner', 'type');
+        $this->assertAttributes($attributes, 'banner');
+        $type = $this->catalogueChoice($attributes['type'] ?? 'info', 'banner', 'type');
         $content = trim((string) $rendered);
         if ($content === '') {
             throw new PortableConfigurationException('MARKDOWN_BANNER_CONTENT_REQUIRED', 'A banner requires visible Markdown content.');
@@ -1848,8 +1825,8 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderDiagram(string $markdown, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['engine', 'title'], 'diagram');
-        $engine = $this->attributeOneOf($attributes['engine'] ?? 'mermaid', ['mermaid'], 'diagram', 'engine');
+        $this->assertAttributes($attributes, 'diagram');
+        $engine = $this->catalogueChoice($attributes['engine'] ?? 'mermaid', 'diagram', 'engine');
         $title = trim($attributes['title'] ?? 'Diagram');
         $source = trim($markdown);
         if ($source === '') {
@@ -1866,8 +1843,8 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderMath(string $markdown, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['display', 'label'], 'math');
-        $display = $this->attributeOneOf($attributes['display'] ?? 'block', ['inline', 'block'], 'math', 'display');
+        $this->assertAttributes($attributes, 'math');
+        $display = $this->catalogueChoice($attributes['display'] ?? 'block', 'math', 'display');
         $label = trim($attributes['label'] ?? 'Mathematical formula');
         $source = trim($markdown);
         if ($source === '') {
@@ -1893,16 +1870,30 @@ HTML;
             . $this->escapeHtml($document) . '"></iframe>';
     }
 
-    /** @param array<string,string> $attributes @param list<string> $allowed */
-    private function assertAttributes(array $attributes, array $allowed, string $component): void
+    /**
+     * The accepted names are the component's catalogue parameters
+     * (resources/component-catalog), so the renderer cannot drift from what
+     * the catalogue and the docs promise.
+     *
+     * @param  array<string,string>  $attributes
+     */
+    private function assertAttributes(array $attributes, string $component): void
     {
-        $unknown = array_values(array_diff(array_keys($attributes), $allowed));
+        $unknown = array_values(array_diff(array_keys($attributes), $this->parameters->names($component)));
         if ($unknown !== []) {
             throw new PortableConfigurationException(
                 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN',
                 "Markdown component [$component] does not support attribute [{$unknown[0]}].",
             );
         }
+    }
+
+    private function catalogueChoice(string $value, string $component, string $attribute): string
+    {
+        $allowed = $this->parameters->values($component, $attribute)
+            ?? throw new \LogicException("Catalogue parameter [$component.$attribute] declares no values.");
+
+        return $this->attributeOneOf($value, $allowed, $component, $attribute);
     }
 
     /** @param list<string> $allowed */
@@ -1944,13 +1935,8 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderCardContent(string $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['variant'], 'card');
-        $variant = $this->attributeOneOf(
-            $attributes['variant'] ?? 'default',
-            ['default', 'plain'],
-            'card',
-            'variant',
-        );
+        $this->assertAttributes($attributes, 'card');
+        $variant = $this->catalogueChoice($attributes['variant'] ?? 'default', 'card', 'variant');
 
         return $this->cardOpening($variant)
             . (string) $rendered . '</section>';
@@ -2214,21 +2200,16 @@ HTML;
         int $sourceLine,
     ): string {
         $backgroundAttributes = ['background_fit', 'background_x', 'background_y', 'overlay', 'overlay_strength'];
-        $this->assertAttributes($attributes, ['variant', 'media', 'padding', ...$backgroundAttributes, ...self::HERO_EFFECT_ATTRIBUTES], 'hero');
+        $this->assertAttributes($attributes, 'hero');
         $effect = $this->heroEffect($attributes);
-        $variant = $this->attributeOneOf($attributes['variant'] ?? 'split', ['split', 'centered', 'compact'], 'hero', 'variant');
-        $padding = $this->attributeOneOf(
-            $attributes['padding'] ?? ($variant === 'compact' ? 'lg' : 'xl'),
-            ['lg', 'xl', '2xl'],
-            'hero',
-            'padding',
-        );
-        $mediaMode = $this->attributeOneOf($attributes['media'] ?? 'auto', ['auto', 'side', 'background', 'none'], 'hero', 'media');
+        $variant = $this->catalogueChoice($attributes['layout'] ?? 'split', 'hero', 'layout');
+        $padding = $this->catalogueChoice($attributes['padding'] ?? ($variant === 'compact' ? 'lg' : 'xl'), 'hero', 'padding');
+        $mediaMode = $this->catalogueChoice($attributes['media'] ?? 'auto', 'hero', 'media');
         if ($mediaMode !== 'background' && array_intersect(array_keys($attributes), $backgroundAttributes) !== []) {
             throw new PortableConfigurationException('MARKDOWN_HERO_BACKGROUND_MODE_REQUIRED', 'Hero background props require media=background.');
         }
         if ($mediaMode === 'side' && $variant !== 'split') {
-            throw new PortableConfigurationException('MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE', 'Hero media=side requires variant=split.');
+            throw new PortableConfigurationException('MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE', 'Hero media=side requires layout=split.');
         }
         if ($effect !== '' && $mediaMode === 'background') {
             throw new PortableConfigurationException(
@@ -2463,15 +2444,15 @@ HTML;
         $columns = $variant === 'split' && $image !== '' ? 'grid-col-1 lg:grid-col-2' : 'grid-col-1';
         $alignment = $variant === 'centered' ? ' text-center items-cross-center' : '';
         if ($mediaMode === 'background') {
-            $overlay = $this->attributeOneOf($attributes['overlay'] ?? 'dark', ['light', 'dark'], 'hero', 'overlay');
+            $overlay = $this->catalogueChoice($attributes['overlay'] ?? 'dark', 'hero', 'overlay');
             $surfaceProps = [
                 'width' => 'full',
                 'content_width' => 'container',
-                'background_fit' => $this->attributeOneOf($attributes['background_fit'] ?? 'cover', ['cover', 'contain', 'auto'], 'hero', 'background_fit'),
-                'background_x' => $this->attributeOneOf($attributes['background_x'] ?? 'center', ['left', 'center', 'right'], 'hero', 'background_x'),
-                'background_y' => $this->attributeOneOf($attributes['background_y'] ?? 'center', ['top', 'center', 'bottom'], 'hero', 'background_y'),
+                'background_fit' => $this->catalogueChoice($attributes['background_fit'] ?? 'cover', 'hero', 'background_fit'),
+                'background_x' => $this->catalogueChoice($attributes['background_x'] ?? 'center', 'hero', 'background_x'),
+                'background_y' => $this->catalogueChoice($attributes['background_y'] ?? 'center', 'hero', 'background_y'),
                 'overlay' => $overlay,
-                'overlay_strength' => $this->attributeOneOf($attributes['overlay_strength'] ?? 'medium', ['soft', 'medium', 'strong'], 'hero', 'overlay_strength'),
+                'overlay_strength' => $this->catalogueChoice($attributes['overlay_strength'] ?? 'medium', 'hero', 'overlay_strength'),
                 'padding' => $padding,
                 'tone' => $overlay === 'dark' ? 'contrast' : 'default',
             ];
@@ -2540,7 +2521,7 @@ HTML;
         }
         $html = ' data-sf-effect="' . htmlspecialchars($reference, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '"';
         if (isset($attributes['effect_theme'])) {
-            $theme = $this->attributeOneOf($attributes['effect_theme'], ['auto', 'dark', 'light'], 'hero', 'effect_theme');
+            $theme = $this->catalogueChoice($attributes['effect_theme'], 'hero', 'effect_theme');
             $html .= ' data-sf-effect-theme="' . $theme . '"';
         }
         if (isset($attributes['effect_settings'])) {
@@ -2572,8 +2553,8 @@ HTML;
     /** @param array<string,string> $attributes */
     private function renderLogos(RenderedContentInterface $rendered, array $attributes): string
     {
-        $this->assertAttributes($attributes, ['tone'], 'logos');
-        $tone = $this->attributeOneOf($attributes['tone'] ?? 'normal', ['normal', 'muted'], 'logos', 'tone');
+        $this->assertAttributes($attributes, 'logos');
+        $tone = $this->catalogueChoice($attributes['tone'] ?? 'default', 'logos', 'tone');
         $root = $rendered->getDocument()->firstChild();
         if (! $root instanceof ListBlock
             || $root->getListData()->type !== ListBlock::TYPE_BULLET
@@ -2614,7 +2595,9 @@ HTML;
         $content = trim((string) $rendered);
         $content = preg_replace(
             '/^<ul>/u',
-            '<ul data-docara-block="logos" data-tone="' . $tone
+            // The page keeps the data-tone marker the block always wrote, so
+            // site styles that select data-tone="normal" keep matching.
+            '<ul data-docara-block="logos" data-tone="' . ($tone === 'default' ? 'normal' : $tone)
                 . '" class="grid grid-col-2 md:grid-col-3 lg:grid-col-6 gap-2 list-none m-0 m-bottom-1 p-0">',
             $content,
             1,
@@ -2663,21 +2646,17 @@ HTML;
         ?string $sourceRoot,
         ?string $sourceFile,
     ): string {
-        $allowed = [
-            'width', 'content_width', 'background_image', 'background_fit', 'background_x',
-            'background_y', 'overlay', 'overlay_strength', 'padding', 'tone',
-        ];
-        $this->assertAttributes($attributes, $allowed, 'surface');
+        $this->assertAttributes($attributes, 'surface');
         $props = [
-            'width' => $this->attributeOneOf($attributes['width'] ?? 'content', ['content', 'full'], 'surface', 'width'),
-            'content_width' => $this->attributeOneOf($attributes['content_width'] ?? 'container', ['container', 'full'], 'surface', 'content_width'),
-            'background_fit' => $this->attributeOneOf($attributes['background_fit'] ?? 'cover', ['cover', 'contain', 'auto'], 'surface', 'background_fit'),
-            'background_x' => $this->attributeOneOf($attributes['background_x'] ?? 'center', ['left', 'center', 'right'], 'surface', 'background_x'),
-            'background_y' => $this->attributeOneOf($attributes['background_y'] ?? 'center', ['top', 'center', 'bottom'], 'surface', 'background_y'),
-            'overlay' => $this->attributeOneOf($attributes['overlay'] ?? 'none', ['none', 'light', 'dark'], 'surface', 'overlay'),
-            'overlay_strength' => $this->attributeOneOf($attributes['overlay_strength'] ?? 'medium', ['soft', 'medium', 'strong'], 'surface', 'overlay_strength'),
-            'padding' => $this->attributeOneOf($attributes['padding'] ?? 'md', ['none', 'sm', 'md', 'lg', 'xl'], 'surface', 'padding'),
-            'tone' => $this->attributeOneOf($attributes['tone'] ?? 'default', ['default', 'muted', 'accent', 'contrast'], 'surface', 'tone'),
+            'width' => $this->catalogueChoice($attributes['width'] ?? 'content', 'surface', 'width'),
+            'content_width' => $this->catalogueChoice($attributes['content_width'] ?? 'container', 'surface', 'content_width'),
+            'background_fit' => $this->catalogueChoice($attributes['background_fit'] ?? 'cover', 'surface', 'background_fit'),
+            'background_x' => $this->catalogueChoice($attributes['background_x'] ?? 'center', 'surface', 'background_x'),
+            'background_y' => $this->catalogueChoice($attributes['background_y'] ?? 'center', 'surface', 'background_y'),
+            'overlay' => $this->catalogueChoice($attributes['overlay'] ?? 'none', 'surface', 'overlay'),
+            'overlay_strength' => $this->catalogueChoice($attributes['overlay_strength'] ?? 'medium', 'surface', 'overlay_strength'),
+            'padding' => $this->catalogueChoice($attributes['padding'] ?? 'md', 'surface', 'padding'),
+            'tone' => $this->catalogueChoice($attributes['tone'] ?? 'default', 'surface', 'tone'),
         ];
         $background = trim($attributes['background_image'] ?? '');
         if ($background === '' && array_intersect(array_keys($attributes), ['background_fit', 'background_x', 'background_y']) !== []) {
@@ -3164,10 +3143,10 @@ HTML;
             function (array $matches): string {
                 $config = str_replace(['“', '”', '‘', '’'], ['"', '"', "'", "'"], (string) $matches['config']);
                 $attributes = $this->attributes->parse($config, 'quote');
-                $this->assertAttributes($attributes, ['author', 'source', 'url'], 'quote');
+                $this->assertAttributes($attributes, 'quote');
                 $author = trim($attributes['author'] ?? '');
                 $source = trim($attributes['source'] ?? '');
-                $url = trim($attributes['url'] ?? '');
+                $url = trim($attributes['href'] ?? '');
                 if ($author === '' && $source === '') {
                     throw new PortableConfigurationException(
                         'MARKDOWN_QUOTE_ATTRIBUTION_REQUIRED',
@@ -3197,10 +3176,9 @@ HTML;
             function (array $matches): string {
                 $config = str_replace(['“', '”', '‘', '’'], ['"', '"', "'", "'"], (string) $matches['config']);
                 $attributes = $this->attributes->parse($config, 'image');
-                $this->assertAttributes($attributes, ['ratio', 'fit'], 'image');
-                $ratio = str_replace('x', '/', $attributes['ratio'] ?? 'auto');
-                $ratio = $this->attributeOneOf($ratio, ['auto', '1/1', '4/3', '3/2', '16/9', '21/9'], 'image', 'ratio');
-                $fit = $this->attributeOneOf($attributes['fit'] ?? 'cover', ['cover', 'contain'], 'image', 'fit');
+                $this->assertAttributes($attributes, 'image');
+                $ratio = $this->catalogueChoice($attributes['ratio'] ?? 'auto', 'image', 'ratio');
+                $fit = $this->catalogueChoice($attributes['fit'] ?? 'cover', 'image', 'fit');
                 $ratioClass = $ratio === 'auto' ? '' : ' ' . $this->aspectRatioClass($ratio);
                 $imageClasses = 'w-full' . ($ratio === 'auto' ? '' : ' h-full') . ' object-' . $fit;
 

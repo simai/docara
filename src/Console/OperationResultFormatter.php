@@ -29,7 +29,17 @@ final class OperationResultFormatter
             $lines[] = sprintf('- %s:%s (%s)', $item['kind'] ?? 'item', $item['id'] ?? '?', $item['provider'] ?? $item['owner'] ?? 'registered');
         }
         foreach ($value['data']['checks'] ?? [] as $check) {
-            $lines[] = sprintf('- %s %s%s', strtoupper((string) ($check['status'] ?? 'unknown')), $check['code'] ?? 'CHECK', isset($check['count']) ? ' (' . $check['count'] . ')' : '');
+            $lines[] = sprintf(
+                '- %s %s%s%s',
+                strtoupper((string) ($check['status'] ?? 'unknown')),
+                $check['code'] ?? 'CHECK',
+                isset($check['count']) ? ' (' . $check['count'] . ')' : '',
+                // A check that explains itself (a deprecated parameter) shows
+                // its line and what to write instead.
+                is_string($check['message'] ?? null)
+                    ? (isset($check['line']) ? ' line ' . (int) $check['line'] : '') . ': ' . $check['message']
+                    : '',
+            );
         }
         if ($value['data'] !== [] && ! isset($value['data']['items']) && ! isset($value['data']['checks']) && ! isset($value['data']['count'])) {
             $lines[] = CanonicalJson::encodePretty($value['data']);

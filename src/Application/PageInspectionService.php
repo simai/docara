@@ -6,6 +6,7 @@ namespace Simai\Docara\Application;
 
 use Simai\Docara\Authoring\AuthoringContract;
 use Simai\Docara\Authoring\AuthoringProfileRegistry;
+use Simai\Docara\ComponentCatalog\ParameterDeprecation;
 use Simai\Docara\Content\FrontMatterDocument;
 use Simai\Docara\Content\FrontMatterParser;
 use Simai\Docara\Content\PageSource;
@@ -17,6 +18,7 @@ use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleUrlProjector;
+use Simai\Docara\Markdown\ParameterDeprecationScanner;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
 use Simai\Docara\PortableSite\ExamplePreviewPolicy;
@@ -123,6 +125,28 @@ final readonly class PageInspectionService
         throw new PortableConfigurationException('PAGE_ROUTE_UNKNOWN', "No Markdown page owns route [$route].");
     }
 
+    /**
+     * Pages that still use former component parameter names or values, for
+     * the build's one-line summary.
+     *
+     * @return array{uses:int, pages:list<string>}
+     */
+    public function parameterDeprecations(string $root): array
+    {
+        $runtime = ProjectRuntime::load($root);
+        $uses = 0;
+        $pages = [];
+        foreach ($this->sources($runtime) as $source) {
+            $found = count((new ParameterDeprecationScanner)->scan((string) file_get_contents($runtime->root . '/' . $source->path)));
+            if ($found > 0) {
+                $uses += $found;
+                $pages[] = $this->publicRoute($runtime, $source);
+            }
+        }
+
+        return ['uses' => $uses, 'pages' => $pages];
+    }
+
     /** @return list<array<string, mixed>> */
     public function validateAll(string $root): array
     {
@@ -170,6 +194,7 @@ final readonly class PageInspectionService
                 $this->links($document->markdown),
                 $routeSet,
             ));
+            array_push($diagnostics, ...$this->deprecationDiagnostics($raw));
             $route = $this->publicRoute($runtime, $source);
             foreach ($diagnostics as $diagnostic) {
                 $checks[] = $diagnostic + ['subject' => $route];
@@ -224,6 +249,7 @@ final readonly class PageInspectionService
                 }
             }
             array_push($diagnostics, ...$this->technicalDiagnostics($runtime, $source, $document->markdown, $links, $routeSet));
+            array_push($diagnostics, ...$this->deprecationDiagnostics($raw));
         }
         $profile = $resolution['profile'] === null ? null : (new AuthoringProfileRegistry)->all()[$resolution['profile']];
         $resolved = $resolveSettings ? (new PortableConfigurationLoader($runtime->root))->resolve($source->path) : null;
@@ -453,6 +479,30 @@ final readonly class PageInspectionService
             if ($asset !== '' && ! is_file($path) && ! is_file($publicAsset)) {
                 $diagnostics[] = ['code' => 'PAGE_ASSET_MISSING', 'status' => 'error', 'severity' => 'error', 'path' => $asset];
             }
+        }
+
+        return $diagnostics;
+    }
+
+    /**
+     * Former component parameter names and values the page still uses. The
+     * page renders the same, so these are warnings for the author, never
+     * errors; each one names the line and the replacement.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function deprecationDiagnostics(string $raw): array
+    {
+        $diagnostics = [];
+        foreach ((new ParameterDeprecationScanner)->scan($raw) as $found) {
+            $deprecation = $found['deprecation'];
+            $diagnostics[] = [
+                'code' => ParameterDeprecation::CODE,
+                'status' => 'review_required',
+                'severity' => 'warning',
+                'line' => $found['line'],
+                'message' => $deprecation->message(),
+            ] + $deprecation->toArray();
         }
 
         return $diagnostics;

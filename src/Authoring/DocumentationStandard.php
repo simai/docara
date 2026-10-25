@@ -167,6 +167,17 @@ final readonly class DocumentationStandard
             $lines[] = '- ' . $rule;
         }
         $lines[] = '';
+        $lines[] = '## Diagrams';
+        $lines[] = '';
+        $lines[] = 'Draw a diagram with `:::diagram {engine=mermaid title="..."}` and Mermaid source inside;';
+        $lines[] = 'any Mermaid type works. Pick it by purpose: `flowchart` for steps and decisions,';
+        $lines[] = '`sequenceDiagram` for requests between parts, `stateDiagram-v2` for states,';
+        $lines[] = '`erDiagram` or `classDiagram` for data and code models, `C4Context` or';
+        $lines[] = '`architecture-beta` for systems, `gantt`, `timeline` or `gitGraph` for plans and';
+        $lines[] = 'history, `pie`, `xychart-beta` or `sankey-beta` for numbers. Write `sankey-beta`';
+        $lines[] = 'labels in Latin letters only; put non-Latin labels of `architecture-beta` and';
+        $lines[] = '`xychart-beta` in double quotes.';
+        $lines[] = '';
         $lines[] = '## Create a page';
         $lines[] = '';
         $lines[] = 'Start every new page from a template of its type:';

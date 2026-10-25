@@ -10,7 +10,11 @@
     },
     "/ru/components/diagram/": {
       "max_page_bytes": 6900000,
-      "reason": "6.24 MB: Mermaid (3.57 MB) renders the diagrams on this page."
+      "reason": "6.35 MB: Mermaid (3.57 MB) renders the diagrams on this page."
+    },
+    "/ru/components/diagram-gallery/": {
+      "max_page_bytes": 6900000,
+      "reason": "6.46 MB: Mermaid (3.57 MB) loads once for the 22 diagrams; the page's own HTML is 264 KB (30 KB gzipped), every diagram's source twice, live and on its Markdown tab."
     }
   }
 }

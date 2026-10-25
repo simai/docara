@@ -21,9 +21,9 @@ component into a block or change a block into an unrestricted container.
 ## Inline syntax
 
 ```markdown
-Installation requires :badge[PHP 8.2]{type=tonal scheme=info size=1/2}.
+Installation requires :badge[PHP 8.2]{variant=tonal scheme=info size=1/2}.
 
-Press :kbd[⌘ K], then :button[open the reference]{href=/components/ type=link}.
+Press :kbd[⌘ K], then :button[open the reference]{href=/components/ variant=link}.
 ```
 
 The initial inline surface is `badge`, `button`, `icon` and `kbd`. Square

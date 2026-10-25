@@ -19,7 +19,7 @@
 
 ```markdown
 > Точная цитата.
-{author="Автор" source="Публикация" url="https://example.com/source"}
+{author="Автор" source="Публикация" href="https://example.com/source"}
 ```
 
 Не подставляйте заглушки вместо неизвестного автора или источника.

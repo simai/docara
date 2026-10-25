@@ -12,7 +12,7 @@ description: "Как встроить видео, карту или другой
 
 :::example {label="Общий пример"}
 ```markdown
-:::embed {provider=video ratio=16/9 title="Внешняя демонстрация"}
+:::embed {provider=video ratio=16/9 label="Внешняя демонстрация"}
 [Открыть встроенный материал](https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ)
 :::
 ```
@@ -23,8 +23,8 @@ description: "Как встроить видео, карту или другой
 | Параметр | Значения | Назначение |
 | --- | --- | --- |
 | `provider` | `generic`, `video`, `map`, `external` | Тип внешнего материала |
-| `ratio` | `1/1`, `4/3`, `16/9`, `21/9` | Пропорции адаптивной области |
-| `title` | текст | Доступное название iframe |
+| `ratio` | `1/1`, `4/3`, `3/2`, `16/9`, `21/9` | Пропорции адаптивной области |
+| `label` | текст | Название рамки для экранного диктора (его не видно на странице) |
 | `consent` | `required`, `none` | Требовать действие перед загрузкой; по умолчанию `required` |
 | `id` | короткий идентификатор | Необязательный стабильный якорь блока |
 
@@ -46,27 +46,27 @@ description: "Как встроить видео, карту или другой
 
 ## Наглядные варианты
 
-:::embed {provider=video ratio=16/9 title="Внешняя демонстрация"}
+:::embed {provider=video ratio=16/9 label="Внешняя демонстрация"}
 [Открыть встроенный материал](https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ)
 :::
 
-:::embed {provider=map ratio=4/3 title="Интерактивная карта"}
+:::embed {provider=map ratio=4/3 label="Интерактивная карта"}
 [Открыть карту](https://www.openstreetmap.org/export/embed.html)
 :::
 
-:::embed {provider=external ratio=1/1 title="Внешний виджет"}
+:::embed {provider=external ratio=1/1 label="Внешний виджет"}
 [Открыть внешний виджет](https://example.com/)
 :::
 
 ## Вызов
 
 ```markdown
-:::embed {provider=map ratio=4/3 title="Интерактивная карта"}
+:::embed {provider=map ratio=4/3 label="Интерактивная карта"}
 [Открыть карту](https://www.openstreetmap.org/export/embed.html)
 :::
 ```
 
-Используйте только доверенные адреса и всегда задавайте осмысленный `title`.
+Используйте только доверенные адреса и всегда задавайте осмысленный `label`.
 `consent=none` загружает материал сразу при открытии страницы и поэтому
 разрешён только для адреса этого же сайта.
 

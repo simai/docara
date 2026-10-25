@@ -178,6 +178,11 @@ final readonly class DocumentationStandard
         $lines[] = 'labels in Latin letters only; put non-Latin labels of `architecture-beta` and';
         $lines[] = '`xychart-beta` in double quotes.';
         $lines[] = '';
+        $lines[] = '## Component parameters';
+        $lines[] = '';
+        $lines[] = 'One name, one meaning: `type` is a status, `variant` a style, `layout` an arrangement,';
+        $lines[] = '`ratio` is `16/9`; former names (badge `type`, details `view`) report `MARKDOWN_PARAMETER_DEPRECATED`.';
+        $lines[] = '';
         $lines[] = '## Create a page';
         $lines[] = '';
         $lines[] = 'Start every new page from a template of its type:';

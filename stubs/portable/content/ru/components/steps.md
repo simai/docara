@@ -4,7 +4,7 @@
 
 :::example {label="Общий пример"}
 ```markdown
-:::steps {view=timeline current=2}
+:::steps {layout=timeline current=2}
 1. Создайте проект.
 2. Добавьте страницы.
 3. Опубликуйте сайт.
@@ -12,7 +12,7 @@
 ```
 :::
 
-:::steps {view=timeline current=2}
+:::steps {layout=timeline current=2}
 1. Создайте проект.
 2. Добавьте страницы.
 3. Опубликуйте сайт.

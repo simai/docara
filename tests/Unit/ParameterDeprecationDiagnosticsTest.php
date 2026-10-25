@@ -154,6 +154,26 @@ MD;
         self::assertSame([], (new ParameterDeprecationScanner)->scan(":badge[Новое]{variant=main}\n:::details {layout=lines}\n## А\n\nБ\n:::\n"));
     }
 
+    #[Test]
+    public function the_shipped_pages_starters_and_examples_use_only_current_names(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $scanner = new ParameterDeprecationScanner;
+        $found = [];
+        foreach (['docs/site/content', 'stubs', 'resources/component-catalog/examples'] as $directory) {
+            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root . '/' . $directory, \FilesystemIterator::SKIP_DOTS));
+            foreach ($files as $file) {
+                if ($file->getExtension() !== 'md') {
+                    continue;
+                }
+                foreach ($scanner->scan((string) file_get_contents($file->getPathname())) as $use) {
+                    $found[] = substr($file->getPathname(), strlen($root) + 1) . ':' . $use['line'] . ' ' . $use['deprecation']->message();
+                }
+            }
+        }
+        self::assertSame([], $found);
+    }
+
     private function project(): void
     {
         (new PortableProjectInitializer(new Filesystem))->initialize($this->tmp, 'minimal', 'en');

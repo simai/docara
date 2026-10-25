@@ -1,7 +1,7 @@
 <!-- docara-variant:base -->
 :::example {label=Example}
 ```markdown
-:badge[Ready]{type=main scheme=success size=1/2}
+:badge[Ready]{variant=main scheme=success size=1/2}
 ```
 :::
 

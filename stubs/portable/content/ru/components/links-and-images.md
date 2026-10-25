@@ -16,7 +16,7 @@
 ## Вызов
 
 ```markdown
-![Знак в области 16:9](../../assets/docara-mark.svg){ratio=16x9 fit=contain}
+![Знак в области 16:9](../../assets/docara-mark.svg){ratio=16/9 fit=contain}
 ```
 
 Используйте понятную подпись ссылки и содержательный альтернативный текст.

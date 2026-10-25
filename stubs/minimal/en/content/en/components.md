@@ -14,7 +14,7 @@ The site was built and checked.
 
 ## Button
 
-:button[Back to the home page]{href=../ type=outline scheme=on-surface size=1 icon=arrow_back}
+:button[Back to the home page]{href=../ variant=outline scheme=on-surface size=1 icon=arrow_back}
 
 ## A Framework component from JSON
 

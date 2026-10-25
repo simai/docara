@@ -7,7 +7,7 @@
 
 :::example {label="Общий пример"}
 ```markdown
-:::download {name="docara-mark.svg" format="SVG" size="1 КБ"}
+:::download {title="docara-mark.svg" format="SVG" file_size="1 КБ"}
 [Скачать знак Docara](../../assets/docara-mark.svg)
 :::
 ```
@@ -22,24 +22,24 @@
 | `download` | Предлагает сохранить файл · **По умолчанию** |
 | `open` | Открывает файл в браузере |
 
-:::download {name="docara-mark.svg" format="SVG" size="1 КБ" action=open}
+:::download {title="docara-mark.svg" format="SVG" file_size="1 КБ" action=open}
 [Открыть знак Docara](../../assets/docara-mark.svg)
 :::
 
 ## Метаданные
 
-`name` показывает имя файла, `format` — формат, `size` — размер до загрузки,
+`title` показывает имя файла, `format` — формат, `file_size` — размер до загрузки,
 а `checksum` — контрольную сумму для проверки целостности. Указывайте только
 проверенные значения; любой из этих параметров можно опустить.
 
-:::download {name="docara-mark.svg" format="SVG" size="1 КБ" checksum="SHA-256: 1078…aebc"}
+:::download {title="docara-mark.svg" format="SVG" file_size="1 КБ" checksum="SHA-256: 1078…aebc"}
 [Скачать и проверить](../../assets/docara-mark.svg)
 :::
 
 ## Вызов
 
 ```markdown
-:::download {name="archive.zip" format="ZIP" size="4,8 МБ"}
+:::download {title="archive.zip" format="ZIP" file_size="4,8 МБ"}
 [Скачать архив](../../files/archive.zip)
 :::
 ```

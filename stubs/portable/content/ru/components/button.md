@@ -4,6 +4,6 @@
 
 :::example {label="Общий пример"}
 ```markdown
-:button[Посмотреть компоненты]{href=../ type=outline scheme=on-surface size=1 icon=arrow_forward}
+:button[Посмотреть компоненты]{href=../ variant=outline scheme=on-surface size=1 icon=arrow_forward}
 ```
 :::

@@ -6,4 +6,4 @@
 
 <!-- docara-parameter:author -->
 > Define the reader's task before explaining the system internals.
-{author="Article author" source="Source title" url="https://example.com/source"}
+{author="Article author" source="Source title" href="https://example.com/source"}

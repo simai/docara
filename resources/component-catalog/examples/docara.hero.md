@@ -1,7 +1,7 @@
 <!-- docara-variant:base -->
 <!-- docara-variant:parameter.variant.split -->
 <!-- docara-parameter:variant -->
-:::hero {variant=split}
+:::hero {layout=split}
 # Documentation that is easy to create and read
 
 Docara turns Markdown and validated JSON settings into a fast static site built with SIMAI Framework.
@@ -13,7 +13,7 @@ Docara turns Markdown and validated JSON settings into a fast static site built 
 
 <!-- docara-variant:state.text -->
 <!-- docara-variant:parameter.variant.compact -->
-:::hero {variant=compact}
+:::hero {layout=compact}
 # A concise introduction
 
 Use the compact variant on an inner page that does not need an image.
@@ -21,7 +21,7 @@ Use the compact variant on an inner page that does not need an image.
 
 <!-- docara-variant:state.text_with_action -->
 <!-- docara-variant:parameter.variant.centered -->
-:::hero {variant=centered}
+:::hero {layout=centered}
 # Start from an empty directory
 
 One command creates a verifiable site structure.
@@ -31,14 +31,14 @@ One command creates a verifiable site structure.
 
 <!-- docara-variant:parameter.padding.2xl -->
 <!-- docara-parameter:padding -->
-:::hero {variant=centered padding=2xl}
+:::hero {layout=centered padding=2xl}
 # A taller first screen
 
 The vertical padding grows with the viewport, from 48 px on a phone to 112 px on a wide screen.
 :::
 
 <!-- docara-variant:state.text_with_media -->
-:::hero {variant=split}
+:::hero {layout=split}
 # Keep content and interface separate
 
 Markdown remains content while JSON describes composition.

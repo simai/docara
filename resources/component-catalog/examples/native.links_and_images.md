@@ -5,9 +5,9 @@
 ![Docara mark](../../_docara/component-catalog/docara-mark.svg)
 
 <!-- docara-parameter:ratio -->
-![Docara mark in 16:9](../../_docara/component-catalog/docara-mark.svg){ratio=16x9 fit=contain}
+![Docara mark in 16:9](../../_docara/component-catalog/docara-mark.svg){ratio=16/9 fit=contain}
 
 <!-- docara-parameter:fit -->
-![Image without cropping](../../_docara/component-catalog/docara-mark.svg){ratio=4x3 fit=contain}
+![Image without cropping](../../_docara/component-catalog/docara-mark.svg){ratio=4/3 fit=contain}
 
 [Backlinks](../backlinks/)

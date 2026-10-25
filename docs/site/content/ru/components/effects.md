@@ -53,7 +53,7 @@ Docara только записывает в Hero, какой эффект нуж
 ### 3. Укажите эффект в Hero
 
 ```markdown
-:::hero {variant=centered padding=2xl effect=constellation-net}
+:::hero {layout=centered padding=2xl effect=constellation-net}
 # Документация, которую удобно читать
 
 Эффект рисуется под текстом и не мешает читать.
@@ -75,7 +75,7 @@ Docara только записывает в Hero, какой эффект нуж
 | `effect_settings` | Настройки эффекта — объект JSON в одинарных кавычках, например `'{"speed": 80}'`. Какие настройки есть у эффекта, показано на effects.simai.io. |
 
 ```markdown
-:::hero {variant=centered effect=aurora-curtain effect_theme=dark effect_settings='{"speed": 80}'}
+:::hero {layout=centered effect=aurora-curtain effect_theme=dark effect_settings='{"speed": 80}'}
 # Тёмный первый экран
 
 Эффект всегда рисуется в тёмной версии, а текст становится светлым.

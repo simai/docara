@@ -4,12 +4,12 @@
 
 :::example {label="Общий пример"}
 ```markdown
-:::embed {provider=external ratio=16/9 title="Внешний материал"}
+:::embed {provider=external ratio=16/9 label="Внешний материал"}
 [Открыть материал](https://example.com/)
 :::
 ```
 :::
 
-:::embed {provider=external ratio=16/9 title="Внешний материал"}
+:::embed {provider=external ratio=16/9 label="Внешний материал"}
 [Открыть материал](https://example.com/)
 :::

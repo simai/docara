@@ -1,4 +1,4 @@
-:::hero {variant=centered padding=2xl effect=constellation-net}
+:::hero {layout=centered padding=2xl effect=constellation-net}
 # Сайт документации из Markdown — на PHP и Composer
 
 Пишите страницы в Markdown, а настройки — в JSON. Docara соберёт из них
@@ -63,7 +63,7 @@ php vendor/bin/docara serve production
 
 ## Частые вопросы
 
-:::details {view=lines}
+:::details {layout=lines}
 ### Чем Docara отличается от VitePress и Docusaurus?
 
 VitePress и Docusaurus — проекты на npm: сайт собирается из JavaScript-пакетов,
@@ -73,7 +73,7 @@ VitePress и Docusaurus — проекты на npm: сайт собираетс
 хотят документацию в общем стиле с продуктами SIMAI.
 :::
 
-:::details {view=lines}
+:::details {layout=lines}
 ### Какие требования?
 
 Для сборки нужны PHP 8.2+ с расширениями `ctype`, `dom`, `intl`, `json`,
@@ -82,14 +82,14 @@ VitePress и Docusaurus — проекты на npm: сайт собираетс
 веб-сервер.
 :::
 
-:::details {view=lines}
+:::details {layout=lines}
 ### Можно ли сделать лендинг?
 
 Да. Preset `landing` использует тот же Markdown, JSON и компоненты, но убирает
 меню документации. Эта страница собрана именно так.
 :::
 
-:::details {view=lines}
+:::details {layout=lines}
 ### Можно ли добавить свой компонент?
 
 Да. Сначала попробуйте обычный Markdown и готовые компоненты Docara. Если их не
@@ -97,7 +97,7 @@ VitePress и Docusaurus — проекты на npm: сайт собираетс
 [документированному контракту](/ru/development/#как-развивать-возможности).
 :::
 
-:::details {view=lines}
+:::details {layout=lines}
 ### Как безопасно обновляться?
 
 Команда `php vendor/bin/docara upgrade` готовит новую версию отдельно,

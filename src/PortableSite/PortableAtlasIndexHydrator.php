@@ -79,20 +79,20 @@ final class PortableAtlasIndexHydrator
         foreach ($entries as $entry) {
             $capabilities = array_values(array_filter($entry['capabilities'] ?? [], 'is_string'));
             $container = is_array($entry['container_contract'] ?? null)
-                ? $this->containerContract($entry['container_contract'])
+                ? $this->containerContract($entry['container_contract'], $copy)
                 : '';
             $items .= '<li class="p-y-2 border-bottom-1 border-bottom-solid border-outline-variant">'
                 . '<div class="flex flex-wrap gap-1 items-cross-center"><code>' . $this->escape((string) $entry['id']) . '</code>'
                 . '<span class="label-small">' . $this->escape((string) $entry['kind']) . '</span>'
                 . '<span class="label-small">' . $this->escape((string) $entry['support']) . '</span></div>'
                 . '<p class="m-top-1 m-bottom-0 color-on-surface-variant">' . $this->escape($copy['atlas.owner']) . ': '
-                . $this->escape((string) $entry['owner_package']) . '; namespace: '
-                . $this->escape((string) $entry['namespace']) . '; origin: '
-                . $this->escape((string) $entry['origin']) . '; provider: '
-                . $this->escape((string) $entry['provider']) . '; authoring: '
-                . $this->escape((string) $entry['authoring_kind']) . '.</p>'
-                . ($capabilities === [] ? '' : '<p class="m-top-1 m-bottom-0">Capabilities: '
-                    . $this->escape(implode(', ', $capabilities)) . '.</p>')
+                . $this->code((string) $entry['owner_package']) . '; ' . $this->escape($copy['atlas.namespace']) . ': '
+                . $this->code((string) $entry['namespace']) . '; ' . $this->escape($copy['atlas.origin']) . ': '
+                . $this->code((string) $entry['origin']) . '; ' . $this->escape($copy['atlas.provider']) . ': '
+                . $this->code((string) $entry['provider']) . '; ' . $this->escape($copy['atlas.authoring']) . ': '
+                . $this->code((string) $entry['authoring_kind']) . '.</p>'
+                . ($capabilities === [] ? '' : '<p class="m-top-1 m-bottom-0">' . $this->escape($copy['atlas.capabilities']) . ': '
+                    . implode(', ', array_map($this->code(...), $capabilities)) . '.</p>')
                 . $container
                 . '</li>';
         }
@@ -101,24 +101,33 @@ final class PortableAtlasIndexHydrator
             . '"><ul class="list-none p-0 m-0 border-top-1 border-top-solid border-outline-variant">' . $items . '</ul></section>';
     }
 
+    /** An identifier from the registry, shown as code. */
+    private function code(string $value): string
+    {
+        return '<code>' . $this->escape($value) . '</code>';
+    }
+
     private function escape(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
     }
 
-    /** @param array<string,mixed> $contract */
-    private function containerContract(array $contract): string
+    /**
+     * @param  array<string,mixed>  $contract
+     * @param  array<string, string>  $copy
+     */
+    private function containerContract(array $contract, array $copy): string
     {
         $children = array_values(array_filter($contract['allowed_children'] ?? [], 'is_string'));
         $slots = array_values(array_filter($contract['slots'] ?? [], 'is_string'));
 
         return '<p class="m-top-1 m-bottom-0" data-docara-container-contract>'
-            . 'Container: allowed_children=[' . $this->escape(implode(', ', $children)) . ']; '
+            . $this->escape($copy['atlas.container']) . ': <code>allowed_children=[' . $this->escape(implode(', ', $children)) . ']; '
             . 'slots=[' . $this->escape(implode(', ', $slots)) . ']; '
             . 'min_children=' . $this->escape((string) ($contract['min_children'] ?? '')) . '; '
             . 'max_children=' . $this->escape((string) ($contract['max_children'] ?? '')) . '; '
             . 'order=' . $this->escape((string) ($contract['order'] ?? '')) . '; '
             . 'max_depth=' . $this->escape((string) ($contract['max_depth'] ?? '')) . ', '
-            . 'depth_semantics=' . $this->escape((string) ($contract['depth_semantics'] ?? '')) . '.</p>';
+            . 'depth_semantics=' . $this->escape((string) ($contract['depth_semantics'] ?? '')) . '</code>.</p>';
     }
 }

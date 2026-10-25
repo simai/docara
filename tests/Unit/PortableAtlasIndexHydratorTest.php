@@ -47,10 +47,12 @@ final class PortableAtlasIndexHydratorTest extends TestCase
             ['locale' => 'ru', 'content_html' => $placeholder . $empty],
         ], $atlas);
 
-        self::assertStringContainsString('>Owner: simai/ui;', $pages[0]['content_html']);
+        self::assertStringContainsString('>Owner: <code>simai/ui</code>; namespace: <code>ui</code>; origin: <code>framework</code>;', $pages[0]['content_html']);
+        self::assertStringContainsString('Capabilities: <code>content</code>.', $pages[0]['content_html']);
         self::assertStringContainsString('The accepted Atlas has no entries for this filter.', $pages[0]['content_html']);
         self::assertDoesNotMatchRegularExpression('/[А-Яа-яЁё]/u', $pages[0]['content_html']);
-        self::assertStringContainsString('>Владелец: simai/ui;', $pages[1]['content_html']);
+        self::assertStringContainsString('>Владелец: <code>simai/ui</code>; пространство имён: <code>ui</code>; источник: <code>framework</code>; поставщик: <code>simai/ui.provider</code>; способ подключения: <code>block</code>.', $pages[1]['content_html']);
+        self::assertStringContainsString('Возможности: <code>content</code>.', $pages[1]['content_html']);
         self::assertStringContainsString('В принятом Atlas нет элементов для этого фильтра.', $pages[1]['content_html']);
     }
 

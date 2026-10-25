@@ -196,6 +196,12 @@ Docara пишет эти строки при сборке на английск�
 | `examples.result_label` — Подпись результата в примере, созданном `docara scaffold` | Result | Результат |
 | `atlas.empty` — Текст пустого списка Design Atlas | The accepted Atlas has no entries for this filter. | В принятом Atlas нет элементов для этого фильтра. |
 | `atlas.owner` — Подпись владельца в Design Atlas | Owner | Владелец |
+| `atlas.namespace` — Подпись пространства имён в Design Atlas | namespace | пространство имён |
+| `atlas.origin` — Подпись источника в Design Atlas | origin | источник |
+| `atlas.provider` — Подпись поставщика в Design Atlas | provider | поставщик |
+| `atlas.authoring` — Подпись способа подключения в Design Atlas | authoring | способ подключения |
+| `atlas.capabilities` — Подпись возможностей в Design Atlas | Capabilities | Возможности |
+| `atlas.container` — Подпись правил вложения контейнера в Design Atlas | Container | Правила вложения |
 | `schema.field` — Заголовок столбца «Поле» в справочнике настроек | Field | Поле |
 | `schema.description` — Заголовок столбца описания в справочнике настроек | What it does | Что задаёт |
 | `schema.default` — Подпись значения по умолчанию под описанием поля | Default | По умолчанию |

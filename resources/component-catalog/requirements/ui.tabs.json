@@ -24,6 +24,9 @@
         "framework_owner": "simai/ui and larena/ui"
     },
     "gap": {
-        "owner": "simai/ui and larena/ui"
+        "owner": "simai/ui and larena/ui",
+        "reason": "The Framework tabs Smart component is not admitted for Markdown pages yet, so pages cannot call it directly.",
+        "fallback": "Use the typed :::tabs block with level-three headings; it renders accessible tabs from Framework classes.",
+        "admission": "The Framework lock pins a ui.tabs Smart manifest with its assets, and Docara admits it with a consumer policy, tests, a docs page with a live example and a catalogue entry; this record is then removed."
     }
 }

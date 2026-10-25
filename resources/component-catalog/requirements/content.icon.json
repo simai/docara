@@ -24,6 +24,9 @@
         "framework_owner": "larena/ui"
     },
     "gap": {
-        "owner": "larena/ui"
+        "owner": "larena/ui",
+        "reason": "A semantic icon is chosen by meaning (status, action, object) rather than by glyph name. That needs a Framework contract that maps each meaning to a glyph, and the Framework does not publish one yet.",
+        "fallback": "Use the inline :icon[name]{label=\"...\"} component with an explicit Material Symbols name, and give it a label when the icon carries meaning.",
+        "admission": "The Framework publishes the semantic icon contract in a release the Framework lock pins; Docara then adds a renderer, tests, a docs page with a live example and a catalogue entry, and removes this record."
     }
 }

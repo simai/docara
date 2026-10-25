@@ -1087,7 +1087,7 @@ function docaraCatalogEntryContractError(
         $gap = $entry['gap'] ?? null;
         if (! is_array($gap)
             || array_is_list($gap)
-            || ! docaraExactKeys($gap, ['owner'])
+            || ! docaraExactKeys($gap, ['owner', 'reason', 'fallback', 'admission'])
         ) {
             return 'An unavailable component catalogue entry lacks a complete gap contract.';
         }
@@ -3345,7 +3345,7 @@ if ($manifestError === null) {
                         );
                     }
                     $gap = $entry['gap'] ?? null;
-                    foreach (['owner'] as $gapKey) {
+                    foreach (['owner', 'reason', 'fallback', 'admission'] as $gapKey) {
                         if (! is_array($gap)
                             || ! is_string($gap[$gapKey] ?? null)
                             || trim($gap[$gapKey]) === ''

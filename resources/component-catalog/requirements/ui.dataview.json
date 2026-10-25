@@ -24,6 +24,9 @@
         "framework_owner": "larena/ui"
     },
     "gap": {
-        "owner": "simai/docara and larena/ui"
+        "owner": "simai/docara and larena/ui",
+        "reason": "Sortable and filterable data tables need a Framework data view component and a way for a page to declare its data source (CSV or JSON with a pinned hash); neither exists yet.",
+        "fallback": "Use a Markdown table; Docara wraps it in a scrollable frame.",
+        "admission": "The Framework publishes ui.dataview in a release the Framework lock pins, and Docara defines the data-source contract; both land with tests, a docs page with a live example and a catalogue entry, and this record is removed."
     }
 }

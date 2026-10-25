@@ -20,6 +20,7 @@ use League\CommonMark\Node\Inline\Text;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Util\RegexHelper;
+use League\CommonMark\Util\Xml;
 use Simai\Docara\ComponentCatalog\ComponentParameterModel;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\ComponentCatalog\TypedRendererId;
@@ -67,6 +68,8 @@ final class PortableMarkdownRenderer
 
     private ExamplePreviewPolicy $examplePreviewPolicy;
 
+    private CodeLinePresenter $codeLines;
+
     public const INTERNAL_PREVIEW_DEFAULT_TITLE = 'Example result';
 
     public const INTERNAL_PREVIEW_DEFAULT_TITLE_MARKER = 'data-docara-preview-default-title';
@@ -101,6 +104,7 @@ final class PortableMarkdownRenderer
         $this->examples = new PortableExampleRenderer;
         $this->projectExamples = $projectExamples;
         $this->examplePreviewPolicy = $examplePreviewPolicy ?? new ExamplePreviewPolicy;
+        $this->codeLines = new CodeLinePresenter;
     }
 
     public function componentGateway(): SmartComponentGateway
@@ -1447,38 +1451,36 @@ HTML;
         if (! is_string($source) || strlen($source) > 1048576 || preg_match('//u', $source) !== 1) {
             throw new PortableConfigurationException('MARKDOWN_CODE_SOURCE_INVALID', "External code source [$src] is invalid or too large.");
         }
-        $lineRange = trim($attributes['lines'] ?? '');
-        if ($lineRange !== '') {
-            if (preg_match('/\A(?<start>[1-9][0-9]*)(?:-(?<end>[1-9][0-9]*))?\z/D', $lineRange, $match) !== 1) {
-                throw new PortableConfigurationException('MARKDOWN_CODE_LINES_INVALID', 'External code lines must use N or N-M.');
-            }
-            $lines = preg_split('/\r\n|\n|\r/u', $source) ?: [];
-            $start = (int) $match['start'];
-            $end = isset($match['end']) && $match['end'] !== '' ? (int) $match['end'] : $start;
-            if ($end < $start || $start > count($lines)) {
-                throw new PortableConfigurationException('MARKDOWN_CODE_LINES_INVALID', 'External code line range is outside the source file.');
-            }
-            $source = implode("\n", array_slice($lines, $start - 1, $end - $start + 1));
-        }
+        $excerpt = (new CodeSourceExcerpt)->extract($source, $attributes);
         $lang = strtolower(trim($attributes['lang'] ?? pathinfo($path, PATHINFO_EXTENSION) ?: 'text'));
         if (preg_match('/\A[a-z0-9_+-]{1,32}\z/D', $lang) !== 1) {
             throw new PortableConfigurationException('MARKDOWN_CODE_LANGUAGE_INVALID', 'External code language is invalid.');
         }
-        $title = trim($attributes['title'] ?? basename($path));
-        $markdown = '```' . $lang . "\n" . rtrim($source) . "\n```\n";
-        $rendered = $this->renderCompiled($markdown, codeSettings: $codeSettings);
-
-        if ($title === '') {
-            return $rendered;
+        // The shown part renders through the same code block as a fence,
+        // with the block's line options. Line numbers follow the file: a
+        // region's hidden marker lines leave gaps, as in the source.
+        $options = ['title' => trim($attributes['title'] ?? basename($path))];
+        foreach (['highlight', 'focus', 'layout', 'numbers'] as $name) {
+            if (isset($attributes[$name])) {
+                $options[$name] = $attributes[$name];
+            }
         }
+        if (isset($options['layout'])) {
+            $this->catalogueChoice($options['layout'], 'code', 'layout');
+        }
+        if (isset($attributes['dedent'])) {
+            $this->attributeBoolean($attributes['dedent'], 'code', 'dedent');
+        }
+        $text = rtrim($excerpt['text']);
+        $lineNumbers = ($options['numbers'] ?? 'false') === 'true' ? array_slice($excerpt['numbers'], 0, substr_count($text, "\n") + 1) : null;
 
-        return preg_replace_callback(
-            '/<div\b(?<attributes>[^>]*)\bdata-docara-code-block\b/u',
-            fn (array $match): string => '<div' . (string) ($match['attributes'] ?? '')
-                . 'data-docara-code-block data-docara-code-title="' . $this->escapeHtml($title) . '"',
-            $rendered,
-            1,
-        ) ?? $rendered;
+        return $this->renderCodeBlock(
+            ' class="language-' . $lang . '"',
+            Xml::escape($text . "\n"),
+            (bool) ($codeSettings['wrap'] ?? true),
+            $options,
+            $lineNumbers,
+        );
     }
 
     /** @param array<string,string> $attributes */
@@ -3198,40 +3200,136 @@ HTML;
             $html,
         ) ?? $html;
 
-        return preg_replace_callback(
-            '/<pre><code(?P<attributes>[^>]*)>(?P<content>.*?)<\/code><\/pre>/s',
-            function (array $matches) use ($wrap): string {
-                $attributes = (string) ($matches['attributes'] ?? '');
-                $language = 'code';
-                if (preg_match('/(?:language|lang)-([a-z0-9_+-]+)/i', $attributes, $languageMatch) === 1) {
-                    $language = strtolower((string) $languageMatch[1]);
-                }
-                $labels = [
-                    'html' => 'HTML', 'xhtml' => 'HTML', 'css' => 'CSS', 'js' => 'JavaScript',
-                    'javascript' => 'JavaScript', 'json' => 'JSON', 'php' => 'PHP', 'bash' => 'Bash',
-                    'shell' => 'Shell', 'markdown' => 'Markdown', 'md' => 'Markdown',
-                    'text' => 'Code', 'plaintext' => 'Code', 'code' => 'Code',
-                ];
-                $label = $labels[$language] ?? $language;
-
-                return '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="' . $this->escapeHtml($language)
-                    . '" data-docara-code-wrap="' . ($wrap ? 'true' : 'false')
-                    . '" class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">'
-                    . '<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center bg-surface-overlay">'
-                    . '<span class="flex sf-text-1/3 weight-5">' . $this->escapeHtml($label) . '</span>'
-                    . '<div data-docara-code-actions class="docara-code-actions flex items-cross-center gap-1/3">'
-                    . ($wrap ? '<button type="button" data-docara-code-wrap-toggle hidden data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow" class="docara-code-wrap sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Wrap source lines" aria-pressed="false">'
-                        . '<span aria-hidden="true" class="sf-icon sf-icon-regular">wrap_text</span>'
-                        . '<span class="sf-button-text-container sr-only">Wrap source lines</span></button>' : '')
-                    . '<button type="button" data-docara-code-copy class="docara-code-copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Copy">'
-                    . '<span aria-hidden="true" class="sf-icon sf-icon-regular">content_copy</span>'
-                    . '<span class="sf-button-text-container sr-only">Copy</span></button></div></div>'
-                    . '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code'
-                    . $attributes . '>' . (string) ($matches['content'] ?? '') . '</code></pre>'
-                    . '</div>';
-            },
+        // Inline code that shows [!name …] keeps it: the Framework loader
+        // would otherwise take it for a shortcode (CodeLinePresenter).
+        $html = preg_replace(
+            '/(?<!<pre>)<code>(?=[^<]*\[!)/',
+            '<code ' . CodeLinePresenter::SHORTCODE_GUARD . '>',
             $html,
         ) ?? $html;
+
+        return preg_replace_callback(
+            '/<pre><code(?P<attributes>[^>]*)>(?P<content>.*?)<\/code><\/pre>/s',
+            fn (array $matches): string => $this->renderCodeBlock(
+                (string) ($matches['attributes'] ?? ''),
+                (string) ($matches['content'] ?? ''),
+                $wrap,
+            ),
+            $html,
+        ) ?? $html;
+    }
+
+    /**
+     * One code block: the Docara header with its title or language, the copy
+     * and wrap actions, and the code itself. Line options (numbers,
+     * highlight, focus, diff markers, the terminal layout) are worked out
+     * here, at build time, by CodeLinePresenter.
+     */
+    /**
+     * @param  array<string, string>|null  $options  already checked options (:::code), or null to read the fence's
+     * @param  list<int>|null  $lineNumbers  the file line of each shown line, when numbers follow a file
+     */
+    private function renderCodeBlock(string $attributes, string $content, bool $wrap, ?array $options = null, ?array $lineNumbers = null): string
+    {
+        $options ??= [];
+        if (preg_match('/\s' . PortableFencedCodeRenderer::OPTIONS_ATTRIBUTE . '="(?<options>[^"]*)"/', $attributes, $optionMatch) === 1) {
+            $attributes = str_replace($optionMatch[0], '', $attributes);
+            $options = $this->codeFenceOptions(html_entity_decode((string) $optionMatch['options'], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        }
+        $language = 'code';
+        if (preg_match('/(?:language|lang)-([a-z0-9_+-]+)/i', $attributes, $languageMatch) === 1) {
+            $language = strtolower((string) $languageMatch[1]);
+        }
+        $labels = [
+            'html' => 'HTML', 'xhtml' => 'HTML', 'css' => 'CSS', 'js' => 'JavaScript',
+            'javascript' => 'JavaScript', 'json' => 'JSON', 'php' => 'PHP', 'bash' => 'Bash',
+            'shell' => 'Shell', 'markdown' => 'Markdown', 'md' => 'Markdown',
+            'text' => 'Code', 'plaintext' => 'Code', 'code' => 'Code',
+        ];
+        $title = trim($options['title'] ?? '');
+        $label = $title !== '' ? $title : ($labels[$language] ?? $language);
+        $code = $content;
+        $lines = null;
+        // A block with [!code …] markers needs the presenter even without
+        // options; every other block keeps the exact CommonMark text.
+        if ($options !== [] || str_contains($content, '[!')) {
+            $lines = $this->codeLines->present(
+                html_entity_decode($content, ENT_QUOTES | ENT_HTML5, 'UTF-8'),
+                $language,
+                $options,
+                $lineNumbers,
+            );
+            $code = $lines['html'];
+        }
+        $enhanced = $lines !== null && $lines['enhanced'];
+        $blockAttributes = '';
+        if ($title !== '') {
+            $blockAttributes .= ' data-docara-code-title="' . $this->escapeHtml($title) . '"';
+        }
+        $blockClasses = '';
+        if ($enhanced) {
+            $blockAttributes .= ' data-docara-code-lines="' . $lines['lines'] . '"';
+            if ($lines['digits'] > 0) {
+                $blockAttributes .= ' data-docara-code-digits="' . $lines['digits'] . '"';
+            }
+            if ($lines['focus']) {
+                $blockAttributes .= ' data-docara-code-focus';
+            }
+            if ($lines['diff']) {
+                $blockAttributes .= ' data-docara-code-diff';
+            }
+            if ($lines['terminal']) {
+                $blockAttributes .= ' data-docara-code-layout="terminal"';
+                $blockClasses = ' docara-code-block--terminal';
+            }
+        }
+
+        return '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="' . $this->escapeHtml($language)
+            . '" data-docara-code-wrap="' . ($wrap ? 'true' : 'false') . '"' . $blockAttributes
+            . ' class="source init docara-code-block' . $blockClasses . ' min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">'
+            . '<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center bg-surface-overlay">'
+            . '<span class="flex sf-text-1/3 weight-5">' . $this->escapeHtml($label) . '</span>'
+            . '<div data-docara-code-actions class="docara-code-actions flex items-cross-center gap-1/3">'
+            . ($wrap ? '<button type="button" data-docara-code-wrap-toggle hidden data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow" class="docara-code-wrap sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Wrap source lines" aria-pressed="false">'
+                . '<span aria-hidden="true" class="sf-icon sf-icon-regular">wrap_text</span>'
+                . '<span class="sf-button-text-container sr-only">Wrap source lines</span></button>' : '')
+            . '<button type="button" data-docara-code-copy class="docara-code-copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Copy">'
+            . '<span aria-hidden="true" class="sf-icon sf-icon-regular">content_copy</span>'
+            . '<span class="sf-button-text-container sr-only">Copy</span></button></div></div>'
+            . ($enhanced
+                ? '<pre class="docara-code-scroll docara-code-scroll--lines overflow-auto m-0"><code' . $attributes . ' data-highlighted="lines" data-docara-code-lines>'
+                : '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code' . $attributes . '>')
+            . $code . '</code></pre>'
+            . '</div>';
+    }
+
+    /**
+     * The {…} options of a code fence, checked against the catalogue's
+     * native code entry. `{1,4-6}` alone is VitePress shorthand for
+     * highlight="1,4-6".
+     *
+     * @return array<string, string>
+     */
+    private function codeFenceOptions(string $source): array
+    {
+        $source = trim($source);
+        if (preg_match('/\A\{(?<body>.*)\}\z/sD', $source, $match) !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_COMPONENT_ATTRIBUTES_INVALID',
+                "A code fence takes its options in one pair of braces after the language, such as ```php {title=\"app.php\" numbers}; found [$source].",
+            );
+        }
+        $body = trim((string) $match['body']);
+        if (preg_match('/\A[0-9][0-9,\s-]*\z/D', $body) === 1) {
+            return ['highlight' => $body];
+        }
+        $options = $this->attributes->parse($body, 'fence');
+        $this->assertAttributes($options, 'fence');
+        if (isset($options['layout'])) {
+            $this->catalogueChoice($options['layout'], 'fence', 'layout');
+        }
+
+        return $options;
     }
 
     /** @return array<string, mixed> */

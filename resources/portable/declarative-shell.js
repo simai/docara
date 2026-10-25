@@ -32,6 +32,54 @@
     Object.keys(parameters||{}).forEach(function(name){value=value.split('{'+name+'}').join(String(parameters[name]))});
     return value;
   }
+  /* A block whose lines the build wrapped copies its code without line numbers, diff signs, prompts, removed lines or terminal output: the build marks every line the copy leaves out with data-copy-skip. */
+  function codeCopyText(code){
+    if(!code.hasAttribute('data-docara-code-lines'))return code.textContent||'';
+    return Array.prototype.filter.call(code.children,function(line){return !line.hasAttribute('data-copy-skip')}).map(function(line){
+      var content=line.querySelector(':scope>.docara-code-line__content');
+      return content?content.textContent:'';
+    }).join('\n');
+  }
+  /* The Framework highlighter reads a block's text and replaces its HTML, which would drop the lines the build wrapped, so those blocks arrive marked data-highlighted="lines". They are coloured here with the Framework's own engine: the whole source at once, so a comment or string that spans lines keeps its colour, then split back into the build's lines. */
+  function splitHighlightedLines(html){
+    var lines=[],open=[],current='',pattern=/(<span\b[^>]*>)|(<\/span>)|([^<]+)|(<)/g,match;
+    while((match=pattern.exec(html))!==null){
+      if(match[1]){open.push(match[1]);current+=match[1]}
+      else if(match[2]){open.pop();current+=match[2]}
+      else{
+        var parts=(match[3]||match[4]).split('\n');
+        for(var index=0;index<parts.length;index++){
+          if(index>0){current+=open.map(function(){return '</span>'}).join('');lines.push(current);current=open.join('')}
+          current+=parts[index];
+        }
+      }
+    }
+    lines.push(current);
+    return lines;
+  }
+  function highlightCodeLines(root){
+    var engine=window.hljs;
+    if(!engine||typeof engine.highlight!=='function')return;
+    var scope=root&&root.querySelectorAll?root:document;
+    scope.querySelectorAll('code[data-docara-code-lines]:not([data-docara-code-coloured])').forEach(function(code){
+      var contents=Array.prototype.map.call(code.children,function(line){return line.querySelector(':scope>.docara-code-line__content')});
+      if(contents.indexOf(null)!==-1)return;
+      var name=Array.prototype.filter.call(code.classList,function(item){return /^(?:language|lang)-/.test(item)})[0];
+      var language=name?name.replace(/^(?:language|lang)-/,'').toLowerCase():'plaintext';
+      if(typeof engine.getLanguage==='function'&&!engine.getLanguage(language))language='plaintext';
+      var source=contents.map(function(content){return content.textContent}).join('\n');
+      var coloured=splitHighlightedLines(engine.highlight(source,{language:language}).value);
+      code.setAttribute('data-docara-code-coloured','');
+      if(coloured.length!==contents.length)return;
+      contents.forEach(function(content,index){if(!content.parentElement.hasAttribute('data-line-output'))content.innerHTML=coloured[index]});
+    });
+  }
+  highlightCodeLines(document);
+  /* The Framework loads its highlighter after the page, when it finds code; a script's load event reaches the document in the capture phase. */
+  document.addEventListener('load',function(event){
+    if(event.target&&event.target.tagName==='SCRIPT'&&window.hljs)highlightCodeLines(document);
+  },true);
+  window.addEventListener('load',function(){highlightCodeLines(document)});
   function localizeCodeCopy(root){
     var selector='[data-docara-code-block] button[data-clipboard-target],[data-docara-code-block] button[data-docara-code-copy]';
     var scope=root&&root.querySelectorAll?root:document,buttons=[];
@@ -46,7 +94,7 @@
         var head=block.querySelector(':scope > .sf--highlight-head,:scope > [data-docara-code-fallback]');
         var title=head&&head.querySelector(':scope > span');
         var languageLabels={html:'HTML',xhtml:'HTML',css:'CSS',js:'JavaScript',javascript:'JavaScript',json:'JSON',php:'PHP',bash:'Bash',shell:'Shell',markdown:'Markdown',md:'Markdown',text:'Code',plaintext:'Code'};
-        var languageLabel=languageLabels[language]||language||'Code';
+        var languageLabel=block.dataset.docaraCodeTitle||languageLabels[language]||language||'Code';
         if(head){head.classList.add('docara-code-header')}
         if(title&&title.textContent!==languageLabel){title.textContent=languageLabel}
         button.classList.remove('sf-button','sf-button--size-1/3','sf-button--on-surface','sf-button--link');
@@ -94,7 +142,7 @@
         button.addEventListener('click',function(){
           var code=button.closest('[data-docara-code-block]')&&button.closest('[data-docara-code-block]').querySelector('code');
           if(!code)return;
-          var value=code.textContent||'',done=function(){
+          var value=codeCopyText(code),done=function(){
             var text=button.querySelector('.sf-button-text-container'),icon=button.querySelector('.sf-icon');
             if(text){text.textContent=message('code.copied')}
             if(icon){icon.textContent='check'}
@@ -829,7 +877,7 @@
       function sourceText(code){
         var lines=Array.from(code.querySelectorAll('.hljs-ln-code'));
         if(lines.length){return lines.map(function(line){return line.textContent||''}).join('\n')}
-        return code.textContent||'';
+        return codeCopyText(code);
       }
       function writeClipboard(value){
         if(navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){
@@ -1034,6 +1082,7 @@
       records.forEach(function(record){
         if(record.type==='characterData'){localizeCodeCopy(record.target.parentElement);return}
         record.addedNodes.forEach(localizeCodeCopy);
+        record.addedNodes.forEach(function(node){if(node.nodeType===1&&node.querySelector&&node.querySelector('code[data-docara-code-lines]'))highlightCodeLines(node)});
       });
     }).observe(document.body,{childList:true,subtree:true,characterData:true});
   }

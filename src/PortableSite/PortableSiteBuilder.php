@@ -541,6 +541,14 @@ final readonly class PortableSiteBuilder
                 ' title="' . htmlspecialchars(UiCopy::buildText($pageLocale, 'examples.preview_title'), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '"',
                 (string) ($page['content_html'] ?? ''),
             );
+            // A diff line's screen-reader word (CodeLinePresenter) in the
+            // page's language; lang.json may override code.added/removed.
+            $page['content_html'] = (string) preg_replace_callback(
+                '/(' . CodeLinePresenter::DIFF_LABEL_ATTRIBUTE . '="(added|removed)">)[^<]*</',
+                static fn (array $match): string => $match[1]
+                    . htmlspecialchars((string) $page['ui_copy']['code.' . $match[2]], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . ': <',
+                (string) $page['content_html'],
+            );
             $contentMessages = $contentLanguages->messages($localeRegistry->get($pageLocale));
             foreach (['navigation.backlinks_heading', 'navigation.backlinks_empty'] as $messageId) {
                 if (isset($contentMessages[$messageId])) {

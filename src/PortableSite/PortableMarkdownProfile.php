@@ -7,6 +7,7 @@ namespace Simai\Docara\PortableSite;
 use JsonException;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
+use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
 use League\CommonMark\Extension\Footnote\FootnoteExtension;
 use League\CommonMark\Extension\SmartPunct\SmartPunctExtension;
 use League\CommonMark\Extension\Strikethrough\StrikethroughExtension;
@@ -48,6 +49,8 @@ final readonly class PortableMarkdownProfile
         $environment->addExtension(new StrikethroughExtension);
         $environment->addExtension(new TableExtension);
         $environment->addExtension(new FootnoteExtension);
+        // Keeps a fence's {…} options for the code presenter.
+        $environment->addRenderer(FencedCode::class, new PortableFencedCodeRenderer, 10);
 
         return $environment;
     }

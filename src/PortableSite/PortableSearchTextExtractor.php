@@ -58,8 +58,21 @@ final readonly class PortableSearchTextExtractor
                 $excluded[] = $node;
             }
         }
+        // A code line's diff word is for screen readers, not for search.
+        foreach ($xpath->query('//*[@id="docara-search-root"]//*[contains(concat(" ", normalize-space(@class), " "), " docara-code-line__status ")]') ?: [] as $node) {
+            if ($node instanceof DOMNode) {
+                $excluded[] = $node;
+            }
+        }
         foreach ($excluded as $node) {
             $node->parentNode?->removeChild($node);
+        }
+        // Build-time code lines are elements without a newline between them;
+        // a space keeps the last word of one line apart from the next.
+        foreach ($xpath->query('//*[@id="docara-search-root"]//*[contains(concat(" ", normalize-space(@class), " "), " docara-code-line ")]') ?: [] as $line) {
+            if ($line instanceof DOMElement) {
+                $line->appendChild($document->createTextNode(' '));
+            }
         }
 
         $headings = [];

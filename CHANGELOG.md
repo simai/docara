@@ -6,6 +6,22 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Example frames ask for the Framework scripts all at once.** A sandboxed
+  example frame used to request each Framework script the page sends it only
+  after the one before it had loaded, and the frame's opaque origin shares no
+  cache with the page, so every frame paid one round trip per script before
+  Core started (about 2.7 s of the 3–3.4 s a component-package example such
+  as `sf-property-view` took on ui.simai.io). The frame now inserts them
+  together with `async=false`: they download in parallel and still run in
+  the page's order. With a 100 ms delay per request in a local build of the
+  SIMAI Framework documentation, `sf-property-view` renders in its frame in
+  2.3 s instead of 3.3 s, and `sf-table` in 1.1 s instead of 3.5 s. Frames
+  keep receiving the page's boot config, including the component-package
+  declaration in `SF_BOOT_CONFIG.packages`; a test now pins that
+  ([#35](https://github.com/simai/docara/issues/35)).
+
 ## [3.9.0] - 2026-10-25
 
 ### Added

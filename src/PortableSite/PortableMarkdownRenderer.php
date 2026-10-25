@@ -1118,21 +1118,20 @@ script.setAttribute('data-docara-example-framework-boot',item.key);
 document.head.appendChild(script);
 currentBoot.push(item.key);
 });
-var currentScripts=Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).map(function(script){return script.src});
-currentScripts.forEach(function(src){frameworkScriptSources[src]=true});
-var scriptQueue=Promise.resolve();
-(Array.isArray(data.scripts)?data.scripts:[]).forEach(function(src){
+loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);
+}
+/* The Framework scripts go in all at once. A script inserted with async=false is fetched at once and still runs after every async=false script inserted before it, in this and in later environments, so Core runs after the scripts it needs, as on the page. The frame's opaque origin shares no cache with the page, so waiting for each script before asking for the next cost a round trip per script. */
+function loadFrameworkScripts(sources){
+Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).forEach(function(script){frameworkScriptSources[script.src]=true});
+sources.forEach(function(src){
 if(typeof src!=='string'||frameworkScriptSources[src])return;
 frameworkScriptSources[src]=true;
-scriptQueue=scriptQueue.then(function(){return new Promise(function(resolve){
 var script=document.createElement('script');
 script.src=src;
 script.async=false;
 script.setAttribute('data-docara-example-framework-script','');
-script.addEventListener('load',function(){measureSettled();resolve()},{once:true});
-script.addEventListener('error',resolve,{once:true});
+script.addEventListener('load',measureSettled,{once:true});
 document.head.appendChild(script);
-})});
 });
 }
 function measure(){

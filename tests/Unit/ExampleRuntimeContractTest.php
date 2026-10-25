@@ -247,6 +247,56 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringNotContainsString('.docara-example-preview .docara-example-preview__action:focus,.docara-example-preview .docara-example-preview__action:focus-visible', $styles);
     }
 
+    public function test_a_frame_asks_for_every_framework_script_at_once_and_keeps_their_order(): void
+    {
+        $renderer = (string) file_get_contents(dirname(__DIR__, 2) . '/src/PortableSite/PortableMarkdownRenderer.php');
+        self::assertSame(1, preg_match('/\nfunction loadFrameworkScripts\(sources\)\{\n.*?\n\}\n/s', $renderer, $match));
+        self::assertStringContainsString('loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);', $renderer);
+        // Each script used to wait for the one before it to load.
+        self::assertStringNotContainsString('scriptQueue', $renderer);
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The frame runtime check runs the function in Node.js.');
+
+        // A document that records what is appended to its head and when: the
+        // run is synchronous, so every script must be in the head before any
+        // of them could have loaded.
+        $script = <<<'JS'
+const head=[];let loads=0;
+function element(src,existing){return{src,async:true,attributes:{},listeners:{},existing,setAttribute(name,value){this.attributes[name]=value},addEventListener(type,listener){this.listeners[type]=listener}}}
+globalThis.document={
+  head:{appendChild(node){head.push(node)}},
+  createElement(){return element('',false)},
+  querySelectorAll(){return head.filter(node=>'data-docara-example-framework-script' in node.attributes)},
+};
+const frameworkScriptSources={};
+function measureSettled(){loads++}
+JS;
+        $script .= $match[0] . <<<'JS'
+const page=['https://docs.example/_docara/smart-base.js','https://docs.example/_docara/icons.js','https://docs.example/_docara/core.js'];
+loadFrameworkScripts(page);
+const first=head.map(node=>({src:node.src,async:node.async,marked:'data-docara-example-framework-script' in node.attributes,listens:typeof node.listeners.load==='function'}));
+/* A later environment sends the same list and one more script: only the new one is added, after the others. */
+loadFrameworkScripts([...page,'https://docs.example/_docara/late.js',42]);
+process.stdout.write(JSON.stringify({first,all:head.map(node=>node.src),loadsBeforeAnyEvent:loads}));
+JS;
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame([
+            ['src' => 'https://docs.example/_docara/smart-base.js', 'async' => false, 'marked' => true, 'listens' => true],
+            ['src' => 'https://docs.example/_docara/icons.js', 'async' => false, 'marked' => true, 'listens' => true],
+            ['src' => 'https://docs.example/_docara/core.js', 'async' => false, 'marked' => true, 'listens' => true],
+        ], $result['first'], 'Every script is inserted at once, in the page order, with async=false so it runs in that order.');
+        self::assertSame([
+            'https://docs.example/_docara/smart-base.js',
+            'https://docs.example/_docara/icons.js',
+            'https://docs.example/_docara/core.js',
+            'https://docs.example/_docara/late.js',
+        ], $result['all']);
+        self::assertSame(0, $result['loadsBeforeAnyEvent']);
+    }
+
     public function test_a_deferred_example_frame_gets_an_absolute_base_so_each_relative_image_is_fetched_once(): void
     {
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');

@@ -10,7 +10,7 @@ Smart-компонент — переносимый элемент интерф�
 
 ```text
 Markdown -> typed Document IR -> renderer registry
--> SmartComponentGateway -> LayoutComposer -> PageBuilder
+-> SmartComponentGateway -> DeclarativePageRenderer -> PageBuilder
 ```
 
 Docara не выбирает рендерер по имени компонента. Реестр поставщиков

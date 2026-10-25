@@ -102,6 +102,20 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **Updated Docara logo.** The blue logo shipped in 3.8.0 is replaced by the
+  updated one: the wordmark "docara" with a red ring (`#E81123`) as the
+  first "o". Docara's own documentation shows it in the header (a light and
+  a dark file, still 24 px high), uses the red ring as its SVG favicon and
+  has a redrawn share image. The starter templates (`docara init`), the
+  component catalogue examples and the documentation's image examples use the
+  red ring as `docara-mark.svg`, and the starter `favicon.ico` is redrawn from
+  it (16, 32 and 48 px); file names are unchanged. The "Made with Docara"
+  credit draws the new wordmark in two gray tones of the credit colour, as in
+  the owner's gray logo files: the letters
+  `color-mix(in srgb, currentColor 65%, transparent)` and the ring
+  `color-mix(in srgb, currentColor 60%, var(--sf-on-surface))`
+  (`--docara-credit-wordmark`, `--docara-credit-mark`), one inline SVG for
+  both themes; `branding.credit: false` works as before.
 - **`docara build` prints one documentation quality line.** When the project
   has `docara.authoring.json`, the build ends with
   `Documentation quality: 82/100, 5 page(s) need attention (docara qa report).`

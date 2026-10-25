@@ -222,7 +222,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/development/composition.md",
-            "source_sha256": "68c6746cf01ec4e9983519be2a13a9b9ab135aa0fd1b31b6452f47943d42d59e",
+            "source_sha256": "e078736a7d45414e2390ece1fd5ac900afc2b77ffbd95a790d9e7a74b4c27285",
             "release": "3.9.0",
             "source_url": "https://github.com/simai/docara/blob/v3.9.0/docs/site/content/ru/development/composition.md",
             "history_url": "https://github.com/simai/docara/commits/v3.9.0/docs/site/content/ru/development/composition.md",
@@ -533,5 +533,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "27f65085c8e39aaaf19cf64cdff446298eba6866396a3a508ffa82568782771f"
+    "content_sha256": "196291ff9266bb4fb5198df3e94be3beb7988203cf1b1bf0a24df8095c43a87e"
 }

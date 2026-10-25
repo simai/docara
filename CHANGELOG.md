@@ -21,6 +21,22 @@ All notable changes to Docara are recorded here. The format follows
   keep receiving the page's boot config, including the component-package
   declaration in `SF_BOOT_CONFIG.packages`; a test now pins that
   ([#35](https://github.com/simai/docara/issues/35)).
+- **"Композиция интерфейса" is plain Russian.** The page keeps every fact
+  and is split into sections by task: the three levels, the path from file
+  to page, compatibility checks, the atlas, the shell parts, data bindings,
+  project layouts and blocks, project shell contributions and preview, with
+  a "См. также" list. It drops two atlas listings that repeated the first
+  one and names the class that places regions into the layout,
+  `DeclarativePageRenderer`, instead of a `LayoutComposer` that does not
+  exist. The quality report measures the page at 1921 words, 8% of them
+  Latin (it was 3860 words, 82% Latin). The glossary gains "Представление
+  (view)", "Оболочка сайта (shell)" and "Предпросмотр (preview)".
+- **The Design Atlas index shows identifiers as code, in the page
+  language.** Package names, namespaces, origins, providers, authoring kinds,
+  capabilities and container rules are code, and their labels are build
+  strings in English and Russian (`atlas.namespace`, `atlas.origin`,
+  `atlas.provider`, `atlas.authoring`, `atlas.capabilities`,
+  `atlas.container`).
 
 ## [3.9.0] - 2026-10-25
 

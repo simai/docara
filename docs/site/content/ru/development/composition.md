@@ -1,47 +1,50 @@
 ---
 description: "Как устроен интерфейс Docara: макет задаёт области, секции наполняют их блоками, Smart-компоненты рисуют элементы."
-tags: [композиция, дизайн, layout, section, block, atlas, preview]
+tags: [композиция, дизайн, макет, секция, блок, atlas, предпросмотр]
 ---
 
 # Композиция интерфейса
 
-Docara собирает интерфейс как LEGO на трёх уровнях: page Layout задаёт регионы, Section наполняет region разрешёнными slots/blocks, а Smart/View рисует конечный элемент. Это конфигурация из принятых registry descriptors, а не второй шаблонный движок.
+Docara собирает интерфейс как конструктор на трёх уровнях. Макет задаёт
+области страницы, секция наполняет область блоками, а Smart-компонент или
+представление рисует конечный элемент. Всё это — настройки из проверенных
+описаний в реестрах, а не второй шаблонный движок.
 
-## Атлас проекта
+## Три уровня
 
-:::atlas_index {kind=layout,section,block,view,binding,preset}
-:::
+1. **Макет (layout)** отвечает за геометрию страницы и имена её областей.
+2. **Секция (section)** ставится в подходящую область и раскладывает блоки
+   по слотам.
+3. **Блок (block)**, Smart-компонент или представление (view) получает
+   проверенные данные. Конечный HTML он создаёт через общие реестры и
+   `SmartComponentGateway`.
 
-Atlas строится командой `docara atlas --json` только из admitted DesignRegistry, SmartRegistry и BindingRegistry. Его fingerprint входит в build-owned projection; ручного списка компонентов здесь нет.
+Markdown страницы разбирается отдельно, в типизированный документ в памяти
+(Document IR). Длина ограды `:::` не выбирает уровень композиции.
 
-## Композиционная модель
+Проверенные настройки и разобранный Markdown превращаются в общий рецепт
+(Composition Recipe). Стандартный сборщик SIMAI Framework создаёт из него
+Composition Document — готовое дерево страницы. Docara восстанавливает из
+дерева вход своих рендереров и создаёт HTML. Авторские файлы при этом не
+переписываются.
 
-### Три уровня
+## Путь от файла до страницы
 
-1. **Layout** владеет геометрией страницы и именами regions.
-2. **Section** допускается в совместимый region и раскладывает Blocks по slots.
-3. **Block/Smart/View** получает проверенные данные и создаёт конечный render artifact через общие registry/Gateway.
+Каждый шаг описан в своём зарегистрированном файле:
 
-Content Markdown компилируется отдельно в typed in-memory Document IR. Длина `:::` fence не выбирает уровень архитектуры.
-
-Проверенные настройки и прочитанный Markdown превращаются в общий Recipe.
-Стандартный сборщик SIMAI Framework создаёт Composition Document — готовое
-дерево страницы. Docara восстанавливает из него вход своих рендереров и
-создаёт HTML. Авторские файлы при этом не переписываются.
-
-### Реальная insertion chain
-
-| Шаг | Реальный зарегистрированный файл | Ответственность |
+| Шаг | Файл или место | За что отвечает |
 | --- | --- | --- |
-| Layout | `resources/layouts/docara.docs.json` | regions, required flags, container limits |
-| Layout View Tree | `resources/views/layout.docara.docs.json` | безопасные element/region nodes |
-| Region | descriptor-owned `header`, `sidebar`, `main`, `outline`, `footer` | insertion point, не компонент ID branch |
-| Section | `resources/sections/docara.article.json`, `docara.header.json`, `docara.navigation.json`, `docara.outline.json`, `docara.shell.json` | compatible regions и allowed blocks |
-| Section View | `resources/views/section.docara.article.json`, `section.docara.header.json`, `section.docara.shell.json` | admitted slots |
-| Block | `resources/blocks/content.document.json`, `content.markdown.json`, `content.smart.json`, `shell.element.json`, `shell.smart.json` | payload schema/capability |
-| Smart | package, Framework или project artifact | props/views/presets/slots/assets/hydration |
-| View | registered view/preset/template | конечный HTML/assets/provenance |
-| Surface presentation | `src/PortableSite/SurfacePresentation.php` | единая admitted outer geometry для Surface, Hero, Showcase и Promo; semantic content остаётся у компонента |
+| Макет | `resources/layouts/docara.docs.json` | области, обязательность, ширина контейнера |
+| Дерево макета | `resources/views/layout.docara.docs.json` | разрешённые элементы и места областей |
+| Область | `header`, `sidebar`, `main`, `outline`, `footer` из описания макета | место вставки, а не ветка кода по ID компонента |
+| Секция | `resources/sections/docara.article.json`, `docara.header.json`, `docara.navigation.json`, `docara.outline.json`, `docara.shell.json` | подходящие области и разрешённые блоки |
+| Дерево секции | `resources/views/section.docara.article.json`, `section.docara.header.json`, `section.docara.shell.json` | допустимые слоты |
+| Блок | `resources/blocks/content.document.json`, `content.markdown.json`, `content.smart.json`, `shell.element.json`, `shell.smart.json` | схема данных блока и его возможность |
+| Smart-компонент | из пакета Docara, SIMAI Framework или проекта | параметры, представления, пресеты, слоты, ассеты, оживление в браузере |
+| Представление | зарегистрированное представление, пресет или шаблон | конечный HTML, ассеты, происхождение |
+| Общее оформление | `src/PortableSite/SurfacePresentation.php` | единая внешняя рамка Surface, Hero, Showcase и Promo |
+
+Так проходит обычная страница документации:
 
 ```text
 Markdown owner
@@ -57,151 +60,90 @@ Markdown owner
   -> Docara renderer projection
   -> SmartComponentGateway when a Smart leaf is present
   -> registered View
-  -> LayoutComposer
+  -> DeclarativePageRenderer: regions into the layout View Tree
   -> PageBuilder result
 ```
 
-### Кто проверяет совместимость
+## Кто проверяет совместимость
 
-Atlas публикует для каждого container `allowed_children`, `slots`, `min_children`,
-`max_children`, `order`, `max_depth` и machine-readable `depth_semantics`.
-Значение `relative_subtree_root_level_1` означает, что каждый container считает
-собственный root уровнем 1. Registry отклоняет unknown View Tree
-kind/tag/attribute/utility/region/slot до registration. Project config выбирает
-только admitted IDs и не содержит class/callback/PHP/template path.
+Для каждого контейнера Atlas показывает правила вложения: `allowed_children`,
+`slots`, `min_children`, `max_children`, `order`, `max_depth` и
+`depth_semantics`. Значение `relative_subtree_root_level_1` значит, что каждый
+контейнер считает себя уровнем 1.
 
-:::atlas_index {kind=layout,section,block}
+Реестр отклоняет неизвестный вид узла, тег, атрибут, утилиту, область или слот
+в дереве разметки (View Tree). Это происходит ещё до регистрации. Настройки
+проекта только выбирают допущенные ID. В них нельзя указать класс, функцию
+обратного вызова, PHP-код или путь к шаблону.
+
+### Общее оформление не меняет владельца
+
+Surface — контейнер для авторского содержимого. Hero, Showcase и Promo — свои
+типизированные блоки со своим смыслом. Их владелец, состояния, параметры и
+происхождение берутся из их собственных описаний. Внешнюю рамку — ширину,
+контейнер и фон — у всех собирает одно неизменяемое оформление Surface.
+Оборачивать эти блоки в Surface нельзя. Страница целиком и `<head>`
+по-прежнему принадлежат приложению, а области в дерево макета расставляет
+`DeclarativePageRenderer`.
+
+## Атлас проекта
+
+Atlas — список всего, что можно поставить на страницу: макеты, секции, блоки,
+представления, привязки и пресеты. Его выводит `docara atlas --json`, и
+строится он только из допущенных реестров `DesignRegistry`, `SmartRegistry` и
+`BindingRegistry`. Отпечаток Atlas сборка записывает в свою квитанцию. Atlas —
+только вычисленное отображение реестров, редактировать его как источник
+нельзя. Ниже — его текущее содержимое, без ручного списка:
+
+:::atlas_index {kind=layout,section,block,view,binding,preset}
 :::
 
-### Общая presentation не меняет semantic owner
+## Части оболочки
 
-Surface — authored content container. Hero, Showcase и Promo — отдельные typed
-semantic definitions. Их Atlas ownership, states, props и provenance берутся из
-реальных admitted definitions, но outer width/container/background frame
-собирает одна immutable Surface presentation. Оборачивать эти semantic blocks
-в Surface нельзя; page/head и границы region по-прежнему принадлежат
-LayoutComposer.
+Одна оболочка сайта обслуживает виды страниц `docs`, `site` и `landing`.
+Варианты меняют зарегистрированное оформление, а путь отрисовки остаётся тем
+же.
 
-## Матрица интерфейса
-
-Один publisher shell обслуживает docs, site и landing presets. Варианты меняют зарегистрированное presentation, а не renderer path.
-
-| Поверхность | Effective owner | Capability / presentation | Можно заменить проектом |
+| Часть интерфейса | Кто отвечает | Возможность или оформление | Можно заменить проектом |
 | --- | --- | --- | --- |
-| Brand | `docara.brand` / branding binding | full, compact, logo, text | через admitted branding capability |
-| Header navigation | `docara.navigation` | `header` | да |
-| Sidebar tree | `docara.navigation` | `tree` | да |
-| Mobile/compact navigation | `docara.navigation` | `compact` | да |
-| Outline / TOC | `docara.toc` | outline binding | да |
-| Search | registered search Smart leaf | shell search capability | да |
-| Breadcrumbs | registered breadcrumbs Smart leaf | reading context | да |
-| Previous/next pager | registered pager Smart leaf | reading context | да |
-| Reader preferences | `docara.preferences` | side panel | да |
-| Footer | registered/project shell Smart | footer capability | да |
-| Outer document, `<head>`, canonical, metadata, asset ledger | PageBuilder/application | application-owned | нет |
+| Логотип и название | `docara.brand` через привязку `docara.branding` | `full`, `compact`, `logo`, `text` | через допущенную возможность бренда |
+| Меню в шапке | `docara.navigation` | `header` | да |
+| Дерево разделов в боковой колонке | `docara.navigation` | `tree` | да |
+| Компактное меню для телефона | `docara.navigation` | `compact` | да |
+| Содержание страницы | `docara.toc` | привязка `docara.outline` | да |
+| Поиск | зарегистрированный Smart-компонент поиска | возможность поиска в оболочке | да |
+| Хлебные крошки | зарегистрированный Smart-компонент | контекст чтения | да |
+| Ссылки «назад» и «вперёд» | зарегистрированный Smart-компонент | контекст чтения | да |
+| Настройки чтения | `docara.preferences` | боковая панель | да |
+| Подвал | Smart-компонент пакета или проекта | возможность подвала | да |
+| Документ целиком: `<head>`, канонический адрес, метаданные, список ассетов | `PageBuilder` и приложение | принадлежит приложению | нет |
 
-### Navigation presentations
+`header`, `tree` и `compact` — три представления одного `docara.navigation`.
+Нужное выбирает `BindingRegistry` по возможности и описанию поставщика.
+`SmartComponentGateway`, рендерер, `DeclarativePageRenderer` и `PageBuilder`
+остаются теми же. Если `view` не указан, сохраняется прежнее поведение по
+умолчанию.
 
-`header`, `tree` и `compact` — три presentation одного `docara.navigation`. BindingRegistry выбирает их по capability и provider descriptor; Gateway, renderer, LayoutComposer и PageBuilder остаются теми же.
+Вклад проекта не может заменить канонический адрес, метаданные языка,
+квитанцию сборки, происхождение поиска и меню или произвольный фрагмент
+`<head>`. Эти части принадлежат приложению. Так `verify-static` может
+проверить сайт, а полная сборка и сборка одной страницы дают одинаковый
+результат.
 
-:::atlas_index {kind=binding}
-:::
+## Привязки данных оболочки
 
-### Граница page/head
+Блок `shell.smart` может выбрать только зарегистрированную привязку в поле
+`bind`. Привязка соединяет данные страницы с уже зарегистрированным
+Smart-компонентом. Это не PHP-функция и не путь к шаблону. Встроенный реестр
+содержит три привязки:
 
-Project contribution не может заменить canonical URL, locale metadata, build receipt, search/navigation provenance или произвольный `<head>` fragment. Эти поверхности остаются application-owned, чтобы static verification и full/single parity были проверяемыми.
-
-## Вклад проекта в оболочку
-
-Project-owned shell contribution — это data-only artifact в разрешённом `design/`/`smart/` root и ссылка на admitted binding ID. Он не требует изменения engine `src/`.
-
-### Порядок подключения
-
-1. Выберите собственный namespace в `docara.json`.
-2. Создайте artifact через hash-bound scaffold dry-run/apply.
-3. Проверьте manifest/schema/namespace/capabilities.
-4. Убедитесь через `docara atlas --json`, что owner=`project` и support=`project`.
-5. Выполните isolated preview на реальной странице.
-6. Только затем соберите full output.
-
-:::atlas_index {support=project}
-:::
-
-### Fail-closed границы
-
-- project ID не затеняет package/Framework ID;
-- binding-owned props нельзя переопределить config-ом;
-- capability/region/slot collision отклоняется;
-- traversal, symlink, hardlink, case collision и arbitrary path отклоняются;
-- shell contribution не меняет outer page/head.
-
-Пример footer из принятого Goal B показывает shell-role, а install builder и product configurator — content-role. Все три проходят существующие registries и Gateway.
-
-## Просмотр по пути сборки
-
-Preview не имеет собственного renderer. `PreviewKernel` вызывает те же parser/compiler, DesignRegistry, SmartComponentGateway, renderer, asset collector, LayoutComposer и PageBuilder; output помечен preview-purpose и production verifier его не принимает.
-
-### Полная композиция
-
-:::internal_preview {size=tall title="Композиция regions"}
-[Открыть результат](/ru/demonstrator-results/regions-composed/)
-:::
-
-### Docs preset
-
-:::internal_preview {size=tall title="Docs preset"}
-[Открыть результат](/ru/demonstrator-results/preset-docs/)
-:::
-
-### Landing preset
-
-:::internal_preview {size=tall title="Landing preset"}
-[Открыть результат](/ru/demonstrator-results/preset-landing/)
-:::
-
-Команда `docara preview smart|region|layout|page` публикует isolated tree в `.docara-preview/output/<target>/`. `verify-static` обязан вернуть `PREVIEW_BUILD_PURPOSE_FORBIDDEN`; для production нужен обычный full build.
-
-## Свои макеты и блоки проекта
-
-Проект может добавить свой Layout, Section, Block и безопасный View Tree в
-каталог `design/`. Менять движок для этого не нужно.
-
-### Цепочка проекта
-
-```text
-Layout → Region → Section → Slot → Block → Smart или безопасный element
-```
-
-Все определения читает один `DesignRegistry`. Встроенные ID принадлежат
-пакету, project ID — namespace из `docara.json`:
-
-```json
-{"smart":{"namespace":"project"}}
-```
-
-Project artifact должен начинаться с `project.`. Он не может заменить
-`docara.*`, `content.*`, `shell.*` или `ui.*`. Дубликаты, symlink, выход из
-корня и неизвестные определения останавливают сборку.
-
-Команда `docara atlas --json` показывает effective Layout, View, Section,
-Block, Smart, binding и preset из принятых registries. Atlas — только
-детерминированная проекция: редактировать его как источник регистрации нельзя.
-Для контейнеров он также показывает допустимые children, slots, порядок,
-количество и максимальную глубину.
-
-### Привязки данных оболочки
-
-Блок `shell.smart` может выбрать только зарегистрированную привязку `bind`.
-Привязка соединяет данные страницы с уже зарегистрированным Smart-компонентом;
-она не является PHP callback или путём к шаблону. Встроенный реестр содержит:
-
-| ID | Возможности | Smart |
+| ID | Возможности | Smart-компонент |
 | --- | --- | --- |
 | `docara.branding` | `shell.brand` | `docara.brand` |
 | `docara.navigation` | `shell.primary-navigation`, `shell.secondary-navigation` | `docara.navigation` |
 | `docara.outline` | `shell.outline` | `docara.toc` |
 
-Проверьте effective descriptor и его происхождение командами:
+Описание привязки и его происхождение показывают команды:
 
 ```bash
 docara list binding
@@ -209,20 +151,31 @@ docara inspect binding docara.navigation
 docara schema binding
 ```
 
-Layout region и Section объявляют совместимые capabilities. Сборка до render
-отклонит неизвестную привязку, несовместимую capability, попытку передать
-binding-owned props или подменить package ID. Project JSON не может задавать
-class, callback, PHP/template path или произвольный filesystem path.
+Область макета и секция объявляют подходящие возможности. Ещё до отрисовки
+сборка отклонит неизвестную привязку и несовместимую возможность. Так же она
+отклонит попытку передать параметры, которыми владеет привязка, или подменить
+ID пакета. JSON проекта не может задавать класс, функцию, путь к PHP-файлу,
+шаблону или любому другому файлу.
 
-Один `docara.navigation` поддерживает presentations `header`, `tree` и
-`compact`. Вызов остаётся тем же `shell.smart`, Gateway и PageBuilder; меняется
-только зарегистрированный `view`. Если `view` явно не указан, сохраняется
-совместимое поведение по умолчанию.
+## Свои макеты и блоки проекта
 
-Starter содержит небольшой footer-пример: project Section и Block допускают
-только зарегистрированный `project.footer-links` в region `footer`. Ни config,
-ни Markdown не выбирают PHP/template path; component, View и assets разрешает
-обычный project Smart provider.
+Проект может добавить свои макет, секцию, блок и безопасное дерево разметки в
+каталог `design/`. Менять движок для этого не нужно. Цепочка та же:
+
+```text
+Layout → Region → Section → Slot → Block → Smart или безопасный element
+```
+
+Все определения читает один `DesignRegistry`. Встроенные ID принадлежат
+пакету, а ID проекта — пространству имён из `docara.json`:
+
+```json
+{"smart":{"namespace":"project"}}
+```
+
+ID проекта должен начинаться с `project.`. Он не может заменить `docara.*`,
+`content.*`, `shell.*` или `ui.*`. Сборку останавливают повторы,
+символические ссылки, выход из корня и неизвестные определения.
 
 ### Файлы
 
@@ -236,7 +189,8 @@ design/
     └── section.project.article.json
 ```
 
-Layout задаёт безопасный View Tree, regions, их defaults и место документа:
+Макет задаёт безопасное дерево разметки, области, их значения по умолчанию и
+место документа:
 
 ```json
 {
@@ -267,11 +221,11 @@ Layout задаёт безопасный View Tree, regions, их defaults и м
 }
 ```
 
-Section объявляет совместимые regions, slots и blocks. Block выбирает один из
-уже зарегистрированных безопасных renderer kinds. JSON не принимает PHP,
-template path, callback, произвольный HTML или CSS.
+Секция объявляет подходящие области, слоты и блоки. Блок выбирает один из уже
+зарегистрированных безопасных видов рендерера. JSON не принимает PHP, путь к
+шаблону, функцию, произвольный HTML или CSS.
 
-Чтобы выбрать project layout, сбросьте унаследованную ветку:
+Чтобы выбрать макет проекта, сбросьте унаследованную ветку:
 
 ```json
 {
@@ -282,14 +236,73 @@ template path, callback, произвольный HTML или CSS.
 }
 ```
 
-### Предпросмотр
+## Вклад проекта в оболочку
 
-Preview использует обычный `PortableSiteBuilder`, PageBuilder, registries,
-Smart gateway, renderer и layout composer. Результат изолирован в
-`.docara-preview/` и не считается production build receipt. Cache receipt
-имеет `build.purpose=preview`, поэтому `verify-static` завершится ошибкой
-`PREVIEW_BUILD_PURPOSE_FORBIDDEN`. Это защита самого receipt, а не соседний
-служебный marker.
+Часть оболочки от проекта — это файлы с данными в разрешённом каталоге
+`design/` или `smart/` и ссылка на допущенный ID привязки. Менять `src/`
+движка не нужно. Порядок подключения:
+
+1. Выберите своё пространство имён в `docara.json`.
+2. Создайте файлы через `docara scaffold`: сначала `--dry-run`, затем
+   `--apply` с хешем плана.
+3. Проверьте описание, схему, пространство имён и возможности.
+4. Убедитесь через `docara atlas --json`, что у элемента `owner=project` и
+   `support=project`.
+5. Посмотрите результат в отдельном предпросмотре на реальной странице.
+6. Только после этого соберите сайт целиком.
+
+Сборка останавливается, если:
+
+- ID проекта совпадает с ID пакета или SIMAI Framework;
+- настройки пытаются переопределить параметры, которыми владеет привязка;
+- возможность, область или слот конфликтует с уже занятыми;
+- путь выходит за корень, ведёт через символическую или жёсткую ссылку,
+  совпадает с другим без учёта регистра или указывает на произвольный файл;
+- вклад в оболочку пытается изменить страницу целиком или `<head>`.
+
+Стартовый шаблон содержит небольшой пример подвала. Секция и блок проекта
+допускают в область `footer` только зарегистрированный `project.footer-links`.
+Ни настройки, ни Markdown не выбирают путь к PHP-файлу или шаблону. Компонент,
+его представление и ассеты находит обычный поставщик Smart-компонентов
+проекта.
+
+Подвал работает как часть оболочки, а `project.install-builder` и
+`project.product-configurator` — как содержимое страницы. Все три проходят
+те же реестры и `SmartComponentGateway`. Элементы проекта на этом сайте:
+
+:::atlas_index {support=project}
+:::
+
+## Предпросмотр
+
+У предпросмотра (preview) нет своего рендерера. `PreviewKernel` запускает
+обычный `PortableSiteBuilder` с теми же разбором Markdown, `DesignRegistry`,
+`SmartComponentGateway`, рендерером, сборщиком ассетов,
+`DeclarativePageRenderer` и `PageBuilder`. Из готовой страницы он берёт
+нужную часть.
+
+### Полная композиция
+
+:::internal_preview {size=tall title="Композиция областей"}
+[Открыть результат](/ru/demonstrator-results/regions-composed/)
+:::
+
+### Вид docs
+
+:::internal_preview {size=tall title="Вид docs"}
+[Открыть результат](/ru/demonstrator-results/preset-docs/)
+:::
+
+### Вид landing
+
+:::internal_preview {size=tall title="Вид landing"}
+[Открыть результат](/ru/demonstrator-results/preset-landing/)
+:::
+
+### Команды
+
+Команда `docara preview smart|region|layout|page` собирает выбранную часть в
+`.docara-preview/output/<target>/`:
 
 ```bash
 docara preview page --page=/ru/components/alert/
@@ -298,27 +311,42 @@ docara preview region --page=/ru/components/alert/ --selector=main
 docara preview smart --page=/ru/components/alert/ --selector=ui.alert
 ```
 
-Для автоматизации добавьте `--json`. Команда watch следит за effective input
-chain выбранного route, locale UI-copy и реально разрешёнными layout, section,
-block, Smart, template и asset dependencies из package/project providers:
+Для автоматизации добавьте `--json`. С `--watch` команда следит за всем, от
+чего зависит выбранная страница. Это подписи интерфейса для её языка и
+реально использованные макет, секция, блок, Smart-компонент, шаблон и ассеты
+из пакета и проекта:
 
 ```bash
 docara preview region --page=/ru/components/alert/ --selector=main --watch
 ```
 
-`artifact.html` содержит точный выбранный fragment, `index.html` — ту же
-production page для проверки в браузере, `preview.json` — assets, provenance,
-dependencies и hashes. В том же preview-root публикуются нужные local CSS, JS,
-Framework и content assets, поэтому открывайте `index.html` через HTTP именно
-из `.docara-preview/output/<target>/`. Production receipt и прочие HTML routes
-туда не копируются. Normal `build_*` preview не перезаписывает.
+В каталоге результата лежат три файла:
 
-Изменение нерелевантного project Smart не пересобирает выбранный target.
-Изменение, появление или удаление файла внутри реально выбранного project или
-package artifact вызывает одну single-page пересборку. `target_only=true`
-выводится из scope и результата пересборки, а не задаётся константой.
+- `artifact.html` — ровно выбранный фрагмент;
+- `index.html` — та же страница, что в рабочей сборке, для проверки в браузере;
+- `preview.json` — ассеты, происхождение, зависимости и хеши.
 
-### Проверка
+Рядом публикуются нужные локальные CSS, JS, файлы SIMAI Framework и ассеты
+страницы. Поэтому открывайте `index.html` через HTTP из каталога
+`.docara-preview/output/<target>/`. Квитанция рабочей сборки и другие
+страницы туда не копируются. Предпросмотр не перезаписывает обычные каталоги
+`build_*`.
+
+Изменение постороннего Smart-компонента проекта выбранную часть не
+пересобирает. Изменение, появление или удаление файла внутри реально
+использованного элемента проекта или пакета вызывает одну пересборку этой
+страницы. Признак `target_only=true` выводится из этого и из результата
+пересборки, а не задан заранее.
+
+### Почему предпросмотр не попадёт на сайт
+
+Результат предпросмотра изолирован в `.docara-preview/` и не считается
+рабочей сборкой. В его квитанции записано `build.purpose=preview`, поэтому
+`verify-static` завершится ошибкой `PREVIEW_BUILD_PURPOSE_FORBIDDEN`. Защиту
+даёт сама квитанция, а не отдельная служебная отметка рядом. Для публикации
+нужна обычная полная сборка.
+
+## Проверка
 
 ```bash
 php vendor/bin/phpunit --filter 'DesignRegistryTest|ProjectDesignCompositionTest|PreviewKernelTest'
@@ -327,11 +355,15 @@ php ../../docara build production
 php ../../docara verify-static build_production
 ```
 
-Не добавляйте ID проекта в engine PHP или schema enum. Если нужен новый
-исполняемый renderer/API, это отдельное расширение платформы, а не project
-JSON.
+Не добавляйте ID проекта в PHP-код движка или в перечисления схем. Если нужен
+новый исполняемый рендерер или API, это отдельное расширение платформы, а не
+JSON проекта.
 
 ## См. также
 
 - [Области макета](/ru/settings/layout-and-regions/) — настройка областей автором сайта
+- [Smart-компоненты](/ru/development/smart-components/) — описание компонента, поставщики и шлюз
+- [Архитектура](/ru/development/architecture/) — путь сборки от Markdown до HTML
+- [SDK для разработчика и AI-агента](/ru/development/developer-sdk/) — команды `inspect`, `schema`, `scaffold`, `preview`
+- [Словарь терминов](/ru/reference/glossary/)
 - [Примеры для разработчиков](/ru/development/examples/)

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Console;
 
+use Simai\Docara\Application\PageInspectionService;
 use Simai\Docara\Authoring\AuthoringContract;
 use Simai\Docara\PortableSite\BuildReceipts;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
@@ -72,6 +73,21 @@ final class BuildCommand extends Command
             $destination,
             microtime(true) - $startedAt,
         ));
+        try {
+            // One line at most: the build never fails on a former parameter
+            // name, and `docara validate page` names each use and its line.
+            $deprecated = (new PageInspectionService)->parameterDeprecations($this->base);
+            if ($deprecated['uses'] > 0) {
+                $this->console->comment(sprintf(
+                    'Deprecated component parameters: %d use(s) on %d page(s) render as before; run "docara validate page %s" for the replacements (MARKDOWN_PARAMETER_DEPRECATED).',
+                    $deprecated['uses'],
+                    count($deprecated['pages']),
+                    $deprecated['pages'][0],
+                ));
+            }
+        } catch (Throwable) {
+            // The summary is advice; a project the scan cannot read still built.
+        }
         try {
             $authoring = AuthoringContract::load($this->base)->present;
         } catch (Throwable $exception) {

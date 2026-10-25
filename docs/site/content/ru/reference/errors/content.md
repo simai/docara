@@ -45,9 +45,10 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_BLOCK_LIMIT_EXCEEDED`, `FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED` | На странице больше 64 строк-открытий блоков и компонентов. **Что сделать:** Разделите страницу на несколько. |
 | `MARKDOWN_BLOCK_INPUT_INVALID`, `MARKDOWN_INLINE_INPUT_INVALID` | Файл не в кодировке UTF-8. **Что сделать:** Сохраните страницу в UTF-8. |
 | `MARKDOWN_COMPONENT_ATTRIBUTES_INVALID` | Атрибуты в `{...}` после имени блока записаны с ошибкой. **Что сделать:** Пишите `{имя=значение}`; значение с пробелами берите в двойные кавычки. |
-| `MARKDOWN_COMPONENT_ATTRIBUTE_DUPLICATE` | Атрибут указан дважды. **Что сделать:** Оставьте один. |
+| `MARKDOWN_COMPONENT_ATTRIBUTE_DUPLICATE` | Атрибут указан дважды, в том числе под старым и новым именем, например `type` и `variant` у бейджа. **Что сделать:** Оставьте один, с новым именем. |
 | `MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN` | Блок не поддерживает такой атрибут. **Что сделать:** Проверьте список атрибутов на странице блока в [каталоге компонентов](/components/). |
 | `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID` | Значение атрибута не из списка допустимых. **Что сделать:** Возьмите значение из описания блока. |
+| `MARKDOWN_PARAMETER_DEPRECATED` | Предупреждение, а не ошибка: страница использует старое имя параметра или старое значение, например `view` вместо `layout` или `ratio=16x9` вместо `ratio=16/9`. Страница выглядит так же, сборка не останавливается и пишет одну строку-итог. **Что сделать:** Запустите `docara validate page <адрес>`: он покажет строку и новое имя. Замените имя или значение. Полный список — в разделе [«Устаревшие имена параметров»](/ru/start/component-model/#устаревшие-имена-параметров). |
 | `MARKDOWN_RAW_HTML_FORBIDDEN` | В Markdown есть HTML-теги. Docara не пропускает HTML в страницу. **Что сделать:** Перепишите фрагмент на Markdown или поместите код в блок [html](/components/html/) или [example](/components/example/), которые показывают его в изолированной рамке. |
 | `MARKDOWN_BLOCK_PLACEHOLDER_CARDINALITY_INVALID`, `MARKDOWN_INLINE_PLACEHOLDER_CARDINALITY_INVALID`, `FRAMEWORK_PLACEHOLDER_CARDINALITY_INVALID` | Текст страницы случайно совпал со служебной меткой, которой Docara отмечает место блока. **Что сделать:** Измените текст рядом с блоком. Если ошибка повторяется, сообщите о ней в репозиторий Docara. |
 
@@ -141,7 +142,7 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_HERO_MEDIA_IMAGE_COUNT_INVALID` | Больше одной картинки. **Что сделать:** Оставьте одну. |
 | `MARKDOWN_HERO_MEDIA_IMAGE_REQUIRED` | `media=side` или `media=background` без картинки. **Что сделать:** Добавьте одну картинку. |
 | `MARKDOWN_HERO_MEDIA_IMAGE_FORBIDDEN` | `media=none`, но в hero есть картинка. **Что сделать:** Уберите картинку или укажите `media=side`. |
-| `MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE` | `media=side` без `variant=split`. **Что сделать:** Добавьте `variant=split`. |
+| `MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE` | `media=side` без `layout=split`. **Что сделать:** Добавьте `layout=split`. |
 | `MARKDOWN_HERO_SIDE_ALT_REQUIRED` | У боковой картинки пустой alt. **Что сделать:** Опишите картинку в `![описание](...)`. |
 | `MARKDOWN_HERO_BACKGROUND_ALT_FORBIDDEN` | У фоновой картинки есть alt. Фон не несёт смысла, и программа экранного доступа не должна его читать. **Что сделать:** Оставьте alt пустым: `![](...)`. |
 | `MARKDOWN_HERO_BACKGROUND_MODE_REQUIRED` | Настройки фона указаны без `media=background`. **Что сделать:** Добавьте `media=background` или уберите настройки фона. |

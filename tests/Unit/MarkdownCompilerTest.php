@@ -45,7 +45,7 @@ final class MarkdownCompilerTest extends TestCase
             'example' => 4,
             'heading' => 5,
             'list' => 1,
-            'paragraph' => 4,
+            'paragraph' => 5,
             'table' => 3,
         ], $counts);
         $components = array_values(array_filter(
@@ -53,11 +53,11 @@ final class MarkdownCompilerTest extends TestCase
             static fn (DocumentNode $node): bool => $node instanceof ComponentNode,
         ));
         self::assertSame('docara.badge', $components[0]->component);
-        self::assertSame(['line' => 8, 'column' => 1], [
+        self::assertSame(['line' => 12, 'column' => 1], [
             'line' => $components[0]->location()->line,
             'column' => $components[0]->location()->column,
         ]);
-        self::assertSame(75, $components[15]->location()->line);
+        self::assertSame(79, $components[15]->location()->line);
         self::assertSame(
             trim((string) file_get_contents($root . '/tests/fixtures/document-ir/badge.json')),
             trim(CanonicalJson::encodePretty($document->toArray())),

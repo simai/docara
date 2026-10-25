@@ -67,6 +67,19 @@ final class TextStatistics
         return $lengths;
     }
 
+    /**
+     * Whether a block is a list of code names rather than prose: at least
+     * three pieces of inline code and more than two of them for every
+     * ordinary word, as in "**A.** `a` · `abc` · `ac_unit`". Such a block has
+     * no sentences to measure.
+     */
+    public function isCodeList(string $block): bool
+    {
+        $code = substr_count($block, self::CODE_TOKEN);
+
+        return $code >= 3 && $code > 2 * $this->wordCount($block);
+    }
+
     public static function isLatinWord(string $word): bool
     {
         return preg_match('/\p{Latin}/u', $word) === 1 && preg_match('/^[\p{Latin}\p{N}\'’-]+$/u', $word) === 1;

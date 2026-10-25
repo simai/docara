@@ -156,6 +156,27 @@ final class QualityChecksTest extends TestCase
     }
 
     #[Test]
+    public function a_list_of_code_names_or_a_table_cell_is_not_a_sentence(): void
+    {
+        $names = '<p><strong>A.</strong> ' . implode(' · ', array_map(static fn (int $i): string => '<code>icon_' . $i . '</code>', range(1, 120))) . '</p>';
+        $cell = '<table><tr><th>Поле</th></tr><tr><td><p>' . str_repeat('слово ', 50) . 'конец.</p></td></tr></table>';
+        $prose = '<p>Atlas показывает <code>slots</code>, <code>order</code> и <code>max_depth</code> для каждого контейнера.</p>';
+        $facts = (new HtmlPageReader)->read('<html lang="en"><body><article class="docara-prose"><h1>Icons</h1>' . $names . $cell . $prose . '</article></body></html>');
+
+        self::assertCount(2, $facts['blocks'], 'The paragraph inside the table cell is not a prose block.');
+        $text = new TextStatistics;
+        self::assertTrue($text->isCodeList($facts['blocks'][0]));
+        self::assertFalse($text->isCodeList($facts['blocks'][1]), 'Prose with a few code names is still prose.');
+
+        $page = ['facts' => ['blocks' => [$facts['blocks'][0], ...self::page()['facts']['blocks']]] + self::page()['facts']] + self::page();
+        $analyzer = new QualityPageAnalyzer;
+        $codes = array_column($analyzer->analyze($page, self::site()), 'code');
+        self::assertNotContains('QUALITY_SENTENCE_TOO_LONG', $codes);
+        self::assertNotContains('QUALITY_SENTENCES_LONG', $codes);
+        self::assertLessThanOrEqual(QualityPageAnalyzer::MAX_SENTENCE_WORDS, $analyzer->metrics()['longest_sentence_words']);
+    }
+
+    #[Test]
     public function text_statistics_are_plain_and_deterministic(): void
     {
         $text = new TextStatistics;

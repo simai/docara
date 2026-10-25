@@ -201,10 +201,13 @@ final class QualityPageAnalyzer
             $add('QUALITY_TOPIC_UNCLEAR', 'No tags, and neither the description nor the first paragraph repeats a word of the title "' . $page['title'] . '".');
         }
 
-        // Readability.
+        // Readability. Only prose has sentences: a block that is a list of
+        // code names, such as an index of icon names, is left out.
         $sentences = [];
         foreach ($facts['blocks'] as $block) {
-            array_push($sentences, ...$this->text->sentenceLengths($block));
+            if (! $this->text->isCodeList($block)) {
+                array_push($sentences, ...$this->text->sentenceLengths($block));
+            }
         }
         if ($sentences !== []) {
             $average = array_sum($sentences) / count($sentences);

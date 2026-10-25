@@ -38,6 +38,17 @@ All notable changes to Docara are recorded here. The format follows
   `atlas.provider`, `atlas.authoring`, `atlas.capabilities`,
   `atlas.container`).
 
+### Fixed
+
+- **Sentence checks read only prose.** `QUALITY_SENTENCE_TOO_LONG` and
+  `QUALITY_SENTENCES_LONG` no longer count a paragraph that is a list of code
+  names, such as the 3926 icon names on the icon page, which the report took
+  for one 520-word sentence. A block counts as such a list when it has at
+  least three pieces of inline code and more than two for every other word.
+  Paragraphs and list items inside table cells are no longer prose blocks
+  either, for these checks and for the glossary check. The icon page now
+  scores 100.
+
 ## [3.9.0] - 2026-10-25
 
 ### Added

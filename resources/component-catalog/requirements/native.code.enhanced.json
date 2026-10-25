@@ -24,6 +24,9 @@
         "framework_owner": "simai/docara"
     },
     "gap": {
-        "owner": "simai/docara"
+        "owner": "simai/docara",
+        "reason": "Code blocks have no file title, line highlighting, line numbers, diff markers, focus or terminal frame yet.",
+        "fallback": "Use a plain fenced code block, or :::code {src=... lines=...} to show a project file or a line range.",
+        "admission": "Docara renders these options at build time for fenced blocks and :::code alike, with tests, a docs page with a live example and a catalogue entry; this record is then removed."
     }
 }

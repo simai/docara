@@ -24,6 +24,9 @@
         "framework_owner": "larena/ui"
     },
     "gap": {
-        "owner": "simai/docara"
+        "owner": "simai/docara",
+        "reason": "The Framework badge exists as a Smart component, but its manifest is not admitted for Markdown pages, so a page cannot call it.",
+        "fallback": "Use the inline :badge[text]{variant=... scheme=... size=...} component, which renders the same Framework badge classes.",
+        "admission": "The Framework lock pins a ui.badge Smart manifest with its assets, and Docara admits it with a consumer policy, tests, a docs page with a live example and a catalogue entry; this record is then removed."
     }
 }

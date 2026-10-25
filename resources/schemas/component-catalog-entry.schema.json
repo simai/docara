@@ -447,9 +447,21 @@
         },
         "gap": {
             "type": "object",
-            "required": ["owner"],
+            "required": ["owner", "reason", "fallback", "admission"],
             "properties": {
                 "owner": {
+                    "$ref": "#/$defs/non_empty_string"
+                },
+                "reason": {
+                    "description": "Why the component is not available yet.",
+                    "$ref": "#/$defs/non_empty_string"
+                },
+                "fallback": {
+                    "description": "What an author uses until it is available.",
+                    "$ref": "#/$defs/non_empty_string"
+                },
+                "admission": {
+                    "description": "The condition under which the requirement is replaced by a supported component.",
                     "$ref": "#/$defs/non_empty_string"
                 }
             },

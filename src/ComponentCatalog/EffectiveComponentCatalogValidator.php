@@ -102,6 +102,14 @@ final readonly class EffectiveComponentCatalogValidator
                         'Every unavailable catalogue entry needs a technical owner.',
                     );
                 }
+                foreach (['reason', 'fallback', 'admission'] as $field) {
+                    if (! is_string($gap[$field] ?? null) || trim($gap[$field]) === '') {
+                        throw new PortableConfigurationException(
+                            'COMPONENT_CATALOG_GAP_INCOMPLETE',
+                            "Unavailable catalogue entry [{$entry['id']}] needs a gap [$field]: why it is missing, what to use meanwhile, and when it is admitted.",
+                        );
+                    }
+                }
             }
 
             foreach ($this->referencedPaths($entry) as $path) {

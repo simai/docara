@@ -1,0 +1,253 @@
+{
+    "$comment": "One name means one thing across every typed, inline and native component. tests/Unit/ComponentParameterVocabularyTest.php checks every catalogue parameter against this file: a name is either in the vocabulary, or it is a justified exception for the components listed, and no component uses a known synonym of a vocabulary name.",
+    "vocabulary": {
+        "type": "Semantic status: what the content means (info, success, warning, danger).",
+        "variant": "Visual style of the same content (filled, tonal, outlined, plain).",
+        "scheme": "Colour from the SIMAI Framework palette.",
+        "layout": "Arrangement of the component's parts.",
+        "size": "A step of the SIMAI Framework size scale (1/3, 1/2, 1, 2, 3).",
+        "ratio": "Aspect ratio, always written a/b; auto where the component allows it.",
+        "label": "Accessible name, read by assistive technology; it need not be visible.",
+        "title": "Visible heading or name.",
+        "caption": "Visible caption under the content.",
+        "href": "Address of a link.",
+        "src": "Address of a file the component reads or shows.",
+        "open": "Initial disclosure state.",
+        "sync": "Group of components that switch together.",
+        "tone": "Tone of the surface or block: default, muted, accent, contrast."
+    },
+    "status_values": ["clear", "info", "note", "tip", "success", "warning", "danger"],
+    "size_scale": ["1/3", "1/2", "1", "2", "3"],
+    "ratio_values": ["auto", "1/1", "4/3", "3/2", "16/9", "21/9"],
+    "scheme_values": ["primary", "secondary", "tertiary", "neutral", "info", "success", "warning", "danger", "on-surface"],
+    "synonyms": {
+        "type": ["status", "state", "severity", "intent", "level", "kind"],
+        "variant": ["style", "appearance", "look", "skin", "theme"],
+        "scheme": ["color", "colour", "palette"],
+        "layout": ["view", "arrangement", "mode", "orientation", "direction"],
+        "size": ["scale", "dimension"],
+        "ratio": ["aspect", "aspect_ratio", "proportion"],
+        "label": ["aria_label", "aria-label", "alt", "accessible_name"],
+        "title": ["name", "heading", "header"],
+        "caption": ["legend", "subtitle"],
+        "href": ["url", "link", "to"],
+        "src": ["source", "file", "path"],
+        "open": ["expanded", "collapsed", "default_open"],
+        "sync": ["group", "sync_key"],
+        "tone": ["shade"]
+    },
+    "exceptions": {
+        "lang": {
+            "components": ["code"],
+            "reason": "Language of the shown source, the same word a Markdown fence uses; not a page locale."
+        },
+        "lines": {
+            "components": ["code"],
+            "reason": "Line range of the source file (N or N-M); no vocabulary name selects part of a file."
+        },
+        "limit": {
+            "components": ["backlinks"],
+            "reason": "Maximum number of listed items; a count, not a size step."
+        },
+        "engine": {
+            "components": ["diagram"],
+            "reason": "Which renderer draws the source (mermaid); a technical choice, not a style."
+        },
+        "format": {
+            "components": ["download"],
+            "reason": "File format shown to the reader (ZIP, PDF); file metadata."
+        },
+        "file_size": {
+            "components": ["download"],
+            "reason": "File size text shown before downloading (4.8 MB); named apart from size, which is the Framework scale."
+        },
+        "checksum": {
+            "components": ["download"],
+            "reason": "Checksum text for verifying the file; file metadata."
+        },
+        "action": {
+            "components": ["download"],
+            "reason": "What the link does: download the file or open it; a behaviour, not a style or arrangement."
+        },
+        "provider": {
+            "components": ["embed", "atlas_index"],
+            "reason": "Who serves the material (embed: video, map, external) or, in the internal atlas index, which provider a catalogue entry comes from."
+        },
+        "id": {
+            "components": ["embed", "example"],
+            "reason": "A stable identifier: the embed's page anchor, or the stored project example to show. Neither is an address, so neither is href or src."
+        },
+        "consent": {
+            "components": ["embed"],
+            "reason": "Whether the reader must agree before third-party content loads; a privacy rule."
+        },
+        "preview": {
+            "components": ["example"],
+            "reason": "How the example is shown: inline on the page or in an isolated frame."
+        },
+        "fullscreen": {
+            "components": ["example"],
+            "reason": "Whether the example offers a full-screen view; a behaviour switch."
+        },
+        "wrap": {
+            "components": ["example"],
+            "reason": "Whether long source lines wrap; the same switch as docara.json example settings."
+        },
+        "fit": {
+            "components": ["figure", "image"],
+            "reason": "How the image fills its ratio box (cover, contain), after CSS object-fit."
+        },
+        "columns": {
+            "components": ["grid"],
+            "reason": "Number of grid columns on wide screens; a count."
+        },
+        "gap": {
+            "components": ["grid"],
+            "reason": "Space between grid items on the Framework gap scale (0-4); spacing, not size."
+        },
+        "padding": {
+            "components": ["hero", "surface"],
+            "reason": "Inner spacing on the Framework spacing scale; spacing, not size."
+        },
+        "media": {
+            "components": ["hero"],
+            "reason": "What the hero image is: side media, background, none or auto."
+        },
+        "background_image": {
+            "components": ["surface"],
+            "reason": "Background picture of the surface; one of the background_* group, kept apart from a future content src."
+        },
+        "background_fit": {
+            "components": ["hero", "surface"],
+            "reason": "How the background picture fills the block; part of the background_* group."
+        },
+        "background_x": {
+            "components": ["hero", "surface"],
+            "reason": "Horizontal anchor of the background picture; part of the background_* group."
+        },
+        "background_y": {
+            "components": ["hero", "surface"],
+            "reason": "Vertical anchor of the background picture; part of the background_* group."
+        },
+        "overlay": {
+            "components": ["hero", "surface"],
+            "reason": "Light or dark layer between the background picture and the text, for contrast."
+        },
+        "overlay_strength": {
+            "components": ["hero", "surface"],
+            "reason": "How strong the overlay is."
+        },
+        "effect": {
+            "components": ["hero"],
+            "reason": "Name of a SIMAI Framework background effect drawn behind the hero."
+        },
+        "effect_theme": {
+            "components": ["hero"],
+            "reason": "Which colour theme the background effect follows."
+        },
+        "effect_settings": {
+            "components": ["hero"],
+            "reason": "JSON settings passed to the background effect."
+        },
+        "display": {
+            "components": ["math"],
+            "reason": "Inline or block formula, the TeX term for the same choice."
+        },
+        "side": {
+            "components": ["media"],
+            "reason": "Which side the image takes beside the text. Kept until media, showcase and promo merge into one media block with a layout."
+        },
+        "current": {
+            "components": ["steps"],
+            "reason": "Number of the current step; a position, not a style or arrangement."
+        },
+        "width": {
+            "components": ["surface"],
+            "reason": "Whether the surface spans the content column or the full window."
+        },
+        "content_width": {
+            "components": ["surface"],
+            "reason": "Width of the content inside the surface."
+        },
+        "interactive": {
+            "components": ["tree"],
+            "reason": "Whether the reader can fold and unfold branches; a behaviour switch."
+        },
+        "icon": {
+            "components": ["button"],
+            "reason": "Material Symbols name of a decorative icon. Proposed for the vocabulary: cards, tabs and callouts will take the same name."
+        },
+        "family": {
+            "components": ["icon"],
+            "reason": "Glyph family of the icon font (outlined, rounded, sharp)."
+        },
+        "weight": {
+            "components": ["icon"],
+            "reason": "Stroke weight of the icon font."
+        },
+        "filled": {
+            "components": ["icon"],
+            "reason": "Whether the glyph is drawn filled; an axis of the icon font."
+        },
+        "container": {
+            "components": ["icon"],
+            "reason": "Shape drawn around the icon (none, square, circle)."
+        },
+        "author": {
+            "components": ["quote"],
+            "reason": "Who said or wrote the quoted text; citation data."
+        },
+        "source": {
+            "components": ["quote"],
+            "reason": "Name of the publication the quote comes from; citation data, not a file address."
+        },
+        "kind": {
+            "components": ["atlas_index"],
+            "reason": "Internal build view: filters catalogue entries by their kind field, so the filter keeps the field's name."
+        },
+        "authoring": {
+            "components": ["atlas_index"],
+            "reason": "Internal build view: filters catalogue entries by their authoring field."
+        },
+        "support": {
+            "components": ["atlas_index"],
+            "reason": "Internal build view: filters catalogue entries by their support field."
+        },
+        "status": {
+            "components": ["atlas_index"],
+            "reason": "Internal build view: filters catalogue entries by their status field."
+        },
+        "namespace": {
+            "components": ["atlas_index"],
+            "reason": "Internal build view: filters catalogue entries by their namespace field."
+        },
+        "owner": {
+            "components": ["atlas_index"],
+            "reason": "Internal build view: filters catalogue entries by their owner field."
+        },
+        "origin": {
+            "components": ["atlas_index"],
+            "reason": "Internal build view: filters catalogue entries by their origin field."
+        },
+        "ids": {
+            "components": ["atlas_index"],
+            "reason": "Internal build view: an explicit list of catalogue entry IDs."
+        },
+        "schema": {
+            "components": ["schema_reference"],
+            "reason": "Internal build view: which Docara schema the field table describes."
+        },
+        "scope": {
+            "components": ["schema_reference"],
+            "reason": "Internal build view: which part of the schema the field table covers."
+        },
+        "fields": {
+            "components": ["schema_reference"],
+            "reason": "Internal build view: the field names to list."
+        }
+    },
+    "meaning_exceptions": {
+        "internal_preview.size": "Internal build view, not a public component: its frame height (compact, normal, tall) predates the vocabulary. Its only callers are the composition guide pages; it moves to height with them.",
+        "internal_preview.title": "Internal build view, not a public component: the text is the iframe's accessible name, so it would be label; it moves with internal_preview.size."
+    }
+}

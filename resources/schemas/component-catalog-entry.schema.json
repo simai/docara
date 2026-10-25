@@ -180,6 +180,24 @@
                         "type": "string",
                         "pattern": "^[a-z][a-z0-9_-]*$"
                     }
+                },
+                "deprecated_names": {
+                    "description": "Former names of this parameter. They still work and report MARKDOWN_PARAMETER_DEPRECATED.",
+                    "type": "array",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9_-]*$"
+                    }
+                },
+                "deprecated_values": {
+                    "description": "Former values mapped to their replacement. They still work and report MARKDOWN_PARAMETER_DEPRECATED.",
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                        "$ref": "#/$defs/scalar"
+                    }
                 }
             },
             "additionalProperties": false

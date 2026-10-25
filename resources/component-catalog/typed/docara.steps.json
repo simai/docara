@@ -12,7 +12,7 @@
             "explain_sequence"
         ],
     "parameters": [
-      {"name": "view", "type": "enum", "required": false, "default": "timeline", "values": ["timeline", "list"]},
+      {"name": "layout", "type": "enum", "required": false, "default": "timeline", "values": ["timeline", "list"], "deprecated_names": ["view"]},
       {"name": "current", "type": "integer", "required": false, "default": 1}
     ]
     },

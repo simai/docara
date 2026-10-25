@@ -4,7 +4,7 @@
     "aliases": ["button"],
     "props": {
         "href": {"kind": "safe_url", "default": "", "required": true},
-        "type": {"default": "default", "enum": ["default", "tonal", "outline", "link"]},
+        "variant": {"default": "default", "enum": ["default", "tonal", "outline", "link"]},
         "scheme": {"default": "primary", "enum": ["primary", "secondary", "on-surface"]},
         "size": {"default": "1", "enum": ["1/2", "1", "2"]},
         "icon": {"kind": "identifier", "default": ""}

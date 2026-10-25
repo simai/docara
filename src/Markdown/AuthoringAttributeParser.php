@@ -4,12 +4,35 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Markdown;
 
+use Simai\Docara\ComponentCatalog\ComponentParameterModel;
+use Simai\Docara\ComponentCatalog\ParameterDeprecation;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final class AuthoringAttributeParser
 {
-    /** @return array<string, string> */
+    public function __construct(private readonly ?ComponentParameterModel $parameters = null) {}
+
+    /**
+     * Parses a component's attribute block. A former parameter name or value
+     * the catalogue still accepts arrives under its current name and value,
+     * so a renderer only ever sees the current vocabulary.
+     *
+     * @return array<string, string>
+     */
     public function parse(string $source, string $component): array
+    {
+        return $this->parseWithDeprecations($source, $component)[0];
+    }
+
+    /** @return array{0: array<string, string>, 1: list<ParameterDeprecation>} */
+    public function parseWithDeprecations(string $source, string $component): array
+    {
+        return ($this->parameters ?? ComponentParameterModel::bundled())
+            ->normalize($component, $this->parseLiteral($source, $component));
+    }
+
+    /** @return array<string, string> the attributes exactly as written */
+    public function parseLiteral(string $source, string $component): array
     {
         $source = trim($source);
         if ($source === '') {

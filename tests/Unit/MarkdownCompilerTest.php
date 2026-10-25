@@ -223,7 +223,7 @@ MD;
         $document = (new MarkdownCompiler)->compile(<<<'MD'
 # Directives
 
-:::details {view=lines open=true}
+:::details {layout=lines open=true}
 ## Дополнительные сведения
 
 Содержимое можно раскрыть.
@@ -239,7 +239,7 @@ MD, 'content/ru/components/details.md');
 
         self::assertCount(2, $directives);
         self::assertSame('docara.details', $directives[0]->data['component']);
-        self::assertSame(['open' => 'true', 'view' => 'lines'], $directives[0]->data['props']);
+        self::assertSame(['layout' => 'lines', 'open' => 'true'], $directives[0]->data['props']);
         self::assertSame([3, 7], [$directives[0]->location()->line, $directives[0]->location()->endLine]);
         self::assertSame('docara.backlinks', $directives[1]->data['component']);
         self::assertSame([9, 10], [$directives[1]->location()->line, $directives[1]->location()->endLine]);

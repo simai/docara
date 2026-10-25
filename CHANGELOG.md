@@ -99,6 +99,30 @@ All notable changes to Docara are recorded here. The format follows
     `simai-framework.lock.json` admits a component and refuses values, with
     live `ui.button` and `ui.alert` examples.
   - The components overview gives every component a one-line description.
+- **Documentation: diagram gallery.** A new Components > Diagram gallery
+  page shows all 22 Mermaid diagram types checked in a browser with the
+  bundled Mermaid 11.16 (flowchart, sequence, state, journey, class, ER,
+  requirement, mindmap, treemap, block, packet, C4 context, architecture,
+  Gantt, timeline, gitGraph, kanban, pie, XY chart, quadrant, sankey and
+  radar), each with a use case from documentation work, a live diagram and
+  its source. The Diagram page is rewritten: how to insert a diagram, that
+  `:::diagram` accepts any Mermaid type, the types grouped by purpose, the
+  label rules (`sankey-beta` renders only Latin labels; `architecture-beta`
+  and `xychart-beta` need non-Latin labels in double quotes; `erDiagram`
+  takes Russian names as aliases), that strict mode ignores `click`, that
+  ZenUML is not bundled, and four live examples. The gallery has its own
+  page-weight budget of 6.9 MB, like the Diagram page: Mermaid loads once
+  for all its diagrams.
+- **`scripts/verify-mermaid-gallery.mjs`** renders every diagram of the
+  Diagram page and the gallery with the bundled Mermaid in headless Chrome,
+  with the site's options, using Node built-ins only; it exits non-zero when
+  a diagram does not render. `MermaidDiagramGalleryTest` keeps the gallery's
+  list of types in step with the detectors in the bundled Mermaid, so a
+  Mermaid upgrade that adds a type fails until the gallery shows it or lists
+  it as not shown.
+- **`AGENTS.md` covers diagrams.** A short Diagrams section tells AI
+  assistants which Mermaid type to pick for which purpose and the
+  `sankey-beta` and `architecture-beta`/`xychart-beta` label rules.
 
 ### Changed
 

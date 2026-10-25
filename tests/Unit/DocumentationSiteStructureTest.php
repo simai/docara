@@ -133,12 +133,12 @@ final class DocumentationSiteStructureTest extends TestCase
             'resources/sections/docara.article.json',
             'resources/blocks/content.document.json',
             'SmartComponentGateway',
-            'LayoutComposer',
+            'DeclarativePageRenderer',
             'PageBuilder',
         ] as $marker) {
             self::assertStringContainsString($marker, $composition);
         }
-        foreach (['Brand', 'Header navigation', 'Sidebar tree', 'Mobile/compact navigation', 'Outline / TOC', 'Search', 'Breadcrumbs', 'Previous/next pager', 'Reader preferences', 'Footer', 'Outer document'] as $surface) {
+        foreach (['Логотип и название', 'Меню в шапке', 'Дерево разделов', 'Компактное меню', 'Содержание страницы', 'Поиск', 'Хлебные крошки', 'Ссылки «назад» и «вперёд»', 'Настройки чтения', 'Подвал', 'Документ целиком'] as $surface) {
             self::assertStringContainsString($surface, $composition);
         }
         self::assertSame(3, substr_count($composition, ':::internal_preview'));

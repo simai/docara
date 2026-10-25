@@ -86,12 +86,12 @@ final class QualityChecks
         ],
         'QUALITY_SENTENCES_LONG' => [
             'group' => 'readability', 'severity' => self::ADVICE,
-            'checks' => 'Sentences average more than 20 words.',
+            'checks' => 'Sentences of the prose average more than 20 words; tables and lists of code names are not prose.',
             'hint' => 'Split long sentences; one idea per sentence.',
         ],
         'QUALITY_SENTENCE_TOO_LONG' => [
             'group' => 'readability', 'severity' => self::ADVICE,
-            'checks' => 'A sentence has more than 40 words.',
+            'checks' => 'A sentence of the prose has more than 40 words; tables and lists of code names are not prose.',
             'hint' => 'Split the longest sentence into two or three.',
         ],
         'QUALITY_PAGE_TOO_LONG' => [

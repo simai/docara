@@ -109,8 +109,10 @@ final class HtmlPageReader
         foreach ($xpath->query('.//table', $content) ?: [] as $node) {
             $facts['tables'][] = ($xpath->query('.//th', $node)?->length ?? 0) > 0;
         }
+        // Prose blocks: a paragraph or list item inside a table cell is part
+        // of the table, not of the prose.
         foreach ($xpath->query('.//p | .//li | .//dd | .//blockquote', $content) ?: [] as $node) {
-            if ($node instanceof DOMElement && ! $this->insideCode($node)) {
+            if ($node instanceof DOMElement && ! $this->insideCode($node) && ! $this->inside($node, ['table'])) {
                 $block = $this->squash($this->blockText($node));
                 if ($block !== '') {
                     $facts['blocks'][] = $block;
@@ -152,8 +154,14 @@ final class HtmlPageReader
 
     private function insideCode(DOMNode $node): bool
     {
+        return $this->inside($node, self::CODE_TAGS);
+    }
+
+    /** @param list<string> $tags */
+    private function inside(DOMNode $node, array $tags): bool
+    {
         for ($parent = $node->parentNode; $parent !== null; $parent = $parent->parentNode) {
-            if (in_array(strtolower($parent->nodeName), self::CODE_TAGS, true)) {
+            if (in_array(strtolower($parent->nodeName), $tags, true)) {
                 return true;
             }
         }

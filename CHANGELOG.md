@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.9.0] - 2026-10-25
+
 ### Added
 
 - **Starters carry the documentation standard.** Every `docara init`

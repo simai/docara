@@ -18,7 +18,7 @@ Surface вокруг Hero: double wrapping не поддерживается.
 
 :::example {label="Общий пример"}
 ```markdown
-:::hero {variant=split}
+:::hero {layout=split}
 # Документация, которую удобно создавать и читать
 
 Docara превращает Markdown и проверенные JSON-настройки в быстрый статический сайт.
@@ -31,6 +31,8 @@ Docara превращает Markdown и проверенные JSON-настро
 :::
 
 ## Компоновка
+
+Параметр `layout` выбирает расположение текста и изображения.
 
 | Значение | Назначение |
 | --- | --- |
@@ -56,7 +58,7 @@ Framework `--sf-d2` и `--sf-e4`. Кнопка остановки фоновог
 
 :::example {label="Высокий первый экран"}
 ```markdown
-:::hero {variant=centered padding=2xl}
+:::hero {layout=centered padding=2xl}
 # Документация, которую удобно читать
 
 Высокий первый экран лендинга: отступ растёт вместе с шириной окна.
@@ -73,14 +75,14 @@ Framework `--sf-d2` и `--sf-e4`. Кнопка остановки фоновог
 | Значение | Контракт |
 | --- | --- |
 | `auto` | Совместимый режим по умолчанию: сохраняет прежнее поведение Hero |
-| `side` | Одно смысловое изображение с непустым alt; только `variant=split` |
+| `side` | Одно смысловое изображение с непустым alt; только `layout=split` |
 | `background` | Одно декоративное локальное изображение с пустым alt |
 | `none` | Изображение запрещено |
 
 Явный смысловой side-media вариант:
 
 ```markdown
-:::hero {variant=split media=side}
+:::hero {layout=split media=side}
 # Документация, которую удобно читать
 
 Один смысловой скриншот остаётся частью содержания.
@@ -112,7 +114,7 @@ Framework `--sf-d2` и `--sf-e4`. Кнопка остановки фоновог
 
 :::example {label="Компактный вариант"}
 ```markdown
-:::hero {variant=compact padding=xl}
+:::hero {layout=compact padding=xl}
 # Короткое введение
 
 Компактный вариант подходит для внутренней страницы без изображения.
@@ -122,7 +124,7 @@ Framework `--sf-d2` и `--sf-e4`. Кнопка остановки фоновог
 
 :::example {label="Вариант по центру"}
 ```markdown
-:::hero {variant=centered}
+:::hero {layout=centered}
 # Начните с пустого каталога
 
 Одна команда создаст проверяемую структуру сайта.
@@ -139,7 +141,7 @@ Framework `--sf-d2` и `--sf-e4`. Кнопка остановки фоновог
 выбирается параметром `effect`:
 
 ```markdown
-:::hero {variant=centered padding=2xl effect=constellation-net}
+:::hero {layout=centered padding=2xl effect=constellation-net}
 # Документация, которую удобно читать
 
 Эффект рисуется под текстом и не мешает читать.
@@ -165,7 +167,7 @@ Content-Security-Policy и какие ошибки бывают, описано 
 ## Вызов
 
 ```markdown
-:::hero {variant=compact}
+:::hero {layout=compact}
 # Короткий заголовок
 
 Одно понятное объяснение ценности страницы.

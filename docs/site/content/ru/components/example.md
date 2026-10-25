@@ -11,7 +11,7 @@ description: "Как показать интерактивный пример: �
 
 :::example {label="Пример"}
 ```markdown
-:badge[Готово]{type=main scheme=success size=1/2}
+:badge[Готово]{variant=main scheme=success size=1/2}
 ```
 :::
 
@@ -270,7 +270,7 @@ document.querySelector('.example-button').addEventListener('click', () => {
 ~~~markdown
 :::example {label="Пример"}
 ```markdown
-:badge[Готово]{type=main scheme=success size=1/2}
+:badge[Готово]{variant=main scheme=success size=1/2}
 ```
 :::
 ~~~

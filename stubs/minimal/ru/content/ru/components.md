@@ -14,7 +14,7 @@ Docara выводит компоненты SIMAI Framework по коротким
 
 ## Кнопка
 
-:button[На главную]{href=../ type=outline scheme=on-surface size=1 icon=arrow_back}
+:button[На главную]{href=../ variant=outline scheme=on-surface size=1 icon=arrow_back}
 
 ## Компонент Framework с настройками в JSON
 

@@ -218,6 +218,8 @@ final class DocumentationStandardTest extends TestCase
             strpos($agents, '## Create a page'),
             strpos($agents, '## Diagrams'),
         );
+        self::assertStringContainsString("## Component parameters\n", $agents);
+        self::assertStringContainsString('`MARKDOWN_PARAMETER_DEPRECATED`', $agents);
         self::assertLessThanOrEqual(100, substr_count($agents, "\n"));
     }
 

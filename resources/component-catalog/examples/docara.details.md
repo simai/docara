@@ -8,20 +8,20 @@ Docara creates a static site that works without a server runtime.
 :::
 
 <!-- docara-parameter:view -->
-:::details {view=lines}
+:::details {layout=lines}
 ## Line view for documentation
 
 Separates content with rules without nesting another card in the article.
 :::
 
-:::details {view=surface}
+:::details {layout=surface}
 ## Surface view for a short FAQ
 
 Highlights an independent question as a card.
 :::
 
 <!-- docara-parameter:open -->
-:::details {view=lines open=true}
+:::details {layout=lines open=true}
 ## Open initially
 
 Important supporting information stays visible.

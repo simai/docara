@@ -50,6 +50,45 @@ All notable changes to Docara are recorded here. The format follows
   Paragraphs and list items inside table cells are no longer prose blocks
   either, for these checks and for the glossary check. The icon page now
   scores 100.
+- **One parameter vocabulary for every component.** A name now means the
+  same thing everywhere: `type` is a semantic status, `variant` a style,
+  `layout` an arrangement, `ratio` is always written `a/b`, `label` is an
+  accessible name and `title` a visible heading. Renamed parameters:
+  `:badge` and `:button` `type` → `variant`; `:::details` and `:::steps`
+  `view` → `layout`; `:::hero` `variant` → `layout`; `:::download` `name` →
+  `title` and `size` → `file_size`; `:::embed` `title` → `label` (it was
+  only ever the iframe's accessible name); the attributed quote's `url` →
+  `href`. Renamed values: image `ratio=16x9` (and the other `NxM` forms) →
+  `16/9`, and `:::logos` `tone=normal` → `tone=default`. The rendered HTML is
+  unchanged, including its `data-view` and `data-tone` markers.
+- **Figure, media and embed share one ratio set:** `1/1`, `4/3`, `3/2`,
+  `16/9` and `21/9` (figure and image also `auto`). Media gains `21/9`;
+  embed gains `3/2`.
+- **The component catalogue is the source of truth for parameters.** The
+  Markdown renderer takes the accepted names and enum values of every typed,
+  inline and native component from `resources/component-catalog`, instead of
+  its own lists. Two drifts this removed: the catalogue now lists the
+  `fullscreen` and `wrap` parameters of `:::example`, and the `auto` value
+  (the default) of the `:icon` `variant`. Tests fail if the inline component
+  definitions and the catalogue disagree, if a parameter name is outside the
+  vocabulary or its justified exceptions, or if two components name one
+  concept differently.
+- **Requirement records state the full gap.** Each record in
+  `resources/component-catalog/requirements/` now has `gap.reason`,
+  `gap.fallback` and `gap.admission` beside `gap.owner`; the catalogue
+  schema, the catalogue validator and `verify-static-build.php` require all
+  four.
+
+### Deprecated
+
+- **The former parameter names and values listed above still work** for at
+  least one minor release. A page that uses them renders exactly as before;
+  `docara validate page <route>` reports each use as the warning
+  `MARKDOWN_PARAMETER_DEPRECATED` with its line and replacement, and
+  `docara build` prints at most one summary line. Neither fails. Catalogue
+  parameters record the former names in `deprecated_names` and the former
+  values in `deprecated_values`. Writing a former name next to its new name
+  is `MARKDOWN_COMPONENT_ATTRIBUTE_DUPLICATE`.
 
 ## [3.9.0] - 2026-10-25
 

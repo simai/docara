@@ -36,6 +36,6 @@ echo 'Привет от Docara';
 
 :::example {label="Пример"}
 ```markdown
-:badge[Готово]{type=main scheme=success size=1/2}
+:badge[Готово]{variant=main scheme=success size=1/2}
 ```
 :::

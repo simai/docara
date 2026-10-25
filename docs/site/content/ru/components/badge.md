@@ -9,13 +9,13 @@ description: "Как добавить в текст короткую метку 
 
 :::example {label=Пример}
 ```markdown
-:badge[Новое]{type=tonal scheme=primary size=1}
+:badge[Новое]{variant=tonal scheme=primary size=1}
 ```
 :::
 
 ## Тип бейджа
 
-Параметр `type` определяет, насколько заметно бейдж выделяется на странице.
+Параметр `variant` определяет, насколько заметно бейдж выделяется на странице.
 
 | Значение | Назначение |
 | --- | --- |
@@ -25,9 +25,9 @@ description: "Как добавить в текст короткую метку 
 
 :::example {label=Пример}
 ```markdown
-:badge[Основной]{type=main scheme=primary size=1}
-:badge[Тональный]{type=tonal scheme=primary size=1}
-:badge[Контурный]{type=outline scheme=primary size=1}
+:badge[Основной]{variant=main scheme=primary size=1}
+:badge[Тональный]{variant=tonal scheme=primary size=1}
+:badge[Контурный]{variant=outline scheme=primary size=1}
 ```
 :::
 
@@ -58,7 +58,7 @@ description: "Как добавить в текст короткую метку 
 :badge[Успех]{scheme=success size=1}
 :badge[Предупреждение]{scheme=warning size=1}
 :badge[Ошибка]{scheme=danger size=1}
-:badge[На поверхности]{type=main scheme=on-surface size=1}
+:badge[На поверхности]{variant=main scheme=on-surface size=1}
 ```
 :::
 

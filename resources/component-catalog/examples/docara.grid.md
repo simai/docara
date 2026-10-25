@@ -56,14 +56,14 @@ Only static files remain on the server.
 
 Write content in Markdown and keep changes beside the project.
 
-:button[Learn more]{href="../button/" type=link icon=arrow_forward}
+:button[Learn more]{href="../button/" variant=link icon=arrow_forward}
 :::
 :::card
 #### Quick start
 
 Build the first page and inspect it in a browser.
 
-:button[Get started]{href="../button/" type=outline}
+:button[Get started]{href="../button/" variant=outline}
 :::
 ::::
 

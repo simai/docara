@@ -11,13 +11,13 @@ description: "Как оформить важную ссылку как кноп�
 
 :::example {label="Общий пример"}
 ```markdown
-:button[Посмотреть компоненты]{href=../ type=outline scheme=on-surface size=1 icon=arrow_forward}
+:button[Посмотреть компоненты]{href=../ variant=outline scheme=on-surface size=1 icon=arrow_forward}
 ```
 :::
 
 ## Вид
 
-Параметр `type` задаёт визуальный акцент действия.
+Параметр `variant` задаёт визуальный акцент действия.
 
 | Значение | Назначение |
 | --- | --- |
@@ -28,10 +28,10 @@ description: "Как оформить важную ссылку как кноп�
 
 :::example {label="Варианты"}
 ```markdown
-:button[Начать]{href=../../ type=default scheme=primary}
-:button[Документация]{href=../../ type=tonal scheme=secondary}
-:button[Компоненты]{href=../ type=outline scheme=on-surface}
-:button[Подробнее]{href=../../ type=link scheme=primary}
+:button[Начать]{href=../../ variant=default scheme=primary}
+:button[Документация]{href=../../ variant=tonal scheme=secondary}
+:button[Компоненты]{href=../ variant=outline scheme=on-surface}
+:button[Подробнее]{href=../../ variant=link scheme=primary}
 ```
 :::
 
@@ -51,7 +51,7 @@ Material Symbols; указывайте его системное имя без �
 ## Вызов
 
 ```markdown
-:button[Понятное действие]{href=/target/ type=default scheme=primary size=1 icon=arrow_forward}
+:button[Понятное действие]{href=/target/ variant=default scheme=primary size=1 icon=arrow_forward}
 ```
 
 `href` обязателен и должен содержать безопасный URL. Для команды без перехода

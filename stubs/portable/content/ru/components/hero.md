@@ -4,7 +4,7 @@
 
 :::example {label="Общий пример"}
 ```markdown
-:::hero {variant=compact}
+:::hero {layout=compact}
 # Короткое введение
 
 Компактный вариант подходит для внутренней страницы без изображения.

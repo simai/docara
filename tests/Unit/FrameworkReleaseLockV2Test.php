@@ -205,6 +205,50 @@ final class FrameworkReleaseLockV2Test extends TestCase
         );
     }
 
+    /**
+     * An example frame gets the page's package declaration by the boot
+     * scripts the shell forwards: Core in the frame reads it and fetches the
+     * package's rule.js itself (simai/docara#35).
+     */
+    #[Test]
+    public function an_example_frame_receives_the_boot_config_that_declares_the_package(): void
+    {
+        [$repository] = $this->v2Repository(withPackage: true);
+        $document = '<!doctype html><html><head></head><body><sf-admin-menu></sf-admin-menu></body></html>';
+        $html = '<html><head></head><body><iframe data-docara-example-frame sandbox="allow-scripts" data-docara-srcdoc="'
+            . htmlspecialchars($document, ENT_QUOTES) . '"></iframe></body></html>';
+
+        $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml($html, []);
+        $boot = [];
+        foreach ($plan->assets as $asset) {
+            if (($asset['kind'] ?? null) === 'boot') {
+                $boot[(string) $asset['key']] = (string) $asset['content'];
+            }
+        }
+
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertSame(1, preg_match('/var bootScripts=Array\.from\(document\.querySelectorAll\(\'([^\']+)\'\)\);/', $shell, $selector));
+        preg_match_all('/data-docara-framework-asset="([^"]+)"\]:not\(\[src\]\)/', $selector[1], $forwarded);
+        self::assertSame(
+            ['docara.framework.storage.compatibility', 'simai.framework.boot', 'simai.framework.preloaded'],
+            $forwarded[1],
+        );
+        foreach ($forwarded[1] as $key) {
+            self::assertArrayHasKey($key, $boot, $key . ' is forwarded to frames and planned for the page.');
+        }
+        self::assertStringContainsString(
+            '"packages":{"larena":{"base":"/_docara/framework-packages/larena/' . self::PACKAGE_REVISION . '/smart"}}',
+            $boot['simai.framework.boot'],
+        );
+        // The base is root-absolute, so the frame resolves it against the
+        // page's origin like the page does.
+        self::assertStringContainsString(
+            '<script data-docara-framework-boot="' . $plan->runtimePair . '" data-docara-framework-asset="simai.framework.boot">'
+                . $boot['simai.framework.boot'] . '</script>',
+            $plan->headHtml(),
+        );
+    }
+
     #[Test]
     public function a_v2_release_without_a_package_declares_none(): void
     {

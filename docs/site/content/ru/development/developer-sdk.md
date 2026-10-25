@@ -8,7 +8,7 @@ tags: [development, sdk, smart, design, mcp, ai, safety]
 
 SDK помогает добавить Smart-компонент или композицию оформления, не меняя
 движок. Он не создаёт нового рендерера: все проверки и предпросмотр используют
-те же реестры, `SmartComponentGateway`, `LayoutComposer` и `PageBuilder`, что и
+те же реестры, `SmartComponentGateway`, `DeclarativePageRenderer` и `PageBuilder`, что и
 обычная сборка.
 
 ## Короткий LEGO-путь

@@ -202,6 +202,25 @@ final class DocumentationStandardTest extends TestCase
         self::assertSame(file_get_contents($this->tmpPath('AGENTS.md')), $data['agents_markdown']);
     }
 
+    #[Test]
+    public function agents_guide_says_which_diagram_type_to_pick_and_the_label_gotchas(): void
+    {
+        $agents = (new DocumentationStandard)->agentsMarkdown('docara', 'content/en', 'en');
+
+        self::assertStringContainsString("## Diagrams\n", $agents);
+        self::assertStringContainsString(':::diagram {engine=mermaid title="..."}', $agents);
+        foreach (['flowchart', 'sequenceDiagram', 'stateDiagram-v2', 'erDiagram', 'C4Context', 'architecture-beta', 'gantt', 'pie', 'xychart-beta'] as $type) {
+            self::assertStringContainsString('`' . $type . '`', $agents);
+        }
+        self::assertStringContainsString('Write `sankey-beta`' . "\n" . 'labels in Latin letters only', $agents);
+        self::assertStringContainsString('non-Latin labels of `architecture-beta` and' . "\n" . '`xychart-beta` in double quotes', $agents);
+        self::assertLessThan(
+            strpos($agents, '## Create a page'),
+            strpos($agents, '## Diagrams'),
+        );
+        self::assertLessThanOrEqual(100, substr_count($agents, "\n"));
+    }
+
     private function starter(string $language): void
     {
         $files = new Filesystem;

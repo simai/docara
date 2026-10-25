@@ -10,6 +10,9 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final class AuthoringAttributeParser
 {
+    /** Components whose options may be written as a bare name. */
+    private const FLAG_COMPONENTS = ['code', 'fence'];
+
     public function __construct(private readonly ?ComponentParameterModel $parameters = null) {}
 
     /**
@@ -31,9 +34,20 @@ final class AuthoringAttributeParser
             ->normalize($component, $this->parseLiteral($source, $component));
     }
 
+    /**
+     * Code options follow the fence convention of VitePress and MkDocs
+     * Material, where a bare name switches an option on: `numbers` reads as
+     * `numbers=true`. Other components keep name=value only.
+     */
+    public static function acceptsFlags(string $component): bool
+    {
+        return in_array($component, self::FLAG_COMPONENTS, true);
+    }
+
     /** @return array<string, string> the attributes exactly as written */
     public function parseLiteral(string $source, string $component): array
     {
+        $flags = self::acceptsFlags($component);
         $source = trim($source);
         if ($source === '') {
             return [];
@@ -43,16 +57,23 @@ final class AuthoringAttributeParser
         $offset = 0;
         $length = strlen($source);
         while ($offset < $length) {
+            if ($flags && preg_match('/\G\s*([a-z][a-z0-9_-]*)(?=\s|\z)(?!\s*=)/A', $source, $match, 0, $offset) === 1) {
+                $name = $match[1];
+                $offset += strlen($match[0]);
+                if (isset($attributes[$name])) {
+                    throw $this->duplicate($component, $name);
+                }
+                $attributes[$name] = 'true';
+
+                continue;
+            }
             if (preg_match('/\G\s*([a-z][a-z0-9_-]*)\s*=\s*/A', $source, $match, 0, $offset) !== 1) {
                 throw $this->invalid($component, $source);
             }
             $name = $match[1];
             $offset += strlen($match[0]);
             if (isset($attributes[$name])) {
-                throw new PortableConfigurationException(
-                    'MARKDOWN_COMPONENT_ATTRIBUTE_DUPLICATE',
-                    "Markdown component [$component] declares attribute [$name] more than once.",
-                );
+                throw $this->duplicate($component, $name);
             }
 
             if ($offset >= $length) {
@@ -95,6 +116,14 @@ final class AuthoringAttributeParser
         ksort($attributes, SORT_STRING);
 
         return $attributes;
+    }
+
+    private function duplicate(string $component, string $name): PortableConfigurationException
+    {
+        return new PortableConfigurationException(
+            'MARKDOWN_COMPONENT_ATTRIBUTE_DUPLICATE',
+            "Markdown component [$component] declares attribute [$name] more than once.",
+        );
     }
 
     private function invalid(string $component, string $source): PortableConfigurationException

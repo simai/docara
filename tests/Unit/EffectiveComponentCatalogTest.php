@@ -211,7 +211,9 @@ final class EffectiveComponentCatalogTest extends TestCase
         }
         self::assertSame('admission_pending', $lifecycles['ui.badge'] ?? null);
         self::assertSame('framework_gap', $lifecycles['content.icon'] ?? null);
-        self::assertSame('framework_gap', $lifecycles['native.code.enhanced'] ?? null);
+        // Code line options shipped: the requirement record is gone and the
+        // native code entry carries them.
+        self::assertArrayNotHasKey('native.code.enhanced', $lifecycles);
         self::assertSame('framework_gap', $lifecycles['ui.tabs'] ?? null);
         self::assertSame('deferred', $lifecycles['ui.dataview'] ?? null);
 
@@ -406,8 +408,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.surface' => 'docs/site/content/ru/components/surface.md',
             'docara.tabs' => 'docs/site/content/ru/components/tabs.md',
             'docara.tree' => 'docs/site/content/ru/components/tree.md',
-            'native.code' => 'docs/site/content/ru/authoring/markdown.md',
-            'native.code.enhanced' => 'docs/site/content/ru/start/component-model.md',
+            'native.code' => 'docs/site/content/ru/components/code.md',
             'native.footnotes_and_sources' => 'docs/site/content/ru/authoring/markdown.md',
             'native.headings_and_text' => 'docs/site/content/ru/authoring/markdown.md',
             'native.links_and_images' => 'docs/site/content/ru/authoring/markdown.md',

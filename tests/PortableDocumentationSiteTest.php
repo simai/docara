@@ -113,9 +113,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
         self::assertCount(87, $search['documents']);
-        self::assertCount(38, $catalog['entries']);
+        self::assertCount(37, $catalog['entries']);
         self::assertCount(31, $supported);
-        self::assertCount(5, $unavailable);
+        self::assertCount(4, $unavailable);
         self::assertFileDoesNotExist($build . '.docara/component-catalog-pages.json');
         self::assertFileDoesNotExist($build . '.docara/declarative-example-pages.json');
         self::assertFileDoesNotExist($build . '/_docara/declarative-examples.json');

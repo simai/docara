@@ -147,7 +147,7 @@ final class PageBuilderTest extends TestCase
         foreach ([
             'components/backlinks' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
             'components/banner' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
-            'components/code' => ['heading', 'paragraph', 'list', 'table', 'code_block'],
+            'components/code' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example'],
             'components/details' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
             'components/download' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
             // The native Markdown constructions share one guide page.

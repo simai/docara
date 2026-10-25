@@ -21,10 +21,11 @@ final class ComponentParameterModel
 {
     /**
      * Native Markdown entries are called through Markdown syntax, not by
-     * name; the attribute block after an image or an attributed quote
-     * carries these names.
+     * name; the attribute block after an image or an attributed quote, and
+     * the {…} options of a code fence, carry these names.
      */
     public const NATIVE_SCOPES = [
+        'native.code' => 'fence',
         'native.links_and_images' => 'image',
         'native.lists_and_quotes' => 'quote',
     ];

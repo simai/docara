@@ -45,6 +45,34 @@
             "components": ["code"],
             "reason": "Line range of the source file (N or N-M); no vocabulary name selects part of a file."
         },
+        "highlight": {
+            "components": ["code", "fence"],
+            "reason": "Lines of the shown code to mark (1,4-6), counted from the block's first line. A code-only idea: no other component has lines, so it is no style, status or arrangement. VitePress and MkDocs Material mark the same lines (hl_lines)."
+        },
+        "numbers": {
+            "components": ["code", "fence"],
+            "reason": "Whether code lines are numbered, and from which number (true, false or N). Code-only, like highlight; MkDocs Material calls it linenums, VitePress line-numbers."
+        },
+        "focus": {
+            "components": ["code", "fence"],
+            "reason": "Lines of the shown code to keep in focus while the others dim (1,4-6). Code-only, like highlight; VitePress offers the same as [!code focus]."
+        },
+        "region": {
+            "components": ["code"],
+            "reason": "Name of a #region marker in the source file to show; selects part of a file by name, as lines does by number."
+        },
+        "start_after": {
+            "components": ["code"],
+            "reason": "Text of the source line the shown part starts after; selects part of a file by a marker line (Sphinx literalinclude start-after, written in Docara's snake_case)."
+        },
+        "end_before": {
+            "components": ["code"],
+            "reason": "Text of the source line the shown part ends before; the closing half of start_after (Sphinx end-before)."
+        },
+        "dedent": {
+            "components": ["code"],
+            "reason": "Whether the indentation the shown lines share is removed; a switch on the excerpt's text, not on its look."
+        },
         "limit": {
             "components": ["backlinks"],
             "reason": "Maximum number of listed items; a count, not a size step."

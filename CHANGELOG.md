@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.9.1] - 2026-10-26
+
 ### Changed
 
 - **Example frames ask for the Framework scripts all at once.** A sandboxed

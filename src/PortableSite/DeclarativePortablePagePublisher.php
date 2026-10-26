@@ -260,6 +260,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 ? $this->sidebarCredit((string) $page['locale'])
                 : null,
             $contentLanguage,
+            $regions['sidebar'] === '' ? '' : self::SIDEBAR_SCROLL_RESTORE,
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
@@ -286,6 +287,23 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
 
         return $sourceDirection === $pageDirection ? $attributes : $attributes . ' dir="' . $sourceDirection . '"';
     }
+
+    /**
+     * Runs right after the sidebar, before the first paint: a page reached
+     * from this site keeps the sidebar where the reader left it
+     * (declarative-shell.js saves it in sessionStorage on pagehide and on a
+     * link click); then, or on a page opened directly, a current item out of
+     * view is centred. Only the sidebar's viewport scrolls, at once even
+     * under the Framework's smooth scroll-behavior, so the page does not move.
+     */
+    private const SIDEBAR_SCROLL_RESTORE = '<script data-docara-sidebar-scroll>(function(){'
+        . "var v=document.querySelector('aside[data-docara-region=\"sidebar\"]>.docara-sidebar-panel>.docara-sidebar-scroll>.sf-scrollbar__viewport');if(!v)return;"
+        . "function to(top){var b=v.style.scrollBehavior;v.style.scrollBehavior='auto';v.scrollTop=top;v.style.scrollBehavior=b}"
+        . "try{if(document.referrer&&new URL(document.referrer).origin===location.origin){var s=JSON.parse(sessionStorage.getItem('docara.navigation.scroll')||'null');if(s&&typeof s.sidebar==='number'&&s.sidebar>0)to(s.sidebar)}}catch(e){}"
+        . "var a=v.querySelector('[aria-current=\"page\"]');if(!a)return;"
+        . 'var r=v.getBoundingClientRect(),c=a.getBoundingClientRect();'
+        . 'if(r.height>0&&c.height>0&&(c.top<r.top||c.bottom>r.bottom))to(v.scrollTop+c.top-r.top-(r.height-c.height)/2)'
+        . '})();</script>';
 
     /**
      * SF_BOOT_CONFIG.effects of a site with an effects catalogue (docara.json

@@ -612,7 +612,7 @@ final class StaticBuildVerifierTest extends TestCase
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
         self::assertCount(33, $supportedEntries);
-        self::assertCount(5, $unavailableEntries);
+        self::assertCount(4, $unavailableEntries);
         self::assertSame(
             [],
             array_values(array_filter(

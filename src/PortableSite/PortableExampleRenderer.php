@@ -24,6 +24,7 @@ final class PortableExampleRenderer
         bool $fullscreen = true,
         bool $wrap = true,
         bool $defaultLabel = false,
+        bool $responsive = false,
     ): string {
         $safeId = preg_replace('/[^a-z0-9_-]+/i', '-', $id) ?: 'example';
         $previewTabId = $safeId . '-tab-example';
@@ -72,7 +73,9 @@ final class PortableExampleRenderer
             . '<div class="docara-example-preview__actions">'
             // The width switcher is three Framework icon buttons like the
             // close button beside it; the chosen width is pressed.
-            . ($fullscreen && $resolvedPreview === 'sandbox' ? '<div data-docara-example-viewports hidden role="group" aria-label="Preview width" class="docara-example-preview__viewports">'
+            // An inline Markdown example gets the switcher when its preview
+            // carries a hidden responsive frame.
+            . ($fullscreen && ($resolvedPreview === 'sandbox' || $responsive) ? '<div data-docara-example-viewports hidden role="group" aria-label="Preview width" class="docara-example-preview__viewports">'
                 . $this->viewportButton('desktop', 'desktop_windows', 'Desktop', true)
                 . $this->viewportButton('tablet', 'tablet', 'Tablet', false)
                 . $this->viewportButton('mobile', 'smartphone', 'Mobile', false)

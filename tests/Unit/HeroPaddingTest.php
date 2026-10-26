@@ -49,7 +49,7 @@ final class HeroPaddingTest extends TestCase
     #[Test]
     public function two_xl_works_with_a_background_image(): void
     {
-        $html = $this->render(":::hero {media=background padding=2xl}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::");
+        $html = $this->render(":::hero {media=background padding=2xl}\n# Hero\n\nDescription.\n\n![](/assets/hero-backdrop.webp)\n:::");
         self::assertSame(1, substr_count($html, 'data-docara-surface-background'));
         self::assertStringContainsString(
             'class="docara-surface__content relative container m-inline-auto grid grid-col-1 gap-4 items-cross-center docara-padding-2xl"',

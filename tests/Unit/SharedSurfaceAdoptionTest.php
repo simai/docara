@@ -21,8 +21,8 @@ final class SharedSurfaceAdoptionTest extends TestCase
         // p-N to p-top-N p-bottom-N, so the band's text keeps the page's edge.
         $cases = [
             'hero' => [
-                ":::hero\n# Hero\n\nDescription.\n\n![Meaningful image](/assets/docara-screen.png)\n:::\n",
-                '61e319c239028ffb544ec0d55f056585db6eec665b27cdf8c222b0378474ac64',
+                ":::hero\n# Hero\n\nDescription.\n\n![Meaningful image](/assets/hero-backdrop.webp)\n:::\n",
+                'b261cefc90812a17e0f3b24dc014f52ab4e0fdca736873d728fa3295ad4ef943',
             ],
             'showcase' => [
                 ":::showcase\n## Проверяемый результат\n\nСобранная документация видна до публикации.\n\n[Открыть пример](/landing/)\n\n![Интерфейс Docara](/assets/screen.png)\n:::\n",

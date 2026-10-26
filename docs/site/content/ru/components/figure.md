@@ -12,7 +12,7 @@ description: Как вставить иллюстрацию с обязател�
 :::example {label="Общий пример"}
 ```markdown
 :::figure {ratio=16/9 fit=cover}
-![Интерфейс документации](../../assets/docara-screen.png)
+![Панель проекта с графиком и карточкой](../../assets/figure-scene.webp)
 
 Широкая иллюстрация заполняет область 16:9.
 :::
@@ -35,6 +35,22 @@ description: Как вставить иллюстрацию с обязател�
 `fit=cover` заполняет всю область и при необходимости обрезает края.
 `fit=contain` показывает изображение целиком и подходит для знаков и схем.
 
+:::example {label="Обрезать или показать целиком"}
+```markdown
+:::figure {ratio=16/9 fit=cover}
+![Телефон со страницей документации](../../assets/figure-tall.webp)
+
+`cover` заполняет широкую рамку и обрезает высокий снимок сверху и снизу.
+:::
+
+:::figure {ratio=16/9 fit=contain}
+![Телефон со страницей документации](../../assets/figure-tall.webp)
+
+`contain` показывает тот же снимок целиком.
+:::
+```
+:::
+
 :::example {label="Показать целиком"}
 ```markdown
 :::figure {ratio=1/1 fit=contain}
@@ -49,7 +65,7 @@ description: Как вставить иллюстрацию с обязател�
 
 ```markdown
 :::figure {ratio=4/3 fit=cover}
-![Схема сборки](../../assets/docara-flow.png)
+![Схема сборки](../../assets/figure-flow.webp)
 
 Короткая подпись дополняет изображение.
 :::

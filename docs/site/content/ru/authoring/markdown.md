@@ -183,7 +183,7 @@ translation_key: guide.install
 | `fit` | `cover`, `contain` | Обрезать до заполнения или показать целиком |
 
 ```markdown
-![Схема сборки](../../assets/docara-flow.png){ratio=16/9 fit=contain}
+![Страница с иллюстрацией](../../assets/markdown-scene.webp){ratio=16/9 fit=contain}
 ```
 
 Альтернативный текст должен передавать назначение изображения. Декоративную

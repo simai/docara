@@ -99,7 +99,7 @@ final class HeroEffectTest extends TestCase
             'effect=aurora-curtain media=background' => 'MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT',
         ] as $attributes => $code) {
             try {
-                $this->render(":::hero {{$attributes}}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::");
+                $this->render(":::hero {{$attributes}}\n# Hero\n\nDescription.\n\n![](/assets/hero-backdrop.webp)\n:::");
                 self::fail("[$attributes] was accepted.");
             } catch (PortableConfigurationException $exception) {
                 self::assertStringContainsString($code, $exception->getMessage() . ' ' . $exception->errorCode, $attributes);

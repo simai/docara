@@ -35,7 +35,7 @@ final class SurfaceRuntimeTest extends TestCase
     public function surface_renders_bounded_geometry_tokens_and_local_decorative_media(): void
     {
         $html = (new PortableMarkdownRenderer)->render(<<<'MD'
-:::surface {width=full content_width=container background_image=/assets/docara-screen.png background_fit=contain background_x=right background_y=bottom overlay=dark overlay_strength=strong padding=xl tone=contrast}
+:::surface {width=full content_width=container background_image=/assets/surface-backdrop.webp background_fit=contain background_x=right background_y=bottom overlay=dark overlay_strength=strong padding=xl tone=contrast}
 ## Surface title
 
 Visible content.
@@ -45,7 +45,7 @@ MD, $this->site, $this->site . '/content/ru/components/surface.md');
         self::assertStringContainsString('data-docara-surface data-docara-width="full"', $html);
         self::assertStringContainsString('data-docara-content-width="container"', $html);
         self::assertStringContainsString('data-docara-surface-background alt="" aria-hidden="true"', $html);
-        self::assertStringContainsString('src="../../assets/docara-screen.png" data-fit="contain" data-x="right" data-y="bottom"', $html);
+        self::assertStringContainsString('src="../../assets/surface-backdrop.webp" data-fit="contain" data-x="right" data-y="bottom"', $html);
         self::assertStringContainsString('data-overlay="dark" data-strength="strong" aria-hidden="true"', $html);
         // Inside a container the inline padding stays the container's, the one
         // the page content uses: a full-width band's text starts at the page's
@@ -107,7 +107,7 @@ MD);
     {
         $cases = [
             ['background_image=https://example.test/a.png', 'MARKDOWN_SURFACE_BACKGROUND_UNSAFE'],
-            ['background_image=/assets/../docara-screen.png', 'MARKDOWN_SURFACE_BACKGROUND_UNSAFE'],
+            ['background_image=/assets/../surface-backdrop.webp', 'MARKDOWN_SURFACE_BACKGROUND_UNSAFE'],
             ['background_image=/assets/missing.png', 'MARKDOWN_SURFACE_BACKGROUND_UNSAFE'],
             ['background_x=right', 'MARKDOWN_SURFACE_BACKGROUND_REQUIRED'],
             ['overlay=dark', 'MARKDOWN_SURFACE_BACKGROUND_REQUIRED'],

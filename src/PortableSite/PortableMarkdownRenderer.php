@@ -762,6 +762,7 @@ final class PortableMarkdownRenderer
             );
         }
 
+        $responsive = false;
         $compiledPreview = $hasMarkdown
             ? $this->renderCompiled($sources['Markdown'], $sourceRoot, $sourceFile)
             : $sources['HTML'];
@@ -779,6 +780,19 @@ final class PortableMarkdownRenderer
             );
         } elseif ($hasMarkdown) {
             $preview = '<div data-docara-example-inline-preview>' . $this->nestInlineHeadings($compiledPreview) . '</div>';
+            // The device widths need a document of their own: the inline
+            // preview reads the page's width, not the chosen one. The frame
+            // stays hidden, so the shell loads it only when the reader opens
+            // the responsive check.
+            if ($fullscreen) {
+                $responsive = true;
+                $preview .= preg_replace('/^<iframe /', '<iframe data-docara-example-responsive-frame ', $this->renderExampleDocument(
+                    ['HTML' => $compiledPreview],
+                    $baseHref,
+                    $label,
+                    $defaultLabel,
+                ), 1);
+            }
         } else {
             $preview = '<div data-docara-example-inline-preview="html"'
                 . ($exampleId === '' ? '' : ' data-docara-example-source="' . $this->escapeHtml($exampleId) . '"')
@@ -805,6 +819,7 @@ final class PortableMarkdownRenderer
             previewReason: $previewDecision['reason'],
             fullscreen: $fullscreen,
             wrap: $wrap,
+            responsive: $responsive,
         );
     }
 

@@ -351,3 +351,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
     text-decoration: underline;
     text-underline-offset: .2em;
 }
+/* An inline Markdown example keeps a hidden frame of its own for the responsive check: the viewer shows it instead of the inline preview, and the shell loads it only then. */
+iframe[data-docara-example-responsive-frame]{display:none}
+[data-docara-example-viewer-active="true"] iframe[data-docara-example-responsive-frame]{display:block}
+[data-docara-example-viewer-active="true"] [data-docara-example-inline-preview]{display:none}

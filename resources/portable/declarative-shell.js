@@ -600,7 +600,8 @@
     inlineScripts=inlineScripts.filter(function(script){return fresh(keyOf(script))});
     bootScripts=bootScripts.filter(function(script){return fresh(keyOf(script))});
     var linked=[];
-    Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"],link[data-docara-declarative-shell-style][rel="stylesheet"]')).forEach(function(link){
+    /* The Framework loader adds component stylesheets (highlight.css for code) while the page runs; the frame gets those too. */
+    Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"],link[data-docara-declarative-shell-style][rel="stylesheet"],link[rel="stylesheet"][href*="/vendor/simai-framework/"]')).forEach(function(link){
       if(fresh('stylesheet:'+link.href))linked.push({link:link,key:'stylesheet:'+link.href,faces:'text'});
       /* Where the subset styles every icon, the page never uses the icon faces its stylesheets declare, so neither does the frame. */
       if(icons&&!subsetStyle&&fresh('icon-faces:'+link.href))linked.push({link:link,key:'icon-faces:'+link.href,faces:'icons'});

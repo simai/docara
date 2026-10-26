@@ -6,6 +6,28 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **The component examples show generated, text-free images.** A screenshot
+  of the old interface (with Russian text and a hand-drawn arrow) and two 3D
+  renders with the old diamond mark are replaced by 19 WebP illustrations
+  drawn by `scripts/build-example-art.mjs` in one style: dark and light
+  blocks with bars instead of words, soft shadows and the red ring of the
+  current mark. They carry no letters or digits, so every locale can use
+  them, and the illustrations keep a transparent background, so they sit on
+  light and dark surfaces alike. Each example has its own image: figure,
+  media, hero, showcase, promo, feature cards, grid cards and the surface
+  background. The figure page gains a `cover`/`contain` example with a tall
+  picture, the hero page a live background example and the landing blocks
+  page a features example with pictures. The SVG sources are in
+  `docs/example-art/`; `--check` reports a stale one. The largest image is
+  104 KB (the old ones weighed up to 1.16 MB), and the pages get lighter:
+  landing blocks 4.27 → 2.98 MB, media 3.92 → 2.94 MB, hero 3.75 →
+  2.89 MB, surface 3.99 → 3.68 MB, figure 3.08 → 2.84 MB.
+- **The surface and hero background examples use `overlay_strength=strong`**,
+  so the heading stays clearly readable in the dark theme too, where the
+  overlay is light.
+
 ## [3.9.1] - 2026-10-26
 
 ### Changed

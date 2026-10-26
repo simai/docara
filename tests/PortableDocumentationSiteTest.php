@@ -462,7 +462,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // stylesheets regroup from 48 into 50: 1970.
         // The file tree renders as the Framework tree, and its page's shared
         // shell stylesheet splits off: 51, 1971.
-        self::assertCount(1971, $firstFiles);
+        // The header gains the repository link and the reader settings become
+        // the Framework context menu, which changes the components every page
+        // uses; the shared shell stylesheets regroup from 51 into 60: 1980.
+        self::assertCount(1980, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

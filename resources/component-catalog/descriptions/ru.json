@@ -8,7 +8,7 @@
     "docara.button.variant": "Вид: `default` — с заливкой, `tonal` — мягкий фон, `outline` — рамка, `link` — как ссылка.",
     "docara.button.scheme": "Цвет кнопки: основной, дополнительный или цвет текста страницы.",
     "docara.button.size": "Ступень размера кнопки.",
-    "docara.button.icon": "Имя значка Material Symbols перед текстом.",
+    "docara.button.icon": "Имя значка Material Symbols после текста кнопки.",
     "docara.icon.size": "Ступень размера значка.",
     "docara.icon.family": "Начертание: `outlined` — контур, `rounded` — скруглённое, `sharp` — острое.",
     "docara.icon.weight": "Толщина линий значка.",

@@ -40,24 +40,26 @@ final class MarkdownCompilerTest extends TestCase
         ksort($counts, SORT_STRING);
 
         self::assertSame([
-            'code_block' => 4,
+            'code_block' => 5,
             'component' => 16,
             'example' => 4,
-            'heading' => 5,
-            'list' => 1,
-            'paragraph' => 5,
-            'table' => 3,
+            'heading' => 10,
+            'html_comment' => 2,
+            'list' => 3,
+            'paragraph' => 6,
+            'table' => 1,
         ], $counts);
         $components = array_values(array_filter(
             $document->allNodes(),
             static fn (DocumentNode $node): bool => $node instanceof ComponentNode,
         ));
         self::assertSame('docara.badge', $components[0]->component);
-        self::assertSame(['line' => 12, 'column' => 1], [
+        // The first badge stands inside a sentence of the page's example.
+        self::assertSame(['line' => 14, 'column' => 47], [
             'line' => $components[0]->location()->line,
             'column' => $components[0]->location()->column,
         ]);
-        self::assertSame(79, $components[15]->location()->line);
+        self::assertSame(73, $components[15]->location()->line);
         self::assertSame(
             trim((string) file_get_contents($root . '/tests/fixtures/document-ir/badge.json')),
             trim(CanonicalJson::encodePretty($document->toArray())),

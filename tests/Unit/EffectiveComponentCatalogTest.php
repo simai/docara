@@ -383,9 +383,9 @@ final class EffectiveComponentCatalogTest extends TestCase
         $actual = array_column($catalog['entries'], 'docs_ref', 'id');
         $expected = [
             'content.icon' => 'docs/site/content/ru/start/component-model.md',
-            'docara.alert' => 'docs/site/content/ru/start/component-model.md',
+            'docara.alert' => 'docs/site/content/ru/components/alert.md',
             'docara.backlinks' => 'docs/site/content/ru/components/backlinks.md',
-            'docara.badge' => 'docs/site/content/ru/start/component-model.md',
+            'docara.badge' => 'docs/site/content/ru/components/badge.md',
             'docara.banner' => 'docs/site/content/ru/components/banner.md',
             'docara.button' => 'docs/site/content/ru/components/button.md',
             'docara.card' => 'docs/site/content/ru/components/card.md',

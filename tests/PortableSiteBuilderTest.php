@@ -983,7 +983,9 @@ MD);
             self::assertStringContainsString('data-docara-preference-option', $html);
             self::assertStringContainsString('data-docara-smart="docara.preferences"', $html);
             self::assertStringContainsString('position="right"', $html);
-            self::assertStringContainsString('width="min(100vw, var(--sf-g6))"', $html);
+            // The settings are a dropdown card under the header's ⋮ button.
+            self::assertStringContainsString('width="min(calc(100vw - 2 * var(--sf-space-1)), var(--sf-g2))"', $html);
+            self::assertStringContainsString('height="auto"', $html);
             self::assertStringContainsString('value="system"', $html);
             self::assertStringContainsString('value="light"', $html);
             self::assertStringContainsString('value="dark"', $html);
@@ -998,7 +1000,7 @@ MD);
                 strpos($html, 'docara.framework.storage.compatibility') < strpos($html, 'data-docara-preferences-bootstrap'),
                 'The volatile Framework storage guard must run before Docara reads the reader preference.',
             );
-            self::assertStringContainsString('<sf-icon icon="tune" aria-hidden="true"></sf-icon>', $html);
+            self::assertStringContainsString('<sf-icon icon="more_vert" aria-hidden="true"></sf-icon>', $html);
             self::assertStringContainsString('data-docara-shell-controller', $html);
             self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $surface);
             self::assertStringContainsString("addEventListener('resize',reveal", $surface);

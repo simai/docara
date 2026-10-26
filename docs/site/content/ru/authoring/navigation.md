@@ -92,10 +92,12 @@ SIMAI Framework проверены на четырёх видимых уровн
 в `header_navigation` поле `repository` с адресом `https://…`:
 
 ```json
-"header_navigation": {
-  "enabled": true,
-  "repository": "https://github.com/simai/docara",
-  "items": [ … ]
+{
+  "header_navigation": {
+    "enabled": true,
+    "repository": "https://github.com/simai/docara",
+    "items": [{"id": "home", "label": "Главная", "href": "/ru/"}]
+  }
 }
 ```
 

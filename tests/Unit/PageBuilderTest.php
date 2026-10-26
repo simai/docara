@@ -126,7 +126,7 @@ final class PageBuilderTest extends TestCase
                 ]))->types(),
         );
         self::assertSame(
-            '0f4a7ab3d60c454a9dd969b1c14009c8241a5000be052288e3d7b46125f0a141',
+            'ec16b98c4a696d758400af00e6a47ce06b8209ce9741aaefa7c7e90e8c357d64',
             hash('sha256', $result->contentHtml),
         );
         foreach ($result->componentArtifacts as $artifact) {
@@ -142,11 +142,12 @@ final class PageBuilderTest extends TestCase
         $root = dirname(__DIR__, 2) . '/docs/site';
         foreach ([
             'components/backlinks' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
-            'components/banner' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
+            'components/banner' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
             'components/code' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example'],
-            // The page standard adds lists and the markers of the generated parameter table.
+            // Pages moved to the page standard add lists and the markers of
+            // the generated parameter table.
             'components/details' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
-            'components/download' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
+            'components/download' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
             // The native Markdown constructions share one guide page.
             'authoring/markdown' => ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example'],
         ] as $slug => $expectedTypes) {

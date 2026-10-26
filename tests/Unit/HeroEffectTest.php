@@ -82,6 +82,22 @@ final class HeroEffectTest extends TestCase
     }
 
     #[Test]
+    public function reduced_motion_starts_no_transitions_that_would_hide_an_effects_theme_colours(): void
+    {
+        // An effect reads its theme colours from a probe element's computed
+        // colour. A nonzero transition-duration on every element starts a
+        // transition there, and the probe reports the inherited text colour:
+        // in Chrome the still frame was painted in the text colour and hid
+        // the hero's text.
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString(
+            '@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:0s!important;',
+            $css,
+        );
+        self::assertStringNotContainsString('transition-duration:.01ms', $css);
+    }
+
+    #[Test]
     public function invalid_effect_inputs_are_refused(): void
     {
         foreach ([

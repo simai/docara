@@ -449,7 +449,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // The diagram gallery adds a page and its legacy redirect: 1955.
         // Generated WebP illustrations replace the three example PNGs: the
         // pages publish 15 of them: 1967.
-        self::assertCount(1967, $firstFiles);
+        // The live hero examples on the effects page change the components
+        // that page uses, and the shared shell stylesheets regroup from 47
+        // into 48: 1968.
+        self::assertCount(1968, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

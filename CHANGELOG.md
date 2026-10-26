@@ -27,6 +27,30 @@ All notable changes to Docara are recorded here. The format follows
 - **The surface and hero background examples use `overlay_strength=strong`**,
   so the heading stays clearly readable in the dark theme too, where the
   overlay is light.
+### Added
+
+- **The effects page shows its effects live.** "Фоновые эффекты" had no
+  live example. It now shows four small heroes from the site's pinned
+  catalogue, each with its Markdown source: `constellation-net`,
+  `hex-conduits`, `glyph-tide` (with `effect_settings`) and `contour-map`,
+  all with a light and a dark version. They render inline in the page, so
+  the shell's pause button and the Framework's off-screen pause apply. In
+  headless Chrome at 1440 px the page fetches the catalogue index once and
+  each effect's two files once, 97 KB in nine requests; the main thread is
+  busy about 1.6% of the time with one effect in view, 2.9% with three, and
+  0% with none in view or with the effects paused. The page's static weight
+  goes from 2.74 MB to 2.79 MB.
+
+### Fixed
+
+- **With reduced motion, a hero effect's still frame hid the hero's text.**
+  The shell's reduced-motion rule set `transition-duration:.01ms` on every
+  element. Since every property transitions by default, that started a
+  transition on the probe element an effect reads its theme colours from,
+  and the probe reported the colour it inherits. In Chrome `constellation-net`,
+  `hex-conduits` and `glyph-tide` painted their light still frame in the text
+  colour, so the home page hero showed a dark box with unreadable text. The
+  rule now uses `0s`, which starts no transition.
 
 ## [3.9.1] - 2026-10-26
 

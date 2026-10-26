@@ -7,6 +7,7 @@
   },
   "header_navigation": {
     "enabled": true,
+    "repository": "https://github.com/simai/docara",
     "items": [
       {
         "id": "guide",
@@ -14,8 +15,7 @@
         "href": "/ru/start/",
         "sections": ["/ru/start/", "/ru/authoring/", "/ru/settings/", "/ru/build/", "/ru/reference/", "/ru/troubleshooting/", "/ru/migration/", "/ru/development/"]
       },
-      {"id": "components", "label": "Компоненты", "href": "/ru/components/"},
-      {"id": "github", "label": "GitHub", "href": "https://github.com/simai/docara"}
+      {"id": "components", "label": "Компоненты", "href": "/ru/components/"}
     ]
   }
 }

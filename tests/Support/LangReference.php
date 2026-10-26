@@ -41,6 +41,7 @@ final class LangReference
         'navigation.open' => 'Кнопка, открывающая меню на телефоне',
         'navigation.mobile_title' => 'Заголовок меню на телефоне',
         'navigation.primary' => 'Подпись верхнего меню для программ экранного доступа',
+        'navigation.repository' => 'Подпись значка репозитория в шапке',
         'navigation.sections' => 'Подпись меню разделов слева',
         'navigation.title' => 'Заголовок списка разделов',
         'navigation.close' => 'Кнопка, закрывающая меню на телефоне',

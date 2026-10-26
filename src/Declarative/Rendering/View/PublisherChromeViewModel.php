@@ -38,5 +38,13 @@ final readonly class PublisherChromeViewModel
          * arrives with reading mode on.
          */
         public bool $readingModeToggleEnabled = true,
+        /**
+         * The project repository link at the end of the header actions:
+         * an escaped https URL and whether it is on GitHub, which shows the
+         * GitHub mark instead of the generic code icon.
+         *
+         * @var array{url:string,github:bool}|null
+         */
+        public ?array $repository = null,
     ) {}
 }

@@ -27,12 +27,12 @@ body[data-docara-shell]{opacity:1!important}
 .docara-sidebar-panel{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));display:flex;flex-direction:column}
 .docara-sidebar-scroll{flex:1 1 auto;min-block-size:0}
 .docara-sidebar-credit{flex:0 0 auto;margin:0;padding-block:var(--sf-space-1);padding-inline:var(--sf-space-1);border-block-start:1px solid var(--sf-outline-variant)}
-.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,currentColor 65%,transparent);--docara-credit-mark:color-mix(in srgb,currentColor 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}
-/* On hover or focus the gray logo takes its colours: letters in the theme text colour, the "o" in the Docara red. */
+.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:color-mix(in srgb,var(--sf-on-surface-variant) 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}
+/* One logo, two colour variables: the letters and the accented "o". Hover and focus only swap their values, from the two grays to the theme text colour and the Docara red. */
 .docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}
 .docara-sidebar-credit-link:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
-.docara-sidebar-credit-logo{display:inline-block;block-size:var(--docara-credit-logo-size);inline-size:auto;vertical-align:calc(var(--docara-credit-logo-size) * -0.25);fill:var(--docara-credit-wordmark);transition:fill var(--sf-duration-fast) var(--sf-animation)}
-.docara-sidebar-credit-mark{fill:var(--docara-credit-mark);transition:fill var(--sf-duration-fast) var(--sf-animation)}
+.docara-sidebar-credit-logo{display:inline-block;block-size:var(--docara-credit-logo-size);inline-size:auto;vertical-align:calc(var(--docara-credit-logo-size) * -0.25);fill:var(--docara-credit-wordmark)}
+.docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}
 .docara-sidebar-credit-text--before{margin-inline-end:var(--sf-a4)}.docara-sidebar-credit-text--after{margin-inline-start:var(--sf-a4)}
 .docara-sidebar-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-block:var(--sf-space-1);padding-inline-end:var(--sf-space-1);padding-inline-start:0}
 .docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}
@@ -212,10 +212,6 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-preview__tab{display:inline-flex;align-items:center;justify-content:center;min-block-size:var(--sf-ui-1--control-height);margin:0;padding-inline:var(--sf-space-1);border:0;border-radius:0;background:transparent;color:var(--sf-on-surface-variant);font-size:var(--sf-text-size-1);line-height:var(--sf-text-height-1);cursor:pointer}
 .docara-example-preview__tab[aria-selected="true"]{color:var(--sf-on-surface)}
 .docara-example-preview__tab:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);outline-offset:calc(var(--sf-focus--width) * -1)}
-.docara-tab{flex:0 0 auto;margin:0;border:0;border-block-end:var(--sf-a2) solid transparent;border-radius:0;background:transparent;font:inherit;font-size:var(--sf-text-size-1);line-height:var(--sf-text-height-1);white-space:nowrap;cursor:pointer}
-.docara-tab:hover,.docara-tab[aria-selected="true"]{color:var(--sf-on-surface)}
-.docara-tab[aria-selected="true"]{border-block-end-color:var(--sf-outline)}
-.docara-tab:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);outline-offset:calc(var(--sf-focus--width) * -1)}
 .docara-example-preview__indicator{position:absolute;inset-block-end:-1px;inset-inline-start:0;z-index:1;inline-size:0;block-size:var(--sf-a2);background:var(--sf-outline);pointer-events:none;transition:inset-inline-start 180ms ease,inline-size 180ms ease}
 .docara-example-preview__actions{justify-content:flex-end}
 .docara-example-preview__action,.docara-example-preview__copy{margin:0;color:var(--sf-on-surface-variant)}

@@ -24,7 +24,9 @@ final class RendererFrameworkUtilityTest extends TestCase
      * Classes that carry state, select a client engine or come from a
      * CommonMark extension (footnotes, fenced-code languages), not a style.
      */
-    private const HOOKS = ['is-active', 'mermaid', 'footnote', 'footnote-ref', 'footnote-backref', 'footnotes'];
+    // sf-tabs-main-tab has no Framework CSS rule: the Framework tabs script
+    // finds its panels by it, as in the Framework's own tabs markup.
+    private const HOOKS = ['is-active', 'mermaid', 'footnote', 'footnote-ref', 'footnote-backref', 'footnotes', 'sf-tabs-main-tab'];
 
     private const HOOK_PREFIXES = ['docara-', 'language-'];
 
@@ -59,7 +61,7 @@ final class RendererFrameworkUtilityTest extends TestCase
         $html .= $this->componentIndexHtml() . $this->atlasIndexHtml();
 
         // The pages exercise the blocks whose utilities once did not exist.
-        foreach (['data-docara-tabs', 'data-docara-block="features"', 'data-docara-block="showcase"', 'data-docara-block="columns"', 'data-step-state=', 'data-view="lines"', '<figcaption', 'data-docara-native-quote', 'data-docara-component-index-view', 'data-atlas-fingerprint'] as $marker) {
+        foreach (['data-docara-block="tabs"', 'data-docara-block="features"', 'data-docara-block="showcase"', 'data-docara-block="columns"', 'data-step-state=', 'data-view="lines"', '<figcaption', 'data-docara-native-quote', 'data-docara-component-index-view', 'data-atlas-fingerprint'] as $marker) {
             self::assertStringContainsString($marker, $html, "The rendered pages no longer contain [$marker]; widen the fixture.");
         }
         $classes = $this->classesIn($html);

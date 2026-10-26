@@ -714,7 +714,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                 'data-docara-content-width="container"',
             ],
             'docara.tabs' => [
-                '<section data-docara-block="tabs"',
+                '<div data-docara-block="tabs" class="sf-tabs sf-tabs--underline',
                 'role="tablist"',
             ],
             'docara.tree' => [

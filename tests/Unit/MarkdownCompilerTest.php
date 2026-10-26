@@ -248,7 +248,7 @@ MD, 'content/ru/components/details.md');
             $document,
             new DocumentRenderContext(null, 'content/ru/components/details.md'),
         );
-        self::assertStringContainsString('<details', $rendered['document']->html);
+        self::assertStringContainsString('<article data-docara-block="details"', $rendered['document']->html);
         self::assertStringContainsString('data-docara-backlinks', $rendered['document']->html);
         self::assertSame([], $rendered['components']);
     }

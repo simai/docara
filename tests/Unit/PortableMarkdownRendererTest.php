@@ -806,6 +806,26 @@ MD);
     }
 
     #[Test]
+    public function tabs_render_as_the_framework_underline_tabs_with_the_first_tab_selected(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(":::tabs\n### Linux\n\nОдин.\n\n### macOS\n\nДва.\n:::\n");
+
+        self::assertMatchesRegularExpression(
+            '~^<div data-docara-block="tabs" class="sf-tabs sf-tabs--underline flex flex-col m-bottom-1">'
+            . '<div class="sf-tabs-top-container flex"><nav class="sf-tabs-top flex" role="tablist">'
+            . '<button type="button" role="tab" id="(docara-tabs-[0-9a-f]{12})-tab-0" aria-controls="\\1-panel-0" aria-selected="true" class="sf-button sf-button--default sf-button--primary sf-button--size-1 selected"><span class="sf-button-text-container">Linux</span></button>'
+            . '<button type="button" role="tab" id="\\1-tab-1" aria-controls="\\1-panel-1" aria-selected="false" tabindex="-1" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">macOS</span></button>'
+            . '</nav></div><div class="sf-tabs-main-container">'
+            . '<section role="tabpanel" id="\\1-panel-0" aria-labelledby="\\1-tab-0" class="sf-tabs-main-tab selected"><p>Один.</p></section>'
+            . '<section role="tabpanel" id="\\1-panel-1" aria-labelledby="\\1-tab-1" class="sf-tabs-main-tab" hidden><p>Два.</p></section>'
+            . '</div></div>$~',
+            trim($html),
+        );
+        // The Framework tabs script switches the panels; Docara keeps no copy.
+        self::assertStringNotContainsString('data-docara-tabs', (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js'));
+    }
+
+    #[Test]
     public function details_render_as_the_framework_accordion_in_every_view(): void
     {
         foreach (['outline' => 'sf-accordion sf-accordion--outline', 'surface' => 'sf-accordion', 'lines' => 'sf-accordion sf-accordion--flush'] as $view => $classes) {

@@ -64,6 +64,8 @@
 <?php } ?>
             </div>
         </aside>
+<?php /* Before the first paint: a page reached from this site keeps the sidebar where the reader left it (declarative-shell.js saves it on pagehide and link click); then, or on a page opened directly, a current item out of view is centred. Only the sidebar scrolls, at once even under the Framework's smooth scroll-behavior, so the page does not move and nothing animates. */ ?>
+        <script data-docara-sidebar-scroll>(function(){var v=document.querySelector('aside[data-docara-region="sidebar"]>.docara-sidebar-panel>.docara-sidebar-scroll>.sf-scrollbar__viewport');if(!v)return;function to(top){var b=v.style.scrollBehavior;v.style.scrollBehavior='auto';v.scrollTop=top;v.style.scrollBehavior=b}try{if(document.referrer&&new URL(document.referrer).origin===location.origin){var s=JSON.parse(sessionStorage.getItem('docara.navigation.scroll')||'null');if(s&&typeof s.sidebar==='number'&&s.sidebar>0)to(s.sidebar)}}catch(e){}var a=v.querySelector('[aria-current="page"]');if(!a)return;var r=v.getBoundingClientRect(),c=a.getBoundingClientRect();if(r.height>0&&c.height>0&&(c.top<r.top||c.bottom>r.bottom))to(v.scrollTop+c.top-r.top-(r.height-c.height)/2)})();</script>
 <?php } ?>
         <div class="docara-reading-column flex min-w-0 flex-col gap-2 p-3">
             <div class="docara-reading-toolbar flex items-cross-center gap-1 min-w-0"><div class="docara-reading-toolbar__location flex-1 min-w-0"><?= $view->chrome['breadcrumbs'] ?></div><?= $view->chrome['reading_actions'] ?></div>

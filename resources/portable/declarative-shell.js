@@ -163,6 +163,53 @@
       }
     });
   }
+  /* The sidebar and the mobile navigation drawer keep their scroll across pages of the site. The position is saved for the tab on pagehide and on a link click, before the drawer closes and loses it; the inline script after the sidebar restores the sidebar before the first paint, and the drawer is restored when it opens. A current item still out of view is centred in its own scroller: only that box scrolls, at once, never the page, and nothing animates. */
+  var navigationScroll=(function(){
+    var key='docara.navigation.scroll';
+    var sidebar=document.querySelector('aside[data-docara-region="sidebar"]>.docara-sidebar-panel>.docara-sidebar-scroll>.sf-scrollbar__viewport');
+    var drawer=document.getElementById('docara-mobile-navigation');
+    var content=drawer&&drawer.querySelector('.docara-mobile-sheet-content');
+    var stored=null,sameSite=false;
+    try{sameSite=Boolean(document.referrer)&&new URL(document.referrer).origin===location.origin}catch(error){}
+    try{stored=JSON.parse(sessionStorage.getItem(key)||'null')}catch(error){}
+    if(!stored||typeof stored!=='object')stored={};
+    var drawerTop=sameSite&&typeof stored.drawer==='number'?stored.drawer:0;
+    function shown(element){return Boolean(element&&element.getClientRects().length)}
+    function keepDrawer(){if(drawer&&drawer.open&&shown(content))drawerTop=content.scrollTop}
+    function save(){
+      keepDrawer();
+      var state={sidebar:shown(sidebar)?sidebar.scrollTop:(typeof stored.sidebar==='number'?stored.sidebar:0),drawer:drawerTop};
+      try{sessionStorage.setItem(key,JSON.stringify(state))}catch(error){}
+    }
+    // The Framework sets scroll-behavior:smooth; the position is put at once instead.
+    function scrollAt(scroller,top){
+      var behavior=scroller.style.scrollBehavior;
+      scroller.style.scrollBehavior='auto';
+      scroller.scrollTop=top;
+      scroller.style.scrollBehavior=behavior;
+    }
+    function reveal(scroller,item){
+      if(!scroller||!item)return;
+      var box=scroller.getBoundingClientRect(),rect=item.getBoundingClientRect();
+      if(box.height<=0||rect.height<=0||(rect.top>=box.top&&rect.bottom<=box.bottom))return;
+      scrollAt(scroller,scroller.scrollTop+rect.top-box.top-(box.height-rect.height)/2);
+    }
+    document.addEventListener('click',function(event){
+      var link=event.target&&event.target.closest?event.target.closest('a[href]'):null;
+      if(link&&((sidebar&&sidebar.contains(link))||(drawer&&drawer.contains(link))))save();
+    },true);
+    window.addEventListener('pagehide',save);
+    return {
+      keepDrawer:keepDrawer,
+      reveal:reveal,
+      openDrawer:function(dialog){
+        if(dialog!==drawer||!content)return;
+        scrollAt(content,drawerTop);
+        var current=dialog.querySelectorAll('[aria-current="page"]');
+        reveal(content,current[current.length-1]);
+      }
+    };
+  })();
   function closeTransientExcept(id){
     document.querySelectorAll('[data-docara-transient-dialog]').forEach(function(dialog){
       if(dialog.id===id)return;
@@ -211,6 +258,7 @@
       }
     }
     function closeSheet(){
+      navigationScroll.keepDrawer();
       if(typeof dialog.close==='function'&&dialog.open){dialog.close()}
       else{dialog.removeAttribute('open');trigger.setAttribute('aria-expanded','false');trigger.focus()}
     }
@@ -222,9 +270,13 @@
         else{dialog.setAttribute('open','')}
       }
       trigger.setAttribute('aria-expanded','true');
+      navigationScroll.openDrawer(dialog);
       requestAnimationFrame(function(){
-        var target=dialog.querySelector('[aria-current="page"]')||dialog.querySelector('a[href]')||closeButton;
-        target.focus();
+        // The drawer lists the primary navigation first: the current item of the sidebar copy is the last one.
+        var current=dialog.querySelectorAll('[aria-current="page"]');
+        var target=current[current.length-1]||dialog.querySelector('a[href]')||closeButton;
+        navigationScroll.reveal(dialog.querySelector('.docara-mobile-sheet-content'),target);
+        target.focus({preventScroll:true});
       });
     }
     trigger.addEventListener('click',openSheet);

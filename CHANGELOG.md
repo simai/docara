@@ -51,6 +51,17 @@ All notable changes to Docara are recorded here. The format follows
   `hex-conduits` and `glyph-tide` painted their light still frame in the text
   colour, so the home page hero showed a dark box with unreadable text. The
   rule now uses `0s`, which starts no transition.
+- **The sidebar keeps its scroll from page to page.** Each page opened with
+  the sidebar scrolled to the top, so a reader deep in a long section had to
+  scroll again to find their place; the existing attempt to reveal the
+  current item scrolled the `aside`, which does not scroll. The shell now
+  saves the sidebar's and the mobile drawer's scroll for the tab on
+  `pagehide` and on a navigation link click, and a short inline script right
+  after the sidebar restores it before the first paint when the reader came
+  from the same site. A current item still out of view, or on a page opened
+  directly, is centred in the sidebar; the drawer does the same when it
+  opens. Only the sidebar or the drawer scrolls, at once even though the
+  Framework sets `scroll-behavior:smooth`, and the page does not move.
 
 ## [3.9.1] - 2026-10-26
 ### Added

@@ -29,8 +29,47 @@ All notable changes to Docara are recorded here. The format follows
   overlay is light.
 
 ## [3.9.1] - 2026-10-26
+### Added
+
+- **Richer code blocks.** A fence takes options in braces after the
+  language, the same `{name=value}` form every Docara block uses:
+  ```` ```php {title="app.php" highlight="1,4-6" numbers} ````. `title`
+  shows a file name in the header instead of the language; `highlight`
+  marks lines; `numbers` numbers them (`numbers=42` starts at 42); `focus`
+  dims every other line; `layout=terminal` draws a terminal window whose
+  `$ ` lines are commands. VitePress-style comment markers `// [!code ++]`,
+  `[!code --]`, `[!code focus]` and `[!code highlight]` mark lines in any
+  comment syntax and leave the shown code; `[!!code ++]` shows a marker as
+  text, and `markdown` fences keep markers as written. The VitePress
+  shorthand ```` ```js{1,4-6} ```` highlights lines. All line work is done at
+  build time; the Framework highlighter still colours the code, through its
+  own engine, line by line. Added and removed lines carry a `+`/`−` sign and
+  a hidden word for screen readers (`code.added`, `code.removed` in
+  `lang.json`); line numbers, signs and prompts are not copied or read. The
+  copy button copies the code after the change: no numbers, markers,
+  removed lines, prompts or terminal output. Code stays left-to-right on a
+  right-to-left page.
+- **`:::code` selects part of a file by name.** `region=build` shows the
+  lines between `#region build` and `#endregion` markers written in the
+  file's own comment syntax (`//`, `#`, `<!-- -->`, `/* */`); the markers
+  are not shown. `start_after` and `end_before` cut between two lines by
+  their text, `dedent=true` removes the shared indentation, and `numbers`
+  counts lines as the file does. `:::code` also takes `highlight`, `focus`
+  and `layout`.
+- **New diagnostics:** `MARKDOWN_CODE_RANGE_INVALID` (a `highlight` or
+  `focus` line outside the block, a backwards range, or `start_after` and
+  `end_before` leaving nothing), `MARKDOWN_CODE_REGION_UNKNOWN` (no such
+  region, an unclosed one, or a marker text no line contains) and
+  `MARKDOWN_CODE_OPTIONS_CONFLICT` (`lines`, `region` and
+  `start_after`/`end_before` combined). The `native.code.enhanced`
+  requirement record is removed: the native code entry carries the options.
 
 ### Changed
+
+- **A `:::code` title is shown.** The header of a code-from-file block used
+  to show the language even when the block had a `title` (by default the
+  file name); it now shows the title. A code block inside an example's
+  result tab keeps its header, as on a page.
 
 - **Example frames ask for the Framework scripts all at once.** A sandboxed
   example frame used to request each Framework script the page sends it only

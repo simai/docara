@@ -6,6 +6,8 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use ReflectionClassConstant;
+use Simai\Docara\PortableSite\DeclarativePortablePagePublisher;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
@@ -21,12 +23,19 @@ final class NavigationScrollMemoryTest extends TestCase
     #[Test]
     public function the_page_restores_the_sidebar_right_after_it_before_the_shell_runs(): void
     {
+        // The publisher shell hosts registered chrome only: the script comes
+        // from the publisher as a view field and is placed after the sidebar.
         $template = $this->file('resources/publisher/templates/page.php');
         $script = $this->inlineScript();
 
-        $aside = strpos($template, '        </aside>' . "\n<?php /* Before the first paint");
-        self::assertIsInt($aside, 'The restore script follows the sidebar, so it runs as soon as the sidebar exists.');
+        $aside = strpos($template, "        </aside>\n        <?= \$view->sidebarScrollRestore ?>\n<?php } ?>");
+        self::assertIsInt($aside, 'The restore script follows the sidebar, so it runs as soon as the sidebar exists, once per page.');
         self::assertLessThan(strpos($template, 'docara-reading-column'), $aside);
+        self::assertStringContainsString(
+            "\$regions['sidebar'] === '' ? '' : self::SIDEBAR_SCROLL_RESTORE,",
+            $this->file('src/PortableSite/DeclarativePortablePagePublisher.php'),
+        );
+        self::assertStringStartsWith('<script data-docara-sidebar-scroll>(function(){', $script);
         foreach ([
             "document.querySelector('" . self::VIEWPORT . "')",
             'new URL(document.referrer).origin===location.origin',
@@ -103,7 +112,7 @@ console.log(JSON.stringify({
   brokenStorage: run('https://docs.example/a/', '{', 600),
 }));
 JS;
-        $process = new Process([$node, '-e', $harness, $this->inlineScript()]);
+        $process = new Process([$node, '-e', $harness, $this->inlineScriptBody()]);
         $process->mustRun();
 
         self::assertSame([
@@ -121,11 +130,16 @@ JS;
 
     private function inlineScript(): string
     {
-        self::assertSame(1, preg_match(
-            '~<script data-docara-sidebar-scroll>(.*?)</script>~s',
-            $this->file('resources/publisher/templates/page.php'),
-            $match,
-        ));
+        $script = (new ReflectionClassConstant(DeclarativePortablePagePublisher::class, 'SIDEBAR_SCROLL_RESTORE'))->getValue();
+        self::assertIsString($script);
+
+        return $script;
+    }
+
+    /** The script's body, as a browser runs it. */
+    private function inlineScriptBody(): string
+    {
+        self::assertSame(1, preg_match('~^<script data-docara-sidebar-scroll>(.*)</script>$~s', $this->inlineScript(), $match));
 
         return $match[1];
     }

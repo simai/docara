@@ -1697,8 +1697,8 @@ MD);
         // logo files: the letters are a softer mix of the link colour and the
         // ring a stronger one, leaning towards on-surface.
         $shellCss = (string) file_get_contents(dirname(__DIR__) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,currentColor 65%,transparent);--docara-credit-mark:color-mix(in srgb,currentColor 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
-        self::assertStringContainsString('.docara-sidebar-credit-mark{fill:var(--docara-credit-mark);transition:fill', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:color-mix(in srgb,var(--sf-on-surface-variant) 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}', $shellCss);
         // Hover and keyboard focus show the logo in colour: theme text and the Docara red.
         self::assertStringContainsString('.docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}', $shellCss);
         self::assertStringContainsString('.docara-sidebar-credit-link:focus-visible{outline:', $shellCss);

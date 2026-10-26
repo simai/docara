@@ -315,31 +315,6 @@
     menu.addEventListener('keydown',function(event){if(event.key==='Escape'&&menu.open){event.preventDefault();closeMenu(true)}});
     document.addEventListener('click',function(event){if(menu.open&&!menu.contains(event.target)){closeMenu(false)}});
   });
-  document.querySelectorAll('[data-docara-tabs]').forEach(function(container){
-    var tabs=Array.from(container.querySelectorAll(':scope > [role="tablist"] > [role="tab"]'));
-    var panels=Array.from(container.querySelectorAll(':scope > [role="tabpanel"]'));
-    function select(tab,focus){
-      tabs.forEach(function(candidate){
-        var active=candidate===tab;
-        candidate.setAttribute('aria-selected',active?'true':'false');
-        candidate.tabIndex=active?0:-1;
-      });
-      panels.forEach(function(panel){panel.hidden=panel.id!==tab.getAttribute('aria-controls')});
-      if(focus){tab.focus()}
-    }
-    tabs.forEach(function(tab,index){
-      tab.addEventListener('click',function(){select(tab,false)});
-      tab.addEventListener('keydown',function(event){
-        var next=index;
-        if(event.key==='ArrowRight'){next=(index+1)%tabs.length}
-        else if(event.key==='ArrowLeft'){next=(index-1+tabs.length)%tabs.length}
-        else if(event.key==='Home'){next=0}
-        else if(event.key==='End'){next=tabs.length-1}
-        else{return}
-        event.preventDefault();select(tabs[next],true);
-      });
-    });
-  });
   document.querySelectorAll('[data-docara-embed-load]').forEach(function(button){
     button.addEventListener('click',function(){
       var embed=button.closest('[data-docara-block="embed"]');

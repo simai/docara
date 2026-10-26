@@ -1799,14 +1799,18 @@ HTML;
             $panelId = $id . '-panel-' . $index;
             $tabs .= '<button type="button" role="tab" id="' . $tabId . '" aria-controls="' . $panelId
                 . '" aria-selected="' . ($selected ? 'true' : 'false') . '"' . ($selected ? '' : ' tabindex="-1"')
-                . ' class="docara-tab p-x-2 p-y-1/2 color-on-surface-variant">' . $this->escapeHtml($label) . '</button>';
-            $panels .= '<div role="tabpanel" id="' . $panelId . '" aria-labelledby="' . $tabId . '"'
-                . ($selected ? '' : ' hidden') . ' class="p-2">' . $content . '</div>';
+                . ' class="sf-button sf-button--default sf-button--primary sf-button--size-1' . ($selected ? ' selected' : '') . '">'
+                . '<span class="sf-button-text-container">' . $this->escapeHtml($label) . '</span></button>';
+            $panels .= '<section role="tabpanel" id="' . $panelId . '" aria-labelledby="' . $tabId . '"'
+                . ' class="sf-tabs-main-tab' . ($selected ? ' selected' : '') . '"' . ($selected ? '' : ' hidden') . '>' . $content . '</section>';
         }
 
-        return '<section data-docara-block="tabs" data-docara-tabs class="border border-outline-variant radius-2 overflow-hidden m-bottom-1">'
-            . '<div role="tablist" class="flex overflow-x-auto border-bottom-1 border-bottom-solid border-outline-variant bg-surface-0">' . $tabs . '</div>'
-            . $panels . '</section>';
+        // The block is the Framework underline tabs: its script switches the
+        // panels and handles the keyboard. The first tab is selected in the
+        // markup, so the page reads the same before the script runs.
+        return '<div data-docara-block="tabs" class="sf-tabs sf-tabs--underline flex flex-col m-bottom-1">'
+            . '<div class="sf-tabs-top-container flex"><nav class="sf-tabs-top flex" role="tablist">' . $tabs . '</nav></div>'
+            . '<div class="sf-tabs-main-container">' . $panels . '</div></div>';
     }
 
     /** @param array<string,string> $attributes */

@@ -182,6 +182,9 @@ final readonly class DocumentationStandard
         $lines[] = '';
         $lines[] = 'One name, one meaning: `type` is a status, `variant` a style, `layout` an arrangement,';
         $lines[] = '`ratio` is `16/9`; former names (badge `type`, details `view`) report `MARKDOWN_PARAMETER_DEPRECATED`.';
+        // One line: the guide stays within 100 lines.
+        $lines[count($lines) - 1] .= ' Code fences take options in braces: ```` ```php {title="app.php" highlight="2-3" numbers} ````;'
+            . ' `// [!code ++]` / `[!code --]` mark changed lines, `layout=terminal` shows commands.';
         $lines[] = '';
         $lines[] = '## Create a page';
         $lines[] = '';

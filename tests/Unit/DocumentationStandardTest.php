@@ -220,6 +220,8 @@ final class DocumentationStandardTest extends TestCase
         );
         self::assertStringContainsString("## Component parameters\n", $agents);
         self::assertStringContainsString('`MARKDOWN_PARAMETER_DEPRECATED`', $agents);
+        self::assertStringContainsString('{title="app.php" highlight="2-3" numbers}', $agents);
+        self::assertStringContainsString('`[!code --]`', $agents);
         self::assertLessThanOrEqual(100, substr_count($agents, "\n"));
     }
 

@@ -611,7 +611,7 @@ final class PortableMarkdownRenderer
     {
         $this->assertAttributes($attributes, 'details');
         $open = $this->attributeBoolean($attributes['open'] ?? 'false', 'details', 'open');
-        $view = $this->catalogueChoice($attributes['layout'] ?? 'surface', 'details', 'layout');
+        $view = $this->catalogueChoice($attributes['layout'] ?? 'outline', 'details', 'layout');
         $nodes = iterator_to_array($rendered->getDocument()->children());
         $heading = $nodes[0] ?? null;
         if (! $heading instanceof Heading || ! in_array($heading->getLevel(), [2, 3, 4], true)) {
@@ -630,18 +630,21 @@ final class PortableMarkdownRenderer
         $content = trim((string) $rendered);
         $content = preg_replace('/^<h[2-4][^>]*>.*?<\/h[2-4]>\s*/su', '', $content, 1) ?? $content;
 
-        $classes = $view === 'lines'
-            ? 'border-bottom-1 border-bottom-solid border-outline-variant p-y-1 m-bottom-1'
-            : 'bg-surface-0 border border-outline-variant radius-2 p-2 m-bottom-1';
+        // The block is the Framework accordion: the shared trigger, chevron
+        // and panel, outlined by default, filled for surface and flush for
+        // lines. A closed panel is hidden="until-found", so find-in-page
+        // still opens it.
+        $classes = 'sf-accordion' . match ($view) {
+            'surface' => '',
+            'lines' => ' sf-accordion--flush',
+            default => ' sf-accordion--outline',
+        } . ($open ? ' active' : '') . ' m-bottom-1';
 
-        // The summary is a flex row, which drops the native disclosure
-        // triangle; the Framework accordion's chevron_right takes its place
-        // and turns down when the block is open (declarative-shell.css).
-        return '<details data-docara-block="details" data-view="' . $view . '" class="' . $classes . '"'
-            . ($open ? ' open' : '') . '><summary class="flex items-cross-center gap-1 cursor-pointer bold">'
-            . '<i class="sf-icon sf-icon-loaded" aria-hidden="true">chevron_right</i>'
-            . '<span class="min-w-0">' . $this->escapeHtml($title) . '</span></summary>'
-            . '<div class="p-top-1">' . $content . '</div></details>';
+        return '<article data-docara-block="details" data-view="' . $view . '" class="' . $classes . '">'
+            . '<div class="sf-accordion-heading"><button class="sf-accordion-trigger" type="button" aria-expanded="' . ($open ? 'true' : 'false') . '">'
+            . '<span class="sf-accordion-title flex-1 min-w-0">' . $this->escapeHtml($title) . '</span>'
+            . '<i class="sf-icon" aria-hidden="true">chevron_right</i></button></div>'
+            . '<div class="sf-accordion-content" role="region"' . ($open ? '' : ' hidden="until-found"') . '>' . $content . '</div></article>';
     }
 
     /** @param array<string,string> $attributes */

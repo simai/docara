@@ -806,24 +806,31 @@ MD);
     }
 
     #[Test]
-    public function details_show_the_framework_disclosure_chevron_in_every_view(): void
+    public function details_render_as_the_framework_accordion_in_every_view(): void
     {
-        foreach (['surface' => 'bg-surface-0 border border-outline-variant radius-2 p-2 m-bottom-1', 'lines' => 'border-bottom-1 border-bottom-solid border-outline-variant p-y-1 m-bottom-1'] as $view => $classes) {
-            $html = (new PortableMarkdownRenderer)->render(":::details {view=$view}\n### Вопрос\n\nОтвет.\n:::\n");
+        foreach (['outline' => 'sf-accordion sf-accordion--outline', 'surface' => 'sf-accordion', 'lines' => 'sf-accordion sf-accordion--flush'] as $view => $classes) {
+            $html = (new PortableMarkdownRenderer)->render(":::details {layout=$view}\n### Вопрос\n\nОтвет.\n:::\n");
 
+            // Closed by default: the panel waits for find-in-page.
             self::assertStringContainsString(
-                '<details data-docara-block="details" data-view="' . $view . '" class="' . $classes . '">'
-                . '<summary class="flex items-cross-center gap-1 cursor-pointer bold">'
-                . '<i class="sf-icon sf-icon-loaded" aria-hidden="true">chevron_right</i>'
-                . '<span class="min-w-0">Вопрос</span></summary><div class="p-top-1"><p>Ответ.</p></div></details>',
+                '<article data-docara-block="details" data-view="' . $view . '" class="' . $classes . ' m-bottom-1">'
+                . '<div class="sf-accordion-heading"><button class="sf-accordion-trigger" type="button" aria-expanded="false">'
+                . '<span class="sf-accordion-title flex-1 min-w-0">Вопрос</span>'
+                . '<i class="sf-icon" aria-hidden="true">chevron_right</i></button></div>'
+                . '<div class="sf-accordion-content" role="region" hidden="until-found"><p>Ответ.</p></div></article>',
                 $html,
             );
         }
 
+        $open = (new PortableMarkdownRenderer)->render(":::details {open=true}\n### Вопрос\n\nОтвет.\n:::\n");
+        // Outline is the default layout.
+        self::assertStringContainsString('class="sf-accordion sf-accordion--outline active m-bottom-1"><div class="sf-accordion-heading"><button class="sf-accordion-trigger" type="button" aria-expanded="true">', $open);
+        self::assertStringContainsString('<div class="sf-accordion-content" role="region"><p>Ответ.</p></div>', $open);
+        self::assertStringNotContainsString('<details', $open);
+
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString('[data-docara-block="details"]>summary::-webkit-details-marker{display:none}', $css);
-        self::assertStringContainsString('[data-docara-block="details"][open]>summary>.sf-icon{transform:rotate(90deg)}', $css);
-        self::assertStringContainsString('[data-docara-block="details"]>summary:focus-visible{outline:', $css);
+        self::assertStringContainsString('[data-docara-block="details"]>.sf-accordion-content[hidden]{padding:0}', $css);
+        self::assertStringNotContainsString('[data-docara-block="details"]>summary', $css);
     }
 
     #[Test]

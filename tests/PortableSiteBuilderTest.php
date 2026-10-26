@@ -1669,8 +1669,8 @@ MD);
         $credit = static fn (string $words, string $name): string => '<p class="docara-sidebar-credit text-small color-on-surface-variant" data-docara-sidebar-credit>'
             . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.simai.io/" rel="noopener" aria-label="' . $name . '" title="' . $name . '">'
             . '<span class="docara-sidebar-credit-text docara-sidebar-credit-text--before">' . $words . '</span>' . $logo . '</a></p>';
-        self::assertStringStartsWith('<svg class="docara-sidebar-credit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1976 598" width="46" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="', $logo);
-        // The ring is the last shape, so it is drawn over the stem of the "d".
+        self::assertStringStartsWith('<svg class="docara-sidebar-credit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1942 600" width="45" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="', $logo);
+        // The accented "o" is the last shape, after the other letters.
         self::assertSame(1, substr_count($logo, '<path class="docara-sidebar-credit-mark" '));
         self::assertStringEndsWith('Z"/></svg>', $logo);
         self::assertGreaterThan(strpos($logo, '<path fill-rule="evenodd"'), strpos($logo, 'docara-sidebar-credit-mark'));
@@ -1697,8 +1697,10 @@ MD);
         // logo files: the letters are a softer mix of the link colour and the
         // ring a stronger one, leaning towards on-surface.
         $shellCss = (string) file_get_contents(dirname(__DIR__) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b4);--docara-credit-wordmark:color-mix(in srgb,currentColor 65%,transparent);--docara-credit-mark:color-mix(in srgb,currentColor 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
-        self::assertStringContainsString('.docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,currentColor 65%,transparent);--docara-credit-mark:color-mix(in srgb,currentColor 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-mark{fill:var(--docara-credit-mark);transition:fill', $shellCss);
+        // Hover and keyboard focus show the logo in colour: theme text and the Docara red.
+        self::assertStringContainsString('.docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}', $shellCss);
         self::assertStringContainsString('.docara-sidebar-credit-link:focus-visible{outline:', $shellCss);
         self::assertSame('Made with {docara}', UiCopy::buildText('ar', 'branding.credit'));
         // A landing page has no sidebar and so no credit line.

@@ -662,8 +662,8 @@ final class EffectiveComponentCatalogTest extends TestCase
                 'data-docara-diagram-source',
             ],
             'docara.details' => [
-                '<details data-docara-block="details"',
-                '<summary class="flex items-cross-center gap-1 cursor-pointer',
+                '<article data-docara-block="details"',
+                '<button class="sf-accordion-trigger" type="button"',
             ],
             'docara.download' => [
                 '<section data-docara-block="download" data-action="download"',

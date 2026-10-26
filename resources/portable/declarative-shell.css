@@ -7,6 +7,10 @@ body{min-height:100vh;background:var(--sf-surface-0);color:var(--sf-on-surface)}
 body[data-docara-shell]{opacity:1!important}
 .docara-mobile-navigation-trigger,.docara-outline-mobile{display:none}
 .docara-header-row>[data-docara-section="docara.header"]{min-inline-size:0;align-items:center;flex:1 1 auto}
+/* The search field follows the Framework size-1 control height, which is smaller on phones, like the icon buttons beside it. */
+.docara-header{--docara-header-control-size:calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-default))}
+.docara-header .docara-brand--logo{--docara-brand-mark-size:var(--sf-c6)}
+.docara-header .docara-search-trigger{block-size:var(--docara-header-control-size)}
 .docara-language-menu>summary{list-style:none}
 .docara-language-menu>summary::-webkit-details-marker{display:none}
 .docara-language-menu__popup{position:absolute;inset-block-start:calc(100% + var(--sf-space-1\/3));inset-inline-end:0;z-index:10;min-inline-size:var(--sf-f0);border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-2,var(--sf-radius-default));background:var(--sf-surface-0);box-shadow:var(--sf-ui-shadow-2)}
@@ -23,11 +27,12 @@ body[data-docara-shell]{opacity:1!important}
 .docara-sidebar-panel{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));display:flex;flex-direction:column}
 .docara-sidebar-scroll{flex:1 1 auto;min-block-size:0}
 .docara-sidebar-credit{flex:0 0 auto;margin:0;padding-block:var(--sf-space-1);padding-inline:var(--sf-space-1);border-block-start:1px solid var(--sf-outline-variant)}
-.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b4);--docara-credit-wordmark:color-mix(in srgb,currentColor 65%,transparent);--docara-credit-mark:color-mix(in srgb,currentColor 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}
-.docara-sidebar-credit-link:hover{color:var(--sf-on-surface)}
+.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,currentColor 65%,transparent);--docara-credit-mark:color-mix(in srgb,currentColor 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}
+/* On hover or focus the gray logo takes its colours: letters in the theme text colour, the "o" in the Docara red. */
+.docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}
 .docara-sidebar-credit-link:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
-.docara-sidebar-credit-logo{display:inline-block;block-size:var(--docara-credit-logo-size);inline-size:auto;vertical-align:calc(var(--docara-credit-logo-size) * -0.238);fill:var(--docara-credit-wordmark)}
-.docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}
+.docara-sidebar-credit-logo{display:inline-block;block-size:var(--docara-credit-logo-size);inline-size:auto;vertical-align:calc(var(--docara-credit-logo-size) * -0.25);fill:var(--docara-credit-wordmark);transition:fill var(--sf-duration-fast) var(--sf-animation)}
+.docara-sidebar-credit-mark{fill:var(--docara-credit-mark);transition:fill var(--sf-duration-fast) var(--sf-animation)}
 .docara-sidebar-credit-text--before{margin-inline-end:var(--sf-a4)}.docara-sidebar-credit-text--after{margin-inline-start:var(--sf-a4)}
 .docara-sidebar-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-block:var(--sf-space-1);padding-inline-end:var(--sf-space-1);padding-inline-start:0}
 .docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}
@@ -193,12 +198,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 [data-docara-media="showcase"]{aspect-ratio:16/9;object-fit:contain}
 [data-docara-media="feature-icon"]{inline-size:var(--sf-e0);block-size:var(--sf-e0);object-fit:contain}
 [data-docara-block="features"]>li>.docara-icon{align-self:flex-start}
-[data-docara-block="details"]>summary{list-style:none;border-radius:var(--sf-radius-1)}
-[data-docara-block="details"]>summary::-webkit-details-marker{display:none}
-[data-docara-block="details"]>summary>.sf-icon{flex:none;color:var(--sf-on-surface-variant);transition:transform var(--sf-duration-fast) var(--sf-animation)}
-[data-docara-block="details"][open]>summary>.sf-icon{transform:rotate(90deg)}
-[dir=rtl] [data-docara-block="details"]:not([open])>summary>.sf-icon{transform:rotate(180deg)}
-[data-docara-block="details"]>summary:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
+/* A closed panel waits for find-in-page with hidden="until-found", which keeps its box; drop the padding so only the trigger shows. */
+[data-docara-block="details"]>.sf-accordion-content[hidden]{padding:0}
 .docara-landing [data-docara-block="columns"]>div>h3:first-child{font-size:var(--sf-heading-4--size);line-height:var(--sf-heading-4--height)}
 [data-docara-media="card"]{aspect-ratio:4/3;object-fit:cover;border-radius:var(--sf-radius-2)}
 [data-docara-media="logo"]{max-inline-size:var(--sf-f0);max-block-size:var(--sf-d2);object-fit:contain}

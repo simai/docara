@@ -222,7 +222,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/tree.md",
-            "source_sha256": "f0dcd5c81507bcbd394b06357b3b923213381e0557b90011b31b7d407165a348",
+            "source_sha256": "726bde9b6586ec48abe9c749072189e4bd23a286027443a9e4ba2837be1afcee",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/tree.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/tree.md",
@@ -541,5 +541,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "cc61a9b7581e7d1f3acc08bad0bca2d5bdb5e71fb334eced174a02a70e99d817"
+    "content_sha256": "15833d41c0cc41d7bd62df362c5c051094665f4f3e710b274f0bd7744b6d9008"
 }

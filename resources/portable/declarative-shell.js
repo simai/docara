@@ -328,24 +328,6 @@
       embed.replaceChildren(fragment);
     });
   });
-  document.querySelectorAll('[data-docara-tree-toggle]').forEach(function(button){
-    var branch=button.nextElementSibling;
-    var indicator=button.querySelector('[data-docara-tree-indicator]');
-    if(!branch||branch.tagName!=='UL')return;
-    function setExpanded(expanded){
-      button.setAttribute('aria-expanded',expanded?'true':'false');
-      branch.hidden=!expanded;
-      if(indicator)indicator.textContent=expanded?'▾':'▸';
-    }
-    button.addEventListener('click',function(){setExpanded(button.getAttribute('aria-expanded')!=='true')});
-    button.addEventListener('keydown',function(event){
-      if(event.key==='ArrowLeft'&&button.getAttribute('aria-expanded')==='true'){
-        event.preventDefault();setExpanded(false);
-      }else if(event.key==='ArrowRight'&&button.getAttribute('aria-expanded')!=='true'){
-        event.preventDefault();setExpanded(true);
-      }
-    });
-  });
   document.querySelectorAll('[data-docara-math-source]').forEach(function(element){
     if(!window.katex||typeof window.katex.render!=='function')return;
     try{
@@ -369,43 +351,6 @@
       });
     }
   }
-  document.querySelectorAll('[data-docara-block="tree"]').forEach(function(tree){
-    Array.from(tree.querySelectorAll('li')).forEach(function(item){
-      var nested=Array.from(item.children).find(function(child){return child.tagName==='UL'})||null;
-      var firstTextNode=Array.from(item.childNodes).find(function(node){
-        return node.nodeType===Node.TEXT_NODE&&String(node.textContent||'').trim()!=='';
-      })||null;
-      if(!firstTextNode)return;
-      var labelText=String(firstTextNode.textContent||'').trim();
-      var label=document.createElement('span');
-      label.className='inline-flex items-cross-center gap-1 min-w-0';
-      var icon=document.createElement('sf-icon');
-      var fileIcon=/\.(?:png|jpe?g|gif|webp|svg|avif)$/i.test(labelText)
-        ?'image'
-        :(/\.(?:json|ya?ml|xml|php|js|ts|css|scss|html?)$/i.test(labelText)?'data_object':'description');
-      icon.setAttribute('icon',nested?'folder_open':fileIcon);
-      icon.setAttribute('size','1');
-      label.appendChild(icon);
-      label.appendChild(document.createTextNode(labelText));
-      firstTextNode.replaceWith(label);
-      if(!nested||tree.dataset.interactive!=='true')return;
-      var toggle=document.createElement('button');
-      toggle.type='button';
-      toggle.className='sf-button sf-button--link sf-button--on-surface sf-button--size-1 inline-flex items-cross-center content-main-center';
-      toggle.setAttribute('aria-expanded','true');
-      toggle.setAttribute('aria-label','Toggle folder');
-      toggle.innerHTML='<sf-icon icon="expand_more" size="1"></sf-icon>';
-      item.insertBefore(toggle,label);
-      toggle.addEventListener('click',function(){
-        var expanded=toggle.getAttribute('aria-expanded')==='true';
-        toggle.setAttribute('aria-expanded',expanded?'false':'true');
-        nested.hidden=expanded;
-        var toggleIcon=toggle.querySelector('sf-icon');
-        if(toggleIcon){toggleIcon.setAttribute('icon',expanded?'chevron_right':'expand_more')}
-        icon.setAttribute('icon',expanded?'folder':'folder_open');
-      });
-    });
-  });
   function positionExampleIndicator(example,animate){
     var selected=example.querySelector('[data-docara-example-tab][aria-selected="true"]');
     var indicator=example.querySelector('.docara-example-preview__indicator');

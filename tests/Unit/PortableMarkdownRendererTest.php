@@ -560,22 +560,31 @@ MD);
     }
 
     #[Test]
-    public function interactive_tree_branches_are_keyboard_operable_and_static_trees_have_no_controls(): void
+    public function trees_render_as_the_framework_tree_and_static_trees_are_left_unbound(): void
     {
         $renderer = new PortableMarkdownRenderer;
         $interactive = $renderer->render(<<<'MD'
 :::tree {interactive=true}
 - content
   - ru
-    - index.md
+    - `index.md`
 - docara.json
 :::
 MD);
-        self::assertStringContainsString('data-docara-block="tree" data-interactive="true"', $interactive);
-        self::assertSame(2, substr_count($interactive, 'data-docara-tree-toggle'));
-        self::assertSame(2, substr_count($interactive, 'aria-expanded="true"'));
-        self::assertStringNotContainsString('<span class="min-w-0">index.md</span>', $interactive);
+        $folder = static fn (string $name, string $toggle): string => '<div class="sf-tree-item open"><div class="sf-tree-item-container flex items-cross-center">'
+            . $toggle . '<span class="sf-tree-item-name">' . $name . '</span></div><div class="sf-tree-group">';
+        $file = static fn (string $name): string => '<div class="sf-tree-item"><div class="sf-tree-item-container flex items-cross-center">'
+            . '<span class="sf-tree-toggle-spacer" aria-hidden="true"></span><span class="sf-tree-item-name">' . $name . '</span></div></div>';
+        $button = '<button type="button" class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>';
+        self::assertSame(
+            '<div data-docara-block="tree" data-interactive="true" class="sf-tree flex flex-col m-bottom-1">'
+            . $folder('content', $button) . $folder('ru', $button) . $file('<code>index.md</code>') . '</div></div></div></div>'
+            . $file('docara.json') . '</div>',
+            trim($interactive),
+        );
 
+        // A static tree is marked as bound, so the Framework script leaves
+        // it open, and its folder icons are not buttons.
         $static = $renderer->render(<<<'MD'
 :::tree {interactive=false}
 - content
@@ -583,8 +592,9 @@ MD);
 - docara.json
 :::
 MD);
-        self::assertStringContainsString('data-interactive="false"', $static);
-        self::assertStringNotContainsString('data-docara-tree-toggle', $static);
+        self::assertStringStartsWith('<div data-docara-block="tree" data-interactive="false" class="sf-tree flex flex-col m-bottom-1" data-sf-tree-bound="1">', trim($static));
+        self::assertStringNotContainsString('<button', $static);
+        self::assertStringContainsString('<span class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></span>', $static);
     }
 
     #[Test]

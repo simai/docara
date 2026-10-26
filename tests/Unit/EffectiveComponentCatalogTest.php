@@ -719,7 +719,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             ],
             'docara.tree' => [
                 '<div data-docara-block="tree"',
-                '<ul',
+                'class="sf-tree flex flex-col',
             ],
         ];
         $smartIdentity = [

@@ -255,7 +255,6 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 /* At tablet and phone widths the device column stays on surface-0 and the area around it is surface-1, so the contrast marks the simulated width. */
 .docara-example-preview[data-docara-example-viewer-active="true"]:is([data-docara-example-viewport="tablet"],[data-docara-example-viewport="mobile"]) [data-docara-example-panel="example"].is-active{background:var(--sf-surface-1)}
 .docara-example-preview[data-docara-example-viewer-active="true"] iframe[data-docara-example-frame]{flex:0 0 auto;min-block-size:100%;max-inline-size:none;background:var(--sf-surface-0)}
-[data-docara-tree-toggle]+ul[hidden]{display:none}
 .docara-step{position:relative;grid-template-columns:var(--sf-d0) minmax(0,1fr);column-gap:var(--sf-space-1);min-block-size:var(--sf-d0);padding-block-end:var(--sf-space-2)}
 .docara-step:last-child{padding-block-end:0}
 .docara-step:not(:last-child)::after{content:"";position:absolute;inset-block-start:var(--sf-d0);inset-block-end:0;inset-inline-start:calc(var(--sf-c0) - var(--sf-px) / 2);inline-size:1px;background:var(--sf-outline-variant)}

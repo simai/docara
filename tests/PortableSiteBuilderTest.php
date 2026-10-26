@@ -635,10 +635,9 @@ MD);
         );
         self::assertStringContainsString('template[data-docara-embed-template]', $shellRuntime);
         self::assertStringContainsString('iframe.src=iframe.dataset.src', $shellRuntime);
-        self::assertStringContainsString('[data-docara-tree-toggle]', $shellRuntime);
-        self::assertStringContainsString("event.key==='ArrowLeft'", $shellRuntime);
-        self::assertStringContainsString("event.key==='ArrowRight'", $shellRuntime);
-        self::assertStringContainsString('[data-docara-tree-toggle]+ul[hidden]{display:none}', $shellCss);
+        // The Framework tree script folds :::tree branches; the shell keeps no copy.
+        self::assertStringNotContainsString('data-docara-tree', $shellRuntime);
+        self::assertStringNotContainsString('data-docara-tree', $shellCss);
         $smartSurface = implode('', array_map(
             static fn (string $path): string => (string) file_get_contents($path),
             [

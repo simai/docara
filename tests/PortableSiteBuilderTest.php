@@ -800,7 +800,7 @@ MD);
         self::assertStringContainsString('.docara-example-preview iframe:not([data-docara-example-frame]){block-size:var(--sf-g6)}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll{box-sizing:border-box;block-size:auto;margin:0', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll code{background:transparent}', $shellCss);
-        self::assertStringContainsString('[data-docara-example-panel] [data-docara-code-block]{block-size:auto;margin:0;', $shellCss);
+        self::assertStringContainsString('[data-docara-example-panel]:not([data-docara-example-panel="example"]) [data-docara-code-block]{block-size:auto;margin:0;', $shellCss);
         self::assertStringContainsString('.docara-example-preview__action,.docara-example-preview__copy{margin:0;color:var(--sf-on-surface-variant)}', $shellCss);
         // The pinned Framework colours the success alert icon itself.
         self::assertStringNotContainsString('.sf-alert.sf-alert--success>sf-icon>.sf-icon', $shellCss);
@@ -1422,7 +1422,7 @@ MD);
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
         self::assertSame('ui-32c7a64e4575', $componentCatalog['framework_pair']);
-        self::assertCount(38, $componentCatalog['entries']);
+        self::assertCount(37, $componentCatalog['entries']);
         self::assertEquals(
             [
                 'catalog_is_canonical_framework_registry' => false,

@@ -168,6 +168,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 [data-docara-block="hero"]:has(>.docara-padding-2xl)>.docara-effect-toggle{inset-block-end:min(var(--sf-space-1),(var(--docara-padding-2xl) - var(--sf-ui-1--control-height))/2)}
 @media (prefers-reduced-motion:no-preference){[data-docara-block="hero"]:has(>.docara-effect-toggle)>[data-docara-container]:not(.docara-padding-2xl){padding-block-end:calc(var(--sf-ui-1--control-height) + 2*var(--sf-space-1\/3))}}
 .docara-landing .docara-content{width:100%}
+/* The Framework container widens its side padding with the screen (up to --sf-space-6), while the header row keeps --sf-space-1, so landing content sat inside the logo's line. The landing article takes the header's padding; full-width blocks break out by container width and are unaffected. */
+.docara-landing>.docara-content.container{padding-inline:var(--sf-space-1)}
 .docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]{box-sizing:border-box;width:100%;max-width:none;margin:0;padding:0}
 .docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}
 .docara-landing [data-docara-container]{box-sizing:border-box;width:100%}

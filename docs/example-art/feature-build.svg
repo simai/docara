@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<defs>
+<linearGradient id="dark" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#30353D"/><stop offset="1" stop-color="#1D2026"/></linearGradient>
+<linearGradient id="darker" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#22262C"/><stop offset="1" stop-color="#14171C"/></linearGradient>
+<linearGradient id="light" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#ECEEF2"/></linearGradient>
+<linearGradient id="lightSoft" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F1F3F6"/><stop offset="1" stop-color="#E2E5EA"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF4A5B"/><stop offset=".55" stop-color="#E81123"/><stop offset="1" stop-color="#A50B19"/></linearGradient>
+<linearGradient id="ring" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF6B78"/><stop offset=".45" stop-color="#E81123"/><stop offset="1" stop-color="#9E0A17"/></linearGradient>
+<linearGradient id="tile" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A3F48"/><stop offset="1" stop-color="#23272D"/></linearGradient>
+<linearGradient id="tileLight" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E7EAEE"/><stop offset="1" stop-color="#D3D8DF"/></linearGradient>
+<linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<radialGradient id="glowRed"><stop offset="0" stop-color="#E81123" stop-opacity=".55"/><stop offset=".45" stop-color="#E81123" stop-opacity=".16"/><stop offset="1" stop-color="#E81123" stop-opacity="0"/></radialGradient>
+<filter id="shadow" x="-30%" y="-30%" width="160%" height="170%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="22"/><feOffset dy="22" result="a"/><feComponentTransfer in="a" result="a"><feFuncA type="linear" slope=".30"/></feComponentTransfer>
+<feGaussianBlur in="SourceAlpha" stdDeviation="3"/><feOffset dy="3" result="b"/><feComponentTransfer in="b" result="b"><feFuncA type="linear" slope=".22"/></feComponentTransfer>
+<feFlood flood-color="#06080B"/><feComposite in2="a" operator="in" result="a2"/>
+<feFlood flood-color="#06080B"/><feComposite in2="b" operator="in" result="b2"/>
+<feMerge><feMergeNode in="a2"/><feMergeNode in="b2"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<filter id="soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="14"/></filter>
+<filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="7" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0"/></filter>
+</defs>
+<g filter="url(#shadow)"><rect x="40" y="120" width="176" height="96" rx="18" fill="url(#dark)"/><rect x="40.75" y="120.75" width="174.5" height="94.5" rx="17.25" fill="url(#sheen)" stroke="rgba(255,255,255,.10)" stroke-width="1.5"/></g><rect x="60" y="140" width="136" height="12" rx="6" fill="#3B414B"/><rect x="60" y="166" width="96" height="12" rx="6" fill="#555C68"/><rect x="60" y="190" width="60" height="8" rx="4" fill="#E81123"/><circle cx="128" cy="82" r="44" fill="none" stroke="#E81123" stroke-width="24" opacity=".45" filter="url(#soft)"/><circle cx="128" cy="84.7" r="44" fill="none" stroke="#5E0610" stroke-width="15" opacity=".55"/><circle cx="128" cy="82" r="44" fill="none" stroke="url(#ring)" stroke-width="15"/><path d="M 90.57 64.55 A 41.3 41.3 0 0 1 142.13 43.19" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="3.3" stroke-linecap="round"/>
+</svg>

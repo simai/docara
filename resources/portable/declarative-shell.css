@@ -255,7 +255,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-viewer-dialog::backdrop{background:color-mix(in srgb,var(--sf-scrim,var(--sf-on-surface)) 48%,transparent)}
 .docara-example-preview[data-docara-example-viewer-active="true"]{display:flex;flex-direction:column;inline-size:100%;block-size:100%;margin:0;border:0;border-radius:0;background:var(--sf-surface-0)}
 .docara-example-preview[data-docara-example-viewer-active="true"] .docara-example-preview__panels{display:flex;flex:1;min-block-size:0;overflow:hidden}
-.docara-example-preview[data-docara-example-viewer-active="true"] [data-docara-example-panel="example"].is-active{box-sizing:border-box;display:flex;flex:1;min-inline-size:0;min-block-size:0;align-items:flex-start;justify-content:center;overflow:auto;background:var(--sf-surface-0)}
+.docara-example-preview[data-docara-example-viewer-active="true"] [data-docara-example-panel="example"].is-active{box-sizing:border-box;display:flex;flex:1;min-inline-size:0;min-block-size:0;align-items:flex-start;justify-content:safe center;overflow:auto;background:var(--sf-surface-0)}
 /* At tablet and phone widths the device column stays on surface-0 and the area around it is surface-1, so the contrast marks the simulated width. */
 .docara-example-preview[data-docara-example-viewer-active="true"]:is([data-docara-example-viewport="tablet"],[data-docara-example-viewport="mobile"]) [data-docara-example-panel="example"].is-active{background:var(--sf-surface-1)}
 .docara-example-preview[data-docara-example-viewer-active="true"] iframe[data-docara-example-frame]{flex:0 0 auto;min-block-size:100%;max-inline-size:none;background:var(--sf-surface-0)}

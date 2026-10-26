@@ -729,7 +729,9 @@
       activeViewport=viewport;
       sharedExampleViewport=viewport;
       example.dataset.docaraExampleViewport=viewport;
-      previewFrame.style.inlineSize=exampleViewportWidths[viewport]+'px';
+      // The desktop width is the screen's when the screen is narrower; a
+      // tablet or phone width stays exact and scrolls if it must.
+      previewFrame.style.inlineSize=viewport==='desktop'?'min('+exampleViewportWidths[viewport]+'px, 100%)':exampleViewportWidths[viewport]+'px';
       previewFrame.style.maxInlineSize='none';
       viewportButtons.forEach(function(button){
         var active=button.dataset.docaraExampleViewport===viewport;

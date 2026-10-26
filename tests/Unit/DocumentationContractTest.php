@@ -270,7 +270,7 @@ final class DocumentationContractTest extends TestCase
     public function portable_installation_surfaces_use_the_stable_package_after_release(): void
     {
         self::assertSame(
-            '3.9.0',
+            '3.9.1',
             trim((string) file_get_contents($this->repositoryRoot() . '/VERSION')),
         );
 

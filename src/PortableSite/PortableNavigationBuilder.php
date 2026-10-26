@@ -148,7 +148,9 @@ final readonly class PortableNavigationBuilder
                 continue;
             }
 
-            return $children !== [] ? $children : [$node];
+            // A top-level page without pages of its own is no section: the
+            // rail keeps the whole tree rather than a lone link.
+            return $children !== [] ? $children : $nodes;
         }
 
         return $nodes;

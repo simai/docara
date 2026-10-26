@@ -47,6 +47,8 @@ final class PortableNavigationBuilderTest extends TestCase
 
         self::assertSame(['intro', 'advanced'], array_column($scoped, 'key'));
         self::assertSame($visible, $builder->scoped($visible, '/guide/advanced/', 'site'));
+        // A top-level page with no pages of its own keeps the whole tree.
+        self::assertSame($visible, $builder->scoped($visible, '/reference/', 'section'));
     }
 
     #[Test]

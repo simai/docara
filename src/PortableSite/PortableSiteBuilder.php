@@ -1130,11 +1130,15 @@ final readonly class PortableSiteBuilder
                             : (string) $page['url']);
                 /** @var ResolvedPagePlan $declarativePlan */
                 $declarativePlan = $page['plan'];
-                $pageNavigation = $navigationBuilder->scoped(
-                    $pageNavigation,
-                    $navigationActiveUrl,
-                    (string) data_get($declarativePlan->configuration, 'navigation.scope', ConfigurationDefaults::value('navigation.scope')),
-                );
+                // With a header menu the header chooses the section, so the
+                // rail shows only that section unless the site sets a scope.
+                $navigationScope = data_get($declarativePlan->configuration, 'navigation.scope');
+                if (! is_string($navigationScope)) {
+                    $navigationScope = data_get($declarativePlan->configuration, 'header_navigation.enabled') === true
+                        ? 'section'
+                        : (string) ConfigurationDefaults::value('navigation.scope');
+                }
+                $pageNavigation = $navigationBuilder->scoped($pageNavigation, $navigationActiveUrl, $navigationScope);
                 $activeNavigation = $navigationBuilder->activate($pageNavigation, $navigationActiveUrl);
                 $composition = PageCompositionContext::fromBuilder(
                     $page['branding'],

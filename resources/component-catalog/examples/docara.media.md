@@ -5,7 +5,7 @@
 
 The image supports the explanation and moves below on narrow screens.
 
-![Docara flow](../../_docara/component-catalog/docara-flow.png)
+![Diagram: source files, components and the finished page](../../_docara/component-catalog/media-flow.webp)
 :::
 
 <!-- docara-variant:state.left -->
@@ -14,7 +14,7 @@ The image supports the explanation and moves below on narrow screens.
 
 The mirrored option uses the same component.
 
-![Docara flow](../../_docara/component-catalog/docara-flow.png)
+![Page components around the Docara mark](../../_docara/component-catalog/media-components.webp)
 :::
 
 <!-- docara-variant:state.stacked -->
@@ -23,5 +23,5 @@ The mirrored option uses the same component.
 
 Both columns stack automatically on a phone.
 
-![Docara interface](../../_docara/component-catalog/docara-screen.png)
+![A Docara page on a wide and a narrow screen](../../_docara/component-catalog/media-devices.webp)
 :::

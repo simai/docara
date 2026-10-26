@@ -41,7 +41,7 @@ Surface выбирают для общей полосы содержимого: 
 
 :::example {label="Локальный декоративный фон"}
 ```markdown
-:::surface {width=full content_width=container background_image=/assets/docara-screen.png background_fit=cover background_x=right background_y=center overlay=dark overlay_strength=medium padding=xl tone=contrast}
+:::surface {width=full content_width=container background_image=/assets/surface-backdrop.webp background_fit=cover background_x=right background_y=center overlay=dark overlay_strength=strong padding=xl tone=contrast}
 ## Документация как продукт
 
 Читаемый контент остаётся поверх декоративного слоя.

@@ -25,7 +25,7 @@ Docara превращает Markdown и проверенные JSON-настро
 
 [Открыть быстрый старт](../../start/)
 
-![Компоненты Docara](../../assets/docara-components.png)
+![Страница документации и её компоненты](../../assets/hero-split.webp)
 :::
 ```
 :::
@@ -85,9 +85,9 @@ Framework `--sf-d2` и `--sf-e4`. Кнопка остановки фоновог
 :::hero {layout=split media=side}
 # Документация, которую удобно читать
 
-Один смысловой скриншот остаётся частью содержания.
+Одно смысловое изображение остаётся частью содержания.
 
-![Интерфейс документации](/assets/docara-screen.png)
+![Светлая страница документации перед двумя тёмными](/assets/hero-side.webp)
 :::
 ```
 
@@ -96,15 +96,17 @@ Framework `--sf-d2` и `--sf-e4`. Кнопка остановки фоновог
 в `assets/`; внешние URL, data URI, переходы по каталогам, symlink и hardlink
 отклоняются до рендера.
 
+:::example {label="Фоновое изображение"}
 ```markdown
-:::hero {media=background background_fit=cover background_x=center background_y=center overlay=dark overlay_strength=medium}
+:::hero {media=background background_fit=cover background_x=right background_y=center overlay=dark overlay_strength=strong}
 # Документация без лишней сложности
 
 Содержимое остаётся читаемым поверх токенизированного затемнения.
 
-![](/assets/docara-screen.png)
+![](/assets/hero-backdrop.webp)
 :::
 ```
+:::
 
 Параметры `background_fit=cover|contain|auto`,
 `background_x=left|center|right`, `background_y=top|center|bottom`,

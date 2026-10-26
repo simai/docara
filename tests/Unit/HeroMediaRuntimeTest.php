@@ -30,29 +30,29 @@ final class HeroMediaRuntimeTest extends TestCase
     #[Test]
     public function absent_media_and_explicit_auto_are_byte_identical_to_the_accepted_hero(): void
     {
-        $body = "# Hero\n\nDescription.\n\n![Meaningful image](/assets/docara-screen.png)";
+        $body = "# Hero\n\nDescription.\n\n![Meaningful image](/assets/hero-backdrop.webp)";
         $renderer = new PortableMarkdownRenderer;
 
         $accepted = $renderer->render(":::hero\n$body\n:::\n");
-        self::assertSame('61e319c239028ffb544ec0d55f056585db6eec665b27cdf8c222b0378474ac64', hash('sha256', $accepted));
+        self::assertSame('b261cefc90812a17e0f3b24dc014f52ab4e0fdca736873d728fa3295ad4ef943', hash('sha256', $accepted));
         self::assertSame($accepted, $renderer->render(":::hero {media=auto}\n$body\n:::\n"));
     }
 
     #[Test]
     public function side_background_and_none_follow_one_typed_semantic_contract(): void
     {
-        $side = $this->render(":::hero {media=side}\n# Side\n\nDescription.\n\n![Meaningful image](/assets/docara-screen.png)\n:::");
+        $side = $this->render(":::hero {media=side}\n# Side\n\nDescription.\n\n![Meaningful image](/assets/hero-backdrop.webp)\n:::");
         self::assertStringContainsString('data-docara-media="hero"', $side);
         self::assertStringContainsString('alt="Meaningful image"', $side);
         self::assertStringNotContainsString('data-docara-surface-background', $side);
 
-        $background = $this->render(":::hero {media=background}\n# Background\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::");
+        $background = $this->render(":::hero {media=background}\n# Background\n\nDescription.\n\n![](/assets/hero-backdrop.webp)\n:::");
         self::assertSame(1, substr_count($background, 'data-docara-surface-background'));
         self::assertStringContainsString('alt="" aria-hidden="true"', $background);
         self::assertStringContainsString('data-overlay="dark" data-strength="medium"', $background);
         self::assertStringContainsString('data-fit="cover" data-x="center" data-y="center"', $background);
         self::assertStringNotContainsString('data-docara-media="hero"', $background);
-        self::assertSame(1, substr_count($background, 'docara-screen.png'));
+        self::assertSame(1, substr_count($background, 'hero-backdrop.webp'));
 
         $none = $this->render(":::hero {media=none}\n# Text only\n\nDescription.\n:::");
         self::assertStringNotContainsString('<img', $none);
@@ -64,20 +64,20 @@ final class HeroMediaRuntimeTest extends TestCase
     {
         $cases = [
             [":::hero {media=side}\n# Hero\n\nDescription.\n:::", 'MARKDOWN_HERO_MEDIA_IMAGE_REQUIRED', 1],
-            [":::hero {media=side variant=centered}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE', 1],
-            [":::hero {media=side}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_SIDE_ALT_REQUIRED', 5],
-            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_ALT_FORBIDDEN', 5],
-            [":::hero {media=none}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_MEDIA_IMAGE_FORBIDDEN', 5],
-            [":::hero {media=background unsupported=value}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN', 1],
-            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n\n![](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_STRUCTURE_INVALID', 5],
+            [":::hero {media=side variant=centered}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/hero-backdrop.webp)\n:::", 'MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE', 1],
+            [":::hero {media=side}\n# Hero\n\nDescription.\n\n![](/assets/hero-backdrop.webp)\n:::", 'MARKDOWN_HERO_SIDE_ALT_REQUIRED', 5],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/hero-backdrop.webp)\n:::", 'MARKDOWN_HERO_BACKGROUND_ALT_FORBIDDEN', 5],
+            [":::hero {media=none}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/hero-backdrop.webp)\n:::", 'MARKDOWN_HERO_MEDIA_IMAGE_FORBIDDEN', 5],
+            [":::hero {media=background unsupported=value}\n# Hero\n\nDescription.\n\n![](/assets/hero-backdrop.webp)\n:::", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN', 1],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/hero-backdrop.webp)\n\n![](/assets/hero-backdrop.webp)\n:::", 'MARKDOWN_HERO_STRUCTURE_INVALID', 5],
             [":::hero {background_x=right}\n# Hero\n\nDescription.\n:::", 'MARKDOWN_HERO_BACKGROUND_MODE_REQUIRED', 1],
             [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](https://example.test/hero.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_UNSAFE', 5],
             [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](//example.test/hero.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_UNSAFE', 5],
             [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](data:image/png;base64,AA)\n:::", 'MARKDOWN_HERO_IMAGE_UNSAFE', 5],
             [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](javascript:alert(1))\n:::", 'MARKDOWN_HERO_IMAGE_UNSAFE', 5],
             [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/missing.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_UNSAFE', 5],
-            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/../docara-screen.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_UNSAFE', 5],
-            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/Docara-screen.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_CASE_MISMATCH', 5],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/../hero-backdrop.webp)\n:::", 'MARKDOWN_HERO_BACKGROUND_UNSAFE', 5],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/Hero-backdrop.webp)\n:::", 'MARKDOWN_HERO_BACKGROUND_CASE_MISMATCH', 5],
         ];
 
         foreach ($cases as [$source, $code, $line]) {
@@ -97,7 +97,7 @@ final class HeroMediaRuntimeTest extends TestCase
     #[Test]
     public function hero_background_uses_typed_ir_and_the_shared_surface_frame_in_page_builder(): void
     {
-        $built = $this->build(":::hero {media=background background_fit=contain background_x=right background_y=bottom overlay=light overlay_strength=soft}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::");
+        $built = $this->build(":::hero {media=background background_fit=contain background_x=right background_y=bottom overlay=light overlay_strength=soft}\n# Hero\n\nDescription.\n\n![](/assets/hero-backdrop.webp)\n:::");
         $node = $built->document->toArray()['nodes'][0] ?? null;
 
         self::assertSame('typed_directive', $node['type'] ?? null);
@@ -106,7 +106,7 @@ final class HeroMediaRuntimeTest extends TestCase
         self::assertSame(1, substr_count($built->contentHtml, 'data-docara-surface-background'));
         self::assertStringContainsString('data-fit="contain" data-x="right" data-y="bottom"', $built->contentHtml);
         self::assertStringContainsString('data-overlay="light" data-strength="soft"', $built->contentHtml);
-        self::assertSame(['/assets/docara-screen.png'], $built->documentArtifact->hydration['local_public_assets']);
+        self::assertSame(['/assets/hero-backdrop.webp'], $built->documentArtifact->hydration['local_public_assets']);
     }
 
     #[Test]
@@ -117,7 +117,7 @@ final class HeroMediaRuntimeTest extends TestCase
         self::assertTrue($files->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $root));
         $root = (string) realpath($root);
         self::assertTrue($files->copy(
-            $this->site . '/assets/docara-screen.png',
+            $this->site . '/assets/hero-backdrop.webp',
             $root . '/assets/hero.png',
         ));
         file_put_contents(

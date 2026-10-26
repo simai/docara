@@ -1,5 +1,5 @@
 {
-  "$comment": "Page-weight budgets for the documentation site, checked in CI by scripts/verify-page-weight.php. Calibrated on 2026-10-20 (main 57686108: icon catalogue, WebP home page): 133 pages, median 2.67 MB, home 2.86 MB, heaviest ordinary page 4.02 MB (ru/examples/extensions/), largest image 1.16 MB (assets/docara-flow.png). Static estimate; headless Chrome loads 0.5-0.9 MB more per page (Framework chunks a script loads, icon weights picked at run time).",
+  "$comment": "Page-weight budgets for the documentation site, checked in CI by scripts/verify-page-weight.php. Calibrated on 2026-10-20 (main 57686108: icon catalogue, WebP home page): 133 pages, median 2.67 MB, home 2.86 MB, heaviest ordinary page 4.02 MB (ru/examples/extensions/), largest image 1.16 MB (assets/docara-flow.png, since replaced: on 2026-10-26 the example images became generated WebP files of at most 104 KB). Static estimate; headless Chrome loads 0.5-0.9 MB more per page (Framework chunks a script loads, icon weights picked at run time).",
   "max_page_bytes": 4500000,
   "max_image_bytes": 1300000,
   "image_oversize_ratio": 2.5,

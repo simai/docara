@@ -447,7 +447,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // The documentation quality page and the quality error codes page
         // add two pages and their two legacy redirects: 1953.
         // The diagram gallery adds a page and its legacy redirect: 1955.
-        self::assertCount(1955, $firstFiles);
+        // Generated WebP illustrations replace the three example PNGs: the
+        // pages publish 15 of them: 1967.
+        self::assertCount(1967, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

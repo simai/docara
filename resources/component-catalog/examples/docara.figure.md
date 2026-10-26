@@ -2,15 +2,15 @@
 <!-- docara-parameter:ratio -->
 <!-- docara-parameter:fit -->
 :::figure {ratio=16/9 fit=cover}
-![Documentation interface](../../_docara/component-catalog/docara-screen.png)
+![A project dashboard with a chart and a card](../../_docara/component-catalog/figure-scene.webp)
 
 A wide illustration fills the 16:9 area.
 :::
 
 :::figure {ratio=4/3 fit=cover}
-![Build flow](../../_docara/component-catalog/docara-flow.png)
+![Build flow](../../_docara/component-catalog/figure-flow.webp)
 
-The 4:3 format works well for diagrams and interface captures.
+The 4:3 format works well for diagrams.
 :::
 
 :::figure {ratio=1/1 fit=contain}

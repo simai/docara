@@ -8,5 +8,5 @@ Docara composes the documentation interface from Markdown, JSON and registered c
 
 [Back to the catalog](../)
 
-![A generated Docara page](../../_docara/component-catalog/docara-screen.png)
+![A documentation page in the light and dark themes](../../_docara/component-catalog/showcase.webp)
 :::

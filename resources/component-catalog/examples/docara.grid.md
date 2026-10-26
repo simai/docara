@@ -92,7 +92,7 @@ Columns stack on narrow screens.
 :::::grid {columns=3 gap=2}
 ::::card {variant=plain}
 :::figure {ratio=16/9 fit=cover}
-![Content](../../_docara/component-catalog/feature-markdown.png)
+![Content](../../_docara/component-catalog/grid-content.webp)
 :::
 ##### Content stays content
 
@@ -100,7 +100,7 @@ Markdown is easy to read and edit.
 ::::
 ::::card {variant=plain}
 :::figure {ratio=16/9 fit=contain}
-![Composition](../../_docara/component-catalog/feature-json.png)
+![Composition](../../_docara/component-catalog/grid-layout.webp)
 :::
 ##### Declarative layout
 
@@ -108,7 +108,7 @@ JSON connects regions and components.
 ::::
 ::::card {variant=plain}
 :::figure {ratio=16/9 fit=contain}
-![Build](../../_docara/component-catalog/feature-build.png)
+![Build](../../_docara/component-catalog/grid-build.webp)
 :::
 ##### Verifiable output
 

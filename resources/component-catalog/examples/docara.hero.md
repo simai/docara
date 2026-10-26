@@ -8,7 +8,7 @@ Docara turns Markdown and validated JSON settings into a fast static site built 
 
 [Back to the catalog](../)
 
-![](../../_docara/component-catalog/docara-flow.png)
+![](../../_docara/component-catalog/hero-split.webp)
 :::
 
 <!-- docara-variant:state.text -->
@@ -43,7 +43,7 @@ The vertical padding grows with the viewport, from 48 px on a phone to 112 px on
 
 Markdown remains content while JSON describes composition.
 
-![Docara flow](../../_docara/component-catalog/docara-flow.png)
+![A light documentation page in front of two dark ones](../../_docara/component-catalog/hero-side.webp)
 :::
 
 <!-- docara-variant:state.background_media -->
@@ -55,6 +55,6 @@ fixture because its local /assets/ admission must be bound to a locale page. -->
 
 The image remains decorative while this content stays readable.
 
-![](/assets/docara-screen.png)
+![](/assets/hero-backdrop.webp)
 :::
 ```

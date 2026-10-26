@@ -6,7 +6,7 @@
     "entries": [
         {
             "source_ref": "docs/site/content/ru/authoring/markdown.md",
-            "source_sha256": "6710cbfe9f9d627dc2893cc06ee2d6f3ab7bf56818195e45d88432a6c237419a",
+            "source_sha256": "9babb66c565af6b9e5224d3c8b758d7142b48f51ed4fa02b7d57cef4501689b3",
             "release": "3.9.1",
             "source_url": "https://github.com/simai/docara/blob/v3.9.1/docs/site/content/ru/authoring/markdown.md",
             "history_url": "https://github.com/simai/docara/commits/v3.9.1/docs/site/content/ru/authoring/markdown.md",
@@ -102,7 +102,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/figure.md",
-            "source_sha256": "457798208d82190c09ba2a24e3e34906dd689d62b3f408379eee22ea313bf826",
+            "source_sha256": "9331be5cb07fc911ee795b0274f8020a7e84c4b0bfa7a16fbfe22169c424632a",
             "release": "3.9.1",
             "source_url": "https://github.com/simai/docara/blob/v3.9.1/docs/site/content/ru/components/figure.md",
             "history_url": "https://github.com/simai/docara/commits/v3.9.1/docs/site/content/ru/components/figure.md",
@@ -118,7 +118,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/hero.md",
-            "source_sha256": "c439481e1122b270e267b84926b8380e6397e1f7cda343cbecd7aa6fac1e0799",
+            "source_sha256": "8aaf8bebe73f148a96e112b4ada0f54d4088032cb7bbc645283f3c98b18c2ede",
             "release": "3.9.1",
             "source_url": "https://github.com/simai/docara/blob/v3.9.1/docs/site/content/ru/components/hero.md",
             "history_url": "https://github.com/simai/docara/commits/v3.9.1/docs/site/content/ru/components/hero.md",
@@ -150,7 +150,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/landing-blocks.md",
-            "source_sha256": "b526ee0aa57baf9dd035ee97bce7ffa13b6f18fdd432aebef662de2295cae0a1",
+            "source_sha256": "9be6e4a23892f6e9abd0a60d1c0d795308a3435ff58e1e248ad691d433307245",
             "release": "3.9.1",
             "source_url": "https://github.com/simai/docara/blob/v3.9.1/docs/site/content/ru/components/landing-blocks.md",
             "history_url": "https://github.com/simai/docara/commits/v3.9.1/docs/site/content/ru/components/landing-blocks.md",
@@ -174,7 +174,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/media.md",
-            "source_sha256": "1da396345ebdc7e0b0003ed24bc7a6acb5e32688098508d8e61cc0891ad0212e",
+            "source_sha256": "e5be4dd3370cbe04954e80ac57b57b97acc4aa62ed62972dd593de24c10c9cf3",
             "release": "3.9.1",
             "source_url": "https://github.com/simai/docara/blob/v3.9.1/docs/site/content/ru/components/media.md",
             "history_url": "https://github.com/simai/docara/commits/v3.9.1/docs/site/content/ru/components/media.md",
@@ -198,7 +198,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/surface.md",
-            "source_sha256": "fe7ad95a26bf4428d69dba082dcb31d57986e4281f1a1f644180bcdc37aef4a9",
+            "source_sha256": "45612113b21308236738b8b4dbf3cd3ac8f7ca06654006520b30a04af1d92dc8",
             "release": "3.9.1",
             "source_url": "https://github.com/simai/docara/blob/v3.9.1/docs/site/content/ru/components/surface.md",
             "history_url": "https://github.com/simai/docara/commits/v3.9.1/docs/site/content/ru/components/surface.md",
@@ -533,5 +533,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "1cd97a902d067b191ab4cb03da02cd65edf3313200f8fe572285a954f1c7eaaf"
+    "content_sha256": "3bac35f2380d82fa24fb108f92b78e8035e2680a3e8de8d30b74e4f3302a755b"
 }

@@ -983,9 +983,7 @@ MD);
             self::assertStringContainsString('data-docara-preference-option', $html);
             self::assertStringContainsString('data-docara-smart="docara.preferences"', $html);
             self::assertStringContainsString('position="right"', $html);
-            // The settings are a dropdown card under the header's ⋮ button.
-            self::assertStringContainsString('width="min(calc(100vw - 2 * var(--sf-space-1)), var(--sf-g2))"', $html);
-            self::assertStringContainsString('height="auto"', $html);
+            self::assertStringContainsString('width="min(100vw, var(--sf-g6))"', $html);
             self::assertStringContainsString('value="system"', $html);
             self::assertStringContainsString('value="light"', $html);
             self::assertStringContainsString('value="dark"', $html);

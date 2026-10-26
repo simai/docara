@@ -135,7 +135,7 @@ Docara начинает с небольшого встроенного набо�
   },
   "reader_preferences": {
     "enabled": true,
-    "view": "side-panel",
+    "view": "menu",
     "groups": [
       {
         "id": "appearance",

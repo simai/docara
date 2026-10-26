@@ -360,5 +360,5 @@ iframe[data-docara-example-responsive-frame]{display:none}
 [data-docara-example-viewer-active="true"] iframe[data-docara-example-responsive-frame]{display:block}
 [data-docara-example-viewer-active="true"] [data-docara-example-panel]:has(>iframe[data-docara-example-responsive-frame]:not([data-docara-example-styled]))>[data-docara-example-inline-preview]{position:absolute;inset:0;z-index:1;overflow:auto;background:var(--sf-surface-0)}
 [data-docara-example-viewer-active="true"] [data-docara-example-panel]:has(>iframe[data-docara-example-styled])>[data-docara-example-inline-preview]{display:none}
-/* The GitHub mark in the repository link is drawn at the size of the icons in the buttons beside it. */
-.docara-repository-mark{inline-size:var(--sf-text-height-1);block-size:var(--sf-text-height-1)}
+/* Material icons leave about a sixth of their box as optical margin; the GitHub mark fills its box, so it is drawn at five sixths of the icon size to look as large as the icons beside it. */
+.docara-repository-mark{inline-size:calc(var(--sf-text-height-1) * 5 / 6);block-size:calc(var(--sf-text-height-1) * 5 / 6)}

@@ -150,7 +150,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                         'groups' => $readerPreferences['groups'],
                         'manifest' => $readerPreferences,
                     ],
-                    'side-panel',
+                    $readerPreferences['view'] === 'side-panel' ? 'side-panel' : 'menu',
                 ),
             );
         }

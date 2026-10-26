@@ -69,7 +69,7 @@
         "type": "object",
         "properties": {
           "enabled": {"type": "boolean"},
-          "view": {"type": "string", "const": "side-panel"},
+          "view": {"type": "string", "enum": ["menu", "side-panel"]},
           "storage_key": {"type": "string", "minLength": 1, "maxLength": 200},
           "schema": {"type": "integer", "const": 1},
           "groups": {"type": "array"},
@@ -87,8 +87,8 @@
     "docara-preference-change": {"kind": "custom", "backend_handler_binding": false},
     "docara-preferences-reset": {"kind": "custom", "backend_handler_binding": false}
   },
-  "views": {"default": {}, "side-panel": {}},
-  "presets": {"default": {"view": "side-panel"}, "side-panel": {"view": "side-panel"}},
+  "views": {"default": {}, "menu": {}, "side-panel": {}},
+  "presets": {"default": {"view": "menu"}, "menu": {"view": "menu"}, "side-panel": {"view": "side-panel"}},
   "constraints": {},
   "render": {"strategy": "host", "renderer": "docara.smart.template"},
   "frontend": {"runtime": null, "tag": null},

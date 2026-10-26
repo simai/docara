@@ -140,7 +140,7 @@
     "site.schema.json#/$defs/readerPreferences/properties/groups/items/properties/id": "Имя группы, например `appearance`.",
     "site.schema.json#/$defs/readerPreferences/properties/hidden_fields": "Стандартные настройки, которые нужно убрать из панели.",
     "site.schema.json#/$defs/readerPreferences/properties/hidden_fields/items": "Имя одной скрытой настройки.",
-    "site.schema.json#/$defs/readerPreferences/properties/view": "Вид панели. Сейчас только `side-panel` — боковая панель.",
+    "site.schema.json#/$defs/readerPreferences/properties/view": "Вид настроек чтения: `menu` — меню Фреймворка под кнопкой ⋮ в шапке (по умолчанию), `side-panel` — боковая панель во всю высоту.",
     "site.schema.json#/$defs/translationTracking": "Отслеживание переводов: какие страницы и строки переведены, устарели или ещё не проверены.",
     "site.schema.json#/$defs/translationTracking/properties/enabled": "Включает отслеживание переводов.",
     "site.schema.json#/$defs/translationTracking/properties/lock_file": "Файл в корне проекта, где хранятся принятые переводы, например `translations.lock.json`.",

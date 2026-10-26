@@ -92,7 +92,8 @@ MD, 'content/install.md'),
             ...glob($root . '/smart/*/templates/*.blade.php') ?: [],
             ...glob($root . '/previews/templates/*.php') ?: [],
         ]));
-        self::assertCount(20, $templates);
+        // docara.preferences has two views: the menu and the side panel.
+        self::assertCount(21, $templates);
         foreach ($templates as $template) {
             $source = (string) file_get_contents($template);
             self::assertStringNotContainsString('<style', $source);

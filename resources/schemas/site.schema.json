@@ -291,7 +291,7 @@
                 },
                 "view": {
                     "type": "string",
-                    "const": "side-panel"
+                    "enum": ["menu", "side-panel"]
                 },
                 "hidden_fields": {
                     "type": "array",

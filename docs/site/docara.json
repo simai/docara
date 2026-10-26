@@ -49,7 +49,7 @@
   },
   "reader_preferences": {
     "enabled": true,
-    "view": "side-panel",
+    "view": "menu",
     "groups": [
       {
         "id": "appearance",

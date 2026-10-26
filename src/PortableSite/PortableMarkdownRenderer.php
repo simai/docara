@@ -1707,27 +1707,63 @@ HTML;
                 'A tree block must contain one nested unordered Markdown list.',
             );
         }
-        $content = trim((string) $rendered);
-        $content = preg_replace('/<ul>/u', '<ul class="list-none m-0 p-inline-start-2 flex flex-col gap-1/3">', $content) ?? $content;
-        $content = preg_replace('/<li>/u', '<li class="min-w-0">', $content) ?? $content;
-        if ($interactive) {
-            $content = preg_replace_callback(
-                '/<li class="min-w-0">(?<label>(?:(?!<\/?li\b).)*?)(?=<ul class="list-none)/su',
-                static function (array $match): string {
-                    $label = trim((string) $match['label']);
+        $list = trim((string) $rendered);
+        $list = preg_replace('~^<ul>|</ul>$~u', '', $list) ?? $list;
 
-                    return '<li class="min-w-0"><button type="button" data-docara-tree-toggle aria-expanded="true" '
-                        . 'class="flex w-full items-cross-center content-main-between gap-1 p-1 border-none bg-transparent color-on-surface text-start cursor-pointer">'
-                        . '<span class="min-w-0">' . $label . '</span>'
-                        . '<span data-docara-tree-indicator aria-hidden="true">&#9662;</span></button>';
-                },
-                $content,
-            ) ?? $content;
+        // The block is the Framework tree: branches open by default, with
+        // the folder toggle the Framework tree script turns into a keyboard
+        // tree. A static tree is marked as already bound, so the script
+        // leaves it alone and every branch stays open.
+        return '<div data-docara-block="tree" data-interactive="' . ($interactive ? 'true' : 'false')
+            . '" class="sf-tree flex flex-col m-bottom-1"' . ($interactive ? '' : ' data-sf-tree-bound="1"') . '>'
+            . $this->treeItems($list, $interactive) . '</div>';
+    }
+
+    /** Turns the items of one rendered Markdown list into Framework tree items. */
+    private function treeItems(string $list, bool $interactive): string
+    {
+        $html = '';
+        foreach ($this->topLevelListItems($list) as $item) {
+            $nested = strpos($item, '<ul>');
+            $label = trim($nested === false ? $item : substr($item, 0, $nested));
+            $label = preg_replace('~^<p>(.*)</p>$~su', '$1', $label) ?? $label;
+            $name = '<span class="sf-tree-item-name">' . $label . '</span>';
+            if ($nested === false) {
+                $html .= '<div class="sf-tree-item"><div class="sf-tree-item-container flex items-cross-center">'
+                    . '<span class="sf-tree-toggle-spacer" aria-hidden="true"></span>' . $name . '</div></div>';
+
+                continue;
+            }
+            $children = substr($item, $nested + 4, (int) strrpos($item, '</ul>') - $nested - 4);
+            $toggle = $interactive
+                ? '<button type="button" class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>'
+                : '<span class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></span>';
+            $html .= '<div class="sf-tree-item open"><div class="sf-tree-item-container flex items-cross-center">'
+                . $toggle . $name . '</div><div class="sf-tree-group">'
+                . $this->treeItems($children, $interactive) . '</div></div>';
         }
 
-        return '<div data-docara-block="tree" data-interactive="' . ($interactive ? 'true' : 'false')
-            . '" class="bg-surface-0 border border-outline-variant radius-2 p-2 m-bottom-1">'
-            . $content . '</div>';
+        return $html;
+    }
+
+    /** @return list<string> the inner HTML of each top-level <li> in a rendered list */
+    private function topLevelListItems(string $list): array
+    {
+        preg_match_all('~<li>|</li>~u', $list, $tags, PREG_OFFSET_CAPTURE);
+        $items = [];
+        $depth = 0;
+        $start = 0;
+        foreach ($tags[0] as [$tag, $offset]) {
+            if ($tag === '<li>') {
+                if ($depth++ === 0) {
+                    $start = $offset + 4;
+                }
+            } elseif (--$depth === 0) {
+                $items[] = substr($list, $start, $offset - $start);
+            }
+        }
+
+        return $items;
     }
 
     /** @param array<string,string> $attributes */

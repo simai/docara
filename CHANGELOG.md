@@ -6,6 +6,22 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.10.0] - 2026-10-26
+
+### Added
+
+- **The effects page shows its effects live.** "Фоновые эффекты" had no
+  live example. It now shows four small heroes from the site's pinned
+  catalogue, each with its Markdown source: `constellation-net`,
+  `hex-conduits`, `glyph-tide` (with `effect_settings`) and `contour-map`,
+  all with a light and a dark version. They render inline in the page, so
+  the shell's pause button and the Framework's off-screen pause apply. In
+  headless Chrome at 1440 px the page fetches the catalogue index once and
+  each effect's two files once, 97 KB in nine requests; the main thread is
+  busy about 1.6% of the time with one effect in view, 2.9% with three, and
+  0% with none in view or with the effects paused. The page's static weight
+  goes from 2.74 MB to 2.79 MB.
+
 ### Changed
 
 - **The component examples show generated, text-free images.** A screenshot
@@ -27,19 +43,6 @@ All notable changes to Docara are recorded here. The format follows
 - **The surface and hero background examples use `overlay_strength=strong`**,
   so the heading stays clearly readable in the dark theme too, where the
   overlay is light.
-### Added
-
-- **The effects page shows its effects live.** "Фоновые эффекты" had no
-  live example. It now shows four small heroes from the site's pinned
-  catalogue, each with its Markdown source: `constellation-net`,
-  `hex-conduits`, `glyph-tide` (with `effect_settings`) and `contour-map`,
-  all with a light and a dark version. They render inline in the page, so
-  the shell's pause button and the Framework's off-screen pause apply. In
-  headless Chrome at 1440 px the page fetches the catalogue index once and
-  each effect's two files once, 97 KB in nine requests; the main thread is
-  busy about 1.6% of the time with one effect in view, 2.9% with three, and
-  0% with none in view or with the effects paused. The page's static weight
-  goes from 2.74 MB to 2.79 MB.
 
 ### Fixed
 

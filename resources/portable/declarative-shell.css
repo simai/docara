@@ -291,7 +291,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
   .docara-previous-next{flex-direction:column}
   .docara-document-link--next{order:-1;justify-content:flex-start;text-align:start}
 }
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}.docara-example-preview__indicator{transition:none!important}}
+/* Reduced motion: 0s, not .01ms. A nonzero duration starts a transition on every element, all properties being transitionable by default, and a background effect reading a theme colour through a probe element would get the colour the probe inherits instead. */
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:0s!important;animation-duration:.01ms!important;animation-iteration-count:1!important}.docara-example-preview__indicator{transition:none!important}}
 
 .docara-search-modal-surface{--sf-modal-surface-bg:transparent;--sf-modal-surface-border-width:0;--sf-modal-surface-shadow:none;--sf-modal-surface--padding-inline-start:0;--sf-modal-surface--padding-top:0;--sf-modal-surface--padding-inline-end:0;--sf-modal-surface--padding-bottom:0}
 .docara-search-trigger{--sf-button--border-color:var(--sf-outline-variant)}

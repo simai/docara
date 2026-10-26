@@ -231,6 +231,11 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
         self::assertStringContainsString('sf-menu sf-menu--horizontal docara-header-navigation-list', $catalogIndex);
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));
+        // header_navigation.repository puts the GitHub mark beside search; the
+        // header menu itself lists the guide and the components.
+        self::assertSame(1, substr_count($catalogIndex, 'data-docara-repository-link'));
+        self::assertMatchesRegularExpression('~<a href="https://github.com/simai/docara" rel="noopener" data-docara-repository-link [^>]*aria-label="Репозиторий"[^>]*><svg class="docara-repository-mark" viewBox="0 0 16 16"~', $catalogIndex);
+        self::assertStringNotContainsString('>GitHub</', $catalogIndex);
         self::assertSame(1, substr_count($catalogIndex, 'id="docara-mobile-navigation"'));
         self::assertSame(
             1,

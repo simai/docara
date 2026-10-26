@@ -31,6 +31,7 @@
     "presentation.schema.json#/$defs/header_navigation/allOf/0/if/properties/enabled": "Условие проверки: при `enabled: true` список `items` обязателен.",
     "presentation.schema.json#/$defs/header_navigation/properties/$reset": "Сбрасывает унаследованные значения этой группы: дальше действуют только поля, заданные рядом.",
     "presentation.schema.json#/$defs/header_navigation/properties/enabled": "Показывать ли верхнее меню. При `true` нужен список `items`.",
+    "presentation.schema.json#/$defs/header_navigation/properties/repository": "Адрес репозитория проекта `https://…`. Справа в шапке появляется значок со ссылкой: логотип GitHub для github.com, общий значок кода для других адресов.",
     "presentation.schema.json#/$defs/header_navigation/properties/items": "Ссылки верхнего меню, от 1 до 8. Список заменяет унаследованный целиком.",
     "presentation.schema.json#/$defs/header_navigation/properties/items/items": "Одна ссылка: `id`, `label`, `href` и, при необходимости, `sections`.",
     "presentation.schema.json#/$defs/header_navigation/properties/items/items/properties/href": "Куда ведёт ссылка: `#якорь`, путь сайта от `/` или адрес `https://`.",

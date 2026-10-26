@@ -1166,6 +1166,10 @@ final readonly class PortableSiteBuilder
                     (string) $page['url'],
                 );
                 $page['header_navigation'] = $composition->headerNavigation;
+                $headerRepository = data_get($declarativePlan->configuration, 'header_navigation.repository');
+                $page['header_repository'] = is_string($headerRepository) && str_starts_with($headerRepository, 'https://')
+                    ? $headerRepository
+                    : null;
                 $declarativePipeline ??= DeclarativePipeline::bundled(
                     new ResolvedPlanRecipeBridge($recipeCompiler, $root, 'sha256:' . $engineRevision['tree_sha256']),
                     $declarativePlan->frameworkLock,

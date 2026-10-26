@@ -202,6 +202,12 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $readerPreferences['enabled'],
             $readerPreferencesArtifact?->html ?? '',
             ($page['not_found'] ?? false) !== true,
+            is_string($page['header_repository'] ?? null)
+                ? [
+                    'url' => $this->escape((string) $page['header_repository']),
+                    'github' => strtolower((string) parse_url((string) $page['header_repository'], PHP_URL_HOST)) === 'github.com',
+                ]
+                : null,
         ));
 
         $view = new PortablePageViewModel(

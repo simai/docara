@@ -36,8 +36,8 @@ final readonly class ReaderPreferenceCompiler
             ? $configuration
             : self::defaultConfiguration();
         $enabled = ($configuration['enabled'] ?? false) === true;
-        $view = (string) ($configuration['view'] ?? 'side-panel');
-        if ($view !== 'side-panel') {
+        $view = (string) ($configuration['view'] ?? 'menu');
+        if (! in_array($view, ['menu', 'side-panel'], true)) {
             throw new PortableConfigurationException(
                 'READER_PREFERENCES_VIEW_INVALID',
                 "Reader preferences view [$view] is not supported.",
@@ -244,7 +244,7 @@ final readonly class ReaderPreferenceCompiler
     {
         return [
             'enabled' => true,
-            'view' => 'side-panel',
+            'view' => 'menu',
             'groups' => [
                 ['id' => 'appearance', 'fields' => self::DEFAULT_FIELDS],
             ],

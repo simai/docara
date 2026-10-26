@@ -20,7 +20,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
         );
 
         self::assertTrue($manifest['enabled']);
-        self::assertSame('side-panel', $manifest['view']);
+        self::assertSame('menu', $manifest['view']);
         self::assertSame(1, $manifest['schema']);
         self::assertSame('docara.preferences.site.v1', $manifest['storage_key']);
         self::assertSame('appearance', $manifest['groups'][0]['id']);

@@ -9,6 +9,7 @@
     "enabled": true,
     "repository": "https://github.com/simai/docara",
     "items": [
+      {"id": "home", "label": "Главная", "href": "/ru/"},
       {
         "id": "guide",
         "label": "Руководство",

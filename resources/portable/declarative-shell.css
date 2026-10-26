@@ -353,5 +353,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 }
 /* An inline Markdown example keeps a hidden frame of its own for the responsive check: the viewer shows it instead of the inline preview, and the shell loads it only then. */
 iframe[data-docara-example-responsive-frame]{display:none}
+/* Until the frame has the page's styles, the inline preview covers it. The frame itself stays visible: a browser holds back painting a hidden frame and shows it blank for a moment when it appears. */
+[data-docara-example-viewer-active="true"] [data-docara-example-panel]:has(>iframe[data-docara-example-responsive-frame]){position:relative}
 [data-docara-example-viewer-active="true"] iframe[data-docara-example-responsive-frame]{display:block}
-[data-docara-example-viewer-active="true"] [data-docara-example-inline-preview]{display:none}
+[data-docara-example-viewer-active="true"] [data-docara-example-panel]:has(>iframe[data-docara-example-responsive-frame]:not([data-docara-example-styled]))>[data-docara-example-inline-preview]{position:absolute;inset:0;z-index:1;overflow:auto;background:var(--sf-surface-0)}
+[data-docara-example-viewer-active="true"] [data-docara-example-panel]:has(>iframe[data-docara-example-styled])>[data-docara-example-inline-preview]{display:none}

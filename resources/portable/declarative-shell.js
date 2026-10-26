@@ -649,6 +649,8 @@
     var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
     if(!frame)return;
     var state=exampleFrameState(frame);
+    /* A reloaded document has none of the page's styles yet. */
+    frame.removeAttribute('data-docara-example-styled');
     state.sent=Object.create(null);
     state.generation++;
     requestExampleHeight(frame);
@@ -665,6 +667,11 @@
       if(token==='full'&&!state.icons.outlined){state.icons.outlined=true;changed=true}
     });
     if(changed)requestExampleHeight(frame);
+  });
+  window.addEventListener('message',function(event){
+    if(!event.data||event.data.type!=='docara:example-styled')return;
+    var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
+    if(frame)frame.setAttribute('data-docara-example-styled','');
   });
   window.addEventListener('message',function(event){
     if(!event.data||event.data.type!=='docara:example-height')return;
@@ -704,6 +711,14 @@
     var viewportControls=owned('[data-docara-example-viewports]')[0]||null;
     var viewportButtons=owned('[data-docara-example-viewport]');
     var previewFrame=owned('iframe[data-docara-example-frame]')[0]||null;
+    var responsiveFrame=owned('iframe[data-docara-example-responsive-frame]')[0]||null;
+    /* An inline example's responsive frame stays hidden, so the lazy loader never reaches it. It loads when the viewer opens: a frame moved into the viewer dialog reloads, so loading it earlier would only load it twice. The viewer keeps the inline preview until the frame reports it is styled. */
+    function loadResponsiveFrame(){
+      if(!responsiveFrame||!responsiveFrame.hasAttribute('data-docara-srcdoc'))return;
+      var source=responsiveFrame.getAttribute('data-docara-srcdoc');
+      responsiveFrame.removeAttribute('data-docara-srcdoc');
+      responsiveFrame.setAttribute('srcdoc',source);
+    }
     var wrapButton=owned('[data-docara-example-wrap]')[0]||null;
     if(!tabs.length||!panels.length)return;
     var viewerDialog=null,viewerPlaceholder=null;
@@ -771,6 +786,7 @@
       example.dataset.docaraExampleViewerActive='true';
       viewerDialog.setAttribute('aria-label',message('examples.viewer_dialog'));
       try{viewerDialog.showModal()}catch(error){restoreViewer();return}
+      loadResponsiveFrame();
       syncViewer();
       var selectedViewport=viewportButtons.find(function(button){return button.dataset.docaraExampleViewport===activeViewport});
       if(selectedViewport){selectedViewport.focus()}

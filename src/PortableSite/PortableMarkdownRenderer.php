@@ -1078,6 +1078,8 @@ body.style.minHeight='0';
 body.style.height='auto';
 document.documentElement.classList.remove('theme-light','theme-dark');
 document.documentElement.classList.add('theme-'+theme);
+/* Framework colours are light-dark() pairs, which follow the used colour scheme. The frame takes the page's theme, not the reader's system setting. */
+document.documentElement.style.colorScheme=theme;
 body.classList.remove('theme-light','theme-dark');
 body.classList.add('theme-'+theme);
 document.documentElement.dir=direction;
@@ -1114,7 +1116,7 @@ link.addEventListener('error',resolve,{once:true});
 document.head.appendChild(link);
 current.push(link.href);
 });
-Promise.all(styleLoads).then(function(){
+var stylesApplied=Promise.all(styleLoads).then(function(){
 applyDesignEnvironment(data);
 var currentInline=Array.from(document.querySelectorAll('script[data-docara-example-framework-inline-script]')).map(function(script){return script.getAttribute('data-docara-example-framework-inline-script')});
 (Array.isArray(data.inlineScripts)?data.inlineScripts:[]).forEach(function(item){
@@ -1143,10 +1145,15 @@ script.setAttribute('data-docara-example-framework-boot',item.key);
 document.head.appendChild(script);
 currentBoot.push(item.key);
 });
-loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);
+var scriptsLoaded=loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);
+/* Once the page's styles are in and the Framework scripts have run, the frame looks like the page: the shell may then show it in a responsive check instead of the inline preview. */
+if((Array.isArray(data.stylesheets)&&data.stylesheets.length)||(Array.isArray(data.inlineStyles)&&data.inlineStyles.length)){
+Promise.all([stylesApplied,scriptsLoaded]).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});
+}
 }
 /* The Framework scripts go in all at once. A script inserted with async=false is fetched at once and still runs after every async=false script inserted before it, in this and in later environments, so Core runs after the scripts it needs, as on the page. The frame's opaque origin shares no cache with the page, so waiting for each script before asking for the next cost a round trip per script. */
 function loadFrameworkScripts(sources){
+var loads=[];
 Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).forEach(function(script){frameworkScriptSources[script.src]=true});
 sources.forEach(function(src){
 if(typeof src!=='string'||frameworkScriptSources[src])return;
@@ -1156,8 +1163,10 @@ script.src=src;
 script.async=false;
 script.setAttribute('data-docara-example-framework-script','');
 script.addEventListener('load',measureSettled,{once:true});
+loads.push(new Promise(function(resolve){script.addEventListener('load',resolve,{once:true});script.addEventListener('error',resolve,{once:true})}));
 document.head.appendChild(script);
 });
+return Promise.all(loads);
 }
 function measure(){
 if(scheduled)return;
@@ -3344,7 +3353,7 @@ HTML;
 
         return '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="' . $this->escapeHtml($language)
             . '" data-docara-code-wrap="' . ($wrap ? 'true' : 'false') . '"' . $blockAttributes
-            . ' class="source init docara-code-block' . $blockClasses . ' min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">'
+            . ' class="source init sf-code-surface docara-code-block' . $blockClasses . ' min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">'
             . '<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center bg-surface-overlay">'
             . '<span class="flex sf-text-1/3 weight-5">' . $this->escapeHtml($label) . '</span>'
             . '<div data-docara-code-actions class="docara-code-actions flex items-cross-center gap-1/3">'

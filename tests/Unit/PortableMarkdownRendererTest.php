@@ -292,8 +292,15 @@ MD);
         self::assertStringContainsString('data-docara-example-copy', $markdown);
         self::assertStringContainsString('data-docara-example-fullscreen="true"', $markdown);
         self::assertStringContainsString('data-docara-example-wrap="true"', $markdown);
-        self::assertStringNotContainsString('data-docara-example-viewer', $markdown);
-        self::assertStringNotContainsString('data-docara-example-viewports', $markdown);
+        // An inline Markdown example offers the device-width check: the inline
+        // preview stays on the page and a hidden sandboxed frame with the same
+        // markup waits, its document in data-docara-srcdoc, until the viewer opens.
+        self::assertStringContainsString('data-docara-example-viewer', $markdown);
+        self::assertStringContainsString('data-docara-example-viewports', $markdown);
+        self::assertStringContainsString('<div data-docara-example-inline-preview>', $markdown);
+        self::assertSame(1, substr_count($markdown, '<iframe data-docara-example-responsive-frame title="Пример"'));
+        self::assertMatchesRegularExpression('~<iframe data-docara-example-responsive-frame [^>]*data-docara-example-frame [^>]*sandbox="allow-scripts"[^>]*data-docara-srcdoc="~', $markdown);
+        self::assertStringNotContainsString(' srcdoc="', $markdown);
         self::assertStringContainsString('data-docara-example-wrap', $markdown);
         self::assertStringContainsString('<sf-icon icon="wrap_text" aria-hidden="true"></sf-icon>', $markdown);
         self::assertStringContainsString('data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow"', $markdown);
@@ -308,7 +315,9 @@ MD);
         self::assertStringContainsString('class="docara-example-preview__indicator"', $markdown);
         self::assertStringContainsString('class="docara-example-preview__panels"', $markdown);
         self::assertStringNotContainsString('sf-tabs sf-tabs--underline', $markdown);
-        self::assertStringNotContainsString('style=', $markdown);
+        // The frame document waiting in data-docara-srcdoc is its own page;
+        // the example markup around it carries no inline styles.
+        self::assertStringNotContainsString('style=', (string) preg_replace('/ data-docara-srcdoc="[^"]*"/', '', $markdown));
         self::assertStringContainsString('sf-badge--success', $markdown);
 
         $withoutControls = $renderer->render(<<<'MD'
@@ -322,6 +331,8 @@ MD);
         self::assertStringContainsString('data-docara-example-wrap="false"', $withoutControls);
         self::assertStringNotContainsString('data-docara-example-fullscreen hidden', $withoutControls);
         self::assertStringNotContainsString('data-docara-example-wrap hidden', $withoutControls);
+        // Without the viewer there is no responsive check, so no hidden frame.
+        self::assertStringNotContainsString('data-docara-example-responsive-frame', $withoutControls);
 
         $table = $renderer->render(<<<'MD'
 :::example {label=Таблица}
@@ -332,6 +343,8 @@ MD);
 ```
 :::
 MD);
+        // The hidden responsive frame holds the same table in its escaped document.
+        $table = (string) preg_replace('/ data-docara-srcdoc="[^"]*"/', '', $table);
         self::assertSame(1, substr_count($table, 'data-docara-table-scroll'));
         self::assertSame(substr_count($table, '<div'), substr_count($table, '</div>'));
 
@@ -665,7 +678,7 @@ MD;
             $html,
         );
         self::assertStringContainsString(
-            '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="php" data-docara-code-wrap="true" class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">',
+            '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="php" data-docara-code-wrap="true" class="source init sf-code-surface docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">',
             $html,
         );
         self::assertStringContainsString('data-docara-code-fallback', $html);
@@ -718,7 +731,7 @@ MD;
 
         self::assertSame(1, substr_count($html, '<div data-docara-code-block'));
         self::assertSame(1, substr_count($html, ' border border-outline-variant'));
-        self::assertStringContainsString('class="source init docara-code-block', $html);
+        self::assertStringContainsString('class="source init sf-code-surface docara-code-block', $html);
         self::assertStringContainsString('data-docara-code-language="shell"', $html);
         self::assertStringContainsString('data-docara-code-fallback', $html);
         self::assertStringContainsString('data-docara-code-copy', $html);

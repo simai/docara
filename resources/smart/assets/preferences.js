@@ -47,7 +47,15 @@
         paint(option);
       });
     }
+    // The card opens under the button that opened it, its end edge on the button's.
+    function place(){
+      var rect=trigger.getBoundingClientRect(),root=document.documentElement;
+      var rtl=getComputedStyle(trigger).direction==='rtl';
+      root.style.setProperty('--docara-preferences-top',Math.round(rect.bottom+8)+'px');
+      root.style.setProperty('--docara-preferences-end',Math.max(8,Math.round(rtl?rect.left:window.innerWidth-rect.right))+'px');
+    }
     function open(){
+      place();
       document.dispatchEvent(new CustomEvent('docara:open-transient',{detail:{id:modal.id}}));
       var show=function(){
         if(typeof modal.open==='function')modal.open();

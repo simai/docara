@@ -1138,7 +1138,18 @@ final readonly class PortableSiteBuilder
                         ? 'section'
                         : (string) ConfigurationDefaults::value('navigation.scope');
                 }
-                $pageNavigation = $navigationBuilder->scoped($pageNavigation, $navigationActiveUrl, $navigationScope);
+                $headerGroups = [];
+                foreach ((array) data_get($declarativePlan->configuration, 'header_navigation.items', []) as $headerItem) {
+                    if (is_array($headerItem) && is_array($headerItem['sections'] ?? null)) {
+                        $headerGroups[] = array_values(array_filter(array_map(
+                            static fn ($section): ?string => is_string($section)
+                                ? PortableNavigationBuilder::routePath(LocaleInternalLinkProjector::rebase($section, $localeUrls->deploymentBase()))
+                                : null,
+                            $headerItem['sections'],
+                        ), 'is_string'));
+                    }
+                }
+                $pageNavigation = $navigationBuilder->scoped($pageNavigation, $navigationActiveUrl, $navigationScope, $headerGroups);
                 $activeNavigation = $navigationBuilder->activate($pageNavigation, $navigationActiveUrl);
                 $composition = PageCompositionContext::fromBuilder(
                     $page['branding'],
@@ -1943,6 +1954,12 @@ final readonly class PortableSiteBuilder
         foreach ($navigation['items'] as $index => $item) {
             if (is_array($item) && is_string($item['href'] ?? null)) {
                 $navigation['items'][$index]['href'] = LocaleInternalLinkProjector::rebase($item['href'], $deploymentBase);
+            }
+            if (is_array($item) && is_array($item['sections'] ?? null)) {
+                $navigation['items'][$index]['sections'] = array_map(
+                    static fn ($section) => is_string($section) ? LocaleInternalLinkProjector::rebase($section, $deploymentBase) : $section,
+                    $item['sections'],
+                );
             }
         }
 

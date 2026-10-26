@@ -125,16 +125,36 @@ final readonly class PortableNavigationBuilder
      * Project only the active top-level branch into the documentation rail.
      * Canonical topology remains available to breadcrumbs and adjacency.
      *
+     * A header item that names several sections makes them one section:
+     * the rail then shows those top-level sections as groups.
+     *
      * @param  list<array<string, mixed>>  $nodes
+     * @param  list<list<string>>  $sectionGroups  route paths a header item joins
      * @return list<array<string, mixed>>
      */
-    public function scoped(array $nodes, string $activeUrl, string $scope): array
+    public function scoped(array $nodes, string $activeUrl, string $scope, array $sectionGroups = []): array
     {
         if ($scope === 'site') {
             return $nodes;
         }
         if ($scope !== 'section') {
             throw new \LogicException('NAVIGATION_SCOPE_INVALID');
+        }
+
+        $activePath = self::routePath($activeUrl);
+        foreach ($sectionGroups as $group) {
+            $members = array_values(array_filter($nodes, fn (array $node): bool => ($node['key'] ?? null) !== '@home'
+                && $this->inSectionGroup($node, $group)));
+            if (count($members) < 2) {
+                continue;
+            }
+            foreach ($members as $member) {
+                $memberPath = is_string($member['url'] ?? null) ? self::routePath((string) $member['url']) : null;
+                $children = is_array($member['children'] ?? null) ? array_values($member['children']) : [];
+                if (($memberPath !== null && $activePath === $memberPath) || $this->containsUrl($children, $activeUrl)) {
+                    return $members;
+                }
+            }
         }
 
         foreach ($nodes as $node) {
@@ -557,5 +577,41 @@ final readonly class PortableNavigationBuilder
         $value = str_replace(['-', '_'], ' ', $segment);
 
         return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
+    }
+
+    /**
+     * A section belongs to a group by its own route or, when the section has
+     * no page of its own, by the routes of the pages inside it.
+     *
+     * @param  array<string, mixed>  $node
+     * @param  list<string>  $group
+     */
+    private function inSectionGroup(array $node, array $group): bool
+    {
+        $path = is_string($node['url'] ?? null) ? self::routePath((string) $node['url']) : null;
+        if ($path !== null) {
+            return in_array($path, $group, true);
+        }
+        foreach (is_array($node['children'] ?? null) ? $node['children'] : [] as $child) {
+            $childPath = is_array($child) && is_string($child['url'] ?? null) ? self::routePath((string) $child['url']) : null;
+            foreach ($group as $section) {
+                if ($childPath !== null && str_starts_with($childPath . '/', $section . '/')) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /** The path of a site route without its trailing slash, or null for other links. */
+    public static function routePath(string $url): ?string
+    {
+        if (! str_starts_with($url, '/') || str_starts_with($url, '//')) {
+            return null;
+        }
+        $path = parse_url($url, PHP_URL_PATH);
+
+        return is_string($path) ? rtrim($path, '/') : null;
     }
 }

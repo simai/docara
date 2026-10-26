@@ -8,12 +8,13 @@
   "header_navigation": {
     "enabled": true,
     "items": [
-      {"id": "start", "label": "Начало работы", "href": "/ru/start/"},
-      {"id": "authoring", "label": "Написание", "href": "/ru/authoring/"},
+      {
+        "id": "guide",
+        "label": "Руководство",
+        "href": "/ru/start/",
+        "sections": ["/ru/start/", "/ru/authoring/", "/ru/settings/", "/ru/build/", "/ru/reference/", "/ru/troubleshooting/", "/ru/migration/", "/ru/development/"]
+      },
       {"id": "components", "label": "Компоненты", "href": "/ru/components/"},
-      {"id": "settings", "label": "Настройка", "href": "/ru/settings/"},
-      {"id": "build", "label": "Сборка", "href": "/ru/build/"},
-      {"id": "reference", "label": "Справочник", "href": "/ru/reference/"},
       {"id": "github", "label": "GitHub", "href": "https://github.com/simai/docara"}
     ]
   }

@@ -49,6 +49,14 @@ final class PortableNavigationBuilderTest extends TestCase
         self::assertSame($visible, $builder->scoped($visible, '/guide/advanced/', 'site'));
         // A top-level page with no pages of its own keeps the whole tree.
         self::assertSame($visible, $builder->scoped($visible, '/reference/', 'section'));
+
+        // A header item that joins sections shows them as groups from any of them.
+        $groups = [['/guide', '/reference']];
+        foreach (['/guide/advanced/', '/guide/intro/', '/reference/'] as $url) {
+            self::assertSame(['guide', 'reference'], array_column($builder->scoped($visible, $url, 'section', $groups), 'key'), $url);
+        }
+        // A section outside every group keeps the single-section rule.
+        self::assertSame($visible, $builder->scoped($visible, '/landing/', 'section', $groups));
     }
 
     #[Test]

@@ -274,6 +274,18 @@ final readonly class PageCompositionContext
         $bestScore = 0;
         foreach ($normalized as $index => $item) {
             $score = self::headerSectionScore((string) $item['url'], $currentUrl, $homeUrl, $trail);
+            // An item that joins several sections is current in each of them.
+            foreach ((array) ($items[$index]['sections'] ?? []) as $section) {
+                if (is_string($section)) {
+                    // A section that is a single page contains that page too.
+                    $sectionPath = self::routePath($section);
+                    $score = max(
+                        $score,
+                        self::headerSectionScore($section, $currentUrl, $homeUrl, $trail),
+                        $sectionPath !== null && $sectionPath === self::routePath($currentUrl) ? strlen($sectionPath) + 1 : 0,
+                    );
+                }
+            }
             if ($score > $bestScore) {
                 $best = $index;
                 $bestScore = $score;

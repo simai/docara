@@ -164,6 +164,30 @@ final class DeclarativeViewCompositionTest extends TestCase
         self::assertFalse($headerBlocks[1]['smart']['props']['items'][1]['active']);
     }
 
+    public function test_a_header_item_that_joins_sections_is_current_in_each_of_them(): void
+    {
+        $header = static fn (string $currentUrl): array => array_map(
+            static fn (array $node): string => $node['active'] ? 'page' : ($node['current_section'] ? 'section' : '-'),
+            PageCompositionContext::fromBuilder(
+                ['title' => 'Docara'],
+                '/ru/',
+                [],
+                [],
+                [],
+                ['enabled' => true, 'items' => [
+                    ['id' => 'guide', 'label' => 'Руководство', 'href' => '/ru/start/', 'sections' => ['/ru/start/', '/ru/settings/', '/ru/migration/']],
+                    ['id' => 'components', 'label' => 'Компоненты', 'href' => '/ru/components/'],
+                ]],
+                $currentUrl,
+            )->headerNavigation,
+        );
+
+        self::assertSame(['section', '-'], $header('/ru/settings/theme/'));
+        self::assertSame(['section', '-'], $header('/ru/migration/'));
+        self::assertSame(['page', '-'], $header('/ru/start/'));
+        self::assertSame(['-', 'section'], $header('/ru/components/card/'));
+    }
+
     public function test_header_navigation_marks_the_section_that_contains_the_current_page(): void
     {
         $items = [

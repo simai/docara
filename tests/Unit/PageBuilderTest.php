@@ -73,31 +73,27 @@ final class PageBuilderTest extends TestCase
             ))),
         );
         self::assertSame(9, substr_count($result->contentHtml, 'data-docara-block="alert"'));
-        self::assertSame(3, substr_count($result->contentHtml, 'data-docara-code-block'));
+        // Three examples show their Markdown source; «Разметка» adds one block.
+        self::assertSame(4, substr_count($result->contentHtml, 'data-docara-code-block'));
         foreach ($result->componentArtifacts as $artifact) {
             self::assertSame('component_block', $artifact->hydration['node_type']);
             self::assertSame('content/ru/components/alert.md', $artifact->hydration['source']['file']);
             self::assertSame([], $artifact->assets);
         }
 
+        // The page follows the component page standard: sections in order,
+        // one H3 per parameter axis with its live example, and the generated
+        // parameter table.
         $source = (string) file_get_contents($root . '/content/ru/components/alert.md');
-        $typeHeading = strpos($source, '## Тип уведомления');
-        $typeTable = strpos($source, '| `clear` |', $typeHeading === false ? 0 : $typeHeading);
-        $typeExample = strpos($source, ':::example {label="Типы уведомлений"}', $typeTable === false ? 0 : $typeTable);
-        $variantHeading = strpos($source, '## Оформление');
-        $variantTable = strpos($source, '| `default` |', $variantHeading === false ? 0 : $variantHeading);
-        $variantExample = strpos($source, ':::example {label="Варианты оформления"}', $variantTable === false ? 0 : $variantTable);
-
-        self::assertIsInt($typeHeading);
-        self::assertIsInt($typeTable);
-        self::assertIsInt($typeExample);
-        self::assertLessThan($typeTable, $typeHeading);
-        self::assertLessThan($typeExample, $typeTable);
-        self::assertIsInt($variantHeading);
-        self::assertIsInt($variantTable);
-        self::assertIsInt($variantExample);
-        self::assertLessThan($variantTable, $variantHeading);
-        self::assertLessThan($variantExample, $variantTable);
+        $positions = array_map(static fn (string $needle): int|false => strpos($source, $needle), [
+            '## Пример', '## Разметка', '## Варианты', '### Тип', ':::example {label="Типы уведомлений"}',
+            '### Вид', ':::example {label="Вид уведомления"}', '## Доступность', '## Параметры',
+            '<!-- docara:component-parameters:start -->', '| `type` |', '| `variant` |', '## См. также',
+        ]);
+        self::assertNotContains(false, $positions);
+        $sorted = $positions;
+        sort($sorted);
+        self::assertSame($sorted, $positions);
         self::assertSame(3, substr_count($result->contentHtml, 'data-docara-example='));
     }
 
@@ -148,7 +144,8 @@ final class PageBuilderTest extends TestCase
             'components/backlinks' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
             'components/banner' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
             'components/code' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example'],
-            'components/details' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
+            // The page standard adds lists and the markers of the generated parameter table.
+            'components/details' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
             'components/download' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
             // The native Markdown constructions share one guide page.
             'authoring/markdown' => ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example'],

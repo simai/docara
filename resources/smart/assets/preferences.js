@@ -46,14 +46,45 @@
     function sync(){
       options().forEach(function(option){
         var on=option.value===store.current(option.dataset.preferenceId);
-        if(option.tagName==='BUTTON'){option.setAttribute('aria-checked',on?'true':'false');return}
+        if(option.tagName==='BUTTON'){
+          option.setAttribute('aria-checked',on?'true':'false');
+          // The menu row shows the chosen value next to the setting's name.
+          var value=on&&option.closest('[data-docara-preference-field]');
+          var slot=value&&value.querySelector('[data-docara-preference-value]');
+          var text=option.querySelector('.sf-button-text-container');
+          if(slot&&text)slot.textContent=text.textContent.trim();
+          return;
+        }
         option.checked=on;
         paint(option);
       });
     }
     var menu=modal.hasAttribute('data-docara-reader-settings-menu'),menuClosedAt=0;
-    function menuItems(){
-      return Array.from(modal.querySelectorAll('[role="menuitemradio"],[role="menuitem"]'));
+    // The menu lists one row per setting; a row opens a submenu with its values.
+    function topItems(){
+      return Array.from(modal.querySelectorAll('[data-docara-preference-submenu-trigger],[data-docara-reader-settings-reset]'));
+    }
+    function submenuOf(row){
+      return row&&document.getElementById(row.getAttribute('aria-controls'));
+    }
+    function closeSubmenus(except){
+      modal.querySelectorAll('[data-docara-preference-submenu-trigger]').forEach(function(row){
+        if(row===except)return;
+        row.setAttribute('aria-expanded','false');
+        var submenu=submenuOf(row);
+        if(submenu)submenu.hidden=true;
+      });
+    }
+    function openSubmenu(row,focus){
+      closeSubmenus(row);
+      var submenu=submenuOf(row);
+      if(!submenu)return;
+      submenu.hidden=false;
+      row.setAttribute('aria-expanded','true');
+      if(!focus)return;
+      var items=Array.from(submenu.querySelectorAll('[role="menuitemradio"]'));
+      var selected=items.find(function(item){return item.getAttribute('aria-checked')==='true'})||items[0];
+      if(selected)selected.focus();
     }
     // The menu opens under the button, its end edge on the button's, and keeps
     // inside the window on a phone.
@@ -65,10 +96,10 @@
     }
     function openMenu(){
       place();
+      closeSubmenus(null);
       try{modal.showPopover()}catch(error){return}
-      var items=menuItems();
-      var selected=items.find(function(item){return item.getAttribute('aria-checked')==='true'})||items[0];
-      if(selected)selected.focus();
+      var first=topItems()[0];
+      if(first)first.focus();
     }
     function open(){
       document.dispatchEvent(new CustomEvent('docara:open-transient',{detail:{id:modal.id}}));
@@ -116,14 +147,40 @@
         if(opened)sync();
         if(!opened&&(modal.contains(document.activeElement)||document.activeElement===document.body))trigger.focus();
       });
-      // Arrow keys move between the items, Home and End go to the ends, and
+      // A row opens its submenu on click, Enter, Space or the right arrow, and
+      // on hover with a mouse.
+      modal.addEventListener('click',function(event){
+        var row=event.target.closest&&event.target.closest('[data-docara-preference-submenu-trigger]');
+        if(!row)return;
+        if(row.getAttribute('aria-expanded')==='true'){closeSubmenus(null);row.focus()}
+        else openSubmenu(row,true);
+      });
+      modal.addEventListener('pointerover',function(event){
+        if(event.pointerType!=='mouse')return;
+        var row=event.target.closest&&event.target.closest('[data-docara-preference-submenu-trigger]');
+        if(row&&row.getAttribute('aria-expanded')!=='true')openSubmenu(row,false);
+      });
+      // Up and down move within the menu or the open submenu, Home and End go
+      // to its ends; left and Escape close a submenu and return to its row;
       // Tab leaves the menu like Escape does.
       modal.addEventListener('keydown',function(event){
-        var items=menuItems(),index=items.indexOf(document.activeElement),next=-1;
+        var submenu=event.target.closest&&event.target.closest('[data-docara-preference-submenu]');
+        var items=submenu?Array.from(submenu.querySelectorAll('[role="menuitemradio"]')):topItems();
+        var index=items.indexOf(document.activeElement),next=-1;
         if(event.key==='ArrowDown')next=(index+1)%items.length;
         else if(event.key==='ArrowUp')next=(index-1+items.length)%items.length;
         else if(event.key==='Home')next=0;
         else if(event.key==='End')next=items.length-1;
+        else if(event.key==='ArrowRight'&&!submenu&&document.activeElement.hasAttribute('data-docara-preference-submenu-trigger')){
+          event.preventDefault();openSubmenu(document.activeElement,true);return;
+        }
+        else if(submenu&&(event.key==='ArrowLeft'||event.key==='Escape')){
+          event.preventDefault();event.stopPropagation();
+          var row=modal.querySelector('[aria-controls="'+submenu.id+'"]');
+          closeSubmenus(null);
+          if(row)row.focus();
+          return;
+        }
         else if(event.key==='Tab'){modal.hidePopover();return}
         else return;
         event.preventDefault();

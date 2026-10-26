@@ -452,7 +452,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // The live hero examples on the effects page change the components
         // that page uses, and the shared shell stylesheets regroup from 47
         // into 48: 1968.
-        self::assertCount(1968, $firstFiles);
+        // Details and tabs render as the Framework accordion and tabs, so the
+        // pages that use them pull in those components, and the shared shell
+        // stylesheets regroup from 48 into 50: 1970.
+        self::assertCount(1970, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

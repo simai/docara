@@ -360,7 +360,8 @@ MD);
         self::assertStringContainsString('<code class="language-php">', $nestedCode);
         self::assertStringContainsString('data-docara-example-tab="markdown"', $nestedCode);
         self::assertStringContainsString("```php\necho 'Docara';\n```", $nestedCode);
-        self::assertSame(2, substr_count($nestedCode, 'data-docara-code-block'));
+        // The hidden responsive frame repeats the preview in its escaped document.
+        self::assertSame(2, substr_count((string) preg_replace('/ data-docara-srcdoc="[^"]*"/', '', $nestedCode), 'data-docara-code-block'));
 
         $web = $renderer->render(<<<'MD'
 :::example {label=Preview}

@@ -234,6 +234,79 @@ Front matter — блок между двумя строками `---` в нач
 | `SMART_PROPS_INVALID` | Параметры Smart-компонента не прошли проверку. В сообщении есть путь к полю. **Что сделать:** Сверьте параметры с описанием Smart-компонента. |
 | `TYPED_COMPONENT_UNSUPPORTED` | Такого блока Docara нет. **Что сделать:** Проверьте имя блока в [каталоге компонентов](/components/). |
 
+## Структура страницы
+
+Перед выводом Docara разбирает страницу на блоки и проверяет, что каждый
+открытый блок закрыт и стоит там, где ему разрешено.
+
+| Код | Причина и что сделать |
+| --- | --- |
+| `DOCUMENT_TYPED_DIRECTIVE_UNCLOSED`, `DOCUMENT_COMPONENT_BLOCK_UNCLOSED`, `DOCUMENT_SMART_UNCLOSED` | У блока нет закрывающей строки. **Что сделать:** Добавьте строку `:::` — столько же двоеточий, сколько в открывающей строке. |
+| `DOCUMENT_TYPED_DIRECTIVE_NESTED_FORBIDDEN`, `DOCUMENT_COMPONENT_BLOCK_NESTED_FORBIDDEN`, `DOCUMENT_SMART_NESTED_FORBIDDEN` | Внутри блока, который не принимает вложенные блоки, стоит другой блок. **Что сделать:** Вынесите внутренний блок наружу. Другие блоки принимают только [полоса](/ru/components/surface/), [сетка](/ru/components/grid/) и [карточка](/ru/components/card/); что именно, написано на странице блока. |
+| `DOCUMENT_COMPONENT_ALIAS_UNKNOWN` | После `:::` стоит имя, которого нет среди блоков Docara и компонентов проекта. **Что сделать:** Проверьте имя в [каталоге компонентов](/ru/components/). |
+| `DOCUMENT_COMPONENT_BLOCK_CONTENT_REQUIRED`, `DOCUMENT_COMPONENT_SLOT_REQUIRED` | Блок пустой, хотя ему нужно видимое содержимое. **Что сделать:** Добавьте текст внутрь блока или удалите блок. |
+| `DOCUMENT_COMPONENT_BLOCK_CHILD_INVALID`, `DOCUMENT_IR_EXAMPLE_COMPONENT_BOUNDARY_INVALID` | Блок кода начинается внутри блока, а заканчивается снаружи — или наоборот. **Что сделать:** Закройте блок кода до строки `:::`. Если блок кода сам содержит `:::`, окружите его более длинной оградой: четырьмя обратными кавычками или `~~~`. |
+| `DOCUMENT_IR_CODE_BLOCK_UNCLOSED` | У блока кода нет закрывающей ограды. **Что сделать:** Добавьте строку с теми же кавычками, что и в начале. |
+| `DOCUMENT_IR_CODE_BLOCK_OPENING_INVALID` | Первая строка блока кода записана неверно: ограда короче трёх символов или смешаны `` ` `` и `~`. **Что сделать:** Начинайте блок с трёх обратных кавычек или трёх тильд, затем язык. |
+| `DOCUMENT_IR_EXAMPLE_UNCLOSED` | У [примера](/ru/components/example/) нет закрывающей строки `:::`. **Что сделать:** Добавьте её после последнего блока кода примера. |
+| `DOCUMENT_HTML_COMMENT_UNCLOSED` | Комментарий `<!--` не закрыт. **Что сделать:** Добавьте `-->`. |
+| `DOCUMENT_DIRECTIVE_LIMIT_EXCEEDED` | На странице больше 128 блоков. **Что сделать:** Разделите страницу на несколько. |
+| `DOCUMENT_CONTAINER_CHILD_COUNT_MIN` | Полоса или сетка пустая. **Что сделать:** Добавьте содержимое или удалите блок. |
+| `DOCUMENT_CONTAINER_CHILD_COUNT_MAX` | В блоке больше вложенных элементов, чем он принимает, например больше 64 карточек в полосе. **Что сделать:** Разделите содержимое на несколько блоков. |
+| `DOCUMENT_CONTAINER_CHILD_FORBIDDEN`, `DOCUMENT_CONTAINER_SMART_CHILD_FORBIDDEN` | Внутрь блока вложено то, что он не принимает: например полоса в полосу или компонент проекта, который не объявил себя встраиваемым. **Что сделать:** Вынесите вложенный блок наружу. Что можно вкладывать, написано на странице блока. |
+| `DOCUMENT_CONTAINER_DEPTH_EXCEEDED` | Блоки вложены слишком глубоко. **Что сделать:** Уменьшите вложенность: «полоса → сетка → карточка» — самая глубокая разрешённая цепочка. |
+| `DOCUMENT_SMART_PROPS_JSON_INVALID` | Параметры компонента проекта — не корректный JSON. **Что сделать:** Проверьте кавычки и запятые. |
+| `DOCUMENT_SMART_PROPS_INVALID` | Параметры компонента записаны не объектом `{…}`. **Что сделать:** Оберните параметры в фигурные скобки. |
+| `DOCUMENT_IR_INPUT_INVALID` | Страницу не удалось прочитать как текст UTF-8. **Что сделать:** Сохраните файл в UTF-8. |
+
+## Компоненты проекта
+
+Компоненты проекта лежат в папке `smart/` и вызываются блоком
+`:::project.имя` с параметрами в JSON. Как их создавать, описано в разделе
+[«Smart-компоненты»](/ru/development/smart-components/).
+
+| Код | Причина и что сделать |
+| --- | --- |
+| `PROJECT_SMART_ROOT_UNSAFE` | В `docara.json` объявлено пространство имён `smart`, но папки `smart/` нет или это ссылка. **Что сделать:** Создайте обычную папку `smart/` в корне проекта. |
+| `PROJECT_SMART_TREE_UNSAFE` | В папке `smart/` есть символическая ссылка или не файл. **Что сделать:** Замените ссылки настоящими файлами. |
+| `PROJECT_SMART_CONFIGURATION_INVALID` | Раздел `smart` в `docara.json` записан неверно. **Что сделать:** Пишите `{"smart": {"namespace": "project"}}`. |
+| `PORTABLE_SMART_PROPS_INVALID`, `PORTABLE_SMART_PROP_POLICY_FORBIDDEN` | Параметр компонента не прошёл проверку или его нельзя задавать из Markdown. В сообщении — имя компонента и параметра. **Что сделать:** Сверьте параметры с `docara inspect smart <имя> --json`. |
+| `PORTABLE_SMART_VIEW_UNKNOWN`, `PORTABLE_SMART_PRESET_UNKNOWN` | У компонента нет такого представления (`view`) или пресета (`preset`). **Что сделать:** Возьмите имя из `docara inspect smart <имя> --json` или уберите параметр. |
+| `PORTABLE_SMART_REQUIRED_SLOT_MISSING` | Не заполнен обязательный слот, например варианты у выпадающего списка. **Что сделать:** Добавьте дочерние элементы в этот слот. |
+| `PORTABLE_SMART_CHILD_SLOT_FORBIDDEN`, `PORTABLE_SMART_CHILD_COUNT_INVALID`, `PORTABLE_SMART_CHILD_INVALID`, `PORTABLE_SMART_CHILDREN_INVALID`, `PORTABLE_SMART_CHILDREN_COLLISION`, `PORTABLE_SMART_SLOTS_INVALID` | Дочерние элементы компонента записаны неверно: не в тот слот, больше разрешённого, неподходящего типа или дважды — в вызове и в представлении. **Что сделать:** Сверьте слоты и дочерние элементы с `docara inspect smart <имя> --json`. |
+| `PORTABLE_SMART_PARENT_FORBIDDEN` | Компонент стоит внутри компонента, который его не принимает. **Что сделать:** Вынесите его наружу или выберите разрешённый родитель. |
+| `PORTABLE_SMART_COMPOSITION_DEPTH_EXCEEDED` | Компоненты вложены друг в друга слишком глубоко. **Что сделать:** Уменьшите вложенность. |
+| `PORTABLE_SMART_ARTIFACT_INVALID`, `PORTABLE_SMART_ARTIFACT_UNSAFE`, `PORTABLE_SMART_CONTRACT_INVALID`, `PORTABLE_SMART_PROVIDER_MISMATCH`, `PORTABLE_SMART_LEGACY_ADAPTER_INVALID` | Файлы компонента в `smart/<имя>/` повреждены, не совпадают с описанием в `manifest.json` или лежат не там. **Что сделать:** Запустите `docara validate smart <имя>` и исправьте названный файл. Для нового компонента начните с `docara scaffold smart <имя> --dry-run`. |
+
+## Общие примеры из папки examples
+
+Общий пример хранится в `examples/<путь>/` и вызывается
+`:::example {id="<путь>"}`. Подробнее — на странице
+[«Интерактивный пример»](/ru/components/example/#общий-пример-из-проекта).
+
+| Код | Причина и что сделать |
+| --- | --- |
+| `PROJECT_EXAMPLES_ROOT_MISSING` | В корне проекта нет папки `examples/`. **Что сделать:** Создайте её рядом с `docara.json`. |
+| `PROJECT_EXAMPLE_NOT_FOUND` | Папки примера с таким `id` нет. **Что сделать:** Проверьте путь: `id="utilities/animation-duration"` ищет `examples/utilities/animation-duration/`. |
+| `PROJECT_EXAMPLE_CASE_COLLISION` | Регистр букв в `id` не совпадает с именем папки, или в папке есть два файла, которые отличаются только регистром. **Что сделать:** Пишите путь строчными буквами и переименуйте повторы. |
+| `PROJECT_EXAMPLE_PATH_ESCAPE`, `PROJECT_EXAMPLE_PATH_INVALID` | Путь примера выходит за `examples/` или папку нельзя прочитать. **Что сделать:** Положите пример внутрь `examples/` обычной папкой, без ссылок. |
+| `PROJECT_EXAMPLE_FILE_FORBIDDEN` | В папке примера есть файл, кроме `index.html`, `index.css`, `index.js` и папки `assets/`. **Что сделать:** Перенесите остальные файлы в `assets/`. |
+| `PROJECT_EXAMPLE_SOURCE_INVALID` | `index.html`, `index.css` или `index.js` больше 1 МиБ, не в UTF-8 или это символическая либо жёсткая ссылка. **Что сделать:** Сохраните файл в UTF-8 и сократите его. |
+| `PROJECT_EXAMPLE_ASSET_ROOT_INVALID` | `assets` в папке примера — не обычная папка. **Что сделать:** Замените его папкой. |
+| `PROJECT_EXAMPLE_ASSET_INVALID` | Файл в `assets/` — ссылка, больше 10 МиБ или текстовый файл не в UTF-8. **Что сделать:** Замените файл обычным и уменьшите его. |
+| `PROJECT_EXAMPLE_ASSET_TYPE_FORBIDDEN` | Тип файла в `assets/` не поддерживается. **Что сделать:** Используйте AVIF, CSS, GIF, ICO, JPEG, JS, JSON, MP3, MP4, OTF, PDF, PNG, SVG, TTF, TXT, WAV, WebM, webmanifest, WebP, WOFF или WOFF2. |
+| `PROJECT_EXAMPLE_ASSET_TOTAL_LIMIT` | Файлы `assets/` одного примера вместе больше 50 МиБ. **Что сделать:** Уменьшите или уберите крупные файлы. |
+
+## Проверка страницы
+
+Эти находки показывает `docara validate page <адрес>` и `docara inspect page`
+— до сборки.
+
+| Код | Причина и что сделать |
+| --- | --- |
+| `PAGE_LINK_TARGET_MISSING` | Ссылка ведёт на страницу этого сайта, которой нет. **Что сделать:** Исправьте адрес ссылки. |
+| `PAGE_ASSET_MISSING` | Картинка ссылается на файл, которого нет. **Что сделать:** Положите файл в `assets/` или исправьте путь. |
+
 ## Оглавление и поиск по странице
 
 | Код | Причина и что сделать |

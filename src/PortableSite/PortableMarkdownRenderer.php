@@ -3414,7 +3414,9 @@ HTML;
 
     private function aspectRatioClass(string $ratio): string
     {
-        return 'aspect-' . str_replace('/', 'x', $ratio);
+        // The Framework aspect-ratio utility has no 21/9 step; the shell
+        // defines that one ratio itself (declarative-shell.css).
+        return $ratio === '21/9' ? 'docara-aspect-21x9' : 'aspect-' . str_replace('/', 'x', $ratio);
     }
 
     /** @return array<string, mixed> */

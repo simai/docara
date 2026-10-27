@@ -30,7 +30,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/backlinks.md",
-            "source_sha256": "87aa0434750ec1cf2e985192ae0d94937b9111235c62f4a6396356144ab40a12",
+            "source_sha256": "b38400a0789b185d392c675c507a9f0ed4c6ff07270e3d7f6ff9f56fa980cfe9",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/backlinks.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/backlinks.md",
@@ -70,7 +70,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/code-from-file.md",
-            "source_sha256": "48681b4cc6341588bf9bfcb0345aa4e1e7f3950f8e3ac12819af531870e7d19b",
+            "source_sha256": "5fc794faac8d53351395aab89e73b1d22087d7b29c3ac16914edff57c6986a5d",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/code-from-file.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/code-from-file.md",
@@ -78,7 +78,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/code.md",
-            "source_sha256": "d46ce1d0561c22c914782e0be317e7a0f3842b3511dd9e4e933644b825cfb2e2",
+            "source_sha256": "ee23ffd10c680dbc56815440c5e1d189cda62421dd29188e2e1d6506908ef205",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/code.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/code.md",
@@ -94,7 +94,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/diagram.md",
-            "source_sha256": "c770c920222dda06e39493332afc9117faffdb0fd2f60162ed521d25682e2d39",
+            "source_sha256": "255923261d5c0dc5a48f4c6a2f28570de9583e0b61034ae81cf71de161f25a3c",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/diagram.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/diagram.md",
@@ -110,7 +110,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/embed.md",
-            "source_sha256": "dd0f4ff95475fb512bcbdd3e026e31c8efdaecb53721aa04b6e830b397c34202",
+            "source_sha256": "7cc911ee839c62b4596fa0237d5a26d309491ccde9654e3bb5e6dcb46ffafd89",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/embed.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/embed.md",
@@ -118,7 +118,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/example.md",
-            "source_sha256": "0ecff1ae4cee1cb6a0d9946f8e7748890b44cc5f03743bbaad23dcdc31f07160",
+            "source_sha256": "e91bbb6f171b2f4b3038ec9445a6d7799afd0baf984e15f11a1037ce3e9014af",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/example.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/example.md",
@@ -142,7 +142,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/hero.md",
-            "source_sha256": "8aaf8bebe73f148a96e112b4ada0f54d4088032cb7bbc645283f3c98b18c2ede",
+            "source_sha256": "5f7c0b165cf69755fbee0444bdda745bed1ac2eaae0c8d1344b5360eeaf427e0",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/hero.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/hero.md",
@@ -150,7 +150,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/html.md",
-            "source_sha256": "8f2ba691f47c45c1499063eac7a84c7b569bbcb649c79ef9370a53e3a5441955",
+            "source_sha256": "2f040cbf20ae47759cbb801a75640e519656087ab68b8b9e76222a6dce51c021",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/html.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/html.md",
@@ -158,7 +158,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/icon.md",
-            "source_sha256": "663af2d8d48f2284605ab8cceda2867b97ef3b1e57a64b85299db3943360b99c",
+            "source_sha256": "537b9f4d17ee57ce01074f5102be18d69687ec853a5a553ee7dfff189444551d",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/icon.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/icon.md",
@@ -174,7 +174,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/landing-blocks.md",
-            "source_sha256": "9be6e4a23892f6e9abd0a60d1c0d795308a3435ff58e1e248ad691d433307245",
+            "source_sha256": "52c0abb1155e17ccb1e388f8710d69f6052aec64e6bc61e0c2daf13df03b39ff",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/landing-blocks.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/landing-blocks.md",
@@ -182,7 +182,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/logos.md",
-            "source_sha256": "adbc856c4ed582726936fb1502eb78ea125d416b19b355b994fbfefaa2778d26",
+            "source_sha256": "41d9508f44a0a66f9243017e575f11b2ddf860d40f71908a4c87b0ab6cced9c4",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/logos.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/logos.md",
@@ -190,7 +190,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/math.md",
-            "source_sha256": "b99f2b2b29b28baaafe6e124e2b8c274f325d754f88d66698b648fcff5e71a07",
+            "source_sha256": "2bfe2320f0c1569ffda6311eee584f0fea3881f4ae92d8e900c79a276a0d8dcc",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/math.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/math.md",
@@ -198,7 +198,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/media.md",
-            "source_sha256": "e5be4dd3370cbe04954e80ac57b57b97acc4aa62ed62972dd593de24c10c9cf3",
+            "source_sha256": "4787fad22f9c3c5b01cc702d8185d6b28a6ade18aa9175c05d888e7239914bae",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/media.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/media.md",
@@ -222,7 +222,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/surface.md",
-            "source_sha256": "45612113b21308236738b8b4dbf3cd3ac8f7ca06654006520b30a04af1d92dc8",
+            "source_sha256": "87c4cec76bd93e59ed1c985de5cd73b64d2c4a85998f066aaa2e0845558c3df7",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/surface.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/surface.md",
@@ -557,5 +557,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "47ecd6fc87d4265b4368c2403704f66f9039b6689a1b7ccb7b1177a59947e76f"
+    "content_sha256": "dad392e707e521b9e1d12bb2d12f44d0bc924bd4b9896dbbbe7933b880415119"
 }

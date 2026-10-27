@@ -536,7 +536,7 @@ MD);
 [Open widget](https://example.com/widget)
 :::
 MD);
-        self::assertStringContainsString('class="aspect-21x9 ', $cinemaEmbed);
+        self::assertStringContainsString('class="docara-aspect-21x9 ', $cinemaEmbed);
     }
 
     #[Test]
@@ -827,6 +827,16 @@ MD);
         self::assertMatchesRegularExpression('~flex-col gap-1"><span class="min-w-0">Text with <span class="docara-icon[^>]*><i[^>]*>search</i></span> inline~', $html);
         self::assertMatchesRegularExpression('~flex-col gap-1"><span class="min-w-0"><span class="sf-badge[^"]*"[^>]*>~', $html);
         self::assertStringNotContainsString('DOCARA_INLINE_', $html);
+    }
+
+    #[Test]
+    public function the_panorama_ratio_uses_the_shell_class_the_framework_does_not_ship(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(":::figure {ratio=21/9}\n![Панорама](a.webp)\n:::\n");
+
+        self::assertStringContainsString('class="overflow-hidden radius-2 docara-aspect-21x9"', $html);
+        self::assertStringNotContainsString('aspect-21x9"', str_replace('docara-aspect-21x9', '', $html));
+        self::assertStringContainsString('.docara-aspect-21x9{aspect-ratio:21/9}', (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css'));
     }
 
     #[Test]

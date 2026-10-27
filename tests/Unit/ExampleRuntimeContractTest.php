@@ -216,7 +216,8 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString("example.dataset.docaraExampleViewerActive='true'", $shell);
         self::assertStringContainsString('var exampleViewportWidths={desktop:1280,tablet:768,mobile:390}', $shell);
         self::assertStringContainsString('sessionStorage.setItem(exampleViewportStorageKey,viewport)', $shell);
-        self::assertStringContainsString("previewFrame.style.inlineSize=exampleViewportWidths[viewport]+'px'", $shell);
+        // The desktop width never exceeds the dialog, so a narrow screen does not push the frame past its edge.
+        self::assertStringContainsString("previewFrame.style.inlineSize=viewport==='desktop'?'min('+exampleViewportWidths[viewport]+'px, 100%)':exampleViewportWidths[viewport]+'px'", $shell);
         self::assertStringContainsString("document.dispatchEvent(new CustomEvent('docara:example-viewport-change'", $shell);
         self::assertStringContainsString("previewFrame.style.removeProperty('inline-size')", $shell);
         self::assertStringContainsString("message('examples.viewport_'+button.dataset.docaraExampleViewport)", $shell);

@@ -123,7 +123,7 @@ final class MermaidDiagramGalleryTest extends TestCase
     private function diagrams(string $page): array
     {
         $markdown = (string) file_get_contents($page);
-        preg_match_all('/^:::diagram \{engine=mermaid title="([^"]+)"\}\n(.*?)\n:::$/msu', $markdown, $matches, PREG_SET_ORDER);
+        preg_match_all('/^:::diagram \{(?:engine=mermaid )?title="([^"]+)"\}\n(.*?)\n:::$/msu', $markdown, $matches, PREG_SET_ORDER);
         $diagrams = [];
         foreach ($matches as $match) {
             $source = trim($match[2]);

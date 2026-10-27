@@ -26,6 +26,11 @@ tags: [ошибка, scaffold, preview, qa, documentation, mcp, sdk]
 | `SDK_WRITE_PATH_UNSAFE`, `SDK_WRITE_COLLISION` | Команда не может безопасно записать файл: путь ведёт за пределы проекта, проходит через ссылку или файл уже есть. **Что сделать:** Уберите ссылку или существующий файл, названный в сообщении, и повторите `--dry-run`. |
 | `SDK_DISCOVERY_KIND_UNKNOWN`, `SDK_SCHEMA_KIND_UNKNOWN` | Команда `list`, `inspect` или `schema` получила неизвестный вид. **Что сделать:** Возьмите вид из `docara list` или справки команды `--help`. |
 | `SDK_TEST_LAYOUT_CONTEXT_MISMATCH` | `docara test layout` получил страницу, которая использует другой макет. **Что сделать:** Укажите в `--page` страницу, где этот макет действительно выбран. |
+| `SDK_ARGUMENT_REQUIRED` | Команде не хватает обязательного аргумента; его имя — после двоеточия в сообщении. **Что сделать:** Добавьте аргумент, например `id` для `validate smart <id>`. |
+| `SDK_DISCOVERY_SUBJECT_UNKNOWN` | `inspect` не нашёл объект с таким `id`. **Что сделать:** Возьмите `id` из `docara list <вид>`. |
+| `SDK_VALIDATION_KIND_UNKNOWN`, `SDK_TEST_KIND_UNKNOWN` | `validate` или `test` получил неизвестный вид. **Что сделать:** Для `validate` укажите `project`, `page`, `source`, `smart`, `layout`, `view`, `section` или `block`; для `test` — `smart` или `layout`. |
+| `SDK_TEST_PAGE_REQUIRED` | `docara test` запущен без страницы. **Что сделать:** Добавьте `--page=/ru/адрес/`. |
+| `SDK_OPERATION_UNKNOWN` | Через MCP или SDK вызвана неизвестная операция. **Что сделать:** Используйте операции из `docara capabilities --json`. |
 | `SDK_INPUT_INVALID` | Аргумент команды записан неверно. **Что сделать:** Сверьтесь со справкой `docara <команда> --help`. |
 | `SDK_OPERATION_FAILED` | Операция остановилась по причине, у которой нет своего кода. **Что сделать:** Прочитайте текст сообщения; если он не помогает, см. [«Внутренние ошибки»](/ru/reference/errors/internal/). |
 
@@ -41,6 +46,7 @@ tags: [ошибка, scaffold, preview, qa, documentation, mcp, sdk]
 | `SCAFFOLD_PAGE_PROFILE_INVALID` | Неизвестный тип страницы в `--type`. **Что сделать:** Укажите `landing`, `article`, `tutorial`, `how_to`, `reference` или `explanation`. |
 | `SCAFFOLD_PAGE_SOURCE_ARGUMENT_INVALID` | Указан только один из `--source` и `--entity`. **Что сделать:** Укажите оба или ни одного. |
 | `SCAFFOLD_PAGE_VALIDATION_FAILED` | Страница создана, но сборка её не находит, например её закрывает настройка навигации. **Что сделать:** Проверьте `section.json` раздела и запустите `docara validate page <адрес>`. |
+| `SCAFFOLD_DRY_RUN_REQUIRED` | План применяется без предварительного просмотра. **Что сделать:** Сначала выполните команду с `--dry-run`, затем `--apply=<plan_id>`. |
 | `SCAFFOLD_PLAN_ID_INVALID` | В `--apply` передан не тот хеш. **Что сделать:** Скопируйте `plan_id` из ответа `--dry-run` целиком. |
 | `SCAFFOLD_PLAN_INVALID`, `SCAFFOLD_PLAN_HASH_MISMATCH` | Файл плана в `.docara/sdk-plans/` повреждён или изменён вручную. **Что сделать:** Составьте план заново командой `--dry-run`. |
 | `SCAFFOLD_PLAN_STALE`, `SCAFFOLD_CONTENT_HASH_MISMATCH` | После `--dry-run` изменились `docara.json` или файлы, которые план собирался записать. **Что сделать:** Повторите `--dry-run` и примените новый план. |

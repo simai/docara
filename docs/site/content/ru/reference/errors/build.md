@@ -71,12 +71,14 @@ Docara собирает сайт во временную папку и заме�
 | Код | Причина и что сделать |
 | --- | --- |
 | `DESTINATION_OUTSIDE_SITE_FORBIDDEN` | Каталог сборки лежит вне проекта или называется не `build` и не `build_*`. **Что сделать:** Собирайте в `build_<окружение>` внутри проекта. |
+| `DESTINATION_SYMLINK_FORBIDDEN` | Каталог сборки — символическая ссылка. **Что сделать:** Замените ссылку обычной папкой; чтобы публиковать в другое место, копируйте готовую сборку. |
 | `DESTINATION_INPUT_OVERLAP_FORBIDDEN` | Каталог сборки совпадает с исходными папками или вложен в них, например в `content/`. **Что сделать:** Выберите отдельный каталог `build_<окружение>`. |
 | `DESTINATION_ROLLBACK_SYMLINK_FORBIDDEN` | Каталог сборки или папка квитанций — символическая ссылка. **Что сделать:** Замените ссылку обычной папкой; чтобы публиковать в другое место, копируйте готовую сборку. |
 | `DESTINATION_ROLLBACK_PREPARE_FAILED`, `DESTINATION_PROMOTION_FAILED` | Новую сборку не удалось поставить на место старой; старая сборка восстановлена. **Что сделать:** Проверьте права на папку и закройте программы, которые держат её файлы, затем повторите. |
 | `DESTINATION_PROMOTION_AND_RESTORE_FAILED` | Новую сборку не удалось поставить на место, и старую вернуть тоже не удалось. **Что сделать:** Выполните полную сборку заново; до этого не публикуйте каталог сборки. |
 | `DESTINATION_ROLLBACK_CLEANUP_FAILED` | Сборка готова, но не удалось удалить временную копию прошлой сборки. **Что сделать:** Удалите вручную папку `<каталог сборки>.docara-rollback` или `<каталог сборки>.docara.rollback` рядом с каталогом сборки. |
 | `DESTINATION_CANDIDATE_INVALID` | Временная папка новой сборки пропала или в ней нет квитанций. **Что сделать:** Повторите сборку; не запускайте две сборки одного проекта одновременно. |
+| `BUILD_PURPOSE_UNSUPPORTED` | `verify-static` проверяет сборку, сделанную не для публикации, например командой `serve`. **Что сделать:** Соберите сайт командой `docara build production` и проверьте эту сборку. |
 | `PORTABLE_DIAGNOSTIC_WRITE_FAILED`, `PORTABLE_PERFORMANCE_RECEIPT_WRITE_FAILED` | Не удалось записать служебный отчёт сборки. **Что сделать:** Проверьте место на диске и права на запись, затем повторите. |
 | `PORTABLE_PERFORMANCE_HTML_INVALID`, `PORTABLE_PERFORMANCE_PAGE_INVALID`, `PORTABLE_PERFORMANCE_PAGE_UNSAFE`, `PORTABLE_PERFORMANCE_RESOURCE_OUTSIDE_BASE`, `PORTABLE_PERFORMANCE_RESOURCE_TRAVERSAL`, `PORTABLE_PERFORMANCE_RESOURCE_UNSAFE`, `PORTABLE_PERFORMANCE_RESOURCE_URL_INVALID`, `PORTABLE_VENDOR_SELECTION_INPUT_INVALID` | Отчёт о весе страниц не смог разобрать готовую страницу или файл, на который она ссылается: файл пропал, ведёт за пределы `base_url` или стал ссылкой. **Что сделать:** Проверьте `base_url` в `docara.json` и ссылки на файлы в шаблонах проекта, затем выполните полную сборку. |
 

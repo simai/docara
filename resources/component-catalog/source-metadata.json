@@ -94,7 +94,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/diagram.md",
-            "source_sha256": "255923261d5c0dc5a48f4c6a2f28570de9583e0b61034ae81cf71de161f25a3c",
+            "source_sha256": "010cef36700cb347de502b3741ea089654efb29889bf9ccf6439f311133d531f",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/diagram.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/diagram.md",
@@ -150,7 +150,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/html.md",
-            "source_sha256": "2f040cbf20ae47759cbb801a75640e519656087ab68b8b9e76222a6dce51c021",
+            "source_sha256": "b405f56feb9ad74fa7238a043c5743ab549e080474b3ef8966052681916d10e5",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/html.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/html.md",
@@ -190,7 +190,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/math.md",
-            "source_sha256": "2bfe2320f0c1569ffda6311eee584f0fea3881f4ae92d8e900c79a276a0d8dcc",
+            "source_sha256": "87ce27cf99aa57c6ec1928ad1aae2912e847159d9186fc3603a141cab9dded1b",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/math.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/math.md",
@@ -214,7 +214,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/steps.md",
-            "source_sha256": "d647974ed20aaf3183789f422d92730188f63e327f44703eb364d9437669bcfa",
+            "source_sha256": "415fe9203085092842d3bcb0be2eadda3d5618febfcabcf461d6d04b85a08e42",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/steps.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/steps.md",
@@ -557,5 +557,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "dad392e707e521b9e1d12bb2d12f44d0bc924bd4b9896dbbbe7933b880415119"
+    "content_sha256": "3a33ea32a7e40a943f95076984c5faaaaf078282f50f016cf63aed1e766a297d"
 }

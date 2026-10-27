@@ -541,6 +541,22 @@ final readonly class PortableSiteBuilder
                 ' title="' . htmlspecialchars(UiCopy::buildText($pageLocale, 'examples.preview_title'), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '"',
                 (string) ($page['content_html'] ?? ''),
             );
+            // A diagram, math block or html frame without its own title gets
+            // its default label in the page's language.
+            $page['content_html'] = (string) preg_replace_callback(
+                '/<(figure|div|span|iframe)( data-docara-block="(?:diagram|math|html)") ' . PortableMarkdownRenderer::DEFAULT_LABEL_MARKER . '="(diagram|math|html)"([^>]*)>(.*?)(?=<\\/figure>|<\\/div>|<\\/span>|<\\/iframe>)/s',
+                static function (array $match) use ($pageLocale): string {
+                    $english = htmlspecialchars(PortableMarkdownRenderer::DEFAULT_LABELS[$match[3]], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+                    $local = htmlspecialchars(UiCopy::buildText($pageLocale, 'blocks.' . $match[3]), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+
+                    return str_replace(
+                        ['aria-label="' . $english . '"', 'title="' . $english . '"', '>' . $english . '</figcaption>'],
+                        ['aria-label="' . $local . '"', 'title="' . $local . '"', '>' . $local . '</figcaption>'],
+                        $match[0],
+                    );
+                },
+                (string) $page['content_html'],
+            );
             // A diff line's screen-reader word (CodeLinePresenter) in the
             // page's language; lang.json may override code.added/removed.
             $page['content_html'] = (string) preg_replace_callback(

@@ -15,6 +15,23 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final class DeclarativeRegionCompositionTest extends TestCase
 {
+    public function test_navigation_deeper_than_four_levels_names_the_page_to_move(): void
+    {
+        $node = static fn (string $url, array $children = []): array => [
+            'key' => $url, 'title' => $url, 'url' => $url, 'active' => false, 'active_ancestor' => false,
+            'current_section' => false, 'open' => false, 'children' => $children,
+        ];
+        $tree = [$node('/a/', [$node('/a/b/', [$node('/a/b/c/', [$node('/a/b/c/d/', [$node('/a/b/c/d/e/')])])])])];
+
+        try {
+            PageCompositionContext::fromBuilder(['title' => 'Docara'], '/', $tree, []);
+            self::fail('A fifth navigation level must stop the build.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('DECLARATIVE_NAVIGATION_DEPTH_EXCEEDED', $exception->errorCode);
+            self::assertStringContainsString('[/a/b/c/d/e/] is on level 5', $exception->getMessage());
+        }
+    }
+
     public function test_optional_regions_can_be_disabled_and_disappear_from_markup(): void
     {
         $layout = RegionCompositionResolver::defaults();

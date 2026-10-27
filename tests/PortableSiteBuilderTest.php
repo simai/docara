@@ -540,6 +540,41 @@ MD);
     }
 
     #[Test]
+    public function hero_side_image_from_project_assets_is_published_with_the_page(): void
+    {
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('assets'));
+        copy(dirname(__DIR__) . '/docs/site/assets/hero-side.webp', $this->tmpPath('assets/hero-side.webp'));
+        file_put_contents($this->tmpPath('content/ru/side.md'), ":::hero {layout=split media=side}\n# Первый экран\n\nОписание рядом с картинкой.\n\n[Начать](/ru/)\n\n![Интерфейс сервиса](/assets/hero-side.webp)\n:::\n");
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $html = (string) file_get_contents($this->tmpPath('build_local/ru/side/index.html'));
+        // A page-relative address, right under the /ru/ prefix and any base_url.
+        self::assertStringContainsString('src="../assets/hero-side.webp" alt="Интерфейс сервиса"', $html);
+        self::assertStringNotContainsString('data-docara-publish-local-asset', $html);
+        self::assertFileEquals(dirname(__DIR__) . '/docs/site/assets/hero-side.webp', $this->tmpPath('build_local/ru/assets/hero-side.webp'));
+    }
+
+    #[Test]
+    public function untitled_diagram_math_and_html_blocks_get_default_labels_in_the_page_language(): void
+    {
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        file_put_contents($this->tmpPath('content/ru/labels.md'), "# Подписи\n\n:::diagram\nflowchart LR\n  A --> B\n:::\n\n:::math\nE = mc^2\n:::\n\n:::html\n```html\n<p>Привет</p>\n```\n:::\n\n:::diagram {title=\"Своя схема\"}\nflowchart LR\n  C --> D\n:::\n");
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $html = (string) file_get_contents($this->tmpPath('build_local/ru/labels/index.html'));
+        self::assertStringContainsString('>Схема</figcaption>', $html);
+        self::assertStringContainsString('aria-label="Математическая формула"', $html);
+        self::assertMatchesRegularExpression('/data-docara-block="html" data-docara-default-label="html" title="Пример HTML"/', $html);
+        // An author's own title stays as written.
+        self::assertStringContainsString('>Своя схема</figcaption>', $html);
+        self::assertStringNotContainsString('>Diagram</figcaption>', $html);
+        self::assertStringNotContainsString('aria-label="Mathematical formula"', $html);
+    }
+
+    #[Test]
     public function incomplete_locale_ui_copy_borrows_missing_strings_from_its_declared_fallback(): void
     {
         $this->copyPortableFixture($this->tmp, legacyCompatibility: false);

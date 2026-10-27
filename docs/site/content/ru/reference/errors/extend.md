@@ -61,7 +61,7 @@ tags: [ошибка, макет, области, smart, design, рецепт, п
 | `SMART_PROVIDER_ASSET_INVALID` | Путь к стилю или скрипту в разделе `assets` файла `manifest.json` записан не строкой или файла нет. **Что сделать:** Положите файл в папку компонента и укажите путь к нему строкой. |
 | `SMART_PROVIDER_ALIASES_INVALID` | Дополнительные имена компонента в `extensions.docara.aliases` записаны неверно. **Что сделать:** Пишите их объектом `{"другое.имя": "причина"}` с непустой причиной. |
 | `SMART_PROVIDER_ROOT_UNSAFE`, `SMART_PROVIDER_PATH_UNSAFE`, `SMART_PROVIDER_SYMLINK_FORBIDDEN` | В папке компонента есть символическая ссылка или путь выходит за `smart/`. **Что сделать:** Замените ссылки обычными файлами. |
-| `SMART_REGISTRY_COMPONENT_NOT_FOUND` | Команда получила имя компонента, которого нет. **Что сделать:** Возьмите имя из `docara list smart`. |
+| `SMART_REGISTRY_COMPONENT_NOT_FOUND` | Страница или команда называет компонент, которого нет, — обычно опечатка в имени после `:::`. **Что сделать:** Возьмите имя из `docara list smart`. |
 | `DECLARATIVE_COMPOSITE_PRESET_UNKNOWN`, `DECLARATIVE_COMPOSITE_PRESET_INVALID` | У составного компонента нет такого пресета или он записан не строкой. **Что сделать:** Возьмите имя пресета из `docara inspect smart <имя> --json`. |
 | `DECLARATIVE_COMPOSITE_PROPS_INVALID`, `DECLARATIVE_COMPOSITE_MANIFEST_INVALID` | Параметры составного компонента не подходят его описанию или описание повреждено. **Что сделать:** Сверьте параметры с `docara inspect smart <имя> --json`. |
 

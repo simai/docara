@@ -291,6 +291,8 @@ MD);
             [":::::surface {order=reverse}\nText\n:::::", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN', 1],
             [":::::surface\n:::project.product-configurator\n{bad}\n:::\n:::::", 'DOCUMENT_SMART_PROPS_JSON_INVALID', 2],
             [":::::surface\nText\n::::", 'DOCUMENT_TYPED_DIRECTIVE_UNCLOSED', 1],
+            // A typo in a project component's name points at the page line.
+            ["Intro.\n\n:::project.product-configuratr\n{}\n:::", 'SMART_REGISTRY_COMPONENT_NOT_FOUND', 3],
         ];
         foreach ($cases as [$source, $code, $line]) {
             try {

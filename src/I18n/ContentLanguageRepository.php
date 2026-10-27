@@ -69,6 +69,13 @@ final class ContentLanguageRepository
         return $messages;
     }
 
+    /** Whether the locale keeps its own content/<locale>/lang.json. */
+    public function hasOwnLanguage(LocaleDefinition $locale): bool
+    {
+        return is_file($this->projectRoot . DIRECTORY_SEPARATOR
+            . str_replace('/', DIRECTORY_SEPARATOR, trim($locale->contentRoot, '/') . '/lang.json'));
+    }
+
     /** @return array<string, string> */
     private function ownMessages(LocaleDefinition $locale): array
     {

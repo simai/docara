@@ -540,6 +540,26 @@ MD);
     }
 
     #[Test]
+    public function incomplete_locale_ui_copy_borrows_missing_strings_from_its_declared_fallback(): void
+    {
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('content/en'));
+        file_put_contents($this->tmpPath('content/en/index.md'), "# English fixture\n\nOwn file, partial strings.\n");
+        file_put_contents($this->tmpPath('content/en/lang.json'), "{\"schema\": \"docara.lang.v1\", \"version\": 1, \"search\": {\"placeholder\": \"Find\"}}\n");
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['locales']['en'] = $this->localeDefinition('English', 'ltr', 'content/en', 'en', ['ru']);
+        file_put_contents($this->tmpPath('docara.json'), CanonicalJson::encodePretty($site));
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $html = (string) file_get_contents($this->tmpPath('build_local/en/index.html'));
+        self::assertStringContainsString('<html lang="en"', $html);
+        // The own file wins where it has the string; the fallback fills the rest.
+        self::assertStringContainsString('placeholder="Find"', $html);
+        self::assertStringContainsString('href="#docara-main">К содержанию', $html);
+    }
+
+    #[Test]
     public function declared_locale_without_its_own_ui_copy_fails_without_silent_fallback_and_preserves_output(): void
     {
         $this->copyPortableFixture($this->tmp, legacyCompatibility: false);

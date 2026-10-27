@@ -171,7 +171,7 @@ final readonly class PortableSiteBuilder
         $translator = new Translator(
             $localeRegistry,
             $contentLanguages,
-            false,
+            fallbacksNeedOwnLanguage: true,
         );
         $uiCopy = new UiCopy($translator);
         $runtimeMetadata = new PortableRuntimeMetadata(dirname(__DIR__, 2));

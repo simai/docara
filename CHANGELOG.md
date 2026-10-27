@@ -6,6 +6,31 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **An incomplete `lang.json` borrows missing required strings from its
+  fallback locale.** The multilingual guide and the `lang.json` reference promised
+  that a locale's own `lang.json` may leave strings out and take them from
+  the locales in `fallbacks`, but the build never consulted `fallbacks`: an
+  Arabic site with an empty `content/ar/lang.json` and `"fallbacks": ["en"]`
+  stopped with `MESSAGE_NOT_FOUND`. The build now walks the fallback chain
+  for the required strings of a locale that keeps its own `lang.json`;
+  strings with a built-in default still use the locale's own text, then the
+  default. A locale with no `lang.json` at all still stops the build
+  instead of silently showing another language.
+
+### Documentation
+
+- The multilingual guide now says that every locale needs its own
+  `lang.json` and where to copy the English and Russian ones from; following
+  it on a fresh project stopped with `MESSAGE_NOT_FOUND` at the first build.
+- The navigation guide said the menu had no depth limit; a fifth level stops
+  the build with `DECLARATIVE_NAVIGATION_DEPTH_EXCEEDED`, and the guide now
+  says so.
+- Every diagnostic code has a cause-and-fix entry (1134 of 1134), and the
+  site gains a CI recipe, a versions page, an accessibility guide and a
+  first-landing tutorial.
+
 ## [3.10.0] - 2026-10-26
 
 ### Added

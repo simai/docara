@@ -146,7 +146,7 @@ facts come from scripts and builds; **judged** ones are the auditor's.
 | 2. Component pages below the standard | closed | all 27 pages use Пример, Разметка, Варианты, Состояния, Доступность, Параметры, См. также; parameter tables generated (`capture-component-parameters.php --check`, measured) |
 | 3. No learning path | closed | tutorials «Первый лендинг» and «Первый компонент проекта», each run on a fresh `init` project; the multilingual guide re-run end to end; GitHub Pages covered by «Сборка в CI» |
 | 4. No changelog, deprecations, support policy | partly | «Версии и изменения»: versioning, changelog location, deprecations, upgrade path; no support window — an owner decision |
-| 5. No accessibility guide, browser support | partly | «Доступность» guide; browser support: owner decided to wait for a SIMAI Framework policy (bus request `msg-da37d702bcd14844aaa3`) |
+| 5. No accessibility guide, browser support | closed | «Доступность» guide; browser support: owner decision via SIMAI Framework (bus `msg-ad968f4f14b74b4c946b`) — no version table, «modern browsers, features all major engines support»; one paragraph on «Что такое Docara», a link to the Framework page to follow |
 | 6. Thin example pages | closed | they are developer stands: hidden from navigation and search, listed on «Примеры» in the development section (measured: `navigation.hidden`, `search.indexed: false`) |
 | 7. Jargon in development pages | partly | SDK, Smart components and testing pages rewritten in plain Russian; architecture and getting-started keep some terms |
 | 8. No English version | open | separate project |
@@ -183,4 +183,4 @@ Each was reproduced on a fresh project before the fix.
 
 - English site (gap 8).
 - A docs-only trial with persona tasks (needs owner approval for its cost).
-- Support window and browser support (owner and SIMAI Framework decisions).
+- Support window (owner decision); the SIMAI Framework browser page link, when it is published.

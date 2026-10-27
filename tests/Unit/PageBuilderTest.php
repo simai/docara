@@ -141,9 +141,9 @@ final class PageBuilderTest extends TestCase
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
         foreach ([
-            'components/backlinks' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive'],
+            'components/backlinks' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
             'components/banner' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
-            'components/code' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example'],
+            'components/code' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'html_comment'],
             // Pages moved to the page standard add lists and the markers of
             // the generated parameter table.
             'components/details' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],

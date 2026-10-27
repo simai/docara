@@ -1,115 +1,154 @@
 ---
-description: Surface — оформленная полоса вокруг Markdown: внешняя ширина content или full, внутренний контейнер или полная ширина, фон и overlay.
+description: Оформленная полоса вокруг обычного Markdown — на ширину текста или во всю ширину области, с тоном фона, декоративным изображением и затемнением.
 ---
 
 # Оформленная полоса
 
-`Surface` создаёт оформленную полосу вокруг обычного Markdown. Внешняя ширина
-может оставаться в потоке (`content`) или достигать границы активного region
-(`full`); внутренний контент независимо остаётся в `.container` либо занимает
-полную ширину.
+Полоса выделяет группу содержимого фоном: несколько абзацев, сетку с
+карточками или компонент проекта. Она может стоять по ширине текста или
+растягиваться во всю ширину своей области, а текст внутри остаётся на одной
+линии с остальной страницей.
 
-Surface выбирают для общей полосы содержимого: нескольких абзацев, сетки с
-карточками или допущенного Smart-компонента проекта. Для первого экрана с H1, описанием и
-действиями используйте [Hero](/ru/components/hero/). Hero, Showcase и Promo уже
-оформлены так же, как Surface, и **не требуют** внешней обёртки `:::surface`.
-Такое двойное оборачивание запрещено правилами контейнера.
+[Первый экран](../hero/), `showcase` и `promo` уже оформлены так же и в
+полосу не оборачиваются.
 
-:::surface {width=full content_width=container padding=lg tone=muted}
-## Surface в границе main
+## Пример
 
-Эта полоса достигает краёв только основной области `main`: в документации она
-не перекрывает боковое меню и правую колонку, а внутренний текст остаётся в
-контейнере.
-:::
-
-:::example {label="Полоса с выровненным контентом"}
+:::example {label="Полоса во всю ширину"}
 ```markdown
-:::surface {width=full content_width=container padding=lg tone=muted}
-## Один контентный ритм
+:::surface {width=full tone=muted padding=lg}
+## Один ритм с текстом
 
-Текст внутри полной полосы выровнен с соседним контентом страницы.
+Текст внутри полосы выровнен с соседним текстом страницы.
 :::
 ```
 :::
 
-## Безопасный декоративный фон
+## Разметка
 
-Фон берётся только из локального `/assets/` проекта, скрыт от accessibility tree
-и не получает фокус или события указателя. Позиция, overlay, отступ и tone —
-ограниченные значения, а не произвольные CSS-классы.
-
-:::example {label="Локальный декоративный фон"}
 ```markdown
-:::surface {width=full content_width=container background_image=/assets/surface-backdrop.webp background_fit=cover background_x=right background_y=center overlay=dark overlay_strength=strong padding=xl tone=contrast}
+:::surface {width=full tone=muted}
+## Заголовок
+
+Обычный Markdown: абзацы, списки, сетка с карточками.
+:::
+```
+
+- Внутри — обычный Markdown и блоки, которые разрешено вкладывать: сетка,
+  карточки, шаги и компоненты проекта, которые объявили себя встраиваемыми.
+- Полоса внутри полосы и вокруг первого экрана, `showcase` или `promo`
+  отклоняется при сборке.
+- Цепочка «полоса → сетка → карточка» разрешена.
+
+## Варианты
+
+### Ширина
+
+`width=content` — полоса по ширине текста. `width=full` — во всю ширину
+своей области: на лендинге — до краёв окна, в документации — до краёв
+основной колонки, не заходя на боковое меню и оглавление.
+
+`content_width` выбирает ширину содержимого внутри: `container` держит текст
+на одной линии с остальной страницей, `full` отдаёт содержимому всю ширину
+полосы.
+
+### Тон и отступы
+
+`tone` выбирает фон: обычный, приглушённый, акцентный или контрастный.
+`padding` задаёт внутренние отступы. При `content_width=container` он меняет
+только отступы сверху и снизу — слева и справа остаётся отступ основного
+текста.
+
+:::example {label="Акцентная полоса по ширине текста"}
+```markdown
+:::surface {width=content tone=accent padding=md}
+## Акцент
+
+Полоса по ширине текста с акцентным фоном.
+:::
+```
+:::
+
+### Декоративный фон
+
+`background_image` ставит фоном изображение из папки `assets/` проекта.
+Положение и заполнение задают `background_fit`, `background_x` и
+`background_y`, затемнение или осветление поверх фона — `overlay` и
+`overlay_strength`, чтобы текст читался.
+
+:::example {label="Фоновое изображение с затемнением"}
+```markdown
+:::surface {width=full background_image=/assets/surface-backdrop.webp background_x=right overlay=dark overlay_strength=strong padding=xl tone=contrast}
 ## Документация как продукт
 
-Читаемый контент остаётся поверх декоративного слоя.
+Текст остаётся поверх декоративного слоя.
 :::
 ```
 :::
 
-## Контейнерный контракт
+### Компонент проекта внутри
 
-Surface принимает обычный Markdown и только зарегистрированные content-embeddable
-компоненты. Вложенный Surface, Hero, Promo, Showcase, shell-компоненты,
-неизвестные children и небезопасные пути отклоняются до публикации. Допустимые
-children, slot `content`, порядок, количество и глубина публикуются в Design
-Atlas из реального registry descriptor. `max_depth=3` считается относительно
-Surface как уровня 1; вложенный Grid отдельно считает себя уровнем 1, поэтому
-каноническая цепочка Surface → Grid → Card допустима без глобального depth.
+Компонент проекта можно поставить в полосу, если его описание объявляет его
+встраиваемым (`content.embeddable`). Компоненты проекта не показываются
+внутри интерактивного примера, поэтому ниже — живая полоса и её разметка.
 
-Проектный Smart тоже проходит тот же Gateway, если его собственный manifest
-явно объявляет capability `content.embeddable`:
-
-:::::surface {width=content content_width=container padding=md tone=default}
+:::::surface {width=content padding=md}
 :::project.product-configurator
 {"title":"Локальный конфигуратор","base_price":2500,"team_price":4500,"business_price":8000,"currency":"₽"}
 :::
 :::::
 
-:::example {label="Project Smart внутри Surface"}
 ``````markdown
-:::::surface {width=content content_width=container padding=md tone=default}
+:::::surface {width=content padding=md}
 :::project.product-configurator
 {"title":"Локальный конфигуратор","base_price":2500,"team_price":4500,"business_price":8000,"currency":"₽"}
 :::
 :::::
 ``````
-:::
 
-Параметры: `width=content|full`, `content_width=container|full`,
-`background_fit=cover|contain|auto`, `background_x=left|center|right`,
-`background_y=top|center|bottom`, `overlay=none|light|dark`,
-`overlay_strength=soft|medium|strong`, `padding=none|sm|md|lg|xl` и
-`tone=default|muted|accent|contrast`.
+## Состояния
 
-## Доступность и адаптивность
-
-- `full` достигает только границы своей области макета: на лендинге — края
-  страницы, в документации — края `main`, не бокового меню и не правой
-  колонки;
-- внутренний `container` сохраняет одну линию выравнивания с соседним текстом:
-  при `content_width=container` параметр `padding` задаёт только отступы
-  сверху и снизу, а отступ слева и справа остаётся отступом `container`, тем же,
-  что у основного текста страницы. При `content_width=full` `padding` задаёт
-  отступы со всех сторон;
-- декоративное изображение выводится один раз с `alt=""` и
-  `aria-hidden="true"`, overlay не получает фокус и не перехватывает указатель;
-- `cover`, `contain` и `auto` не создают отдельный мобильный источник или
-  произвольный breakpoint; responsive geometry принадлежит общей presentation;
-- авторский текст и интерактивные children остаются поверх overlay в обычном
-  DOM-порядке и доступны с клавиатуры.
-
-## Fail-closed граница
+### Проверки при сборке
 
 | Ошибка автора | Результат |
 | --- | --- |
-| Surface внутри Surface или вокруг Hero/Showcase/Promo | вложение отклоняется до render |
-| remote, `data:`, protocol-relative, traversal, symlink или hardlink media | локальная asset policy отклоняет путь |
-| `background_x/y/fit` без `background_image` | `MARKDOWN_SURFACE_BACKGROUND_REQUIRED` |
-| `overlay_strength` без overlay | `MARKDOWN_SURFACE_OVERLAY_REQUIRED` |
-| неизвестный prop, CSS class, style, callback или template path | schema/admission error |
+| Полоса внутри полосы или вокруг первого экрана, `showcase`, `promo` | Вложение отклоняется |
+| Фон по внешнему адресу, `data:`, путь за пределы проекта, символическая ссылка | Путь отклоняется |
+| `background_x`, `background_y` или `background_fit` без `background_image` | `MARKDOWN_SURFACE_BACKGROUND_REQUIRED` |
+| `overlay_strength` без `overlay` | `MARKDOWN_SURFACE_OVERLAY_REQUIRED` |
+| Неизвестный параметр, класс CSS или стиль | Ошибка параметров |
 
-Глобальной настройки Surface нет: каждое значение выше принадлежит конкретной
-типизированной директиве и попадает в Atlas из допущенного описания.
+## Доступность
+
+- Фоновое изображение — украшение: оно выводится с пустым описанием и скрыто
+  от программ экранного доступа.
+- Затемнение не получает фокус и не перехватывает щелчки: текст и ссылки
+  поверх него работают как обычно, в исходном порядке.
+- Выбирайте затемнение так, чтобы текст читался на фоне в светлой и тёмной
+  теме.
+
+## Параметры
+
+<!-- docara:component-parameters:start -->
+
+| Параметр | Значения | По умолчанию | Что задаёт |
+| --- | --- | --- | --- |
+| `width` | `content`, `full` | `content` | `content` — по ширине текста, `full` — во всю ширину окна. |
+| `content_width` | `container`, `full` | `container` | Ширина содержимого внутри полосы: по контейнеру или во всю ширину. |
+| `background_image` | строка | — | Фоновое изображение полосы. |
+| `background_fit` | `cover`, `contain`, `auto` | `cover` | Как фоновое изображение заполняет полосу. |
+| `background_x` | `left`, `center`, `right` | `center` | Положение фона по горизонтали. |
+| `background_y` | `top`, `center`, `bottom` | `center` | Положение фона по вертикали. |
+| `overlay` | `none`, `light`, `dark` | `none` | Затемнение или осветление поверх фона. |
+| `overlay_strength` | `soft`, `medium`, `strong` | `medium` | Сила затемнения или осветления. |
+| `padding` | `none`, `sm`, `md`, `lg`, `xl` | `md` | Внутренние отступы полосы. |
+| `tone` | `default`, `muted`, `accent`, `contrast` | `default` | Тон фона: обычный, приглушённый, акцентный или контрастный. |
+
+<!-- docara:component-parameters:end -->
+
+## См. также
+
+- [Первый экран](../hero/)
+- [Сетка](../grid/) и [карточка](../card/)
+- [Блоки лендинга](../landing-blocks/)
+- [Шаги](../steps/) — последовательность внутри полосы

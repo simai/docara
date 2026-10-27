@@ -111,7 +111,7 @@ final class DeveloperJourneyCommandsTest extends TestCase
         $combined = implode("\n", $documents);
 
         self::assertStringContainsString('preview smart --page=/ru/project-demos/ --selector=ui.dropdown', $combined);
-        self::assertStringContainsString('scaffold --apply="$PLAN_SHA256" --json', $combined);
+        self::assertStringContainsString('scaffold --apply="$PLAN_ID" --json', $combined);
         self::assertStringNotContainsString('--apply-plan', $combined);
         self::assertStringNotContainsString('/ru/example/', $combined);
         self::assertDoesNotMatchRegularExpression('/preview smart\s+project\.[^\s]+/', $combined);

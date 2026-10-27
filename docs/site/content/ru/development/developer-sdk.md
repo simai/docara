@@ -1,19 +1,20 @@
 ---
 title: SDK для разработчика и AI-агента
-description: Безопасный путь inspect, scaffold, validate, preview и test для LEGO-артефактов Docara.
+description: Как безопасно найти, создать, проверить и посмотреть компонент или макет проекта командами Docara — вручную или силами AI-агента.
 tags: [development, sdk, smart, design, mcp, ai, safety]
 ---
 
 # SDK для разработчика и AI-агента
 
-SDK помогает добавить Smart-компонент или композицию оформления, не меняя
-движок. Он не создаёт нового рендерера: все проверки и предпросмотр используют
-те же реестры, `SmartComponentGateway`, `DeclarativePageRenderer` и `PageBuilder`, что и
-обычная сборка.
+SDK — набор команд, которыми разработчик или AI-агент добавляет в проект свой
+компонент или макет, не меняя саму Docara. У этих команд нет отдельного
+механизма вывода: проверки и предпросмотр проходят через те же реестры и тот
+же построитель страниц, что и обычная сборка. Что прошло проверку SDK, то
+соберётся и на сайте.
 
-## Короткий LEGO-путь
+## Короткий путь
 
-Запускайте команды из корня инициализированного проекта:
+Запускайте команды из корня проекта:
 
 ```bash
 docara capabilities --json
@@ -22,31 +23,26 @@ docara list smart
 docara inspect smart ui.alert --json
 docara schema smart --json
 
-PLAN_SHA256="$(docara scaffold smart project.notice-card --dry-run --json | php -r '$r=json_decode(stream_get_contents(STDIN),true,512,JSON_THROW_ON_ERROR); echo $r["data"]["plan_id"];')"
-docara scaffold --apply="$PLAN_SHA256" --json
+docara scaffold smart project.notice-card --dry-run
+docara scaffold --apply=<plan_id>
 docara validate smart project.notice-card
 docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown
 docara test smart ui.dropdown --page=/ru/project-demos/ --json
 ```
 
-`capabilities` — первая команда для любого AI-агента. Она сообщает
-операции, параметры, схемы и статусы возможностей именно той версии, которая
-установлена в этом проекте. Агент не должен переносить предположения из другого
-проекта или из более новой Docara.
+`capabilities` — первая команда для AI-агента. Она сообщает, какие операции,
+параметры и схемы есть именно в установленной версии Docara. Агент не должен
+переносить знания из другого проекта или из более новой версии.
 
-`--dry-run` возвращает список создаваемых файлов, SHA-256 их содержимого,
-текущие хеши входных файлов и `plan_id`. Применение (`--apply`) принимает
-только этот план и ещё раз проверяет пространство имён, настройки, пути
-назначения и хеши. Если что-либо изменилось, команда завершится ошибкой и
-ничего не запишет частично.
+Пошаговый пример с первым компонентом — в уроке
+[«Первый компонент проекта»](/ru/start/first-component/).
 
-## Путь разработчика и AI-агента
+## Шаг за шагом
 
-Все шаги ниже выполняют одни и те же внутренние службы Docara. У командной
-строки, вывода `--json` и необязательного MCP нет отдельных правил проверки
-или вывода HTML.
+Командная строка, вывод `--json` и необязательный MCP вызывают одни и те же
+службы Docara, поэтому правила проверки у них одинаковые.
 
-### 1. Найдите возможность
+### 1. Найдите, что уже есть
 
 ```bash
 docara doctor --json
@@ -56,52 +52,43 @@ docara inspect smart project.install-builder --json
 docara schema smart --json
 ```
 
-Команды чтения ничего не меняют. Результат содержит постоянные операцию,
-предмет, код и код завершения, владельца, безопасный путь и место в файле,
-происхождение значения и подсказку.
+Эти команды только читают. В ответе — операция, предмет, код результата,
+владелец, путь к файлу и место в нём, откуда взялось значение, и подсказка.
 
 ### 2. Составьте план и посмотрите результат
 
 ```bash
-PLAN_SHA256="$(docara scaffold smart project.notice-card --dry-run --json | php -r '$r=json_decode(stream_get_contents(STDIN),true,512,JSON_THROW_ON_ERROR); echo $r["data"]["plan_id"];')"
-docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown --json
+docara scaffold smart project.notice-card --dry-run
+docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown
 docara test smart ui.dropdown --page=/ru/project-demos/ --json
 ```
 
-Пробный запуск (`--dry-run`) возвращает точные пути и содержимое файлов, хеши
-входных файлов и `plan_id`. Предпросмотр вызывает тот же
-`PreviewKernel/PageBuilder`, что и рабочая сборка, публикуется отдельно и не
-проходит проверку рабочей сборки.
+Пробный запуск `--dry-run` ничего не записывает. Он показывает пути и
+содержимое будущих файлов, отпечатки (хеши) текущих файлов и номер плана
+`plan_id`. Предпросмотр строит фрагмент страницы тем же кодом, что и сборка,
+но в отдельной папке: на сайт он не попадает.
 
-### 3. Примените план по хешу (hash-bound apply)
+Чтобы взять номер плана в скрипте, используйте `--json`:
 
 ```bash
-docara scaffold --apply="$PLAN_SHA256" --json
+PLAN_ID="$(docara scaffold smart project.notice-card --dry-run --json | php -r '$r=json_decode(stream_get_contents(STDIN),true,512,JSON_THROW_ON_ERROR); echo $r["data"]["plan_id"];')"
+```
+
+### 3. Примените план
+
+```bash
+docara scaffold --apply="$PLAN_ID" --json
 docara validate smart project.notice-card --json
 ```
 
-Применение разрешено только после явного пробного запуска и повторной
-проверки всех хешей. Устаревший план, изменённый входной файл, уже
-существующий файл или файл, отличающийся только регистром, выход за каталог
-через `..` или ссылку, запись в файлы движка, lock, результаты сборки или
-внешние каталоги завершают команду с ошибкой. Ни один файл при этом не
-меняется.
+Применяется только план, показанный пробным запуском. Перед записью Docara
+сверяет все отпечатки ещё раз. Команда остановится и ничего не изменит, если:
 
-### CLI, JSON и MCP
-
-| Действие | Human/JSON operation | Optional MCP tool | Один service |
-| --- | --- | --- | --- |
-| Atlas | `docara atlas [--json]` | `docara_atlas` | `DesignAtlasService` |
-| Inspect | `docara inspect … [--json]` | inspect tool | discovery/SDK service |
-| Schema | `docara schema … [--json]` | schema tool | schema service |
-| Scaffold plan/apply | `docara scaffold …` | plan/apply tool | `ScaffoldService` |
-| Validate/test/QA | `docara validate|test|qa …` | matching tools | accepted validators/PreviewKernel |
-
-Адаптер MCP запускается отдельно и по умолчанию только читает. Ключ
-`--allow-writes` открывает то же применение плана по хешу; защита корня
-проекта и диагностика при этом работают. Node.js 20+ нужен для `build`,
-браузер — только для необязательной визуальной проверки, а `init` и
-`verify-static` выполняются через PHP.
+- после пробного запуска изменились настройки или файлы;
+- файл уже есть или отличается от существующего только регистром букв;
+- путь выходит за папку проекта через `..` или ссылку;
+- запись затрагивает файлы самой Docara, файл закрепления, результат сборки
+  или папки вне проекта.
 
 ### Если операция отклонена
 
@@ -112,94 +99,94 @@ pointer: /operations/preview/output
 suggestion: remove the unsafe symlink and repeat dry-run
 ```
 
-Не правьте план, отчёт или квитанцию. Устраните причину в исходных файлах
-проекта, повторите поиск, проверку и пробный запуск и получите новый план.
+Не правьте план, отчёт или квитанцию сборки. Исправьте причину в файлах
+проекта, повторите поиск и пробный запуск и получите новый план. Коды и что с
+ними делать — в справочнике
+[«Ошибки инструментов разработчика»](/ru/reference/errors/developer/).
 
 ## Что можно посмотреть
 
-`list`, `inspect` и `schema` работают для Smart, layout, view, section, block,
-provider, fixture, state и schema. Human и `--json` — два представления одного
-`docara.operation_result.v1`: у diagnostics стабильны code, severity, owner,
-provenance, source location и suggestion.
+`list`, `inspect` и `schema` работают с компонентами (`smart`), макетами
+(`layout`), представлениями (`view`), секциями (`section`), блоками
+(`block`), поставщиками (`provider`), тестовыми данными (`fixture`),
+состояниями (`state`) и схемами (`schema`). Обычный вывод и `--json` — два
+вида одного результата `docara.operation_result.v1`; у каждой находки
+постоянные код, уровень, владелец, источник значения, место в файле и
+подсказка.
 
-`schema smart --json` возвращает byte-exact Framework-owned схему переносимого
-manifest, который создаёт `scaffold smart`: `smart.manifest.schema.json` из
-зафиксированной owner revision. После неё применяется отдельно названная
-Docara policy `docara.smart_admission.v1`; это не второй формат. В результате
-также есть машинная identity контракта:
-`sf.smart_artifact_abi` / `1.0.0` /
-`sf-smart-artifact-abi-v1`. Поэтому manifest из dry-run можно проверить этой
-схемой напрямую, без конвертации в package-specific формат.
+`schema smart --json` возвращает схему файла `manifest.json` — ту же, что
+ведёт SIMAI Framework, без изменений. Поверх неё Docara применяет свои
+правила допуска `docara.smart_admission.v1`; это не второй формат. Поэтому
+`manifest.json` из заготовки можно проверить этой схемой напрямую.
 
-`inspect smart` показывает эту же neutral identity для Framework-, Docara- и
-project-owned компонентов. Поля `provider_adapter` и `template_abi` отдельно
-объясняют, как конкретный provider подключил artifact. Историческое имя
-`sf5.smart.artifact.v1` публикуется только как
-`storage_compatibility_alias`, а не как второй Smart-контракт.
+`inspect smart` одинаково описывает компоненты Framework, Docara и проекта:
+формат компонента — `sf.smart_artifact_abi` версии `1.0.0`. Поля
+`provider_adapter` и `template_abi` показывают, как именно поставщик подключил
+компонент. Старое имя формата `sf5.smart.artifact.v1` сохранено только как
+псевдоним (`storage_compatibility_alias`).
 
-## Границы записи
+## Что SDK может записать
 
-`scaffold` создаёт только новые файлы проекта в `smart/` или `design/`. Он не
-перезаписывает существующий идентификатор и не пишет в `src/`, `resources/`,
-`content/`, `assets/`, lock-файл, результат сборки или внешний репозиторий.
-Выход за каталог через `..`, символические и жёсткие ссылки, повтор
-пространства имён и устаревший план отклоняются.
+`scaffold` создаёт только новые файлы в `smart/` или `design/`. Он не
+перезаписывает существующий компонент и не пишет в `src/`, `resources/`,
+`content/`, `assets/`, файл закрепления, результат сборки или чужой
+репозиторий. Выход за папку через `..`, символические и жёсткие ссылки,
+повтор пространства имён и устаревший план отклоняются.
 
-Smart scaffold следует portable SIMAI Framework 5 Smart ABI v1. Design scaffold
-создаёт связанный docs-shell-compatible layout, layout View Tree, section,
-section View Tree и block. Результат сразу проходит registry validation и может
-быть выбран в JSON-настройках страницы. Их можно доработать только в пределах
-проверяемых JSON-схем.
+Заготовка компонента следует формату Smart-компонентов SIMAI Framework 5.
+Заготовка оформления создаёт связанные макет, его представление, секцию, её
+представление и блок. Всё созданное сразу проходит проверку и может быть
+выбрано в JSON-настройках страницы; дорабатывать файлы можно в пределах их
+схем.
 
-## Structured QA
-
-```bash
-docara qa smart ui.dropdown \
-  --page=/ru/project-demos/ --dry-run --json
-```
-
-Команда сначала публикует isolated production-path preview, затем создаёт
-hash-bound draft-план для desktop/mobile, light/dark и LTR/RTL. План явно
-фиксирует проверяемую поверхность и locator: сам Smart, выбранный region или
-весь layout. Browser runner остаётся необязательным development-инструментом и
-сначала записывает reference draft. Затем PHP-команда
-`docara qa --finalize-reference=<draft-plan-id>` проверяет все PNG и создаёт
-новый immutable finalized plan. Его `reference_id` охватывает полный manifest:
-target, страницу, artifact, упорядоченные scenario ID, screenshot paths и
-SHA-256 каждого изображения.
-
-Только finalized plan передаётся browser runner для сравнения и команде
-`docara qa --verify=<finalized-plan-id>`. Verification повторно вычисляет
-полную identity и manifest seal, проверяет реальные candidate/reference bytes
-и не доверяет одному полю `visual_diff_pixels=0`. Report принимается только
-при полном наборе screenshots и нулевых a11y, console, overflow и visual-diff
-дефектах. `init` и `verify-static` выполняются через PHP. Команда `build`
-дополнительно использует Node.js 20+ и точную поставку Framework для сборки
-Recipe. Подготовка описана в [быстром старте](/ru/start/quick-start/).
-
-Для `test layout` и `qa layout` указанный route обязан фактически выбирать
-этот layout. Несовпадение останавливается кодом
-`SDK_TEST_LAYOUT_CONTEXT_MISMATCH` или `QA_LAYOUT_CONTEXT_MISMATCH`: команда не
-подменяет проверяемый artifact похожей страницей.
-
-## Optional MCP
-
-Локальный stdio adapter запускается отдельно:
+## Визуальная проверка
 
 ```bash
-php tools/mcp-docara/server.php
+docara qa smart ui.dropdown --page=/ru/project-demos/ --dry-run --json
 ```
 
-Он публикует те же capabilities/doctor/list/inspect/schema/plan/validate/test/QA operations и
-не содержит собственной логики validation или rendering. По умолчанию apply
-запрещён. После ручного просмотра plan можно запустить локальный процесс с
-`--allow-writes`; root всё равно фиксируется текущим project directory, а apply
-принимает только точный `plan_id`. MCP не входит в normal static runtime и не
-добавляет Node либо daemon dependency.
+Команда строит отдельный предпросмотр и план снимков: широкий и узкий экран,
+светлая и тёмная тема, письмо слева направо и справа налево. План указывает,
+что именно снимается: сам компонент, область или весь макет.
+
+Дальше — три шага:
+
+1. Браузерный исполнитель (необязательный инструмент разработчика) снимает
+   черновик эталона.
+2. `docara qa --finalize-reference=<номер черновика>` проверяет снимки и
+   утверждает эталон: его номер охватывает страницу, сценарии, пути снимков и
+   отпечаток каждого изображения.
+3. Исполнитель снимает текущее состояние, а `docara qa --verify=<номер плана>`
+   сравнивает его с эталоном.
+
+Проверка пройдена, только если снимки есть для всех сценариев, а ошибок
+доступности, ошибок в консоли браузера, горизонтальной прокрутки и отличий от
+эталона нет. Отчёту на слово Docara не верит: отличия она пересчитывает по
+самим снимкам.
+
+Для `test layout` и `qa layout` страница в `--page` должна действительно
+использовать этот макет. Иначе команда остановится с кодом
+`SDK_TEST_LAYOUT_CONTEXT_MISMATCH` или `QA_LAYOUT_CONTEXT_MISMATCH`, а не
+подставит похожую страницу.
+
+## MCP для AI-агента
+
+Локальный сервер MCP запускается отдельно:
+
+```bash
+php vendor/simai/docara/tools/mcp-docara/server.php
+```
+
+Он даёт агенту те же операции: `capabilities`, `doctor`, `list`, `inspect`,
+`schema`, план, `validate`, `test` и `qa`. Своей логики проверки и вывода у
+него нет. По умолчанию сервер только читает. Чтобы агент мог применить план,
+просмотрите план сами и перезапустите сервер с ключом `--allow-writes`. Даже
+тогда запись ограничена папкой проекта и только точным `plan_id`. Сайту MCP не
+нужен: он работает только у разработчика.
 
 ## Когда нужна полная сборка
 
-Изменение существующей Markdown-страницы можно проверить сборкой одной
-страницы. Добавление, переименование или удаление страницы, правка общих
-настроек или `lang.json` и изменение общих реестров требуют полной сборки,
-чтобы вместе обновились меню, поиск, навигация и квитанции.
+Изменение существующей страницы можно проверить сборкой одной страницы.
+Добавление, переименование или удаление страницы, правка общих настроек,
+`lang.json` или реестров требуют полной сборки — чтобы вместе обновились
+меню, поиск и квитанции.

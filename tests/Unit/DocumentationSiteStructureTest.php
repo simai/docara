@@ -240,10 +240,10 @@ final class DocumentationSiteStructureTest extends TestCase
         $root = dirname(__DIR__, 2) . '/docs/site/content/ru';
         // The agent journey is a part of the SDK page.
         $journey = (string) file_get_contents($root . '/development/developer-sdk.md');
-        foreach (['Найдите возможность', 'Составьте план', 'preview', 'dry-run', 'hash-bound apply', 'DesignAtlasService', 'ScaffoldService', 'SDK_WRITE_PATH_UNSAFE', '--allow-writes'] as $marker) {
+        foreach (['Найдите, что уже есть', 'Составьте план', 'Примените план', 'preview', 'dry-run', 'plan_id', 'SDK_WRITE_PATH_UNSAFE', '--allow-writes'] as $marker) {
             self::assertStringContainsStringIgnoringCase($marker, $journey);
         }
-        foreach (['выход за каталог', 'символические и жёсткие ссылки', 'запись в файлы движка, lock, результаты сборки или'] as $negative) {
+        foreach (['выходит за папку проекта', 'символические и жёсткие ссылки', 'файлы самой Docara, файл закрепления, результат сборки'] as $negative) {
             self::assertStringContainsString($negative, $journey);
         }
         $demos = (string) file_get_contents($root . '/examples/extensions.md');

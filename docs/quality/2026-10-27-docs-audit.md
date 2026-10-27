@@ -134,3 +134,53 @@ page hygiene, not the standards above, so it does not show these gaps.
   of sufficiency is the auditor's.
 - The site was not tested by a docs-only trial yet; scores are an audit
   estimate, not a trial result.
+
+## 9. Follow-up (2026-10-27)
+
+What changed after the audit, on the local review branch. **Measured**
+facts come from scripts and builds; **judged** ones are the auditor's.
+
+| Gap | State | Evidence |
+| --- | --- | --- |
+| 1. Diagnostic codes without a page | closed | 1134 of 1134 documented (measured, `capture-diagnostic-code-coverage.php --check`); new pages: build, developer tools, Framework delivery, layout and extension, internal errors |
+| 2. Component pages below the standard | closed | all 27 pages use Пример, Разметка, Варианты, Состояния, Доступность, Параметры, См. также; parameter tables generated (`capture-component-parameters.php --check`, measured) |
+| 3. No learning path | closed | tutorials «Первый лендинг» and «Первый компонент проекта», each run on a fresh `init` project; the multilingual guide re-run end to end; GitHub Pages covered by «Сборка в CI» |
+| 4. No changelog, deprecations, support policy | partly | «Версии и изменения»: versioning, changelog location, deprecations, upgrade path; no support window — an owner decision |
+| 5. No accessibility guide, browser support | partly | «Доступность» guide; browser support: owner decided to wait for a SIMAI Framework policy (bus request `msg-da37d702bcd14844aaa3`) |
+| 6. Thin example pages | closed | they are developer stands: hidden from navigation and search, listed on «Примеры» in the development section (measured: `navigation.hidden`, `search.indexed: false`) |
+| 7. Jargon in development pages | partly | SDK, Smart components and testing pages rewritten in plain Russian; architecture and getting-started keep some terms |
+| 8. No English version | open | separate project |
+| 9. No CI recipes | closed | «Сборка в CI»: commands for any CI and a GitHub Actions workflow with Pages, commands run on a probe site (measured) |
+| 10. `qa report` ignores page standards | partly | a unit test now fails when a component page leaves the standard sections; the product check is not added |
+
+### Defects found while re-running the docs
+
+Each was reproduced on a fresh project before the fix.
+
+- The navigation guide promised unlimited menu depth; a fifth level stops the
+  build. The guide now states the limit, and the error names the page.
+- Following the multilingual guide stopped at the first build with
+  `MESSAGE_NOT_FOUND`: every locale needs its own `lang.json`. The guide now
+  says so.
+- An incomplete `lang.json` did not borrow required strings from its
+  `fallbacks`, though the reference promised it. Fixed in the build.
+- A hero `media=side` image from `/assets/` was never published (broken
+  link), also under a locale prefix. Fixed.
+- A misspelled project component name gave a bare internal message; it now
+  names the page line.
+- Untitled diagrams, math and html frames were labelled in English on Russian
+  pages; they now use the page language.
+- `:::steps {current=N}` announced nothing to screen readers; the named
+  current step is now `aria-current="step"`.
+- The Smart components page said `docara init` ships a component example; only
+  the showcase template does.
+- The surface page example showed raw `:::project…` text: project components
+  do not render inside an interactive example. The page shows it live instead.
+- `ratio=21/9` produced a class the Framework does not ship. Fixed with a
+  shell class.
+
+### Still open
+
+- English site (gap 8).
+- A docs-only trial with persona tasks (needs owner approval for its cost).
+- Support window and browser support (owner and SIMAI Framework decisions).

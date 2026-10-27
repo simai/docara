@@ -14,6 +14,7 @@
 | Версия SIMAI Framework | [Файл закрепления Framework](/ru/reference/framework-lock/) |
 | Форматы файлов и квитанции сборки | [Схемы JSON](/ru/reference/schemas/) |
 | Сообщения об ошибках | [Коды ошибок](/ru/reference/errors/) |
+| Версии и журнал изменений | [Версии и изменения](/ru/reference/versions/) |
 | Ограничения | [Безопасность](/ru/reference/security-and-errors/) |
 | Термины | [Словарь терминов](/ru/reference/glossary/) |
 

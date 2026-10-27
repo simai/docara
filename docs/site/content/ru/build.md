@@ -28,6 +28,7 @@ Preview блокирует терминал до `Ctrl+C`. Не использу
 - [Сборка сайта](/ru/build/php-only/) — команды, готовый каталог и воспроизводимость
 - [Локальный просмотр](/ru/build/local-preview/)
 - [Проверка сборки](/ru/build/verify/)
+- [Сборка в CI](/ru/build/ci/) — команды для любого CI и готовый процесс GitHub Actions с GitHub Pages
 - [Размещение на хостинге](/ru/build/hosting/)
 - [Публикация и откат](/ru/build/publish/)
 - [Сборка для портала](/ru/build/portal/)

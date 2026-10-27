@@ -74,6 +74,20 @@ final class PortableMarkdownRenderer
 
     public const INTERNAL_PREVIEW_DEFAULT_TITLE_MARKER = 'data-docara-preview-default-title';
 
+    /**
+     * A diagram, math block or html frame without its own title or label
+     * carries this marker with the English default; the site build swaps the
+     * default for the page language (UiCopy blocks.*).
+     */
+    public const DEFAULT_LABEL_MARKER = 'data-docara-default-label';
+
+    /** @var array<string, string> block => English default label */
+    public const DEFAULT_LABELS = [
+        'diagram' => 'Diagram',
+        'math' => 'Mathematical formula',
+        'html' => 'HTML example',
+    ];
+
     public function __construct(
         ?PortableMarkdownProfile $profile = null,
         ?TypedComponentDefinitionRepository $definitions = null,
@@ -568,6 +582,8 @@ final class PortableMarkdownRenderer
         $this->assertAttributes($attributes, 'steps');
         $view = $this->catalogueChoice($attributes['layout'] ?? 'timeline', 'steps', 'layout');
         $current = max(1, (int) ($attributes['current'] ?? '1'));
+        // Only a current step the author named is announced as such.
+        $announceCurrent = isset($attributes['current']);
         $root = $rendered->getDocument()->firstChild();
         if (! $root instanceof ListBlock
             || $root->getListData()->type !== ListBlock::TYPE_ORDERED
@@ -581,12 +597,12 @@ final class PortableMarkdownRenderer
         $content = (string) $rendered;
         if ($view === 'timeline') {
             $index = 0;
-            $content = preg_replace_callback('/<li>(?<content>.*?)<\/li>/su', static function (array $match) use (&$index, $current): string {
+            $content = preg_replace_callback('/<li>(?<content>.*?)<\/li>/su', static function (array $match) use (&$index, $current, $announceCurrent): string {
                 $index++;
                 $state = $index < $current ? 'complete' : ($index === $current ? 'current' : 'pending');
                 $marker = $index < $current ? '&#10003;' : (string) $index;
 
-                return '<li data-step-state="' . $state . '" class="docara-step grid items-cross-start gap-1 list-none">'
+                return '<li data-step-state="' . $state . '"' . ($announceCurrent && $state === 'current' ? ' aria-current="step"' : '') . ' class="docara-step grid items-cross-start gap-1 list-none">'
                     . '<span aria-hidden="true" class="docara-step-marker inline-flex items-cross-center content-main-center">'
                     . '<span class="docara-step-marker-text">' . $marker . '</span></span>'
                     . '<div class="docara-step-content">'
@@ -1896,13 +1912,14 @@ HTML;
     {
         $this->assertAttributes($attributes, 'diagram');
         $engine = $this->catalogueChoice($attributes['engine'] ?? 'mermaid', 'diagram', 'engine');
-        $title = trim($attributes['title'] ?? 'Diagram');
+        $defaultLabel = ! isset($attributes['title']);
+        $title = trim($attributes['title'] ?? self::DEFAULT_LABELS['diagram']);
         $source = trim($markdown);
         if ($source === '') {
             throw new PortableConfigurationException('MARKDOWN_DIAGRAM_SOURCE_REQUIRED', 'A diagram requires a declarative source.');
         }
 
-        return '<figure data-docara-block="diagram" data-engine="' . $engine . '" class="border border-outline-variant radius-2 overflow-hidden m-0 m-bottom-1">'
+        return '<figure data-docara-block="diagram"' . ($defaultLabel ? ' ' . self::DEFAULT_LABEL_MARKER . '="diagram"' : '') . ' data-engine="' . $engine . '" class="border border-outline-variant radius-2 overflow-hidden m-0 m-bottom-1">'
             . '<figcaption class="bg-surface-container p-x-2 p-y-1/3 bold">' . $this->escapeHtml($title) . '</figcaption>'
             . '<div class="mermaid p-2 overflow-auto" data-docara-diagram-source role="img" aria-label="'
             . $this->escapeHtml($title) . '">'
@@ -1914,14 +1931,15 @@ HTML;
     {
         $this->assertAttributes($attributes, 'math');
         $display = $this->catalogueChoice($attributes['display'] ?? 'block', 'math', 'display');
-        $label = trim($attributes['label'] ?? 'Mathematical formula');
+        $defaultLabel = ! isset($attributes['label']);
+        $label = trim($attributes['label'] ?? self::DEFAULT_LABELS['math']);
         $source = trim($markdown);
         if ($source === '') {
             throw new PortableConfigurationException('MARKDOWN_MATH_SOURCE_REQUIRED', 'A math block requires TeX source.');
         }
         $tag = $display === 'inline' ? 'span' : 'div';
 
-        return '<' . $tag . ' data-docara-block="math" data-display="' . $display . '" data-docara-math-source role="math" aria-label="'
+        return '<' . $tag . ' data-docara-block="math"' . ($defaultLabel ? ' ' . self::DEFAULT_LABEL_MARKER . '="math"' : '') . ' data-display="' . $display . '" data-docara-math-source role="math" aria-label="'
             . $this->escapeHtml($label) . '" class="mono ' . ($display === 'block' ? 'p-2 bg-surface-container radius-2 m-bottom-1 overflow-auto' : '')
             . '">' . $this->escapeHtml($source) . '</' . $tag . '>';
     }
@@ -1935,7 +1953,7 @@ HTML;
         $document = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'
             . $match['source'] . '</body></html>';
 
-        return '<iframe data-docara-block="html" title="HTML example" class="w-full border border-outline-variant radius-2 bg-surface-0 m-bottom-1" sandbox loading="lazy" data-docara-srcdoc="'
+        return '<iframe data-docara-block="html" ' . self::DEFAULT_LABEL_MARKER . '="html" title="' . self::DEFAULT_LABELS['html'] . '" class="w-full border border-outline-variant radius-2 bg-surface-0 m-bottom-1" sandbox loading="lazy" data-docara-srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
     }
 
@@ -2432,6 +2450,7 @@ HTML;
         }
 
         $backgroundUrl = '';
+        $sideImageUrl = '';
         if ($mediaMode === 'background' || $mediaMode === 'side') {
             try {
                 $resolved = $this->localPublicImageAsset(
@@ -2442,6 +2461,7 @@ HTML;
                     $mediaMode === 'background' ? 'Hero background image' : 'Hero side image',
                 );
                 $backgroundUrl = $mediaMode === 'background' ? $resolved : '';
+                $sideImageUrl = $mediaMode === 'side' ? $resolved : '';
             } catch (PortableConfigurationException $exception) {
                 throw $this->locatedHeroException(
                     $exception,
@@ -2465,7 +2485,7 @@ HTML;
         if ($imageCount === 1) {
             $content = preg_replace_callback(
                 '/<p><img(?<attributes>[^>]*)\s*\/?><\/p>/u',
-                static function (array $match) use (&$image, $mediaMode): string {
+                static function (array $match) use (&$image, $mediaMode, $sideImageUrl): string {
                     if ($mediaMode === 'background' || $mediaMode === 'none') {
                         return '';
                     }
@@ -2473,9 +2493,18 @@ HTML;
                     $decorative = preg_match('/\balt=""/u', $attributes) === 1
                         ? ' aria-hidden="true"'
                         : '';
+                    // A media=side image from the project's /assets/ is
+                    // published like a hero background: a page-relative URL
+                    // (right under a locale prefix or base_url) and the
+                    // receipt that copies the file into the build.
+                    $receipt = '';
+                    if ($sideImageUrl !== '') {
+                        $attributes = (string) preg_replace('/\bsrc="[^"]*"/u', 'src="' . $sideImageUrl . '"', $attributes, 1);
+                        $receipt = ' data-docara-publish-local-asset';
+                    }
                     $image = '<div class="min-w-0 flex items-cross-center content-main-center">'
                         . '<img data-docara-media="hero" loading="eager" fetchpriority="high" decoding="async"'
-                        . $decorative . $attributes . '>'
+                        . $decorative . $attributes . $receipt . '>'
                         . '</div>';
 
                     return '';

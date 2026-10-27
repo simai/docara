@@ -81,6 +81,13 @@ final readonly class SmartComponentGateway
         if ($depth > 8) {
             throw new PortableConfigurationException('PORTABLE_SMART_COMPOSITION_DEPTH_EXCEEDED', $call->smart);
         }
+        if (! in_array($this->smarts->canonicalKey($call->smart), $this->smarts->keys(), true)) {
+            // Usually a typo after ::: on the page; the build adds the source line.
+            throw new PortableConfigurationException(
+                'SMART_REGISTRY_COMPONENT_NOT_FOUND',
+                "Component [{$call->smart}] is not registered.",
+            );
+        }
         $definition = $this->smarts->definition($call->smart);
         $constraints = is_array($definition->provenance['consumer_constraints'] ?? null)
             ? $definition->provenance['consumer_constraints']

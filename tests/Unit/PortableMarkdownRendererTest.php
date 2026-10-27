@@ -830,6 +830,18 @@ MD);
     }
 
     #[Test]
+    public function a_named_current_step_is_announced_and_an_unnamed_one_is_not(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $named = $renderer->render(":::steps {current=2}\n1. A\n2. B\n3. C\n:::\n");
+        $plain = $renderer->render(":::steps\n1. A\n2. B\n:::\n");
+
+        self::assertSame(1, substr_count($named, 'aria-current="step"'));
+        self::assertStringContainsString('<li data-step-state="current" aria-current="step"', $named);
+        self::assertStringNotContainsString('aria-current', $plain);
+    }
+
+    #[Test]
     public function the_panorama_ratio_uses_the_shell_class_the_framework_does_not_ship(): void
     {
         $html = (new PortableMarkdownRenderer)->render(":::figure {ratio=21/9}\n![Панорама](a.webp)\n:::\n");

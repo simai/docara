@@ -196,6 +196,9 @@ Docara пишет эти строки при сборке на английск�
 | Ключ и где видно | English | Русский |
 | --- | --- | --- |
 | `examples.preview_title` — Подпись рамки с результатом примера | Example result | Результат примера |
+| `blocks.diagram` — Подпись схемы без своего `title` | Diagram | Схема |
+| `blocks.math` — Название формулы для программ экранного доступа, если нет своего `label` | Mathematical formula | Математическая формула |
+| `blocks.html` — Название рамки HTML-примера | HTML example | Пример HTML |
 | `examples.result_label` — Подпись результата в примере, созданном `docara scaffold` | Result | Результат |
 | `atlas.empty` — Текст пустого списка Design Atlas | The accepted Atlas has no entries for this filter. | В принятом Atlas нет элементов для этого фильтра. |
 | `atlas.owner` — Подпись владельца в Design Atlas | Owner | Владелец |

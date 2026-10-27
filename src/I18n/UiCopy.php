@@ -139,6 +139,9 @@ final readonly class UiCopy
     private const BUILD_DEFAULTS = [
         'en' => [
             'examples.preview_title' => 'Example result',
+            'blocks.diagram' => 'Diagram',
+            'blocks.math' => 'Mathematical formula',
+            'blocks.html' => 'HTML example',
             'examples.result_label' => 'Result',
             'atlas.empty' => 'The accepted Atlas has no entries for this filter.',
             'atlas.owner' => 'Owner',
@@ -173,6 +176,9 @@ final readonly class UiCopy
         ],
         'ru' => [
             'examples.preview_title' => 'Результат примера',
+            'blocks.diagram' => 'Схема',
+            'blocks.math' => 'Математическая формула',
+            'blocks.html' => 'Пример HTML',
             'examples.result_label' => 'Результат',
             'atlas.empty' => 'В принятом Atlas нет элементов для этого фильтра.',
             'atlas.owner' => 'Владелец',

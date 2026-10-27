@@ -18,6 +18,26 @@ All notable changes to Docara are recorded here. The format follows
   strings with a built-in default still use the locale's own text, then the
   default. A locale with no `lang.json` at all still stops the build
   instead of silently showing another language.
+- **A hero `media=side` image from the project's `assets/` reaches the
+  site.** The image kept its `/assets/…` address and was never copied into
+  the build, so the page linked to a missing file. It now gets a
+  page-relative address and is published like a hero background, also under
+  a locale prefix or a `base_url` subdirectory.
+- **Two build errors name the place to fix.** A fifth menu level names the
+  page that is too deep (`DECLARATIVE_NAVIGATION_DEPTH_EXCEEDED`), and a
+  misspelled project component name gives `SMART_REGISTRY_COMPONENT_NOT_FOUND`
+  with the page file and line instead of a bare internal message.
+
+### Changed
+
+- **Untitled diagrams, math and html frames are labelled in the page
+  language.** A diagram without `title`, a formula without `label` and the
+  html frame were called "Diagram", "Mathematical formula" and "HTML
+  example" on every page; a Russian page now says «Схема», «Математическая
+  формула» and «Пример HTML» (`blocks.*` build strings).
+- **A named current step is announced.** `:::steps {current=N}` marks the
+  current step with `aria-current="step"`, so screen readers say where the
+  reader is; without `current` nothing is announced.
 
 ### Documentation
 
@@ -29,7 +49,7 @@ All notable changes to Docara are recorded here. The format follows
   says so.
 - Every diagnostic code has a cause-and-fix entry (1134 of 1134), and the
   site gains a CI recipe, a versions page, an accessibility guide and a
-  first-landing tutorial.
+  first-landing tutorial and a first-project-component tutorial.
 
 ## [3.10.0] - 2026-10-26
 

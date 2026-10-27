@@ -122,9 +122,12 @@ final readonly class PageCompositionContext
     private function assertNavigation(array $nodes, int $depth = 1): void
     {
         if ($depth > 4) {
+            // Name the first page too deep, so the author knows what to move.
+            $first = $nodes[0] ?? [];
+            $page = is_string($first['url'] ?? null) ? $first['url'] : (string) ($first['key'] ?? '');
             throw new PortableConfigurationException(
                 'DECLARATIVE_NAVIGATION_DEPTH_EXCEEDED',
-                'Declarative navigation supports at most four levels.',
+                'Declarative navigation supports at most four levels; [' . $page . '] is on level ' . $depth . '.',
             );
         }
         foreach ($nodes as $node) {

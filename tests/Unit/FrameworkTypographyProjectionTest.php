@@ -419,8 +419,15 @@ final class FrameworkTypographyProjectionTest extends TestCase
             'icon.getAttribute("data-docara-icon-name")===current',
             $assets['simai.framework.icon_font.ready']['content'],
         );
+        // The Framework sf-icon rewrites its whole class list when it
+        // re-renders; class changes are watched and the recorded face class
+        // comes back without a second font load.
         self::assertStringContainsString(
-            'observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["icon"]})',
+            'observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["icon","class"]})',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
+        self::assertStringContainsString(
+            'if(icon.getAttribute("data-docara-icon-face")!==faceClass(icon)){family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon))}return}',
             $assets['simai.framework.icon_font.ready']['content'],
         );
         self::assertStringNotContainsString('@latest', $plan->headHtml());

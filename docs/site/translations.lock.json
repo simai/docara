@@ -1182,10 +1182,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/start/first-component.md",
-            "source_sha256": "521bf482c7bed0eadbc31eede2b3fa619dc34239799c8e38bf39231ba56d56f0",
+            "source_sha256": "c388b15bc51b00790f6febacca309aea504139eec68773aaaa0581bb5dba0558",
             "source_structure_sha256": "d5ab79bc10d8d721e335437f97fe842f71bd2da97161efa07948263479ccbcb3",
             "target_path": "content/en/start/first-component.md",
-            "target_sha256": "6da4edea7631a10985131ee153c4235ebb1a3def95de45d4bee28d9d10ebf32b",
+            "target_sha256": "2583c92aef53fca2f1d5a12c7cbe4c4c0b75adb0063297e27046d24ab645e777",
             "target_structure_sha256": "d5ab79bc10d8d721e335437f97fe842f71bd2da97161efa07948263479ccbcb3"
         },
         {

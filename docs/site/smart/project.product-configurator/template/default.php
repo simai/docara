@@ -11,7 +11,7 @@ $teamPrice = is_int($props['team_price'] ?? null) || is_float($props['team_price
 $businessPrice = is_int($props['business_price'] ?? null) || is_float($props['business_price'] ?? null) ? (float) $props['business_price'] : 8000.0;
 $currency = $escape($props['currency'] ?? '₽');
 ?>
-<section class="project-product-configurator flex flex-col gap-2 border border-outline-variant radius-2 p-2" data-project-product-configurator data-starter-price="<?= $price ?>" data-team-price="<?= $teamPrice ?>" data-business-price="<?= $businessPrice ?>" data-default-variant="Стартовый" data-currency="<?= $currency ?>" data-state="valid">
+<section class="project-product-configurator flex flex-col gap-2 border border-outline-variant radius-surface p-2" data-project-product-configurator data-starter-price="<?= $price ?>" data-team-price="<?= $teamPrice ?>" data-business-price="<?= $businessPrice ?>" data-default-variant="Стартовый" data-currency="<?= $currency ?>" data-state="valid">
     <h2 class="m-0 title-2"><?= $title ?></h2>
     <fieldset class="m-0 p-0 border-none flex flex-col gap-1"><legend class="weight-6">Вариант и возможности</legend><?= $childrenHtml ?></fieldset>
     <p class="m-0">Выбрано: <strong data-config-summary>Стартовый — без дополнительных возможностей</strong></p>

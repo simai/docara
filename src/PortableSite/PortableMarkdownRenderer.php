@@ -615,7 +615,7 @@ final class PortableMarkdownRenderer
 
         $sectionClass = $view === 'timeline'
             ? 'm-bottom-1'
-            : 'bg-surface-0 border border-outline-variant radius-2 p-3 m-bottom-1';
+            : 'bg-surface-0 border border-outline-variant radius-surface p-3 m-bottom-1';
 
         return '<section data-docara-block="steps" data-view="' . $view
             . '" class="' . $sectionClass . '">'
@@ -693,7 +693,7 @@ final class PortableMarkdownRenderer
         }
 
         return '<section data-docara-block="download" data-action="' . $action
-            . '" class="bg-surface-0 border border-outline-variant radius-2 p-2 flex flex-col md:flex-row md:items-cross-center content-main-between gap-2 m-bottom-1">'
+            . '" class="bg-surface-0 border border-outline-variant radius-surface p-2 flex flex-col md:flex-row md:items-cross-center content-main-between gap-2 m-bottom-1">'
             . '<div class="min-w-0 flex items-cross-start gap-1"><i class="sf-icon sf-icon-loaded color-primary" aria-hidden="true">description</i>'
             . '<div class="min-w-0 flex flex-col gap-1/3">'
             . ($name !== '' ? '<strong>' . $this->escapeHtml($name) . '</strong>' : '')
@@ -1300,7 +1300,7 @@ HTML;
         return '<div data-docara-block="embed" data-provider="' . $provider . '" data-consent="' . $consent
             . '"' . ($id !== '' ? ' id="' . $this->escapeHtml($id) . '"' : '')
             . ' class="' . $this->aspectRatioClass($ratio)
-            . ' overflow-hidden bg-surface-container radius-2 m-bottom-1">' . $content . '</div>';
+            . ' overflow-hidden bg-surface-container radius-surface m-bottom-1">' . $content . '</div>';
     }
 
     /** @param array<string,string> $attributes */
@@ -1340,7 +1340,7 @@ HTML;
             );
         }
 
-        return '<div data-docara-block="internal-preview" class="docara-example-preview bg-surface-0 border border-outline-variant radius-2 overflow-hidden"'
+        return '<div data-docara-block="internal-preview" class="docara-example-preview bg-surface-0 border border-outline-variant radius-surface overflow-hidden"'
             . ' data-preview-size="' . $size . '"><iframe src="' . $this->escapeHtml($url)
             . '" title="' . $this->escapeHtml($title) . '"'
             . ($defaultTitle ? ' ' . self::INTERNAL_PREVIEW_DEFAULT_TITLE_MARKER : '')
@@ -1619,7 +1619,7 @@ HTML;
 
         $imageClasses = 'w-full' . ($ratio === 'auto' ? '' : ' h-full') . ' object-' . $fit;
 
-        return '<figure data-docara-block="figure" data-fit="' . $fit . '" class="m-0 m-bottom-1 flex flex-col gap-1"><div class="overflow-hidden radius-2'
+        return '<figure data-docara-block="figure" data-fit="' . $fit . '" class="m-0 m-bottom-1 flex flex-col gap-1"><div class="overflow-hidden radius-surface'
             . $ratioClass . '"><img' . $match['image'] . ' class="' . $imageClasses . '" loading="lazy" decoding="async"></div>'
             . (isset($match['caption']) && trim($match['caption']) !== ''
                 ? '<figcaption class="color-on-surface-variant">' . $match['caption'] . '</figcaption>'
@@ -1711,7 +1711,7 @@ HTML;
         $content = preg_replace_callback(
             '/<p><img(?<attributes>[^>]*)\s*\/><\/p>/u',
             function (array $match) use (&$image, $ratio): string {
-                $image = '<div class="' . $this->aspectRatioClass($ratio) . ' overflow-hidden radius-2">'
+                $image = '<div class="' . $this->aspectRatioClass($ratio) . ' overflow-hidden radius-surface">'
                     . '<img' . rtrim((string) $match['attributes']) . ' loading="lazy" decoding="async"></div>';
 
                 return '';
@@ -1919,7 +1919,7 @@ HTML;
             throw new PortableConfigurationException('MARKDOWN_DIAGRAM_SOURCE_REQUIRED', 'A diagram requires a declarative source.');
         }
 
-        return '<figure data-docara-block="diagram"' . ($defaultLabel ? ' ' . self::DEFAULT_LABEL_MARKER . '="diagram"' : '') . ' data-engine="' . $engine . '" class="border border-outline-variant radius-2 overflow-hidden m-0 m-bottom-1">'
+        return '<figure data-docara-block="diagram"' . ($defaultLabel ? ' ' . self::DEFAULT_LABEL_MARKER . '="diagram"' : '') . ' data-engine="' . $engine . '" class="border border-outline-variant radius-surface overflow-hidden m-0 m-bottom-1">'
             . '<figcaption class="bg-surface-container p-x-2 p-y-1/3 bold">' . $this->escapeHtml($title) . '</figcaption>'
             . '<div class="mermaid p-2 overflow-auto" data-docara-diagram-source role="img" aria-label="'
             . $this->escapeHtml($title) . '">'
@@ -1940,7 +1940,7 @@ HTML;
         $tag = $display === 'inline' ? 'span' : 'div';
 
         return '<' . $tag . ' data-docara-block="math"' . ($defaultLabel ? ' ' . self::DEFAULT_LABEL_MARKER . '="math"' : '') . ' data-display="' . $display . '" data-docara-math-source role="math" aria-label="'
-            . $this->escapeHtml($label) . '" class="mono ' . ($display === 'block' ? 'p-2 bg-surface-container radius-2 m-bottom-1 overflow-auto' : '')
+            . $this->escapeHtml($label) . '" class="mono ' . ($display === 'block' ? 'p-2 bg-surface-container radius-surface m-bottom-1 overflow-auto' : '')
             . '">' . $this->escapeHtml($source) . '</' . $tag . '>';
     }
 
@@ -1953,7 +1953,7 @@ HTML;
         $document = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'
             . $match['source'] . '</body></html>';
 
-        return '<iframe data-docara-block="html" ' . self::DEFAULT_LABEL_MARKER . '="html" title="' . self::DEFAULT_LABELS['html'] . '" class="w-full border border-outline-variant radius-2 bg-surface-0 m-bottom-1" sandbox loading="lazy" data-docara-srcdoc="'
+        return '<iframe data-docara-block="html" ' . self::DEFAULT_LABEL_MARKER . '="html" title="' . self::DEFAULT_LABELS['html'] . '" class="w-full border border-outline-variant radius-surface bg-surface-0 m-bottom-1" sandbox loading="lazy" data-docara-srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
     }
 
@@ -2033,7 +2033,7 @@ HTML;
     {
         $classes = $variant === 'plain'
             ? 'flex flex-col gap-1 m-bottom-1'
-            : 'bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1 m-bottom-1';
+            : 'bg-surface-0 border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1';
 
         return '<section data-docara-block="card" data-docara-card-variant="' . $variant
             . '" class="' . $classes . '">';
@@ -2245,7 +2245,7 @@ HTML;
             function (array $match) use (&$index, $leadingTitles, $iconPlaceholders): string {
                 $hasTitle = $leadingTitles[$index++] ?? false;
 
-                return '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">'
+                return '<li class="bg-surface-0 border border-outline-variant radius-surface p-3 flex min-w-0 max-w-none flex-col gap-1">'
                     . $this->featureCardBody($match['body'], $hasTitle, $iconPlaceholders) . '</li>';
             },
             $content,
@@ -3281,7 +3281,7 @@ HTML;
                 $imageClasses = 'w-full' . ($ratio === 'auto' ? '' : ' h-full') . ' object-' . $fit;
 
                 return '<figure data-docara-native-image data-fit="' . $fit
-                    . '" class="m-0 m-bottom-1 overflow-hidden radius-2' . $ratioClass . '">'
+                    . '" class="m-0 m-bottom-1 overflow-hidden radius-surface' . $ratioClass . '">'
                     . '<img' . rtrim((string) $matches['image']) . ' class="' . $imageClasses
                     . '" loading="lazy" decoding="async"></figure>';
             },
@@ -3382,7 +3382,7 @@ HTML;
 
         return '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="' . $this->escapeHtml($language)
             . '" data-docara-code-wrap="' . ($wrap ? 'true' : 'false') . '"' . $blockAttributes
-            . ' class="source init sf-code-surface docara-code-block' . $blockClasses . ' min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">'
+            . ' class="source init sf-code-surface docara-code-block' . $blockClasses . ' min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-surface m-bottom-1">'
             . '<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center bg-surface-overlay">'
             . '<span class="flex sf-text-1/3 weight-5">' . $this->escapeHtml($label) . '</span>'
             . '<div data-docara-code-actions class="docara-code-actions flex items-cross-center gap-1/3">'

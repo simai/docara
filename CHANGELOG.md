@@ -8,6 +8,13 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **Every block has the same corner radius.** Cards, features, tables,
+  figures, media, example frames, diagrams, formulas and the starter's
+  project components used a fixed `radius-2` (12 px), while code blocks and
+  other Framework surfaces follow the shared `--sf-radius--surface` token
+  (8 px), so a code block and the card below it had different corners. They
+  now use the Framework `radius-surface` utility and the same token, so a
+  change of the Framework surface radius reaches every block.
 - **An incomplete `lang.json` borrows missing required strings from its
   fallback locale.** The multilingual guide and the `lang.json` reference promised
   that a locale's own `lang.json` may leave strings out and take them from

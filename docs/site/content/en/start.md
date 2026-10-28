@@ -21,6 +21,5 @@ browser.
 
 :::
 
-The rest of the documentation is in Russian for now: writing pages
-([«Написание страниц»](/ru/authoring/)), settings, building and publishing
-([«Сборка и публикация»](/ru/build/)) and the reference.
+Then go on to [Writing pages](/en/authoring/), and when the site is ready
+to publish, to [«Сборка и публикация»](/ru/build/) (in Russian).

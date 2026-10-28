@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Writing pages",
+  "description": "How to write Docara pages in Markdown, place them in the menu, run several languages and keep old addresses.",
+  "navigation": {
+    "order": 20
+  }
+}

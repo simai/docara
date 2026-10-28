@@ -101,8 +101,7 @@ The four folders are a documentation skeleton by page type: tutorial,
 how-to, reference and explanation. Each holds a short example page of its
 type: replace it with your own text. `docara.authoring.json` turns on page
 type checks, and `AGENTS.md` tells AI assistants the same standard. How it
-works is described in [«Профили страниц»](/ru/authoring/page-profiles/) (in
-Russian).
+works is described in [Page profiles](/en/authoring/page-profiles/).
 
 ## See also
 

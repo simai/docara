@@ -118,8 +118,10 @@ Server started on http://127.0.0.1:8000
   как проверить установку
 - [Файлы проекта](/ru/start/project-files/)
 - [Как устроены компоненты](/ru/start/component-model/)
+- [Урок: первый лендинг](/ru/start/first-landing/)
 - [Написание страниц](/ru/authoring/)
 - [Настройка сайта](/ru/settings/)
 - [Проверка сборки](/ru/build/verify/)
 - [Публикация и откат](/ru/build/publish/)
 - [Размещение на хостинге](/ru/build/hosting/)
+- [Сборка в CI](/ru/build/ci/)

@@ -45,6 +45,14 @@ All notable changes to Docara are recorded here. The format follows
 - **A named current step is announced.** `:::steps {current=N}` marks the
   current step with `aria-current="step"`, so screen readers say where the
   reader is; without `current` nothing is announced.
+- **Translations with localized links and code can be current.** The
+  translation structure check compared internal links with their locale
+  prefix and anchor, and code blocks with their text, so a page that linked
+  `/en/...` instead of `/ru/...` or translated a code comment was always
+  `structure_mismatch` on a prefixed multilingual site. Links are now
+  compared without the locale prefix and the anchor (an anchor-only link as
+  any anchor), and code blocks by count
+  and language.
 
 ### Documentation
 
@@ -54,13 +62,14 @@ All notable changes to Docara are recorded here. The format follows
 - The navigation guide said the menu had no depth limit; a fifth level stops
   the build with `DECLARATIVE_NAVIGATION_DEPTH_EXCEEDED`, and the guide now
   says so.
-- **The documentation site has an English version, starting with Get
-  started.** `/en/` holds the home page and the nine Get started pages
-  (what Docara is, the quick start, both tutorials, starters, project files,
-  how components work), each tutorial re-run on a fresh English starter.
-  Other sections link to their Russian pages until they are translated;
-  untranslated pages are not published in English (`missing_page_policy:
-  skip`).
+- **The documentation site has an English version.** `/en/` holds 26
+  pages so far: the home page, Get started (what Docara is, the quick start,
+  both tutorials, starters, project files, how components work), Writing
+  pages and Site settings. Each tutorial was re-run on a fresh English
+  starter. Other sections link to their Russian pages until they are
+  translated; untranslated pages are not published in English
+  (`missing_page_policy: skip`). Translation tracking is on, and every
+  translated page and interface string is accepted as current.
 - Every diagnostic code has a cause-and-fix entry (1134 of 1134), and the
   site gains a CI recipe, a versions page, an accessibility guide and a
   first-landing tutorial and a first-project-component tutorial.

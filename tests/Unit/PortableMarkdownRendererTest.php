@@ -663,7 +663,7 @@ MD;
         $html = (new PortableMarkdownRenderer)->render($markdown);
 
         self::assertStringContainsString(
-            '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1 m-bottom-1">',
+            '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-0 border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1">',
             $html,
         );
         self::assertStringContainsString(
@@ -679,7 +679,7 @@ MD;
             $html,
         );
         self::assertStringContainsString(
-            '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="php" data-docara-code-wrap="true" class="source init sf-code-surface docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">',
+            '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="php" data-docara-code-wrap="true" class="source init sf-code-surface docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-surface m-bottom-1">',
             $html,
         );
         self::assertStringContainsString('data-docara-code-fallback', $html);
@@ -772,7 +772,7 @@ MD;
         );
         self::assertSame(3, substr_count(
             $html,
-            '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
+            '<li class="bg-surface-0 border border-outline-variant radius-surface p-3 flex min-w-0 max-w-none flex-col gap-1">',
         ));
         self::assertStringContainsString(
             '<img data-docara-media="feature-icon" loading="lazy" decoding="async" src="/assets/markdown.png" alt="" />',
@@ -846,7 +846,7 @@ MD);
     {
         $html = (new PortableMarkdownRenderer)->render(":::figure {ratio=21/9}\n![Панорама](a.webp)\n:::\n");
 
-        self::assertStringContainsString('class="overflow-hidden radius-2 docara-aspect-21x9"', $html);
+        self::assertStringContainsString('class="overflow-hidden radius-surface docara-aspect-21x9"', $html);
         self::assertStringNotContainsString('aspect-21x9"', str_replace('docara-aspect-21x9', '', $html));
         self::assertStringContainsString('.docara-aspect-21x9{aspect-ratio:21/9}', (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css'));
     }

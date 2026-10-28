@@ -21,7 +21,7 @@
                 <a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 radius-default decoration-none" href="<?= $view->receiptUrl ?>"><?= $view->copy['receipt'] ?></a>
             </div>
         </header>
-        <section class="surface-0 border border-outline-variant radius-2 overflow-hidden" aria-labelledby="preview-pages-title">
+        <section class="surface-0 border border-outline-variant radius-surface overflow-hidden" aria-labelledby="preview-pages-title">
             <h2 id="preview-pages-title" class="m-0 p-2 border-bottom-1 border-outline-variant"><?= $view->copy['pages'] ?></h2>
             <div class="flex flex-col">
 <?php foreach ($view->items as $item) { ?>

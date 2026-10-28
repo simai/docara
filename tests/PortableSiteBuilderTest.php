@@ -747,9 +747,9 @@ MD);
             $shellCss,
         );
         self::assertStringNotContainsString('minmax(12rem,15rem)', $shellCss);
-        self::assertStringNotContainsString('docara-sidebar bg-surface-0 border radius-2', $index);
-        self::assertStringNotContainsString('docara-content bg-surface-0 border radius-2', $index);
-        self::assertStringNotContainsString('docara-outline-rail bg-surface-0 border radius-2', $guide);
+        self::assertStringNotContainsString('docara-sidebar bg-surface-0 border radius-surface', $index);
+        self::assertStringNotContainsString('docara-content bg-surface-0 border radius-surface', $index);
+        self::assertStringNotContainsString('docara-outline-rail bg-surface-0 border radius-surface', $guide);
         self::assertStringContainsString(
             '<div class="docara-sidebar-scroll sf-scrollbar">',
             $guide,
@@ -795,7 +795,7 @@ MD);
             $landing,
         );
         self::assertStringContainsString(
-            '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
+            '<li class="bg-surface-0 border border-outline-variant radius-surface p-3 flex min-w-0 max-w-none flex-col gap-1">',
             $landing,
         );
         self::assertStringNotContainsString('docara-feature-grid', $landing);
@@ -825,7 +825,7 @@ MD);
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:var(--sf-surface-0);', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}', $shellCss);
         self::assertStringContainsString(
-            '[data-docara-table-scroll]{border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-2,var(--sf-radius-default));background:var(--sf-surface-0)}',
+            '[data-docara-table-scroll]{border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius--surface);background:var(--sf-surface-0)}',
             $shellCss,
         );
         self::assertStringContainsString(

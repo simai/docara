@@ -37,7 +37,7 @@
 <body class="bg-surface <?= $view->containerClass ?>" data-docara-shell>
     <a class="docara-skip-link bg-surface-0 border radius-1 p-1" href="#docara-main"><?= $view->copy['shell.skip_to_content'] ?></a>
     <header class="docara-header sticky top-0 z-2 bg-surface-0 border-bottom-1 border-outline-variant" data-docara-region="header"<?php if ($view->portalHome !== null) { ?> data-portal-shell="header"<?php } ?>>
-        <div class="docara-header-row container w-full m-inline-auto flex items-cross-center content-main-between gap-2 p-1">
+        <div class="docara-header-row container w-full m-inline-auto flex items-cross-center content-main-between gap-2 p-y-1">
 <?php if ($view->portalHome !== null) { ?>
             <a class="docara-portal-home" href="<?= $view->portalHome['url'] ?>" data-docara-portal-home><?= $view->portalHome['label'] ?></a>
 <?php } ?>

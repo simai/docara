@@ -49,6 +49,12 @@ final class TranslationStatusService
             $excluded[$entry['kind'] . "\0" . $entry['key'] . "\0" . $entry['locale']] = $entry;
         }
 
+        $prefixes = [];
+        foreach ($registry->all() as $definition) {
+            if ($definition->publicPrefix !== '') {
+                $prefixes[] = preg_quote(trim($definition->publicPrefix, '/'), '#');
+            }
+        }
         $pages = [];
         $parser = new FrontMatterParser;
         $locator = new PageSourceLocator($root, $registry);
@@ -61,7 +67,7 @@ final class TranslationStatusService
                 }
                 $relative = substr($source->path, strlen(rtrim($definition->contentRoot, '/') . '/'));
                 $key = (string) ($document->metadata['translation_key'] ?? $relative);
-                $pages[$localeCode][$key][] = $this->sourceRecord($source->path, $contents);
+                $pages[$localeCode][$key][] = $this->sourceRecord($source->path, $contents, $prefixes);
             }
         }
 
@@ -422,14 +428,15 @@ final class TranslationStatusService
     }
 
     /** @return array<string,mixed> */
-    private function sourceRecord(string $path, string $contents): array
+    /** @param list<string> $prefixes */
+    private function sourceRecord(string $path, string $contents, array $prefixes): array
     {
         $normalized = $this->normalizeForHash($contents);
 
         return [
             'path' => $path,
             'sha256' => hash('sha256', $normalized),
-            'structure_sha256' => hash('sha256', CanonicalJson::encode($this->structure($normalized))),
+            'structure_sha256' => hash('sha256', CanonicalJson::encode($this->structure($normalized, $prefixes))),
         ];
     }
 
@@ -566,8 +573,16 @@ final class TranslationStatusService
         return $report;
     }
 
-    /** @return array<string,mixed> */
-    private function structure(string $markdown): array
+    /**
+     * Shape of a page that a translation must keep. Code blocks count by
+     * language only, so translated comments and sample text are allowed, and
+     * internal links drop the locale prefix and the fragment, which follow
+     * the translated page.
+     *
+     * @param  list<string>  $prefixes
+     * @return array<string,mixed>
+     */
+    private function structure(string $markdown, array $prefixes): array
     {
         preg_match_all('/^(#{1,6})\h+/m', $markdown, $headings);
         preg_match_all('/^:::(?<name>[a-z][a-z0-9_.-]*)(?:\h+\{(?<attrs>[^}]*)})?/m', $markdown, $directives, PREG_SET_ORDER);
@@ -582,12 +597,29 @@ final class TranslationStatusService
         return [
             'headings' => array_map('strlen', $headings[1] ?? []),
             'directives' => $directiveRecords,
-            'code' => array_map(static fn (array $match): array => [strtolower($match['lang']), $match['code']], $code),
-            'links' => $links['url'] ?? [],
+            'code' => array_map(static fn (array $match): string => strtolower($match['lang']), $code),
+            'links' => array_map(static fn (string $url): string => self::comparableLink($url, $prefixes), $links['url'] ?? []),
             'tables' => preg_match_all('/^\|.*\|\h*$/m', $markdown),
             'unordered_lists' => preg_match_all('/^\h*[-+*]\h+/m', $markdown),
             'ordered_lists' => preg_match_all('/^\h*\d+[.)]\h+/m', $markdown),
         ];
+    }
+
+    /** @param list<string> $prefixes */
+    private static function comparableLink(string $url, array $prefixes): string
+    {
+        if (str_starts_with($url, '#')) {
+            return '#';
+        }
+        if (! str_starts_with($url, '/') || str_starts_with($url, '//')) {
+            return $url;
+        }
+        $url = explode('#', $url, 2)[0];
+        if ($prefixes !== []) {
+            $url = preg_replace('#^/(?:' . implode('|', $prefixes) . ')(?=/|$)#', '', $url) ?? $url;
+        }
+
+        return $url === '' ? '/' : $url;
     }
 
     private function normalize(string $contents): string

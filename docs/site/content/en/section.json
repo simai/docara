@@ -1,0 +1,29 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Docara documentation",
+  "preset": "docs",
+  "layout": {
+    "container": {
+      "max": 7
+    }
+  },
+  "header_navigation": {
+    "enabled": true,
+    "repository": "https://github.com/simai/docara",
+    "items": [
+      {
+        "id": "home",
+        "label": "Home",
+        "href": "/en/"
+      },
+      {
+        "id": "guide",
+        "label": "Get started",
+        "href": "/en/start/",
+        "sections": [
+          "/en/start/"
+        ]
+      }
+    ]
+  }
+}

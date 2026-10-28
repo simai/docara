@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Quick start",
+  "description": "Create and build your first Docara site with PHP, Composer and Node.js: four steps to a page open over HTTP.",
+  "navigation": {
+    "order": 20
+  }
+}

@@ -54,6 +54,23 @@ final class TranslationStatusServiceTest extends TestCase
     }
 
     #[Test]
+    public function localized_links_and_translated_code_keep_the_structure(): void
+    {
+        $this->project();
+        $fence = str_repeat('`', 3);
+        file_put_contents($this->tmpPath('content/ru/index.md'), "---\ntranslation_key: guide.start\n---\n# Начало\n\n[Шаги](/ru/start/#шаги), [Gitflic](https://gitflic.ru/), [компоненты](/ru/components/), [ниже](#шаги)\n\n{$fence}bash\n# создать проект\ndocara init .\n{$fence}\n");
+        file_put_contents($this->tmpPath('content/en/index.md'), "---\ntranslation_key: guide.start\n---\n# Start\n\n[Steps](/en/start/#steps), [Gitflic](https://gitflic.ru/), [components](/ru/components/), [below](#steps)\n\n{$fence}bash\n# create the project\ndocara init .\n{$fence}\n");
+        $service = new TranslationStatusService;
+        self::assertSame('unverified', $this->item($service->report($this->tmp, 'en'), 'page', 'guide.start')['status']);
+
+        file_put_contents($this->tmpPath('content/en/index.md'), str_replace('/en/start/', '/en/install/', (string) file_get_contents($this->tmpPath('content/en/index.md'))));
+        self::assertSame('structure_mismatch', $this->item($service->report($this->tmp, 'en'), 'page', 'guide.start')['status']);
+
+        file_put_contents($this->tmpPath('content/en/index.md'), str_replace(['/en/install/', "{$fence}bash"], ['/en/start/', "{$fence}sh"], (string) file_get_contents($this->tmpPath('content/en/index.md'))));
+        self::assertSame('structure_mismatch', $this->item($service->report($this->tmp, 'en'), 'page', 'guide.start')['status']);
+    }
+
+    #[Test]
     public function stale_plans_and_ambiguous_keys_fail_closed(): void
     {
         $this->project();

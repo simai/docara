@@ -8,6 +8,14 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **The page edges follow the Framework container.** The header row, the
+  documentation layout, the landing content and the footer are all SIMAI
+  Framework containers, but the shell pinned their side padding to one space
+  step (16 px) at every width, so on a wide screen the text almost touched
+  the window edge. They now take the Framework container steps, and the
+  logo, the sidebar, the content and the footer start on the same line at
+  every width: measured 12 px at 375 px, 32 px at 1000 px and 48 px at
+  1280 px and wider.
 - **Every block has the same corner radius.** Cards, features, tables,
   figures, media, example frames, diagrams, formulas and the starter's
   project components used a fixed `radius-2` (12 px), while code blocks and

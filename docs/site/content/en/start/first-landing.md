@@ -69,7 +69,7 @@ where you work.
 :::
 ```
 
-Inside the first screen go one `#` heading, a description and a link that
+Inside the [first screen](/ru/components/hero/) (in Russian) go one `#` heading, a description and a link that
 becomes a button. `layout=centered` centres everything, `padding=2xl` makes
 the screen tall.
 
@@ -139,5 +139,5 @@ Russian).
 - Add a picture to the first screen with `layout=split` — see the
   [first screen page](/ru/components/hero/) (in Russian).
 - See more blocks on [«Блоки лендинга»](/ru/components/landing-blocks/) (in Russian).
-- Make a landing page the home page — the [home page of this site](/en/) is
-  built that way.
+- Make a landing page the home page — the [home page of this documentation](/ru/landing/)
+  (in Russian) is built that way.

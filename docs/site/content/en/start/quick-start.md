@@ -92,8 +92,8 @@ the Framework lock file, run a full `php vendor/bin/docara build production`.
 
 The starter sets `default_locale`, an explicit `locales` registry,
 `locale_routing` without a language prefix and a `redirects_file`. Adding a
-second language is described in [«Мультиязычный сайт»](/ru/authoring/multilingual-site/)
-(in Russian). For another documentation version, create a separate site
+second language is described in [Multilingual site](/en/authoring/multilingual-site/).
+For another documentation version, create a separate site
 variant and output folder rather than mixing pages in one build.
 
 ## What to keep in Git
@@ -120,6 +120,9 @@ for `verify-static`; the `/build_*/` rule excludes it too.
 - [Project files](/en/start/project-files/)
 - [How components work](/en/start/component-model/)
 - [Tutorial: a first landing page](/en/start/first-landing/)
-- In Russian: [writing pages](/ru/authoring/), [site settings](/ru/settings/),
-  [checking the build](/ru/build/verify/), [publishing and rollback](/ru/build/publish/),
-  [hosting](/ru/build/hosting/), [CI](/ru/build/ci/)
+- [Writing pages](/en/authoring/)
+- [Site settings](/en/settings/)
+- [Checking the build](/ru/build/verify/) (in Russian)
+- [Publishing and rollback](/ru/build/publish/) (in Russian)
+- [Hosting](/ru/build/hosting/) (in Russian)
+- [Building in CI](/ru/build/ci/) (in Russian)

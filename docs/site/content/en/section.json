@@ -18,10 +18,12 @@
       },
       {
         "id": "guide",
-        "label": "Get started",
+        "label": "Guide",
         "href": "/en/start/",
         "sections": [
-          "/en/start/"
+          "/en/start/",
+          "/en/authoring/",
+          "/en/settings/"
         ]
       }
     ]

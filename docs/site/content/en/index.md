@@ -47,12 +47,12 @@ Docara builds the menu, search and a comfortable reading view itself — no
 theme or plugins of your own.
 
 :::features
-- :icon[account_tree]{size=2 container=square variant=tonal scheme=primary} **Menu and navigation.** Sections, breadcrumbs, the page outline and links to neighbouring pages come from the file structure.
+- :icon[account_tree]{size=2 container=square variant=tonal scheme=primary} **Menu and navigation.** Sections, breadcrumbs, the page outline and links to neighbouring pages come from the file structure. More in [Menu and sections](/en/authoring/navigation/).
 - :icon[search]{size=2 container=square variant=tonal scheme=primary} **Site search.** The index is built at build time and runs in the reader's browser: the server needs no database and no external service.
 - :icon[tune]{size=2 container=square variant=tonal scheme=primary} **Comfortable reading.** Readers choose a light or dark theme, the font size and the text width.
-- :icon[translate]{size=2 container=square variant=tonal scheme=primary} **Several languages.** Each language is its own Markdown folder. Linked pages get a language switcher and `hreflang` — like this English version of the site.
-- :icon[web]{size=2 container=square variant=tonal scheme=primary} **A landing page from the same files.** This page is Docara too: the `landing` preset drops the documentation menu and keeps the first screen, the blocks and the call to action. The [first landing tutorial](/en/start/first-landing/) builds one.
-- :icon[verified]{size=2 container=square variant=tonal scheme=primary} **Checked before publishing.** `verify-static` checks the finished site before it goes live: pages, local links, files and the search index.
+- :icon[translate]{size=2 container=square variant=tonal scheme=primary} **Several languages.** Each language is its own Markdown folder. Linked pages get a language switcher and `hreflang`; more in [Multilingual site](/en/authoring/multilingual-site/).
+- :icon[web]{size=2 container=square variant=tonal scheme=primary} **A landing page from the same files.** This page is Docara too: the `landing` preset drops the documentation menu and keeps the first screen, the blocks and the call to action. How it is built is described [on a separate page](/ru/landing/) (in Russian).
+- :icon[verified]{size=2 container=square variant=tonal scheme=primary} **Checked before publishing.** `verify-static` checks the finished site before it goes live: pages, local links, files and the search index. More in [«Проверка статического результата»](/ru/build/verify/) (in Russian).
 :::
 
 ## Example pages
@@ -95,8 +95,8 @@ drops the documentation menu. This page is built that way.
 ### Can I add my own component?
 
 Yes. Try plain Markdown and the ready Docara blocks first. If they are not
-enough, add a component of your own — the
-[first project component tutorial](/en/start/first-component/) shows how.
+enough, add a component of your own through the
+[documented contract](/ru/development/#как-развивать-возможности) (in Russian).
 :::
 
 :::details {layout=lines}

@@ -15,14 +15,14 @@ Russian) explains the build stages.
 
 | Task | Use | Where to look |
 | --- | --- | --- |
-| A heading, paragraph, link, image, list, quote, code or table | Plain Markdown | [Markdown](/ru/authoring/markdown/) |
+| A heading, paragraph, link, image, list, quote, code or table | Plain Markdown | [Markdown](/en/authoring/markdown/) |
 | A short label, link button, icon or key inside a line | An inline Docara component | [Component catalogue](/ru/components/) |
 | A self-contained fragment with its own meaning | A Docara block | [Component catalogue](/ru/components/) |
 | Several nested blocks with constraints | A Docara container | [Surface](/ru/components/surface/) and [Grid](/ru/components/grid/) |
 | A ready, checked interface element from SIMAI Framework | A Framework Smart component | [Framework components](/ru/development/smart-components/#новый-компонент-simai-framework) |
-| A component of one project | A project Smart component or a shell contribution | [First project component](/en/start/first-component/) |
+| A component of one project | A project Smart component or a shell contribution | [Developer SDK](/ru/development/developer-sdk/) |
 
-The linked pages, except the tutorial, are in Russian.
+The linked pages, except Markdown, are in Russian.
 
 ## Plain Markdown
 
@@ -31,7 +31,7 @@ images, lists, quotes, inline code and code blocks, tables and footnotes.
 Raw HTML on a page is not allowed: the build stops with
 `MARKDOWN_RAW_HTML_FORBIDDEN`. Every supported construction is listed in the
 [component catalogue](/ru/components/) and described in the
-[Markdown guide](/ru/authoring/markdown/).
+[Markdown guide](/en/authoring/markdown/).
 
 ## Inline Docara components
 
@@ -115,7 +115,8 @@ path. A dry run (`dry-run`) records the changes and the hashes of the input
 files; the plan is applied only if the plan and the files have not changed
 since.
 
-The practical path is the [first project component tutorial](/en/start/first-component/).
+The practical path is [inspect → scaffold → validate → preview → test](/ru/development/developer-sdk/)
+(in Russian).
 
 ## One name, one meaning
 
@@ -155,7 +156,7 @@ the next minor version.
 | [Hero](/ru/components/hero/) | `variant` | `layout` |
 | [Download](/ru/components/download/) | `name`, `size` | `title`, `file_size` |
 | [Embed](/ru/components/embed/) | `title` | `label` |
-| [Attributed quote](/ru/authoring/markdown/) | `url` | `href` |
+| [Attributed quote](/en/authoring/markdown/) | `url` | `href` |
 | Image, [figure](/ru/components/figure/), [media](/ru/components/media/), embed | `ratio=16x9` | `ratio=16/9` |
 | [Logos](/ru/components/logos/) | `tone=normal` | `tone=default` |
 

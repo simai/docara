@@ -8,6 +8,12 @@
     "namespace": "project"
   },
   "default_locale": "ru",
+  "translation_tracking": {
+    "enabled": true,
+    "source_locale": "ru",
+    "mode": "report",
+    "lock_file": "translations.lock.json"
+  },
   "locales": {
     "missing_page_policy": "skip",
     "ru": {

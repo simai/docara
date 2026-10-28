@@ -85,5 +85,4 @@ the project: updating Docara does not change them.
   text can sit next to the Markdown. Brand file paths are set in
   `docara.json` and checked before the previous build is cleared.
 
-Next: [site, section and page settings and their inheritance](/ru/settings/levels-and-inheritance/)
-(in Russian).
+Next: [site, section and page settings and their inheritance](/en/settings/levels-and-inheritance/).

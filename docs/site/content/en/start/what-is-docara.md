@@ -23,7 +23,7 @@ two ready views — documentation (`docs`) and landing (`landing`).
 - You need a site built entirely from files in the repository and published
   as a static folder — no database and no server code.
 - Strict checking matters: an unknown setting or a wrong component parameter
-  stops the build, and `verify-static` finds broken links, missing anchors and
+  stops the build, and [`verify-static`](/ru/build/verify/) (in Russian) finds broken links, missing anchors and
   missing files in the finished folder before publishing.
 - The site has several languages, including right-to-left scripts: each
   language gets its own page tree, interface labels and address.
@@ -43,7 +43,7 @@ two ready views — documentation (`docs`) and landing (`landing`).
   without typo correction or stemming. Synonyms are set with page tags.
 - **A bounded set of components.** The components in the
   [catalogue](/ru/components/) (in Russian) are available; a developer adds a
-  new one along a [checked path](/en/start/first-component/).
+  new one along a [checked path](/ru/development/smart-components/) (in Russian).
 - **The Docara documentation is mostly in Russian.** This English version
   covers getting started; the other sections follow. The `minimal` starter
   creates a site in English or Russian, `showcase` only in Russian.

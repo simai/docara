@@ -54,6 +54,13 @@ All notable changes to Docara are recorded here. The format follows
 - The navigation guide said the menu had no depth limit; a fifth level stops
   the build with `DECLARATIVE_NAVIGATION_DEPTH_EXCEEDED`, and the guide now
   says so.
+- **The documentation site has an English version, starting with Get
+  started.** `/en/` holds the home page and the nine Get started pages
+  (what Docara is, the quick start, both tutorials, starters, project files,
+  how components work), each tutorial re-run on a fresh English starter.
+  Other sections link to their Russian pages until they are translated;
+  untranslated pages are not published in English (`missing_page_policy:
+  skip`).
 - Every diagnostic code has a cause-and-fix entry (1134 of 1134), and the
   site gains a CI recipe, a versions page, an accessibility guide and a
   first-landing tutorial and a first-project-component tutorial.

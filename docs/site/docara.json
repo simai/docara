@@ -16,6 +16,13 @@
       "content_root": "content/ru",
       "public_prefix": "ru",
       "fallbacks": []
+    },
+    "en": {
+      "label": "English",
+      "direction": "ltr",
+      "content_root": "content/en",
+      "public_prefix": "en",
+      "fallbacks": []
     }
   },
   "locale_routing": {

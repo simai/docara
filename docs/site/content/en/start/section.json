@@ -1,0 +1,7 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Get started",
+  "layout": {
+    "container": {"max": 7}
+  }
+}

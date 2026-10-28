@@ -1,0 +1,19 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Docara",
+  "description": "Docara builds a static documentation site from Markdown and JSON: installed with Composer, runs on PHP and SIMAI Framework, published on any host.",
+  "preset": "landing",
+  "layout": {
+    "container": {
+      "max": 7
+    }
+  },
+  "navigation": {
+    "hidden": true,
+    "order": 0
+  },
+  "search": {
+    "enabled": true,
+    "indexed": true
+  }
+}

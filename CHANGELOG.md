@@ -23,6 +23,13 @@ All notable changes to Docara are recorded here. The format follows
   the build, so the page linked to a missing file. It now gets a
   page-relative address and is published like a hero background, also under
   a locale prefix or a `base_url` subdirectory.
+- **Icons inside Framework components keep their full font.** An icon whose
+  name needs the full icon font (`edit_square`, `more_horiz`, `archive`)
+  showed broken letters such as "SqUARE" when it sat inside a component that
+  re-renders, like the package components on ui.simai.io (simai/docara#35):
+  the Framework `sf-icon` rewrites its whole class list and dropped the face
+  class Docara had chosen. The icon runtime now also watches class changes
+  and puts the recorded face class back without loading the font again.
 - **Two build errors name the place to fix.** A fifth menu level names the
   page that is too deep (`DECLARATIVE_NAVIGATION_DEPTH_EXCEEDED`), and a
   misspelled project component name gives `SMART_REGISTRY_COMPONENT_NOT_FOUND`

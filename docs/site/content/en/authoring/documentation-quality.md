@@ -212,4 +212,4 @@ tools.
 - [Documentation freshness](/en/authoring/documentation-tracking/) — the source for the freshness group
 - [«Ошибки качества документации»](/ru/reference/errors/quality/) (in Russian) — all check codes
 - [CLI commands](/ru/reference/cli/#qa) (in Russian) — the options of `qa report` and `qa review-packet`
-- [«Проверка сборки»](/ru/build/verify/) (in Russian)
+- [Checking the build](/en/build/verify/)

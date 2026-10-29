@@ -123,10 +123,12 @@ All notable changes to Docara are recorded here. The format follows
 - The navigation guide said the menu had no depth limit; a fifth level stops
   the build with `DECLARATIVE_NAVIGATION_DEPTH_EXCEEDED`, and the guide now
   says so.
-- **The documentation site has an English version.** `/en/` holds 26
+- **The documentation site has an English version.** `/en/` holds 35
   pages so far: the home page, Get started (what Docara is, the quick start,
   both tutorials, starters, project files, how components work), Writing
-  pages and Site settings. Each tutorial was re-run on a fresh English
+  pages, Site settings and Building and publishing (building the site, local
+  preview, checking the build, CI, hosting, publishing and rolling back,
+  building for a portal, updating Docara). Each tutorial was re-run on a fresh English
   starter. Other sections link to their Russian pages until they are
   translated; untranslated pages are not published in English
   (`missing_page_policy: skip`). Translation tracking is on, and every

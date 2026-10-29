@@ -58,7 +58,7 @@ php vendor/bin/docara doctor --json
 Docara updates with one command, `php vendor/bin/docara upgrade`, and goes
 back to the previous checked version with
 `php vendor/bin/docara upgrade --rollback=latest`. How it works and what it
-checks is described in [«Обновление Docara»](/ru/build/update/) (in Russian).
+checks is described in [Updating Docara](/en/build/update/).
 
 ## Which files the starter creates
 

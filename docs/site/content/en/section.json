@@ -23,7 +23,8 @@
         "sections": [
           "/en/start/",
           "/en/authoring/",
-          "/en/settings/"
+          "/en/settings/",
+          "/en/build/"
         ]
       }
     ]

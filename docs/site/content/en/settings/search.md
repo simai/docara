@@ -118,7 +118,7 @@ with the `data-docara-search-open` attribute; by it `_docara/search.js` opens
 the dialog, like the "Search" button. Search does not work without
 JavaScript, so the link leads to the home page. If search is off on the page
 (`search.enabled: false`), it is an ordinary link to the home page. The
-built-in [404 page](/ru/build/hosting/#страница-404) (in Russian) has the same
+built-in [404 page](/en/build/hosting/#the-404-page) has the same
 link.
 
 Search normalizes case, Unicode and the Russian `е/ё`. Results are ranked by

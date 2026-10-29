@@ -84,6 +84,13 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-prose>p>img:only-child,.docara-prose>p>a:only-child>img:only-child{display:block;block-size:auto}
 .docara-prose figure>img,.docara-prose picture>img{display:block}
 .docara-prose figure,.docara-prose picture{max-inline-size:100%}
+/* A checklist item keeps the Framework list inset but trades its bullet for the box, which sits where the bullet was. The box is disabled: the list records a state, it does not collect an answer. */
+.docara-prose li:has(>input[type="checkbox"]){list-style:none}
+.docara-prose li>input[type="checkbox"]{inline-size:var(--sf-text--size-1);block-size:var(--sf-text--size-1);margin-inline-start:calc(var(--sf-text--size-2) * -1);margin-inline-end:var(--sf-space-1\/3);accent-color:var(--sf-primary)}
+/* A term and its definition: the Framework reset leaves dl, dd without margins, so the spacing comes from the space steps and the term carries the weight. */
+.docara-prose dt{font-weight:var(--sf-weight--medium)}
+.docara-prose dd{margin-inline-start:var(--sf-space-2)}
+.docara-prose dl>dt:not(:first-child){margin-block-start:var(--sf-space-1)}
 [data-docara-table-scroll]{border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius--surface);background:var(--sf-surface-0)}
 [data-docara-table-scroll]>.table{inline-size:100%;margin:0;border:0;border-radius:0;border-collapse:separate;border-spacing:0}
 [data-docara-table-scroll]>.table>thead{background:var(--sf-surface-container)}

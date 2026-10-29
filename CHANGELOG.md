@@ -8,6 +8,19 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **A checklist, a term with its definition and a marked word are plain
+  Markdown now.** A page that listed steps to tick off, explained its terms or
+  wanted to point at one word in a sentence had to reach for a component or
+  write the markup by hand. `- [x]` and `- [ ]` make a checklist, a term with
+  the next line starting `: ` makes a definition list, and `==words==` marks
+  text the way a marker pen would. The boxes on a built page do not click: a
+  checklist records a state, it does not collect an answer. The three are
+  profile capabilities, not components: `native.task_list`,
+  `native.description_list` and the `mark_text` job of
+  `native.headings_and_text`. A features item that opens with `[ ]` is a
+  checklist item now, so an empty link in that one place is refused with
+  `MARKDOWN_FEATURES_ITEM_CONTENT_INVALID` instead of
+  `MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED`.
 - **A diagram can carry its own text alternative.** A screen reader meets a
   diagram as one image whose name was the caption, so a diagram without a
   `title` announced itself as "Схема" and one with a title said only what the

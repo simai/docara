@@ -8,10 +8,13 @@ use JsonException;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
+use League\CommonMark\Extension\DescriptionList\DescriptionListExtension;
 use League\CommonMark\Extension\Footnote\FootnoteExtension;
+use League\CommonMark\Extension\Highlight\HighlightExtension;
 use League\CommonMark\Extension\SmartPunct\SmartPunctExtension;
 use League\CommonMark\Extension\Strikethrough\StrikethroughExtension;
 use League\CommonMark\Extension\Table\TableExtension;
+use League\CommonMark\Extension\TaskList\TaskListExtension;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
 
@@ -20,11 +23,13 @@ final readonly class PortableMarkdownProfile
     /** @var array<string, string> */
     private const CAPABILITY_FILES = [
         'native.code' => 'native.code.json',
+        'native.description_list' => 'native.description_list.json',
         'native.footnotes_and_sources' => 'native.footnotes_and_sources.json',
         'native.headings_and_text' => 'native.headings_and_text.json',
         'native.links_and_images' => 'native.links_and_images.json',
         'native.lists_and_quotes' => 'native.lists_and_quotes.json',
         'native.table' => 'native.table.json',
+        'native.task_list' => 'native.task_list.json',
     ];
 
     public function __construct(
@@ -49,6 +54,12 @@ final readonly class PortableMarkdownProfile
         $environment->addExtension(new StrikethroughExtension);
         $environment->addExtension(new TableExtension);
         $environment->addExtension(new FootnoteExtension);
+        // A checklist, a term with its definition and ==marked== words are
+        // plain Markdown, so they need no component: the profile reads them
+        // and the shell styles the dl, the checkbox and the mark.
+        $environment->addExtension(new TaskListExtension);
+        $environment->addExtension(new DescriptionListExtension);
+        $environment->addExtension(new HighlightExtension);
         // Keeps a fence's {…} options for the code presenter.
         $environment->addRenderer(FencedCode::class, new PortableFencedCodeRenderer, 10);
 

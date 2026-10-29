@@ -7,7 +7,8 @@
         "syntax": "markdown",
         "call": "# Heading",
         "jobs": [
-            "structure_prose"
+            "structure_prose",
+            "mark_text"
         ],
         "parameters": []
     },

@@ -1964,11 +1964,23 @@ HTML;
         if ($source === '') {
             throw new PortableConfigurationException('MARKDOWN_DIAGRAM_SOURCE_REQUIRED', 'A diagram requires a declarative source.');
         }
+        // A screen reader meets the drawing as one image. Its name is the
+        // caption, which says what the picture is; `label` replaces that name
+        // with the author's own text alternative, which can say what the
+        // picture shows. The default caption still carries the marker, so the
+        // site build writes it in the page's language.
+        $alternative = trim($attributes['label'] ?? '');
+        if ($alternative === '' && isset($attributes['label'])) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_DIAGRAM_LABEL_EMPTY',
+                'A diagram [label] is the text alternative a screen reader reads; it cannot be empty.',
+            );
+        }
 
         return '<figure data-docara-block="diagram"' . ($defaultLabel ? ' ' . self::DEFAULT_LABEL_MARKER . '="diagram"' : '') . ' data-engine="' . $engine . '" class="border border-outline-variant radius-surface overflow-hidden m-0 m-bottom-1">'
             . '<figcaption class="bg-surface-container p-x-2 p-y-1/3 bold">' . $this->escapeHtml($title) . '</figcaption>'
             . '<div class="mermaid p-2 overflow-auto" data-docara-diagram-source role="img" aria-label="'
-            . $this->escapeHtml($title) . '">'
+            . $this->escapeHtml($alternative === '' ? $title : $alternative) . '">'
             . $this->escapeHtml($source) . '</div></figure>';
     }
 

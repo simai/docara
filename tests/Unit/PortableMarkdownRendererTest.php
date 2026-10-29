@@ -508,6 +508,17 @@ MD);
         self::assertStringContainsString('data-docara-diagram-source role="img" aria-label="Build flow"', $diagram);
         self::assertStringContainsString('flowchart LR', $diagram);
 
+        // A text alternative replaces the caption as the picture's name, and
+        // the caption above it stays what the reader sees.
+        $described = $renderer->render(<<<'MD'
+:::diagram {title="Build flow" label="A source becomes a recipe, then a document, then HTML"}
+flowchart LR
+  A --> B
+:::
+MD);
+        self::assertStringContainsString('>Build flow</figcaption>', $described);
+        self::assertStringContainsString('role="img" aria-label="A source becomes a recipe, then a document, then HTML"', $described);
+
         $math = $renderer->render(<<<'MD'
 :::math {display=block label="Energy formula"}
 E=mc^2
@@ -893,6 +904,14 @@ MD);
         $script = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
         self::assertStringContainsString("var syncPrefix='docara.tabs.';", $script);
         self::assertStringContainsString('[data-docara-block="tabs"][data-docara-tabs-sync]', $script);
+    }
+
+    #[Test]
+    public function an_empty_diagram_label_stops_the_build(): void
+    {
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('MARKDOWN_DIAGRAM_LABEL_EMPTY');
+        (new PortableMarkdownRenderer)->render(":::diagram {label=\" \"}\nflowchart LR\n  A --> B\n:::\n");
     }
 
     #[Test]

@@ -8,6 +8,13 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **A diagram can carry its own text alternative.** A screen reader meets a
+  diagram as one image whose name was the caption, so a diagram without a
+  `title` announced itself as "Схема" and one with a title said only what the
+  picture is called. `:::diagram` takes a `label` now: the author's sentence
+  about what the diagram shows, which becomes the image's name while the
+  caption stays what everyone else reads. An empty `label` stops the build
+  with `MARKDOWN_DIAGRAM_LABEL_EMPTY`.
 - **Tabs can open on a chosen tab and follow one another.** `:::tabs` takes
   two parameters. `default` names the tab a page opens on, by its label or by
   its name (the label in lower case, with other characters as hyphens); a

@@ -83,7 +83,8 @@ All notable changes to Docara are recorded here. The format follows
   site.** The image kept its `/assets/…` address and was never copied into
   the build, so the page linked to a missing file. It now gets a
   page-relative address and is published like a hero background, also under
-  a locale prefix or a `base_url` subdirectory.
+  a locale prefix or a `base_url` subdirectory. The hero page shows the case
+  live, so the published site carries a working side image.
 - **Icons inside Framework components keep their full font.** An icon whose
   name needs the full icon font (`edit_square`, `more_horiz`, `archive`)
   showed broken letters such as "SqUARE" when it sat inside a component that

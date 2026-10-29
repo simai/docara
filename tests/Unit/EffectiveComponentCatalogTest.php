@@ -128,11 +128,13 @@ final class EffectiveComponentCatalogTest extends TestCase
 
         self::assertSame([
             'native.code',
+            'native.description_list',
             'native.footnotes_and_sources',
             'native.headings_and_text',
             'native.links_and_images',
             'native.lists_and_quotes',
             'native.table',
+            'native.task_list',
         ], array_column($profile->entries(), 'id'));
 
         $environment = $profile->environment();
@@ -170,11 +172,13 @@ final class EffectiveComponentCatalogTest extends TestCase
         $lifecycles = array_column($first['entries'], 'lifecycle', 'id');
         foreach ([
             'native.code',
+            'native.description_list',
             'native.footnotes_and_sources',
             'native.headings_and_text',
             'native.links_and_images',
             'native.lists_and_quotes',
             'native.table',
+            'native.task_list',
             'docara.card',
             'docara.banner',
             'docara.diagram',
@@ -409,11 +413,13 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.tabs' => 'docs/site/content/ru/components/tabs.md',
             'docara.tree' => 'docs/site/content/ru/components/tree.md',
             'native.code' => 'docs/site/content/ru/components/code.md',
+            'native.description_list' => 'docs/site/content/ru/authoring/markdown.md',
             'native.footnotes_and_sources' => 'docs/site/content/ru/authoring/markdown.md',
             'native.headings_and_text' => 'docs/site/content/ru/authoring/markdown.md',
             'native.links_and_images' => 'docs/site/content/ru/authoring/markdown.md',
             'native.lists_and_quotes' => 'docs/site/content/ru/authoring/markdown.md',
             'native.table' => 'docs/site/content/ru/authoring/markdown.md',
+            'native.task_list' => 'docs/site/content/ru/authoring/markdown.md',
             'ui.alert' => 'docs/site/content/ru/components/smart-ui.md',
             'ui.badge' => 'docs/site/content/ru/start/component-model.md',
             'ui.button' => 'docs/site/content/ru/components/smart-ui.md',
@@ -612,6 +618,28 @@ final class EffectiveComponentCatalogTest extends TestCase
                     'aspect-16x9',
                 ],
             ],
+            'native.description_list' => [
+                'markdown' => [
+                    'Recipe',
+                    ': The build plan of one page, which Docara writes itself.',
+                ],
+                'html' => [
+                    '<dl>',
+                    '<dt>Recipe</dt>',
+                    '<dd>The build plan of one page, which Docara writes itself.</dd>',
+                ],
+            ],
+            'native.task_list' => [
+                'markdown' => [
+                    "- [x] Describe the reader's task",
+                    '- [ ] Check the example in a browser',
+                ],
+                'html' => [
+                    '<input checked="" disabled="" type="checkbox">',
+                    '<input disabled="" type="checkbox">',
+                    'Check the example in a browser',
+                ],
+            ],
             'native.lists_and_quotes' => [
                 'markdown' => [
                     '- First item',
@@ -736,7 +764,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(33, $supported);
+        self::assertCount(35, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),

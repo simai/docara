@@ -80,7 +80,8 @@ emphasizes important words without hand-written HTML.
 
 First set the **required parameters**, then add *helpful
 explanations*. An outdated recommendation can be marked as
-~~no longer valid~~ for a while.
+~~no longer valid~~ for a while, and the line the reader looks for as
+==highlighted==.
 ```
 :::
 
@@ -98,12 +99,15 @@ the level describes the structure of the document.
 **important text**
 *an accent in meaning*
 ~~outdated wording~~
+==what the reader looks for==
 `parameter_name`
 ```
 
 Bold suits the key result, italics a short accent, strikethrough a clearly
-outdated wording, and inline code commands, files and values. Do not use
-arbitrary HTML instead of Markdown.
+outdated wording, and inline code commands, files and values. Two equals
+signs highlight a word as a marker pen would: that is how you mark what the
+reader looks for, a match inside an example, say. Do not use arbitrary HTML
+instead of Markdown.
 
 Headings get deterministic anchors you can link to; how an anchor is built is
 described in [Reading context](/en/settings/reading/#how-anchors-are-built).
@@ -153,6 +157,33 @@ A quote can name its source:
 `author` names the author, `source` the publication, and `href` adds a safe
 link. Do not fill unknown details with placeholders: a plain quote without
 attribution is more useful than a made-up source.
+
+## Checklists and definitions
+
+A task list shows what is already done, and a definition list explains the
+terms of a page without turning them into an ordinary paragraph.
+
+:::example {label="Checklist and definitions"}
+```markdown
+- [x] Describe the reader's task
+- [ ] Check the example in a browser
+
+Recipe
+: The build plan of one page, which Docara writes itself.
+
+Composition Document
+: The finished page with its regions, sections and blocks.
+```
+:::
+
+An item with `[x]` is checked, one with `[ ]` is not. The boxes on the built
+page do not click: the list shows a state, it does not collect the reader's
+answer. Such a list suits a release instruction or a work plan; an item is
+checked by editing the page.
+
+A definition is written like this: the term on its own line, and the next
+line starting with a colon and a space. Any number of terms may follow one
+another, and one term may have several definitions.
 
 ## Links and images
 

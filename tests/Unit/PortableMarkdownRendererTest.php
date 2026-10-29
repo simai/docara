@@ -1396,7 +1396,9 @@ MD);
             [":::features\nPlain text\n:::\n", 'MARKDOWN_FEATURES_UNORDERED_LIST_REQUIRED'],
             [":::features\n- Only one\n:::\n", 'MARKDOWN_FEATURES_ITEM_COUNT_INVALID'],
             [":::features\n- \n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID'],
-            [":::features\n- [ ](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
+            // A list item that opens with [ ] is a checklist item now, so an
+            // empty link in that place is a checkbox the block cannot hold.
+            [":::features\n- [ ](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID'],
             [":::features\n- [\u{00A0}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
             [":::features\n- [\u{200B}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
             [":::features\n- [\u{FE0F}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
@@ -1886,6 +1888,20 @@ MD);
                 self::assertSame($expected, $exception->errorCode);
             }
         }
+    }
+
+    #[Test]
+    public function checklists_definitions_and_marks_are_plain_markdown(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(
+            "- [x] Done\n- [ ] Open\n\nRecipe\n: The build plan of one page.\n\nA ==found== word.\n",
+        );
+
+        self::assertStringContainsString('<input checked="" disabled="" type="checkbox"> Done', $html);
+        self::assertStringContainsString('<input disabled="" type="checkbox"> Open', $html);
+        self::assertStringContainsString('<dt>Recipe</dt>', $html);
+        self::assertStringContainsString('<dd>The build plan of one page.</dd>', $html);
+        self::assertStringContainsString('<mark>found</mark>', $html);
     }
 
     #[Test]

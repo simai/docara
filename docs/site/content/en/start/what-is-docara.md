@@ -23,7 +23,7 @@ two ready views — documentation (`docs`) and landing (`landing`).
 - You need a site built entirely from files in the repository and published
   as a static folder — no database and no server code.
 - Strict checking matters: an unknown setting or a wrong component parameter
-  stops the build, and [`verify-static`](/ru/build/verify/) (in Russian) finds broken links, missing anchors and
+  stops the build, and [`verify-static`](/en/build/verify/) finds broken links, missing anchors and
   missing files in the finished folder before publishing.
 - The site has several languages, including right-to-left scripts: each
   language gets its own page tree, interface labels and address.

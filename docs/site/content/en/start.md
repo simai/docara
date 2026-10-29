@@ -22,4 +22,4 @@ browser.
 :::
 
 Then go on to [Writing pages](/en/authoring/), and when the site is ready
-to publish, to [«Сборка и публикация»](/ru/build/) (in Russian).
+to publish, to [Building and publishing](/en/build/).

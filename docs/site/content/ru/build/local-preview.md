@@ -29,7 +29,7 @@ Markdown и JSON исходники.
 - desktop: оглавление закреплено справа, а breadcrumbs и previous/next ведут на
   ожидаемые страницы;
 - viewport до 1152 px: оглавление доступно через native details над статьёй;
-- viewport до 600 px: previous/next складываются в колонку без горизонтального
+- viewport до 704 px: previous/next складываются в колонку без горизонтального
   overflow;
 - Tab показывает заметный focus, Enter открывает ссылки, а переход по
   `#fragment` ставит нужный заголовок в видимую область;

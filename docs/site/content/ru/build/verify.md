@@ -85,8 +85,8 @@ php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 - `@unsafe-fragment-encoding`.
 
 Все отметки проверки с причиной и способом исправления собраны на странице
-[Проверка сборки](/reference/errors/verify-static/), коды ошибок сборки — в
-[справочнике кодов ошибок](/reference/errors/). Если причина неясна,
+[Проверка сборки](/ru/reference/errors/verify-static/), коды ошибок сборки — в
+[справочнике кодов ошибок](/ru/reference/errors/). Если причина неясна,
 сохраните команду, exit code, полный вывод, exact source revision и путь
 проверяемого каталога для диагностики.
 

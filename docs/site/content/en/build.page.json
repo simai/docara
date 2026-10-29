@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Building and publishing",
+  "description": "Building a static site, checking it, publishing it and going back to the previous version.",
+  "navigation": {
+    "order": 50
+  }
+}

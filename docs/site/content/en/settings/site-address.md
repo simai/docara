@@ -85,7 +85,7 @@ file of the build.
 
 A site built for one path of a portal sets a `portal` section next to
 `site_url`: then the build writes only `llms.txt` and leaves `sitemap.xml` and
-`robots.txt` to the portal. See [«Сборка для портала»](/build/portal/) (in
+`robots.txt` to the portal. See [«Сборка для портала»](/en/build/portal/) (in
 Russian).
 
 In CI it is handy to set `site_url` in the same step as `base_url`. For
@@ -109,6 +109,6 @@ site name (usually on the home page), the name is not repeated:
 
 ## See also
 
-- [«Размещение на хостинге»](/ru/build/hosting/) (in Russian) — `base_url` on different hosts
-- [«Сборка для портала»](/ru/build/portal/) (in Russian)
+- [Hosting the site](/en/build/hosting/) — `base_url` on different hosts
+- [Building for a portal](/en/build/portal/)
 - [Address and publishing fields in docara.json](/ru/reference/docara-json/#адрес-и-публикация) (in Russian)

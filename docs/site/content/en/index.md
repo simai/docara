@@ -52,7 +52,7 @@ theme or plugins of your own.
 - :icon[tune]{size=2 container=square variant=tonal scheme=primary} **Comfortable reading.** Readers choose a light or dark theme, the font size and the text width.
 - :icon[translate]{size=2 container=square variant=tonal scheme=primary} **Several languages.** Each language is its own Markdown folder. Linked pages get a language switcher and `hreflang`; more in [Multilingual site](/en/authoring/multilingual-site/).
 - :icon[web]{size=2 container=square variant=tonal scheme=primary} **A landing page from the same files.** This page is Docara too: the `landing` preset drops the documentation menu and keeps the first screen, the blocks and the call to action. How it is built is described [on a separate page](/ru/landing/) (in Russian).
-- :icon[verified]{size=2 container=square variant=tonal scheme=primary} **Checked before publishing.** `verify-static` checks the finished site before it goes live: pages, local links, files and the search index. More in [«Проверка статического результата»](/ru/build/verify/) (in Russian).
+- :icon[verified]{size=2 container=square variant=tonal scheme=primary} **Checked before publishing.** `verify-static` checks the finished site before it goes live: pages, local links, files and the search index. More in [Checking the build](/en/build/verify/).
 :::
 
 ## Example pages

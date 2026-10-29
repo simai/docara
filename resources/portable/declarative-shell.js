@@ -286,8 +286,8 @@
     dialog.addEventListener('keydown',function(event){trapDialogTab(dialog,event)});
     dialog.addEventListener('close',function(){trigger.setAttribute('aria-expanded','false');trigger.focus()});
     window.addEventListener('resize',function(){
-      var unavailable=(dialog.id==='docara-mobile-navigation'&&window.matchMedia('not all and (max-width: 50rem)').matches)
-        ||(dialog.id==='docara-outline-dialog'&&window.matchMedia('not all and (max-width: 72rem)').matches);
+      var unavailable=(dialog.id==='docara-mobile-navigation'&&window.matchMedia('(min-width: 60rem)').matches)
+        ||(dialog.id==='docara-outline-dialog'&&window.matchMedia('(min-width: 72rem)').matches);
       if(unavailable&&dialog.open){closeSheet()}
     },{passive:true});
   }

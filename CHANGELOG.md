@@ -20,6 +20,21 @@ All notable changes to Docara are recorded here. The format follows
   `schema` key of `lang.json` names the file's own schema, and the "made with
   Docara" credit stays with the branding gate.
 
+### Changed
+
+- **The shell changes layout only at Framework breakpoints.** Two of its own
+  narrow steps, 50rem and 37.5rem, are gone: the sidebar, the navigation
+  trigger and the compact search button now follow the Framework `lg` step
+  (60rem), and the example viewer and the stacked previous/next links follow
+  `md` (44rem). The sidebar therefore appears a little later, where there is
+  room for it: between 800 and 960 px the grid was capped at the `md`
+  container, so a 288 px sidebar left the text 352 px wide; it is now 640 px
+  wide there. Each query is written as the complement of the Framework's own
+  `min-width`, so a width belongs to one side only: at exactly 1152 px
+  (`xl`) the header navigation and the outline rail now stay in the wide
+  layout, as the Framework's own `xl` rules do, instead of moving into
+  sheets one step early.
+
 ### Fixed
 
 - **The page edges follow the Framework container.** The header row, the

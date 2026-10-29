@@ -106,7 +106,7 @@ final class HeroPaddingTest extends TestCase
         // The narrow-screen landing step tightens section and lg/xl hero
         // padding, but never a 2xl hero: its clamp already starts at 3rem on
         // a phone, and the step used to cut it to --sf-space-2.
-        $narrow = $this->mediaBlock($css, '@media(max-width:50rem){');
+        $narrow = $this->mediaBlock($css, '@media not all and (min-width:60rem){');
         self::assertStringContainsString(
             '.docara-landing [data-docara-container]:not(.docara-padding-2xl){padding-block:var(--sf-space-2)}',
             $narrow,

@@ -45,10 +45,10 @@ final class ShellBreakpointTest extends TestCase
         $css = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
         $js = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
 
-        self::assertStringContainsString("@media(max-width:50rem){\n  .docara-mobile-navigation-trigger{display:inline-flex}", $css);
-        self::assertStringContainsString("window.matchMedia('not all and (max-width: 50rem)')", $js);
-        self::assertStringContainsString("@media(max-width:72rem){\n  .docara-header-navigation{display:none}", $css);
-        self::assertStringContainsString("window.matchMedia('not all and (max-width: 72rem)')", $js);
+        self::assertStringContainsString("@media not all and (min-width:60rem){\n  .docara-mobile-navigation-trigger{display:inline-flex}", $css);
+        self::assertStringContainsString("window.matchMedia('(min-width: 60rem)')", $js);
+        self::assertStringContainsString("@media not all and (min-width:72rem){\n  .docara-header-navigation{display:none}", $css);
+        self::assertStringContainsString("window.matchMedia('(min-width: 72rem)')", $js);
     }
 
     /** @return array<string, string> */

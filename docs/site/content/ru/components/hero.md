@@ -118,6 +118,21 @@ Docara превращает Markdown и проверенные JSON-настро
 `background_fit`, `background_x`, `background_y`, `overlay` и
 `overlay_strength` — они работают только с `media=background`.
 
+:::example {label="Изображение рядом с текстом"}
+```markdown
+:::hero {layout=split media=side}
+# Документация, которую собирает одна команда
+
+Текст слева, смысловое изображение справа: у него есть описание, потому что
+оно несёт смысл, а не украшает страницу.
+
+[Быстрый старт](/ru/start/quick-start/)
+
+![Страница документации с боковым меню и оглавлением](/assets/hero-side.webp)
+:::
+```
+:::
+
 :::example {label="Фоновое изображение"}
 ```markdown
 :::hero {media=background background_x=right overlay=dark overlay_strength=strong}

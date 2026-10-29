@@ -166,7 +166,7 @@ final class LangReference
         }
         $optional = UiCopy::optionalDefaultsByLanguage();
         $build = UiCopy::buildDefaultsByLanguage();
-        $overridableBuild = [...NotFoundPage::MESSAGE_IDS, 'language.fallback_notice'];
+        $overridableBuild = [...NotFoundPage::MESSAGE_IDS, 'language.fallback_notice', ...UiCopy::OVERRIDABLE_BUILD_IDS];
 
         $out = "### Обязательные строки\n\n"
             . "Их нужно задать в `lang.json` каждого языка или в его запасном языке из `fallbacks`; иначе сборка остановится с `MESSAGE_NOT_FOUND`. Встроенного текста у них нет: `docara init` записывает английский или русский текст из столбцов справа.\n\n"
@@ -180,13 +180,13 @@ final class LangReference
                     ?? ($language === 'en' ? (self::READ_ELSEWHERE[$id] ?? '') : (isset(self::READ_ELSEWHERE[$id]) ? self::READ_ELSEWHERE[$id] . ' (английский)' : '')),
             );
 
-        $out .= "\n### Страница 404 и уведомление о переводе\n\n"
-            . "Эти строки тоже можно задать в `lang.json`. Без них Docara пишет встроенный текст при сборке.\n\n"
+        $out .= "\n### Строки, которые Docara пишет при сборке\n\n"
+            . "Их тоже можно задать в `lang.json` — группами `error`, `language`, `blocks`, `atlas` и `examples`. Без них Docara пишет встроенный текст: русский для русского языка, английский для остальных.\n\n"
             . $this->table($overridableBuild, fn (string $id, string $language): string => $build[$language][$id] ?? '');
 
         $fixed = array_values(array_diff(array_keys($build['en']), $overridableBuild));
         $out .= "\n### Встроенные строки, которые не меняются\n\n"
-            . "Docara пишет эти строки при сборке на английском или русском. Через `lang.json` их не изменить.\n\n"
+            . "Docara пишет эти строки при сборке на английском или русском. Через `lang.json` их не изменить: ключ `schema` в `lang.json` занят схемой самого файла, а подпись «сделано в Docara» принадлежит проверке брендирования.\n\n"
             . $this->table($fixed, fn (string $id, string $language): string => $build[$language][$id] ?? '');
 
         $out .= "\n### Ключи, которые не используются\n\n"

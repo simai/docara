@@ -15,6 +15,7 @@ use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleTag;
 use Simai\Docara\I18n\LocaleUrlProjector;
 use Simai\Docara\I18n\Translator;
+use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
 
@@ -207,6 +208,30 @@ HTML;
         self::assertSame('English fallback', $translator->message('fr-CA', 'common.only_en'));
         self::assertSame('Default {missing}', $translator->messageOr('fr-CA', 'code.copy', 'Default {missing}'));
         self::assertSame('Default Ada', $translator->messageOr('fr-CA', 'code.copy', 'Default {name}', ['name' => 'Ada']));
+    }
+
+    public function test_a_site_can_write_the_build_time_block_and_atlas_labels_itself(): void
+    {
+        $this->writeLang('ru', ['blocks.diagram' => 'Диаграмма', 'atlas.owner' => 'Кто ведёт']);
+        $this->writeLang('fr', ['blocks.math' => 'Formule']);
+        $uiCopy = new UiCopy(new Translator(
+            LocaleRegistry::fromSite($this->site()),
+            new ContentLanguageRepository($this->root),
+        ));
+
+        $russian = $uiCopy->buildCopy('ru');
+        self::assertSame('Диаграмма', $russian['blocks.diagram']);
+        self::assertSame('Кто ведёт', $russian['atlas.owner']);
+        // A string the site leaves out keeps the built-in text of its language.
+        self::assertSame('Математическая формула', $russian['blocks.math']);
+        self::assertSame('Схема', UiCopy::buildText('ru', 'blocks.diagram'));
+
+        $french = $uiCopy->buildCopy('fr');
+        self::assertSame('Formule', $french['blocks.math']);
+        self::assertSame('Diagram', $french['blocks.diagram']);
+        // Strings outside the overridable list stay as Docara writes them.
+        self::assertSame('Field', $french['schema.field']);
+        self::assertSame('Made with {docara}', $french['branding.credit']);
     }
 
     public function test_content_language_is_the_public_ui_overlay_without_owning_component_prose(): void

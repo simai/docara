@@ -19,8 +19,8 @@ final readonly class SourceBoundaryValidator
     ];
 
     private const LANG_NAMESPACES = [
-        'accessibility', 'code', 'common', 'copy', 'effects', 'error', 'examples', 'language', 'navigation', 'reader', 'redirect',
-        'search', 'shell', 'toc', 'transitions',
+        'accessibility', 'atlas', 'blocks', 'code', 'common', 'copy', 'effects', 'error', 'examples', 'language', 'navigation',
+        'reader', 'redirect', 'search', 'shell', 'toc', 'transitions',
     ];
 
     public function __construct(private SchemaRepository $schemas = new SchemaRepository) {}

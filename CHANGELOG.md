@@ -6,6 +6,20 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **A site can write the block and Atlas labels of its own language.** The
+  caption of a diagram without a `title`, the screen-reader name of a formula,
+  the title of an HTML example frame, the caption of an example result and the
+  labels of a Design Atlas list were written at build time from Docara's
+  built-in English or Russian text, and `lang.json` could not reach them, so a
+  site in a third language kept English words inside its own pages. `lang.json`
+  now takes a `blocks` and an `atlas` group, and these strings follow the same
+  rule as the rest of the interface: the locale's own text, else the built-in
+  text of its language, else English. `schema.*` stays built-in, because the
+  `schema` key of `lang.json` names the file's own schema, and the "made with
+  Docara" credit stays with the branding gate.
+
 ### Fixed
 
 - **The page edges follow the Framework container.** The header row, the

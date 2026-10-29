@@ -8,6 +8,8 @@ use Simai\Docara\I18n\UiCopy;
 
 final class PortableAtlasIndexHydrator
 {
+    public function __construct(private readonly ?UiCopy $uiCopy = null) {}
+
     /**
      * @param  list<array<string, mixed>>  $pages
      * @param  array<string, mixed>  $atlas
@@ -18,7 +20,8 @@ final class PortableAtlasIndexHydrator
         $entries = is_array($atlas['entries'] ?? null) ? $atlas['entries'] : [];
         $fingerprint = (string) ($atlas['fingerprint'] ?? '');
         foreach ($pages as &$page) {
-            $copy = UiCopy::buildDefaults((string) ($page['locale'] ?? 'en'));
+            $locale = (string) ($page['locale'] ?? 'en');
+            $copy = $this->uiCopy?->buildCopy($locale) ?? UiCopy::buildDefaults($locale);
             $page['content_html'] = preg_replace_callback(
                 '/<nav\b(?<attributes>[^>]*)\bdata-docara-atlas-index\b(?<tail>[^>]*)><\/nav>/iu',
                 function (array $match) use ($entries, $fingerprint, $copy): string {

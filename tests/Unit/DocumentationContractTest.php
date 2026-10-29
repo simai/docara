@@ -138,8 +138,8 @@ final class DocumentationContractTest extends TestCase
             JSON_THROW_ON_ERROR,
         );
         self::assertSame([
-            'accessibility', 'code', 'common', 'copy', 'effects', 'error', 'examples', 'language', 'navigation',
-            'reader', 'redirect', 'search', 'shell', 'toc', 'transitions',
+            'accessibility', 'atlas', 'blocks', 'code', 'common', 'copy', 'effects', 'error', 'examples', 'language',
+            'navigation', 'reader', 'redirect', 'search', 'shell', 'toc', 'transitions',
         ], $this->langNamespaces($langSchema));
 
         foreach ([$this->repositoryRoot() . '/README.md', ...$this->markdownDocuments()] as $path) {

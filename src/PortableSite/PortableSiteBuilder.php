@@ -536,18 +536,19 @@ final readonly class PortableSiteBuilder
             $pageLocale = (string) $page['locale'];
             $page['direction'] = $localeRegistry->get($pageLocale)->direction;
             $page['ui_copy'] = $uiCopy->forLocale($pageLocale);
+            $buildCopy = $uiCopy->buildCopy($pageLocale);
             $page['content_html'] = str_replace(
                 ' title="' . PortableMarkdownRenderer::INTERNAL_PREVIEW_DEFAULT_TITLE . '" ' . PortableMarkdownRenderer::INTERNAL_PREVIEW_DEFAULT_TITLE_MARKER,
-                ' title="' . htmlspecialchars(UiCopy::buildText($pageLocale, 'examples.preview_title'), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '"',
+                ' title="' . htmlspecialchars($buildCopy['examples.preview_title'], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '"',
                 (string) ($page['content_html'] ?? ''),
             );
             // A diagram, math block or html frame without its own title gets
             // its default label in the page's language.
             $page['content_html'] = (string) preg_replace_callback(
                 '/<(figure|div|span|iframe)( data-docara-block="(?:diagram|math|html)") ' . PortableMarkdownRenderer::DEFAULT_LABEL_MARKER . '="(diagram|math|html)"([^>]*)>(.*?)(?=<\\/figure>|<\\/div>|<\\/span>|<\\/iframe>)/s',
-                static function (array $match) use ($pageLocale): string {
+                static function (array $match) use ($buildCopy): string {
                     $english = htmlspecialchars(PortableMarkdownRenderer::DEFAULT_LABELS[$match[3]], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
-                    $local = htmlspecialchars(UiCopy::buildText($pageLocale, 'blocks.' . $match[3]), ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+                    $local = htmlspecialchars($buildCopy['blocks.' . $match[3]], ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
 
                     return str_replace(
                         ['aria-label="' . $english . '"', 'title="' . $english . '"', '>' . $english . '</figcaption>'],
@@ -715,7 +716,7 @@ final readonly class PortableSiteBuilder
             $pages = $componentIndexHydrator->hydrate($pages, $componentIndexes);
             $contextPages = $pages;
         }
-        $atlasHydrator = new PortableAtlasIndexHydrator;
+        $atlasHydrator = new PortableAtlasIndexHydrator($uiCopy);
         $currentAtlas = (new DesignAtlasService)->atlas($root)->data;
         $atlasReceipt = [
             'schema' => 'docara.public_atlas_projection.v1',

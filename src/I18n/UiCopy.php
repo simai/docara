@@ -219,6 +219,31 @@ final readonly class UiCopy
         'reader.reset_all' => 'reader.reset',
     ];
 
+    /**
+     * Build-time strings a site may replace in its own lang.json. They are the
+     * ones a reader meets on the page, so a site in a language Docara has no
+     * built-in text for can still write them itself. `schema.*` stays out: the
+     * `schema` key of lang.json holds the file's own schema id, so a group of
+     * that name cannot live beside it. `branding.credit` stays out too, since
+     * the branding gate owns it.
+     *
+     * @var list<string>
+     */
+    public const OVERRIDABLE_BUILD_IDS = [
+        'examples.preview_title',
+        'blocks.diagram',
+        'blocks.math',
+        'blocks.html',
+        'atlas.empty',
+        'atlas.owner',
+        'atlas.namespace',
+        'atlas.origin',
+        'atlas.provider',
+        'atlas.authoring',
+        'atlas.capabilities',
+        'atlas.container',
+    ];
+
     public function __construct(private Translator $translator) {}
 
     /**
@@ -268,6 +293,22 @@ final readonly class UiCopy
     private static function hasOwnDefaults(string $locale): bool
     {
         return isset(self::OPTIONAL_DEFAULTS[strtolower(explode('-', str_replace('_', '-', $locale), 2)[0])]);
+    }
+
+    /**
+     * The build-time strings for a page's language, with the site's own
+     * lang.json text where it provides one of OVERRIDABLE_BUILD_IDS.
+     *
+     * @return array<string, string>
+     */
+    public function buildCopy(string $locale): array
+    {
+        $copy = self::buildDefaults($locale);
+        foreach (self::OVERRIDABLE_BUILD_IDS as $id) {
+            $copy[$id] = $this->translator->messageOr($locale, $id, $copy[$id]);
+        }
+
+        return $copy;
     }
 
     /** @return array<string, string> */

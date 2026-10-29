@@ -29,10 +29,12 @@ tags: [lang-json, подписи, перевод, интерфейс, i18n]
 ```
 
 Корневые группы ограничены общей UI-лексикой из
-`resources/schemas/lang.schema.json`: `accessibility`, `code`, `common`,
-`copy`, `effects`, `examples`, `language`, `navigation`, `reader`, `redirect`,
-`search`, `shell`, `toc` и `transitions`. Группа `examples` содержит только
-подписи интерфейса примеров, например кнопку адаптивного просмотра. Группы
+`resources/schemas/lang.schema.json`: `accessibility`, `atlas`, `blocks`,
+`code`, `common`, `copy`, `effects`, `error`, `examples`, `language`,
+`navigation`, `reader`, `redirect`, `search`, `shell`, `toc` и `transitions`.
+Группа `examples` содержит только подписи интерфейса примеров, например кнопку
+адаптивного просмотра; `blocks` и `atlas` — подписи блоков и списка Design
+Atlas, которые Docara пишет при сборке. Группы
 `pages`, `components` и `catalog` запрещены: текст страниц и описания
 компонентов принадлежат Markdown.
 
@@ -177,9 +179,9 @@ Docara нет.
 | `navigation.backlinks_heading` — Заголовок блока обратных ссылок `:::backlinks` | Referenced by | Referenced by (английский) |
 | `navigation.backlinks_empty` — Текст блока обратных ссылок, когда ссылок нет | No backlinks yet. | No backlinks yet. (английский) |
 
-### Страница 404 и уведомление о переводе
+### Строки, которые Docara пишет при сборке
 
-Эти строки тоже можно задать в `lang.json`. Без них Docara пишет встроенный текст при сборке.
+Их тоже можно задать в `lang.json` — группами `error`, `language`, `blocks`, `atlas` и `examples`. Без них Docara пишет встроенный текст: русский для русского языка, английский для остальных.
 
 | Ключ и где видно | English | Русский |
 | --- | --- | --- |
@@ -188,18 +190,10 @@ Docara нет.
 | `error.not_found.home` — Ссылка на главную на странице 404 | Go to the home page | На главную |
 | `error.not_found.search` — Кнопка поиска на странице 404 | Search the documentation | Искать в документации |
 | `language.fallback_notice` — Уведомление на странице, перевод которой ещё не готов; `{source}` — ссылка на оригинал | This page is being translated; the original is shown ({source}). | Эта страница переводится; показан оригинал ({source}). |
-
-### Встроенные строки, которые не меняются
-
-Docara пишет эти строки при сборке на английском или русском. Через `lang.json` их не изменить.
-
-| Ключ и где видно | English | Русский |
-| --- | --- | --- |
 | `examples.preview_title` — Подпись рамки с результатом примера | Example result | Результат примера |
 | `blocks.diagram` — Подпись схемы без своего `title` | Diagram | Схема |
 | `blocks.math` — Название формулы для программ экранного доступа, если нет своего `label` | Mathematical formula | Математическая формула |
 | `blocks.html` — Название рамки HTML-примера | HTML example | Пример HTML |
-| `examples.result_label` — Подпись результата в примере, созданном `docara scaffold` | Result | Результат |
 | `atlas.empty` — Текст пустого списка Design Atlas | The accepted Atlas has no entries for this filter. | В принятом Atlas нет элементов для этого фильтра. |
 | `atlas.owner` — Подпись владельца в Design Atlas | Owner | Владелец |
 | `atlas.namespace` — Подпись пространства имён в Design Atlas | namespace | пространство имён |
@@ -208,6 +202,14 @@ Docara пишет эти строки при сборке на английск�
 | `atlas.authoring` — Подпись способа подключения в Design Atlas | authoring | способ подключения |
 | `atlas.capabilities` — Подпись возможностей в Design Atlas | Capabilities | Возможности |
 | `atlas.container` — Подпись правил вложения контейнера в Design Atlas | Container | Правила вложения |
+
+### Встроенные строки, которые не меняются
+
+Docara пишет эти строки при сборке на английском или русском. Через `lang.json` их не изменить: ключ `schema` в `lang.json` занят схемой самого файла, а подпись «сделано в Docara» принадлежит проверке брендирования.
+
+| Ключ и где видно | English | Русский |
+| --- | --- | --- |
+| `examples.result_label` — Подпись результата в примере, созданном `docara scaffold` | Result | Результат |
 | `schema.field` — Заголовок столбца «Поле» в справочнике настроек | Field | Поле |
 | `schema.description` — Заголовок столбца описания в справочнике настроек | What it does | Что задаёт |
 | `schema.default` — Подпись значения по умолчанию под описанием поля | Default | По умолчанию |

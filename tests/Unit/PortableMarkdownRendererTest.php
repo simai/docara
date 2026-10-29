@@ -857,18 +857,58 @@ MD);
         $html = (new PortableMarkdownRenderer)->render(":::tabs\n### Linux\n\nОдин.\n\n### macOS\n\nДва.\n:::\n");
 
         self::assertMatchesRegularExpression(
-            '~^<div data-docara-block="tabs" class="sf-tabs sf-tabs--underline flex flex-col m-bottom-1">'
+            '~^<div data-docara-block="tabs" data-active-index="0" class="sf-tabs sf-tabs--underline flex flex-col m-bottom-1">'
             . '<div class="sf-tabs-top-container flex"><nav class="sf-tabs-top flex" role="tablist">'
-            . '<button type="button" role="tab" id="(docara-tabs-[0-9a-f]{12})-tab-0" aria-controls="\\1-panel-0" aria-selected="true" class="sf-button sf-button--default sf-button--primary sf-button--size-1 selected"><span class="sf-button-text-container">Linux</span></button>'
-            . '<button type="button" role="tab" id="\\1-tab-1" aria-controls="\\1-panel-1" aria-selected="false" tabindex="-1" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">macOS</span></button>'
+            . '<button type="button" role="tab" id="(docara-tabs-[0-9a-f]{12})-tab-0" aria-controls="\\1-panel-0" aria-selected="true" data-docara-tab="linux" class="sf-button sf-button--default sf-button--primary sf-button--size-1 selected"><span class="sf-button-text-container">Linux</span></button>'
+            . '<button type="button" role="tab" id="\\1-tab-1" aria-controls="\\1-panel-1" aria-selected="false" tabindex="-1" data-docara-tab="macos" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">macOS</span></button>'
             . '</nav></div><div class="sf-tabs-main-container">'
-            . '<section role="tabpanel" id="\\1-panel-0" aria-labelledby="\\1-tab-0" class="sf-tabs-main-tab selected"><p>Один.</p></section>'
-            . '<section role="tabpanel" id="\\1-panel-1" aria-labelledby="\\1-tab-1" class="sf-tabs-main-tab" hidden><p>Два.</p></section>'
+            . '<section role="tabpanel" id="\\1-panel-0" aria-labelledby="\\1-tab-0" data-docara-tab="linux" class="sf-tabs-main-tab selected"><p>Один.</p></section>'
+            . '<section role="tabpanel" id="\\1-panel-1" aria-labelledby="\\1-tab-1" data-docara-tab="macos" class="sf-tabs-main-tab" hidden><p>Два.</p></section>'
             . '</div></div>$~',
             trim($html),
         );
-        // The Framework tabs script switches the panels; Docara keeps no copy.
-        self::assertStringNotContainsString('data-docara-tabs', (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js'));
+        // A block without a sync name carries no sync marker, and the
+        // Framework tabs script alone switches its panels.
+        self::assertStringNotContainsString('data-docara-tabs-sync', $html);
+    }
+
+    #[Test]
+    public function tabs_open_the_default_tab_and_name_the_synced_group(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(
+            ":::tabs {sync=os default=\"Пакетный менеджер\"}\n### Linux\n\nОдин.\n\n### Пакетный менеджер\n\nДва.\n:::\n",
+        );
+
+        self::assertStringContainsString('data-docara-tabs-sync="os" data-active-index="1"', $html);
+        self::assertStringContainsString('data-docara-tab="пакетный-менеджер" class="sf-button', $html);
+        self::assertMatchesRegularExpression('~role="tab"[^>]*data-docara-tab="пакетный-менеджер"[^>]*selected~', $html);
+        self::assertStringContainsString('data-docara-tab="пакетный-менеджер" class="sf-tabs-main-tab selected"', $html);
+        self::assertStringContainsString('data-docara-tab="linux" class="sf-tabs-main-tab" hidden', $html);
+
+        // The name of a tab also works in place of its label.
+        $byKey = (new PortableMarkdownRenderer)->render(":::tabs {default=macos}\n### Linux\n\nОдин.\n\n### macOS\n\nДва.\n:::\n");
+        self::assertStringContainsString('data-active-index="1"', $byKey);
+
+        // The shell script passes a click on to the other blocks of the name.
+        $script = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertStringContainsString("var syncPrefix='docara.tabs.';", $script);
+        self::assertStringContainsString('[data-docara-block="tabs"][data-docara-tabs-sync]', $script);
+    }
+
+    #[Test]
+    public function a_tabs_default_that_names_no_tab_stops_the_build(): void
+    {
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('MARKDOWN_TABS_DEFAULT_NOT_FOUND');
+        (new PortableMarkdownRenderer)->render(":::tabs {default=windows}\n### Linux\n\nОдин.\n\n### macOS\n\nДва.\n:::\n");
+    }
+
+    #[Test]
+    public function a_tabs_sync_name_outside_the_vocabulary_stops_the_build(): void
+    {
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID');
+        (new PortableMarkdownRenderer)->render(":::tabs {sync=OS}\n### Linux\n\nОдин.\n\n### macOS\n\nДва.\n:::\n");
     }
 
     #[Test]

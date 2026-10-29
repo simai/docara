@@ -425,7 +425,7 @@
       var stored=localStorage.getItem(sourceWrapStorageKey);
       if(stored==='true'||stored==='false')return stored==='true';
     }catch(error){}
-    return Boolean(window.matchMedia&&window.matchMedia('(max-width: 40rem)').matches);
+    return Boolean(window.matchMedia&&window.matchMedia('not all and (min-width: 44rem)').matches);
   }
   var sourceWrapActive=storedSourceWrap();
   function setSourceWrap(active,notify){
@@ -1065,6 +1065,81 @@
         if(!entry.handle&&paused)place(entry);
         sync(entry);
       });
+    });
+  })();
+  // Tabs with a sync name follow one another: picking "Linux" in one block
+  // picks it in every block of that name, and the choice is remembered for
+  // the next page. The Framework tabs script owns the switch itself, so a
+  // click is the only thing passed on. A tab is matched by its own name
+  // (data-docara-tab), never by its place, so blocks may list different tabs.
+  (function(){
+    var syncPrefix='docara.tabs.';
+    var applying=false;
+    function groups(name){
+      return Array.prototype.filter.call(
+        document.querySelectorAll('[data-docara-block="tabs"][data-docara-tabs-sync]'),
+        function(group){return !name||group.getAttribute('data-docara-tabs-sync')===name}
+      );
+    }
+    function owned(group,selector){
+      return Array.prototype.filter.call(
+        group.querySelectorAll(selector),
+        function(element){return element.closest('[data-docara-block="tabs"]')===group}
+      );
+    }
+    // The same switch the Framework tabs script makes on a click, so the
+    // choice holds whichever script ran first: data-active-index is what the
+    // Framework reads when it binds, and the classes are what the reader sees
+    // if it has already bound.
+    function select(group,key){
+      var tabs=owned(group,'[role="tab"][data-docara-tab]');
+      var panels=owned(group,'[role="tabpanel"][data-docara-tab]');
+      var index=-1;
+      tabs.forEach(function(tab,position){if(tab.getAttribute('data-docara-tab')===key){index=position}});
+      if(index<0)return false;
+      group.setAttribute('data-active-index',String(index));
+      tabs.forEach(function(tab,position){
+        var active=position===index;
+        tab.classList.toggle('selected',active);
+        tab.setAttribute('aria-selected',active?'true':'false');
+        tab.setAttribute('tabindex',active?'0':'-1');
+      });
+      panels.forEach(function(panel,position){
+        var active=position===index;
+        panel.classList.toggle('selected',active);
+        panel.toggleAttribute('hidden',!active);
+      });
+      return true;
+    }
+    function apply(name,key,except){
+      applying=true;
+      try{
+        groups(name).forEach(function(group){
+          if(group!==except)select(group,key);
+        });
+      }finally{applying=false}
+    }
+    function stored(name){
+      try{return localStorage.getItem(syncPrefix+name)}catch(error){return null}
+    }
+    document.addEventListener('click',function(event){
+      if(applying)return;
+      var tab=event.target&&event.target.closest?event.target.closest('[role="tab"][data-docara-tab]'):null;
+      if(!tab)return;
+      var group=tab.closest('[data-docara-block="tabs"][data-docara-tabs-sync]');
+      if(!group)return;
+      var name=group.getAttribute('data-docara-tabs-sync');
+      var key=tab.getAttribute('data-docara-tab');
+      try{localStorage.setItem(syncPrefix+name,key)}catch(error){}
+      apply(name,key,group);
+    });
+    window.addEventListener('storage',function(event){
+      if(!event.key||event.key.indexOf(syncPrefix)!==0||!event.newValue)return;
+      apply(event.key.slice(syncPrefix.length),event.newValue,null);
+    });
+    groups().forEach(function(group){
+      var key=stored(group.getAttribute('data-docara-tabs-sync'));
+      if(key){apply(group.getAttribute('data-docara-tabs-sync'),key,null)}
     });
   })();
   localizeCodeCopy(document);

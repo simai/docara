@@ -327,7 +327,7 @@ final class PortableMarkdownRenderer
                     $block['attributes'],
                     $sourceFile,
                 ),
-                TypedRendererId::Tabs => $this->renderTabs($this->converter->convert($blockMarkdown)),
+                TypedRendererId::Tabs => $this->renderTabs($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Banner => $this->renderBanner($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Diagram => $this->renderDiagram($block['markdown'], $block['attributes']),
                 TypedRendererId::Math => $this->renderMath($block['markdown'], $block['attributes']),
@@ -1852,8 +1852,10 @@ HTML;
         )->html;
     }
 
-    private function renderTabs(RenderedContentInterface $rendered): string
+    /** @param array<string,string> $attributes */
+    private function renderTabs(RenderedContentInterface $rendered, array $attributes = []): string
     {
+        $this->assertAttributes($attributes, 'tabs');
         $html = trim((string) $rendered);
         if (preg_match_all('/<h3[^>]*>(?<label>.*?)<\/h3>\s*(?<content>.*?)(?=<h3\b|\z)/su', $html, $matches, PREG_SET_ORDER) < 2) {
             throw new PortableConfigurationException(
@@ -1861,32 +1863,76 @@ HTML;
                 'A tabs block requires at least two level-three headings with content.',
             );
         }
+        $sync = trim($attributes['sync'] ?? '');
+        if ($sync !== '' && preg_match('/\A[a-z][a-z0-9-]{0,31}\z/D', $sync) !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+                "Markdown component [tabs] has invalid [sync] value [$sync].",
+            );
+        }
+        $wanted = trim($attributes['default'] ?? '');
         $id = 'docara-tabs-' . substr(hash('sha256', $html), 0, 12);
-        $tabs = '';
-        $panels = '';
+        $items = [];
         foreach ($matches as $index => $match) {
             $label = trim(strip_tags((string) $match['label']));
             $content = trim((string) $match['content']);
             if ($label === '' || $content === '') {
                 throw new PortableConfigurationException('MARKDOWN_TABS_ITEM_INVALID', 'Every tab requires a label and visible content.');
             }
-            $selected = $index === 0;
+            $items[] = ['label' => $label, 'content' => $content, 'key' => self::tabKey($label, $index)];
+        }
+        $selectedIndex = 0;
+        if ($wanted !== '') {
+            $keys = array_column($items, 'key');
+            $labels = array_column($items, 'label');
+            $found = array_search(self::tabKey($wanted, 0), $keys, true);
+            $found = $found === false ? array_search($wanted, $labels, true) : $found;
+            if ($found === false) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_TABS_DEFAULT_NOT_FOUND',
+                    "A tabs block has no tab [$wanted] for its [default]; the tabs are [" . implode(', ', $keys) . '].',
+                );
+            }
+            $selectedIndex = (int) $found;
+        }
+        $tabs = '';
+        $panels = '';
+        foreach ($items as $index => $item) {
+            $selected = $index === $selectedIndex;
             $tabId = $id . '-tab-' . $index;
             $panelId = $id . '-panel-' . $index;
+            $key = ' data-docara-tab="' . $this->escapeHtml($item['key']) . '"';
             $tabs .= '<button type="button" role="tab" id="' . $tabId . '" aria-controls="' . $panelId
-                . '" aria-selected="' . ($selected ? 'true' : 'false') . '"' . ($selected ? '' : ' tabindex="-1"')
+                . '" aria-selected="' . ($selected ? 'true' : 'false') . '"' . ($selected ? '' : ' tabindex="-1"') . $key
                 . ' class="sf-button sf-button--default sf-button--primary sf-button--size-1' . ($selected ? ' selected' : '') . '">'
-                . '<span class="sf-button-text-container">' . $this->escapeHtml($label) . '</span></button>';
-            $panels .= '<section role="tabpanel" id="' . $panelId . '" aria-labelledby="' . $tabId . '"'
-                . ' class="sf-tabs-main-tab' . ($selected ? ' selected' : '') . '"' . ($selected ? '' : ' hidden') . '>' . $content . '</section>';
+                . '<span class="sf-button-text-container">' . $this->escapeHtml($item['label']) . '</span></button>';
+            $panels .= '<section role="tabpanel" id="' . $panelId . '" aria-labelledby="' . $tabId . '"' . $key
+                . ' class="sf-tabs-main-tab' . ($selected ? ' selected' : '') . '"' . ($selected ? '' : ' hidden') . '>' . $item['content'] . '</section>';
         }
 
         // The block is the Framework underline tabs: its script switches the
-        // panels and handles the keyboard. The first tab is selected in the
-        // markup, so the page reads the same before the script runs.
-        return '<div data-docara-block="tabs" class="sf-tabs sf-tabs--underline flex flex-col m-bottom-1">'
+        // panels and handles the keyboard. The selected tab is selected in the
+        // markup, so the page reads the same before the script runs, and
+        // data-active-index tells the Framework which tab that is. With a sync
+        // name the shell script keeps every block of that name on one tab and
+        // remembers the reader's choice.
+        return '<div data-docara-block="tabs"' . ($sync === '' ? '' : ' data-docara-tabs-sync="' . $this->escapeHtml($sync) . '"')
+            . ' data-active-index="' . $selectedIndex . '" class="sf-tabs sf-tabs--underline flex flex-col m-bottom-1">'
             . '<div class="sf-tabs-top-container flex"><nav class="sf-tabs-top flex" role="tablist">' . $tabs . '</nav></div>'
             . '<div class="sf-tabs-main-container">' . $panels . '</div></div>';
+    }
+
+    /**
+     * A tab's own name, used by `default` and by the synced choice: the label
+     * in lower case with every run of other characters as one hyphen. A label
+     * that keeps no letters or digits of its own (an icon, say) falls back to
+     * its place in the block.
+     */
+    private static function tabKey(string $label, int $index): string
+    {
+        $key = trim((string) preg_replace('/[^\p{L}\p{N}]+/u', '-', mb_strtolower($label, 'UTF-8')), '-');
+
+        return $key === '' ? 'tab-' . ($index + 1) : $key;
     }
 
     /** @param array<string,string> $attributes */

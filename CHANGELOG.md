@@ -8,6 +8,16 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **Tabs can open on a chosen tab and follow one another.** `:::tabs` takes
+  two parameters. `default` names the tab a page opens on, by its label or by
+  its name (the label in lower case, with other characters as hyphens); a
+  `default` that names no tab stops the build with
+  `MARKDOWN_TABS_DEFAULT_NOT_FOUND` and lists the names of the block's tabs.
+  `sync` gives a block a group name: every block of that name switches
+  together, and the reader's choice is remembered for the next page, so
+  picking Linux once keeps Linux through a guide. Tabs are matched by name,
+  not by position, so blocks may list different sets. Without scripts the
+  page still shows the tab chosen in the markup.
 - **A site can write the block and Atlas labels of its own language.** The
   caption of a diagram without a `title`, the screen-reader name of a formula,
   the title of an HTML example frame, the caption of an example result and the

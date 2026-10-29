@@ -37,6 +37,10 @@
         "tone": ["shade"]
     },
     "exceptions": {
+        "default": {
+            "components": ["tabs"],
+            "reason": "Which tab a page opens on, named by its label or its tab name. The vocabulary's open is a boolean (whether a block starts open), so it cannot pick one of several tabs; MkDocs Material and VitePress name the same idea default."
+        },
         "lang": {
             "components": ["code"],
             "reason": "Language of the shown source, the same word a Markdown fence uses; not a page locale."

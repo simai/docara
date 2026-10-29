@@ -250,7 +250,7 @@ final class ComponentParameterVocabularyTest extends TestCase
             $probed++;
         }
         self::assertGreaterThanOrEqual(15, $probed);
-        self::assertSame(['columns', 'component_index', 'cta', 'features', 'html', 'kbd', 'promo', 'showcase', 'tabs'], $withoutParameters);
+        self::assertSame(['columns', 'component_index', 'cta', 'features', 'html', 'kbd', 'promo', 'showcase'], $withoutParameters);
 
         foreach (['image' => "![Знак](https://example.com/a.png){%s}\n", 'quote' => "> Цитата\n{author=\"Автор\" %s}\n"] as $component => $template) {
             foreach ($model->names($component) as $name) {

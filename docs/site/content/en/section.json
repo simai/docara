@@ -26,6 +26,11 @@
           "/en/settings/",
           "/en/build/"
         ]
+      },
+      {
+        "id": "components",
+        "label": "Components",
+        "href": "/ru/components/"
       }
     ]
   }

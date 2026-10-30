@@ -104,6 +104,37 @@ final class TranslationStatusServiceTest extends TestCase
     }
 
     #[Test]
+    public function a_generated_region_changes_neither_freshness_nor_structure(): void
+    {
+        $this->project();
+        $region = static fn (string $text): string => "<!-- docara:generated -->\n$text\n<!-- /docara:generated -->\n";
+        $service = new TranslationStatusService;
+        $sample = "```markdown\n<!-- docara:generated -->\n```\n";
+        file_put_contents($this->tmpPath('content/ru/index.md'), "# Начало\n\n" . $sample . $region("## Версия\n\n1.0"));
+        file_put_contents($this->tmpPath('content/en/index.md'), "# Start\n\n" . $sample . $region('Not built yet'));
+        $accepted = $this->item($service->report($this->tmp, 'en'), 'page', 'index.md');
+        self::assertSame('unverified', $accepted['status']);
+        $service->apply($this->tmp, $service->planAccept($this->tmp, 'en', 'index.md', 'ai_verified')['plan_id']);
+
+        file_put_contents($this->tmpPath('content/ru/index.md'), "# Начало\n\n" . $sample . $region("## Версия\n\n2.0\n\n## Новое\n\nТекст"));
+        self::assertSame('current', $this->item($service->report($this->tmp, 'en'), 'page', 'index.md')['status']);
+
+        file_put_contents($this->tmpPath('content/ru/index.md'), "# Начало\n\nНовый абзац\n\n" . $sample . $region('2.0'));
+        self::assertSame('stale', $this->item($service->report($this->tmp, 'en'), 'page', 'index.md')['status']);
+    }
+
+    #[Test]
+    public function an_unpaired_generated_marker_fails_closed(): void
+    {
+        $this->project();
+        file_put_contents($this->tmpPath('content/ru/index.md'), "# Начало\n\n<!-- docara:generated -->\nТекст\n");
+
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessageMatches('/TRANSLATION_GENERATED_REGION_INVALID/');
+        (new TranslationStatusService)->report($this->tmp, 'en');
+    }
+
+    #[Test]
     public function a_reviewed_set_is_accepted_through_one_hash_bound_plan(): void
     {
         $this->project();

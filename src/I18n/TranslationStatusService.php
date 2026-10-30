@@ -431,13 +431,63 @@ final class TranslationStatusService
     /** @param list<string> $prefixes */
     private function sourceRecord(string $path, string $contents, array $prefixes): array
     {
-        $normalized = $this->normalizeForHash($contents);
+        $normalized = $this->withoutGeneratedRegions($this->normalizeForHash($contents), $path);
 
         return [
             'path' => $path,
             'sha256' => hash('sha256', $normalized),
             'structure_sha256' => hash('sha256', CanonicalJson::encode($this->structure($normalized, $prefixes))),
         ];
+    }
+
+    /**
+     * A region between `<!-- docara:generated -->` and
+     * `<!-- /docara:generated -->` is rebuilt per locale by the project's own
+     * tooling, so it counts neither for freshness nor for structure. Each
+     * marker stands on its own line; a marker inside a fenced code block is
+     * sample text.
+     */
+    private function withoutGeneratedRegions(string $markdown, string $path): string
+    {
+        if (! str_contains($markdown, 'docara:generated')) {
+            return $markdown;
+        }
+        $kept = [];
+        $fence = null;
+        $inRegion = false;
+        foreach (explode("\n", $markdown) as $line) {
+            if (preg_match('/^ {0,3}(`{3,}|~{3,})/', $line, $match) === 1) {
+                if ($fence === null) {
+                    $fence = $match[1];
+                } elseif ($match[1][0] === $fence[0] && strlen($match[1]) >= strlen($fence)) {
+                    $fence = null;
+                }
+            } elseif ($fence === null) {
+                $marker = trim($line);
+                if ($marker === '<!-- docara:generated -->' || $marker === '<!-- /docara:generated -->') {
+                    if ($inRegion === ($marker === '<!-- docara:generated -->')) {
+                        throw new PortableConfigurationException(
+                            'TRANSLATION_GENERATED_REGION_INVALID',
+                            "Generated region markers in [$path] must open and close in pairs, without nesting.",
+                        );
+                    }
+                    $inRegion = ! $inRegion;
+
+                    continue;
+                }
+            }
+            if (! $inRegion) {
+                $kept[] = $line;
+            }
+        }
+        if ($inRegion) {
+            throw new PortableConfigurationException(
+                'TRANSLATION_GENERATED_REGION_INVALID',
+                "Generated region markers in [$path] must open and close in pairs, without nesting.",
+            );
+        }
+
+        return implode("\n", $kept);
     }
 
     /** @param array<string,mixed>|null $accepted */

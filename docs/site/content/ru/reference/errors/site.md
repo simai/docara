@@ -107,6 +107,7 @@ description: Коды ошибок настроек сайта — перена�
 | `TRANSLATION_LOCK_INVALID` | Файл принятых переводов повреждён. **Что сделать:** Восстановите файл из системы контроля версий. |
 | `TRANSLATION_LOCK_SOURCE_LOCALE_MISMATCH` | Язык оригинала в файле принятых переводов отличается от `docara.json`. **Что сделать:** Верните прежний `source_locale` или примите переводы заново. |
 | `TRANSLATION_LANG_INVALID`, `TRANSLATION_PAGE_SOURCE_INVALID` | `lang.json` или страница не читаются как UTF-8 или лежат вне проекта. **Что сделать:** Сохраните файл в UTF-8 внутри каталога языка. |
+| `TRANSLATION_GENERATED_REGION_INVALID` | Метки созданной автоматически части страницы не образуют пару или вложены друг в друга. **Что сделать:** Оставьте на странице пары `<!-- docara:generated -->` и `<!-- /docara:generated -->`, каждую метку на отдельной строке. |
 | `TRANSLATION_PLAN_ID_INVALID`, `TRANSLATION_PLAN_INVALID`, `TRANSLATION_PLAN_HASH_MISMATCH` | Идентификатор плана не тот, что выдал `--dry-run`, или план изменён. **Что сделать:** Запустите `--dry-run` заново и примените выданный идентификатор. |
 | `TRANSLATION_PLAN_STALE` | Файлы изменились после `--dry-run`. **Что сделать:** Запустите `--dry-run` заново. |
 | `TRANSLATION_PLAN_PATH_UNSAFE`, `TRANSLATION_PLAN_WRITE_FAILED`, `TRANSLATION_WRITE_FAILED` | Команда не смогла записать файл: каталог — ссылка или нет прав. **Что сделать:** Проверьте права на каталог проекта и `.docara/`. |

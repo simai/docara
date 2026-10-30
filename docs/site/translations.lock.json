@@ -1158,11 +1158,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/index.md",
-            "source_sha256": "39f90e142eb67e77d893ba75c754f2bdf23ff271bffd31c632bd038355f6fe4a",
-            "source_structure_sha256": "5e2731bea11946cbb3ece60a90ef9209dd22829eefe3d75f7fe173d27c7f6030",
+            "source_sha256": "7fa67acec972956eee90820ef111bf6f1101ce839165e46f01ba9726333c3ba5",
+            "source_structure_sha256": "511b34e530c825d6e74ec22672e14afaf49217c4478be7e627822110e2ef9dba",
             "target_path": "content/en/index.md",
-            "target_sha256": "f1a0581cf28dc0f3fabdb9526a6ed4ca6528c6b724d39e4eaf97a669e2014e40",
-            "target_structure_sha256": "5e2731bea11946cbb3ece60a90ef9209dd22829eefe3d75f7fe173d27c7f6030"
+            "target_sha256": "f4e562defe2330f5d5e8e9ed9b71fab4aa7a5c156ac2de5f1519e5696a906e80",
+            "target_structure_sha256": "511b34e530c825d6e74ec22672e14afaf49217c4478be7e627822110e2ef9dba"
         },
         {
             "key": "settings.md",

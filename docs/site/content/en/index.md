@@ -1,4 +1,4 @@
-:::hero {layout=centered padding=2xl effect=chladni effect_settings='{"speed":100,"transparency":90,"density":30,"palette":"graphite","interactive":true}'}
+:::hero {layout=centered padding=2xl effect=chladni effect_settings='{"speed":100,"transparency":75,"density":30,"palette":"graphite","interactive":true}'}
 # A documentation site from Markdown — on PHP and Composer
 
 Write pages in Markdown and settings in JSON. Docara builds a fast static

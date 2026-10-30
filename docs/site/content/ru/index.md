@@ -1,4 +1,4 @@
-:::hero {layout=centered padding=2xl effect=constellation-net}
+:::hero {layout=centered padding=2xl effect=glyph-tide}
 # Сайт документации из Markdown — на PHP и Composer
 
 Пишите страницы в Markdown, а настройки — в JSON. Docara соберёт из них

@@ -1,12 +1,7 @@
 :::hero {layout=centered padding=2xl effect=glyph-tide}
 # Сайт документации из Markdown — на PHP и Composer
 
-Пишите страницы в Markdown, а настройки — в JSON. Docara соберёт из них
-быстрый статический сайт на SIMAI Framework с меню, поиском и тёмной темой.
-Такой сайт можно выложить на любой хостинг.
-
-Docara 3 · открытый код на [GitHub](https://github.com/simai/docara) ·
-лицензия Apache 2.0
+Быстрый статический сайт с меню, поиском и тёмной темой.
 
 [Быстрый старт](/ru/start/quick-start/)
 

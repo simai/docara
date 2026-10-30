@@ -97,6 +97,23 @@ MD;
     }
 
     #[Test]
+    public function inline_example_headings_leave_markup_in_attribute_values_alone(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::example {label="Rich text"}
+```html
+<div data-value="<h2>About</h2><p>Text</p>" title='<h1 class="x">'><h1 data-note="a > b">Title</h1></div>
+```
+:::
+MD);
+        $previews = (string) preg_replace('~<pre\b.*?</pre>~s', '', $html);
+
+        self::assertStringNotContainsString('<h3', $previews);
+        self::assertStringContainsString('<h2 class="sf-h-1 text-6 heading" data-note="a > b">Title</h2>', $previews);
+        self::assertStringNotContainsString('text-5', $previews);
+    }
+
+    #[Test]
     public function example_preview_mode_is_selected_deterministically_and_can_be_overridden_safely(): void
     {
         $renderer = new PortableMarkdownRenderer;

@@ -849,7 +849,8 @@ final class PortableMarkdownRenderer
      * --sf-text--size-M and --sf-title--height-M, M = 7 - N). A heading that
      * already names a heading or text size class keeps its own. The example's
      * Source tab still shows the markup as written; a sandboxed example is a
-     * separate document and keeps its levels.
+     * separate document and keeps its levels. Tags are read whole, so a heading
+     * written inside an attribute value, a comment or a script stays text.
      */
     private function nestInlineHeadings(string $html): string
     {
@@ -858,9 +859,12 @@ final class PortableMarkdownRenderer
         }
 
         return preg_replace_callback(
-            '~<(?<close>/?)h(?<level>[1-6])(?<attributes>(?:\s[^>]*)?)>~i',
+            '~<!--.*?-->|<(script|style)\b.*?</\1\s*>|<(?<close>/?)(?<name>[a-z][a-z0-9:-]*)(?<attributes>(?:"[^"]*"|\'[^\']*\'|[^\'">]+)*+)>~is',
             static function (array $match): string {
-                $level = (int) $match['level'];
+                if (preg_match('~\Ah[1-6]\z~i', $match['name'] ?? '') !== 1) {
+                    return $match[0];
+                }
+                $level = (int) substr($match['name'], 1);
                 $nested = min(6, $level + 1);
                 if ($match['close'] === '/') {
                     return '</h' . $nested . '>';

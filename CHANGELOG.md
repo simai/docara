@@ -67,6 +67,11 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **A heading written inside an attribute value no longer breaks an example.**
+  An inline example moves its headings one level down, and that step also
+  rewrote `<h2>` inside a value such as `value="<h2>About</h2>"`, which broke
+  the attribute and spilled it onto the page. Docara now reads tags whole, so
+  markup in an attribute value, a comment or a script stays as written.
 - **The page edges follow the Framework container.** The header row, the
   documentation layout, the landing content and the footer are all SIMAI
   Framework containers, but the shell pinned their side padding to one space

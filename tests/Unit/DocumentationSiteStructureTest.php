@@ -58,11 +58,13 @@ final class DocumentationSiteStructureTest extends TestCase
         // its own part of the Markdown guide; fenced code also has a page.
         $refs = [
             'native.code' => ['/ru/components/code/', '## Код'],
+            'native.description_list' => ['/ru/authoring/markdown/#чеклисты-и-определения', '## Чеклисты и определения'],
             'native.footnotes_and_sources' => ['/ru/authoring/markdown/#сноски-и-источники', '## Сноски и источники'],
             'native.headings_and_text' => ['/ru/authoring/markdown/#заголовки-и-текст', '## Заголовки и текст'],
             'native.links_and_images' => ['/ru/authoring/markdown/#ссылки-и-изображения', '## Ссылки и изображения'],
             'native.lists_and_quotes' => ['/ru/authoring/markdown/#списки-и-цитаты', '## Списки и цитаты'],
             'native.table' => ['/ru/authoring/markdown/#таблицы', '## Таблицы'],
+            'native.task_list' => ['/ru/authoring/markdown/#чеклисты-и-определения', '## Чеклисты и определения'],
         ];
         self::assertSame(array_keys($refs), array_column(PortableMarkdownProfile::bundled()->entries(), 'id'));
         foreach ($refs as [$route, $heading]) {
@@ -94,7 +96,7 @@ final class DocumentationSiteStructureTest extends TestCase
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
         $atlas = (new DesignAtlasService)->atlas($root)->toArray()['data'];
-        self::assertSame(85, $atlas['count']);
+        self::assertSame(87, $atlas['count']);
         $groups = [
             'native' => [':::atlas_index {origin=native authoring=markdown support=supported}', ['native.code', 'native.table']],
             'inline' => [':::atlas_index {kind=block origin=docara authoring=inline support=supported}', ['docara.badge', 'docara.button', 'docara.icon', 'docara.kbd']],

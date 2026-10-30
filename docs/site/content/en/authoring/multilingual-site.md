@@ -226,6 +226,23 @@ checked by AI both technically and for meaning; `human_reviewed` is set after
 a separate editorial review. The builder does not call AI or the network and
 does not change the sources.
 
+### Parts created automatically
+
+Your script may build some parts of a page, such as a version line or a code
+reference. They change with every release even though the text stayed the
+same. To keep them from making a translation stale, put markers around such a
+part, each on its own line:
+
+```markdown
+<!-- docara:generated -->
+Current version: 2.4.1
+<!-- /docara:generated -->
+```
+
+Nothing between the markers affects translation freshness or the comparison of
+page structure. Your script must build this part for each language: Docara does
+not translate or create it. The markers do not reach the site.
+
 ## Strict publish-current mode
 
 In `report` mode the build publishes all translations as they are. To keep a

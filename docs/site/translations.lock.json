@@ -1002,11 +1002,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/multilingual-site.md",
-            "source_sha256": "572651a3a447946aca1d734d3ae51e87319f6d5e8d8d02a4466a33297df30792",
-            "source_structure_sha256": "ac39e9eba52f1f6f7729beb93944beb3f6c535d669af56ce6130bb009757bef1",
+            "source_sha256": "a5000ae30d1ffd257dfcb2d7dc5f673844b506d9d8438eff219cdff7a31cfc2b",
+            "source_structure_sha256": "97abf98935a6835bf953d0e1c1c17a6cae512353f47851ed0656d1b9a676a636",
             "target_path": "content/en/authoring/multilingual-site.md",
-            "target_sha256": "0fecb76b72296560484b010183ca78409362bd95c957e3e390f11e8c90183009",
-            "target_structure_sha256": "ac39e9eba52f1f6f7729beb93944beb3f6c535d669af56ce6130bb009757bef1"
+            "target_sha256": "e776cad32a587c33572ee7d777c7ee2fc718f6d95a1591e68a4fe034314b0b28",
+            "target_structure_sha256": "97abf98935a6835bf953d0e1c1c17a6cae512353f47851ed0656d1b9a676a636"
         },
         {
             "key": "authoring/navigation.md",

@@ -1,7 +1,12 @@
 :::hero {layout=centered padding=2xl effect=glyph-tide}
 # A documentation site from Markdown — on PHP and Composer
 
-A fast static site with a menu, search and a dark theme.
+Write pages in Markdown and settings in JSON. Docara builds a fast static
+site from them on SIMAI Framework, with a menu, search and a dark theme. You
+can publish it on any host.
+
+Docara 3 · open source on [GitHub](https://github.com/simai/docara) ·
+Apache 2.0 license
 
 [Quick start](/en/start/quick-start/)
 

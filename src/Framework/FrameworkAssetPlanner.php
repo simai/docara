@@ -2101,6 +2101,10 @@ final readonly class FrameworkAssetPlanner
             . 'function fallbackStyle(){return document.querySelector(\'style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]\')||frameStyle("simai.framework.icon_fallback_font.css")}'
             . 'function ensureFullFont(){if(fallbackPending)return fallbackPending;var style=fallbackStyle();if(!style&&framed){fallbackPending=requestFrameStyle("simai.framework.icon_fallback_font.css","full");return fallbackPending}if(!style){style=document.createElement("style");style.dataset.docaraIconFallback="outlined";style.textContent=fallbackCss;document.head.appendChild(style)}fallbackPending=Promise.resolve();return fallbackPending}'
             . 'function ensureFace(face){if(face.full==="full")return ensureFullFont();if(!framed)return Promise.resolve();if(face.full)return requestFrameStyle("simai.framework.icon_variant_fonts.css",face.full);return face.id?requestFrameStyle("simai.framework.icon_catalog.css#"+face.id,"face:"+face.id):Promise.resolve()}'
+            // A class is written only when it changes: DOMTokenList writes the
+            // attribute even for a token already in place, and the observer
+            // below would answer its own write forever.
+            . 'function classSet(icon,name,on){if(icon.classList.contains(name)!==on)icon.classList.toggle(name,on)}'
             . 'function axis(style,name,fallback){var value=parseFloat(style.getPropertyValue(name));return isNaN(value)?fallback:value}'
             // The face follows the icon's own computed axes. A catalogue
             // instance draws weights 300, 400 and 500, fill 0 and 1 with
@@ -2112,8 +2116,8 @@ final readonly class FrameworkAssetPlanner
             // it is checked) has no glyph to fetch; the subset face covers it.
             . 'function family(icon){var variant=icon.classList.contains("sf-icon-rounded")?"rounded":icon.classList.contains("sf-icon-shape")?"shape":"outlined",name=iconName(icon),filled=icon.matches(".sf-icon-filled,.sf-icon--filled,.sf-icon-solid")?1:0,style=getComputedStyle(icon),weight=parseFloat(style.fontWeight)||400,'
             . 'drawn=axis(style,"--sf-icon--fill",0)===filled&&axis(style,"--sf-icon--grade",0)===0&&axis(style,"--sf-icon--optical-size",24)===24&&catalogWeights.indexOf(weight)!==-1;'
-            . 'if(!drawn&&(variant==="outlined"||variants[variant])){icon.classList.remove("sf-icon-complete");icon.classList.add("sf-icon-full-font");return variant==="outlined"?{family:"Material Symbols Outlined Full",weight:weight,full:"full"}:{family:variants[variant],weight:weight,full:variant+"-full"}}'
-            . 'icon.classList.remove("sf-icon-full-font");var complete=variant==="outlined"&&!filled&&beyondSubset.test(name);icon.classList.toggle("sf-icon-complete",complete);'
+            . 'if(!drawn&&(variant==="outlined"||variants[variant])){classSet(icon,"sf-icon-complete",false);classSet(icon,"sf-icon-full-font",true);return variant==="outlined"?{family:"Material Symbols Outlined Full",weight:weight,full:"full"}:{family:variants[variant],weight:weight,full:variant+"-full"}}'
+            . 'classSet(icon,"sf-icon-full-font",false);var complete=variant==="outlined"&&!filled&&beyondSubset.test(name);classSet(icon,"sf-icon-complete",complete);'
             . 'if(variant==="outlined"&&!filled&&!complete&&weight===400)return{family:subsetFamily,weight:400};'
             // Without the variable variant fonts, the face CSS matches.
             . 'if(catalogWeights.indexOf(weight)===-1)weight=weight<400?300:500;'
@@ -2126,8 +2130,8 @@ final readonly class FrameworkAssetPlanner
             // whole class list) drops the face class chosen here; the recorded
             // face puts it back without loading the font again.
             . 'function faceClass(icon){return icon.classList.contains("sf-icon-full-font")?"full":icon.classList.contains("sf-icon-complete")?"complete":""}'
-            . 'function ready(icon){var current=iconName(icon);if(icon.classList.contains("sf-icon-loaded")&&icon.getAttribute("data-docara-icon-name")===current){if(icon.getAttribute("data-docara-icon-face")!==faceClass(icon)){family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon))}return}icon.classList.remove("sf-icon-loaded");icon.setAttribute("data-docara-icon-name",current);var face=family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon));'
-            . 'ensureFace(face).then(function(){var key=face.weight+\' 24px "\'+face.family+\'"\';return loaded[key]||(loaded[key]=document.fonts&&document.fonts.load?document.fonts.load(key,current||undefined):Promise.resolve([true]))}).then(function(faces){if(faces&&faces.length)icon.classList.add("sf-icon-loaded")}).catch(function(){})}'
+            . 'function ready(icon){var current=iconName(icon);if(icon.classList.contains("sf-icon-loaded")&&icon.getAttribute("data-docara-icon-name")===current){if(icon.getAttribute("data-docara-icon-face")!==faceClass(icon)){family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon))}return}classSet(icon,"sf-icon-loaded",false);icon.setAttribute("data-docara-icon-name",current);var face=family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon));'
+            . 'ensureFace(face).then(function(){var key=face.weight+\' 24px "\'+face.family+\'"\';return loaded[key]||(loaded[key]=document.fonts&&document.fonts.load?document.fonts.load(key,current||undefined):Promise.resolve([true]))}).then(function(faces){if(faces&&faces.length)classSet(icon,"sf-icon-loaded",true)}).catch(function(){})}'
             . 'function mark(root){if(root.nodeType===1&&root.matches(".sf-icon"))ready(root);if(root.querySelectorAll){root.querySelectorAll(".sf-icon").forEach(ready)}}'
             . 'function owner(node){var element=node&&node.nodeType===1?node:node&&node.parentElement;return element&&element.closest?element.closest(".sf-icon"):null}'
             . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark);var icon=owner(record.target);if(icon)ready(icon)})}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["icon","class"]})}'

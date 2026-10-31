@@ -393,7 +393,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $assets['simai.framework.icon_font.ready']['content'],
         );
         self::assertStringContainsString(
-            'icon.classList.add("sf-icon-full-font")',
+            'classSet(icon,"sf-icon-full-font",true)',
             $assets['simai.framework.icon_font.ready']['content'],
         );
         self::assertStringContainsString(
@@ -419,9 +419,20 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $assets['simai.framework.icon_font.ready']['content'],
         );
         self::assertStringContainsString(
-            'icon.classList.toggle("sf-icon-complete",complete)',
+            'classSet(icon,"sf-icon-complete",complete)',
             $assets['simai.framework.icon_font.ready']['content'],
         );
+        // The script observes icon classes, so it writes a class only when it
+        // changes; a write of an unchanged token answered itself forever.
+        self::assertStringContainsString(
+            'function classSet(icon,name,on){if(icon.classList.contains(name)!==on)icon.classList.toggle(name,on)}',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
+        self::assertDoesNotMatchRegularExpression(
+            '~icon\.classList\.(?:add|remove)\(~',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
+        self::assertSame(1, substr_count($assets['simai.framework.icon_font.ready']['content'], 'icon.classList.toggle('));
         // The subset draws every name written with its own characters; only
         // a name with another character leaves it.
         self::assertStringContainsString(

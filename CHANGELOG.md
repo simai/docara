@@ -80,6 +80,11 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **Pages no longer freeze with Framework `ui-7153f7a9c092`.** Its `sf-icon`
+  element re-renders the glyph after the page loads. The icon font script
+  then rewrote classes that had not changed, and its own class observer
+  answered each write, so the page never became responsive. The script now
+  writes a class only when it changes.
 - **`docara upgrade --to=<version> --dry-run` works.** The option conflict check
   always fired, so an exact target could never be planned or checked. `--to`
   still conflicts with `--apply` and `--rollback`.

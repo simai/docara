@@ -31,12 +31,10 @@ Smart-компоненты `ui.*` — готовые элементы интер
 {
   "manifests": {
     "ui.button": {
-      "provider": "larena/ui",
       "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
       "sha256": "235e049d…"
     },
     "ui.alert": {
-      "provider": "larena/ui",
       "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
       "sha256": "056329bb…",
       "consumer_policy": {

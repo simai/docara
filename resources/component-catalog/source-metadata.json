@@ -206,7 +206,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/smart-ui.md",
-            "source_sha256": "44eb79a10d815925fdb7973fd81a8030bf00df823dbc0ba0416ae4f58fb7c532",
+            "source_sha256": "45e699ec4f7358e1eac9a081f1ab4264ef31fdb028c42fbc17dd34eb9f2e2370",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/components/smart-ui.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/components/smart-ui.md",
@@ -557,5 +557,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "c1d10fcee3431bfe810d72b56c793e2f638495be2c339b4fefebbac5db0e27b4"
+    "content_sha256": "2c5cdfa6a352ad0d7949af190b1c4b493d9b595b337df4835c9cba7ca74dced9"
 }

@@ -107,6 +107,7 @@ Server started on http://127.0.0.1:8000
 /build_*/
 /.docara-preview/
 /.docara-qa/
+/.docara/upgrades/
 ```
 
 `build_production.docara/` рядом с готовым сайтом содержит отчёты сборки для

@@ -108,6 +108,7 @@ against these files. Do not keep dependencies or build results. A
 /build_*/
 /.docara-preview/
 /.docara-qa/
+/.docara/upgrades/
 ```
 
 `build_production.docara/` next to the finished site holds the build reports

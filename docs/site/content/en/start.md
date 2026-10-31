@@ -18,6 +18,8 @@ browser.
    which files you edit and which Docara creates.
 7. [How components work](/en/start/component-model/) — when plain Markdown is
    enough and when you need a component.
+8. [Working with an AI agent](/en/start/ai-agent/) — how to install the Docara
+   skill and what you can ask it to do.
 
 :::
 

@@ -222,7 +222,7 @@ final readonly class DocumentationStandard
         $lines[] = 'examples work. Fix the page where the answer is no. Docara itself never calls an AI.';
         $lines[] = '';
         $lines[] = 'The machine-readable form of this guide: `' . $docara . ' capabilities --json`,';
-        $lines[] = 'field `documentation_standard`.';
+        $lines[] = 'field `documentation_standard`. For settings, components, updates and errors, install the Docara agent skill: https://github.com/simai/ai-skill-docara';
 
         return implode("\n", $lines) . "\n";
     }

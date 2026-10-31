@@ -280,6 +280,9 @@ final class ProjectUpgradeService
                 'project_owned_preserved' => true,
             ];
             (new SchemaRepository($this->packageRoot . '/resources/schemas'))->assertValid($currentPlan, 'upgrade-plan.schema.json');
+            if (! $this->files->deleteDirectory($upgradeRoot)) {
+                throw new RuntimeException('UPGRADE_STATE_CLEANUP_FAILED:Incomplete generated candidate could not be cleaned.');
+            }
 
             return $currentPlan;
         }

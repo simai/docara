@@ -1266,11 +1266,23 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/start.md",
-            "source_sha256": "baf8f5f68d78e5d0bfa235d7436b50b040d5d79d102e1ca7aacfdf618e15dc0c",
-            "source_structure_sha256": "72dca471300e02ac776f16b9c2c7f129709f7945951c6d213ae739329e65efd7",
+            "source_sha256": "7d98ce500c9ffa647e08abbe875b39384d5b6927c5277558231d5090ab9adaf7",
+            "source_structure_sha256": "0df588daa64dd3cd37b02fafd9254eb4e8a95a0d8ff8f1bf7a6c6d0f0d7e27ec",
             "target_path": "content/en/start.md",
-            "target_sha256": "95275fca9b5b73dfa8be652a291e3ab8d52642350cf9c757718306d9b5d00f14",
-            "target_structure_sha256": "72dca471300e02ac776f16b9c2c7f129709f7945951c6d213ae739329e65efd7"
+            "target_sha256": "c940aff5cb1e4d342787232e0358cae653068282cf5e6f1a4594c65a40c574a5",
+            "target_structure_sha256": "0df588daa64dd3cd37b02fafd9254eb4e8a95a0d8ff8f1bf7a6c6d0f0d7e27ec"
+        },
+        {
+            "key": "start/ai-agent.md",
+            "kind": "page",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/start/ai-agent.md",
+            "source_sha256": "4796f1874b31b9124deb4f69478058163fd4da7803adb2e9cf5109822f9b001e",
+            "source_structure_sha256": "3c8da52348772b1a8439e2180adccab346e774489f269cf69dab008aeaa33811",
+            "target_path": "content/en/start/ai-agent.md",
+            "target_sha256": "d22492624d40eb5e9027dd3e4b7e85f35b3640b31feee6d1f31fb747a0d93526",
+            "target_structure_sha256": "3c8da52348772b1a8439e2180adccab346e774489f269cf69dab008aeaa33811"
         },
         {
             "key": "start/component-model.md",
@@ -1326,10 +1338,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/start/quick-start.md",
-            "source_sha256": "a8f7392034dfc188be3c6f416b63b3b6d126150ee7c22f4b9d992b7c167ec36f",
+            "source_sha256": "31debc5a85ca7f98d4ba3c85cb4af40bebd75030f397d0bac638101249b65be2",
             "source_structure_sha256": "2d4c0295a05eb5d1e721b0f6a60c658e6c968eeabc05d3392665fad534e6d078",
             "target_path": "content/en/start/quick-start.md",
-            "target_sha256": "06f567512e27acc9d1759b8f73c660f8ccdb38e950d5e341d6d231928a431cd0",
+            "target_sha256": "028320e9d0433cd3fe2bac64c959697962d4ff356395bf55b2fef8871744d7b8",
             "target_structure_sha256": "2d4c0295a05eb5d1e721b0f6a60c658e6c968eeabc05d3392665fad534e6d078"
         },
         {

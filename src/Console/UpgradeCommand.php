@@ -40,7 +40,7 @@ final class UpgradeCommand extends ApplicationCommand
             return $this->runOperation(static fn () => throw new \InvalidArgumentException('UPGRADE_ACTION_CONFLICT:Choose only one of --check, --dry-run, --apply or --rollback.'), 'upgrade');
         }
         $target = $this->input->getOption('to');
-        if (($apply !== false || $rollback !== false) && is_string($target)) {
+        if ((is_string($apply) || is_string($rollback)) && is_string($target)) {
             return $this->runOperation(static fn () => throw new \InvalidArgumentException('UPGRADE_ACTION_CONFLICT:--to is allowed only for check, dry-run or automatic upgrade.'), 'upgrade');
         }
         $root = $this->targetDirectory();

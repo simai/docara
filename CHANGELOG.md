@@ -8,6 +8,9 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **Docara now says how to work with an AI agent.** A new page explains how to
+  install the open Docara skill and what to ask it for, and the `AGENTS.md` that
+  `init` writes points to the skill.
 - **A checklist, a term with its definition and a marked word are plain
   Markdown now.** A page that listed steps to tick off, explained its terms or
   wanted to point at one word in a sentence had to reach for a component or
@@ -67,6 +70,14 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **`docara upgrade --to=<version> --dry-run` works.** The option conflict check
+  always fired, so an exact target could never be planned or checked. `--to`
+  still conflicts with `--apply` and `--rollback`.
+- **`docara upgrade --check` leaves nothing behind when the project is current.**
+  It kept a full copy of the dependencies under `.docara/upgrades/`, about 86 MB
+  on a new project. The suggested `.gitignore` now lists that folder too.
+- **`docara capabilities` reports the right product major.** The AI contract said
+  2 on Docara 3; it now says 3 (contract 1.2.1).
 - **A heading written inside an attribute value no longer breaks an example.**
   An inline example moves its headings one level down, and that step also
   rewrote `<h2>` inside a value such as `value="<h2>About</h2>"`, which broke

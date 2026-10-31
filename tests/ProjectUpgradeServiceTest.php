@@ -185,6 +185,7 @@ final class ProjectUpgradeServiceTest extends TestCase
         self::assertSame('2.3.0', $result['current_version']);
         self::assertFalse($verified);
         self::assertFileExists($project . '/build_production/old.html');
+        self::assertSame([], glob($project . '/.docara/upgrades/*') ?: []);
     }
 
     #[Test]

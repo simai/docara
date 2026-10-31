@@ -55,6 +55,9 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **Requirement records name the public Framework repository as owner.** The
+  catalogue and the Smart components page no longer name another product's
+  package in their text.
 - **The shell changes layout only at Framework breakpoints.** Two of its own
   narrow steps, 50rem and 37.5rem, are gone: the sidebar, the navigation
   trigger and the compact search button now follow the Framework `lg` step

@@ -685,22 +685,19 @@ final class PortableMarkdownRenderer
         $icon = $action === 'open' ? 'open_in_new' : 'download';
         $download = $action === 'download' ? ' download' : '';
 
-        if ($name === '' && $meta === []) {
-            return '<a data-docara-block="download" data-action="' . $action
-                . '" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 inline-flex items-cross-center gap-1 decoration-none m-bottom-1"'
-                . $match['attributes'] . $download . '><i class="sf-icon sf-icon-loaded" aria-hidden="true">' . $icon . '</i>'
-                . '<span class="sf-button-text-container">' . $match['label'] . '</span></a>';
-        }
+        // The Framework's download-file card on the native anchor: plain classes,
+        // so it needs no script. The title names the file; without one, the link text does.
+        $label = $name !== '' ? $this->escapeHtml($name) : $match['label'];
 
-        return '<section data-docara-block="download" data-action="' . $action
-            . '" class="bg-surface-0 border border-outline-variant radius-surface p-2 flex flex-col md:flex-row md:items-cross-center content-main-between gap-2 m-bottom-1">'
-            . '<div class="min-w-0 flex items-cross-start gap-1"><i class="sf-icon sf-icon-loaded color-primary" aria-hidden="true">description</i>'
-            . '<div class="min-w-0 flex flex-col gap-1/3">'
-            . ($name !== '' ? '<strong>' . $this->escapeHtml($name) . '</strong>' : '')
-            . ($meta !== [] ? '<span class="color-on-surface-variant">' . $this->escapeHtml(implode(' · ', $meta)) . '</span>' : '')
-            . '</div></div><a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 inline-flex items-cross-center gap-1 decoration-none"'
-            . $match['attributes'] . $download . '><i class="sf-icon sf-icon-loaded" aria-hidden="true">' . $icon . '</i>'
-            . '<span class="sf-button-text-container">' . $match['label'] . '</span></a></section>';
+        return '<a data-docara-block="download" data-action="' . $action
+            . '" class="sf-download-file sf-download-file--size-2 cursor-pointer transition m-bottom-1"'
+            . $match['attributes'] . $download . '>'
+            . '<span class="sf-download-file__body sf-download-file-wrap">'
+            . '<span class="sf-download-file__main sf-download-file-container">'
+            . '<i class="sf-download-file__icon sf-icon sf-icon-loaded" aria-hidden="true">' . $icon . '</i>'
+            . '<span class="sf-download-file__name sf-download-file-file-name">' . $label . '</span></span>'
+            . ($meta !== [] ? '<span class="sf-download-file__size sf-download-file-file-size">' . $this->escapeHtml(implode(' · ', $meta)) . '</span>' : '')
+            . '</span></a>';
     }
 
     /** @param array<string,string> $attributes */
@@ -3352,8 +3349,8 @@ HTML;
 
         $html = preg_replace_callback(
             '/<table>(?<content>.*?)<\/table>/su',
-            static fn (array $matches): string => '<div data-docara-table-scroll class="overflow-auto m-bottom-1">'
-                . '<table class="table table-border table-stripe">'
+            static fn (array $matches): string => '<div data-docara-table-scroll class="table-frame m-bottom-1">'
+                . '<table class="table table-stripe">'
                 . (string) $matches['content'] . '</table></div>',
             $html,
         ) ?? $html;

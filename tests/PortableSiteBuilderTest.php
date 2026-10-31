@@ -824,22 +824,7 @@ MD);
         self::assertStringNotContainsString('.docara-prose img{inline-size:100%', $shellCss);
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:var(--sf-surface-0);', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}', $shellCss);
-        self::assertStringContainsString(
-            '[data-docara-table-scroll]{border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius--surface);background:var(--sf-surface-0)}',
-            $shellCss,
-        );
-        self::assertStringContainsString(
-            '[data-docara-table-scroll]>.table>thead{background:var(--sf-surface-container)}',
-            $shellCss,
-        );
-        self::assertStringContainsString(
-            '[data-docara-table-scroll]>.table>thead>tr>th,[data-docara-table-scroll]>.table>tbody>tr>td{min-inline-size:var(--sf-e0,5rem);overflow-wrap:normal;word-break:normal;padding-block:var(--sf-space-1\/2);padding-inline:var(--sf-space-1);border:0;border-inline-end:var(--sf-px) solid var(--sf-outline-variant);border-block-end:var(--sf-px) solid var(--sf-outline-variant);text-align:start;vertical-align:top}',
-            $shellCss,
-        );
-        self::assertStringContainsString(
-            '[data-docara-table-scroll]>.table>thead>tr>th{padding-block:var(--sf-space-1);background:var(--sf-surface-container);color:var(--sf-on-surface);font-weight:var(--sf-font-weight-bold)}',
-            $shellCss,
-        );
+        self::assertStringNotContainsString('[data-docara-table-scroll]', $shellCss);
         self::assertStringContainsString(
             '.docara-sidebar-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-block:var(--sf-space-1);padding-inline-end:var(--sf-space-1);padding-inline-start:0}',
             $shellCss,
@@ -1084,7 +1069,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/32c7a64e457583eaf5a1860590001217a86b5af9/distr/',
+                '/_docara/vendor/simai-framework/runtime/7153f7a9c0929a28d67f458e9d9a9f9351f7cf8f/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -1376,9 +1361,9 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => 'c2c80109299ad4483a85c69cf73eb20e5b906cc093c4527af59b7e4a67af3839',
-            'smart/buttons/js/buttons.js' => '16599394e25a25bbf8f1f18fca15ce869332ad83fe2c8f7f9f9d66ae131a1c25',
-            'smart/icons/js/icons.js' => '818b2b59ba1e1585f9b941aefbdbd9700e0260cdf804ed54a6bac37160c5d60e',
+            'smart/alert/js/alert.js' => 'e86096d4ce8e3fb95966e7fe0913e9d6192d2a87c4f3581ebfaf64b70a63b435',
+            'smart/buttons/js/buttons.js' => '5095cfe2a3d11020806f418f177f33534b9208cedb9e796c7f651c07de9b1b31',
+            'smart/icons/js/icons.js' => '17f9e531c61e7443d2bee58bf18230ce37006872858c9cc7a2e06ab792fec5ba',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
             self::assertFileExists($published);
@@ -1475,8 +1460,8 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('ui-32c7a64e4575', $componentCatalog['framework_pair']);
-        self::assertCount(37, $componentCatalog['entries']);
+        self::assertSame('ui-7153f7a9c092', $componentCatalog['framework_pair']);
+        self::assertCount(39, $componentCatalog['entries']);
         self::assertEquals(
             [
                 'catalog_is_canonical_framework_registry' => false,
@@ -2065,7 +2050,7 @@ MD;
             $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-32c7a64e4575-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-7153f7a9c092-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));
@@ -2870,8 +2855,8 @@ MD;
             $closure = array_column($plan['generated_assets'], 'sha256');
             $links = $stylesheets['pages'][$page];
             // The stub site's closures hold 44-56 segments; its pages link
-            // 4-8 stylesheets.
-            self::assertLessThanOrEqual(8, count($links), $page);
+            // 4-10 stylesheets.
+            self::assertLessThanOrEqual(10, count($links), $page);
             self::assertLessThan(count($closure), count($links), $page);
             $linked = array_merge(...array_map(
                 static fn (string $filename): array => array_column($stylesheets['bundles'][$filename]['inputs'], 'sha256'),
@@ -2911,8 +2896,11 @@ MD;
             $plans,
         ));
         self::assertGreaterThan(1, count($distinctClosures), 'the fixture must hold pages with different closures');
-        $shared = array_intersect(...array_values($pageFiles));
-        self::assertNotEmpty($shared, 'pages with different closures still share the common stylesheets');
+        self::assertGreaterThan(
+            1,
+            max(array_count_values(array_merge(...array_values($pageFiles)))),
+            'pages with different closures still share stylesheets',
+        );
 
         // The mobile documentation sheet takes the sidebar tree in the
         // browser; the page does not carry a second copy of it.

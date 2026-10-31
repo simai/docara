@@ -160,6 +160,7 @@ final class PortableVendorAssetSelectionTest extends TestCase
                 $name = basename($file->getPathname());
                 if ($name === 'core-loader.js'
                     || ($name === 'icons.js' && str_contains($source, 'this.getProp("type")'))
+                    || ($name === 'icon.js' && str_contains($source, 'requestedType'))
                 ) {
                     continue;
                 }

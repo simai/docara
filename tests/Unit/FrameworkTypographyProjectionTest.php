@@ -26,7 +26,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($project));
 
-        self::assertSame('ui-32c7a64e4575', $repository->runtime()['pair_id']);
+        self::assertSame('ui-7153f7a9c092', $repository->runtime()['pair_id']);
     }
 
     #[Test]
@@ -40,8 +40,8 @@ final class FrameworkTypographyProjectionTest extends TestCase
         );
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
-        self::assertSame('ui-32c7a64e4575', $repository->runtime()['pair_id']);
-        self::assertSame(1385, $repository->runtimeProjection()['files']);
+        self::assertSame('ui-7153f7a9c092', $repository->runtime()['pair_id']);
+        self::assertSame(1389, $repository->runtimeProjection()['files']);
         self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $previous['runtime']['pair_id']);
 
         $previous['runtime']['ui']['files'] = 6772;
@@ -61,8 +61,8 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-4f5e5067afeb-smart-7d932ed51408', $previous['runtime']['pair_id']);
-        self::assertSame('ui-32c7a64e4575', $repository->runtime()['pair_id']);
-        self::assertSame(1385, $repository->runtimeProjection()['files']);
+        self::assertSame('ui-7153f7a9c092', $repository->runtime()['pair_id']);
+        self::assertSame(1389, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 6144;
         $this->expectException(FrameworkComponentException::class);
@@ -81,8 +81,8 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-82fc0ba882ba', $previous['runtime']['pair_id']);
-        self::assertSame('ui-32c7a64e4575', $repository->runtime()['pair_id']);
-        self::assertSame(1385, $repository->runtimeProjection()['files']);
+        self::assertSame('ui-7153f7a9c092', $repository->runtime()['pair_id']);
+        self::assertSame(1389, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 8090;
         $this->expectException(FrameworkComponentException::class);
@@ -102,12 +102,28 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-25beeb814ae8', $previous['runtime']['pair_id']);
-        self::assertSame('ui-32c7a64e4575', $repository->runtime()['pair_id']);
-        self::assertSame(1385, $repository->runtimeProjection()['files']);
+        self::assertSame('ui-7153f7a9c092', $repository->runtime()['pair_id']);
+        self::assertSame(1389, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 8558;
         $this->expectException(FrameworkComponentException::class);
         FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
+    }
+
+    #[Test]
+    public function the_lock_docara_3_6_to_3_9_shipped_builds_with_the_bundled_release(): void
+    {
+        $previous = json_decode(
+            (string) file_get_contents(dirname(__DIR__) . '/fixtures/framework/simai-framework-3.9.1.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+
+        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
+        self::assertSame('ui-32c7a64e4575', $previous['runtime']['pair_id']);
+        self::assertSame('ui-7153f7a9c092', $repository->runtime()['pair_id']);
+        self::assertSame(1389, $repository->runtimeProjection()['files']);
     }
 
     #[Test]
@@ -121,7 +137,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $legacy['runtime_projection']['manifest']['sha256'] = '8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e';
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($legacy));
-        self::assertSame(1385, $repository->runtimeProjection()['files']);
+        self::assertSame(1389, $repository->runtimeProjection()['files']);
         self::assertArrayHasKey('rule/rule.json', $repository->runtimeManifest()['files']);
         self::assertSame(117, $legacy['runtime_projection']['files']);
 
@@ -247,9 +263,9 @@ final class FrameworkTypographyProjectionTest extends TestCase
         }
         $runtime = $repository->runtimeProjection();
         self::assertIsArray($runtime);
-        self::assertSame(1385, $runtime['files']);
+        self::assertSame(1389, $runtime['files']);
         $runtimeFiles = $repository->runtimeManifest()['files'];
-        self::assertCount(1385, $runtimeFiles);
+        self::assertCount(1389, $runtimeFiles);
         self::assertArrayHasKey('rule/rule.json', $runtimeFiles);
         self::assertArrayHasKey('utility/theme/default/css/default.css', $runtimeFiles);
         self::assertArrayHasKey('component/highlight/js/highlight.js', $runtimeFiles);
@@ -287,7 +303,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertStringNotContainsString('.min.', $relativePath);
         }
         self::assertSame(
-            '05b452c6a886cc32a3d5ad34fd479b7459b4ffd7be7b3f8dfadf21090e0b4d4b',
+            '105d6b4734c35e3304698ad236169965f90a88b1fa09febc018beddf52671ac3',
             $runtime['packet_sha256'],
         );
         $coreLoader = $repository->bundledRuntimeAsset('core/js/core-loader.js');
@@ -297,7 +313,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertStringNotContainsString('cdn.jsdelivr.net', $assets['simai.framework.boot']['content']);
         foreach (['simai.framework.smart_base.js', 'simai.framework.core.js'] as $assetKey) {
             self::assertStringStartsWith('/_docara/vendor/simai-framework/runtime/', $assets[$assetKey]['url']);
-            self::assertSame('32c7a64e457583eaf5a1860590001217a86b5af9', $assets[$assetKey]['source_revision']);
+            self::assertSame('7153f7a9c0929a28d67f458e9d9a9f9351f7cf8f', $assets[$assetKey]['source_revision']);
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
@@ -480,7 +496,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertSame('simai.framework.asset_plan.v1', $productionPlan->preload['schema']);
         self::assertContains('display/default', $productionPlan->preload['modules']);
         self::assertContains('padding/default', $productionPlan->preload['modules']);
-        self::assertContains('cl-buttons', $productionPlan->preload['modules']);
+        self::assertContains('cl-button', $productionPlan->preload['modules']);
         self::assertContains('pointer-events/default', $productionPlan->preload['modules']);
         self::assertContains('text-align/default', $productionPlan->preload['modules']);
         self::assertNotContains('simai.framework.utility.full.css', array_column($productionPlan->assets, 'key'));
@@ -572,7 +588,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         // core.js carries no query: Core preloads its chunks with core.js's
         // query while the chunk imports carry none, so a query fetched them twice.
         self::assertSame(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/32c7a64e457583eaf5a1860590001217a86b5af9/distr/core/js/core.js',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/7153f7a9c0929a28d67f458e9d9a9f9351f7cf8f/distr/core/js/core.js',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }

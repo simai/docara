@@ -703,7 +703,7 @@ MD;
         self::assertStringContainsString('<div class="docara-step-content">Установите PHP-зависимости.</div>', $html);
         self::assertStringNotContainsString('absolute inset-inline-start-0', $html);
         self::assertStringContainsString(
-            '<div data-docara-table-scroll class="overflow-auto m-bottom-1"><table class="table table-border table-stripe">',
+            '<div data-docara-table-scroll class="table-frame m-bottom-1"><table class="table table-stripe">',
             $html,
         );
         self::assertStringContainsString(

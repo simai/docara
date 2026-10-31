@@ -96,9 +96,9 @@ final class SiteThemeTest extends TestCase
         [$comment, $css] = explode("\n", $result['content'], 2);
 
         // SF.ThemePalette.themeToCss(themeFromColor('#0a7d4f')) of ui-source
-        // 94b497f5b (the release's source), run outside Docara: the 128 tones
+        // 481b50fe9 (the release's source), run outside Docara: the 128 tones
         // and the 98 translucent steps.
-        self::assertSame('ac898d4f1168776ebabbb2f1ef2b60173c543348e6acd6992d8d22e888340edd', hash('sha256', $css));
+        self::assertSame('2b532b922254a9e8779e7fe983e0eaac6a738a5bf380d326d9de45aa9b10100c', hash('sha256', $css));
         self::assertStringContainsString('  --sf-primary-50--alfa-12: #0088561f;', $css);
         self::assertStringContainsString('  --sf-neutral-90--alfa-8: #e0e3de14;', $css);
         self::assertStringContainsString('  --sf-primary-40: #006d44;', $css);
@@ -106,12 +106,12 @@ final class SiteThemeTest extends TestCase
         self::assertStringContainsString('  --sf-tertiary-40: #00677d;', $css);
         self::assertStringContainsString('  --sf-neutral-98: #f7faf5;', $css);
         self::assertStringContainsString('  --sf-error-40: #bb1919;', $css);
-        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-32c7a64e4575 SF.ThemePalette.themeToCss */', $comment);
+        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-7153f7a9c092 SF.ThemePalette.themeToCss */', $comment);
 
         $receipt = $result['receipt'];
         self::assertSame('docara.site_theme.v1', $receipt['schema']);
         self::assertSame(['hue' => 161, 'chroma' => 85], $receipt['palette']);
-        self::assertSame('ui-32c7a64e4575', $receipt['framework']['pair_id']);
+        self::assertSame('ui-7153f7a9c092', $receipt['framework']['pair_id']);
         self::assertSame(226, $receipt['stylesheet']['variables']);
         self::assertSame('docara-theme.' . hash('sha256', $result['content']) . '.css', $receipt['stylesheet']['filename']);
 
@@ -123,7 +123,7 @@ final class SiteThemeTest extends TestCase
     {
         $result = $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0a7d4f', 'hue' => 200, 'chroma' => 40]));
 
-        // themeFromHct({hue: 200, chroma: 40}) of ui-source 94b497f5b.
+        // themeFromHct({hue: 200, chroma: 40}) of ui-source 481b50fe9.
         self::assertStringContainsString('  --sf-primary-40: #00696c;', $result['content']);
         self::assertStringContainsString('  --sf-tertiary-40: #365f97;', $result['content']);
         self::assertSame(['hue' => 200, 'chroma' => 40], $result['receipt']['palette']);

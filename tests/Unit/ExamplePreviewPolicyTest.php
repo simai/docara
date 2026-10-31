@@ -123,7 +123,7 @@ final class ExamplePreviewPolicyTest extends TestCase
 
         self::assertSame('admitted_html', $resolve('<sf-country-code label="Phone" hint="Pick a country" iso2="RU" use-mask="true" root-class="p-2" name="phone" required="true"></sf-country-code>'));
         self::assertSame('html_attribute_not_admitted', $resolve('<sf-country-code label="Phone" dial-code="+7"></sf-country-code>'));
-        self::assertSame('html_attribute_not_admitted', $resolve('<sf-country-code form="checkout"></sf-country-code>'));
+        self::assertSame('html_attribute_not_admitted', $resolve('<sf-country-code not-a-prop="checkout"></sf-country-code>'));
         self::assertSame('html_attribute_not_admitted', $resolve('<sf-country-code src="/flags.json"></sf-country-code>'));
         self::assertSame('html_attribute_not_admitted', $resolve('<sf-inline-editor template="x"></sf-inline-editor>'));
         self::assertSame('html_attribute_not_admitted', $resolve('<div label="Phone"></div>'));
@@ -145,7 +145,7 @@ final class ExamplePreviewPolicyTest extends TestCase
         $resolve = static fn (string $html): string => $policy->resolve(['HTML' => $html], true, 'auto')['reason'];
 
         self::assertSame('admitted_html', $resolve('<sf-country-code label="Phone" name="phone" required="true" iso2="RU" value="+7 903 123-45-67" use-mask="true" hint="Pick a country."></sf-country-code>'));
-        self::assertSame('html_attribute_not_admitted', $resolve('<sf-country-code form="checkout"></sf-country-code>'));
+        self::assertSame('html_attribute_not_admitted', $resolve('<sf-country-code not-a-prop="checkout"></sf-country-code>'));
         self::assertSame('html_attribute_not_admitted', $resolve('<sf-country-code root-style="color:red"></sf-country-code>'));
         self::assertSame('html_attribute_not_admitted', $resolve('<sf-inline-editor template="x"></sf-inline-editor>'));
     }

@@ -148,7 +148,11 @@ final class ExamplePreviewPolicy
             }
             $attributes = [];
             foreach ($component['attributes'] as $attribute) {
-                if (is_string($attribute) && preg_match('/\A[a-z][a-z0-9-]*\z/D', $attribute) === 1) {
+                if (is_string($attribute)
+                    && preg_match('/\A[a-z][a-z0-9-]*\z/D', $attribute) === 1
+                    // Declared by the Framework, but an inline style or template is not safe to inline.
+                    && ! in_array($attribute, ['root-style', 'template'], true)
+                ) {
                     $attributes[] = $attribute;
                 }
             }

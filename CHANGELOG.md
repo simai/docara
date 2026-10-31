@@ -55,6 +55,13 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **Docara now bundles SIMAI Framework `ui-7153f7a9c092`.** Markdown tables use
+  the Framework's `table-frame` and Docara's own table rules are gone. The
+  download block is the Framework's `sf-download-file` card, so a download with
+  a title shows the file name and details on the card and no longer a separate
+  button with the link text. The release is heavier: `core.js`, `smart-base.js`
+  and `core.css` grew by 30-58% (raw), and the budgets in `page-weight.json` were
+  raised to match. Sites that pin `ui-32c7a64e4575` build with the new release.
 - **Requirement records name the public Framework repository as owner.** The
   catalogue and the Smart components page no longer name another product's
   package in their text.

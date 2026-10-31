@@ -1,0 +1,437 @@
+@layer sf.reset, sf.tokens, sf.base, sf.utilities, sf.components, sf.overrides, sf.states;
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+/*
+* _var__component_name.scss
+* 
+* SCSS file containing variables for component styling.
+* 
+* Used to define default parameters (color, size, etc.)
+* that can be overridden in other parts of the project.
+* 
+* Example usage:
+* --sf-icon--fill: 0; // Fill for icon
+*/
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+/* In the components layer, as every other component: outside it these rules
+   outranked every utility, whatever its layer. */
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-loader-container {
+    /* The colour is the current ink unless --sf-loader--color is set on the
+       spinner or any ancestor: inside a button it is the button's ink. The
+       Framework never sets it (simai/ui-source#10; it was primary before). */
+    --sf-loader-track-color: var(--sf-spinner-track-color, var(--sf-surface-container));
+    /* The size ladder (simai/ui-source#10): at each step the spinner is exactly
+       the icon of a button of the same size, so it can stand in for that icon in
+       a button, a field, a chip or a menu item. Step 1 when none is written. */
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1));
+    /* In units of the 24-unit icon grid the arc is drawn on: the stroke of a
+       regular-weight icon, which scales with the box as the icon's does. */
+    --sf-loader-stroke-width: var(--sf-spinner-stroke-width, 2);
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/2));
+    --sf-loader-text-size: var(--sf-text-size-1);
+    --sf-loader-cycle-duration: calc(var(--sf-duration-slow) * 6);
+    --sf-loader-dot-duration: calc(var(--sf-duration-slow) * 3);
+    /* The turn of the arc (one a second, linear, simai/ui-source#13), of the
+       breathing and comet looks, and the breath itself (simai/ui-source#11). */
+    --sf-loader-arc-duration: calc(var(--sf-duration-slow) * 2);
+    --sf-loader-spin-duration: calc(var(--sf-duration-slow) * 4);
+    --sf-loader-breath-duration: calc(var(--sf-duration-slow) * 3);
+    --sf-loader-comet-duration: calc(var(--sf-duration-slow) * 2);
+    color: currentColor;
+    color: var(--sf-spinner-color, var(--sf-loader--color, currentColor));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sf-loader-text-gap);
+    justify-content: center;
+  }
+  .sf-loader-container .sf-loader--text {
+    font-family: var(--sf-text--family);
+    font-weight: 400;
+    font-size: var(--sf-loader-text-size);
+    color: var(--sf-on-surface);
+    color: var(--sf-spinner-text-color, var(--sf-on-surface));
+  }
+  .sf-loader-container.sf-loader--size-1\/3 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1\/3));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1\/3));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/3));
+    --sf-loader-text-size: var(--sf-text-size-1\/3);
+  }
+  .sf-loader-container.sf-loader--size-1\/2 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1\/2));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1\/2));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/3));
+    --sf-loader-text-size: var(--sf-text-size-1\/2);
+  }
+  .sf-loader-container.sf-loader--size-1 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/2));
+    --sf-loader-text-size: var(--sf-text-size-1);
+  }
+  .sf-loader-container.sf-loader--size-2 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-2));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-2));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1));
+    --sf-loader-text-size: var(--sf-text-size-2);
+  }
+  .sf-loader-container.sf-loader--size-3 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-3));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-3));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-2));
+    --sf-loader-text-size: var(--sf-text-size-3);
+  }
+  /* A spinner drawn in pixels (data-width, data-height, data-stroke-width,
+     data-dot-radius: deprecated, journal attribute-spinner-pixel-geometry) keeps
+     the strokes it had, in the pixels of its own drawing, until the sweep. */
+  .sf-loader-container.sf-loader--pixel-geometry {
+    --sf-loader-stroke-width: var(--sf-a5);
+  }
+  .sf-loader-container.sf-loader--pixel-geometry.sf-loader--size-1\/3 {
+    --sf-loader-stroke-width: var(--sf-a4);
+  }
+  .sf-loader-container.sf-loader--pixel-geometry.sf-loader--size-1\/2 {
+    --sf-loader-stroke-width: var(--sf-a4);
+  }
+  .sf-loader-container.sf-loader--pixel-geometry.sf-loader--size-1 {
+    --sf-loader-stroke-width: var(--sf-a6);
+  }
+  .sf-loader-container.sf-loader--pixel-geometry.sf-loader--size-2 {
+    --sf-loader-stroke-width: var(--sf-a6);
+  }
+  .sf-loader-container.sf-loader--pixel-geometry.sf-loader--size-3 {
+    --sf-loader-stroke-width: var(--sf-a8);
+  }
+}
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+/* The looks (simai/ui-source#11). Every spinner draws the four on one ring;
+   which one shows, and how it moves, is a set of variables, so that it
+   inherits: data-sf-spinner on html, body or any block sets them for
+   everything inside it, the nearest such block winning, and data-variant on a
+   spinner sets them for that spinner above both. With none set, the fallbacks
+   where they are read are the arc's. An unknown name is the arc too.
+   `dash` is the arc's length where no motion draws it: the arc's own (a fixed
+   30% of the ring, simai/ui-source#13) and the still frame of breathing. */
+/* In the components layer, as every other component: outside it these rules
+   outranked every utility, whatever its layer. */
+@layer sf.components {
+  .sf-loader-container .sf-loader--loading-indicator,
+  .sf-loader-container .sf-loader--circles {
+    display: inline-flex;
+    height: var(--sf-loader-svg-height);
+    width: var(--sf-loader-svg-width);
+  }
+  .sf-loader-container .sf-loader-svg {
+    display: block;
+    height: 100%;
+    overflow: visible;
+    width: 100%;
+  }
+  /* The page's look, inherited from the nearest block that names one; a name
+     that is not a look is the arc (that rule weighs nothing, so a named look on
+     the same block wins). An empty name sets nothing and inherits. */
+  :where([data-sf-spinner]:not([data-sf-spinner=""])) {
+    --sf-loader--look-track: inline;
+    --sf-loader--look-accent: inline;
+    --sf-loader--look-comet: none;
+    --sf-loader--look-dots: none;
+    --sf-loader--look-motion: none;
+    --sf-loader--look-motion-duration: var(--sf-loader-cycle-duration);
+    --sf-loader--look-motion-easing: linear;
+    --sf-loader--look-spin: sf-loader-svg-rotate;
+    --sf-loader--look-spin-duration: var(--sf-loader-arc-duration);
+    --sf-loader--look-dash: 30 70;
+  }
+  [data-sf-spinner=breathing] {
+    --sf-loader--look-track: inline;
+    --sf-loader--look-accent: inline;
+    --sf-loader--look-comet: none;
+    --sf-loader--look-dots: none;
+    --sf-loader--look-motion: sf-loader-breathing;
+    --sf-loader--look-motion-duration: var(--sf-loader-breath-duration);
+    --sf-loader--look-motion-easing: var(--sf-animation);
+    --sf-loader--look-spin: sf-loader-svg-rotate;
+    --sf-loader--look-spin-duration: var(--sf-loader-spin-duration);
+    --sf-loader--look-dash: 24 76;
+  }
+  [data-sf-spinner=comet] {
+    --sf-loader--look-track: inline;
+    --sf-loader--look-accent: none;
+    --sf-loader--look-comet: inline;
+    --sf-loader--look-dots: none;
+    --sf-loader--look-motion: none;
+    --sf-loader--look-motion-duration: var(--sf-loader-cycle-duration);
+    --sf-loader--look-motion-easing: linear;
+    --sf-loader--look-spin: sf-loader-svg-rotate;
+    --sf-loader--look-spin-duration: var(--sf-loader-comet-duration);
+    --sf-loader--look-dash: 30 70;
+  }
+  [data-sf-spinner=dots] {
+    --sf-loader--look-track: none;
+    --sf-loader--look-accent: none;
+    --sf-loader--look-comet: none;
+    --sf-loader--look-dots: inline;
+    --sf-loader--look-motion: none;
+    --sf-loader--look-motion-duration: var(--sf-loader-cycle-duration);
+    --sf-loader--look-motion-easing: linear;
+    --sf-loader--look-spin: none;
+    --sf-loader--look-spin-duration: var(--sf-loader-spin-duration);
+    --sf-loader--look-dash: 30 70;
+  }
+  /* The spinner's own look, above the page's. Written after it, so a spinner
+     that also carries data-sf-spinner is still ruled by its data-variant. */
+  .sf-loader-container:where([data-variant]:not([data-variant=""])) {
+    --sf-loader--look-track: inline;
+    --sf-loader--look-accent: inline;
+    --sf-loader--look-comet: none;
+    --sf-loader--look-dots: none;
+    --sf-loader--look-motion: none;
+    --sf-loader--look-motion-duration: var(--sf-loader-cycle-duration);
+    --sf-loader--look-motion-easing: linear;
+    --sf-loader--look-spin: sf-loader-svg-rotate;
+    --sf-loader--look-spin-duration: var(--sf-loader-arc-duration);
+    --sf-loader--look-dash: 30 70;
+  }
+  .sf-loader-container[data-variant=breathing] {
+    --sf-loader--look-track: inline;
+    --sf-loader--look-accent: inline;
+    --sf-loader--look-comet: none;
+    --sf-loader--look-dots: none;
+    --sf-loader--look-motion: sf-loader-breathing;
+    --sf-loader--look-motion-duration: var(--sf-loader-breath-duration);
+    --sf-loader--look-motion-easing: var(--sf-animation);
+    --sf-loader--look-spin: sf-loader-svg-rotate;
+    --sf-loader--look-spin-duration: var(--sf-loader-spin-duration);
+    --sf-loader--look-dash: 24 76;
+  }
+  .sf-loader-container[data-variant=comet] {
+    --sf-loader--look-track: inline;
+    --sf-loader--look-accent: none;
+    --sf-loader--look-comet: inline;
+    --sf-loader--look-dots: none;
+    --sf-loader--look-motion: none;
+    --sf-loader--look-motion-duration: var(--sf-loader-cycle-duration);
+    --sf-loader--look-motion-easing: linear;
+    --sf-loader--look-spin: sf-loader-svg-rotate;
+    --sf-loader--look-spin-duration: var(--sf-loader-comet-duration);
+    --sf-loader--look-dash: 30 70;
+  }
+  .sf-loader-container[data-variant=dots] {
+    --sf-loader--look-track: none;
+    --sf-loader--look-accent: none;
+    --sf-loader--look-comet: none;
+    --sf-loader--look-dots: inline;
+    --sf-loader--look-motion: none;
+    --sf-loader--look-motion-duration: var(--sf-loader-cycle-duration);
+    --sf-loader--look-motion-easing: linear;
+    --sf-loader--look-spin: none;
+    --sf-loader--look-spin-duration: var(--sf-loader-spin-duration);
+    --sf-loader--look-dash: 30 70;
+  }
+  /* The arc, breathing and comet turn the whole drawing; the track is a full
+     ring and does not show it. The arc is nothing but that turn: a fixed 30% of
+     the ring going round at one turn a second, so its length never changes --
+     breathing's does (simai/ui-source#13). */
+  /* In longhands: in the shorthand a name of none reads as the fill mode. */
+  .sf-loader-container .sf-loader-svg {
+    -webkit-animation-name: sf-loader-svg-rotate;
+            animation-name: sf-loader-svg-rotate;
+    -webkit-animation-name: var(--sf-loader--look-spin, sf-loader-svg-rotate);
+            animation-name: var(--sf-loader--look-spin, sf-loader-svg-rotate);
+    -webkit-animation-duration: var(--sf-loader-arc-duration);
+            animation-duration: var(--sf-loader-arc-duration);
+    -webkit-animation-duration: var(--sf-loader--look-spin-duration, var(--sf-loader-arc-duration));
+            animation-duration: var(--sf-loader--look-spin-duration, var(--sf-loader-arc-duration));
+    -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+  }
+  .sf-loader-container .sf-loader-ring-filled {
+    display: inline;
+    display: var(--sf-loader--look-track, inline);
+    fill: none;
+    opacity: var(--sf-opacity-30);
+    stroke: var(--sf-surface-container);
+    stroke: var(--sf-loader-track-color, var(--sf-surface-container));
+    stroke-linecap: round;
+    stroke-width: var(--sf-loader-stroke-width);
+  }
+  .sf-loader-container .sf-loader-ring-accent {
+    display: inline;
+    display: var(--sf-loader--look-accent, inline);
+    fill: none;
+    stroke: currentColor;
+    stroke-dasharray: 30 70;
+    stroke-dasharray: var(--sf-loader--look-dash, 30 70);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: var(--sf-loader-stroke-width);
+  }
+  .sf-loader-container .sf-loader--loading-indicator .sf-loader-ring-accent {
+    -webkit-animation-name: none;
+            animation-name: none;
+    -webkit-animation-name: var(--sf-loader--look-motion, none);
+            animation-name: var(--sf-loader--look-motion, none);
+    -webkit-animation-duration: var(--sf-loader-cycle-duration);
+            animation-duration: var(--sf-loader-cycle-duration);
+    -webkit-animation-duration: var(--sf-loader--look-motion-duration, var(--sf-loader-cycle-duration));
+            animation-duration: var(--sf-loader--look-motion-duration, var(--sf-loader-cycle-duration));
+    -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+    -webkit-animation-timing-function: var(--sf-loader--look-motion-easing, linear);
+            animation-timing-function: var(--sf-loader--look-motion-easing, linear);
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+  }
+  .sf-loader-container.sf-loader--infinite .sf-loader--loading-indicator .sf-loader-ring-accent,
+  .sf-loader-container.sf-loader--infinite .sf-loader-svg {
+    -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+  }
+  .sf-loader-container .sf-loader-comet {
+    display: none;
+    display: var(--sf-loader--look-comet, none);
+  }
+  .sf-loader-container .sf-loader-comet-segment {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--sf-loader-stroke-width);
+  }
+  .sf-loader-container .sf-loader-dots {
+    display: none;
+    display: var(--sf-loader--look-dots, none);
+  }
+  .sf-loader-container .sf-loader-dot {
+    fill: currentColor;
+    opacity: var(--sf-opacity-20);
+    -webkit-animation: sf-loader-dot-wave var(--sf-loader-dot-duration) linear both;
+            animation: sf-loader-dot-wave var(--sf-loader-dot-duration) linear both;
+    -webkit-animation-delay: calc(var(--sf-loader-dot-duration) / var(--sf-loader-dot-count) * var(--sf-loader-dot-step) * -1);
+            animation-delay: calc(var(--sf-loader-dot-duration) / var(--sf-loader-dot-count) * var(--sf-loader-dot-step) * -1);
+  }
+  .sf-loader-container .sf-loader-dot--active {
+    opacity: var(--sf-opacity-60);
+  }
+  .sf-loader-container.sf-loader--infinite .sf-loader-dot {
+    -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+  }
+  @-webkit-keyframes sf-loader-svg-rotate {
+    0% {
+      -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+  }
+  @keyframes sf-loader-svg-rotate {
+    0% {
+      -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes sf-loader-dot-wave {
+    0% {
+      opacity: var(--sf-opacity-20);
+    }
+    18% {
+      opacity: 1;
+    }
+    40% {
+      opacity: var(--sf-opacity-60);
+    }
+    100% {
+      opacity: var(--sf-opacity-20);
+    }
+  }
+  @keyframes sf-loader-dot-wave {
+    0% {
+      opacity: var(--sf-opacity-20);
+    }
+    18% {
+      opacity: 1;
+    }
+    40% {
+      opacity: var(--sf-opacity-60);
+    }
+    100% {
+      opacity: var(--sf-opacity-20);
+    }
+  }
+  /* Reduced motion: a still frame of every look -- the arc its own 30% of the
+     ring, breathing's arc a quarter of it (each the look's dash), the comet
+     where it is drawn, the dots with their lit ones brighter. */
+  @media (prefers-reduced-motion: reduce) {
+    .sf-loader-container .sf-loader-svg,
+    .sf-loader-container .sf-loader-ring-accent,
+    .sf-loader-container .sf-loader-dot {
+      -webkit-animation: none !important;
+              animation: none !important;
+    }
+    .sf-loader-container .sf-loader-ring-accent {
+      opacity: 1;
+    }
+  }
+  /* Breathing: the arc grows to most of the ring and shrinks back while its
+     start runs ahead, as Material's indeterminate circular indicator does; the
+     drawing turns underneath at its own pace. */
+  @-webkit-keyframes sf-loader-breathing {
+    0% {
+      stroke-dasharray: 4 96;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 70 30;
+      stroke-dashoffset: -15;
+    }
+    100% {
+      stroke-dasharray: 4 96;
+      stroke-dashoffset: -100;
+    }
+  }
+  @keyframes sf-loader-breathing {
+    0% {
+      stroke-dasharray: 4 96;
+      stroke-dashoffset: 0;
+    }
+    50% {
+      stroke-dasharray: 70 30;
+      stroke-dashoffset: -15;
+    }
+    100% {
+      stroke-dasharray: 4 96;
+      stroke-dashoffset: -100;
+    }
+  }
+}

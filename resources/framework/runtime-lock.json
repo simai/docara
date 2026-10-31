@@ -86,6 +86,12 @@
                 "runtime_projection_packet_sha256": "2b6d09d914ad2fe44df62d115310a92d5e8f9884f30b62e0319f2a88f9e34ac2",
                 "runtime_projection_files": 1385,
                 "runtime_projection_manifest_sha256": "a4f9008db55cc8adcfc78de3bdb0596641ad8c6114aeef0a84e8bd4c66987b5a"
+            },
+            {
+                "runtime_sha256": "72b1d9d491806678a1bb8134be6bfdf03c6f4eb32fd9d7bbf963363ca8a989d2",
+                "runtime_projection_packet_sha256": "05b452c6a886cc32a3d5ad34fd479b7459b4ffd7be7b3f8dfadf21090e0b4d4b",
+                "runtime_projection_files": 1385,
+                "runtime_projection_manifest_sha256": "99d6f1471f3e7d78671795aa3a927723d43520b1d0d8675afd4b9f33db73f645"
             }
         ],
         "superseded_typography_projections": [
@@ -100,44 +106,44 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "ui-32c7a64e4575",
-    "bundle_id": "ui-32c7a64e4575-registry-fe0a0dfb-verified-commit-candidate-v1",
+    "pair_id": "ui-7153f7a9c092",
+    "bundle_id": "ui-7153f7a9c092-registry-e26fb395-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
     "tag": null,
     "ui": {
         "tag": null,
-        "commit": "32c7a64e457583eaf5a1860590001217a86b5af9",
+        "commit": "7153f7a9c0929a28d67f458e9d9a9f9351f7cf8f",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "d6ebdfdcd4d0cc2743897b91e36e46327d2393ea56c6e054d4ac30a8ae8dfdde",
-        "files": 8563
+        "sha256": "c8003462439f70d3c8fe0421e49be33889c288ff0ac756275e0c7a8b97decd82",
+        "files": 11462
     },
     "ui_smart": {
         "tag": null,
-        "commit": "32c7a64e457583eaf5a1860590001217a86b5af9",
+        "commit": "7153f7a9c0929a28d67f458e9d9a9f9351f7cf8f",
         "tree": "distr/smart",
         "mount": "ui",
-        "sha256": "19c9564f7394398528602818d0d64a759128b8115554c27708e30d2d75723b36",
-        "files": 756
+        "sha256": "427a685b2f9067d65ea584d6635458ef722811a810539a6a4cd9b08868ed4438",
+        "files": 2704
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "ui-32c7a64e4575",
+        "compatibility_id": "ui-7153f7a9c092",
         "profile": "plain-assets-v1",
         "relative_path": "contracts/generated/framework-contract-registry.json",
-        "file_sha256": "fe0a0dfb6627eddc47c42ea036bc75791a7e0cf46448049cb4de6a811fd12204",
+        "file_sha256": "e26fb395d38603384cec7ccec7ce02c6b5f8d925adb3519d4dcb4ca243694f20",
         "source": {
-            "commit": "efccc737657634122270ce7281a43878baa78410",
+            "commit": "46ce16bc2613e2fead3b6f2675495bcc3a499b5f",
             "tree": "contracts/generated",
-            "tree_oid": "c3af9ca534b640838b3370150a376c07885514e2",
+            "tree_oid": "f3dde108026d35e7b6e87b288628bcd8bedb0160",
             "mount": "contract",
-            "sha256": "bbc909ed220b703c8d5c9d116d3110862ae7821b462d9341e48be43af1064cd7",
+            "sha256": "82c373416adc19c577e069b849e5079b2cee014a575eb921040b95ffe6e489cf",
             "files": 2
         },
         "documentation_source": {
             "schema": "docara.documentation_source.v1",
             "relative_path": "contracts/generated/documentation-source.json",
-            "file_sha256": "cc86b818656104d58435b6d64da607e4095c9285b50fe5411b4ef97290def6bb"
+            "file_sha256": "11a0f708cf76c3f04bc080340824be5acea93c7882db56f8aea49f3a2d482d79"
         }
     },
     "boot": {
@@ -170,6 +176,26 @@
         ]
     },
     "components": {
+        "sf-accordion": {
+            "source": "smart/accordion",
+            "javascript": "smart/smart/accordion/js/accordion.js",
+            "css": "smart/smart/accordion/css/accordion.css",
+            "attributes": [
+                "appearance",
+                "heading-level",
+                "items",
+                "marker",
+                "root-class",
+                "root-style",
+                "single",
+                "single-section",
+                "size",
+                "template"
+            ],
+            "requires": [
+                "sf-badge"
+            ]
+        },
         "sf-alert": {
             "source": "smart/alert",
             "javascript": "smart/smart/alert/js/alert.js",
@@ -182,10 +208,13 @@
                 "action",
                 "action-text",
                 "appearance",
+                "aria-label",
                 "closable",
                 "close-label",
+                "heading",
                 "icon",
                 "root-class",
+                "root-style",
                 "secondary-action",
                 "secondary-action-text",
                 "status",
@@ -202,9 +231,14 @@
             "css": null,
             "attributes": [
                 "aria-label",
+                "badge-cap",
+                "badge-count",
+                "badge-dot",
+                "badge-label",
                 "card-variant",
                 "description",
                 "disabled",
+                "heading",
                 "image-alt",
                 "image-url",
                 "line",
@@ -212,12 +246,14 @@
                 "meta-icon",
                 "no-wrap",
                 "root-class",
+                "root-style",
                 "shape",
                 "size",
                 "status",
                 "template",
                 "text",
-                "title"
+                "title",
+                "tone"
             ]
         },
         "sf-avatars": {
@@ -232,6 +268,7 @@
                 "avatars-more",
                 "check",
                 "data",
+                "fields",
                 "image-url",
                 "label-second-text",
                 "label-size",
@@ -240,6 +277,7 @@
                 "profile-size",
                 "property",
                 "root-class",
+                "root-style",
                 "round-size",
                 "source",
                 "template"
@@ -251,8 +289,10 @@
             "css": null,
             "core_css": "ui/distr/component/badges/css/badges.css",
             "attributes": [
+                "activity",
                 "appearance",
                 "aria-label",
+                "compact",
                 "icon",
                 "icon-end",
                 "icon-left",
@@ -261,6 +301,7 @@
                 "icon-start",
                 "line",
                 "root-class",
+                "root-style",
                 "scheme",
                 "size",
                 "status",
@@ -286,6 +327,7 @@
                 "link-class",
                 "max-items",
                 "root-class",
+                "root-style",
                 "separator-class",
                 "separator-icon",
                 "template"
@@ -313,6 +355,7 @@
                 "appearance",
                 "aria-label",
                 "disabled",
+                "expanded",
                 "icon",
                 "icon-end",
                 "icon-left",
@@ -323,8 +366,11 @@
                 "native-type",
                 "radius",
                 "root-class",
+                "root-style",
                 "scheme",
                 "segment",
+                "shortcut",
+                "shortcut-listen",
                 "size",
                 "spacing",
                 "status",
@@ -353,6 +399,7 @@
                 "plate",
                 "radius",
                 "root-class",
+                "root-style",
                 "scheme",
                 "size",
                 "spacing",
@@ -378,10 +425,12 @@
                 "error",
                 "help",
                 "indeterminate",
+                "invalid",
                 "label",
                 "name",
                 "position",
                 "root-class",
+                "root-style",
                 "size",
                 "template",
                 "value"
@@ -396,8 +445,36 @@
             "css": null,
             "attributes": [
                 "root-class",
+                "root-style",
                 "size",
                 "template"
+            ]
+        },
+        "sf-code-input": {
+            "source": "smart/code-input",
+            "javascript": "smart/smart/code-input/js/code-input.js",
+            "css": "smart/smart/code-input/css/code-input.css",
+            "attributes": [
+                "appearance",
+                "aria-label",
+                "default-value",
+                "disabled",
+                "error",
+                "error-message",
+                "hint",
+                "invalid",
+                "label",
+                "length",
+                "mask",
+                "mode",
+                "name",
+                "readonly",
+                "required",
+                "root-class",
+                "root-style",
+                "size",
+                "template",
+                "value"
             ]
         },
         "sf-color": {
@@ -414,11 +491,14 @@
                 "inherited-value",
                 "label",
                 "name",
+                "reset-label",
                 "root-class",
+                "root-style",
                 "size",
                 "swatches",
                 "template",
-                "value"
+                "value",
+                "variant"
             ],
             "requires": [
                 "sf-icon-button"
@@ -430,13 +510,41 @@
             "css": "smart/smart/composition-overlay/css/composition-overlay.css",
             "attributes": [
                 "accepts",
+                "actions",
                 "for",
+                "frame",
+                "insertion-target",
                 "label",
+                "messages",
                 "root-class",
+                "root-style",
                 "template"
             ],
             "requires": [
                 "sf-sortable"
+            ]
+        },
+        "sf-contents": {
+            "source": "smart/contents",
+            "javascript": "smart/smart/contents/js/contents.js",
+            "css": "smart/smart/contents/css/contents.css",
+            "attributes": [
+                "collapse",
+                "hash",
+                "items",
+                "label",
+                "layout",
+                "levels",
+                "root-class",
+                "root-style",
+                "size",
+                "sticky",
+                "target",
+                "template"
+            ],
+            "requires": [
+                "sf-button",
+                "sf-icon"
             ]
         },
         "sf-context-menu": {
@@ -454,8 +562,10 @@
                 "position",
                 "role",
                 "root-class",
+                "root-style",
                 "search",
                 "size",
+                "submenu",
                 "tabs",
                 "template",
                 "text",
@@ -479,6 +589,7 @@
                 "icon",
                 "label",
                 "root-class",
+                "root-style",
                 "size",
                 "success-icon",
                 "success-text",
@@ -498,10 +609,10 @@
             "javascript": "smart/smart/country-code/js/country-code.js",
             "css": null,
             "attributes": [
+                "aria-label",
                 "dial-code",
                 "disabled",
                 "flag-base",
-                "form",
                 "hint",
                 "iso2",
                 "label",
@@ -517,6 +628,7 @@
                 "placeholder",
                 "required",
                 "root-class",
+                "root-style",
                 "show-code",
                 "show-mask-placeholder",
                 "size",
@@ -531,18 +643,23 @@
             "javascript": "smart/smart/datepicker/js/datepicker.js",
             "css": null,
             "attributes": [
+                "aria-label",
                 "close-on-select",
                 "context",
                 "date",
                 "disabled",
                 "end-value",
+                "error-message",
                 "format",
+                "hint",
+                "hint-icon",
                 "icon-start",
                 "input",
                 "input-name",
                 "input-root-class",
                 "input-size",
                 "input-type",
+                "invalid",
                 "label",
                 "left-icon",
                 "locale",
@@ -561,8 +678,10 @@
                 "preset",
                 "presets",
                 "range",
+                "readonly",
                 "required",
                 "root-class",
+                "root-style",
                 "size",
                 "start-value",
                 "template",
@@ -590,6 +709,7 @@
                 "href",
                 "icon",
                 "root-class",
+                "root-style",
                 "size",
                 "target",
                 "template"
@@ -603,15 +723,20 @@
             "javascript": "smart/smart/drawer/js/drawer.js",
             "css": "smart/smart/drawer/css/drawer.css",
             "attributes": [
+                "block-start",
                 "body-class",
                 "close-class",
                 "close-label",
                 "close-on-esc",
                 "close-on-overlay",
                 "close-placement",
+                "controlled",
+                "dismissible",
+                "dock-breakpoint",
                 "docked",
                 "gutter",
                 "header-class",
+                "heading",
                 "label",
                 "modal",
                 "open",
@@ -622,11 +747,14 @@
                 "placement",
                 "preserve-scroll-gap",
                 "root-class",
+                "root-style",
                 "show-close",
                 "size",
+                "snap",
                 "stack-offset",
                 "template",
                 "title",
+                "unsaved",
                 "width",
                 "z-index"
             ]
@@ -640,6 +768,8 @@
                 "aria-label",
                 "columns",
                 "disabled",
+                "inherited-text",
+                "inherited-value",
                 "label",
                 "layout",
                 "mode",
@@ -649,7 +779,9 @@
                 "placeholder",
                 "portal",
                 "required",
+                "reset-label",
                 "root-class",
+                "root-style",
                 "search",
                 "search-placeholder",
                 "size",
@@ -668,12 +800,15 @@
             "javascript": "smart/smart/empty-state/js/empty-state.js",
             "css": "smart/smart/empty-state/css/empty-state.css",
             "attributes": [
+                "actions",
+                "heading",
                 "heading-level",
                 "icon",
                 "kind",
                 "layout",
                 "live",
                 "root-class",
+                "root-style",
                 "size",
                 "template",
                 "text",
@@ -691,7 +826,6 @@
             "attributes": [
                 "actions",
                 "aria-label",
-                "avatar-size",
                 "compact",
                 "disabled",
                 "download",
@@ -705,10 +839,10 @@
                 "kind",
                 "mime-type",
                 "name",
-                "open",
                 "remove-action",
                 "remove-label",
                 "root-class",
+                "root-style",
                 "size",
                 "surface",
                 "target",
@@ -726,9 +860,11 @@
                 "disabled",
                 "formats",
                 "icon",
+                "items",
                 "link-text",
                 "multiple",
                 "root-class",
+                "root-style",
                 "size",
                 "supporting-text",
                 "template",
@@ -744,6 +880,7 @@
             "css": null,
             "attributes": [
                 "arrows",
+                "backdrop-blur",
                 "blur",
                 "blur-type",
                 "body-class",
@@ -760,6 +897,7 @@
                 "footer-class",
                 "fullscreen",
                 "header-class",
+                "heading",
                 "height",
                 "inline",
                 "inline-class",
@@ -774,6 +912,7 @@
                 "position",
                 "preserve-scroll-gap",
                 "root-class",
+                "root-style",
                 "show-close",
                 "show-header",
                 "slide-class",
@@ -799,9 +938,11 @@
             "javascript": "smart/smart/help-mark/js/help-mark.js",
             "css": "smart/smart/help-mark/css/help-mark.css",
             "attributes": [
+                "heading",
                 "label",
                 "placement",
                 "root-class",
+                "root-style",
                 "size",
                 "template",
                 "text",
@@ -828,6 +969,10 @@
                 ]
             },
             "attributes": [
+                "badge-cap",
+                "badge-count",
+                "badge-dot",
+                "badge-label",
                 "filled",
                 "grade",
                 "icon",
@@ -835,6 +980,7 @@
                 "loaded",
                 "optical-size",
                 "root-class",
+                "root-style",
                 "size",
                 "template",
                 "type",
@@ -848,6 +994,11 @@
             "attributes": [
                 "appearance",
                 "aria-label",
+                "badge-cap",
+                "badge-count",
+                "badge-dot",
+                "badge-label",
+                "button-attributes",
                 "disabled",
                 "filled",
                 "icon",
@@ -856,6 +1007,7 @@
                 "native-type",
                 "radius",
                 "root-class",
+                "root-style",
                 "scheme",
                 "segment",
                 "size",
@@ -871,11 +1023,44 @@
                 "sf-icon"
             ]
         },
+        "sf-image-field": {
+            "source": "smart/image-field",
+            "javascript": "smart/smart/image-field/js/image-field.js",
+            "css": "smart/smart/image-field/css/image-field.css",
+            "attributes": [
+                "accept",
+                "aria-label",
+                "disabled",
+                "empty-text",
+                "error",
+                "error-message",
+                "hint",
+                "invalid",
+                "label",
+                "meta",
+                "name",
+                "readonly",
+                "required",
+                "root-class",
+                "root-style",
+                "size",
+                "template",
+                "value"
+            ],
+            "requires": [
+                "sf-button",
+                "sf-icon"
+            ]
+        },
         "sf-inline-editor": {
             "source": "smart/inline-editor",
             "javascript": "smart/smart/inline-editor/js/inline-editor.js",
             "css": "smart/smart/inline-editor/css/inline-editor.css",
-            "attributes": []
+            "attributes": [
+                "root-class",
+                "root-style",
+                "template"
+            ]
         },
         "sf-input": {
             "source": "smart/inputs",
@@ -883,6 +1068,7 @@
             "css": "smart/smart/inputs/css/inputs.css",
             "attributes": [
                 "appearance",
+                "aria-label",
                 "autocomplete",
                 "default-value",
                 "disabled",
@@ -891,6 +1077,8 @@
                 "hint",
                 "hint-icon",
                 "icon-start",
+                "inherited-text",
+                "inherited-value",
                 "input-type",
                 "inputmode",
                 "invalid",
@@ -908,8 +1096,10 @@
                 "placeholder",
                 "readonly",
                 "required",
+                "reset-label",
                 "right-text",
                 "root-class",
+                "root-style",
                 "size",
                 "template",
                 "text-end",
@@ -932,14 +1122,75 @@
                 "color-class",
                 "disabled",
                 "icon",
+                "interactive",
                 "kind",
+                "pinned",
                 "root-class",
+                "root-style",
                 "selected",
                 "size",
+                "sortable-item",
+                "supporting",
                 "template",
                 "text",
                 "type",
                 "value"
+            ]
+        },
+        "sf-lookup": {
+            "source": "smart/lookup",
+            "javascript": "smart/smart/lookup/js/lookup.js",
+            "css": "smart/smart/lookup/css/lookup.css",
+            "attributes": [
+                "appearance",
+                "aria-label",
+                "debounce",
+                "disabled",
+                "error-message",
+                "exclude",
+                "hint",
+                "invalid",
+                "label",
+                "max-items",
+                "max-results",
+                "maxlength",
+                "min-length",
+                "multiple",
+                "name",
+                "options",
+                "placeholder",
+                "provider",
+                "readonly",
+                "required",
+                "root-class",
+                "root-style",
+                "size",
+                "template",
+                "value"
+            ],
+            "requires": [
+                "sf-button",
+                "sf-spinner",
+                "sf-tag"
+            ]
+        },
+        "sf-menu": {
+            "source": "smart/menu",
+            "javascript": "smart/smart/menu/js/menu.js",
+            "css": "smart/smart/menu/css/menu.css",
+            "attributes": [
+                "appearance",
+                "aria-label",
+                "collapse",
+                "current",
+                "current-from-location",
+                "items",
+                "label",
+                "orientation",
+                "root-class",
+                "root-style",
+                "template",
+                "toggle-label"
             ]
         },
         "sf-modal": {
@@ -966,6 +1217,7 @@
             "attributes": [
                 "aria-label",
                 "autoload",
+                "backdrop-blur",
                 "blur",
                 "blur-type",
                 "body-class",
@@ -973,13 +1225,16 @@
                 "close-on-esc",
                 "close-on-overlay",
                 "content-class",
+                "dismissible",
                 "display",
                 "footer-class",
                 "fullscreen",
                 "header-class",
+                "heading",
                 "height",
                 "hide",
                 "hide-modifier",
+                "minimizable",
                 "minimized",
                 "modal-id",
                 "mode",
@@ -992,6 +1247,7 @@
                 "preload",
                 "preserve-scroll-gap",
                 "root-class",
+                "root-style",
                 "show-close",
                 "show-footer",
                 "show-header",
@@ -1002,6 +1258,7 @@
                 "text",
                 "title",
                 "unclose",
+                "unsaved",
                 "width"
             ]
         },
@@ -1014,11 +1271,41 @@
                 "heading",
                 "level",
                 "root-class",
+                "root-style",
                 "star",
                 "template"
             ],
             "requires": [
                 "sf-badge",
+                "sf-icon",
+                "sf-icon-button"
+            ]
+        },
+        "sf-pager": {
+            "source": "smart/pager",
+            "javascript": "smart/smart/pager/js/pager.js",
+            "css": "smart/smart/pager/css/pager.css",
+            "attributes": [
+                "appearance",
+                "complete",
+                "current",
+                "done-label",
+                "items",
+                "keys",
+                "label",
+                "next-href",
+                "next-label",
+                "next-title",
+                "prev-href",
+                "prev-label",
+                "prev-title",
+                "root-class",
+                "root-style",
+                "size",
+                "template"
+            ],
+            "requires": [
+                "sf-button",
                 "sf-icon",
                 "sf-icon-button"
             ]
@@ -1059,6 +1346,7 @@
                 "pages-label",
                 "previous-label",
                 "root-class",
+                "root-style",
                 "selected-count",
                 "selected-label",
                 "show-action-for-all",
@@ -1072,6 +1360,7 @@
                 "top",
                 "top-class",
                 "total",
+                "total-exact",
                 "total-label"
             ],
             "requires": [
@@ -1093,10 +1382,11 @@
                 "label",
                 "open",
                 "placement",
-                "role",
                 "root-class",
+                "root-style",
                 "surface-role",
                 "template",
+                "unsaved",
                 "width"
             ]
         },
@@ -1109,8 +1399,11 @@
                 "disabled",
                 "label",
                 "message",
+                "profiles",
                 "resettable",
+                "rights",
                 "root-class",
+                "root-style",
                 "size",
                 "template"
             ],
@@ -1124,8 +1417,10 @@
             "javascript": "smart/smart/progress-bar/js/progress-bar.js",
             "css": null,
             "attributes": [
+                "aria-label",
                 "label",
                 "root-class",
+                "root-style",
                 "size",
                 "status",
                 "template",
@@ -1135,14 +1430,35 @@
                 "value-text"
             ]
         },
+        "sf-progress-ring": {
+            "source": "smart/progress-ring",
+            "javascript": "smart/smart/progress-ring/js/progress-ring.js",
+            "css": null,
+            "attributes": [
+                "aria-label",
+                "indeterminate",
+                "label",
+                "meter",
+                "root-class",
+                "root-style",
+                "show-text",
+                "size",
+                "status",
+                "template",
+                "value",
+                "value-text"
+            ]
+        },
         "sf-progress-scale": {
             "source": "smart/progress-scale",
             "javascript": "smart/smart/progress-scale/js/progress-scale.js",
             "css": null,
             "attributes": [
+                "aria-label",
                 "label",
                 "line",
                 "root-class",
+                "root-style",
                 "show-text",
                 "size",
                 "status",
@@ -1150,6 +1466,41 @@
                 "tone",
                 "value",
                 "value-text"
+            ]
+        },
+        "sf-quantity": {
+            "source": "smart/quantity",
+            "javascript": "smart/smart/quantity/js/quantity.js",
+            "css": "smart/smart/quantity/css/quantity.css",
+            "attributes": [
+                "aria-label",
+                "decrement-label",
+                "disabled",
+                "error",
+                "error-message",
+                "grouping",
+                "hint",
+                "increment-label",
+                "inherited-text",
+                "inherited-value",
+                "invalid",
+                "label",
+                "locale",
+                "max",
+                "min",
+                "name",
+                "page-step",
+                "placeholder",
+                "precision",
+                "readonly",
+                "required",
+                "reset-label",
+                "root-class",
+                "root-style",
+                "size",
+                "step",
+                "template",
+                "value"
             ]
         },
         "sf-radio": {
@@ -1162,9 +1513,11 @@
                 "disabled",
                 "error",
                 "help",
+                "invalid",
                 "label",
                 "name",
                 "root-class",
+                "root-style",
                 "size",
                 "template",
                 "value"
@@ -1175,6 +1528,7 @@
             "javascript": "smart/smart/range-slider/js/range-slider.js",
             "css": null,
             "attributes": [
+                "aria-label",
                 "connect",
                 "decimals",
                 "disabled",
@@ -1187,7 +1541,9 @@
                 "min",
                 "multiple",
                 "prefix",
+                "prefix-text",
                 "root-class",
+                "root-style",
                 "start",
                 "step",
                 "suffix",
@@ -1211,6 +1567,7 @@
                 "label",
                 "line",
                 "root-class",
+                "root-style",
                 "size",
                 "target",
                 "template",
@@ -1225,6 +1582,7 @@
             "javascript": "smart/smart/resizer/js/resizer.js",
             "css": "smart/smart/resizer/css/resizer.css",
             "attributes": [
+                "aria-label",
                 "disabled",
                 "edge",
                 "label",
@@ -1232,11 +1590,88 @@
                 "min",
                 "property",
                 "root-class",
+                "root-style",
                 "step",
                 "storage-key",
                 "target",
                 "template",
                 "value"
+            ]
+        },
+        "sf-rich-text": {
+            "source": "smart/rich-text",
+            "javascript": "smart/smart/rich-text/js/rich-text.js",
+            "css": "smart/smart/rich-text/css/rich-text.css",
+            "attributes": [
+                "appearance",
+                "aria-label",
+                "disabled",
+                "error-message",
+                "hint",
+                "invalid",
+                "label",
+                "max-rows",
+                "name",
+                "placeholder",
+                "readonly",
+                "required",
+                "root-class",
+                "root-style",
+                "rows",
+                "size",
+                "template",
+                "value"
+            ],
+            "requires": [
+                "sf-button",
+                "sf-input",
+                "sf-popover"
+            ]
+        },
+        "sf-search": {
+            "source": "smart/search",
+            "javascript": "smart/smart/search/js/search.js",
+            "css": "smart/smart/search/css/search.css",
+            "attributes": [
+                "actions",
+                "for",
+                "index",
+                "keys",
+                "label",
+                "path",
+                "placeholder",
+                "popular",
+                "provider",
+                "recent",
+                "recent-key",
+                "root-class",
+                "root-style",
+                "scopes",
+                "shortcut",
+                "template"
+            ],
+            "requires": [
+                "sf-icon-button"
+            ]
+        },
+        "sf-site-header": {
+            "source": "smart/site-header",
+            "javascript": "smart/smart/site-header/js/site-header.js",
+            "css": "smart/smart/site-header/css/site-header.css",
+            "attributes": [
+                "close-label",
+                "collapse",
+                "label",
+                "menu-label",
+                "root-class",
+                "root-style",
+                "size",
+                "sticky",
+                "template"
+            ],
+            "requires": [
+                "sf-icon",
+                "sf-icon-button"
             ]
         },
         "sf-skeleton": {
@@ -1250,6 +1685,7 @@
                 "items",
                 "kind",
                 "root-class",
+                "root-style",
                 "size",
                 "template",
                 "type",
@@ -1270,6 +1706,7 @@
                 "dots-type",
                 "loop",
                 "root-class",
+                "root-style",
                 "slide-class",
                 "space-between",
                 "speed",
@@ -1288,13 +1725,19 @@
             "css": "smart/smart/sortable/css/sortable.css",
             "attributes": [
                 "accepts",
+                "aria-label",
                 "group",
+                "inserter-items",
                 "label",
                 "mode",
                 "orientation",
                 "preview",
                 "root-class",
+                "root-style",
                 "template"
+            ],
+            "requires": [
+                "sf-context-menu"
             ]
         },
         "sf-spinner": {
@@ -1304,19 +1747,16 @@
             "attributes": [
                 "announce",
                 "direction",
-                "dot-radius",
                 "dots",
                 "filled",
-                "height",
                 "infinite",
                 "kind",
                 "label",
                 "root-class",
+                "root-style",
                 "size",
-                "stroke-width",
                 "template",
-                "variant",
-                "width"
+                "variant"
             ]
         },
         "sf-steps": {
@@ -1331,6 +1771,7 @@
                 "error-step",
                 "items",
                 "root-class",
+                "root-style",
                 "separator-icon",
                 "size",
                 "template"
@@ -1341,13 +1782,18 @@
             "javascript": "smart/smart/switch/js/switch.js",
             "css": null,
             "attributes": [
+                "aria-label",
                 "checked",
                 "description",
                 "disabled",
                 "help",
+                "inherited-text",
+                "inherited-value",
                 "label",
                 "name",
+                "reset-label",
                 "root-class",
+                "root-style",
                 "size",
                 "template",
                 "value"
@@ -1359,12 +1805,16 @@
             "css": "smart/smart/tabs/css/tabs.css",
             "attributes": [
                 "active-index",
+                "aria-label",
                 "configurable",
                 "items",
                 "overflow",
                 "panel-class",
                 "root-class",
+                "root-style",
                 "scheme",
+                "selected",
+                "settings",
                 "size",
                 "template",
                 "top-class",
@@ -1402,6 +1852,7 @@
                 "kind",
                 "line",
                 "root-class",
+                "root-style",
                 "size",
                 "spacing",
                 "status",
@@ -1419,26 +1870,34 @@
             "css": null,
             "attributes": [
                 "appearance",
+                "auto-grow",
                 "autocomplete",
                 "disabled",
                 "error",
                 "error-message",
                 "hint",
+                "inherited-text",
+                "inherited-value",
                 "inputmode",
                 "invalid",
                 "label",
                 "mask",
                 "mask-options",
                 "mask-pattern",
+                "max-rows",
                 "maxlength",
+                "min-rows",
                 "minlength",
                 "name",
                 "placeholder",
                 "readonly",
                 "required",
+                "reset-label",
                 "root-class",
+                "root-style",
                 "rows",
                 "size",
+                "spell-check",
                 "spellcheck",
                 "template",
                 "type",
@@ -1452,9 +1911,11 @@
             "css": "smart/smart/theme-generator/css/theme-generator.css",
             "attributes": [
                 "apply",
+                "aria-label",
                 "chroma",
                 "hue",
                 "root-class",
+                "root-style",
                 "selector",
                 "size",
                 "swatches",
@@ -1480,9 +1941,11 @@
                 "closable",
                 "close-label",
                 "duration",
+                "heading",
                 "icon",
                 "role",
                 "root-class",
+                "root-style",
                 "status",
                 "supporting-text",
                 "template",
@@ -1506,6 +1969,7 @@
                 "label",
                 "name",
                 "root-class",
+                "root-style",
                 "size",
                 "template",
                 "type",
@@ -1520,6 +1984,7 @@
                 "appearance",
                 "arrow",
                 "root-class",
+                "root-style",
                 "size",
                 "supporting-text",
                 "template",
@@ -1536,8 +2001,10 @@
                 "accept-records",
                 "aria-label",
                 "items",
-                "role",
                 "root-class",
+                "root-style",
+                "selected",
+                "selected-ids",
                 "selection",
                 "template"
             ],
@@ -1569,6 +2036,7 @@
                 "open-label",
                 "rel",
                 "root-class",
+                "root-style",
                 "selected",
                 "target",
                 "template",

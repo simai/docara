@@ -1413,9 +1413,9 @@ MD);
             [":::features\nPlain text\n:::\n", 'MARKDOWN_FEATURES_UNORDERED_LIST_REQUIRED'],
             [":::features\n- Only one\n:::\n", 'MARKDOWN_FEATURES_ITEM_COUNT_INVALID'],
             [":::features\n- \n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID'],
-            // A list item that opens with [ ] is a checklist item now, so an
-            // empty link in that place is a checkbox the block cannot hold.
-            [":::features\n- [ ](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID'],
+            // league/commonmark before 2.10.7 reads [ ] here as a checkbox the
+            // block cannot hold; 2.10.7 reads an empty link. Both are refused.
+            [":::features\n- [ ](/empty/)\n- Text\n:::\n", ['MARKDOWN_FEATURES_ITEM_CONTENT_INVALID', 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED']],
             [":::features\n- [\u{00A0}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
             [":::features\n- [\u{200B}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
             [":::features\n- [\u{FE0F}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
@@ -1436,7 +1436,7 @@ MD);
                 (new PortableMarkdownRenderer)->render($markdown);
                 self::fail("Invalid feature list unexpectedly rendered for [$expected].");
             } catch (PortableConfigurationException $exception) {
-                self::assertSame($expected, $exception->errorCode);
+                self::assertContains($exception->errorCode, (array) $expected);
             }
         }
     }

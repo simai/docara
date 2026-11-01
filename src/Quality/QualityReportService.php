@@ -194,6 +194,7 @@ final readonly class QualityReportService
                 'markdown' => (string) ($source['markdown'] ?? ''),
                 'profile_missing' => $source['profile_missing'] ?? [],
                 'profile_inferred' => ($source['profile_source'] ?? null) === 'inferred',
+                'template_findings' => $source['template_findings'] ?? [],
                 'freshness' => $freshness === null ? null : ($freshness[$this->urlPath($page['url'])] ?? []),
                 'facts' => $page['facts'],
             ], $site);

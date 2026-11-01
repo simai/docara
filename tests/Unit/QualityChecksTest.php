@@ -37,6 +37,7 @@ final class QualityChecksTest extends TestCase
 
         return [
             'profile part' => ['QUALITY_PROFILE_PART_MISSING', static fn (array $p): array => ['profile_missing' => ['ordered_steps']] + $p],
+            'template mismatch' => ['QUALITY_TEMPLATE_MISMATCH', static fn (array $p): array => ['template_findings' => [['code' => 'PAGE_TEMPLATE_SECTION_MISSING', 'template' => 'component', 'heading' => 'Classes']]] + $p],
             'description missing' => ['QUALITY_DESCRIPTION_MISSING', static fn (array $p): array => ['description' => null] + $p],
             'description short' => ['QUALITY_DESCRIPTION_LENGTH', static fn (array $p): array => ['description' => 'Build it.'] + $p],
             'description long' => ['QUALITY_DESCRIPTION_LENGTH', static fn (array $p): array => ['description' => str_repeat('Build the site. ', 15)] + $p],

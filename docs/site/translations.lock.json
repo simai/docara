@@ -990,11 +990,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/markdown.md",
-            "source_sha256": "b28bca3fe02414a0616996caea1bdd0f6fd986b3b8d52eb966f7c2c2107fe2e7",
-            "source_structure_sha256": "69008a1d6723a9efb683ce7699eb3a416b81551317b27499ca7b1c3726c56d4e",
+            "source_sha256": "c9f119645fa99bc33d214e1699276dde456e94f9f5caf19c4877711f1607bee0",
+            "source_structure_sha256": "1fbbb9bf225abb93abd29ad803b8f7a8ac4f1e3dc8d08ff7729b38aa59d87727",
             "target_path": "content/en/authoring/markdown.md",
-            "target_sha256": "23c8defdb62651dbe4ccdcf1ccfa506658af8384e3181dd99d37c223d564398d",
-            "target_structure_sha256": "69008a1d6723a9efb683ce7699eb3a416b81551317b27499ca7b1c3726c56d4e"
+            "target_sha256": "456fe8721eda2b8d27688e5086581db423fc8bbc6f54644af58ac4bb4b4518a2",
+            "target_structure_sha256": "1fbbb9bf225abb93abd29ad803b8f7a8ac4f1e3dc8d08ff7729b38aa59d87727"
         },
         {
             "key": "authoring/multilingual-site.md",
@@ -1026,11 +1026,23 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/page-profiles.md",
-            "source_sha256": "628d38a7b6b43d3482988a864450020569df3b199d2551ce682cf49b3d468fcb",
-            "source_structure_sha256": "4fbb8b8fd1b1c84877fa37b319577a2e017983ff1fc185001f36346bf0c2585f",
+            "source_sha256": "ba70c96793b851b62608580277a60b5ac50e846d91cfc378d6258974f67611f1",
+            "source_structure_sha256": "7fc2c2fa46f82cf436f38343b6e5add1180f8af74b176bd3142045c38036c5b7",
             "target_path": "content/en/authoring/page-profiles.md",
-            "target_sha256": "c3585eadd06a3b0432b8ab3bdda5cd62006789889f3af195bdb7634cd71520f2",
-            "target_structure_sha256": "4fbb8b8fd1b1c84877fa37b319577a2e017983ff1fc185001f36346bf0c2585f"
+            "target_sha256": "2ab02b7be4144d47d15b075791754a3695a90cbf52067633fea7464682762484",
+            "target_structure_sha256": "7fc2c2fa46f82cf436f38343b6e5add1180f8af74b176bd3142045c38036c5b7"
+        },
+        {
+            "key": "authoring/page-templates.md",
+            "kind": "page",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/authoring/page-templates.md",
+            "source_sha256": "74bde88396575c4aff17ecffa8277f2dc571de3a648a6f84cc3bb1c89760ec18",
+            "source_structure_sha256": "65290f04c2bf21b99fbf61350d18e6f2281fa31b0ed9cdef965bcacb79b47259",
+            "target_path": "content/en/authoring/page-templates.md",
+            "target_sha256": "535dd261f3476da8ed00bbbd3dc18e0d978de87a1860e18e970d0a23db71c5af",
+            "target_structure_sha256": "65290f04c2bf21b99fbf61350d18e6f2281fa31b0ed9cdef965bcacb79b47259"
         },
         {
             "key": "authoring/redirects.md",

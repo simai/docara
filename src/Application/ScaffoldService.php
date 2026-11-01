@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Application;
 
+use Simai\Docara\Authoring\AuthoringContract;
 use Simai\Docara\Authoring\AuthoringProfileRegistry;
 use Simai\Docara\Authoring\DocumentationStandard;
 use Simai\Docara\Documentation\DocumentationSourceRepository;
@@ -27,6 +28,19 @@ final readonly class ScaffoldService
             && (! is_string($options['title'] ?? null) || trim((string) $options['title']) === '')
         ) {
             $options['title'] = (new DocumentationSourceRepository)->entity($runtime->root, $options['source'], $options['entity'])['title'];
+        }
+        if ($kind === 'page' && is_string($options['template'] ?? null) && $options['template'] !== '') {
+            $contract = AuthoringContract::load($runtime->root);
+            $template = $contract->templates[$options['template']] ?? null;
+            if ($template === null) {
+                throw new PortableConfigurationException('AUTHORING_TEMPLATE_UNKNOWN', "Unknown page template [{$options['template']}].");
+            }
+            if (is_string($options['source'] ?? null) && $options['source'] !== '') {
+                throw new PortableConfigurationException('SCAFFOLD_PAGE_SOURCE_ARGUMENT_INVALID', 'A page scaffold takes its sections from a template or from a documentation source, not both.');
+            }
+            $options['profile'] = is_string($options['profile'] ?? null) ? $options['profile'] : ($template['profile'] ?? null);
+        } else {
+            $options['template'] = null;
         }
         if ($kind === 'page') {
             if (! is_string($options['locale'] ?? null) || $options['locale'] === '') {
@@ -71,6 +85,9 @@ final readonly class ScaffoldService
                 'source' => is_string($options['source'] ?? null) && $options['source'] !== '' ? $options['source'] : null,
                 'entity' => is_string($options['entity'] ?? null) && $options['entity'] !== '' ? $options['entity'] : null,
             ];
+            if ($options['template'] !== null) {
+                $core['options']['template'] = $options['template'];
+            }
             if ($core['options']['source'] !== null && $core['options']['entity'] !== null) {
                 $core['source_sha256'] = (new DocumentationSourceRepository)->entity($runtime->root, $core['options']['source'], $core['options']['entity'])['source_sha256'];
             }
@@ -272,6 +289,9 @@ final readonly class ScaffoldService
                     }
                 }
             }
+        } elseif (is_string($options['template'] ?? null)) {
+            $template = AuthoringContract::load($runtime->root)->templates[$options['template']];
+            $body = (new DocumentationStandard)->templatePage($options['template'], $template, $profile, $locale, $title);
         } else {
             $body = (new DocumentationStandard)->page($profile, $locale, $title);
         }

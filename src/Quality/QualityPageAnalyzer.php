@@ -98,6 +98,7 @@ final class QualityPageAnalyzer
      *   url:string, file:string, locale:string, home:bool,
      *   description:?string, title:string, tags:list<string>, markdown:string,
      *   profile_missing:list<string>, profile_inferred:bool,
+     *   template_findings?:list<array<string,mixed>>,
      *   freshness:?list<array{source:string,key:string,status:string}>,
      *   facts:array<string,mixed>
      * }  $page
@@ -116,6 +117,12 @@ final class QualityPageAnalyzer
         // Completeness.
         if ($page['profile_missing'] !== []) {
             $add('QUALITY_PROFILE_PART_MISSING', 'Missing: ' . implode(', ', $page['profile_missing']) . ($page['profile_inferred'] ? ' (profile inferred)' : '') . '.', count($page['profile_missing']), $page['profile_inferred'] ? QualityChecks::ADVICE : null);
+        }
+        $templateFindings = $page['template_findings'] ?? [];
+        if ($templateFindings !== []) {
+            $template = (string) $templateFindings[0]['template'];
+            $parts = array_map(static fn (array $finding): string => strtolower(substr((string) $finding['code'], strlen('PAGE_TEMPLATE_'))) . (isset($finding['heading']) ? ' «' . $finding['heading'] . '»' : ''), $templateFindings);
+            $add('QUALITY_TEMPLATE_MISMATCH', "Template [$template]: " . implode(', ', $parts) . '.', count($templateFindings));
         }
         $description = trim((string) $page['description']);
         if ($description === '') {

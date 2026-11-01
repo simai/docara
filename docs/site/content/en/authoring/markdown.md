@@ -59,6 +59,10 @@ The block accepts only these keys; any other one stops the build with
 - `translation_key` — a stable key that links the translations of one page;
 - `profile` — a built-in [check profile](/en/authoring/page-profiles/):
   `landing`, `article`, `tutorial`, `how_to`, `reference` or `explanation`;
+- `template` — a [page template](/en/authoring/page-templates/) from
+  `docara.authoring.json`: which sections, in which order;
+- `template_omit` — template sections this page leaves out on purpose, as a
+  one-line list such as `template_omit: [classes]`;
 - `composition_recipe` — the path to a Composition Recipe JSON descriptor
   relative to the project; see the example page
   [Composition Recipe: expanded header](/ru/examples/composition-recipe-expanded/)

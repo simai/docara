@@ -6,7 +6,7 @@
     "entries": [
         {
             "source_ref": "docs/site/content/ru/authoring/markdown.md",
-            "source_sha256": "e31f0ffe6d15dde8f270316ec2659a70719dcd8f970272d6c0b1ff544f47069b",
+            "source_sha256": "666fe3e73206215bafabd3ee103f981a1759f112f88f7499d727c0fe6c01841b",
             "release": "3.10.0",
             "source_url": "https://github.com/simai/docara/blob/v3.10.0/docs/site/content/ru/authoring/markdown.md",
             "history_url": "https://github.com/simai/docara/commits/v3.10.0/docs/site/content/ru/authoring/markdown.md",
@@ -557,5 +557,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "f584602bb1fba695bdf89dae9a234756d70a1c4cedb476278f88de2b8aaa1a9d"
+    "content_sha256": "ec8bdf960504724361de77ba4576b51e1f357e49250e55c889a1b3953d6118c5"
 }

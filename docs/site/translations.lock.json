@@ -1134,10 +1134,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/build/update.md",
-            "source_sha256": "abf8ffd9f32a36d10c99ba81674202345ec0df85e0611b4126ae1513d0c877e4",
+            "source_sha256": "d4bc06085d971257680b35f4c8725bff8beca51edda31d4e5b16ec749ff3acff",
             "source_structure_sha256": "48d3983bb0222d77e2d4e98fdff213189d12f6c6aaecdd63cff6d3860ee51d3c",
             "target_path": "content/en/build/update.md",
-            "target_sha256": "3375cf36b9a0a5d48a6c4cd0770c54b0b01428e3aef0ec24bd7a2384c7719bcf",
+            "target_sha256": "cbe7249ddd3f0ef2af9e4dafd0e84cca046e387068e94d544c4529a1b83877b9",
             "target_structure_sha256": "48d3983bb0222d77e2d4e98fdff213189d12f6c6aaecdd63cff6d3860ee51d3c"
         },
         {

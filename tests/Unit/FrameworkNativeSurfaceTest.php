@@ -101,7 +101,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
     }
 
     #[Test]
-    public function search_trigger_uses_static_framework_button_geometry(): void
+    public function search_trigger_is_the_framework_button_printed_for_first_paint(): void
     {
         $root = dirname(__DIR__, 2);
         $template = file_get_contents(
@@ -109,29 +109,24 @@ final class FrameworkNativeSurfaceTest extends TestCase
         );
 
         self::assertIsString($template);
-        self::assertStringContainsString('<button', $template);
-        self::assertStringContainsString('type="button"', $template);
-        self::assertStringContainsString('data-docara-search-trigger', $template);
+        // The Framework sf-button, with its static form so the header is
+        // right before the script; the sf-search window opens from it by id.
+        self::assertStringContainsString('<sf-button id="docara-search-trigger" data-docara-search-trigger', $template);
+        self::assertStringContainsString('shortcut="mod+k"', $template);
         self::assertStringContainsString(
-            'class="sf-button sf-button--size-1 sf-button--outline sf-button--on-surface flex items-cross-center content-main-center docara-search-trigger h-d0"',
+            '<button type="button" class="sf-button sf-button--size-1 sf-button--outline sf-button--on-surface flex items-cross-center"',
             $template,
         );
         self::assertStringContainsString(
             '<span class="sf-button-text-container text-center pointer-event-none"><?= $view->copy[\'search.label\'] ?></span>',
             $template,
         );
+        self::assertStringContainsString('<kbd class="sf-kbd--group sf-button-shortcut pointer-event-none" aria-hidden="true">', $template);
+        self::assertStringNotContainsString('docara-search-shortcut', $template);
         self::assertStringContainsString(
-            '<span class="sf-icon sf-icon-regular pointer-event-none" aria-hidden="true">search</span>',
-            $template,
+            'for="docara-search-trigger"',
+            (string) file_get_contents($root . '/resources/smart/docara.search/templates/default.php'),
         );
-        self::assertStringContainsString(
-            'docara-search-shortcut text-1 color-on-surface-variant m-inline-start-1/2',
-            $template,
-        );
-        self::assertStringNotContainsString('docara-search-shortcut label-small', $template);
-        self::assertStringNotContainsString('docara-search-shortcut text-1 color-on-surface-variant border', $template);
-        self::assertStringNotContainsString('<sf-button', $template);
-        self::assertStringNotContainsString('items-center gap-1 radius-default', $template);
     }
 
     #[Test]
@@ -139,7 +134,6 @@ final class FrameworkNativeSurfaceTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         foreach ([
-            $root . '/resources/smart/docara.search/templates/default.php' => 'docara-search-dialog',
             $root . '/resources/smart/docara.preferences/templates/side-panel.php' => 'docara-reader-settings-dialog',
         ] as $path => $id) {
             $template = file_get_contents($path);

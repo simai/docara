@@ -1,43 +1,20 @@
 (function () {
     'use strict';
 
-    var trigger = document.querySelector('[data-docara-search-trigger]');
-    var dialog = document.querySelector('[data-docara-search-dialog]');
-    if (!trigger || !dialog) return;
+    // The site search window is the Framework sf-search. Docara answers it
+    // through its port (simai.search-port 1.0.0) with its own index and
+    // ranking: the page's locale only, weighted fields, accents folded, and
+    // the words around the match as the row's preview.
+    var search = document.querySelector('sf-search[data-docara-search-dialog]');
+    if (!search) return;
 
-    var input = null;
-    var status = null;
-    var results = null;
-    var closeButton = null;
-    var shortcut = trigger.querySelector('[data-docara-search-shortcut]');
     var locale = document.documentElement.lang || 'und';
-    var copyNode = document.getElementById('docara-runtime-copy');
-    var messages = {};
-    try { messages = JSON.parse(copyNode ? copyNode.textContent : '{}'); } catch (error) { messages = {}; }
-    function message(id, parameters) {
-        var value = typeof messages[id] === 'string' ? messages[id] : id;
-        Object.keys(parameters || {}).forEach(function (name) {
-            value = value.split('{' + name + '}').join(String(parameters[name]));
-        });
-        return value;
-    }
-    var copy = {
-        idle: message('search.idle'),
-        loading: message('search.loading'),
-        found: function (count) { return message('search.found', {count: count}); },
-        empty: message('search.empty'),
-        error: message('search.error')
-    };
     var indexPromise = null;
     var preparedDocuments = [];
-    var visibleResults = [];
     var deploymentBase = null;
     var expectedContentHash = null;
-    var initialized = false;
-
-    if (shortcut && !/Mac|iPhone|iPad/.test(navigator.platform || '')) {
-        shortcut.textContent = 'Ctrl K';
-    }
+    var recentKey = 'docara.search.recent.' + locale;
+    var recentLimit = 5;
 
     function normalize(value) {
         return String(value || '')
@@ -53,45 +30,8 @@
         return normalize(value).match(/[\p{L}\p{N}_-]+/gu) || [];
     }
 
-    function highlightTokens(value) {
-        return String(value || '').normalize('NFKC').match(/[\p{L}\p{N}_-]+/gu) || [];
-    }
-
     function escapeExpression(value) {
         return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    }
-
-    function appendHighlighted(target, value, terms) {
-        var text = String(value || '');
-        var uniqueTerms = Array.from(new Set((terms || []).filter(Boolean)))
-            .sort(function (left, right) { return right.length - left.length; });
-        if (!uniqueTerms.length) {
-            target.textContent = text;
-            return;
-        }
-        var expression = new RegExp(uniqueTerms.map(escapeExpression).join('|'), 'giu');
-        var cursor = 0;
-        Array.from(text.matchAll(expression)).forEach(function (match) {
-            var offset = match.index || 0;
-            if (offset > cursor) target.append(document.createTextNode(text.slice(cursor, offset)));
-            var mark = document.createElement('mark');
-            mark.className = 'docara-search-mark';
-            mark.textContent = match[0];
-            target.append(mark);
-            cursor = offset + match[0].length;
-        });
-        if (cursor < text.length) target.append(document.createTextNode(text.slice(cursor)));
-    }
-
-    function setStatus(value, state) {
-        status.textContent = value;
-        status.dataset.state = state;
-        results.dataset.state = state;
-    }
-
-    function clearResults() {
-        results.replaceChildren();
-        visibleResults = [];
     }
 
     function isPlainRecord(value) {
@@ -198,20 +138,18 @@
 
     function loadIndex() {
         if (indexPromise) return indexPromise;
-        var indexUrl = new URL(dialog.dataset.docaraSearchIndex, window.location.href);
+        var indexUrl = new URL(search.dataset.docaraSearchIndex, window.location.href);
         var indexSuffix = '_docara/search-index.json';
         if (indexUrl.origin !== window.location.origin
             || !indexUrl.pathname.endsWith('/' + indexSuffix)
             || indexUrl.hash
             || Array.from(indexUrl.searchParams.keys()).length !== 1
             || !/^[a-f0-9]{64}$/.test(indexUrl.searchParams.get('docara_v') || '')) {
-            setStatus(copy.error, 'error');
             indexPromise = Promise.reject(new Error('SEARCH_INDEX_ORIGIN_INVALID'));
             return indexPromise;
         }
         deploymentBase = indexUrl.pathname.slice(0, -indexSuffix.length);
         expectedContentHash = indexUrl.searchParams.get('docara_v');
-        setStatus(copy.loading, 'loading');
         indexPromise = fetch(indexUrl.toString(), {
             mode: 'same-origin',
             redirect: 'error',
@@ -222,12 +160,10 @@
             return response.json();
         }).then(validateIndex).then(function (documents) {
             preparedDocuments = documents.map(prepare);
-            setStatus(copy.idle, 'idle');
             return preparedDocuments;
-        }).catch(function (error) {
-            setStatus(copy.error, 'error');
-            throw error;
         });
+        // A failed read is tried again on the next query.
+        indexPromise.catch(function () { indexPromise = null; });
         return indexPromise;
     }
 
@@ -313,159 +249,134 @@
         return (start > 0 ? '…' : '') + text.slice(start, end).trim() + (end < text.length ? '…' : '');
     }
 
-    function createResult(item, terms) {
-        var record = item.document;
-        var listItem = document.createElement('li');
-        var link = document.createElement('a');
-        var icon = document.createElement('sf-icon');
-        var content = document.createElement('span');
-        var title = document.createElement('span');
-        var context = document.createElement('span');
-        var summary = document.createElement('span');
-        listItem.className = 'docara-search-result-item min-w-0';
-        link.className = 'docara-search-result min-w-0 p-2 flex items-cross-start gap-1 decoration-none color-on-surface transition';
-        link.href = record.url;
-        link.dataset.docaraSearchResult = 'true';
-        icon.setAttribute('icon', 'description');
-        icon.setAttribute('aria-hidden', 'true');
-        icon.className = 'docara-search-result-icon color-on-surface-variant flex-none';
-        content.className = 'flex flex-col gap-1/4 min-w-0';
-        title.className = 'docara-search-result-title weight-7';
-        appendHighlighted(title, record.title, terms);
-        if (record.trail.length) {
-            context.className = 'docara-search-result-context color-link';
-            appendHighlighted(context, record.trail.join(' › '), terms);
-            content.append(context);
-        }
-        content.append(title);
-        var excerpt = contextualSnippet(record, terms);
-        if (excerpt) {
-            summary.className = 'docara-search-result-summary color-on-surface-variant';
-            summary.dataset.docaraSearchResultSummary = 'true';
-            appendHighlighted(summary, excerpt, terms);
-            content.append(summary);
-        }
-        link.append(icon, content);
-        link.setAttribute('aria-label', [record.title, record.trail.join(' / '), excerpt]
-            .filter(Boolean).join('. '));
-        listItem.append(link);
-        return { listItem: listItem, link: link };
-    }
-
-    function render() {
-        var phrase = normalize(input.value);
-        var terms = highlightTokens(input.value);
-        clearResults();
-        if (Array.from(phrase).length < 2) {
-            setStatus(copy.idle, 'idle');
-            return;
-        }
+    function rank(query) {
+        var phrase = normalize(query);
         var queryTokens = tokens(phrase);
-        if (!queryTokens.length) {
-            setStatus(copy.idle, 'idle');
-            return;
-        }
-        var ranked = preparedDocuments.map(function (prepared) {
+        return preparedDocuments.map(function (prepared) {
             return { prepared: prepared, score: score(prepared, phrase, queryTokens) };
         }).filter(function (item) {
             return item.score >= 0;
         }).sort(function (left, right) {
             return right.score - left.score || left.prepared.document.url.localeCompare(right.prepared.document.url);
-        }).slice(0, 20);
-        if (!ranked.length) {
-            setStatus(copy.empty, 'empty');
-            return;
-        }
-        ranked.forEach(function (item) {
-            var rendered = createResult(item.prepared, terms);
-            results.append(rendered.listItem);
-            visibleResults.push(rendered.link);
+        }).slice(0, 20).map(function (item) {
+            return item.prepared.document;
         });
-        setStatus(copy.found(ranked.length), 'results');
     }
 
-    function openSearch() {
-        document.dispatchEvent(new CustomEvent('docara:open-transient', {
-            detail: { id: dialog.id }
-        }));
-        dialog.open();
-        trigger.setAttribute('aria-expanded', 'true');
-        window.requestAnimationFrame(function () { input.focus(); });
-        loadIndex().then(render).catch(function () {});
+    // Recent queries are the host's: kept per locale in this browser, and
+    // only for as long as the page lives where storage is refused.
+    var keptRecent = [];
+    function readRecent() {
+        try {
+            var saved = JSON.parse(window.localStorage.getItem(recentKey) || '[]');
+            keptRecent = Array.isArray(saved) ? saved.filter(function (entry) { return typeof entry === 'string' && entry; }).slice(0, recentLimit) : [];
+        } catch (error) {}
+        return keptRecent;
+    }
+    function writeRecent(list) {
+        keptRecent = list.slice(0, recentLimit);
+        try {
+            if (keptRecent.length) window.localStorage.setItem(recentKey, JSON.stringify(keptRecent));
+            else window.localStorage.removeItem(recentKey);
+        } catch (error) {}
+        return keptRecent;
+    }
+    function recordRecent(query) {
+        var value = String(query || '').trim();
+        if (!value) return readRecent();
+        return writeRecent([value].concat(readRecent().filter(function (entry) { return entry !== value; })));
     }
 
-    function closeSearch() {
-        dialog.close();
+    var byId = {};
+    var lastTerms = [];
+
+    function applied(data, sequence) {
+        return sequence === undefined ? { answer: 'applied', data: data } : { answer: 'applied', sequence: sequence, data: data };
     }
 
-    function bind(root) {
-        if (!root) return;
-        input = root.querySelector('[data-docara-search-input]');
-        status = root.querySelector('[data-docara-search-status]');
-        results = root.querySelector('[data-docara-search-results]');
-        closeButton = root.querySelector('[data-docara-search-close]');
-        if (!input || !status || !results || !closeButton) {
-            window.requestAnimationFrame(function () { bind(root); });
-            return;
-        }
-        if (input.dataset.docaraSearchBound === 'true') return;
-        input.dataset.docaraSearchBound = 'true';
-        root.setAttribute('aria-labelledby', 'docara-search-title');
-        root.removeAttribute('aria-label');
-        closeButton.addEventListener('click', closeSearch);
-        input.addEventListener('input', function () {
-            if (preparedDocuments.length) render();
-            else loadIndex().then(render).catch(function () {});
-        });
-        input.addEventListener('keydown', function (event) {
-            if (event.key === 'ArrowDown' && visibleResults[0]) {
-                event.preventDefault();
-                visibleResults[0].focus();
-            }
-            if (event.key === 'Enter' && visibleResults[0]) {
-                event.preventDefault();
-                visibleResults[0].click();
-            }
-        });
-        results.addEventListener('keydown', function (event) {
-            var index = visibleResults.indexOf(event.target);
-            if (index < 0 || !['ArrowDown', 'ArrowUp'].includes(event.key)) return;
-            event.preventDefault();
-            if (event.key === 'ArrowUp' && index === 0) input.focus();
-            else visibleResults[Math.max(0, Math.min(visibleResults.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)))].focus();
-        });
-        if (dialog.openState) window.requestAnimationFrame(function () { input.focus(); });
-        if (!initialized) {
-            initialized = true;
-            trigger.addEventListener('click', openSearch);
-            dialog.onAfterClose(function () {
-                trigger.setAttribute('aria-expanded', 'false');
-            });
-            // A link that opens search (the not-found page has one); without
-            // the script it leads to its href.
-            document.addEventListener('click', function (event) {
-                var opener = event.target instanceof Element
-                    ? event.target.closest('a[data-docara-search-open]')
-                    : null;
-                if (!opener || event.defaultPrevented || event.button !== 0
-                    || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-                event.preventDefault();
-                openSearch();
-            });
-            document.addEventListener('keydown', function (event) {
-                if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-                    event.preventDefault();
-                    openSearch();
+    var host = {
+        id: 'simai.search-port',
+        port: 'simai.search-port',
+        version: '1.0.0',
+        capabilities: ['recent', 'preview'],
+        raise: function (intent, payload) {
+            payload = payload || {};
+            var sequence = payload.sequence;
+            if (intent === 'query.change') {
+                var query = String(payload.query || '');
+                var echo = { query: query, scope: payload.scope || null };
+                if (!normalize(query)) return Promise.resolve(applied({ results: [], echo: echo, recent: readRecent() }, sequence));
+                if (Array.from(normalize(query)).length < 2) {
+                    return Promise.resolve({ answer: 'refused', reason: 'query-too-short', sequence: sequence });
                 }
-            });
+                return loadIndex().then(function () {
+                    lastTerms = tokens(query);
+                    var results = rank(query).map(function (record) {
+                        byId[record.id] = record;
+                        return {
+                            id: record.id,
+                            group: '',
+                            title: record.title,
+                            path: record.trail.length ? record.trail.join(' › ') : null,
+                            snippet: null,
+                            icon: 'description',
+                            shortcut: null,
+                            kind: 'page',
+                            url: record.url
+                        };
+                    });
+                    return applied({ results: results, echo: echo, recent: readRecent() }, sequence);
+                }, function () {
+                    return { answer: 'unavailable', reason: 'index-unavailable', sequence: sequence };
+                });
+            }
+            if (intent === 'result.preview') {
+                var record = byId[payload.id];
+                if (!record) return Promise.resolve({ answer: 'unavailable', reason: 'not-found', sequence: sequence });
+                return Promise.resolve(applied({ preview: {
+                    id: record.id,
+                    title: record.title,
+                    path: record.trail.join(' › '),
+                    text: contextualSnippet(record, lastTerms)
+                } }, sequence));
+            }
+            if (intent === 'result.open' || intent === 'action.run') {
+                return Promise.resolve(applied({ recent: recordRecent(payload.query) }));
+            }
+            if (intent === 'recent.forget') {
+                var forgotten = String(payload.query || '');
+                return Promise.resolve(applied({ recent: writeRecent(readRecent().filter(function (entry) { return entry !== forgotten; })) }));
+            }
+            if (intent === 'recent.clear') return Promise.resolve(applied({ recent: writeRecent([]) }));
+            return Promise.resolve({ answer: 'unavailable', reason: 'intent-unknown' });
         }
+    };
+
+    function connect(element) {
+        if (!element || typeof element.connectPort !== 'function' || element.sfPort === host) return;
+        element.connectPort(host);
+    }
+    // The element asks for a host once per connection; the script may come
+    // before or after that, so it answers the request and also connects when
+    // the element is defined.
+    document.addEventListener('sf-host-port-request', function (event) {
+        var component = event.detail && event.detail.component;
+        if (component === search) connect(search);
+    });
+    if (window.customElements) {
+        window.customElements.whenDefined('sf-search').then(function () { connect(search); });
     }
 
-    customElements.whenDefined('sf-modal').then(function () {
-        function bindModal(event) {
-            bind(event.detail && event.detail.root ? event.detail.root : dialog.getModalRoot());
-        }
-        dialog.onModalReady(bindModal);
-        dialog.onModalUpdate(bindModal);
+    // A link that opens search (the not-found page has one); without the
+    // script it leads to its href.
+    document.addEventListener('click', function (event) {
+        var opener = event.target instanceof Element
+            ? event.target.closest('a[data-docara-search-open]')
+            : null;
+        if (!opener || event.defaultPrevented || event.button !== 0
+            || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey
+            || typeof search.open !== 'function') return;
+        event.preventDefault();
+        search.open();
     });
 }());

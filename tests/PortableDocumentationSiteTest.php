@@ -468,7 +468,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // The English Get started, Writing pages and Site settings sections,
         // their two images and the translation lock: 2031.
         // The English Building and publishing section: 2084.
-        self::assertCount(2084, $firstFiles);
+        // The contents, pager, search and settings become the Framework
+        // sf-contents, sf-pager, sf-search and sf-context-menu: Docara's
+        // toc.css and toc.js go and the shared shell stylesheets regroup: 2080.
+        self::assertCount(2080, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

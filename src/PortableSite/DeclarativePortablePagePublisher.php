@@ -76,7 +76,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         if ($contentLanguage !== '') {
             // The outline entries are the source page's headings.
             $regions['outline'] = preg_replace(
-                '/(<ul\\b[^>]*\\bclass="docara-outline-list\\b[^"]*")/',
+                '/(<ol\\b[^>]*\\bclass="sf-contents-list\\b[^"]*")/',
                 '$1' . $contentLanguage,
                 $regions['outline'],
             ) ?? $regions['outline'];
@@ -634,11 +634,6 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             . 'window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};})();</script>';
     }
 
-    private function mobileClone(string $html): string
-    {
-        return preg_replace('/\\s+id="[^"]+"/', '', $html) ?? $html;
-    }
-
     /**
      * @param  list<array<string, mixed>>  $items
      * @param  array<string, mixed>  $copy
@@ -665,28 +660,39 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         return $this->smartRenderer->render($plan);
     }
 
+    /**
+     * The narrow-screen contents: the same Framework sf-contents in its
+     * compact layout (a button that opens the list), with its own list id.
+     */
     private function mobileOutlineClone(string $html): string
     {
         if ($html === '') {
             return '';
         }
-        $clone = $this->mobileClone($html);
         $count = 0;
         $clone = preg_replace(
-            '/(<nav\\b[^>]*data-docara-smart="docara\\.toc"[^>]*>\\s*<p\\b)/',
-            '$1 hidden',
-            $clone,
+            ['/\\blayout="column" sticky="false"/', '/\\bsf-contents--layout-column sf-contents--size-half"/', '/\\bdata-docara-view="default"/'],
+            ['layout="compact" data-compact="true"', 'sf-contents--layout-compact sf-contents--size-half sf-contents--sticky"', 'data-docara-view="compact"'],
+            $html,
             1,
             $count,
-        ) ?? $clone;
-        if ($count !== 1) {
+        ) ?? $html;
+        if ($count !== 3) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_MOBILE_TOC_HEADING_CONTRACT_INVALID',
-                'The mobile contents clone must contain exactly one hideable duplicate heading.',
+                'The mobile contents must be made from exactly one column contents.',
             );
         }
 
-        return $clone;
+        // The copy must not repeat the column's ids; its own list keeps one
+        // for the toggle's aria-controls.
+        $clone = preg_replace('/\\s+id="[^"]+"/', '', $clone) ?? $clone;
+
+        return str_replace(
+            '<ol class="sf-contents-list"',
+            '<ol id="docara-contents-compact-list" class="sf-contents-list"',
+            str_replace('aria-controls="docara-contents-list"', 'aria-controls="docara-contents-compact-list"', $clone),
+        );
     }
 
     /** @param list<string> $assetKeys */

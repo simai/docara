@@ -7,6 +7,7 @@
     var trigger=document.querySelector('[data-docara-reader-settings-trigger]');
     var store=window.DocaraReaderPreferences;
     if(!component||!modal||!trigger||!store)return;
+    if(modal.localName==='sf-context-menu'){bootMenu(modal,trigger,store);return}
     booted=true;
     component.dataset.docaraPreferencesRuntime='ready';
     var copyNode=document.getElementById('docara-runtime-copy'),messages={};
@@ -239,6 +240,71 @@
       }
     });
     sync();
+  }
+  // The menu view is the Framework sf-context-menu settings panel: it draws
+  // the rows and reports each choice; the page keeps the values (the store
+  // the bootstrap applied before first paint) and puts them back on open.
+  function bootMenu(menu,trigger,store){
+    booted=true;
+    menu.dataset.docaraPreferencesRuntime='ready';
+    var copyNode=document.getElementById('docara-runtime-copy'),messages={};
+    try{messages=JSON.parse(copyNode?copyNode.textContent:'{}')}catch(error){messages={}}
+    function message(id,parameters){
+      var value=typeof messages[id]==='string'?messages[id]:id;
+      Object.keys(parameters||{}).forEach(function(name){value=value.split('{'+name+'}').join(String(parameters[name]))});
+      return value;
+    }
+    // The rows are the element's entries: the settings island while the
+    // element has not started, its entries setting once it has read it.
+    var island=menu.querySelector('script[data-sf-settings]'),declared=[];
+    try{declared=island?JSON.parse(island.textContent).entries||[]:[]}catch(error){declared=[]}
+    function fields(){
+      var entries=Array.isArray(menu.entries)&&menu.entries.length?menu.entries:declared;
+      return entries.filter(function(entry){return entry&&entry.type==='choice'&&entry.id});
+    }
+    function values(){
+      var map={};
+      fields().forEach(function(field){map[field.id]=store.current(field.id)});
+      return map;
+    }
+    function restore(){if(typeof menu.setAll==='function')menu.setAll(values())}
+    function announce(value){
+      var status=document.querySelector('[data-docara-reader-settings-status]');
+      if(!status)return;
+      status.textContent='';
+      requestAnimationFrame(function(){status.textContent=value});
+    }
+    function textOf(field,value){
+      var option=(field.options||[]).filter(function(option){return option.id===value})[0];
+      return option?option.text:value;
+    }
+    trigger.addEventListener('click',function(){
+      restore();
+      if(typeof menu.toggleFor==='function')menu.toggleFor(trigger);
+    });
+    menu.addEventListener('sf-context-menu-opened',function(){trigger.setAttribute('aria-expanded','true')});
+    menu.addEventListener('sf-context-menu-closed',function(){trigger.setAttribute('aria-expanded','false')});
+    menu.addEventListener('sf-context-menu-changed',function(event){
+      var detail=event.detail||{};
+      var field=fields().filter(function(field){return field.id===detail.id})[0];
+      if(!field)return;
+      var result=store.set(field.id,String(detail.value));
+      if(!result.applied){restore();return}
+      announce(result.persisted?message('reader.saved',{setting:field.text,value:textOf(field,String(detail.value))}):message('reader.applied_not_saved'));
+      menu.dispatchEvent(new CustomEvent('docara-preference-change',{bubbles:true,detail:{id:field.id,value:String(detail.value),persisted:result.persisted}}));
+    });
+    // The reset row is a command: the page clears its values and the panel
+    // shows the declared ones again.
+    menu.addEventListener('sf-context-menu-select',function(event){
+      if(!event.detail||event.detail.id!=='reset')return;
+      store.reset();
+      restore();
+      announce(message('reader.restored'));
+      menu.dispatchEvent(new CustomEvent('docara-preferences-reset',{bubbles:true}));
+    });
+    window.addEventListener('storage',function(event){
+      if(event.key===store.key){store.syncExternal();restore()}
+    });
   }
   document.addEventListener('docara:preferences-ready',boot);
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});

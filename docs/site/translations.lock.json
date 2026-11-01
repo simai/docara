@@ -1218,10 +1218,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/reader-preferences.md",
-            "source_sha256": "85343e9a0d39ace656ef6e3e3bb00470c975d4f7645eb40e4a3e039fe96a863f",
+            "source_sha256": "ff1e5c9f7d6ad0495376067211c2b03c411d60caf0fca59f37260fa3e29172d2",
             "source_structure_sha256": "613f0dadd63abe5b4139f8728f19c5d71a1cf1124d981a093e03e99e76e364ce",
             "target_path": "content/en/settings/reader-preferences.md",
-            "target_sha256": "6c98359683528b2a157052c9fde48654db5b5771950bd42c3aeca966ce3a9b7a",
+            "target_sha256": "0d45526caa84450852bc4d740710830878e301a55d18435def7a27f2ef347f94",
             "target_structure_sha256": "613f0dadd63abe5b4139f8728f19c5d71a1cf1124d981a093e03e99e76e364ce"
         },
         {
@@ -1230,10 +1230,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/reading.md",
-            "source_sha256": "0556a2bbe68bd411de8162bdb1b7fd61d0cad05af65c2d4329856e0786c3cd46",
+            "source_sha256": "be338a544301bdde2c06d77dff5ab3f9149909fd6e9189f86c32e041dbd27380",
             "source_structure_sha256": "a401163f58f33008fa4f0d81f100c0e1864fd467f068630017b065737b988d48",
             "target_path": "content/en/settings/reading.md",
-            "target_sha256": "761b19db428b45841bd494764a28dcdd086cbcdb10ac80ec44e5c477c42a085f",
+            "target_sha256": "f82fc0fd4074449c6620c4fcb0fdf35e7e461c19f433539c3ba30b200badfc0d",
             "target_structure_sha256": "a401163f58f33008fa4f0d81f100c0e1864fd467f068630017b065737b988d48"
         },
         {
@@ -1242,10 +1242,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/search.md",
-            "source_sha256": "f078ec6861e554d4f3ed828ea615a98eaad3da69f96b1c368e86e448df7a3ea5",
+            "source_sha256": "8ef89cea2b879c42536e66a25ad66f886875e55f4fa440656592a6cf84fa649f",
             "source_structure_sha256": "4b5aa11a51529d516c7bd789d01f1b40eeb5cb894aac9da4dcb946a72408dd42",
             "target_path": "content/en/settings/search.md",
-            "target_sha256": "f12f29b170998f10fe860f88deb4dc39b644b21bc91d36a83d5f30084432c89a",
+            "target_sha256": "9973551904b79472c39c266a633494e2ed312fd702fe573d91c78f28a6d377c6",
             "target_structure_sha256": "4b5aa11a51529d516c7bd789d01f1b40eeb5cb894aac9da4dcb946a72408dd42"
         },
         {

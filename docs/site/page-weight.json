@@ -4,6 +4,10 @@
   "max_image_bytes": 1300000,
   "image_oversize_ratio": 2.5,
   "pages": {
+    "/ru/examples/extensions/": {
+      "max_page_bytes": 5300000,
+      "reason": "5.08 MB: the heaviest ordinary page, an example gallery; the Framework search, contents, pager and settings components (sf-search, sf-contents, sf-pager, sf-context-menu) every page loads since 3.10.0 took it past the default."
+    },
     "/ru/components/icon/": {
       "max_page_bytes": 5500000,
       "reason": "5.21 MB: the icon page draws every family, weight and fill, so it loads catalogue faces the other pages do not, and lists all 3926 icon names."

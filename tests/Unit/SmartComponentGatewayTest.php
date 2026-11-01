@@ -42,7 +42,8 @@ final class SmartComponentGatewayTest extends TestCase
         self::assertSame('ui.alert', $framework->smart);
         self::assertSame('docara.toc', $product->smart);
         self::assertSame('simai/docara', $product->provenance['provider']);
-        self::assertContains('docara.smart.toc.css', $product->assets);
+        // The contents is the Framework sf-contents; the product component brings no assets of its own.
+        self::assertNotContains('docara.smart.toc.css', $product->assets);
     }
 
     /** @return array<string, mixed> */

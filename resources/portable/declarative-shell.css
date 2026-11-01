@@ -274,9 +274,9 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
   .docara-outline-mobile{display:block}
 }
 @media not all and (min-width:60rem){
+  .docara-mobile-navigation-trigger{display:inline-flex}
   /* The search button, which opens the Framework sf-search window, keeps only its icon on a narrow header. */
   .docara-search-trigger .sf-button-text-container,.docara-search-trigger .sf-button-shortcut{display:none}
-  .docara-mobile-navigation-trigger{display:inline-flex}
   .docara-docs-layout,.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(0,1fr)}
   .docara-sidebar{display:none}
   .docara-reading-column{padding:var(--sf-space-2)}

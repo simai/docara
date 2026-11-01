@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.10.0] - 2026-11-01
+
 ### Added
 
 - **Docara now says how to work with an AI agent.** A new page explains how to
@@ -53,6 +55,18 @@ All notable changes to Docara are recorded here. The format follows
   `schema` key of `lang.json` names the file's own schema, and the "made with
   Docara" credit stays with the branding gate.
 
+- **The effects page shows its effects live.** "Фоновые эффекты" had no
+  live example. It now shows four small heroes from the site's pinned
+  catalogue, each with its Markdown source: `constellation-net`,
+  `hex-conduits`, `glyph-tide` (with `effect_settings`) and `contour-map`,
+  all with a light and a dark version. They render inline in the page, so
+  the shell's pause button and the Framework's off-screen pause apply. In
+  headless Chrome at 1440 px the page fetches the catalogue index once and
+  each effect's two files once, 97 KB in nine requests; the main thread is
+  busy about 1.6% of the time with one effect in view, 2.9% with three, and
+  0% with none in view or with the effects paused. The page's static weight
+  goes from 2.74 MB to 2.79 MB.
+
 ### Changed
 
 - **The page contents, search, previous and next pages and the reader settings
@@ -91,6 +105,43 @@ All notable changes to Docara are recorded here. The format follows
   (`xl`) the header navigation and the outline rail now stay in the wide
   layout, as the Framework's own `xl` rules do, instead of moving into
   sheets one step early.
+
+- **Untitled diagrams, math and html frames are labelled in the page
+  language.** A diagram without `title`, a formula without `label` and the
+  html frame were called "Diagram", "Mathematical formula" and "HTML
+  example" on every page; a Russian page now says «Схема», «Математическая
+  формула» and «Пример HTML» (`blocks.*` build strings).
+- **A named current step is announced.** `:::steps {current=N}` marks the
+  current step with `aria-current="step"`, so screen readers say where the
+  reader is; without `current` nothing is announced.
+- **Translations with localized links and code can be current.** The
+  translation structure check compared internal links with their locale
+  prefix and anchor, and code blocks with their text, so a page that linked
+  `/en/...` instead of `/ru/...` or translated a code comment was always
+  `structure_mismatch` on a prefixed multilingual site. Links are now
+  compared without the locale prefix and the anchor (an anchor-only link as
+  any anchor), and code blocks by count
+  and language.
+
+- **The component examples show generated, text-free images.** A screenshot
+  of the old interface (with Russian text and a hand-drawn arrow) and two 3D
+  renders with the old diamond mark are replaced by 19 WebP illustrations
+  drawn by `scripts/build-example-art.mjs` in one style: dark and light
+  blocks with bars instead of words, soft shadows and the red ring of the
+  current mark. They carry no letters or digits, so every locale can use
+  them, and the illustrations keep a transparent background, so they sit on
+  light and dark surfaces alike. Each example has its own image: figure,
+  media, hero, showcase, promo, feature cards, grid cards and the surface
+  background. The figure page gains a `cover`/`contain` example with a tall
+  picture, the hero page a live background example and the landing blocks
+  page a features example with pictures. The SVG sources are in
+  `docs/example-art/`; `--check` reports a stale one. The largest image is
+  104 KB (the old ones weighed up to 1.16 MB), and the pages get lighter:
+  landing blocks 4.27 → 2.98 MB, media 3.92 → 2.94 MB, hero 3.75 →
+  2.89 MB, surface 3.99 → 3.68 MB, figure 3.08 → 2.84 MB.
+- **The surface and hero background examples use `overlay_strength=strong`**,
+  so the heading stays clearly readable in the dark theme too, where the
+  overlay is light.
 
 ### Fixed
 
@@ -155,24 +206,25 @@ All notable changes to Docara are recorded here. The format follows
   misspelled project component name gives `SMART_REGISTRY_COMPONENT_NOT_FOUND`
   with the page file and line instead of a bare internal message.
 
-### Changed
-
-- **Untitled diagrams, math and html frames are labelled in the page
-  language.** A diagram without `title`, a formula without `label` and the
-  html frame were called "Diagram", "Mathematical formula" and "HTML
-  example" on every page; a Russian page now says «Схема», «Математическая
-  формула» and «Пример HTML» (`blocks.*` build strings).
-- **A named current step is announced.** `:::steps {current=N}` marks the
-  current step with `aria-current="step"`, so screen readers say where the
-  reader is; without `current` nothing is announced.
-- **Translations with localized links and code can be current.** The
-  translation structure check compared internal links with their locale
-  prefix and anchor, and code blocks with their text, so a page that linked
-  `/en/...` instead of `/ru/...` or translated a code comment was always
-  `structure_mismatch` on a prefixed multilingual site. Links are now
-  compared without the locale prefix and the anchor (an anchor-only link as
-  any anchor), and code blocks by count
-  and language.
+- **With reduced motion, a hero effect's still frame hid the hero's text.**
+  The shell's reduced-motion rule set `transition-duration:.01ms` on every
+  element. Since every property transitions by default, that started a
+  transition on the probe element an effect reads its theme colours from,
+  and the probe reported the colour it inherits. In Chrome `constellation-net`,
+  `hex-conduits` and `glyph-tide` painted their light still frame in the text
+  colour, so the home page hero showed a dark box with unreadable text. The
+  rule now uses `0s`, which starts no transition.
+- **The sidebar keeps its scroll from page to page.** Each page opened with
+  the sidebar scrolled to the top, so a reader deep in a long section had to
+  scroll again to find their place; the existing attempt to reveal the
+  current item scrolled the `aside`, which does not scroll. The shell now
+  saves the sidebar's and the mobile drawer's scroll for the tab on
+  `pagehide` and on a navigation link click, and a short inline script right
+  after the sidebar restores it before the first paint when the reader came
+  from the same site. A current item still out of view, or on a page opened
+  directly, is centred in the sidebar; the drawer does the same when it
+  opens. Only the sidebar or the drawer scrolls, at once even though the
+  Framework sets `scroll-behavior:smooth`, and the page does not move.
 
 ### Documentation
 
@@ -195,66 +247,6 @@ All notable changes to Docara are recorded here. The format follows
 - Every diagnostic code has a cause-and-fix entry (1134 of 1134), and the
   site gains a CI recipe, a versions page, an accessibility guide and a
   first-landing tutorial and a first-project-component tutorial.
-
-## [3.10.0] - 2026-10-26
-
-### Added
-
-- **The effects page shows its effects live.** "Фоновые эффекты" had no
-  live example. It now shows four small heroes from the site's pinned
-  catalogue, each with its Markdown source: `constellation-net`,
-  `hex-conduits`, `glyph-tide` (with `effect_settings`) and `contour-map`,
-  all with a light and a dark version. They render inline in the page, so
-  the shell's pause button and the Framework's off-screen pause apply. In
-  headless Chrome at 1440 px the page fetches the catalogue index once and
-  each effect's two files once, 97 KB in nine requests; the main thread is
-  busy about 1.6% of the time with one effect in view, 2.9% with three, and
-  0% with none in view or with the effects paused. The page's static weight
-  goes from 2.74 MB to 2.79 MB.
-
-### Changed
-
-- **The component examples show generated, text-free images.** A screenshot
-  of the old interface (with Russian text and a hand-drawn arrow) and two 3D
-  renders with the old diamond mark are replaced by 19 WebP illustrations
-  drawn by `scripts/build-example-art.mjs` in one style: dark and light
-  blocks with bars instead of words, soft shadows and the red ring of the
-  current mark. They carry no letters or digits, so every locale can use
-  them, and the illustrations keep a transparent background, so they sit on
-  light and dark surfaces alike. Each example has its own image: figure,
-  media, hero, showcase, promo, feature cards, grid cards and the surface
-  background. The figure page gains a `cover`/`contain` example with a tall
-  picture, the hero page a live background example and the landing blocks
-  page a features example with pictures. The SVG sources are in
-  `docs/example-art/`; `--check` reports a stale one. The largest image is
-  104 KB (the old ones weighed up to 1.16 MB), and the pages get lighter:
-  landing blocks 4.27 → 2.98 MB, media 3.92 → 2.94 MB, hero 3.75 →
-  2.89 MB, surface 3.99 → 3.68 MB, figure 3.08 → 2.84 MB.
-- **The surface and hero background examples use `overlay_strength=strong`**,
-  so the heading stays clearly readable in the dark theme too, where the
-  overlay is light.
-
-### Fixed
-
-- **With reduced motion, a hero effect's still frame hid the hero's text.**
-  The shell's reduced-motion rule set `transition-duration:.01ms` on every
-  element. Since every property transitions by default, that started a
-  transition on the probe element an effect reads its theme colours from,
-  and the probe reported the colour it inherits. In Chrome `constellation-net`,
-  `hex-conduits` and `glyph-tide` painted their light still frame in the text
-  colour, so the home page hero showed a dark box with unreadable text. The
-  rule now uses `0s`, which starts no transition.
-- **The sidebar keeps its scroll from page to page.** Each page opened with
-  the sidebar scrolled to the top, so a reader deep in a long section had to
-  scroll again to find their place; the existing attempt to reveal the
-  current item scrolled the `aside`, which does not scroll. The shell now
-  saves the sidebar's and the mobile drawer's scroll for the tab on
-  `pagehide` and on a navigation link click, and a short inline script right
-  after the sidebar restores it before the first paint when the reader came
-  from the same site. A current item still out of view, or on a page opened
-  directly, is centred in the sidebar; the drawer does the same when it
-  opens. Only the sidebar or the drawer scrolls, at once even though the
-  Framework sets `scroll-behavior:smooth`, and the page does not move.
 
 ## [3.9.1] - 2026-10-26
 ### Added

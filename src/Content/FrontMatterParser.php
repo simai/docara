@@ -9,7 +9,7 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class FrontMatterParser
 {
-    private const KEYS = ['title', 'description', 'tags', 'draft', 'noindex', 'translation_key', 'profile', 'composition_recipe'];
+    private const KEYS = ['title', 'description', 'tags', 'draft', 'noindex', 'translation_key', 'profile', 'template', 'template_omit', 'composition_recipe'];
 
     public function parse(string $markdown, string $source): FrontMatterDocument
     {
@@ -108,12 +108,28 @@ final readonly class FrontMatterParser
 
             return $tags;
         }
+        if ($key === 'template_omit') {
+            if (preg_match('/^\[(.*)]$/u', $value, $match) !== 1) {
+                $this->fail('FRONT_MATTER_TEMPLATE_OMIT_INVALID', $source, $line, $column, 'Use an inline list of section ids such as template_omit: [classes].');
+            }
+            $ids = trim($match[1]) === '' ? [] : array_map('trim', explode(',', $match[1]));
+            foreach ($ids as $id) {
+                if (preg_match('/^[a-z][a-z0-9_-]*$/D', $id) !== 1) {
+                    $this->fail('FRONT_MATTER_TEMPLATE_OMIT_INVALID', $source, $line, $column, "Section id [$id] must be lowercase letters, digits, _ or -.");
+                }
+            }
+
+            return array_values(array_unique($ids));
+        }
 
         $value = $this->scalar($value, $source, $line, $column);
         if ($key === 'translation_key'
             && preg_match('/^[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?$/D', $value) !== 1
         ) {
             $this->fail('FRONT_MATTER_TRANSLATION_KEY_INVALID', $source, $line, $column, 'Use a stable lowercase identifier.');
+        }
+        if ($key === 'template' && preg_match('/^[a-z][a-z0-9_-]*$/D', $value) !== 1) {
+            $this->fail('FRONT_MATTER_TEMPLATE_INVALID', $source, $line, $column, 'Use a template id from docara.authoring.json.');
         }
         if ($key === 'profile' && ! in_array($value, AuthoringProfileRegistry::IDS, true)) {
             $this->fail('FRONT_MATTER_PROFILE_INVALID', $source, $line, $column, 'Use a built-in Docara authoring profile.');

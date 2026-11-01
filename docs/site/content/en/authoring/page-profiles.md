@@ -1,5 +1,5 @@
 ---
-description: Page profiles in docara.authoring.json — the type of a page, what docara validate page checks, how Docara guesses the type, page templates and AGENTS.md for AI assistants.
+description: Page profiles in docara.authoring.json — the type of a page, what docara validate page checks, how Docara guesses the type, a new page of a type and AGENTS.md for AI assistants.
 ---
 
 # Page profiles
@@ -41,6 +41,8 @@ The file sits at the project root next to `docara.json`:
 | `rules` | Rules: which profile pages get by their path. |
 | `rules[].match` | The path of the page file from the language folder, for example `reference/cli.md`. `*` stands for part of a name inside one folder, `**` for any number of folders, `?` for one character. |
 | `rules[].profile` | The profile for matching pages. |
+| `rules[].template` | The template for matching pages, see [Page templates](/en/authoring/page-templates/). A rule needs `profile`, `template` or both. |
+| `templates` | Page templates: which sections, in which order, see [Page templates](/en/authoring/page-templates/). |
 | `audiences` | The list of site readers, for example `["reader", "author"]`. For now it is only checked for format and does not affect the result. |
 
 If two rules with different profiles match a page, the check stops with
@@ -111,7 +113,7 @@ add `"infer_profiles": false` to `docara.authoring.json`.
 Guessing works only when the project has `docara.authoring.json`. This way
 old sites without the file build as before.
 
-## Page templates
+## A new page of a type
 
 `docara scaffold page` creates a page of the needed type: with front matter,
 a place for `description` and the sections of that type.
@@ -157,6 +159,7 @@ tool.
 
 ## See also
 
+- [Page templates](/en/authoring/page-templates/) — the exact list of sections for pages of one kind
 - [Page metadata](/en/authoring/markdown/#page-metadata) — the `profile` key
 - [Starters and environment](/en/start/templates/) — the skeleton by page type and `AGENTS.md`
 - [CLI commands](/ru/reference/cli/) (in Russian) — `scaffold page` and `validate page`

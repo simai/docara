@@ -29,6 +29,11 @@ final class QualityChecks
             'checks' => 'The page lacks a part its profile requires (the PAGE_PROFILE_*_MISSING checks of validate page).',
             'hint' => 'Add the missing part or set the profile that matches the page; run docara validate page <route>.',
         ],
+        'QUALITY_TEMPLATE_MISMATCH' => [
+            'group' => 'completeness', 'severity' => self::WARNING,
+            'checks' => 'The page does not follow its template from docara.authoring.json (the PAGE_TEMPLATE_* checks of validate page): a section is missing, unknown or out of order, an example is missing, or a generated section was edited by hand.',
+            'hint' => 'Bring the sections in line with the template, list a section the page leaves out on purpose in template_omit, or rerun the generator; run docara validate page <route>.',
+        ],
         'QUALITY_DESCRIPTION_MISSING' => [
             'group' => 'completeness', 'severity' => self::WARNING,
             'checks' => 'The page has no description in front matter or in its <page>.page.json.',

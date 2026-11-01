@@ -30,6 +30,8 @@ Front matter — блок между двумя строками `---` в нач
 | `FRONT_MATTER_TAG_DUPLICATE` | Метка повторяется. **Что сделать:** Удалите повтор. |
 | `FRONT_MATTER_TRANSLATION_KEY_INVALID` | `translation_key` не является строчным идентификатором. **Что сделать:** Используйте строчные латинские буквы, цифры, `.`, `_` и `-`, например `start.install`. |
 | `FRONT_MATTER_PROFILE_INVALID` | Неизвестный профиль страницы. **Что сделать:** Укажите один из профилей: `landing`, `article`, `tutorial`, `how_to`, `reference`, `explanation`. |
+| `FRONT_MATTER_TEMPLATE_INVALID` | `template` не является id шаблона. **Что сделать:** Укажите id шаблона из `docara.authoring.json`: строчные латинские буквы, цифры, `_` и `-`. |
+| `FRONT_MATTER_TEMPLATE_OMIT_INVALID` | `template_omit` записан не списком в квадратных скобках или содержит неверный id. **Что сделать:** Пишите `template_omit: [classes]`, перечисляя id разделов шаблона. |
 | `FRONT_MATTER_COMPOSITION_RECIPE_INVALID` | Путь в `composition_recipe` не является безопасным относительным путём к `.json`. **Что сделать:** Укажите путь от корня проекта без `..` и `//`. |
 
 ## Общие правила блоков

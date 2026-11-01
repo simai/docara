@@ -19,7 +19,8 @@
         "title": {"type": "string", "minLength": 1},
         "profile": {"enum": ["landing", "article", "tutorial", "how_to", "reference", "explanation"]},
         "source": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9-]*$"},
-        "entity": {"type": ["string", "null"], "minLength": 1}
+        "entity": {"type": ["string", "null"], "minLength": 1},
+        "template": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"}
       }
     },
     "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},

@@ -6,6 +6,7 @@ namespace Simai\Docara\Application;
 
 use Simai\Docara\Authoring\AuthoringContract;
 use Simai\Docara\Authoring\AuthoringProfileRegistry;
+use Simai\Docara\Authoring\PageTemplateCheck;
 use Simai\Docara\ComponentCatalog\ParameterDeprecation;
 use Simai\Docara\Content\FrontMatterDocument;
 use Simai\Docara\Content\FrontMatterParser;
@@ -40,16 +41,7 @@ final readonly class PageInspectionService
             $document = (new FrontMatterParser)->parse($raw, $source->path);
             $contentRoot = LocaleRegistry::fromSite($runtime->site)->get($source->locale)->contentRoot;
             $relative = substr($source->path, strlen($contentRoot) + 1);
-            $resolution = $contract->resolve(
-                $relative,
-                is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null,
-                $document->markdown,
-            );
-            $diagnostics = $this->profileDiagnostics(
-                $resolution,
-                $this->facts($document->markdown),
-                $contract->present || isset($document->metadata['profile']),
-            );
+            ['resolution' => $resolution, 'template' => $template, 'diagnostics' => $diagnostics] = $this->structure($contract, $relative, $document, $source);
             $route = $this->publicRoute($runtime, $source);
             $items[] = [
                 'id' => $route,
@@ -71,7 +63,7 @@ final readonly class PageInspectionService
      * and the structural profile checks, without compiling the Markdown.
      * The quality report and the review packet read pages through this.
      *
-     * @return list<array{route:string,source:string,relative:string,locale:string,front_matter:array<string,mixed>,markdown:string,profile:?string,profile_source:string,profile_reason:?string,profile_missing:list<string>,draft:bool}>
+     * @return list<array{route:string,source:string,relative:string,locale:string,front_matter:array<string,mixed>,markdown:string,profile:?string,profile_source:string,profile_reason:?string,profile_missing:list<string>,template:?string,template_findings:list<array<string,mixed>>,draft:bool}>
      */
     public function profileReport(string $root): array
     {
@@ -82,15 +74,14 @@ final readonly class PageInspectionService
         foreach ($this->sources($runtime) as $source) {
             $document = (new FrontMatterParser)->parse((string) file_get_contents($runtime->root . '/' . $source->path), $source->path);
             $relative = substr($source->path, strlen($locales->get($source->locale)->contentRoot) + 1);
-            $resolution = $contract->resolve(
-                $relative,
-                is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null,
-                $document->markdown,
-            );
+            ['resolution' => $resolution, 'template' => $template, 'diagnostics' => $diagnostics] = $this->structure($contract, $relative, $document, $source);
             $missing = [];
-            foreach ($this->profileDiagnostics($resolution, $this->facts($document->markdown), $contract->present || isset($document->metadata['profile'])) as $diagnostic) {
+            $templateFindings = [];
+            foreach ($diagnostics as $diagnostic) {
                 if (preg_match('/^PAGE_PROFILE_(.+)_MISSING$/', (string) $diagnostic['code'], $match) === 1) {
                     $missing[] = strtolower($match[1]);
+                } elseif (str_starts_with((string) $diagnostic['code'], 'PAGE_TEMPLATE_') && ($diagnostic['severity'] ?? null) === 'warning') {
+                    $templateFindings[] = $diagnostic;
                 }
             }
             $pages[] = [
@@ -104,6 +95,8 @@ final readonly class PageInspectionService
                 'profile_source' => $resolution['source'],
                 'profile_reason' => $resolution['reason'] ?? null,
                 'profile_missing' => $missing,
+                'template' => $template['template'],
+                'template_findings' => $templateFindings,
                 'draft' => ($document->metadata['draft'] ?? false) === true,
             ];
         }
@@ -171,16 +164,7 @@ final readonly class PageInspectionService
             $document = (new FrontMatterParser)->parse($raw, $source->path);
             $contentRoot = LocaleRegistry::fromSite($runtime->site)->get($source->locale)->contentRoot;
             $relative = substr($source->path, strlen($contentRoot) + 1);
-            $resolution = $contract->resolve(
-                $relative,
-                is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null,
-                $document->markdown,
-            );
-            $diagnostics = $this->profileDiagnostics(
-                $resolution,
-                $this->facts($document->markdown),
-                $contract->present || isset($document->metadata['profile']),
-            );
+            ['resolution' => $resolution, 'template' => $template, 'diagnostics' => $diagnostics] = $this->structure($contract, $relative, $document, $source);
             $compiler->compile($this->compiledMarkdown($document), $source->path);
             foreach ($this->examples($runtime, $source, $document->markdown) as $example) {
                 if ($example['mode'] === 'reusable') {
@@ -234,9 +218,7 @@ final readonly class PageInspectionService
         $raw = (string) file_get_contents($absolute);
         $document = (new FrontMatterParser)->parse($raw, $source->path);
         $relative = substr($source->path, strlen(LocaleRegistry::fromSite($runtime->site)->get($source->locale)->contentRoot) + 1);
-        $resolution = $contract->resolve($relative, is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null, $document->markdown);
-        $facts = $this->facts($document->markdown);
-        $diagnostics = $this->profileDiagnostics($resolution, $facts, $contract->present || isset($document->metadata['profile']));
+        ['resolution' => $resolution, 'template' => $template, 'diagnostics' => $diagnostics] = $this->structure($contract, $relative, $document, $source);
         $route = $this->publicRoute($runtime, $source);
         $components = $this->components($document->markdown);
         $examples = $this->examples($runtime, $source, $document->markdown);
@@ -265,6 +247,7 @@ final readonly class PageInspectionService
             'effective_settings' => ['configuration' => $resolved?->configuration, 'page_sidecar' => $this->sidecar($runtime->root, $source->path)],
             'profile' => ['id' => $resolution['profile'], 'source' => $resolution['source'], 'definition' => $profile, 'review_status' => $profile === null ? 'not_configured' : 'review_required']
                 + (isset($resolution['reason']) ? ['inferred_from' => $resolution['reason']] : []),
+            'template' => ['id' => $template['template'], 'source' => $template['source'], 'definition' => $template['template'] === null ? null : $contract->templates[$template['template']]],
             'components' => $components,
             'examples' => $examples,
             'links' => $links,
@@ -311,6 +294,45 @@ final readonly class PageInspectionService
             'code_blocks' => intdiv(count($fences[0]), 2), 'directives' => count($directives[0]),
             'links' => count($links[0]), 'has_introduction' => trim($body) !== '',
         ];
+    }
+
+    /**
+     * The page's profile and template with their structural checks.
+     *
+     * @return array{resolution:array{profile:?string,source:string,matches:list<array<string,string>>,reason?:string},template:array{template:?string,source:string},diagnostics:list<array<string,mixed>>}
+     */
+    private function structure(AuthoringContract $contract, string $relative, FrontMatterDocument $document, PageSource $source): array
+    {
+        $metadata = $document->metadata;
+        $template = $contract->resolveTemplate($relative, is_string($metadata['template'] ?? null) ? $metadata['template'] : null);
+        $resolution = $contract->resolve(
+            $relative,
+            is_string($metadata['profile'] ?? null) ? $metadata['profile'] : null,
+            $document->markdown,
+            $template['template'],
+        );
+        $diagnostics = $this->profileDiagnostics(
+            $resolution,
+            $this->facts($document->markdown),
+            $contract->present || isset($metadata['profile']),
+        );
+        if ($template['template'] !== null) {
+            $omit = $metadata['template_omit'] ?? [];
+            $sections = array_column($contract->templates[$template['template']]['sections'], 'id');
+            if (! is_array($omit) || ! array_is_list($omit) || array_diff($omit, $sections) !== [] || count(array_filter($omit, 'is_string')) !== count($omit)) {
+                throw new PortableConfigurationException('AUTHORING_TEMPLATE_OMIT_INVALID', "template_omit in [{$source->path}] must list section ids of template [{$template['template']}].");
+            }
+            array_push($diagnostics, ...(new PageTemplateCheck)->check(
+                $template['template'],
+                $contract->templates[$template['template']],
+                $document->markdown,
+                $source->locale,
+                $omit,
+                $source->path,
+            ));
+        }
+
+        return ['resolution' => $resolution, 'template' => $template, 'diagnostics' => $diagnostics];
     }
 
     /**

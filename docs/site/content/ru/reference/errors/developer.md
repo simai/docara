@@ -43,7 +43,7 @@ tags: [ошибка, scaffold, preview, qa, documentation, mcp, sdk]
 | `SCAFFOLD_TARGET_EXISTS` | Файл или папка заготовки уже есть. **Что сделать:** Выберите другое имя или удалите старую заготовку. |
 | `SCAFFOLD_PAGE_ARGUMENT_REQUIRED` | Для страницы не указаны язык или заголовок. **Что сделать:** Добавьте `--locale=ru --title="…"`. |
 | `SCAFFOLD_PAGE_ROUTE_INVALID` | Адрес страницы записан неверно. **Что сделать:** Пишите строчными латинскими буквами, цифрами и дефисами внутри языка: `guides/new-page`. |
-| `SCAFFOLD_PAGE_PROFILE_INVALID` | Неизвестный тип страницы в `--type`. **Что сделать:** Укажите `landing`, `article`, `tutorial`, `how_to`, `reference` или `explanation`. |
+| `SCAFFOLD_PAGE_PROFILE_INVALID` | Неизвестный тип страницы в `--type`, или у шаблона из `--template` нет профиля, а `--type` не указан. **Что сделать:** Укажите `landing`, `article`, `tutorial`, `how_to`, `reference` или `explanation`, или добавьте шаблону `profile`. |
 | `SCAFFOLD_PAGE_SOURCE_ARGUMENT_INVALID` | Указан только один из `--source` и `--entity`. **Что сделать:** Укажите оба или ни одного. |
 | `SCAFFOLD_PAGE_VALIDATION_FAILED` | Страница создана, но сборка её не находит, например её закрывает настройка навигации. **Что сделать:** Проверьте `section.json` раздела и запустите `docara validate page <адрес>`. |
 | `SCAFFOLD_DRY_RUN_REQUIRED` | План применяется без предварительного просмотра. **Что сделать:** Сначала выполните команду с `--dry-run`, затем `--apply=<plan_id>`. |

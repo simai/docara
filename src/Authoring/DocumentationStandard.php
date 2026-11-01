@@ -197,7 +197,9 @@ final readonly class DocumentationStandard
         $lines[] = '';
         $lines[] = 'The page gets the sections of its type, a `description` placeholder and';
         $lines[] = '`draft: true`. Replace every placeholder, then remove `draft: true` so the';
-        $lines[] = 'page is published.';
+        // One line: the guide stays within 100 lines.
+        $lines[] = 'page is published. With `templates` in `docara.authoring.json`, start a page of that kind with `--template <id>`'
+            . ' and keep its sections (`validate page` reports `PAGE_TEMPLATE_*`); never edit text between `docara:generated` markers.';
         $lines[] = '';
         $lines[] = '## Check before you finish';
         $lines[] = '';
@@ -265,6 +267,41 @@ final readonly class DocumentationStandard
     }
 
     /**
+     * A new page for a template from docara.authoring.json: the introduction
+     * and every section in the template's order, each with a placeholder and
+     * the section's hint as a comment. A generated section gets an empty
+     * generated region for its generator to fill.
+     *
+     * @param  array<string, mixed>  $template
+     */
+    public function templatePage(string $id, array $template, ?string $profile, string $locale, string $title): string
+    {
+        $language = self::language($locale);
+        $encode = static fn (string $value): string => json_encode($value, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        $text = self::TEMPLATE_TEXT[$language];
+        $page = "---\ntitle: {$encode($title)}\ndescription: {$encode($text['description'])}\ndraft: true\n"
+            . ($profile !== null ? "profile: {$profile}\n" : '') . "template: {$id}\n---\n\n# {$title}\n\n{$text['introduction']}\n";
+        foreach ($template['sections'] as $section) {
+            $heading = is_array($section['heading']) ? ($section['heading'][$locale] ?? reset($section['heading'])) : $section['heading'];
+            $page .= "\n## {$heading}\n\n";
+            if (isset($section['hint'])) {
+                $page .= '<!-- ' . str_replace('--', '—', (string) $section['hint']) . " -->\n\n";
+            }
+            if (($section['generated'] ?? false) === true) {
+                $page .= "<!-- docara:generated -->\n<!-- /docara:generated -->\n";
+
+                continue;
+            }
+            $page .= (($section['required'] ?? false) === true ? $text['section'] : $text['optional']) . "\n";
+            if (($section['example'] ?? false) === true || ($section['example_per_subsection'] ?? false) === true) {
+                $page .= "\n{$text['example']}\n";
+            }
+        }
+
+        return $page;
+    }
+
+    /**
      * Lines of the page templates that a finished page must not keep: the
      * description placeholders and every prose or list line of every
      * template, without list markers. Headings and table rows are left out
@@ -278,6 +315,9 @@ final readonly class DocumentationStandard
             'Одно предложение: что читатель узнает или сделает на этой странице.',
             'One sentence: what the reader learns or does on this page.',
         ];
+        foreach (self::TEMPLATE_TEXT as $text) {
+            array_push($lines, $text['introduction'], $text['section'], $text['optional'], $text['example']);
+        }
         foreach (self::TEMPLATES as $templates) {
             foreach ($templates as $template) {
                 foreach (explode("\n", $template) as $line) {
@@ -303,6 +343,24 @@ final readonly class DocumentationStandard
 
         return '# ' . $title . "\n\n" . $text;
     }
+
+    /** The placeholders of a page made from a template. */
+    private const TEMPLATE_TEXT = [
+        'en' => [
+            'description' => 'One sentence: what the reader learns or does on this page.',
+            'introduction' => 'Say in one or two sentences what this is and when to choose it.',
+            'section' => 'Write this section as the template describes it.',
+            'optional' => 'Write this optional section, or remove it if the page does not need it.',
+            'example' => 'Add a live example here with the :::example block.',
+        ],
+        'ru' => [
+            'description' => 'Одно предложение: что читатель узнает или сделает на этой странице.',
+            'introduction' => 'Одним-двумя предложениями скажите, что это и когда это выбрать.',
+            'section' => 'Напишите этот раздел так, как его описывает шаблон.',
+            'optional' => 'Напишите этот необязательный раздел или удалите его, если он странице не нужен.',
+            'example' => 'Добавьте сюда живой пример блоком :::example.',
+        ],
+    ];
 
     private const TEMPLATES = [
         'en' => [

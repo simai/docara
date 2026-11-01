@@ -12,8 +12,9 @@ final readonly class AuthoringContract
 {
     /**
      * @param  list<string>  $audiences
-     * @param  list<array{match:string,profile:string}>  $rules
+     * @param  list<array{match:string,profile?:string,template?:string}>  $rules
      * @param  array{min_score?:int,glossary?:string,exclude?:list<string>}  $quality
+     * @param  array<string, array<string, mixed>>  $templates
      */
     private function __construct(
         public bool $present,
@@ -23,6 +24,7 @@ final readonly class AuthoringContract
         public ?string $sha256 = null,
         public bool $inferProfiles = false,
         public array $quality = [],
+        public array $templates = [],
     ) {}
 
     public static function load(string $root): self
@@ -44,6 +46,18 @@ final readonly class AuthoringContract
             throw new PortableConfigurationException('AUTHORING_SCHEMA_INVALID', 'docara.authoring.json must contain an object.');
         }
         (new SchemaRepository)->assertValid($data, 'authoring.schema.json');
+        $templates = $data['templates'] ?? [];
+        foreach ($data['rules'] ?? [] as $index => $rule) {
+            if (! isset($rule['profile']) && ! isset($rule['template'])) {
+                throw new PortableConfigurationException('AUTHORING_RULE_INVALID', "Rule [$index] must name a profile, a template or both.");
+            }
+            if (isset($rule['template']) && ! isset($templates[$rule['template']])) {
+                throw new PortableConfigurationException('AUTHORING_TEMPLATE_UNKNOWN', "Rule [$index] names unknown template [{$rule['template']}].");
+            }
+        }
+        foreach ($templates as $id => $template) {
+            self::assertTemplate((string) $id, $template);
+        }
 
         return new self(
             true,
@@ -53,18 +67,47 @@ final readonly class AuthoringContract
             hash_file('sha256', $path) ?: null,
             ($data['infer_profiles'] ?? true) === true,
             $data['quality'] ?? [],
+            $templates,
         );
     }
 
     /**
-     * The profile of one page: front matter first, then path rules, then
-     * default_profile. When none applies and the file allows inference, the
+     * The template of one page: front matter `template` first, then path
+     * rules. A page without one is not held to a section list.
+     *
+     * @return array{template:?string,source:string}
+     */
+    public function resolveTemplate(string $relativePath, ?string $override): array
+    {
+        if ($override !== null) {
+            if (! isset($this->templates[$override])) {
+                throw new PortableConfigurationException('AUTHORING_TEMPLATE_UNKNOWN', "Unknown page template [$override].");
+            }
+
+            return ['template' => $override, 'source' => 'front_matter'];
+        }
+        $matched = [];
+        foreach ($this->rules as $rule) {
+            if (isset($rule['template']) && $this->matches($rule['match'], $relativePath)) {
+                $matched[$rule['template']] = true;
+            }
+        }
+        if (count($matched) > 1) {
+            throw new PortableConfigurationException('AUTHORING_RULE_CONFLICT', "Rules assign conflicting templates to [$relativePath].");
+        }
+
+        return $matched === [] ? ['template' => null, 'source' => 'none'] : ['template' => array_key_first($matched), 'source' => 'path_rule'];
+    }
+
+    /**
+     * The profile of one page: front matter first, then path rules, then the
+     * profile of the page's template, then default_profile. When none applies and the file allows inference, the
      * profile is guessed from the path and the Markdown (source "inferred");
      * an inferred profile is advice only.
      *
      * @return array{profile:?string,source:string,matches:list<array{match:string,profile:string}>,reason?:string}
      */
-    public function resolve(string $relativePath, ?string $override, ?string $markdown = null): array
+    public function resolve(string $relativePath, ?string $override, ?string $markdown = null, ?string $template = null): array
     {
         if ($override !== null) {
             $this->assertProfile($override);
@@ -78,6 +121,10 @@ final readonly class AuthoringContract
         }
         if ($profiles !== []) {
             return ['profile' => $profiles[0], 'source' => 'path_rule', 'matches' => $matches];
+        }
+        $templateProfile = $template === null ? null : ($this->templates[$template]['profile'] ?? null);
+        if ($templateProfile !== null) {
+            return ['profile' => $templateProfile, 'source' => 'template', 'matches' => []];
         }
 
         if ($this->defaultProfile !== null) {
@@ -102,6 +149,29 @@ final readonly class AuthoringContract
         }
 
         return false;
+    }
+
+    /** @param array<string, mixed> $template */
+    private static function assertTemplate(string $id, array $template): void
+    {
+        $ids = [];
+        $headings = [];
+        foreach ($template['sections'] as $section) {
+            if (isset($ids[$section['id']])) {
+                throw new PortableConfigurationException('AUTHORING_TEMPLATE_INVALID', "Template [$id] repeats section [{$section['id']}].");
+            }
+            $ids[$section['id']] = true;
+            foreach ((array) $section['heading'] as $locale => $heading) {
+                $key = (is_string($locale) ? $locale : '*') . "\0" . $heading;
+                if (isset($headings[$key])) {
+                    throw new PortableConfigurationException('AUTHORING_TEMPLATE_INVALID', "Template [$id] uses heading [$heading] for two sections.");
+                }
+                $headings[$key] = true;
+            }
+            if (($section['generated'] ?? false) === true && (($section['example'] ?? false) === true || ($section['example_per_subsection'] ?? false) === true)) {
+                throw new PortableConfigurationException('AUTHORING_TEMPLATE_INVALID', "Template [$id] section [{$section['id']}] is generated, so it cannot also ask for a hand-written example.");
+            }
+        }
     }
 
     private function assertProfile(string $profile): void

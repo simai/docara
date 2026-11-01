@@ -56,6 +56,10 @@ translation_key: guide.install
   страницы;
 - `profile` — встроенный [профиль проверки](/ru/authoring/page-profiles/):
   `landing`, `article`, `tutorial`, `how_to`, `reference` или `explanation`;
+- `template` — [шаблон страницы](/ru/authoring/page-templates/) из
+  `docara.authoring.json`: какие разделы и в каком порядке;
+- `template_omit` — разделы шаблона, которых на этой странице нет нарочно,
+  списком в одну строку, например `template_omit: [classes]`;
 - `composition_recipe` — путь к JSON-дескриптору Composition Recipe
   относительно проекта; пример — страница
   [Composition Recipe: расширенная шапка](/ru/examples/composition-recipe-expanded/).

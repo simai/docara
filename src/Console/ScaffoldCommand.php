@@ -25,6 +25,7 @@ final class ScaffoldCommand extends ApplicationCommand
             ->addOption('title', null, InputOption::VALUE_REQUIRED, 'Page title for page scaffolding.')
             ->addOption('type', null, InputOption::VALUE_REQUIRED, 'Page type: landing|article|tutorial|how_to|reference|explanation. Same as --profile.')
             ->addOption('profile', null, InputOption::VALUE_REQUIRED, 'Built-in page authoring profile.')
+            ->addOption('template', null, InputOption::VALUE_REQUIRED, 'Page template from docara.authoring.json: the page gets its sections in order.')
             ->addOption('source', null, InputOption::VALUE_REQUIRED, 'Configured documentation source id.')
             ->addOption('entity', null, InputOption::VALUE_REQUIRED, 'Stable source entity key.')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Create and return a deterministic review plan.')
@@ -47,6 +48,7 @@ final class ScaffoldCommand extends ApplicationCommand
         $options = [
             'locale' => $this->input->getOption('locale'), 'title' => $this->input->getOption('title'), 'profile' => is_string($type) ? $type : $profile,
             'source' => $this->input->getOption('source'), 'entity' => $this->input->getOption('entity'),
+            'template' => $this->input->getOption('template'),
         ];
         $plan = fn () => $this->service->plan($this->base, $kind, (string) $this->input->getArgument('id'), $options);
         if (! (bool) $this->input->getOption('dry-run')) {

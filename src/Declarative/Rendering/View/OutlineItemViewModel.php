@@ -11,5 +11,6 @@ final readonly class OutlineItemViewModel
         public int $level,
         public string $text,
         public string $indentationClass,
+        public int $depth = 0,
     ) {}
 }

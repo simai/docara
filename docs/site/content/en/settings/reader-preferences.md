@@ -29,7 +29,7 @@ or a click outside the menu close it and return focus to the button.
 
 | Value | What it looks like |
 | --- | --- |
-| `menu` | A context menu under the ⋮ button · **Default** |
+| `menu` | The SIMAI Framework settings panel (`sf-context-menu`) under the ⋮ button: a setting's row shows its current value and opens the options in the same panel · **Default** |
 | `side-panel` | A full-height "Settings" side panel on the right, with the page dimmed |
 
 In the side panel each setting is a label and a segmented switch from a

@@ -1,10 +1,10 @@
-<nav aria-label="<?= $view->label ?>" data-docara-smart="docara.toc" data-docara-view="default" data-docara-outline class="flex flex-col gap-1">
-    <p class="m-0 weight-7"><?= $view->label ?></p>
-    <ul class="docara-outline-list flex flex-col gap-0 m-0 p-0">
-<?php foreach ($view->items as $item) { ?>
-        <li class="docara-outline-item" data-docara-outline-level="<?= $item->level ?>">
-            <a class="docara-outline-link flex items-cross-center radius-1 p-1/3 text-small color-on-surface-variant decoration-none" href="#<?= $item->id ?>"><?= $item->text ?></a>
-        </li>
+<?php $first = $view->items[0] ?? null; ?>
+<sf-contents data-docara-smart="docara.toc" data-docara-view="default" data-docara-outline layout="column" sticky="false" hash="false" label="<?= $view->label ?>" style="display: contents;"><script type="application/json" data-sf-settings><?= $view->settingsJson ?></script><nav class="sf-contents sf-contents--layout-column sf-contents--size-half" aria-label="<?= $view->label ?>" data-sf-static>
+<div class="sf-contents-head"><sf-button class="sf-contents-toggle" appearance="outline" scheme="on-surface" icon-start="toc" icon-end="expand_more" text-position="start" root-class="w-full" size="1/2" text="<?= $first?->text ?? $view->label ?>" aria-label="<?= $view->label ?><?= $first !== null ? ': ' . $first->text : '' ?>" aria-controls="docara-contents-list" expanded="false" style="display: contents;"><button type="button" class="sf-button sf-button--size-1/2 sf-button--outline sf-button--on-surface flex items-cross-center w-full" aria-label="<?= $view->label ?><?= $first !== null ? ': ' . $first->text : '' ?>" aria-expanded="false" aria-controls="docara-contents-list" data-sf-static><sf-icon root-class="pointer-event-none" weight="400" aria-hidden="true" icon="toc" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-event-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>toc</i></sf-icon><span class="sf-button-text-container text-start pointer-event-none"><?= $first?->text ?? $view->label ?></span><sf-icon root-class="pointer-event-none" weight="400" aria-hidden="true" icon="expand_more" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-event-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>expand_more</i></sf-icon></button></sf-button><span class="sf-contents-progress" aria-hidden="true"><span class="sf-contents-progress-value" style="--sf-contents--progress: 0"></span></span></div>
+<span class="sf-contents-label" aria-hidden="true"><?= $view->label ?></span>
+<ol class="sf-contents-list" role="list" id="docara-contents-list">
+<?php foreach ($view->items as $index => $item) { ?>
+<li class="sf-contents-item" data-depth="<?= $item->depth ?>"><a class="sf-contents-link" href="#<?= $item->id ?>"<?php if ($index === 0) { ?> aria-current="location"<?php } ?>><span class="sf-contents-mark" aria-hidden="true"></span><span class="sf-contents-text"><?= $item->text ?></span></a></li>
 <?php } ?>
-    </ul>
-</nav>
+</ol>
+</nav></sf-contents>

@@ -21,11 +21,15 @@ The `docs` preset has these settings:
 | `reading.toc_depth` | `3` | Includes headings from H2 to the given level, 2–6 allowed |
 | `reading.previous_next` | `true` | Shows the neighbouring pages in tree order |
 
-On a wide screen the "Contents" outline is fixed on the right. Below
-1152 px the `auto` mode shows a compact "Contents" button only if the outline has
-at least four items or a nested H3–H6 heading. A short flat page does not
-spend the first screen on an extra element. On a narrow screen the "Previous"
-and "Next" links stack.
+The page contents is the SIMAI Framework `sf-contents` component. On a wide
+screen it is a column on the right that marks the section you are reading.
+Below 1152 px the `auto` mode shows a button with the current section above
+the article, which opens the list, only if the outline has at least four items
+or a nested H3–H6 heading. A short flat page does not spend the first screen
+on an extra element.
+
+"Previous" and "Next" below the article are the two cards of the SIMAI
+Framework `sf-pager` component.
 
 `always` keeps the mobile button whenever the outline is not empty, and
 `never` hides it whatever the page length. These modes do not affect the

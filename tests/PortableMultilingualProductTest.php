@@ -111,14 +111,14 @@ final class PortableMultilingualProductTest extends TestCase
         // ... and the source text, its headings and the outline entries read as English.
         self::assertSame(1, preg_match_all('#<article class="docara-prose[^"]*" lang="en" dir="ltr">#', $held));
         self::assertStringContainsString('English fixture', $held);
-        self::assertSame(2, preg_match_all('#<ul class="docara-outline-list[^"]*" lang="en" dir="ltr">#', $held));
-        self::assertStringContainsString('>Keyboard check</a>', $held);
-        self::assertStringContainsString('>Shortcuts</a>', $held);
+        self::assertSame(2, preg_match_all('#<ol (?:id="[^"]+" )?class="sf-contents-list" lang="en" dir="ltr"#', $held));
+        self::assertStringContainsString('>Keyboard check</span></a>', $held);
+        self::assertStringContainsString('>Shortcuts</span></a>', $held);
 
         $source = (string) file_get_contents($destination . '/en/index.html');
         self::assertStringNotContainsString('data-docara-translation-fallback', $source);
         self::assertMatchesRegularExpression('#<article class="docara-prose[^"]*">#', $source);
-        self::assertDoesNotMatchRegularExpression('#<(article|ul) class="(docara-prose|docara-outline-list)[^"]*" lang=#', $source);
+        self::assertDoesNotMatchRegularExpression('#<(article|ol) class="(docara-prose|sf-contents-list)[^"]*" lang=#', $source);
     }
 
     /** @return array<string, mixed> */

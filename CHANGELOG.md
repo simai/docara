@@ -55,6 +55,20 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **The page contents, search, previous and next pages and the reader settings
+  are SIMAI Framework components.** The Framework made them from Docara's own
+  designs, so Docara now prints them instead of its own versions:
+  - the contents is `sf-contents`: a column on a wide screen, and on a narrow one
+    a button with the current section that opens the list (no side sheet);
+  - previous and next are the two `sf-pager` cards;
+  - search is the `sf-search` window, opened by an `sf-button` with the ⌘K
+    hint, by Cmd/Ctrl+K or `/`. Docara answers it through `simai.search-port`
+    with its own index and ranking, keeps recent queries and shows the words
+    around the match beside the list;
+  - the `menu` view of the reader settings is the `sf-context-menu` settings
+    panel; the values, their storage and first-paint application stay Docara's.
+  Docara's TOC script and styles, the search dialog and the old pager styles are
+  gone.
 - **Docara now bundles SIMAI Framework `ui-7153f7a9c092`.** Markdown tables use
   the Framework's `table-frame` and Docara's own table rules are gone. The
   download block is the Framework's `sf-download-file` card, so a download with

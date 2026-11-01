@@ -23,7 +23,7 @@ Add the settings to `docara.json`:
 }
 ```
 
-- `enabled` shows the search button and dialog on the pages of the current
+- `enabled` shows the search button and window on the pages of the current
   area;
 - `indexed` adds the pages of the area to the index.
 
@@ -98,14 +98,18 @@ the word forms you need as separate tags.
 
 ## In the browser
 
-The index loads only after the dialog is opened for the first time. Press the
-"Search" button or `Cmd/Ctrl + K`, type at least two characters and use the
-arrows and Enter to go to a result. Escape closes the dialog and returns
-focus to the button.
+The search window is the SIMAI Framework `sf-search` component. Docara gives
+it its own results: pages in the current language, ranked by title, tags,
+headings and text. The index loads only on the first query. Press the
+"Search" button, `Cmd/Ctrl + K` or `/`, type at least two characters and use
+the arrows and Enter to go to a result. On a wide screen the words around the
+match show beside the list. The window remembers recent queries in the
+browser. Escape first clears the query and, on an empty field, closes the
+window and returns focus to the button.
 
 ### A link that opens search
 
-To make a link in the text open the search dialog, write `#docara-search` in
+To make a link in the text open the search window, write `#docara-search` in
 Markdown instead of an address:
 
 ```markdown
@@ -115,7 +119,7 @@ Did not find the answer? [Open search](#docara-search).
 Any link can be written this way: in a paragraph, in a list, a button in a
 Hero or a CTA. The build turns it into a link to the language's home page
 with the `data-docara-search-open` attribute; by it `_docara/search.js` opens
-the dialog, like the "Search" button. Search does not work without
+the search window, like the "Search" button. Search does not work without
 JavaScript, so the link leads to the home page. If search is off on the page
 (`search.enabled: false`), it is an ordinary link to the home page. The
 built-in [404 page](/en/build/hosting/#the-404-page) has the same

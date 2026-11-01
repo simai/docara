@@ -36,9 +36,7 @@
   "render": {"strategy": "host", "renderer": "docara.smart.template"},
   "frontend": {"runtime": null, "tag": null},
   "assets": [
-    {"key": "simai.framework.core.css", "kind": "css", "critical": true},
-    {"key": "docara.smart.toc.css", "kind": "css", "critical": true},
-    {"key": "docara.smart.toc.js", "kind": "javascript", "critical": false}
+    {"key": "simai.framework.core.css", "kind": "css", "critical": true}
   ],
   "atlas": {
     "visible": true,

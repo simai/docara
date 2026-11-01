@@ -97,7 +97,8 @@ MD, 'content/install.md'),
         foreach ($templates as $template) {
             $source = (string) file_get_contents($template);
             self::assertStringNotContainsString('<style', $source);
-            self::assertStringNotContainsString('<script', $source);
+            // A Framework smart component's settings island is data, never code.
+            self::assertStringNotContainsString('<script', str_replace('<script type="application/json" data-sf-settings>', '', $source));
             self::assertStringNotContainsString('function ', $source);
             self::assertStringNotContainsString('new ', $source);
             self::assertStringNotContainsString('require ', $source);

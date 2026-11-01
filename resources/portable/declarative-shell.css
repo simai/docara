@@ -26,8 +26,9 @@ body[data-docara-shell]{opacity:1!important}
 .docara-sidebar-panel{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));display:flex;flex-direction:column}
 .docara-sidebar-scroll{flex:1 1 auto;min-block-size:0}
 .docara-sidebar-credit{flex:0 0 auto;margin:0;padding-block:var(--sf-space-1);padding-inline:var(--sf-space-1);border-block-start:1px solid var(--sf-outline-variant)}
-/* The layout container pads the page by --sf-space-1; the line above the credit runs through that padding to the window edge, and the text stays put. */
-.docara-sidebar-panel>.docara-sidebar-credit{margin-inline-start:calc(var(--sf-space-1) * -1);padding-inline-start:calc(var(--sf-space-1) * 2)}
+/* The container's gutter grows with the window and a wide page centres the container, so the line above the credit is drawn on through any gutter to the window edge instead of moving the credit. */
+.docara-sidebar-panel>.docara-sidebar-credit{position:relative}
+.docara-sidebar-panel>.docara-sidebar-credit::before{content:"";position:absolute;inset-block-start:-1px;inset-inline-end:100%;inline-size:100vw;border-block-start:1px solid var(--sf-outline-variant);pointer-events:none}
 .docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:color-mix(in srgb,var(--sf-on-surface-variant) 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}
 /* One logo, two colour variables: the letters and the accented "o". Hover and focus only swap their values, from the two grays to the theme text colour and the Docara red. */
 .docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}

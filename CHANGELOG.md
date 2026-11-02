@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.11.0] - 2026-11-02
+
 ### Added
 
 - **Pages of one kind can follow one list of sections.** A reference

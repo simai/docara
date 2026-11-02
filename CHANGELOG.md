@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.11.1] - 2026-11-02
+
 ### Fixed
 
 - **Code blocks with highlighted or numbered lines keep their lines.** Since

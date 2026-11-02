@@ -2,6 +2,9 @@
   "id": "header",
   "node": {
     "type": "layout.section",
-    "slots": { "default": [{ "id": "title", "node": { "type": "content.heading", "data": { "level": { "literal": 1 }, "content": { "literal": [{ "type": "text", "value": "Расширенная шапка" }] } } } }] }
+    "slots": { "default": [
+      { "id": "title", "node": { "type": "content.heading", "data": { "level": { "literal": 1 }, "content": { "literal": [{ "type": "text", "value": "Возврат платежа" }] } } } },
+      { "id": "lead", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "Справочник API · версия 2026-10 · обновлено 2 ноября 2026 года" }] } } } }
+    ] }
   }
 }

@@ -6,5 +6,8 @@
   },
   "search": {
     "indexed": false
+  },
+  "reading": {
+    "previous_next": false
   }
 }

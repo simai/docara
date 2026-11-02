@@ -36,7 +36,7 @@ description: "Как настройки сайта, раздела и стран
    пришло от раздела, и страница задаёт правую колонку заново: оглавление и
    свою заметку. Подвал страница включает только для себя.
 
-:::code {src="../demonstrator-results/composition-inheritance/page.page.json" lang=json lines="5-21" highlight="3-5"}
+:::code {src="../demonstrator-results/composition-inheritance/page.page.json" lang=json lines="5-21" highlight="3-5" dedent=true}
 :::
 
 Без `$reset` поля страницы сложились бы с полями раздела. Со сбросом область

@@ -33,7 +33,7 @@ description: "Как добавить в шапку сайта главную к
 3. Docara проверяет параметры кнопки при сборке. Опечатка в имени параметра
    остановит сборку с понятной ошибкой, а не сломает страницу молча.
 
-:::code {src="../demonstrator-results/region-header.page.json" lang=json lines="10-31" highlight="3-20"}
+:::code {src="../demonstrator-results/region-header.page.json" lang=json lines="10-31" highlight="3-20" dedent=true}
 :::
 
 Название «Acme Pay» и разделы шапки задаёт общий `section.json` демо-раздела,

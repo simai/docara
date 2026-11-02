@@ -31,7 +31,7 @@ description: "Как добавить под меню слева коротку�
 3. Элементы задаются полями, а не HTML. Docara сама пишет разметку и не даёт
    вставить скрипт или чужой адрес.
 
-:::code {src="../demonstrator-results/region-sidebar.page.json" lang=json lines="11-29" highlight="10,16"}
+:::code {src="../demonstrator-results/region-sidebar.page.json" lang=json lines="11-29" highlight="10,16" dedent=true}
 :::
 
 ## Что можно поменять

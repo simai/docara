@@ -13,7 +13,7 @@ description: "Как собрать страницу по шаблону SIMAI F
 
 ## Краткая шапка
 
-::::example {src="/ru/examples/composition-recipe-compact/" label="Результат"}
+::::example {src="/ru/demonstrator-recipes/compact/" label="Результат"}
 ### inputs-compact.json
 
 :::code {src="../../../composition/inputs-compact.json" lang=json highlight="5-7"}
@@ -27,7 +27,7 @@ description: "Как собрать страницу по шаблону SIMAI F
 
 ## Расширенная шапка
 
-::::example {src="/ru/examples/composition-recipe-expanded/" label="Результат"}
+::::example {src="/ru/demonstrator-recipes/expanded/" label="Результат"}
 ### inputs-expanded.json
 
 :::code {src="../../../composition/inputs-expanded.json" lang=json highlight="5-7"}
@@ -49,7 +49,7 @@ description: "Как собрать страницу по шаблону SIMAI F
    `composition_recipe` в начале Markdown. SIMAI Framework собирает страницу
    при сборке сайта, в браузере ничего не вычисляется.
 
-:::code {src="composition-recipe-compact.md" lang=markdown highlight=4}
+:::code {src="../demonstrator-recipes/compact.md" lang=markdown highlight=4}
 :::
 
 ## Что можно поменять

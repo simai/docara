@@ -31,7 +31,7 @@ description: "Как поставить под оглавлением справ
    проверяет его параметры при сборке.
 3. Уведомление следует теме сайта: в тёмной теме оно тоже тёмное.
 
-:::code {src="../demonstrator-results/region-aside.page.json" lang=json lines="16-30" highlight="5-13"}
+:::code {src="../demonstrator-results/region-aside.page.json" lang=json lines="16-30" highlight="5-13" dedent=true}
 :::
 
 ## Что можно поменять

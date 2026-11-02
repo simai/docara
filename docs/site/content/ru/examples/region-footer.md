@@ -29,7 +29,7 @@ description: "Как добавить внизу страницы подвал �
 3. Классы `p-2` и `bg-surface-0` из SIMAI Framework дают подвалу отступы и
    фон. Своего CSS не нужно.
 
-:::code {src="../demonstrator-results/region-footer.page.json" lang=json lines="7-30" highlight="2,7"}
+:::code {src="../demonstrator-results/region-footer.page.json" lang=json lines="7-30" highlight="2,7" dedent=true}
 :::
 
 ## Что можно поменять

@@ -35,7 +35,7 @@ description: "Как собрать страницу документации и
 3. Оглавление Docara собирает из заголовков `##` и `###` страницы. Меню
    строится из структуры папок сайта.
 
-:::code {src="../demonstrator-results/regions-composed.page.json" lang=json lines="5-20" highlight="3,7,11"}
+:::code {src="../demonstrator-results/regions-composed.page.json" lang=json lines="5-20" highlight="3,7,11" dedent=true}
 :::
 
 Так выглядит любая страница документации и без этих строк: Docara включает

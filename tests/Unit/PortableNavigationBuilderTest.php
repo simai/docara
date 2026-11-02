@@ -107,6 +107,22 @@ final class PortableNavigationBuilderTest extends TestCase
         ], $context['breadcrumbs']);
     }
 
+    #[Test]
+    public function a_section_hidden_from_the_site_menu_lists_its_own_pages_for_its_pages(): void
+    {
+        $builder = new PortableNavigationBuilder;
+        $topology = $this->topology();
+
+        $rail = $builder->hiddenSection($topology, '/private/secret/');
+
+        self::assertSame(['Secret'], array_column($rail ?? [], 'title'));
+        self::assertSame('/private/secret/', $rail[0]['url']);
+        // A page outside such a section keeps the usual menu.
+        self::assertNull($builder->hiddenSection($topology, '/guide/intro/'));
+        // A visible section with one hidden page is not a hidden section.
+        self::assertNull($builder->hiddenSection($topology, '/guide/hidden/'));
+    }
+
     /** @return list<array<string, mixed>> */
     private function topology(): array
     {

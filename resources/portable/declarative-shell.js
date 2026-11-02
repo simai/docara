@@ -723,6 +723,17 @@
       }
       var width=panel.clientWidth;
       if(!width)return;
+      /* A column as narrow as a phone would shrink the desktop past reading, so there the page shows at the column's own width, as a phone draws it. */
+      if(width<exampleViewportWidths.tablet){
+        pageFrame.style.inlineSize='100%';
+        pageFrame.style.removeProperty('max-inline-size');
+        pageFrame.style.removeProperty('transform');
+        pageFrame.style.removeProperty('transform-origin');
+        pageFrame.style.blockSize='640px';
+        panel.style.overflow='hidden';
+        panel.style.blockSize='640px';
+        return;
+      }
       var scale=Math.min(1,width/exampleViewportWidths.desktop);
       pageFrame.style.inlineSize=exampleViewportWidths.desktop+'px';
       pageFrame.style.maxInlineSize='none';

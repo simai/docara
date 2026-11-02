@@ -74,7 +74,8 @@
       var coloured=splitHighlightedLines(engine.highlight(source,{language:language}).value);
       code.setAttribute('data-docara-code-coloured','');
       if(coloured.length!==contents.length)return;
-      contents.forEach(function(content,index){if(!content.parentElement.hasAttribute('data-line-output'))content.innerHTML=coloured[index]});
+      /* Each line's colours go in one element: the Framework highlighter redraws a block whose text node changes, which would join the lines, but it leaves an added element alone. */
+      contents.forEach(function(content,index){if(!content.parentElement.hasAttribute('data-line-output'))content.innerHTML='<span>'+coloured[index]+'</span>'});
     });
   }
   highlightCodeLines(document);

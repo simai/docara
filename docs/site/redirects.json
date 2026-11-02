@@ -2,6 +2,10 @@
   "schema": "docara.redirects.v1",
   "version": 1,
   "redirects": [
+    {"from": "examples/composition-recipe-compact", "to": "ru/demonstrator-recipes/compact"},
+    {"from": "ru/examples/composition-recipe-compact", "to": "ru/demonstrator-recipes/compact"},
+    {"from": "examples/composition-recipe-expanded", "to": "ru/demonstrator-recipes/expanded"},
+    {"from": "ru/examples/composition-recipe-expanded", "to": "ru/demonstrator-recipes/expanded"},
     {"from": "authoring/branding", "to": "ru/settings/branding-and-theme"},
     {"from": "authoring/configuration", "to": "ru/settings/levels-and-inheritance"},
     {"from": "authoring/inheritance", "to": "ru/settings/levels-and-inheritance"},

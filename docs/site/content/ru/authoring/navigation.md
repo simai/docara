@@ -152,7 +152,10 @@ content/
 добавьте в тот же `section.json` строку `"scope": "section"`:
 
 ```json
-"navigation": {"hidden": true, "scope": "section"}
+{
+  "schema": "docara.section.v1",
+  "navigation": {"hidden": true, "scope": "section"}
+}
 ```
 
 Страницы такого раздела идут в боковой панели в порядке своих `order`, а в

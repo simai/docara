@@ -6,18 +6,6 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
-## [3.11.1] - 2026-11-02
-
-### Fixed
-
-- **Code blocks with highlighted or numbered lines keep their lines.** Since
-  3.10.0 such a block showed all its code on one line once the page had
-  loaded: the Framework highlighter redrew the block when Docara coloured its
-  lines. Docara now adds each line's colours in a way the highlighter leaves
-  alone.
-
-## [3.11.0] - 2026-11-02
-
 ### Added
 
 - **An example can show a whole page of the site.** Headers, menus, layout
@@ -46,6 +34,18 @@ All notable changes to Docara are recorded here. The format follows
   the bar beside the header links. It now goes to the Framework header's
   actions slot: at the end of the row before search and settings, and in the
   menu panel after the links when the header is collapsed.
+
+## [3.11.1] - 2026-11-02
+
+### Fixed
+
+- **Code blocks with highlighted or numbered lines keep their lines.** Since
+  3.10.0 such a block showed all its code on one line once the page had
+  loaded: the Framework highlighter redrew the block when Docara coloured its
+  lines. Docara now adds each line's colours in a way the highlighter leaves
+  alone.
+
+## [3.11.0] - 2026-11-02
 
 ### Added
 

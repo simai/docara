@@ -1,7 +1,7 @@
 {
   "schema": "docara.section.v1",
   "title": "Платежи",
-  "navigation": {"hidden": true},
+  "navigation": {"hidden": true, "order": 50},
   "search": {"indexed": false},
   "layout": {
     "regions": {

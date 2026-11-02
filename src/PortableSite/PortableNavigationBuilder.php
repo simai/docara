@@ -122,6 +122,49 @@ final readonly class PortableNavigationBuilder
     }
 
     /**
+     * The pages of a top-level section whose every page is hidden from the
+     * site's menu, for a page in it whose rail shows its own section: the
+     * section stays out of the site's menu, but its pages still list each
+     * other. Null when the page is in no such section.
+     *
+     * @param  list<array<string, mixed>>  $topology
+     * @return list<array<string, mixed>>|null
+     */
+    public function hiddenSection(array $topology, string $activeUrl): ?array
+    {
+        foreach ($topology as $node) {
+            $children = is_array($node['children'] ?? null) ? array_values($node['children']) : [];
+            if ($children === []
+                || $this->visible([$node]) !== []
+                || (($node['url'] ?? null) !== $activeUrl && ! $this->containsUrl($children, $activeUrl))
+            ) {
+                continue;
+            }
+            $shown = $this->visible($this->unhidden($children));
+
+            return $shown === [] ? null : $shown;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $nodes
+     * @return list<array<string, mixed>>
+     */
+    private function unhidden(array $nodes): array
+    {
+        return array_map(function (array $node): array {
+            $node['hidden'] = false;
+            if (is_array($node['children'] ?? null)) {
+                $node['children'] = $this->unhidden(array_values($node['children']));
+            }
+
+            return $node;
+        }, $nodes);
+    }
+
+    /**
      * Project only the active top-level branch into the documentation rail.
      * Canonical topology remains available to breadcrumbs and adjacency.
      *

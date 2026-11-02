@@ -7,5 +7,6 @@
   "reading": {
     "toc": false,
     "previous_next": false
-  }
+  },
+  "navigation": {"order": 70}
 }

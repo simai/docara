@@ -10,7 +10,8 @@
     ]
   },
   "navigation": {
-    "hidden": true
+    "hidden": true,
+    "scope": "section"
   },
   "search": {
     "indexed": false

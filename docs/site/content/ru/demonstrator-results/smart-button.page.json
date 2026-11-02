@@ -1,5 +1,6 @@
 {
   "schema": "docara.page.v1",
   "title": "SDK для мобильных приложений",
-  "description": "Демонстрационная страница с кнопкой SIMAI Framework в тексте."
+  "description": "Демонстрационная страница с кнопкой SIMAI Framework в тексте.",
+  "navigation": {"order": 100}
 }

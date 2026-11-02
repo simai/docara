@@ -8,5 +8,6 @@
       "sidebar": {"enabled": false},
       "outline": {"enabled": false}
     }
-  }
+  },
+  "navigation": {"order": 110}
 }

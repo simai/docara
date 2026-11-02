@@ -17,5 +17,6 @@
         "sections": [{"id": "outline", "section": "docara.outline"}]
       }
     }
-  }
+  },
+  "navigation": {"order": 40}
 }

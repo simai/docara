@@ -1166,7 +1166,13 @@ final readonly class PortableSiteBuilder
                         ), 'is_string'));
                     }
                 }
-                $pageNavigation = $navigationBuilder->scoped($pageNavigation, $navigationActiveUrl, $navigationScope, $headerGroups);
+                // A section kept out of the site's menu lists its own pages
+                // only when it asks for its own rail in so many words.
+                $hiddenSection = data_get($declarativePlan->configuration, 'navigation.scope') === 'section'
+                    ? $navigationBuilder->hiddenSection($pageTopology, $navigationActiveUrl)
+                    : null;
+                $pageNavigation = $hiddenSection
+                    ?? $navigationBuilder->scoped($pageNavigation, $navigationActiveUrl, $navigationScope, $headerGroups);
                 $activeNavigation = $navigationBuilder->activate($pageNavigation, $navigationActiveUrl);
                 $composition = PageCompositionContext::fromBuilder(
                     $page['branding'],

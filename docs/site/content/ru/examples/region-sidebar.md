@@ -1,27 +1,54 @@
 ---
-description: "Стенд: боковое меню и короткая подсказка рядом с ним в одной области страницы."
+description: "Как добавить под меню слева короткую подсказку со ссылкой: вторая часть области sidebar в page.json, без HTML."
 ---
 
-# Sidebar с дополнительным блоком
+# Подсказка под меню
 
-Меню остаётся Smart-компонентом, а рядом появляется короткая безопасная
-подсказка.
+Под меню слева появляется короткий блок: подсказка и ссылка на нужную
+страницу. Так читатель не теряется, если пришёл на страницу из поиска.
 
-## Результат
+::::example {src="/ru/demonstrator-results/region-sidebar/" label="Результат"}
+### page.json
 
-[Открыть отдельно](/ru/demonstrator-results/region-sidebar/)
-
-:::internal_preview {size=tall title="Sidebar с дополнительным блоком"}
-[Открыть результат](/ru/demonstrator-results/region-sidebar/)
+:::code {src="../demonstrator-results/region-sidebar.page.json" lang=json highlight="11-29"}
 :::
 
-## Исходные файлы
+### Markdown страницы
 
-:::code {src="./region-sidebar.md" lang=markdown title="Страница примера · content/ru/examples/region-sidebar.md"}
+:::code {src="../demonstrator-results/region-sidebar.md" lang=markdown}
+:::
+::::
+
+Нажмите «Проверить адаптивность» над примером и выберите телефон. Меню
+уходит за кнопку в шапке, и подсказка уходит вместе с ним.
+
+## Как это устроено
+
+1. Область `sidebar` получает две части. Первая, `docara.navigation`, —
+   обычное меню сайта.
+2. Вторая, `docara.shell`, — пустая рамка для своих блоков. В ней два
+   элемента: абзац `p` и ссылка `a`.
+3. Элементы задаются полями, а не HTML. Docara сама пишет разметку и не даёт
+   вставить скрипт или чужой адрес.
+
+:::code {src="../demonstrator-results/region-sidebar.page.json" lang=json lines="11-29" highlight="10,16"}
 :::
 
-:::code {src="../demonstrator-results/region-sidebar.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/region-sidebar.md"}
-:::
+## Что можно поменять
 
-:::code {src="../demonstrator-results/region-sidebar.page.json" lang=json title="Композиция sidebar · content/ru/demonstrator-results/region-sidebar.page.json"}
-:::
+| Параметр | Что меняет |
+|---|---|
+| `tag` | Вид элемента: `p` — абзац, `a` — ссылка, `span` или `div` |
+| `text` | Текст элемента, до 500 знаков |
+| `href` | Адрес ссылки: путь внутри сайта или `#якорь` |
+| `aria_label` | Название ссылки для экранного диктора |
+| `utilities` | Классы SIMAI Framework для отступов и фона, до 16 |
+
+Чтобы подсказка стояла на всех страницах раздела, перенесите `layout` в
+`section.json` этого раздела.
+
+## См. также
+
+- [Шапка, меню и оглавление](../regions-composed/)
+- [Заметка рядом с оглавлением](../region-aside/)
+- [Области макета](/ru/settings/layout-and-regions/)

@@ -1,27 +1,40 @@
 ---
-description: "Стенд: вид страницы docs — оболочка документации с меню, оглавлением и переходами между страницами."
+description: "Как выглядит обычная страница документации Docara: меню и оглавление — одной строкой в page.json."
 ---
 
-# Preset docs
+# Страница документации
 
-Документационная оболочка для последовательного чтения с навигацией и
-контекстом страницы.
+Вид `docs` — обычная страница документации: шапка, меню слева и оглавление
+справа. Его получают все страницы
+сайта, если не указано другое.
 
-## Результат
+::::example {src="/ru/demonstrator-results/preset-docs/" label="Результат"}
+### page.json
 
-[Открыть отдельно](/ru/demonstrator-results/preset-docs/)
-
-:::internal_preview {size=tall title="Preset docs"}
-[Открыть результат](/ru/demonstrator-results/preset-docs/)
+:::code {src="../demonstrator-results/preset-docs.page.json" lang=json highlight="5"}
 :::
 
-## Исходные файлы
+### Markdown страницы
 
-:::code {src="./preset-docs.md" lang=markdown title="Страница примера · content/ru/examples/preset-docs.md"}
+:::code {src="../demonstrator-results/preset-docs.md" lang=markdown}
 :::
+::::
 
-:::code {src="../demonstrator-results/preset-docs.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/preset-docs.md"}
-:::
+## Как это устроено
 
-:::code {src="../demonstrator-results/preset-docs.page.json" lang=json title="Настройки страницы · content/ru/demonstrator-results/preset-docs.page.json"}
-:::
+1. `"preset": "docs"` выбирает вид страницы целиком: какие области есть и
+   как они расположены.
+2. Писать его не обязательно: `docs` — вид по умолчанию. Здесь он указан,
+   чтобы было видно, где выбирается вид.
+3. Всё остальное на странице — обычный Markdown.
+
+## Что можно поменять
+
+| Параметр | Что меняет |
+|---|---|
+| `preset` | Вид страницы: `docs` — документация, `landing` — посадочная страница |
+
+## См. также
+
+- [Посадочная страница продукта](../preset-landing/)
+- [Шапка, меню и оглавление](../regions-composed/)

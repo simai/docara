@@ -1,27 +1,52 @@
 ---
-description: "Стенд: правая область страницы с оглавлением и дополнительным информационным блоком."
+description: "Как поставить под оглавлением справа важное предупреждение: уведомление SIMAI Framework во второй части области outline."
 ---
 
-# Aside с контекстом страницы
+# Заметка рядом с оглавлением
 
-Правая область объединяет автоматически построенное оглавление и
-информационный Smart-компонент.
+Справа под оглавлением стоит предупреждение, которое читатель видит, пока
+листает страницу. Подходит для правил, которые нельзя пропустить.
 
-## Результат
+::::example {src="/ru/demonstrator-results/region-aside/" label="Результат"}
+### page.json
 
-[Открыть отдельно](/ru/demonstrator-results/region-aside/)
-
-:::internal_preview {size=tall title="Aside с контекстом страницы"}
-[Открыть результат](/ru/demonstrator-results/region-aside/)
+:::code {src="../demonstrator-results/region-aside.page.json" lang=json highlight="11-32"}
 :::
 
-## Исходные файлы
+### Markdown страницы
 
-:::code {src="./region-aside.md" lang=markdown title="Страница примера · content/ru/examples/region-aside.md"}
+:::code {src="../demonstrator-results/region-aside.md" lang=markdown}
+:::
+::::
+
+Нажмите «Проверить адаптивность» над примером и выберите телефон. Правой
+колонки там нет, и заметка вместе с ней не показывается. Предупреждение,
+которое должны увидеть все, ставьте в текст страницы.
+
+## Как это устроено
+
+1. Область `outline` — правая колонка. Первая часть, `docara.outline`,
+   строит оглавление из заголовков страницы.
+2. Вторая часть содержит уведомление `ui.alert` из SIMAI Framework. Docara
+   проверяет его параметры при сборке.
+3. Уведомление следует теме сайта: в тёмной теме оно тоже тёмное.
+
+:::code {src="../demonstrator-results/region-aside.page.json" lang=json lines="16-30" highlight="5-13"}
 :::
 
-:::code {src="../demonstrator-results/region-aside.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/region-aside.md"}
-:::
+## Что можно поменять
 
-:::code {src="../demonstrator-results/region-aside.page.json" lang=json title="Композиция aside · content/ru/demonstrator-results/region-aside.page.json"}
-:::
+| Параметр | Что меняет |
+|---|---|
+| `type` | Смысл уведомления: `info`, `success`, `warning`, `danger` или `clear` |
+| `variant` | Вид: `default` — с заливкой, `flat` — плоский, `outlined` — с рамкой |
+| `title` | Заголовок, до 160 знаков |
+| `supporting-text` | Текст, до 500 знаков |
+| `closable` | Можно ли закрыть уведомление |
+| `aria-label` | Название уведомления для экранного диктора |
+
+## См. также
+
+- [Подсказка под меню](../region-sidebar/)
+- [Уведомление в тексте страницы](../smart-alert/)
+- [Компоненты SIMAI Framework](/ru/components/smart-ui/)

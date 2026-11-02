@@ -1,30 +1,54 @@
 ---
-description: "Стенд: раздел задаёт общие правила чтения, а страница переопределяет только ширину макета."
+description: "Как задать общие настройки для всего раздела в section.json и изменить одну из них для отдельной страницы."
 ---
 
-# Наследование настроек
+# Общие настройки раздела и исключение для страницы
 
-Раздел задаёт общие правила чтения, а страница переопределяет только ширину
-макета.
+Раздел «Справочник API» читается узкой колонкой без оглавления. Одной
+странице с широкой таблицей нужна колонка пошире. Страница меняет только
+ширину, остальное берёт у раздела.
 
-## Результат
+::::example {src="/ru/demonstrator-results/inheritance/page/" label="Результат"}
+### section.json раздела
 
-[Открыть отдельно](/ru/demonstrator-results/inheritance/page/)
-
-:::internal_preview {size=normal title="Наследование настроек"}
-[Открыть результат](/ru/demonstrator-results/inheritance/page/)
+:::code {src="../demonstrator-results/inheritance/section.json" lang=json highlight="4-10"}
 :::
 
-## Исходные файлы
+### page.json страницы
 
-:::code {src="./inheritance.md" lang=markdown title="Страница примера · content/ru/examples/inheritance.md"}
+:::code {src="../demonstrator-results/inheritance/page.page.json" lang=json highlight="5-7"}
 :::
 
-:::code {src="../demonstrator-results/inheritance/page.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/inheritance/page.md"}
-:::
+### Markdown страницы
 
-:::code {src="../demonstrator-results/inheritance/section.json" lang=json title="Настройки раздела · content/ru/demonstrator-results/inheritance/section.json"}
+:::code {src="../demonstrator-results/inheritance/page.md" lang=markdown}
 :::
+::::
 
-:::code {src="../demonstrator-results/inheritance/page.page.json" lang=json title="Настройки страницы · content/ru/demonstrator-results/inheritance/page.page.json"}
-:::
+## Как это устроено
+
+1. `section.json` лежит в папке раздела. Его настройки получают все страницы
+   этой папки и вложенных папок.
+2. Раздел делает колонку узкой (`container.max: 4`) и выключает оглавление и
+   переходы «Предыдущая / Следующая».
+3. Файл `page.json` с именем страницы меняет одну настройку — ширину.
+   Оглавления и переходов на странице по-прежнему нет: их страница не
+   трогала.
+
+Порядок такой: `docara.json` сайта, затем `section.json` разделов от
+внешнего к внутреннему, затем `page.json` страницы. Каждый следующий меняет
+только то, что в нём записано.
+
+## Что можно поменять
+
+| Параметр | Что меняет |
+|---|---|
+| `layout.container.max` | Ширина колонки текста, от 1 до 8 |
+| `reading.toc` | Оглавление страницы |
+| `reading.previous_next` | Переходы на соседние страницы внизу |
+| `reading.breadcrumbs` | Строка «где я» над заголовком |
+
+## См. также
+
+- [Настройки на трёх уровнях](../composition-inheritance/)
+- [Сайт, раздел и страница](/ru/settings/levels-and-inheritance/)

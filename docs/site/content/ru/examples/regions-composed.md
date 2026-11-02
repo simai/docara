@@ -1,29 +1,58 @@
 ---
-description: "Стенд: явная композиция областей — шапка, меню и оглавление из зарегистрированных секций."
+description: "Как собрать страницу документации из шапки, меню слева и оглавления справа: три области в page.json, текст — в Markdown."
 ---
 
-# Явная композиция областей
+# Шапка, меню и оглавление
 
-Header, sidebar и outline получают зарегистрированные секции, а main —
-Markdown-контент.
+Обычная страница документации состоит из четырёх частей: шапки, меню слева,
+текста и оглавления справа. Текст пишется в Markdown, а остальные части
+подключаются по имени в `page.json`.
 
-## Результат
+::::example {src="/ru/demonstrator-results/regions-composed/" label="Результат"}
+### page.json
 
-[Открыть отдельно](/ru/demonstrator-results/regions-composed/)
-
-:::internal_preview {size=tall title="Явная композиция областей"}
-[Открыть результат](/ru/demonstrator-results/regions-composed/)
+:::code {src="../demonstrator-results/regions-composed.page.json" lang=json highlight="7-18"}
 :::
 
-## Исходные файлы
+### Markdown страницы
 
-Именно эти файлы проходят основной конфигурационный и декларативный pipeline.
+:::code {src="../demonstrator-results/regions-composed.md" lang=markdown}
+:::
+::::
 
-:::code {src="./regions-composed.md" lang=markdown title="Страница примера · content/ru/examples/regions-composed.md"}
+Нажмите «Проверить адаптивность» над примером и выберите телефон. Меню и
+разделы шапки уходят за кнопку слева в шапке, а правая колонка с оглавлением
+скрывается.
+
+## Как это устроено
+
+1. Страница делится на области: `header` — шапка, `sidebar` — меню слева,
+   `outline` — колонка справа. Текст из Markdown всегда идёт в основную
+   область.
+2. В каждую область ставится готовая часть Docara: `docara.header` — шапка с
+   названием, поиском и настройками, `docara.navigation` — меню сайта,
+   `docara.outline` — оглавление.
+3. Оглавление Docara собирает из заголовков `##` и `###` страницы. Меню
+   строится из структуры папок сайта.
+
+:::code {src="../demonstrator-results/regions-composed.page.json" lang=json lines="5-20" highlight="3,7,11"}
 :::
 
-:::code {src="../demonstrator-results/regions-composed.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/regions-composed.md"}
-:::
+Так выглядит любая страница документации и без этих строк: Docara включает
+три области сама. Явная запись нужна, когда вы меняете их состав, как в
+[соседних примерах](../region-sidebar/).
 
-:::code {src="../demonstrator-results/regions-composed.page.json" lang=json title="Настройки страницы · content/ru/demonstrator-results/regions-composed.page.json"}
-:::
+## Что можно поменять
+
+| Параметр | Что меняет |
+|---|---|
+| `enabled` | Показывать область или нет: `true` или `false` |
+| `sections` | Что стоит в области, сверху вниз; до восьми частей |
+| `id` | Имя части в этой области, латиницей; нужно, чтобы различать части |
+| `section` | Какая часть Docara: `docara.header`, `docara.navigation`, `docara.outline` или `docara.shell` для своих блоков |
+
+## См. также
+
+- [Области макета](/ru/settings/layout-and-regions/)
+- [Меню с подсказкой](../region-sidebar/)
+- [Страница без боковых колонок](../regions-disabled/)

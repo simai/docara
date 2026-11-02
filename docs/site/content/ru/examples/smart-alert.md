@@ -1,27 +1,41 @@
 ---
-description: "Стенд: Smart-компонент уведомления с проверяемыми параметрами из Markdown и его исходные файлы."
+description: "Как поставить в текст страницы заметное уведомление SIMAI Framework: вызов ui.alert с параметрами прямо в Markdown."
 ---
 
-# Smart-компонент Alert
+# Уведомление в тексте страницы
 
-Уведомление с типизированными props из Markdown и шаблоном зафиксированного
-SIMAI Framework runtime.
+Посреди текста появляется заметное уведомление: здесь — предупреждение, что в
+тестовом режиме деньги не списываются. Оно задаётся в Markdown, без HTML.
 
-## Результат
+::::example {src="/ru/demonstrator-results/smart-alert/" label="Результат"}
+### Markdown страницы
 
-[Открыть отдельно](/ru/demonstrator-results/smart-alert/)
-
-:::internal_preview {size=compact title="Smart-компонент Alert"}
-[Открыть результат](/ru/demonstrator-results/smart-alert/)
+:::code {src="../demonstrator-results/smart-alert.md" lang=markdown highlight="10-12"}
 :::
+::::
 
-## Исходные файлы
+## Как это устроено
 
-:::code {src="./smart-alert.md" lang=markdown title="Страница примера · content/ru/examples/smart-alert.md"}
-:::
+1. `:::ui.alert` вызывает уведомление из SIMAI Framework.
+2. На следующей строке — параметры в JSON. Docara проверяет их при сборке:
+   неизвестный параметр или неверное значение остановит сборку.
+3. Уведомление следует теме сайта.
 
-:::code {src="../demonstrator-results/smart-alert.md" lang=markdown title="Markdown и вызов Smart-компонента · content/ru/demonstrator-results/smart-alert.md"}
-:::
+## Что можно поменять
 
-:::code {src="../demonstrator-results/smart-alert.page.json" lang=json title="Настройки страницы · content/ru/demonstrator-results/smart-alert.page.json"}
-:::
+| Параметр | Что меняет |
+|---|---|
+| `type` | Смысл: `info`, `success`, `warning`, `danger` или `clear` |
+| `variant` | Вид: `default`, `flat` или `outlined` |
+| `title` | Заголовок, до 160 знаков |
+| `supporting-text` | Текст, до 500 знаков |
+| `closable` | Можно ли закрыть уведомление |
+| `aria-label` | Название уведомления для экранного диктора |
+
+Для простых заметок без SIMAI Framework есть [блок «Уведомление»](/ru/components/alert/).
+
+## См. также
+
+- [Заметка рядом с оглавлением](../region-aside/)
+- [Кнопка в тексте страницы](../smart-button/)
+- [Компоненты SIMAI Framework](/ru/components/smart-ui/)

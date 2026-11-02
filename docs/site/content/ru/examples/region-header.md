@@ -11,7 +11,7 @@ description: "Как добавить в шапку сайта главную к
 ::::example {src="/ru/demonstrator-results/region-header/" label="Результат"}
 ### page.json
 
-:::code {src="../demonstrator-results/region-header.page.json" lang=json highlight="20-37"}
+:::code {src="../demonstrator-results/region-header.page.json" lang=json highlight="12-29"}
 :::
 
 ### Markdown страницы
@@ -20,9 +20,9 @@ description: "Как добавить в шапку сайта главную к
 :::
 ::::
 
-Откройте пример во весь экран и переключите ширину. На широком экране кнопка
-стоит справа, перед поиском. На телефоне шапка сворачивается: кнопка
-переезжает в выдвижное меню вместе с разделами.
+Нажмите «Проверить адаптивность» над примером и переключите ширину. На
+широком экране кнопка стоит справа, перед поиском. На телефоне шапка
+сворачивается: кнопка переезжает в выдвижное меню вместе с разделами.
 
 ## Как это устроено
 
@@ -33,12 +33,12 @@ description: "Как добавить в шапку сайта главную к
 3. Docara проверяет параметры кнопки при сборке. Опечатка в имени параметра
    остановит сборку с понятной ошибкой, а не сломает страницу молча.
 
-:::code {src="../demonstrator-results/region-header.page.json" lang=json lines="17-39" highlight="4-21"}
+:::code {src="../demonstrator-results/region-header.page.json" lang=json lines="10-31" highlight="3-20"}
 :::
 
-Название, разделы шапки и отключённое левое меню в этом примере нужны только
-для правдоподобия. В настоящем сайте название и разделы задаются один раз в
-`docara.json`.
+Название «Acme Pay» и разделы шапки задаёт общий `section.json` демо-раздела,
+поэтому в `page.json` их нет. В настоящем сайте они обычно задаются один раз
+в `docara.json`.
 
 ## Что можно поменять
 
@@ -54,5 +54,5 @@ description: "Как добавить в шапку сайта главную к
 
 ## См. также
 
-- [Области макета](../../settings/layout-and-regions.md)
-- [Компоненты SIMAI Framework](../../components/smart-ui.md)
+- [Области макета](/ru/settings/layout-and-regions/)
+- [Компоненты SIMAI Framework](/ru/components/smart-ui/)

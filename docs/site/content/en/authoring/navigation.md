@@ -90,7 +90,7 @@ items and order:
 `href` an internal path, an anchor or a safe HTTPS address. No more than eight
 single-level items are allowed.
 
-To show a repository icon on the right of the header, next to search, add a
+To show a repository icon on the right of the header, last after search, language and settings, add a
 `repository` field with an `https://…` address to `header_navigation`:
 
 ```json
@@ -127,11 +127,17 @@ page item is marked only on the home page itself. The current page gets
 `aria-current="page"` and the section item `aria-current="true"`; both look
 like the active item of the left menu.
 
-On a wide screen the top menu sits between the brand and the header actions.
-On a narrow one it neither shrinks nor gets cut: the links move into one
-"Navigation" panel, which starts with a "Main" group followed by the
-documentation tree. On a landing page without a tree the same panel holds
-only the key links.
+The site header is the SIMAI Framework `sf-site-header` component, one header
+for every SIMAI site. On a wide screen the top menu sits between the brand and
+the header buttons: search, language, settings and the repository. Below
+1152 px (the Framework `xl` step) it neither shrinks nor gets cut: a menu
+button appears before the brand, and the links move into the "Navigation"
+side panel, which starts with a "Main" group followed by the documentation
+tree. Without a top menu the button appears below 960 px (the `lg` step), when
+the left menu hides. On a landing page without a tree the same panel holds
+only the key links. The panel closes with its button, with Escape, with a
+click outside it or when a link is chosen, and remembers how far it was
+scrolled.
 
 ## The whole tree or one section
 

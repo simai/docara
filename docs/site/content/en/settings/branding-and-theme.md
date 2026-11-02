@@ -131,8 +131,8 @@ hover the line becomes more contrasting.
 
 The line is fixed at the bottom of the menu panel and separated from it by a
 thin rule: the menu scrolls above it, and the line itself is always visible,
-however long the navigation is. In the mobile menu the line is fixed at the
-bottom of the panel too. Pages without a left menu (a landing page) do not
+however long the navigation is. In the "Navigation" panel on a narrow screen
+the line comes last, under the documentation tree. Pages without a left menu (a landing page) do not
 have the line.
 
 To remove the line from the whole site, set in `docara.json`:

@@ -117,8 +117,7 @@ MD, 'content/install.md'),
 
         foreach ([
             'head',
-            'header_actions',
-            'mobile_navigation',
+            'site_header',
             'breadcrumbs',
             'mobile_toc',
             'pager',

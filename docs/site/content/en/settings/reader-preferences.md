@@ -1,11 +1,11 @@
 ---
-description: The "Settings" menu under the ⋮ button — theme, font size, page width, reading mode, which settings docara.json shows and how the browser keeps the choice.
+description: The "Settings" menu under the gear button — theme, font size, page width, reading mode, which settings docara.json shows and how the browser keeps the choice.
 tags: [reader-panel, reading-settings, theme, font, reading-mode]
 ---
 
 # Reader panel
 
-The ⋮ button on the right of the header opens the "Settings" menu. It is
+The gear button on the right of the header opens the "Settings" menu. It is
 built by the `docara.preferences` product Smart component: the menu itself
 is a SIMAI Framework context menu (`sf-context-menu`) that opens under the
 button over the page.
@@ -17,10 +17,10 @@ a phone. The selected value has a check mark. A change applies at once,
 nothing needs saving. The "Reset settings" item at the bottom returns all
 values to the site's values.
 
-From the keyboard the menu opens with the ⋮ button, and focus lands on the
+From the keyboard the menu opens with the gear button, and focus lands on the
 first row. The up and down arrows move between rows, the right arrow, Enter
 or Space open a submenu, and the left arrow closes it and returns to the row.
-With a mouse a submenu also opens on hover. Escape, Tab, another press on ⋮
+With a mouse a submenu also opens on hover. Escape, Tab, another press on the gear
 or a click outside the menu close it and return focus to the button.
 
 ## Settings view
@@ -29,7 +29,7 @@ or a click outside the menu close it and return focus to the button.
 
 | Value | What it looks like |
 | --- | --- |
-| `menu` | The SIMAI Framework settings panel (`sf-context-menu`) under the ⋮ button: a setting's row shows its current value and opens the options in the same panel · **Default** |
+| `menu` | The SIMAI Framework settings panel (`sf-context-menu`) under the gear button: a setting's row shows its current value and opens the options in the same panel · **Default** |
 | `side-panel` | A full-height "Settings" side panel on the right, with the page dimmed |
 
 In the side panel each setting is a label and a segmented switch from a

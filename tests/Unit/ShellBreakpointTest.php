@@ -39,16 +39,17 @@ final class ShellBreakpointTest extends TestCase
     }
 
     #[Test]
-    public function the_shell_script_closes_sheets_at_the_same_widths_the_stylesheet_hides_them(): void
+    public function the_header_collapses_at_the_widths_the_stylesheet_moves_its_navigation(): void
     {
         $root = dirname(__DIR__, 2);
         $css = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
-        $js = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
 
-        self::assertStringContainsString("@media not all and (min-width:60rem){\n  .docara-mobile-navigation-trigger{display:inline-flex}", $css);
-        self::assertStringContainsString("window.matchMedia('(min-width: 60rem)')", $js);
         self::assertStringContainsString("@media not all and (min-width:72rem){\n  .docara-header-navigation{display:none}", $css);
-        self::assertStringContainsString("window.matchMedia('(min-width: 72rem)')", $js);
+        // The header's panel is the Framework sf-site-header's own: it closes
+        // itself above its collapse step, which the publisher sets to the
+        // same Framework steps (xl with header links, else lg).
+        $publisher = (string) file_get_contents($root . '/src/PortableSite/DeclarativePortablePagePublisher.php');
+        self::assertStringContainsString("\$primaryNavigationEnabled ? 'xl' : (\$mobileNavigationEnabled ? 'lg' : 'none')", $publisher);
     }
 
     /** @return array<string, string> */

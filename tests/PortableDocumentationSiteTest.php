@@ -227,7 +227,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString("addEventListener('resize',function()", $shellJs);
         self::assertStringContainsString("Object.assign({type:'docara:example-measure'},environment)", $shellJs);
         self::assertStringContainsString('link[data-docara-declarative-shell-style][rel="stylesheet"]', $shellJs);
-        self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
+        // The header menu is printed twice: in the sf-site-header first-paint
+        // picture and as the slotted original the element places.
+        self::assertSame(2, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
+        self::assertSame(1, substr_count($catalogIndex, 'data-docara-smart="docara.navigation" data-docara-view="header"'));
         self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
         self::assertStringContainsString('sf-menu sf-menu--horizontal docara-header-navigation-list', $catalogIndex);
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));
@@ -236,19 +239,8 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-repository-link'));
         self::assertMatchesRegularExpression('~<a href="https://github.com/simai/docara" rel="noopener" data-docara-repository-link [^>]*aria-label="Репозиторий"[^>]*><svg class="docara-repository-mark" viewBox="0 0 16 16"~', $catalogIndex);
         self::assertStringNotContainsString('>GitHub</', $catalogIndex);
-        self::assertSame(1, substr_count($catalogIndex, 'id="docara-mobile-navigation"'));
-        self::assertSame(
-            1,
-            substr_count(
-                $catalogIndex,
-                'data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation"',
-            ),
-        );
-        self::assertStringContainsString(
-            '.docara-mobile-sheet{position:fixed;inset-block:0;inset-inline-start:0;inset-inline-end:auto;',
-            $shellCss,
-            'The mobile navigation sheet must follow the logical inline direction in LTR and RTL.',
-        );
+        self::assertSame(1, substr_count($catalogIndex, '<sf-site-header class="docara-header" collapse="xl" sticky'));
+        self::assertSame(1, substr_count($catalogIndex, 'data-docara-sheet-content'));
         self::assertStringContainsString(
             ':root{--docara-header-block-size:calc(var(--sf-d0) + var(--sf-space-1) * 2 + var(--sf-a1));'
             . '--docara-anchor-offset:calc(var(--docara-header-block-size) + var(--sf-space-2))}',
@@ -472,7 +464,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // sf-contents, sf-pager, sf-search and sf-context-menu: Docara's
         // toc.css and toc.js go and the shared shell stylesheets regroup: 2080.
         // The Page templates page in both languages: 2083.
-        self::assertCount(2083, $firstFiles);
+        // The header becomes the Framework sf-site-header: its stylesheet
+        // joins the first frame and the shared shell stylesheets regroup: 2088.
+        self::assertCount(2088, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

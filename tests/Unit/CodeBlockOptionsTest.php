@@ -282,6 +282,19 @@ MD);
     }
 
     #[Test]
+    public function the_shell_colours_each_build_time_line_inside_one_element(): void
+    {
+        // The Framework highlighter redraws a block when one of its text nodes
+        // changes, and a redraw joins the build's lines into one. The shell
+        // adds each line's colours as one element, which the highlighter
+        // leaves alone.
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+
+        self::assertStringContainsString("content.innerHTML='<span>'+coloured[index]+'</span>'", $shell);
+        self::assertStringNotContainsString('content.innerHTML=coloured[index]', $shell);
+    }
+
+    #[Test]
     public function the_same_source_builds_to_the_same_bytes(): void
     {
         $page = $this->project(['a.php' => "<?php\n// #region one\n  echo 1; // [!code ++]\n// #endregion one\n"]);

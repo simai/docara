@@ -14,7 +14,8 @@ use Symfony\Component\Process\Process;
 /**
  * The sidebar keeps its scroll across pages of the site, and the current item
  * is brought into view: the inline script after the sidebar restores before
- * the first paint, the shell saves the position and handles the mobile drawer.
+ * the first paint, the shell saves the position and handles the header's
+ * navigation panel.
  */
 final class NavigationScrollMemoryTest extends TestCase
 {
@@ -61,12 +62,11 @@ final class NavigationScrollMemoryTest extends TestCase
             'try{sessionStorage.setItem(key,JSON.stringify(state))}catch(error){}',
             "try{stored=JSON.parse(sessionStorage.getItem(key)||'null')}catch(error){}",
             "window.addEventListener('pagehide',save);",
-            // Capture phase: the drawer is still open when its link is clicked.
+            // Capture phase: the panel is still open when its link is clicked.
             "if(link&&((sidebar&&sidebar.contains(link))||(drawer&&drawer.contains(link))))save();\n    },true);",
-            "function closeSheet(){\n      navigationScroll.keepDrawer();",
-            'navigationScroll.openDrawer(dialog);',
-            "navigationScroll.reveal(dialog.querySelector('.docara-mobile-sheet-content'),target);",
-            'target.focus({preventScroll:true});',
+            "header.addEventListener('sf-site-header-close',function(){navigationScroll.keepDrawer()});",
+            "header.addEventListener('sf-site-header-opened',function(){navigationScroll.openDrawer()});",
+            'reveal(content,current[current.length-1]);',
         ] as $needle) {
             self::assertStringContainsString($needle, $shell);
         }

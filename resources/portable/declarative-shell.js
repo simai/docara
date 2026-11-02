@@ -10,20 +10,23 @@
   /* The sidebar's "Made with Docara" footer stays under the menu in the sheet too: a copy closes the sheet, after its scrolling content. */
   (function(){
     var credit=document.querySelector('aside[data-docara-region="sidebar"]>.docara-sidebar-panel>[data-docara-sidebar-credit]');
-    var sheet=document.getElementById('docara-mobile-navigation');
+    var sheet=document.querySelector('body[data-docara-shell]>.docara-header [data-docara-sheet-content]');
     if(credit&&sheet&&!sheet.querySelector(':scope>[data-docara-sidebar-credit]')){sheet.appendChild(credit.cloneNode(true))}
   })();
-  /* The sticky sidebar and outline start under the header and fill the rest of the window. The header's height depends on the brand size and what the header holds, so the shell measures it into --docara-header-block-size; until then the stylesheet's estimate stands. */
+  /* The sticky sidebar and outline start under the header and fill the rest of the window. The header's height depends on the brand size and what the header holds, so the shell measures it into --docara-header-block-size; until then the stylesheet's estimate stands. The header element has no box of its own (display: contents) and draws its bar anew in place of the printed one, so the bar is looked up again whenever its children change. */
   (function(){
-    var header=document.querySelector('body[data-docara-shell]>.docara-header');
-    if(!header)return;
+    var host=document.querySelector('body[data-docara-shell]>.docara-header');
+    if(!host)return;
+    var observed=null,resize=typeof ResizeObserver==='function'?new ResizeObserver(measure):null;
     function measure(){
-      var size=header.getBoundingClientRect().height;
+      var bar=host.querySelector(':scope>.sf-site-header');
+      if(resize&&bar!==observed){if(observed)resize.unobserve(observed);if(bar)resize.observe(bar);observed=bar}
+      var size=bar?bar.getBoundingClientRect().height:0;
       if(size>0)document.documentElement.style.setProperty('--docara-header-block-size',size+'px');
     }
     measure();
-    if(typeof ResizeObserver==='function'){new ResizeObserver(measure).observe(header)}
-    else{window.addEventListener('resize',measure)}
+    if(typeof MutationObserver==='function'){new MutationObserver(measure).observe(host,{childList:true})}
+    if(!resize){window.addEventListener('resize',measure)}
   })();
   var copyNode=document.getElementById('docara-runtime-copy'),messages={};
   try{messages=JSON.parse(copyNode?copyNode.textContent:'{}')}catch(error){messages={}}
@@ -163,19 +166,20 @@
       }
     });
   }
-  /* The sidebar and the mobile navigation drawer keep their scroll across pages of the site. The position is saved for the tab on pagehide and on a link click, before the drawer closes and loses it; the inline script after the sidebar restores the sidebar before the first paint, and the drawer is restored when it opens. A current item still out of view is centred in its own scroller: only that box scrolls, at once, never the page, and nothing animates. */
+  /* The sidebar and the header's navigation panel keep their scroll across pages of the site. The position is saved for the tab on pagehide and on a link click, before the panel closes and loses it; the inline script after the sidebar restores the sidebar before the first paint, and the panel is restored when it opens. A current item still out of view is centred in its own scroller: only that box scrolls, at once, never the page, and nothing animates. */
   var navigationScroll=(function(){
     var key='docara.navigation.scroll';
     var sidebar=document.querySelector('aside[data-docara-region="sidebar"]>.docara-sidebar-panel>.docara-sidebar-scroll>.sf-scrollbar__viewport');
-    var drawer=document.getElementById('docara-mobile-navigation');
-    var content=drawer&&drawer.querySelector('.docara-mobile-sheet-content');
+    var drawer=document.querySelector('body[data-docara-shell]>.docara-header');
+    // The panel is the element's own; it is drawn with the element, so it is looked up when needed.
+    function panel(){return drawer?drawer.querySelector('.sf-site-header-panel'):null}
     var stored=null,sameSite=false;
     try{sameSite=Boolean(document.referrer)&&new URL(document.referrer).origin===location.origin}catch(error){}
     try{stored=JSON.parse(sessionStorage.getItem(key)||'null')}catch(error){}
     if(!stored||typeof stored!=='object')stored={};
     var drawerTop=sameSite&&typeof stored.drawer==='number'?stored.drawer:0;
     function shown(element){return Boolean(element&&element.getClientRects().length)}
-    function keepDrawer(){if(drawer&&drawer.open&&shown(content))drawerTop=content.scrollTop}
+    function keepDrawer(){var content=panel();if(drawer&&drawer.isOpen&&shown(content))drawerTop=content.scrollTop}
     function save(){
       keepDrawer();
       var state={sidebar:shown(sidebar)?sidebar.scrollTop:(typeof stored.sidebar==='number'?stored.sidebar:0),drawer:drawerTop};
@@ -201,11 +205,12 @@
     window.addEventListener('pagehide',save);
     return {
       keepDrawer:keepDrawer,
-      reveal:reveal,
-      openDrawer:function(dialog){
-        if(dialog!==drawer||!content)return;
+      openDrawer:function(){
+        var content=panel();
+        if(!content)return;
         scrollAt(content,drawerTop);
-        var current=dialog.querySelectorAll('[aria-current="page"]');
+        // The panel lists the header links first: the current item of the sidebar copy is the last one.
+        var current=content.querySelectorAll('[aria-current="page"]');
         reveal(content,current[current.length-1]);
       }
     };
@@ -227,71 +232,19 @@
   document.addEventListener('docara:open-transient',function(event){
     closeTransientExcept(event.detail&&event.detail.id||'');
   });
-  function requestTransient(dialog){
-    document.dispatchEvent(new CustomEvent('docara:open-transient',{detail:{id:dialog.id}}));
-  }
-  function trapDialogTab(dialog,event){
-    if(event.key!=='Tab')return;
-    var focusable=Array.from(dialog.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'))
-      .filter(function(element){
-        if(element.hidden||element.getClientRects().length===0)return false;
-        return !(element.matches('input[type="radio"]')&&!element.checked);
-      });
-    if(!focusable.length)return;
-    var first=focusable[0],last=focusable[focusable.length-1];
-    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
-    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
-    else if(!dialog.contains(document.activeElement)){event.preventDefault();(event.shiftKey?last:first).focus()}
-  }
-  function bindSheet(dialog){
-    var trigger=document.querySelector('[data-docara-sheet-trigger][aria-controls="'+dialog.id+'"]');
-    var closeButton=dialog.querySelector('[data-docara-sheet-close]');
-    if(!trigger||!closeButton)return;
-    var linksBound=false;
-    function hydrateSheet(){
-      var template=dialog.querySelector('template[data-docara-sheet-template]');
-      var target=dialog.querySelector('[data-docara-sheet-lazy-content]');
+  /* The header's navigation panel is the Framework sf-site-header's own: it opens, closes, traps focus and locks the page. The shell fills its sheet with the sidebar tree as the panel opens, and keeps the panel's scroll. */
+  (function(){
+    var header=document.querySelector('body[data-docara-shell]>.docara-header');
+    var sheet=header&&header.querySelector('[data-docara-sheet-content]');
+    if(!sheet)return;
+    header.addEventListener('sf-site-header-open',function(){
+      var template=sheet.querySelector('template[data-docara-sheet-template]');
+      var target=sheet.querySelector('[data-docara-sheet-lazy-content]');
       if(template&&target){target.replaceWith(template.content.cloneNode(true));template.remove()}
-      if(!linksBound){
-        linksBound=true;
-        dialog.querySelectorAll('a[href]').forEach(function(link){link.addEventListener('click',closeSheet)});
-      }
-    }
-    function closeSheet(){
-      navigationScroll.keepDrawer();
-      if(typeof dialog.close==='function'&&dialog.open){dialog.close()}
-      else{dialog.removeAttribute('open');trigger.setAttribute('aria-expanded','false');trigger.focus()}
-    }
-    function openSheet(){
-      hydrateSheet();
-      requestTransient(dialog);
-      if(!dialog.open){
-        if(typeof dialog.showModal==='function'){dialog.showModal()}
-        else{dialog.setAttribute('open','')}
-      }
-      trigger.setAttribute('aria-expanded','true');
-      navigationScroll.openDrawer(dialog);
-      requestAnimationFrame(function(){
-        // The drawer lists the primary navigation first: the current item of the sidebar copy is the last one.
-        var current=dialog.querySelectorAll('[aria-current="page"]');
-        var target=current[current.length-1]||dialog.querySelector('a[href]')||closeButton;
-        navigationScroll.reveal(dialog.querySelector('.docara-mobile-sheet-content'),target);
-        target.focus({preventScroll:true});
-      });
-    }
-    trigger.addEventListener('click',openSheet);
-    closeButton.addEventListener('click',closeSheet);
-    dialog.addEventListener('click',function(event){if(event.target===dialog){closeSheet()}});
-    dialog.addEventListener('cancel',function(event){event.preventDefault();closeSheet()});
-    dialog.addEventListener('keydown',function(event){trapDialogTab(dialog,event)});
-    dialog.addEventListener('close',function(){trigger.setAttribute('aria-expanded','false');trigger.focus()});
-    window.addEventListener('resize',function(){
-      var unavailable=(dialog.id==='docara-mobile-navigation'&&window.matchMedia('(min-width: 60rem)').matches)
-        ||(dialog.id==='docara-outline-dialog'&&window.matchMedia('(min-width: 72rem)').matches);
-      if(unavailable&&dialog.open){closeSheet()}
-    },{passive:true});
-  }
-  document.querySelectorAll('dialog[data-docara-sheet]').forEach(bindSheet);
+    });
+    header.addEventListener('sf-site-header-opened',function(){navigationScroll.openDrawer()});
+    header.addEventListener('sf-site-header-close',function(){navigationScroll.keepDrawer()});
+  })();
   document.querySelectorAll('[data-docara-breadcrumbs]').forEach(function(breadcrumbs){
     var ellipsisLabel=breadcrumbs.dataset.docaraBreadcrumbsEllipsisLabel;
     if(!ellipsisLabel)return;

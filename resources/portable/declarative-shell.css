@@ -5,8 +5,11 @@ body{min-height:100vh;background:var(--sf-surface-0);color:var(--sf-on-surface)}
 .docara-skip-link{position:fixed;inset-block-start:var(--sf-space-1);inset-inline-start:var(--sf-space-1);z-index:100;transform:translateY(-200%);color:var(--sf-on-surface);text-decoration:none}
 .docara-skip-link:focus{transform:translateY(0)}
 body[data-docara-shell]{opacity:1!important}
-.docara-mobile-navigation-trigger,.docara-outline-mobile{display:none}
-.docara-header-row>[data-docara-section="docara.header"]{min-inline-size:0;align-items:center;flex:1 1 auto}
+.docara-outline-mobile{display:none}
+/* The header is the Framework sf-site-header (PortableSiteHeader): the navigation fills the bar between the brand and the tools. */
+.docara-header-content{flex:1 1 auto}
+/* The language menu is positioned for its popup, so it would paint over the open panel and its scrim that come before it; they are lifted over the bar's own controls. */
+.docara-header .sf-site-header--open .sf-site-header-scrim,.docara-header .sf-site-header--open .sf-site-header-panel{z-index:1}
 /* The search field follows the Framework size-1 control height, which is smaller on phones, like the icon buttons beside it. */
 .docara-header{--docara-header-control-size:calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-default))}
 .docara-header .docara-brand--logo{--docara-brand-mark-size:var(--sf-c6)}
@@ -41,8 +44,11 @@ body[data-docara-shell]{opacity:1!important}
 .docara-outline-rail{--docara-outline-indent:calc(var(--sf-space-2) + var(--sf-a2))}
 html[dir="rtl"] .docara-outline-rail{box-shadow:inset calc(var(--sf-px) * -1) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}
 .docara-outline-scroll{position:sticky;inset-block-start:var(--docara-header-block-size);block-size:calc(100vh - var(--docara-header-block-size));direction:ltr}
-.docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding:var(--sf-space-2);padding-inline-start:var(--docara-outline-indent)}
-html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-inline-start:var(--sf-space-2);padding-inline-end:var(--docara-outline-indent)}
+/* The column's edge is the contents line: the section starts on it, the edge is the one line drawn, and the current section's bar lies on it. The heading and the links keep their indent from it. */
+.docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding:var(--sf-space-2);padding-inline-start:0}
+html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-inline-start:var(--sf-space-2);padding-inline-end:0}
+.docara-outline-rail .sf-contents{--sf-contents-line-color:transparent}
+.docara-outline-rail .sf-contents--layout-column .sf-contents-label,.docara-outline-rail .sf-contents--layout-column .sf-contents-link{padding-inline-start:calc(var(--docara-outline-indent) + var(--sf-space-1\/2))}
 html[dir="ltr"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]>*{direction:ltr}
 html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-section]>*{direction:rtl}
 /* The sticky header is a row of size-1 controls (--sf-d0) inside p-1 padding over a border-bottom-1, so its height follows the same tokens at every breakpoint. A jump target stops one spacing step below it; reading mode hides the header. */
@@ -66,14 +72,15 @@ html[data-docara-focus-mode] .docara-docs-layout .docara-focus-exit{display:inli
   html[data-docara-outline-hidden] .docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr)}
   html[data-docara-outline-hidden] .docara-docs-layout>.docara-outline-rail{display:none}
 }
-/* Reading mode keeps only the content column. */
-html[data-docara-focus-mode] body:has(>.docara-docs-layout)>.docara-header,html[data-docara-focus-mode] body:has(>.docara-docs-layout)>[data-docara-region="footer"],html[data-docara-focus-mode] .docara-docs-layout>.docara-sidebar,html[data-docara-focus-mode] .docara-docs-layout>.docara-outline-rail,html[data-docara-focus-mode] .docara-docs-layout .docara-outline-mobile,html[data-docara-focus-mode] .docara-outline-toggle{display:none}
+/* Reading mode keeps only the content column. The header element sets display: contents on itself, so hiding it needs !important. */
+html[data-docara-focus-mode] body:has(>.docara-docs-layout)>.docara-header{display:none!important}
+html[data-docara-focus-mode] body:has(>.docara-docs-layout)>[data-docara-region="footer"],html[data-docara-focus-mode] .docara-docs-layout>.docara-sidebar,html[data-docara-focus-mode] .docara-docs-layout>.docara-outline-rail,html[data-docara-focus-mode] .docara-docs-layout .docara-outline-mobile,html[data-docara-focus-mode] .docara-outline-toggle{display:none}
 html[data-docara-focus-mode] .docara-docs-layout.docara-docs-layout{grid-template-columns:minmax(0,1fr)}
 /* Reading mode sets the whole column, toolbar, code, tables and examples alike, on the prose measure and centres it, so nothing runs wider than the text; the reader wide format keeps the full width. */
 html[data-docara-focus-mode]:not([data-docara-content-width="wide"]) .docara-docs-layout .docara-reading-column>*{inline-size:100%;max-inline-size:var(--sf-text--measure-wide);margin-inline:auto}
 @media not all and (min-width:72rem){.docara-outline-toggle{display:none}}
 /* Reader wide format: the shell takes the Framework's widest container step (layout.container.max 8) instead of the authored one, and prose lines lose their measure limit. The container tokens exist from the Framework lg breakpoint (60rem), like max-container-N. */
-@media(min-width:60rem){html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:var(--sf-container-8--size-max)}}
+@media(min-width:60rem){html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header .sf-site-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:var(--sf-container-8--size-max)}}
 html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:where(.docara-example-inline *)),html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose li:not(:where(.docara-example-inline *)){max-width:none}
 /* The Framework pager (sf-pager) draws the previous and next pages; the shell only sets it apart from the article. */
 [data-docara-previous-next]>.sf-pager{margin-block-start:var(--sf-space-4)}
@@ -91,12 +98,6 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-prose dt{font-weight:var(--sf-weight--medium)}
 .docara-prose dd{margin-inline-start:var(--sf-space-2)}
 .docara-prose dl>dt:not(:first-child){margin-block-start:var(--sf-space-1)}
-.docara-mobile-sheet{position:fixed;inset-block:0;inset-inline-start:0;inset-inline-end:auto;inline-size:min(90vw,var(--sf-g1));block-size:100dvh;max-block-size:100dvh;margin:0;border:0;border-inline-end:1px solid var(--sf-outline-variant);border-radius:0;overflow:hidden;color:var(--sf-on-surface);background:var(--sf-surface-0)}
-.docara-mobile-sheet:not([open]){display:none}
-.docara-mobile-sheet::backdrop{background:color-mix(in srgb,var(--sf-on-surface) 38%,transparent);backdrop-filter:blur(var(--sf-a2))}
-.docara-mobile-sheet-header{flex:0 0 auto;min-block-size:var(--sf-d4)}
-.docara-mobile-sheet[open]{display:flex;flex-direction:column}.docara-mobile-sheet-content{flex:1 1 auto;min-block-size:0;overflow:auto;overscroll-behavior:contain}
-.docara-mobile-sheet>.docara-sidebar-credit{padding-inline:var(--sf-space-2)}
 .docara-code-block.bg-surface-container{background:var(--sf-surface-0)}
 .docara-code-block>.sf--highlight-head{margin:0;border-bottom:1px solid var(--sf-outline-variant)}
 .docara-code-header,.docara-code-block>.sf--highlight-head,.docara-example-preview__header{position:relative;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;align-content:center;gap:var(--sf-space-1);min-block-size:calc(var(--sf-ui-1--control-height) + 2 * var(--sf-space-1\/3));padding:var(--sf-space-1\/3) var(--sf-space-1);background:var(--sf-surface-0)}
@@ -268,14 +269,14 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 /* The shell changes layout only at SIMAI Framework breakpoints (32, 44, 60, 72, 80rem = sm..xxl), written as the complement of the Framework's own min-width so a width belongs to one side only. Below xl (72rem) the header navigation and the outline rail move into sheets; below lg (60rem) the sidebar does too, because up to that step the grid is capped at the md container and a sidebar would leave the text 352px wide; below md (44rem) the example viewer, which previews desktop and tablet widths, has no room at all. */
 @media not all and (min-width:72rem){
   .docara-header-navigation{display:none}
-  .docara-mobile-navigation-trigger--primary{display:inline-flex}
+  /* In the open panel the sheet lists the header links as a column, so the horizontal menu with its dropdowns stays out of it. */
+  .docara-header .sf-site-header-nav:not(:has(.docara-header-content>:not(.docara-header-navigation))){display:none}
   .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}
   .docara-docs-layout[data-sidebar="false"],.docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr)}
   .docara-outline-rail{display:none}
   .docara-outline-mobile{display:block}
 }
 @media not all and (min-width:60rem){
-  .docara-mobile-navigation-trigger{display:inline-flex}
   /* The search button, which opens the Framework sf-search window, keeps only its icon on a narrow header. */
   .docara-search-trigger .sf-button-text-container,.docara-search-trigger .sf-button-shortcut{display:none}
   .docara-docs-layout,.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(0,1fr)}

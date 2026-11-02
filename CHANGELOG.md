@@ -28,6 +28,34 @@ All notable changes to Docara are recorded here. The format follows
   for translation freshness nor for structure. An unpaired marker stops the
   check with `TRANSLATION_GENERATED_REGION_INVALID`.
 
+### Changed
+
+- **The header is the SIMAI Framework site header.** `sf-site-header` is one
+  bar for every SIMAI site, so Docara no longer draws its own header row and
+  mobile sheet. On a wide screen the bar reads brand, header menu, then search,
+  language, reader settings and the repository link, in that order. Below the
+  Framework `xl` step (1152 px), or `lg` (960 px) when the site has no header
+  menu, a menu button before the brand opens the Framework side panel: the
+  header links as a column, then the documentation tree, then the "Made with
+  Docara" line. The panel is a layer of the Framework stack, so Escape, focus
+  and the page lock follow the other dialogs, and it still remembers how far it
+  was scrolled. The page prints the header in its first-paint form, so it is
+  right before the script arrives. A section a site adds to the header region
+  renders after the header menu.
+- **The reader settings button shows a gear** instead of three dots, and the
+  header buttons and header menu items stand closer, one third of a spacing
+  step apart.
+- **The page contents line is the outline column's edge.** The contents list
+  drew its own line a little inside the column, beside the column's border, so
+  two lines stood side by side. The column's border is the one line now, and
+  the current section's bar lies on it; the entries keep their indent.
+
+### Fixed
+
+- **The line above "Made with Docara" reaches the window edge on wide
+  screens.** It was drawn for the smallest page gutter, so on a wide window it
+  stopped short of the edge.
+
 ## [3.10.0] - 2026-11-01
 
 ### Added

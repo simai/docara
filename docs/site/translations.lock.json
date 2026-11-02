@@ -1014,10 +1014,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/navigation.md",
-            "source_sha256": "1efcca8f59c55abd17553d999c8b4d35c229afa6b1b27a823769d218922a791d",
+            "source_sha256": "943204e11d0540666c60ba50bfea60c2b4b1f2b7f4a4b362408d66b23d20142a",
             "source_structure_sha256": "27f1459ff9e953dfb5874f014e48151343471a4d3a3a2985619de02614ddc798",
             "target_path": "content/en/authoring/navigation.md",
-            "target_sha256": "7dac2c052c45837e91fc8d2eb17acfb871f363d3066d3511a63d148c82f0be37",
+            "target_sha256": "d0a19921a1e20df03ca803b47085e9425b8dca30f37c04403aced5b74af6733c",
             "target_structure_sha256": "27f1459ff9e953dfb5874f014e48151343471a4d3a3a2985619de02614ddc798"
         },
         {
@@ -1194,10 +1194,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/branding-and-theme.md",
-            "source_sha256": "90a28f818d173a61ff44c82a4cc7815863bd03316ed111db60d25576b925af25",
+            "source_sha256": "aad4cfdaeafad491909a6c2eb520c0bd3b73c47deb1aa42eab9f7492832b6872",
             "source_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7",
             "target_path": "content/en/settings/branding-and-theme.md",
-            "target_sha256": "7fa0fa2191fa70e6a6c6cbf202f8531e9cf47a1620228ee27f134b6d899ad83f",
+            "target_sha256": "5ca4a4a620585ab2e1b9962326953c96d3db2e4f00a5044d3fcfe7baef3f26d7",
             "target_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7"
         },
         {
@@ -1230,10 +1230,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/reader-preferences.md",
-            "source_sha256": "ff1e5c9f7d6ad0495376067211c2b03c411d60caf0fca59f37260fa3e29172d2",
+            "source_sha256": "60fbaebe6f6b0a40c47fa9d9f476d284a5d26a2b9b91228268696b34773db365",
             "source_structure_sha256": "613f0dadd63abe5b4139f8728f19c5d71a1cf1124d981a093e03e99e76e364ce",
             "target_path": "content/en/settings/reader-preferences.md",
-            "target_sha256": "0d45526caa84450852bc4d740710830878e301a55d18435def7a27f2ef347f94",
+            "target_sha256": "df8e36e14d76d2f874fc4d694082887001eee2d85d3426b56f1d6e3ea947583c",
             "target_structure_sha256": "613f0dadd63abe5b4139f8728f19c5d71a1cf1124d981a093e03e99e76e364ce"
         },
         {
@@ -1326,10 +1326,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/start/first-landing.md",
-            "source_sha256": "452299ba36881b859d52aec408554271188156189c884f9223dab72bccf9377a",
+            "source_sha256": "5f21c844d969c9cfc8621fad4de1802a021ea081ed81dabbf028eba25e5a7825",
             "source_structure_sha256": "adb5bb285d65926d1ff8dc4c0f9b7a47d9969dff4ea8621ad30e008f8cb7b367",
             "target_path": "content/en/start/first-landing.md",
-            "target_sha256": "a429b878ca1d6e78bab2e2c3fd4df10f2c6f9a6408168df72b222b4bf755c60b",
+            "target_sha256": "cddc8cd06a40d96b26b32a24cab48429517b7353a947bb32738c03731221ffa5",
             "target_structure_sha256": "adb5bb285d65926d1ff8dc4c0f9b7a47d9969dff4ea8621ad30e008f8cb7b367"
         },
         {

@@ -209,6 +209,19 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 ]
                 : null,
         ));
+        $portalHome = $this->portalHome($page);
+        // The bar collapses where Docara's narrow layout begins: below xl
+        // (72rem) when the header navigation must move into the sheet, below
+        // lg (60rem) when only the sidebar does, never when the sheet is empty.
+        $chrome['site_header'] = (new PortableSiteHeader)->render(
+            $regions['header'],
+            $portalHome,
+            $chrome['header_actions'],
+            $mobileNavigationEnabled ? $chrome['mobile_navigation'] : '',
+            $escapedCopy,
+            $primaryNavigationEnabled ? 'xl' : ($mobileNavigationEnabled ? 'lg' : 'none'),
+            $portalHome === null ? '' : ' data-portal-shell="header"',
+        );
 
         $view = new PortablePageViewModel(
             $this->escape((string) $page['locale']),
@@ -261,7 +274,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 ? (string) $page['robots']
                 : null,
             $this->socialMeta($page, $brandTitle, $branding),
-            $this->portalHome($page),
+            $portalHome,
             $documentationNavigationEnabled && ($page['sidebar_credit'] ?? true) === true
                 ? $this->sidebarCredit((string) $page['locale'])
                 : null,

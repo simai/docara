@@ -118,7 +118,7 @@ php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 
 Open `http://127.0.0.1:8000/product/`. You see the first screen with the
 heading "Notes that find themselves" and a button, then three benefit cards
-and the "Create an account" button. Switch the theme in the ⋮ menu on the
+and the "Create an account" button. Switch the theme in the gear menu on the
 right of the header and check the page in the light and dark themes.
 
 Stop the preview with `Ctrl+C`.

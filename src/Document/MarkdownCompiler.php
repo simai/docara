@@ -260,9 +260,14 @@ final class MarkdownCompiler
             );
         }
         $fence = (string) ($opening['fence'] ?? ':::');
+        // A page example lists the files behind a built page as :::code
+        // blocks and renders them itself; it needs the longer fence to close.
+        $pageExample = $alias === 'example' && strlen($fence) > 3
+            && preg_match('/(?:^|\s)src\s*=/', (string) ($opening['attributes'] ?? '')) === 1;
         $end = $start + 1;
         while (isset($lines[$end]) && trim($lines[$end]) !== $fence) {
-            if (! $this->isContainerDefinition($definition)
+            if (! $pageExample
+            && ! $this->isContainerDefinition($definition)
             && preg_match('/^:{3,}[a-z]/', $lines[$end]) === 1
             ) {
                 throw $this->locatedException(

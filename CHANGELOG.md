@@ -20,6 +20,28 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **An example can show a whole page of the site.** Headers, menus, layout
+  regions and section settings show only on a whole page, and the examples
+  of them were a small frame with the page's own Markdown dumped below it.
+  `:::example {src="/path/"}` now shows a built page of the site in the
+  example frame, drawn as a 1280 px desktop screen scaled to the column, and
+  lists the files behind it as tabs: each `###` heading names a tab and a
+  `:::code` block under it reads the real file. The responsive check opens
+  the page at the real desktop, tablet or phone width. An address on another
+  site (`MARKDOWN_EXAMPLE_SRC_UNSAFE`), `id` or `preview` beside `src`
+  (`MARKDOWN_EXAMPLE_SRC_CONFLICT`) and an empty, repeated or missing tab
+  (`MARKDOWN_EXAMPLE_PAGE_SOURCE_INVALID`) stop the build.
+
+### Changed
+
+- **What a site adds to the header stands before the tools.** A button or
+  other section a page or section adds to the header stood in the middle of
+  the bar beside the header links. It now goes to the Framework header's
+  actions slot: at the end of the row before search and settings, and in the
+  menu panel after the links when the header is collapsed.
+
+### Added
+
 - **Pages of one kind can follow one list of sections.** A reference
   catalogue kept its pages alike only by a script of its own, and a person or
   an AI assistant writing a new page had to copy the order from another one.

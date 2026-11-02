@@ -1,9 +1,18 @@
 {
   "schema": "docara.page.v1",
-  "title": "Брендированный header",
-  "description": "Header из брендового Smart-компонента и отдельного действия.",
+  "title": "Приём первого платежа",
+  "description": "Демонстрационная страница документации платёжного API с кнопкой в шапке.",
+  "branding": {"title": "Acme Pay", "label": "Документация API", "mode": "text"},
+  "header_navigation": {
+    "items": [
+      {"id": "guide", "label": "Руководство", "href": "#guide"},
+      {"id": "api", "label": "API", "href": "#api"},
+      {"id": "sdk", "label": "SDK", "href": "#sdk"}
+    ]
+  },
   "layout": {
     "regions": {
+      "sidebar": {"enabled": false},
       "header": {
         "enabled": true,
         "sections": [
@@ -11,15 +20,18 @@
           {
             "id": "header-action",
             "section": "docara.shell",
-            "utilities": ["flex", "gap-1"],
             "blocks": [
               {
-                "id": "start",
+                "id": "get-key",
                 "block": "shell.smart",
                 "slot": "content",
                 "smart": "ui.button",
                 "view": "default",
-                "props": {"text": "Начать", "preset": "primary", "aria-label": "Начать работу с Docara"}
+                "props": {
+                  "text": "Получить ключ",
+                  "preset": "primary",
+                  "aria-label": "Получить тестовый ключ API"
+                }
               }
             ]
           }

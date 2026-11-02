@@ -1,27 +1,58 @@
 ---
-description: "Стенд: шапка из фирменного блока бренда и отдельного действия — две секции одной области."
+description: "Как добавить в шапку сайта главную кнопку действия рядом с логотипом: одна секция в page.json, без HTML."
 ---
 
-# Брендированный header
+# Шапка с кнопкой действия
 
-Фирменный Smart-компонент бренда и отдельное действие собираются как две секции
-одной области.
+Рядом с логотипом появляется главная кнопка сайта: «Получить ключ»,
+«Начать» или «Скачать». HTML писать не нужно, хватает одной секции в
+`page.json`.
 
-## Результат
+::::example {src="/ru/demonstrator-results/region-header/" label="Результат"}
+### page.json
 
-[Открыть отдельно](/ru/demonstrator-results/region-header/)
-
-:::internal_preview {size=compact title="Брендированный header"}
-[Открыть результат](/ru/demonstrator-results/region-header/)
+:::code {src="../demonstrator-results/region-header.page.json" lang=json highlight="20-37"}
 :::
 
-## Исходные файлы
+### Markdown страницы
 
-:::code {src="./region-header.md" lang=markdown title="Страница примера · content/ru/examples/region-header.md"}
+:::code {src="../demonstrator-results/region-header.md" lang=markdown}
+:::
+::::
+
+Откройте пример во весь экран и переключите ширину. На широком экране кнопка
+стоит справа, перед поиском. На телефоне шапка сворачивается: кнопка
+переезжает в выдвижное меню вместе с разделами.
+
+## Как это устроено
+
+1. Шапка состоит из секций. Первая, `docara.header`, — стандартная шапка
+   Docara: название, разделы, поиск и настройки.
+2. Вторая секция добавляет кнопку `ui.button` из SIMAI Framework. Всё, что
+   вы добавляете в шапку, Docara ставит справа, перед поиском.
+3. Docara проверяет параметры кнопки при сборке. Опечатка в имени параметра
+   остановит сборку с понятной ошибкой, а не сломает страницу молча.
+
+:::code {src="../demonstrator-results/region-header.page.json" lang=json lines="17-39" highlight="4-21"}
 :::
 
-:::code {src="../demonstrator-results/region-header.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/region-header.md"}
-:::
+Название, разделы шапки и отключённое левое меню в этом примере нужны только
+для правдоподобия. В настоящем сайте название и разделы задаются один раз в
+`docara.json`.
 
-:::code {src="../demonstrator-results/region-header.page.json" lang=json title="Композиция header · content/ru/demonstrator-results/region-header.page.json"}
-:::
+## Что можно поменять
+
+| Параметр | Что меняет |
+|---|---|
+| `text` | Надпись на кнопке |
+| `preset` | Вид кнопки: `primary` — главная, `secondary` — второстепенная |
+| `aria-label` | Название кнопки для экранного диктора, если надписи мало |
+| Порядок секций | Порядок элементов в шапке |
+
+Чтобы кнопка была на всех страницах раздела, перенесите `layout` из
+`page.json` в `section.json` этого раздела.
+
+## См. также
+
+- [Области макета](../../settings/layout-and-regions.md)
+- [Компоненты SIMAI Framework](../../components/smart-ui.md)

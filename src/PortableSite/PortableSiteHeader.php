@@ -46,12 +46,13 @@ final readonly class PortableSiteHeader
         string $collapse,
         string $attributes = '',
     ): string {
-        [$brand, $content] = $this->split($headerRegion);
+        [$brand, $content, $actions] = $this->split($headerRegion);
         if ($portalHome !== null) {
             $brand = '<a class="docara-portal-home" href="' . $portalHome['url'] . '" data-docara-portal-home>' . $portalHome['label'] . '</a>' . $brand;
         }
         $brand = trim($brand) === '' ? '' : '<div class="docara-header-brand flex items-cross-center gap-1">' . $brand . '</div>';
         $content = trim($content) === '' ? '' : '<div class="docara-header-content flex items-cross-center gap-2 min-w-0">' . $content . '</div>';
+        $actions = trim($actions) === '' ? '' : '<div class="docara-header-extra flex items-cross-center gap-1">' . $actions . '</div>';
         $tools = trim($tools);
         $sheet = trim($sheet);
 
@@ -64,6 +65,7 @@ final readonly class PortableSiteHeader
             . '<div class="sf-site-header-panel-head"><span class="sf-site-header-panel-heading">' . $copy['navigation.mobile_title'] . '</span>'
             . $this->iconButton('sf-site-header-close-button', 'close', $copy['navigation.close'], '') . '</div>'
             . ($content === '' ? '' : '<div class="sf-site-header-nav">' . $this->copyOf($content) . '</div>')
+            . ($actions === '' ? '' : '<div class="sf-site-header-actions">' . $this->copyOf($actions) . '</div>')
             . '</div>'
             . ($tools === '' ? '' : '<div class="sf-site-header-tools">' . $this->copyOf($tools) . '</div>')
             . '</div></header>';
@@ -72,22 +74,25 @@ final readonly class PortableSiteHeader
             . $picture
             . $this->held($brand, 'brand')
             . $this->held($content, null)
+            . $this->held($actions, 'actions')
             . $this->held($tools, 'tools')
             . $this->held($sheet, 'sheet')
             . '</sf-site-header>';
     }
 
     /**
-     * The brand and the rest of the header region. The docara.header
-     * section's wrapper is left out: the bar's slots are the element's own
-     * children. Sections a site adds stay whole, after the navigation.
+     * The brand, the header navigation and the sections a site adds. The
+     * docara.header section's wrapper is left out: the bar's slots are the
+     * element's own children. Sections a site adds stay whole and go to the
+     * bar's actions slot: wide, they stand before the tools at the end of the
+     * row; collapsed, they follow the navigation in the panel.
      *
-     * @return array{0:string,1:string}
+     * @return array{0:string,1:string,2:string}
      */
     private function split(string $region): array
     {
         if (preg_match(self::SECTION, $region, $section, PREG_OFFSET_CAPTURE) !== 1) {
-            return ['', $region];
+            return ['', $region, ''];
         }
         $inner = $section[1][0];
         $brand = '';
@@ -95,9 +100,9 @@ final readonly class PortableSiteHeader
             $brand = $match[0];
             $inner = str_replace($brand, '', $inner);
         }
-        $rest = substr($region, 0, $section[0][1]) . $inner . substr($region, $section[0][1] + strlen($section[0][0]));
+        $added = substr($region, 0, $section[0][1]) . substr($region, $section[0][1] + strlen($section[0][0]));
 
-        return [$brand, trim($rest)];
+        return [$brand, trim($inner), trim($added)];
     }
 
     /** A slotted original, held out of view while the picture stands. */

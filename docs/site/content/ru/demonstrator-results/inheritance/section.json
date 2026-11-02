@@ -1,6 +1,6 @@
 {
   "schema": "docara.section.v1",
-  "title": "Наследуемый раздел",
+  "title": "Справочник API",
   "layout": {
     "container": {"max": 4}
   },

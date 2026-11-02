@@ -1,7 +1,7 @@
 {
   "schema": "docara.page.v1",
-  "title": "Отключение необязательных областей",
-  "description": "Sidebar и outline отключены без пустых оболочек.",
+  "title": "Условия использования API",
+  "description": "Демонстрационная страница без меню и оглавления.",
   "layout": {
     "container": {"max": 7},
     "regions": {

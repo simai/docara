@@ -124,7 +124,11 @@ final class PortableConfigurationTest extends TestCase
             'content/ru/demonstrator-results/composition-inheritance/page.md',
         );
 
-        self::assertSame('Docara', $plan->configuration['branding']['title']);
+        self::assertSame('Acme Pay', $plan->configuration['branding']['title']);
+        self::assertSame(
+            'content/ru/demonstrator-results/section.json',
+            $plan->provenance['/branding/title'],
+        );
         self::assertSame('system', $plan->configuration['settings']['theme']);
         self::assertSame(
             'content/ru/demonstrator-results/composition-inheritance/section.json',

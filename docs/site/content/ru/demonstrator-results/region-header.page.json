@@ -2,14 +2,6 @@
   "schema": "docara.page.v1",
   "title": "Приём первого платежа",
   "description": "Демонстрационная страница документации платёжного API с кнопкой в шапке.",
-  "branding": {"title": "Acme Pay", "label": "Документация API", "mode": "text"},
-  "header_navigation": {
-    "items": [
-      {"id": "guide", "label": "Руководство", "href": "#guide"},
-      {"id": "api", "label": "API", "href": "#api"},
-      {"id": "sdk", "label": "SDK", "href": "#sdk"}
-    ]
-  },
   "layout": {
     "regions": {
       "sidebar": {"enabled": false},

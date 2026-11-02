@@ -55,6 +55,10 @@ All notable changes to Docara are recorded here. The format follows
 - **The line above "Made with Docara" reaches the window edge on wide
   screens.** It was drawn for the smallest page gutter, so on a wide window it
   stopped short of the edge.
+- **The search window and the full-screen example darken the page in the dark
+  theme too.** Their scrim was drawn from a theme colour that turns light in
+  the dark theme, so the page behind them lit up. Both now use a fixed black,
+  like the Framework modal.
 
 ## [3.10.0] - 2026-11-01
 

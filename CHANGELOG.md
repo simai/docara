@@ -27,6 +27,12 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **Parts added to the side columns and the footer line up with Docara's own
+  text.** A part under the contents lay on the column's line, and a filled one
+  cut it in two; a part under the menu started left of the menu items; the
+  footer had no line above it and no room below. Docara now gives these parts
+  the menu's or the contents' indent, and sets the footer off with a line and
+  space of its own, so pages need no padding or background utilities for it.
 - **Example tabs named without Latin letters no longer share one id.** Two
   source tabs labelled only in Russian, such as «Значения» and «Шаблон»,
   got the same tab and panel ids, and the static check stopped the build.

@@ -3,8 +3,13 @@
   "node": {
     "type": "layout.section",
     "slots": { "default": [
+      { "id": "context", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "Справочник API · версия 2026-10 · обновлено 2 ноября 2026 года" }] } } } },
       { "id": "title", "node": { "type": "content.heading", "data": { "level": { "literal": 1 }, "content": { "literal": [{ "type": "text", "value": "Возврат платежа" }] } } } },
-      { "id": "lead", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "Справочник API · версия 2026-10 · обновлено 2 ноября 2026 года" }] } } } }
+      { "id": "facts", "node": { "type": "content.heading", "data": { "level": { "literal": 2 }, "content": { "literal": [{ "type": "text", "value": "Коротко" }] } } } },
+      { "id": "request", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "Запрос: ", "marks": ["strong"] }, { "type": "text", "value": "POST /v1/payments/{id}/refunds", "marks": ["code"] }] } } } },
+      { "id": "deadline", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "Срок: ", "marks": ["strong"] }, { "type": "text", "value": "180 дней после оплаты" }] } } } },
+      { "id": "event", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "Итог: ", "marks": ["strong"] }, { "type": "text", "value": "событие " }, { "type": "text", "value": "refund.succeeded", "marks": ["code"] }] } } } },
+      { "id": "about", "node": { "type": "content.heading", "data": { "level": { "literal": 2 }, "content": { "literal": [{ "type": "text", "value": "Описание" }] } } } }
     ] }
   }
 }

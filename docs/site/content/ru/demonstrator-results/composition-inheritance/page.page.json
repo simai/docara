@@ -12,7 +12,7 @@
           {
             "id": "page-context",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1"],
             "blocks": [
               {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "Обновлено 2 ноября 2026 года.", "utilities": ["m-0"]}}
             ]
@@ -25,7 +25,7 @@
           {
             "id": "page-footer",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1"],
             "blocks": [
               {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "Вопрос по отмене? Напишите в поддержку Acme Pay.", "utilities": ["m-0"]}}
             ]

@@ -259,7 +259,7 @@ A minimal footer:
           {
             "id": "site-footer",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1"],
             "blocks": [
               {
                 "id": "copyright",
@@ -279,6 +279,12 @@ A minimal footer:
   }
 }
 ```
+
+Docara sets the part's distance from the column edges itself. In the left
+column the text starts where the menu items start; in the right column it
+starts where the contents start and stays off the column's line. The footer is
+set off by a line and has room above and below. Utilities only arrange the
+elements inside the part.
 
 This is not an HTML string. The author picks only an allowed tag, text, a
 local link and utilities from the exact Framework projection. PHP, Blade, raw

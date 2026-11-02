@@ -11,7 +11,7 @@
           {
             "id": "section-context",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1"],
             "blocks": [
               {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "Раздел «Платежи» описывает API версии 2026-10.", "utilities": ["m-0"]}}
             ]

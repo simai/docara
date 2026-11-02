@@ -19,6 +19,11 @@ description: "Как собрать страницу по шаблону SIMAI F
 :::code {src="../../../composition/inputs-compact.json" lang=json highlight="5-7"}
 :::
 
+### header-compact.json
+
+:::code {src="../../../composition/header-compact.json" lang=json}
+:::
+
 ### recipe.json
 
 :::code {src="../../../composition/recipe.json" lang=json highlight="13-21"}
@@ -33,6 +38,11 @@ description: "Как собрать страницу по шаблону SIMAI F
 :::code {src="../../../composition/inputs-expanded.json" lang=json highlight="5-7"}
 :::
 
+### header-expanded.json
+
+:::code {src="../../../composition/header-expanded.json" lang=json}
+:::
+
 ### recipe.json
 
 :::code {src="../../../composition/recipe.json" lang=json highlight="13-21"}
@@ -45,7 +55,10 @@ description: "Как собрать страницу по шаблону SIMAI F
    `headerMode`, в основную часть — текст из значения `body`.
 2. Файл значений задаёт `headerMode`: `compact` или `expanded`. Остальное у
    двух страниц общее.
-3. Страница Docara ссылается на свой набор файлов строкой
+3. Шапки — отдельные файлы. В краткой только заголовок. В расширенной над
+   заголовком строка о разделе и версии API, под ним — сводка: запрос, срок и
+   событие, которое придёт по итогу.
+4. Страница Docara ссылается на свой набор файлов строкой
    `composition_recipe` в начале Markdown. SIMAI Framework собирает страницу
    при сборке сайта, в браузере ничего не вычисляется.
 

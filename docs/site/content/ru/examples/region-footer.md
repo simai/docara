@@ -26,8 +26,8 @@ description: "Как добавить внизу страницы подвал �
 1. Область `footer` выключена у всех страниц. `"enabled": true` включает её.
 2. В подвале одна часть `docara.shell` с двумя элементами: абзацем и
    ссылкой.
-3. Классы `p-2` и `bg-surface-0` из SIMAI Framework дают подвалу отступы и
-   фон. Своего CSS не нужно.
+3. Линию над подвалом и отступы Docara ставит сама, текст подвала начинается
+   там же, где пункты меню. Своего CSS не нужно.
 
 :::code {src="../demonstrator-results/region-footer.page.json" lang=json lines="7-30" highlight="2,7" dedent=true}
 :::

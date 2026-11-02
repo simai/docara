@@ -249,10 +249,9 @@ final class DocumentationSiteStructureTest extends TestCase
             self::assertStringContainsString($negative, $journey);
         }
         $demos = (string) file_get_contents($root . '/examples/extensions.md');
-        foreach (['ui.input', 'ui.checkbox', 'ui.dropdown', 'ui.list-item(type=text)', 'project', 'network/order/payment/command side effects'] as $marker) {
+        foreach (['smart/', 'project.', 'manifest.json', 'template/default.php', 'ничего не отправляют по сети'] as $marker) {
             self::assertStringContainsString($marker, $demos);
         }
-        self::assertStringContainsString('icons, avatars, tags', $demos);
         self::assertFileExists($root . '/project-demos.md');
         self::assertFileExists(dirname(__DIR__, 2) . '/docs/site/smart/project.install-builder/manifest.json');
         self::assertFileExists(dirname(__DIR__, 2) . '/docs/site/design/sections/project.footer.json');

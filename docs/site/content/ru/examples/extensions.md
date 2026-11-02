@@ -1,32 +1,67 @@
 ---
-description: "Стенд: принятые Smart-компоненты SIMAI Framework и сценарии проекта рядом с готовым результатом."
+description: "Как добавить на сайт свой интерактивный компонент без изменения Docara: папка smart/ с описанием, шаблоном, скриптом и стилями."
 ---
 
-# Полезные Framework и project-сценарии
+# Свой компонент проекта
 
-Это не вторая gallery. Страница связывает принятые artifacts с задачей и реальным production output; support labels проецируются из Atlas.
+Когда готовых блоков мало, сайт добавляет свой компонент. Здесь их три:
+конструктор команды установки, калькулятор тарифа и ссылки в подвале. Docara
+при этом не меняется: компоненты лежат в папке `smart/` самого сайта.
 
-## Принятые Framework controls
+::::example {src="/ru/project-demos/" label="Результат"}
+### Markdown страницы
 
-:::atlas_index {kind=smart owner=ui support=supported}
+:::code {src="../project-demos.md" lang=markdown highlight="13-15,21-23"}
 :::
 
-`ui.input` редактирует package/version, `ui.checkbox` включает allowlisted options, а `ui.dropdown → ui.list-item(type=text)` выбирает OS/method/tariff. Raw `items`, icons, avatars, tags и прочие непринятые related surfaces не поддерживаются.
+### manifest.json
 
-## Project-owned scenarios
-
-:::atlas_index {support=project}
+:::code {src="../../../smart/project.install-builder/manifest.json" lang=json highlight="18-25"}
 :::
 
-:::internal_preview {size=tall title="Install builder, configurator и footer"}
-[Открыть результат](/ru/project-demos/)
+### view/default.json
+
+:::code {src="../../../smart/project.install-builder/view/default.json" lang=json}
 :::
 
-- install builder формирует безопасную copy-only Composer command;
-- product configurator локально пересчитывает tariff/options/summary;
-- footer contribution входит через admitted `shell.footer` capability;
-- network/order/payment/command side effects отсутствуют.
+### template/default.php
 
-## Как читать статусы
+:::code {src="../../../smart/project.install-builder/template/default.php" lang=php}
+:::
+::::
 
-`supported` и `project` — доступные public scenarios. `compatibility` означает лишь доказательство совместимости. Proposal/rejected artifacts не попадают в admitted Atlas и не могут быть показаны как рабочий public example.
+Выберите в окне примера другую систему или версию: команда установки
+меняется сразу. Копировать её можно кнопкой «Копировать».
+
+## Как это устроено
+
+1. Каждый компонент — папка в `smart/` с именем вида `project.имя`.
+2. `manifest.json` описывает компонент: его параметры (`props`), места для
+   вложенных элементов (`slots`) и файлы стилей и скриптов.
+3. `view/default.json` собирает компонент из готовых элементов SIMAI
+   Framework: выпадающих списков `ui.dropdown`, полей `ui.input` и флажков
+   `ui.checkbox`.
+4. `template/default.php` — разметка, которую Docara выводит при сборке. Скрипт
+   из `assets/` оживляет её в браузере.
+
+На странице компонент вызывается так же, как компоненты SIMAI Framework:
+
+:::code {src="../project-demos.md" lang=markdown lines="13-15"}
+:::
+
+## Что можно поменять
+
+| Файл | Что в нём меняется |
+|---|---|
+| `manifest.json` | Параметры компонента и разрешённые вложенные элементы |
+| `view/default.json` | Какие элементы стоят внутри и с какими подписями |
+| `template/default.php` | Разметка вокруг элементов |
+| `assets/*.css`, `assets/*.js` | Внешний вид и поведение в браузере |
+
+Компоненты примера ничего не отправляют по сети: конструктор только
+составляет команду, а калькулятор считает итог в браузере.
+
+## См. также
+
+- [Компоненты SIMAI Framework](/ru/components/smart-ui/)
+- [Подвал страницы](../region-footer/)

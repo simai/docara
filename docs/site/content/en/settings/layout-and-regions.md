@@ -375,4 +375,4 @@ utility or an unsafe path are refused before rendering.
 
 - [Inheritance of regions](/en/settings/levels-and-inheritance/#layout-regions)
 - [«Smart-компоненты»](/ru/development/smart-components/) (in Russian) — how the header, menu and outline components work
-- [A live example of Docara Smart components](/ru/examples/product-smart-runtime/) (in Russian)
+- [A live example of the header, menu and outline](/ru/examples/regions-composed/) (in Russian)

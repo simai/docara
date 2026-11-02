@@ -371,4 +371,4 @@ build_<environment>.docara/resolved-page-plans.json
 
 - [Наследование областей](/ru/settings/levels-and-inheritance/#области-макета)
 - [Smart-компоненты](/ru/development/smart-components/) — как устроены компоненты шапки, меню и содержания
-- [Живой пример Smart-компонентов Docara](/ru/examples/product-smart-runtime/)
+- [Живой пример шапки, меню и оглавления](/ru/examples/regions-composed/)

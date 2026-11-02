@@ -62,6 +62,23 @@ final class PageExampleTest extends TestCase
     }
 
     #[Test]
+    public function tabs_named_without_latin_letters_get_distinct_ids(): void
+    {
+        $page = $this->project(['a.json' => "{}\n", 'b.json' => "[]\n"]);
+        $html = (new PortableMarkdownRenderer)->render(
+            "::::example {src=\"/demo/\"}\n### Значения\n\n:::code {src=\"a.json\" lang=json}\n:::\n\n"
+            . "### Шаблон\n\n:::code {src=\"b.json\" lang=json}\n:::\n::::\n",
+            $this->root,
+            $page,
+        );
+
+        self::assertStringContainsString('data-docara-example-tab="source"', $html);
+        self::assertStringContainsString('data-docara-example-tab="source-2"', $html);
+        preg_match_all('/\sid="([^"]+)"/', $html, $ids);
+        self::assertSame($ids[1], array_values(array_unique($ids[1])));
+    }
+
+    #[Test]
     public function a_page_example_reports_unsafe_addresses_conflicts_and_missing_sources(): void
     {
         $cases = [

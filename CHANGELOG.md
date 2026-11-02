@@ -32,6 +32,13 @@ All notable changes to Docara are recorded here. The format follows
   (`MARKDOWN_EXAMPLE_SRC_CONFLICT`) and an empty, repeated or missing tab
   (`MARKDOWN_EXAMPLE_PAGE_SOURCE_INVALID`) stop the build.
 
+### Fixed
+
+- **Example tabs named without Latin letters no longer share one id.** Two
+  source tabs labelled only in Russian, such as «Значения» and «Шаблон»,
+  got the same tab and panel ids, and the static check stopped the build.
+  Each tab now gets its own id.
+
 ### Changed
 
 - **What a site adds to the header stands before the tools.** A button or

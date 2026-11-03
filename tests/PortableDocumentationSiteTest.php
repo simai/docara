@@ -104,7 +104,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
-        self::assertCount(389, $htmlPages);
+        self::assertCount(393, $htmlPages);
         $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
         $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
         $singleNonIndexed = $this->documentationBuilder($filesystem)
@@ -301,7 +301,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(389, $report['html_pages'] ?? null);
+        self::assertSame(393, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
 
@@ -468,7 +468,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // joins the first frame and the shared shell stylesheets regroup: 2088.
         // The developer examples move to the page-example pattern and one
         // example merges into another behind redirects: 2095.
-        self::assertCount(2095, $firstFiles);
+        // The recipe examples move to their own demo section behind
+        // redirects: 2099.
+        self::assertCount(2099, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

@@ -127,7 +127,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
                     && ($page['page_source_kind'] ?? null) === 'authored_markdown',
             )->count(),
         );
-        self::assertCount(93, $redirectReceipt['redirects']);
+        self::assertCount(97, $redirectReceipt['redirects']);
         self::assertCount(129, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],

@@ -1,0 +1,15 @@
+{
+  "id": "header",
+  "node": {
+    "type": "layout.section",
+    "slots": { "default": [
+      { "id": "context", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "API reference · version 2026-10 · updated on 2 November 2026" }] } } } },
+      { "id": "title", "node": { "type": "content.heading", "data": { "level": { "literal": 1 }, "content": { "literal": [{ "type": "text", "value": "Refund a payment" }] } } } },
+      { "id": "facts", "node": { "type": "content.heading", "data": { "level": { "literal": 2 }, "content": { "literal": [{ "type": "text", "value": "At a glance" }] } } } },
+      { "id": "request", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "Request: ", "marks": ["strong"] }, { "type": "text", "value": "POST /v1/payments/{id}/refunds", "marks": ["code"] }] } } } },
+      { "id": "deadline", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "Deadline: ", "marks": ["strong"] }, { "type": "text", "value": "180 days after payment" }] } } } },
+      { "id": "event", "node": { "type": "content.paragraph", "data": { "content": { "literal": [{ "type": "text", "value": "Result: ", "marks": ["strong"] }, { "type": "text", "value": "the event " }, { "type": "text", "value": "refund.succeeded", "marks": ["code"] }] } } } },
+      { "id": "about", "node": { "type": "content.heading", "data": { "level": { "literal": 2 }, "content": { "literal": [{ "type": "text", "value": "Description" }] } } } }
+    ] }
+  }
+}

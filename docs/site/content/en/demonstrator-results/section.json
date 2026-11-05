@@ -1,0 +1,23 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Acme Pay demo",
+  "branding": {"title": "Acme Pay", "label": "API documentation", "mode": "text"},
+  "header_navigation": {
+    "items": [
+      {"id": "guide", "label": "Guide", "href": "/en/demonstrator-results/preset-docs/"},
+      {"id": "api", "label": "API", "href": "/en/demonstrator-results/inheritance/page/"},
+      {"id": "sdk", "label": "SDK", "href": "/en/demonstrator-results/region-sidebar/"}
+    ]
+  },
+  "navigation": {
+    "hidden": true,
+    "scope": "section"
+  },
+  "search": {
+    "indexed": false
+  },
+  "reading": {
+    "breadcrumbs": false,
+    "previous_next": false
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Developer examples",
+  "navigation": {
+    "hidden": true
+  },
+  "search": {
+    "indexed": false
+  },
+  "reading": {
+    "previous_next": false
+  }
+}

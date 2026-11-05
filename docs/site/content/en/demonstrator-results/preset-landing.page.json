@@ -1,0 +1,14 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Home",
+  "description": "Demo landing page of a payment service.",
+  "preset": "landing",
+  "layout": {
+    "container": {"max": 7}
+  },
+  "search": {
+    "enabled": false,
+    "indexed": false
+  },
+  "navigation": {"order": 1}
+}

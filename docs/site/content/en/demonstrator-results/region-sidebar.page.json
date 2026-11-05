@@ -1,0 +1,35 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Install the PHP SDK",
+  "description": "Demo page with a hint under the menu.",
+  "layout": {
+    "regions": {
+      "sidebar": {
+        "enabled": true,
+        "sections": [
+          {"id": "docs-navigation", "section": "docara.navigation"},
+          {
+            "id": "sidebar-note",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1"],
+            "blocks": [
+              {
+                "id": "hint",
+                "block": "shell.element",
+                "slot": "content",
+                "element": {"tag": "p", "text": "No test key yet? Start with the quick start.", "utilities": ["m-0"]}
+              },
+              {
+                "id": "start-link",
+                "block": "shell.element",
+                "slot": "content",
+                "element": {"tag": "a", "text": "Quick start", "href": "/en/demonstrator-results/preset-docs/", "aria_label": "Open the Acme Pay quick start"}
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "navigation": {"order": 90}
+}

@@ -1,0 +1,6 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Test mode",
+  "description": "Demo page with a SIMAI Framework alert in the text.",
+  "navigation": {"order": 30}
+}

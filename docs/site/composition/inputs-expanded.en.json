@@ -1,0 +1,33 @@
+{
+  "schema": "simai.composition.inputs.v1",
+  "scope": "docara-site",
+  "values": {
+    "headerMode": {
+      "kind": "setting",
+      "value": "expanded",
+      "valueDigest": "sha256:c60ad395f956f970f43b45b950c381db8108ca2064e11748e72262d8c2ab46b0",
+      "origin": {
+        "scope": "docara-site",
+        "owner": "docara/settings",
+        "ref": "header.mode",
+        "revision": "1"
+      }
+    },
+    "body": {
+      "kind": "content",
+      "value": [
+        {
+          "type": "text",
+          "value": "You can refund money to the customer in full or in part within 180 days after payment. A refund is created with a separate API request and gets its own status."
+        }
+      ],
+      "valueDigest": "sha256:39db829b9cf8d10c18ce37d7ca2b51da6f85ced2479fa54e555afc82beb976ef",
+      "origin": {
+        "scope": "docara-site",
+        "owner": "docara/content",
+        "ref": "page.demo",
+        "revision": "1"
+      }
+    }
+  }
+}

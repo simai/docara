@@ -1,0 +1,6 @@
+{
+  "schema": "docara.page.v1",
+  "title": "SDK for mobile apps",
+  "description": "Demo page with a SIMAI Framework button in the text.",
+  "navigation": {"order": 100}
+}

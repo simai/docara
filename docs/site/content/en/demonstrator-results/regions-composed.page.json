@@ -1,0 +1,22 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Refund a payment",
+  "description": "Demo page with a header, menu and page outline set in page.json.",
+  "layout": {
+    "regions": {
+      "header": {
+        "enabled": true,
+        "sections": [{"id": "branding", "section": "docara.header"}]
+      },
+      "sidebar": {
+        "enabled": true,
+        "sections": [{"id": "navigation", "section": "docara.navigation"}]
+      },
+      "outline": {
+        "enabled": true,
+        "sections": [{"id": "outline", "section": "docara.outline"}]
+      }
+    }
+  },
+  "navigation": {"order": 40}
+}

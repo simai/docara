@@ -57,6 +57,13 @@ All notable changes to Docara are recorded here. The format follows
   changes nothing; the running build holds the `<build folder>.docara-lock`
   file beside the folder.
 
+- **The docs site's demo components speak the page's language.** The install
+  command builder, the product configurator and the footer links showed
+  Russian labels, buttons and messages on English pages. Their default view
+  is now English, a `view/ru.json` view carries the Russian text, and the
+  Russian pages pick it with `"view":"ru"`. The configurator now finds the
+  chosen plan by its place in the list, so its prices work in both views.
+
 - **Parts added to the side columns and the footer line up with Docara's own
   text.** A part under the contents lay on the column's line, and a filled one
   cut it in two; a part under the menu started left of the menu items; the

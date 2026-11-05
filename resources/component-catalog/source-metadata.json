@@ -118,7 +118,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/example.md",
-            "source_sha256": "48a151c7cd5d04ddedfc848aa5b90a1351f28f895369e0d84f7b73d6d93ba288",
+            "source_sha256": "29acee45a28418c220706e510c38485bdb8f21703b55c2cbe1a23e5161aed298",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/docs/site/content/ru/components/example.md",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/docs/site/content/ru/components/example.md",
@@ -222,7 +222,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/surface.md",
-            "source_sha256": "87c4cec76bd93e59ed1c985de5cd73b64d2c4a85998f066aaa2e0845558c3df7",
+            "source_sha256": "064e19f026412b2d1cbf7442c67b23b16cd169d576a6d920f65f795ebfaa0616",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/docs/site/content/ru/components/surface.md",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/docs/site/content/ru/components/surface.md",
@@ -406,7 +406,7 @@
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.example.json",
-            "source_sha256": "8cf7cfab941036946f8cddb7f35eccc522bafa5ad4d64bb282dfb3b7ab9c0450",
+            "source_sha256": "d3d4e20c121b71c5022b10e93608da64ade77d004476951f4639216f83db0af4",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/resources/component-catalog/typed/docara.example.json",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/resources/component-catalog/typed/docara.example.json",
@@ -557,5 +557,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "b5b86e1929953c83da5d45327042eaf51b35e133b67c8e4bd176c42364ca9d47"
+    "content_sha256": "aadb20996aed9529d8962ec4eec0a0ab0d829433b3220b22afb4f309d18b9921"
 }

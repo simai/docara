@@ -20,6 +20,7 @@
             "block": "project.footer-smart",
             "slot": "content",
             "smart": "project.footer-links",
+            "view": "ru",
             "props": {"title": "Полезные ссылки"}
           }]
         }]

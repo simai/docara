@@ -2070,11 +2070,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/build.md",
-            "source_sha256": "7568cb961ab2e5cd3a6b91630fca0f1176a8de7613506ace57bd085d97574b72",
-            "source_structure_sha256": "d6643c4b26c4362d73559101cdd66d53a89735eaa35f6ee0314baca2e9c93920",
+            "source_sha256": "10db02c7da871e9199a333168041e4ca78be43571d5efe7c908d58177013cfe1",
+            "source_structure_sha256": "b39e00fc44cd2e36ddc410ff1e0abf4a65625fd04c34c03f666671bd67ddcd04",
             "target_path": "content/en/reference/errors/build.md",
-            "target_sha256": "0c0dfeb6bc5df6f97dfac505947dfcf3b4aa7845f864ed3a66b49d43b4d488c8",
-            "target_structure_sha256": "d6643c4b26c4362d73559101cdd66d53a89735eaa35f6ee0314baca2e9c93920"
+            "target_sha256": "edac2dff557e32f223c31c369252e35bdac119902e927fbae2be48290814404c",
+            "target_structure_sha256": "b39e00fc44cd2e36ddc410ff1e0abf4a65625fd04c34c03f666671bd67ddcd04"
         },
         {
             "key": "reference/errors/content.md",

@@ -325,6 +325,37 @@ MD);
     }
 
     #[Test]
+    public function a_second_build_into_the_same_folder_stops_while_the_first_is_running(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $destination = $this->tmpPath('build_local');
+        $builder = $this->builder();
+        $builder->build($this->tmp, $destination);
+        $accepted = $this->treeHashes($destination);
+
+        // The running build holds the lock beside the folder.
+        $running = fopen($destination . PortableSiteBuilder::BUILD_LOCK_SUFFIX, 'c');
+        self::assertIsResource($running);
+        self::assertTrue(flock($running, LOCK_EX | LOCK_NB));
+
+        try {
+            $builder->build($this->tmp, $destination);
+            self::fail('A second build ran while another build held the folder.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('PORTABLE_BUILD_IN_PROGRESS', $exception->errorCode);
+        } finally {
+            fclose($running);
+        }
+
+        self::assertSame($accepted, $this->treeHashes($destination));
+        self::assertDirectoryDoesNotExist($destination . '.docara-candidate');
+
+        // Once the first build is done the folder builds again.
+        $builder->build($this->tmp, $destination);
+        self::assertSame($accepted, $this->treeHashes($destination));
+    }
+
+    #[Test]
     public function single_page_build_fails_closed_when_the_complete_build_engine_provenance_differs(): void
     {
         $this->copyPortableFixture($this->tmp);

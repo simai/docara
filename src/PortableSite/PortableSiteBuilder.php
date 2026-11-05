@@ -56,6 +56,9 @@ use Symfony\Component\Process\Process;
 
 final readonly class PortableSiteBuilder
 {
+    /** The file beside a build folder that one build at a time holds. */
+    public const BUILD_LOCK_SUFFIX = '.docara-lock';
+
     private PortablePagePublisher $publisher;
 
     private PageBuilder $pageBuilder;
@@ -226,6 +229,9 @@ final readonly class PortableSiteBuilder
         );
         $finalDestination = $destination;
         $destination = $this->candidateDestination($root, $finalDestination);
+        // Held until build() returns or throws: PHP closes the handle, and
+        // with it the lock, when the local goes out of scope.
+        $buildLock = $this->acquireBuildLock($finalDestination);
         $selectedPageUrl = $onlyPage === null ? null : $this->normalizePageSelector($onlyPage);
         $existingDiagnostics = [];
         $earlyPhysicalSelection = false;
@@ -2317,6 +2323,42 @@ final readonly class PortableSiteBuilder
         $this->assertDestinationShape($root, $candidate);
 
         return $candidate;
+    }
+
+    /**
+     * Two builds into one folder share its candidate and rollback siblings,
+     * so the second one stops at once instead of overwriting the first.
+     * The lock file stays beside the build folder: removing it would let a
+     * third build lock a new file while the second still holds the old one.
+     *
+     * @return resource
+     */
+    private function acquireBuildLock(string $destination)
+    {
+        $path = rtrim($destination, '/\\') . self::BUILD_LOCK_SUFFIX;
+        if (is_link($path)) {
+            throw new PortableConfigurationException(
+                'DESTINATION_SYMLINK_FORBIDDEN',
+                'Portable builds refuse a symbolic-link build lock file.',
+            );
+        }
+        $handle = @fopen($path, 'c');
+        if ($handle === false) {
+            throw new PortableConfigurationException(
+                'PORTABLE_BUILD_LOCK_FAILED',
+                'The build lock file beside the build folder could not be opened.',
+            );
+        }
+        if (! flock($handle, LOCK_EX | LOCK_NB)) {
+            fclose($handle);
+
+            throw new PortableConfigurationException(
+                'PORTABLE_BUILD_IN_PROGRESS',
+                'Another build into this folder is still running. Wait for it to finish, then build again.',
+            );
+        }
+
+        return $handle;
     }
 
     private function promoteCandidate(string $root, string $candidate, string $destination): void

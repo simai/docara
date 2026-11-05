@@ -44,6 +44,7 @@ final readonly class PreviewKernel
         ] as $generated) {
             $this->writes->directoryPath($root, $generated);
         }
+        $this->writes->writablePath($root, 'build_preview-cache' . PortableSiteBuilder::BUILD_LOCK_SUFFIX);
         $receipt = BuildReceipts::existing($cache) . '/resolved-page-plans.json';
         // Receipts left next to a cache that is gone describe nothing.
         $incremental = is_file($receipt) && is_dir($cache) && ! is_link($cache);

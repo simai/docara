@@ -40,6 +40,12 @@ All notable changes to Docara are recorded here. The format follows
   edited anything outside code blocks failed `verify-static` with
   "Generated Framework page asset plan [...] does not match final HTML". The
   plan of each page a transform changed is now made again from the final HTML.
+- **Two builds into one folder no longer spoil each other.** A second build
+  started while another one writes the same build folder, for example `serve`
+  and `build` at once, used to share its temporary folders and could leave a
+  broken result. It now stops at once with `PORTABLE_BUILD_IN_PROGRESS` and
+  changes nothing; the running build holds the `<build folder>.docara-lock`
+  file beside the folder.
 
 - **Parts added to the side columns and the footer line up with Docara's own
   text.** A part under the contents lay on the column's line, and a filled one

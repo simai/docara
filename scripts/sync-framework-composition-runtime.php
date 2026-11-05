@@ -72,8 +72,10 @@ $read = static function (string $path) use ($git, $revision): string {
 // The module closure: static `from './x.mjs'` and dynamic `import('./x.mjs')`
 // specifiers, followed from the entry. Only relative modules inside
 // distr/core/js/ are allowed (the composition directory and, since
-// ui-1cb0739a8423, core modules beside it such as ../schema-name.mjs);
-// anything else would need files this projection does not carry.
+// ui-1cb0739a8423, core modules beside it such as ../schema-name.mjs; since
+// ui-c3015f76bcc2, plain `.js` core modules and dotted names, such as
+// ../page-language.js and ./elements.generated.mjs); anything else would need
+// files this projection does not carry.
 $files = [];
 $entry = (string) ($recipeLock['runtime']['entry'] ?? '');
 $pending = [$entry];
@@ -82,7 +84,7 @@ while ($pending !== []) {
     if (isset($files[$path])) {
         continue;
     }
-    if (preg_match('#^distr/core/js/(?:composition/)?[a-z0-9-]+\.mjs$#D', $path) !== 1) {
+    if (preg_match('#^distr/core/js/(?:composition/)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.m?js$#D', $path) !== 1) {
         throw new RuntimeException('FRAMEWORK_COMPOSITION_MODULE_PATH_INVALID: ' . $path);
     }
     $bytes = $read($path);
@@ -97,9 +99,9 @@ while ($pending !== []) {
         array_push($specifiers, ...$matches[2]);
     }
     foreach ($specifiers as $specifier) {
-        if (preg_match('#^\./[a-z0-9-]+\.mjs$#D', $specifier) === 1) {
+        if (preg_match('#^\./[a-z0-9-]+(?:\.[a-z0-9-]+)*\.m?js$#D', $specifier) === 1) {
             $pending[] = dirname($path) . '/' . substr($specifier, 2);
-        } elseif (preg_match('#^\.\./[a-z0-9-]+\.mjs$#D', $specifier) === 1) {
+        } elseif (preg_match('#^\.\./[a-z0-9-]+(?:\.[a-z0-9-]+)*\.m?js$#D', $specifier) === 1) {
             $pending[] = dirname($path, 2) . '/' . substr($specifier, 3);
         } else {
             throw new RuntimeException('FRAMEWORK_COMPOSITION_IMPORT_UNSUPPORTED: ' . $path . ' -> ' . $specifier);

@@ -36,7 +36,7 @@ final class PreferencesContextAdapter implements SmartContextAdapter
                         'selected' => (string) $option['value'] === (string) $field['configured'],
                     ];
                 }
-                // One row of the Framework sf-context-menu settings panel: a
+                // One row of the Framework sf-menu-context settings panel: a
                 // choice that opens its options in the same panel.
                 $entries[] = [
                     'id' => (string) $field['id'],

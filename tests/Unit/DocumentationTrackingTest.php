@@ -226,14 +226,14 @@ final class DocumentationTrackingTest extends TestCase
         ]);
         $source = (new DocumentationSourceRepository)->source($this->tmp, 'simai-framework');
         self::assertFalse($source['compatibility_adapter']);
-        self::assertSame('ui-7153f7a9c092', $source['revision']);
+        self::assertSame('ui-c3015f76bcc2', $source['revision']);
         $entities = array_column($source['entities'], null, 'key');
         self::assertArrayHasKey('component.buttons', $entities);
         self::assertArrayHasKey('smart.button', $entities);
         self::assertArrayHasKey('utility.display', $entities);
         $radius = $entities['core.design-tokens']['public_contract']['semantic_radius'];
         self::assertSame('compact_controls', $radius['--sf-radius--ui']['scope']);
-        self::assertSame('large_surfaces', $radius['--sf-radius-default']['scope']);
+        self::assertSame('large_surfaces', $radius['--sf-radius--surface']['scope']);
     }
 
     #[Test]

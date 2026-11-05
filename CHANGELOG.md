@@ -47,6 +47,18 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **Docara now bundles SIMAI Framework `ui-c3015f76bcc2`.** The Framework
+  renamed twenty components to its naming standard (`sf-site-header` is now
+  `sf-header-site`, `sf-icon-button` `sf-button-icon`, `sf-context-menu`
+  `sf-menu-context` and so on), and Docara's own header, settings menu and
+  icon buttons use the new tags and listen to the new event names. Old tags
+  keep working in the Framework until 2027-01-01, so a page that still writes
+  one builds and works, with a deprecation note in the browser console. The
+  bundled lock serves every tag from its component's current folder, so no
+  page loads a forwarding script under a former path. The release is heavier:
+  `core.js` grew from 727 KB to 1.12 MB, and the budgets in `page-weight.json`
+  were raised to match. Sites that pin `ui-7153f7a9c092` build with the new
+  release.
 - **What a site adds to the header stands before the tools.** A button or
   other section a page or section adds to the header stood in the middle of
   the bar beside the header links. It now goes to the Framework header's

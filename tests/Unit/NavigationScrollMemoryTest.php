@@ -64,8 +64,8 @@ final class NavigationScrollMemoryTest extends TestCase
             "window.addEventListener('pagehide',save);",
             // Capture phase: the panel is still open when its link is clicked.
             "if(link&&((sidebar&&sidebar.contains(link))||(drawer&&drawer.contains(link))))save();\n    },true);",
-            "header.addEventListener('sf-site-header-close',function(){navigationScroll.keepDrawer()});",
-            "header.addEventListener('sf-site-header-opened',function(){navigationScroll.openDrawer()});",
+            "header.addEventListener('sf-header-site-close',function(){navigationScroll.keepDrawer()});",
+            "header.addEventListener('sf-header-site-opened',function(){navigationScroll.openDrawer()});",
             'reveal(content,current[current.length-1]);',
         ] as $needle) {
             self::assertStringContainsString($needle, $shell);

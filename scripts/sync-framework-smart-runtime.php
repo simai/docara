@@ -274,10 +274,18 @@ foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $pr
     ) {
         throw new RuntimeException('FRAMEWORK_SMART_PROJECT_LOCK_REVISION_MISMATCH: ' . $projectLockPath);
     }
+    // A tag the registry names is served from the folder of the entry that
+    // owns it now: since ui-c3015f76bcc2 a renamed component answers to its
+    // former tag too (sf-icon-button is sf-button-icon until 2027-01-01), and
+    // the former folder only forwards to the new one and notes the old path
+    // in SF.deprecations, so an entry kept from the previous lock must not
+    // keep pointing there.
     foreach ($smartEntries as $tag => $component) {
-        if (! isset($projectLock['runtime']['components'][$tag])) {
-            $projectLock['runtime']['components'][$tag] = $component;
-        }
+        $current = $projectLock['runtime']['components'][$tag] ?? [];
+        $projectLock['runtime']['components'][$tag] = is_array($current)
+            ? array_replace($current, array_diff_key($component, ['attributes' => true]))
+            : $component;
+        $projectLock['runtime']['components'][$tag]['attributes'] ??= [];
     }
     // A component the revision no longer ships (the four product components
     // left the free Framework in ui-09bc6b371eca) leaves the runtime map with

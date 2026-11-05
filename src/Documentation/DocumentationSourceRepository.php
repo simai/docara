@@ -147,7 +147,7 @@ final class DocumentationSourceRepository
                     'tokens' => $tokens,
                     'semantic_radius' => [
                         '--sf-radius--ui' => ['scope' => 'compact_controls'],
-                        '--sf-radius-default' => ['scope' => 'large_surfaces'],
+                        '--sf-radius--surface' => ['scope' => 'large_surfaces'],
                         'square' => ['role' => 'explicit_override'],
                         'rounded' => ['role' => 'explicit_override'],
                     ],

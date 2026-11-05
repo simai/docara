@@ -17,17 +17,17 @@ final class FrameworkRuntimeClosureTest extends TestCase
     public function the_eager_set_is_the_admitted_closure_and_ignores_any_hand_list(): void
     {
         $runtime = ['components' => [
-            'sf-alert' => ['javascript' => 'smart/smart/alert/js/alert.js', 'css' => null, 'requires' => ['sf-icon', 'sf-icon-button']],
+            'sf-alert' => ['javascript' => 'smart/smart/alert/js/alert.js', 'css' => null, 'requires' => ['sf-icon', 'sf-button-icon']],
             'sf-button' => ['javascript' => 'smart/smart/buttons/js/buttons.js', 'css' => null, 'requires' => ['sf-icon']],
-            'sf-close' => ['javascript' => 'smart/smart/close/js/close.js', 'css' => null],
+            'sf-button-close' => ['javascript' => 'smart/smart/button-close/js/button-close.js', 'css' => null],
             'sf-icon' => ['javascript' => 'smart/smart/icons/js/icons.js', 'css' => null],
-            'sf-icon-button' => [
-                'javascript' => 'smart/smart/icon-buttons/js/icon-buttons.js',
-                'css' => 'smart/smart/icon-buttons/css/icon-buttons.css',
-                'requires' => ['sf-close', 'sf-icon'],
+            'sf-button-icon' => [
+                'javascript' => 'smart/smart/button-icon/js/button-icon.js',
+                'css' => 'smart/smart/button-icon/css/button-icon.css',
+                'requires' => ['sf-button-close', 'sf-icon'],
             ],
             'sf-modal' => ['javascript' => 'smart/smart/modal/js/modal.js', 'css' => null],
-            'sf-table' => ['javascript' => 'smart/smart/table/js/table.js', 'css' => null, 'requires' => ['sf-button']],
+            'sf-view-table' => ['javascript' => 'smart/smart/view-table/js/view-table.js', 'css' => null, 'requires' => ['sf-button']],
         ]];
 
         self::assertSame(
@@ -35,14 +35,14 @@ final class FrameworkRuntimeClosureTest extends TestCase
             FrameworkRuntimeClosure::admissionRootTags(['sf-alert', 'sf-button']),
         );
         // The old hand list named alert, buttons, icons and modal. The closure
-        // also reaches sf-icon-button through sf-alert and sf-close through
-        // sf-icon-button; a component nothing reaches (sf-table) stays out.
+        // also reaches sf-button-icon through sf-alert and sf-button-close through
+        // sf-button-icon; a component nothing reaches (sf-view-table) stays out.
         self::assertSame([
             'smart/alert/js/alert.js',
+            'smart/button-close/js/button-close.js',
+            'smart/button-icon/css/button-icon.css',
+            'smart/button-icon/js/button-icon.js',
             'smart/buttons/js/buttons.js',
-            'smart/close/js/close.js',
-            'smart/icon-buttons/css/icon-buttons.css',
-            'smart/icon-buttons/js/icon-buttons.js',
             'smart/icons/js/icons.js',
             'smart/modal/js/modal.js',
         ], FrameworkRuntimeClosure::eagerSmartFiles($runtime, ['sf-alert', 'sf-button']));
@@ -50,15 +50,15 @@ final class FrameworkRuntimeClosureTest extends TestCase
         // Lazy relations may name each other: a cycle is reached once, in a
         // stable order, and projects the same files.
         $cyclic = $runtime;
-        $cyclic['components']['sf-close']['requires'] = ['sf-icon-button'];
+        $cyclic['components']['sf-button-close']['requires'] = ['sf-button-icon'];
         self::assertSame(
             FrameworkRuntimeClosure::eagerSmartFiles($runtime, ['sf-alert', 'sf-button']),
             FrameworkRuntimeClosure::eagerSmartFiles($cyclic, ['sf-alert', 'sf-button']),
         );
         $ordered = FrameworkRuntimeClosure::orderedTags($cyclic, ['sf-alert']);
         self::assertSame($ordered, array_values(array_unique($ordered)));
-        self::assertContains('sf-close', $ordered);
-        self::assertContains('sf-icon-button', $ordered);
+        self::assertContains('sf-button-close', $ordered);
+        self::assertContains('sf-button-icon', $ordered);
         self::assertSame($ordered, FrameworkRuntimeClosure::orderedTags($cyclic, ['sf-alert']));
     }
 

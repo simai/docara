@@ -7,7 +7,7 @@ tags: [reader-panel, reading-settings, theme, font, reading-mode]
 
 The gear button on the right of the header opens the "Settings" menu. It is
 built by the `docara.preferences` product Smart component: the menu itself
-is a SIMAI Framework context menu (`sf-context-menu`) that opens under the
+is a SIMAI Framework context menu (`sf-menu-context`) that opens under the
 button over the page.
 
 Out of the box the menu has three rows: "Theme", "Font size" and "Page
@@ -29,7 +29,7 @@ or a click outside the menu close it and return focus to the button.
 
 | Value | What it looks like |
 | --- | --- |
-| `menu` | The SIMAI Framework settings panel (`sf-context-menu`) under the gear button: a setting's row shows its current value and opens the options in the same panel · **Default** |
+| `menu` | The SIMAI Framework settings panel (`sf-menu-context`) under the gear button: a setting's row shows its current value and opens the options in the same panel · **Default** |
 | `side-panel` | A full-height "Settings" side panel on the right, with the page dimmed |
 
 In the side panel each setting is a label and a segmented switch from a

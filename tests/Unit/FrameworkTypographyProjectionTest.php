@@ -41,7 +41,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-c3015f76bcc2', $repository->runtime()['pair_id']);
-        self::assertSame(1376, $repository->runtimeProjection()['files']);
+        self::assertSame(2228, $repository->runtimeProjection()['files']);
         self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $previous['runtime']['pair_id']);
 
         $previous['runtime']['ui']['files'] = 6772;
@@ -62,7 +62,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-4f5e5067afeb-smart-7d932ed51408', $previous['runtime']['pair_id']);
         self::assertSame('ui-c3015f76bcc2', $repository->runtime()['pair_id']);
-        self::assertSame(1376, $repository->runtimeProjection()['files']);
+        self::assertSame(2228, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 6144;
         $this->expectException(FrameworkComponentException::class);
@@ -82,7 +82,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-82fc0ba882ba', $previous['runtime']['pair_id']);
         self::assertSame('ui-c3015f76bcc2', $repository->runtime()['pair_id']);
-        self::assertSame(1376, $repository->runtimeProjection()['files']);
+        self::assertSame(2228, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 8090;
         $this->expectException(FrameworkComponentException::class);
@@ -103,7 +103,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-25beeb814ae8', $previous['runtime']['pair_id']);
         self::assertSame('ui-c3015f76bcc2', $repository->runtime()['pair_id']);
-        self::assertSame(1376, $repository->runtimeProjection()['files']);
+        self::assertSame(2228, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 8558;
         $this->expectException(FrameworkComponentException::class);
@@ -123,7 +123,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-32c7a64e4575', $previous['runtime']['pair_id']);
         self::assertSame('ui-c3015f76bcc2', $repository->runtime()['pair_id']);
-        self::assertSame(1376, $repository->runtimeProjection()['files']);
+        self::assertSame(2228, $repository->runtimeProjection()['files']);
     }
 
     #[Test]
@@ -139,7 +139,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-7153f7a9c092', $previous['runtime']['pair_id']);
         self::assertSame('ui-c3015f76bcc2', $repository->runtime()['pair_id']);
-        self::assertSame(1376, $repository->runtimeProjection()['files']);
+        self::assertSame(2228, $repository->runtimeProjection()['files']);
     }
 
     #[Test]
@@ -153,7 +153,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $legacy['runtime_projection']['manifest']['sha256'] = '8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e';
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($legacy));
-        self::assertSame(1376, $repository->runtimeProjection()['files']);
+        self::assertSame(2228, $repository->runtimeProjection()['files']);
         self::assertArrayHasKey('rule/rule.json', $repository->runtimeManifest()['files']);
         self::assertSame(117, $legacy['runtime_projection']['files']);
 
@@ -190,7 +190,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->plan([]);
         $assets = array_column($plan->assets, null, 'key');
         self::assertStringStartsWith(
-            '/_docara/vendor/simai-framework/runtime/' . $pinned['runtime']['ui']['commit'] . '/distr/core/css/core.css?sf_v=',
+            '/_docara/vendor/simai-framework/runtime/' . $pinned['runtime']['ui']['commit'] . '/distr/core/css/core.min.css?sf_v=',
             $assets['simai.framework.core.css']['url'],
         );
         self::assertDirectoryDoesNotExist(dirname(__DIR__, 2) . '/resources/portable/vendor/simai-framework/typography');
@@ -251,7 +251,8 @@ final class FrameworkTypographyProjectionTest extends TestCase
             array_search('simai.framework.core.js', $assetKeys, true),
             array_search('simai.framework.preloaded.sf_modal.js', $assetKeys, true),
         );
-        foreach (['simai.framework.core.css' => 'core/css/core.css', 'simai.framework.utility.full.css' => 'core/css/utility.full.css'] as $assetKey => $runtimeFile) {
+        // The page links core.css's minified twin; utility.full.css has none.
+        foreach (['simai.framework.core.css' => 'core/css/core.min.css', 'simai.framework.utility.full.css' => 'core/css/utility.full.css'] as $assetKey => $runtimeFile) {
             self::assertStringStartsWith(
                 '/_docara/vendor/simai-framework/runtime/' . $uiCommit . '/distr/' . $runtimeFile . '?sf_v=',
                 $assets[$assetKey]['url'],
@@ -264,7 +265,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         // runtime projection's core.css and point at the hashed woff2 files the
         // sync projects beside core/css/.
         self::assertMatchesRegularExpression(
-            '#<link rel="stylesheet" href="/_docara/vendor/simai-framework/runtime/' . $uiCommit . '/distr/core/css/core\.css\?sf_v=[^"]+" data-docara-framework-asset="simai\.framework\.core\.css">#',
+            '#<link rel="stylesheet" href="/_docara/vendor/simai-framework/runtime/' . $uiCommit . '/distr/core/css/core\.min\.css\?sf_v=[^"]+" data-docara-framework-asset="simai\.framework\.core\.css">#',
             $plan->headHtml(),
         );
         $coreCss = $repository->bundledRuntimeAsset('core/css/core.css');
@@ -279,16 +280,17 @@ final class FrameworkTypographyProjectionTest extends TestCase
         }
         $runtime = $repository->runtimeProjection();
         self::assertIsArray($runtime);
-        self::assertSame(1376, $runtime['files']);
+        self::assertSame(2228, $runtime['files']);
         $runtimeFiles = $repository->runtimeManifest()['files'];
-        self::assertCount(1376, $runtimeFiles);
+        self::assertCount(2228, $runtimeFiles);
         self::assertArrayHasKey('rule/rule.json', $runtimeFiles);
         self::assertArrayHasKey('utility/theme/default/css/default.css', $runtimeFiles);
         self::assertArrayHasKey('component/highlight/js/highlight.js', $runtimeFiles);
-        self::assertCount(1, array_filter(
+        // The entrypoint and its minified twin; it loads no chunks.
+        self::assertSame(['component/highlight/js/highlight.js', 'component/highlight/js/highlight.min.js'], array_values(array_filter(
             array_keys($runtimeFiles),
             static fn (string $path): bool => str_starts_with($path, 'component/highlight/js/'),
-        ));
+        )));
         self::assertArrayHasKey('component/icons/a5f1f832a64baed42867.woff2', $runtimeFiles);
         self::assertArrayHasKey('component/icons/fonts/MaterialSymbols-Outlined.woff2', $runtimeFiles);
         // Nothing loads the third-party notices, so the projection names them
@@ -316,10 +318,18 @@ final class FrameworkTypographyProjectionTest extends TestCase
         ));
         foreach (array_keys($runtimeFiles) as $relativePath) {
             self::assertFalse(str_ends_with($relativePath, '.gz'), $relativePath);
-            self::assertStringNotContainsString('.min.', $relativePath);
+            // A minified twin (or its licence file) only ever sits beside the
+            // readable file it was built from.
+            if (str_contains($relativePath, '.min.')) {
+                self::assertArrayHasKey(
+                    (string) preg_replace('/\.min\.(css|js)(?:\.LICENSE\.txt)?$/D', '.$1', $relativePath),
+                    $runtimeFiles,
+                    $relativePath,
+                );
+            }
         }
         self::assertSame(
-            '16daa897d695d49f8311de154e2c7d93af1ce638aa5c8335949d2c61f51aab39',
+            'a06b34c0dd6f88adfb7196fd1d386ccd5a51a54a944f5eec8b72ff288eb25922',
             $runtime['packet_sha256'],
         );
         $coreLoader = $repository->bundledRuntimeAsset('core/js/core-loader.js');
@@ -528,7 +538,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertContains('text-align/default', $productionPlan->preload['modules']);
         self::assertNotContains('simai.framework.utility.full.css', array_column($productionPlan->assets, 'key'));
         self::assertContains(
-            'runtime/utility/display/default/css/default.css',
+            'runtime/utility/display/default/css/default.min.css',
             array_map(
                 static fn (array $asset): string => $asset['inputs'][0]['source'],
                 $productionPlan->generatedAssets,
@@ -568,7 +578,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
                     array_column($smartPlan->assets, 'url'),
                     static fn (string $url): bool => str_starts_with(
                         $url,
-                        "/_docara/framework-runtime/smart/$module/js/$module.js?sf_v=",
+                        "/_docara/framework-runtime/smart/$module/js/$module.min.js?sf_v=",
                     ),
                 ),
             );
@@ -589,11 +599,11 @@ final class FrameworkTypographyProjectionTest extends TestCase
             static fn (string $source): bool => str_contains($source, 'utility/grid-template-columns/'),
         ));
         self::assertSame([
-            'runtime/utility/grid-template-columns/default/css/default.css',
-            'runtime/utility/grid-template-columns/sm/css/sm.css',
-            'runtime/utility/grid-template-columns/md/css/md.css',
-            'runtime/utility/grid-template-columns/lg/css/lg.css',
-            'runtime/utility/grid-template-columns/xl/css/xl.css',
+            'runtime/utility/grid-template-columns/default/css/default.min.css',
+            'runtime/utility/grid-template-columns/sm/css/sm.min.css',
+            'runtime/utility/grid-template-columns/md/css/md.min.css',
+            'runtime/utility/grid-template-columns/lg/css/lg.min.css',
+            'runtime/utility/grid-template-columns/xl/css/xl.min.css',
         ], $gridSources);
         self::assertSame(
             ['a/default', 'b', 'a/sm', 'a/md', 'c/hover', 'a/lg', 'a/xl'],
@@ -609,13 +619,13 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $nested = (new FrameworkAssetPlanner($repository, '/project~/docs/_docara/framework-runtime'))->plan([]);
         $nestedAssets = array_column($nested->assets, null, 'key');
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/' . $uiCommit . '/distr/core/css/core.css?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/' . $uiCommit . '/distr/core/css/core.min.css?sf_v=',
             $nestedAssets['simai.framework.core.css']['url'],
         );
         // core.js carries no query: Core preloads its chunks with core.js's
         // query while the chunk imports carry none, so a query fetched them twice.
         self::assertSame(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/c3015f76bcc20cd502d5fe7931495e35711d6a4d/distr/core/js/core.js',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/c3015f76bcc20cd502d5fe7931495e35711d6a4d/distr/core/js/core.min.js',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }

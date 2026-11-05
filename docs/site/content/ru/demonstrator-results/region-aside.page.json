@@ -1,7 +1,7 @@
 {
   "schema": "docara.page.v1",
-  "title": "Aside с контекстом страницы",
-  "description": "Оглавление и информационный Smart-компонент в правой области.",
+  "title": "Уведомления о платежах",
+  "description": "Демонстрационная страница с предупреждением рядом с оглавлением.",
   "layout": {
     "regions": {
       "outline": {
@@ -9,22 +9,30 @@
         "sections": [
           {"id": "page-outline", "section": "docara.outline"},
           {
-            "id": "aside-context",
+            "id": "aside-note",
             "section": "docara.shell",
             "utilities": ["flex", "flex-col", "gap-1"],
             "blocks": [
               {
-                "id": "note",
+                "id": "signature",
                 "block": "shell.smart",
                 "slot": "content",
                 "smart": "ui.alert",
                 "view": "default",
-                "props": {"type": "info", "variant": "outlined", "title": "Контекст", "supporting-text": "Оглавление построено из Markdown.", "closable": false, "aria-label": "Контекст страницы"}
+                "props": {
+                  "type": "warning",
+                  "variant": "outlined",
+                  "title": "Сверяйте подпись",
+                  "supporting-text": "Без неё письмо подделает кто угодно.",
+                  "closable": false,
+                  "aria-label": "Сверяйте подпись уведомлений"
+                }
               }
             ]
           }
         ]
       }
     }
-  }
+  },
+  "navigation": {"order": 60}
 }

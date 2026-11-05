@@ -585,7 +585,8 @@
     });
   }
   function requestExampleHeight(frame){
-    if(!frame.contentWindow)return;
+    /* A page example shows a built page of the site: it keeps the frame height the stylesheet gives it. */
+    if(!frame.contentWindow||frame.hasAttribute('data-docara-example-page'))return;
     var state=exampleFrameState(frame),generation=state.generation;
     /* Environments reach a frame in the order they were requested: boot state goes out once, in the first one, and must arrive before any later update loads Core. */
     state.queue=state.queue.then(function(){
@@ -708,6 +709,41 @@
       previewFrame.style.removeProperty('max-inline-size');
       requestExampleHeight(previewFrame);
     }
+    /* A page example draws a desktop screen, 1280 by 800, scaled down to the article's width, so the page shows its wide layout in the article; the responsive viewer shows it at the real width. */
+    var pageFrame=previewFrame&&previewFrame.hasAttribute('data-docara-example-page')?previewFrame:null;
+    function fitPageFrame(){
+      if(!pageFrame)return;
+      var panel=pageFrame.parentElement;
+      if(isViewerOpen()){
+        pageFrame.style.removeProperty('transform');
+        pageFrame.style.removeProperty('transform-origin');
+        pageFrame.style.removeProperty('block-size');
+        panel.style.removeProperty('block-size');
+        return;
+      }
+      var width=panel.clientWidth;
+      if(!width)return;
+      /* A column as narrow as a phone would shrink the desktop past reading, so there the page shows at the column's own width, as a phone draws it. */
+      if(width<exampleViewportWidths.tablet){
+        pageFrame.style.inlineSize='100%';
+        pageFrame.style.removeProperty('max-inline-size');
+        pageFrame.style.removeProperty('transform');
+        pageFrame.style.removeProperty('transform-origin');
+        pageFrame.style.blockSize='640px';
+        panel.style.overflow='hidden';
+        panel.style.blockSize='640px';
+        return;
+      }
+      var scale=Math.min(1,width/exampleViewportWidths.desktop);
+      pageFrame.style.inlineSize=exampleViewportWidths.desktop+'px';
+      pageFrame.style.maxInlineSize='none';
+      pageFrame.style.blockSize='800px';
+      pageFrame.style.transformOrigin='0 0';
+      pageFrame.style.transform='scale('+scale+')';
+      panel.style.overflow='hidden';
+      panel.style.blockSize=Math.round(800*scale)+'px';
+    }
+    if(pageFrame&&typeof ResizeObserver==='function'){new ResizeObserver(fitPageFrame).observe(pageFrame.parentElement)}
     function syncViewer(){
       if(!viewerButton)return;
       var active=isViewerOpen();
@@ -720,6 +756,7 @@
         viewportControls.setAttribute('aria-label',message('examples.viewport_group'));
       }
       if(active){setViewport(activeViewport,false)}else{resetViewport()}
+      fitPageFrame();
       var icon=viewerButton.querySelector('sf-icon');
       if(icon){icon.setAttribute('icon',active
         ?(viewerButton.dataset.viewerExitIcon||'close')

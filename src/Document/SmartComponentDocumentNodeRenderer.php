@@ -39,8 +39,10 @@ final readonly class SmartComponentDocumentNodeRenderer implements DocumentNodeR
         ));
         $artifact = $this->renderer->render($plan);
 
+        // A Framework component may draw no box of its own, so the block
+        // keeps its distance from the text through a box Docara owns.
         return new RenderArtifact(
-            $artifact->html,
+            '<div class="docara-smart-block">' . $artifact->html . '</div>',
             $artifact->assets,
             $artifact->hydration + [
                 'node_id' => $plan->nodeId,

@@ -440,11 +440,15 @@ final class PortableMarkdownRenderer
             $frameworkBodyInspection = $this->inspectFrameworkDirectives($bodyMarkdown);
             $nestedPortable = $bodyInspection['directives'];
             $allowedChildCapabilities = $this->definitions->allowedChildCapabilities($type);
+            // A page example's source tabs read the real files with :::code.
+            $pageExample = $renderer === TypedRendererId::Example && array_key_exists('src', $blockAttributes);
             $allowsNestedPortable = $nestedPortable !== []
                 && array_reduce(
                     $nestedPortable,
                     fn (bool $allowed, array $child): bool => $allowed
-                        && $this->definitions->allowsChild($type, (string) $child['name']),
+                        && ($pageExample
+                            ? (string) $child['name'] === 'code'
+                            : $this->definitions->allowsChild($type, (string) $child['name'])),
                     true,
                 );
             $allowsFramework = $frameworkBodyInspection['directives'] !== []
@@ -727,6 +731,9 @@ final class PortableMarkdownRenderer
             ? $this->attributeBoolean($attributes['wrap'], 'example', 'wrap')
             : (bool) ($exampleSettings['wrap'] ?? true);
         $baseHref = null;
+        if (array_key_exists('src', $attributes)) {
+            return $this->renderPageExample($markdown, $attributes, $label, $defaultLabel, $fullscreen, $wrap, $sourceRoot, $sourceFile);
+        }
         if ($exampleId !== '') {
             if (trim($markdown) !== '') {
                 throw new PortableConfigurationException(
@@ -907,6 +914,18 @@ final class PortableMarkdownRenderer
                     'An example label must contain visible text.',
                 );
             }
+            if (array_key_exists('src', $attributes)) {
+                $this->pageExampleParts($attributes, (string) ($directive['body'] ?? ''));
+                $previews[] = [
+                    'id' => '',
+                    'mode' => 'page',
+                    'requested_preview' => 'page',
+                    'resolved_preview' => 'page',
+                    'reason' => 'built_page',
+                ];
+
+                continue;
+            }
             $exampleId = trim($attributes['id'] ?? '');
             if ($exampleId !== '') {
                 if (trim((string) ($directive['body'] ?? '')) !== '') {
@@ -953,6 +972,108 @@ final class PortableMarkdownRenderer
         }
 
         return $previews;
+    }
+
+    /**
+     * A page example shows a whole built page of the site in the example frame
+     * and the files that make it on the source tabs. Its body is a list of
+     * sections: a third-level heading names a tab and the Markdown under it,
+     * usually a :::code block that reads the real file, becomes the tab.
+     *
+     * @param  array<string,string>  $attributes
+     */
+    private function renderPageExample(
+        string $markdown,
+        array $attributes,
+        string $label,
+        bool $defaultLabel,
+        bool $fullscreen,
+        bool $wrap,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+    ): string {
+        ['src' => $src, 'sections' => $sections] = $this->pageExampleParts($attributes, $markdown);
+        $sources = [];
+        foreach ($sections as $title => $body) {
+            $sources[$title] = $this->renderCompiled($body, $sourceRoot, $sourceFile);
+        }
+        // The page is a document of the same site: it needs no sandbox, keeps
+        // its own height and follows the reader's theme from the site's
+        // storage. The responsive viewer still sets the frame's real width.
+        $preview = '<iframe src="' . $this->escapeHtml($src) . '" title="' . $this->escapeHtml($label) . '"'
+            . ($defaultLabel ? ' data-docara-example-default-label' : '')
+            . ' data-docara-example-frame data-docara-example-page data-sf-observer="ignore"'
+            . ' class="w-full border-0 bg-surface-0" loading="lazy"></iframe>';
+        $renderId = 'markdown-example-' . substr(hash('sha256', $src . "\n" . $markdown), 0, 12);
+
+        return $this->examples->render(
+            id: $renderId,
+            preview: $preview,
+            sources: $sources,
+            exampleLabel: $label,
+            defaultLabel: $defaultLabel,
+            copyLabel: 'Copy code',
+            copiedLabel: 'Code copied',
+            requestedPreview: 'page',
+            resolvedPreview: 'page',
+            previewReason: 'built_page',
+            fullscreen: $fullscreen,
+            wrap: $wrap,
+            responsive: true,
+        );
+    }
+
+    /**
+     * @param  array<string,string>  $attributes
+     * @return array{src:string,sections:array<string,string>}
+     */
+    private function pageExampleParts(array $attributes, string $markdown): array
+    {
+        foreach (['id', 'preview'] as $conflict) {
+            if (array_key_exists($conflict, $attributes)) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_EXAMPLE_SRC_CONFLICT',
+                    "A page example cannot also set [$conflict].",
+                );
+            }
+        }
+        $src = trim($attributes['src']);
+        $parts = parse_url($src);
+        if (! str_starts_with($src, '/')
+            || str_starts_with($src, '//')
+            || preg_match('/[\x00-\x20\x7f]/', $src) === 1
+            || $parts === false
+            || isset($parts['scheme'])
+            || isset($parts['host'])
+        ) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_EXAMPLE_SRC_UNSAFE',
+                'A page example src must be a same-origin absolute path.',
+            );
+        }
+
+        $normalized = trim(str_replace(["\r\n", "\r"], "\n", $markdown));
+        $chunks = preg_split('/^###\h+(.+?)\h*$/m', $normalized, -1, PREG_SPLIT_DELIM_CAPTURE) ?: [''];
+        $sections = [];
+        for ($index = 1; $index + 1 < count($chunks); $index += 2) {
+            $title = trim($chunks[$index]);
+            $body = trim($chunks[$index + 1]);
+            if ($body === '' || isset($sections[$title])) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_EXAMPLE_PAGE_SOURCE_INVALID',
+                    "Page example source [$title] is empty or repeated.",
+                );
+            }
+            $sections[$title] = $body;
+        }
+        if ($sections === [] || trim($chunks[0]) !== '') {
+            throw new PortableConfigurationException(
+                'MARKDOWN_EXAMPLE_PAGE_SOURCE_INVALID',
+                'A page example must list its sources under ### headings and nothing before them.',
+            );
+        }
+
+        return ['src' => $src, 'sections' => $sections];
     }
 
     private function sourceFence(string $source): string

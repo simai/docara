@@ -44,8 +44,17 @@ final class PortableExampleRenderer
                 . ' aria-hidden="false" class="docara-example-preview__panel is-active">' . $preview . '</div>',
         ];
 
+        $keys = [];
         foreach ($sources as $language => $source) {
-            $key = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $language) ?: 'source');
+            // A tab named in another script, such as a Russian file label,
+            // keeps no Latin letters; a counter keeps every tab's id unique.
+            $key = trim(strtolower(preg_replace('/[^a-z0-9]+/i', '-', (string) $language) ?? ''), '-');
+            $key = $key === '' ? 'source' : $key;
+            $base = $key;
+            for ($suffix = 2; isset($keys[$key]); $suffix++) {
+                $key = $base . '-' . $suffix;
+            }
+            $keys[$key] = true;
             $tabId = $safeId . '-tab-' . $key;
             $panelId = $safeId . '-panel-' . $key;
             $tabs[] = '<button type="button" role="tab" id="' . $tabId

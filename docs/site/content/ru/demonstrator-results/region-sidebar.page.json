@@ -1,7 +1,7 @@
 {
   "schema": "docara.page.v1",
-  "title": "Sidebar с дополнительным блоком",
-  "description": "Навигационный Smart-компонент и безопасный текстовый блок.",
+  "title": "Установка SDK для PHP",
+  "description": "Демонстрационная страница с подсказкой под меню.",
   "layout": {
     "regions": {
       "sidebar": {
@@ -11,24 +11,25 @@
           {
             "id": "sidebar-note",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1"],
             "blocks": [
               {
                 "id": "hint",
                 "block": "shell.element",
                 "slot": "content",
-                "element": {"tag": "p", "text": "Нужен быстрый старт? Начните с установки.", "utilities": ["m-0"]}
+                "element": {"tag": "p", "text": "Нет тестового ключа? Начните с быстрого старта.", "utilities": ["m-0"]}
               },
               {
-                "id": "install-link",
+                "id": "start-link",
                 "block": "shell.element",
                 "slot": "content",
-                "element": {"tag": "a", "text": "Открыть установку", "href": "/ru/start/quick-start/", "aria_label": "Открыть руководство по установке"}
+                "element": {"tag": "a", "text": "Быстрый старт", "href": "/ru/demonstrator-results/preset-docs/", "aria_label": "Открыть быстрый старт Acme Pay"}
               }
             ]
           }
         ]
       }
     }
-  }
+  },
+  "navigation": {"order": 90}
 }

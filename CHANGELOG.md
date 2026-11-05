@@ -6,6 +6,53 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **An example can show a whole page of the site.** Headers, menus, layout
+  regions and section settings show only on a whole page, and the examples
+  of them were a small frame with the page's own Markdown dumped below it.
+  `:::example {src="/path/"}` now shows a built page of the site in the
+  example frame, drawn as a 1280 px desktop screen scaled to the column (on a
+  phone, at the column's own width, as a phone draws the page), and lists the files behind it as tabs: each `###` heading names a tab and a
+  `:::code` block under it reads the real file. The responsive check opens
+  the page at the real desktop, tablet or phone width. An address on another
+  site (`MARKDOWN_EXAMPLE_SRC_UNSAFE`), `id` or `preview` beside `src`
+  (`MARKDOWN_EXAMPLE_SRC_CONFLICT`) and an empty, repeated or missing tab
+  (`MARKDOWN_EXAMPLE_PAGE_SOURCE_INVALID`) stop the build.
+- **A section kept out of the site's menu can list its own pages.** A demo
+  or service section hidden with `navigation.hidden` showed the whole site's
+  menu on its pages. With `"navigation": {"scope": "section"}` in its
+  `section.json`, its pages now list each other in their own menu, in the
+  order their files give, while the section stays out of the site's menu.
+
+### Fixed
+
+- **Parts added to the side columns and the footer line up with Docara's own
+  text.** A part under the contents lay on the column's line, and a filled one
+  cut it in two; a part under the menu started left of the menu items; the
+  footer had no line above it and no room below. Docara now gives these parts
+  the menu's or the contents' indent, and sets the footer off with a line and
+  space of its own, so pages need no padding or background utilities for it.
+- **Example tabs named without Latin letters no longer share one id.** Two
+  source tabs labelled only in Russian, such as «Значения» and «Шаблон»,
+  got the same tab and panel ids, and the static check stopped the build.
+  Each tab now gets its own id.
+- **A Framework button in the text keeps its distance from the next line.**
+  `:::ui.button` and other Framework components written in Markdown stood
+  flush against the paragraph below, because the component draws no box of
+  its own. Each now sits in a block with the usual spacing.
+- **Example tab names stay on one line.** A long tab name, such as
+  «Markdown страницы», broke onto two lines when an example had several
+  tabs; the tab row now scrolls instead.
+
+### Changed
+
+- **What a site adds to the header stands before the tools.** A button or
+  other section a page or section adds to the header stood in the middle of
+  the bar beside the header links. It now goes to the Framework header's
+  actions slot: at the end of the row before search and settings, and in the
+  menu panel after the links when the header is collapsed.
+
 ## [3.11.1] - 2026-11-02
 
 ### Fixed

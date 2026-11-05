@@ -1,10 +1,23 @@
 {
   "schema": "docara.section.v1",
-  "title": "Результаты демонстратора",
+  "title": "Демо Acme Pay",
+  "branding": {"title": "Acme Pay", "label": "Документация API", "mode": "text"},
+  "header_navigation": {
+    "items": [
+      {"id": "guide", "label": "Руководство", "href": "/ru/demonstrator-results/preset-docs/"},
+      {"id": "api", "label": "API", "href": "/ru/demonstrator-results/inheritance/page/"},
+      {"id": "sdk", "label": "SDK", "href": "/ru/demonstrator-results/region-sidebar/"}
+    ]
+  },
   "navigation": {
-    "hidden": true
+    "hidden": true,
+    "scope": "section"
   },
   "search": {
     "indexed": false
+  },
+  "reading": {
+    "breadcrumbs": false,
+    "previous_next": false
   }
 }

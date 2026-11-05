@@ -1,5 +1,6 @@
 {
   "schema": "docara.page.v1",
-  "title": "Smart-компонент Alert",
-  "description": "Типизированное уведомление SIMAI Framework из Markdown."
+  "title": "Тестовый режим",
+  "description": "Демонстрационная страница с уведомлением SIMAI Framework в тексте.",
+  "navigation": {"order": 30}
 }

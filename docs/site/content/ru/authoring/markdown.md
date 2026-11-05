@@ -62,7 +62,7 @@ translation_key: guide.install
   списком в одну строку, например `template_omit: [classes]`;
 - `composition_recipe` — путь к JSON-дескриптору Composition Recipe
   относительно проекта; пример — страница
-  [Composition Recipe: расширенная шапка](/ru/examples/composition-recipe-expanded/).
+  [Composition Recipe: расширенная шапка](/ru/demonstrator-recipes/expanded/).
 
 Макет, HTML и произвольные поля в метаданных запрещены. Ошибка в блоке
 указывает исходный файл, строку и колонку. Остальные настройки страницы

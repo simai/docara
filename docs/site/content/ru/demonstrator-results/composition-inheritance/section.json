@@ -1,7 +1,7 @@
 {
   "schema": "docara.section.v1",
-  "title": "Наследуемая композиция",
-  "navigation": {"hidden": true},
+  "title": "Платежи",
+  "navigation": {"hidden": true, "order": 50},
   "search": {"indexed": false},
   "layout": {
     "regions": {
@@ -11,9 +11,9 @@
           {
             "id": "section-context",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1"],
             "blocks": [
-              {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "Этот блок унаследован от section.json.", "utilities": ["m-0"]}}
+              {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "Раздел «Платежи» описывает API версии 2026-10.", "utilities": ["m-0"]}}
             ]
           }
         ]

@@ -1,7 +1,7 @@
 {
   "schema": "docara.page.v1",
-  "title": "Footer из безопасных блоков",
-  "description": "Footer из структурированных элементов и утилит SIMAI Framework.",
+  "title": "Коды ошибок API",
+  "description": "Демонстрационная страница с подвалом из текста и ссылки.",
   "layout": {
     "regions": {
       "footer": {
@@ -10,24 +10,25 @@
           {
             "id": "site-footer",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1"],
             "blocks": [
               {
                 "id": "copyright",
                 "block": "shell.element",
                 "slot": "content",
-                "element": {"tag": "p", "text": "Docara — документация как код.", "utilities": ["m-0"]}
+                "element": {"tag": "p", "text": "© 2026 Acme Pay. Поддержка отвечает круглосуточно.", "utilities": ["m-0"]}
               },
               {
-                "id": "home",
+                "id": "status",
                 "block": "shell.element",
                 "slot": "content",
-                "element": {"tag": "a", "text": "Вернуться на главную", "href": "/", "aria_label": "Вернуться на главную страницу"}
+                "element": {"tag": "a", "text": "Быстрый старт", "href": "/ru/demonstrator-results/preset-docs/", "aria_label": "Открыть быстрый старт Acme Pay"}
               }
             ]
           }
         ]
       }
     }
-  }
+  },
+  "navigation": {"order": 80}
 }

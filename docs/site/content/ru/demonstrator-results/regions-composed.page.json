@@ -1,27 +1,22 @@
 {
   "schema": "docara.page.v1",
-  "title": "Явная композиция областей",
-  "description": "Header, sidebar и outline заданы декларативно.",
+  "title": "Возврат платежа",
+  "description": "Демонстрационная страница с шапкой, меню и оглавлением, заданными в page.json.",
   "layout": {
     "regions": {
       "header": {
         "enabled": true,
-        "sections": [
-          {"id": "branding", "section": "docara.header"}
-        ]
+        "sections": [{"id": "branding", "section": "docara.header"}]
       },
       "sidebar": {
         "enabled": true,
-        "sections": [
-          {"id": "navigation", "section": "docara.navigation"}
-        ]
+        "sections": [{"id": "navigation", "section": "docara.navigation"}]
       },
       "outline": {
         "enabled": true,
-        "sections": [
-          {"id": "outline", "section": "docara.outline"}
-        ]
+        "sections": [{"id": "outline", "section": "docara.outline"}]
       }
     }
-  }
+  },
+  "navigation": {"order": 40}
 }

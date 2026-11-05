@@ -1,5 +1,6 @@
 {
   "schema": "docara.page.v1",
-  "title": "Smart-компонент Button",
-  "description": "Кнопка SIMAI Framework с параметрами из Markdown."
+  "title": "SDK для мобильных приложений",
+  "description": "Демонстрационная страница с кнопкой SIMAI Framework в тексте.",
+  "navigation": {"order": 100}
 }

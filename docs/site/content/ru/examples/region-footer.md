@@ -1,27 +1,51 @@
 ---
-description: "Стенд: нижняя область страницы, собранная из текста и локальной ссылки без произвольного HTML."
+description: "Как добавить внизу страницы подвал с текстом и ссылкой: область footer в page.json, без HTML."
 ---
 
-# Footer из безопасных блоков
+# Подвал страницы
 
-Нижняя область включается явно и получает текст и локальную ссылку без
-произвольного HTML.
+Внизу страницы появляется подвал: строка о компании и ссылка. По умолчанию
+подвала нет, страница включает его сама.
 
-## Результат
+::::example {src="/ru/demonstrator-results/region-footer/" label="Результат"}
+### page.json
 
-[Открыть отдельно](/ru/demonstrator-results/region-footer/)
-
-:::internal_preview {size=normal title="Footer из безопасных блоков"}
-[Открыть результат](/ru/demonstrator-results/region-footer/)
+:::code {src="../demonstrator-results/region-footer.page.json" lang=json highlight="7-30"}
 :::
 
-## Исходные файлы
+### Markdown страницы
 
-:::code {src="./region-footer.md" lang=markdown title="Страница примера · content/ru/examples/region-footer.md"}
+:::code {src="../demonstrator-results/region-footer.md" lang=markdown}
+:::
+::::
+
+Прокрутите страницу в окне примера до конца, чтобы увидеть подвал.
+
+## Как это устроено
+
+1. Область `footer` выключена у всех страниц. `"enabled": true` включает её.
+2. В подвале одна часть `docara.shell` с двумя элементами: абзацем и
+   ссылкой.
+3. Линию над подвалом и отступы Docara ставит сама, текст подвала начинается
+   там же, где пункты меню. Своего CSS не нужно.
+
+:::code {src="../demonstrator-results/region-footer.page.json" lang=json lines="7-30" highlight="2,7" dedent=true}
 :::
 
-:::code {src="../demonstrator-results/region-footer.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/region-footer.md"}
-:::
+## Что можно поменять
 
-:::code {src="../demonstrator-results/region-footer.page.json" lang=json title="Композиция footer · content/ru/demonstrator-results/region-footer.page.json"}
-:::
+| Параметр | Что меняет |
+|---|---|
+| `enabled` | Показывать подвал или нет |
+| `tag` | Вид элемента: `p`, `a`, `span` или `div` |
+| `text` | Текст элемента, до 500 знаков |
+| `href` | Адрес ссылки: путь внутри сайта или `#якорь` |
+| `utilities` | Классы SIMAI Framework для отступов, фона и расположения |
+
+Чтобы подвал был на всех страницах, перенесите `layout` в `docara.json`.
+
+## См. также
+
+- [Подсказка под меню](../region-sidebar/)
+- [Настройки на трёх уровнях](../composition-inheritance/)
+- [Области макета](/ru/settings/layout-and-regions/)

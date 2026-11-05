@@ -1,27 +1,47 @@
 ---
-description: "Стенд: вид страницы landing — сфокусированная страница без меню документации, собранная тем же генератором."
+description: "Как сделать посадочную страницу продукта без меню документации: вид landing, первый экран, карточки и кнопка действия."
 ---
 
-# Preset landing
+# Посадочная страница продукта
 
-Сфокусированная страница без документационной навигации, собранная тем же
-генератором.
+Главная страница продукта не похожа на документацию: на ней нет меню и
+оглавления, есть крупный первый экран, карточки преимуществ и кнопка
+действия. Её собирает тот же Docara из того же Markdown.
 
-## Результат
+::::example {src="/ru/demonstrator-results/preset-landing/" label="Результат"}
+### page.json
 
-[Открыть отдельно](/ru/demonstrator-results/preset-landing/)
-
-:::internal_preview {size=tall title="Preset landing"}
-[Открыть результат](/ru/demonstrator-results/preset-landing/)
+:::code {src="../demonstrator-results/preset-landing.page.json" lang=json highlight="5"}
 :::
 
-## Исходные файлы
+### Markdown страницы
 
-:::code {src="./preset-landing.md" lang=markdown title="Страница примера · content/ru/examples/preset-landing.md"}
+:::code {src="../demonstrator-results/preset-landing.md" lang=markdown}
+:::
+::::
+
+## Как это устроено
+
+1. `"preset": "landing"` убирает меню и оглавление и отдаёт странице всю
+   ширину.
+2. `:::hero` — первый экран: заголовок, короткий текст и главная кнопка.
+3. `:::features` превращает список в карточки, а `:::cta` — ссылку в кнопку.
+4. Поиск на этой странице выключен: посадочной странице он не нужен.
+
+:::code {src="../demonstrator-results/preset-landing.md" lang=markdown lines="5-12"}
 :::
 
-:::code {src="../demonstrator-results/preset-landing.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/preset-landing.md"}
-:::
+## Что можно поменять
 
-:::code {src="../demonstrator-results/preset-landing.page.json" lang=json title="Настройки страницы · content/ru/demonstrator-results/preset-landing.page.json"}
-:::
+| Параметр | Что меняет |
+|---|---|
+| `preset` | Вид страницы: `landing` или `docs` |
+| `layout.container.max` | Ширина содержимого, от 1 до 8 |
+| `search.enabled` | Поиск в шапке |
+| `search.indexed` | Попадает ли страница в результаты поиска |
+
+## См. также
+
+- [Первый экран](/ru/components/hero/)
+- [Блоки лендинга](/ru/components/landing-blocks/)
+- [Страница документации](../preset-docs/)

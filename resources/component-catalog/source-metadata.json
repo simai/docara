@@ -6,7 +6,7 @@
     "entries": [
         {
             "source_ref": "docs/site/content/ru/authoring/markdown.md",
-            "source_sha256": "666fe3e73206215bafabd3ee103f981a1759f112f88f7499d727c0fe6c01841b",
+            "source_sha256": "6b1115acc26f31ceeffc752dea825214204e3838d0a352c525359e5ffbe2ac91",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/docs/site/content/ru/authoring/markdown.md",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/docs/site/content/ru/authoring/markdown.md",
@@ -118,7 +118,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/example.md",
-            "source_sha256": "e91bbb6f171b2f4b3038ec9445a6d7799afd0baf984e15f11a1037ce3e9014af",
+            "source_sha256": "29acee45a28418c220706e510c38485bdb8f21703b55c2cbe1a23e5161aed298",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/docs/site/content/ru/components/example.md",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/docs/site/content/ru/components/example.md",
@@ -406,7 +406,7 @@
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.example.json",
-            "source_sha256": "09a083df98a7ff0cad17ed8dc15b905219888899c19463aca72f0d3a4206198e",
+            "source_sha256": "d3d4e20c121b71c5022b10e93608da64ade77d004476951f4639216f83db0af4",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/resources/component-catalog/typed/docara.example.json",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/resources/component-catalog/typed/docara.example.json",
@@ -557,5 +557,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "ade514e7ddd1ba9b02517a867f271ce7c8cea2eb96dfa4a5c6c6ccba09a89a69"
+    "content_sha256": "0471aed788a34d9853c8c4321fa5c61314c88b068158fa36a2435c39b74cb54d"
 }

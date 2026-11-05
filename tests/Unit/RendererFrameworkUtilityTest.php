@@ -153,7 +153,7 @@ final class RendererFrameworkUtilityTest extends TestCase
                 }
             }
         }
-        self::assertArrayHasKey('bg-surface-0', $found);
+        self::assertArrayHasKey('gap-1', $found);
 
         $unknown = [];
         foreach ($this->unknown($found) as $name) {

@@ -256,7 +256,7 @@ Framework и два типа вызовов:
           {
             "id": "site-footer",
             "section": "docara.shell",
-            "utilities": ["flex", "flex-col", "gap-1", "p-2", "bg-surface-0"],
+            "utilities": ["flex", "flex-col", "gap-1"],
             "blocks": [
               {
                 "id": "copyright",
@@ -276,6 +276,11 @@ Framework и два типа вызовов:
   }
 }
 ```
+
+Отступы части от краёв колонки Docara ставит сама. В левой колонке текст
+начинается там же, где пункты меню, в правой — там же, где оглавление, и не
+ложится на линию колонки. Подвал отделён линией и имеет свои отступы сверху и
+снизу. Утилиты нужны только для расположения элементов внутри части.
 
 Это не строка HTML. Автор выбирает только разрешённый тег, текст, локальную
 ссылку и утилиты из точной Framework projection. PHP, Blade, raw HTML,
@@ -371,4 +376,4 @@ build_<environment>.docara/resolved-page-plans.json
 
 - [Наследование областей](/ru/settings/levels-and-inheritance/#области-макета)
 - [Smart-компоненты](/ru/development/smart-components/) — как устроены компоненты шапки, меню и содержания
-- [Живой пример Smart-компонентов Docara](/ru/examples/product-smart-runtime/)
+- [Живой пример шапки, меню и оглавления](/ru/examples/regions-composed/)

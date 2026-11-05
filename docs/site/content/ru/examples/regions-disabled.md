@@ -1,27 +1,42 @@
 ---
-description: "Стенд: страница без бокового меню и оглавления — без пустых контейнеров и лишней мобильной навигации."
+description: "Как убрать с длинной текстовой страницы меню и оглавление, чтобы текст занял всю ширину."
 ---
 
-# Отключение областей
+# Страница без боковых колонок
 
-Sidebar и outline отключаются без пустых контейнеров и лишней мобильной
-навигации.
+Для длинного документа — условий, политики, договора — боковые колонки только
+мешают. Страница выключает меню и оглавление, и текст занимает всю ширину.
 
-## Результат
+::::example {src="/ru/demonstrator-results/regions-disabled/" label="Результат"}
+### page.json
 
-[Открыть отдельно](/ru/demonstrator-results/regions-disabled/)
-
-:::internal_preview {size=normal title="Отключение областей"}
-[Открыть результат](/ru/demonstrator-results/regions-disabled/)
+:::code {src="../demonstrator-results/regions-disabled.page.json" lang=json highlight="6-9"}
 :::
 
-## Исходные файлы
+### Markdown страницы
 
-:::code {src="./regions-disabled.md" lang=markdown title="Страница примера · content/ru/examples/regions-disabled.md"}
+:::code {src="../demonstrator-results/regions-disabled.md" lang=markdown}
 :::
+::::
 
-:::code {src="../demonstrator-results/regions-disabled.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/regions-disabled.md"}
-:::
+## Как это устроено
 
-:::code {src="../demonstrator-results/regions-disabled.page.json" lang=json title="Настройки страницы · content/ru/demonstrator-results/regions-disabled.page.json"}
-:::
+1. `"enabled": false` выключает область. Docara не оставляет на её месте
+   пустого места.
+2. `container.max` задаёт ширину колонки текста по шкале SIMAI Framework от
+   1 до 8. Здесь 7 — широкая колонка.
+3. Шапка остаётся: в ней название, поиск и настройки.
+
+## Что можно поменять
+
+| Параметр | Что меняет |
+|---|---|
+| `sidebar.enabled` | Меню слева |
+| `outline.enabled` | Оглавление справа |
+| `container.max` | Ширина колонки текста: от 1 — узкая до 8 — во весь экран |
+
+## См. также
+
+- [Шапка, меню и оглавление](../regions-composed/)
+- [Общие настройки раздела и исключение для страницы](../inheritance/)
+- [Области макета](/ru/settings/layout-and-regions/)

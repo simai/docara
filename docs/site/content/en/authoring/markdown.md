@@ -65,7 +65,7 @@ The block accepts only these keys; any other one stops the build with
   one-line list such as `template_omit: [classes]`;
 - `composition_recipe` — the path to a Composition Recipe JSON descriptor
   relative to the project; see the example page
-  [Composition Recipe: expanded header](/ru/examples/composition-recipe-expanded/)
+  [Composition Recipe: expanded header](/ru/demonstrator-recipes/expanded/)
   (in Russian).
 
 Layout, HTML and arbitrary fields in the metadata are not allowed. An error

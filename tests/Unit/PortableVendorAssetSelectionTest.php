@@ -161,6 +161,9 @@ final class PortableVendorAssetSelectionTest extends TestCase
                 if ($name === 'core-loader.js'
                     || ($name === 'icons.js' && str_contains($source, 'this.getProp("type")'))
                     || ($name === 'icon.js' && str_contains($source, 'requestedType'))
+                    // Since ui-c3015f76bcc2 core.js names the family classes
+                    // only in the selector of a loaded icon subset; it adds none.
+                    || ($name === 'core.js' && str_contains($source, 'function iconSubsetSelector'))
                 ) {
                     continue;
                 }

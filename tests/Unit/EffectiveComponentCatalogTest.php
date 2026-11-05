@@ -150,7 +150,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         self::assertSame(CanonicalJson::encodePretty($first), CanonicalJson::encodePretty($second));
         self::assertSame('docara.effective_component_catalog.v1', $first['schema']);
         self::assertSame(1, $first['version']);
-        self::assertSame('ui-7153f7a9c092', $first['framework_pair']);
+        self::assertSame('ui-c3015f76bcc2', $first['framework_pair']);
         self::assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $first['provider_revision']);
         self::assertSame([
             'catalog_is_canonical_framework_registry' => false,
@@ -518,7 +518,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             512,
             JSON_THROW_ON_ERROR,
         );
-        unset($lock['asset_projection']['files']['smart/buttons/js/buttons.js']);
+        unset($lock['asset_projection']['files']['smart/button/js/button.js']);
 
         try {
             EffectiveComponentCatalogBuilder::bundled(FrameworkLock::fromArray($lock))->build();

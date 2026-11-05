@@ -270,7 +270,7 @@
         "source": "larena/ui",
         "runtime_lock": "resources/sf/runtime-lock.json",
         "upstream_component": "simai/ui:distr/smart/alert",
-        "upstream_revision": "7153f7a9c0929a28d67f458e9d9a9f9351f7cf8f",
+        "upstream_revision": "c3015f76bcc20cd502d5fe7931495e35711d6a4d",
         "reference_status": "source_backed",
         "evidence": "resources/sf/runtime-lock.json"
     }

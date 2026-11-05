@@ -1,0 +1,132 @@
+{
+    "schema": "docara.framework_composition_runtime.v1",
+    "source": {
+        "provider": "simai/ui",
+        "revision": "c3015f76bcc20cd502d5fe7931495e35711d6a4d",
+        "tree_sha256": "939065eedc93ec7faa454aacad6ec0857202893dc045cfa5c1c023edbd3ee96b"
+    },
+    "contract": {
+        "edition": "1.1.0",
+        "contract_digest": "sha256:b9eba08bffbdffcb17e2af9d1349764fc8ef279828c44af6a02fd02ce7a5d649"
+    },
+    "files": {
+        "distr/core/contracts/composition-recipe-v1/README.md": {
+            "sha256": "841526d8466252f8354b744903a889ada4ad08abd358667e8c672f40037b5c98"
+        },
+        "distr/core/contracts/composition-recipe-v1/common.schema.json": {
+            "sha256": "09945cc8485e7b1a5f8ee8add6938da720ffc6c434c6e86c13fe6f98a95b2fe4"
+        },
+        "distr/core/contracts/composition-recipe-v1/contract.lock.json": {
+            "sha256": "271b0d8ac3f7eef42410269eb1ee1a64e7925610b591b425419f771d2e7768ed"
+        },
+        "distr/core/contracts/composition-recipe-v1/dependencies.schema.json": {
+            "sha256": "3d4508db8ba3056ad408fdf6c0ae6a497d9ab47ec1cf04cf06e70f2d5efd9cb5"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/canonicalization.json": {
+            "sha256": "ab6e3aef30bbceef84bdd1314b301d20fe1196b32d6d83f59feb32e376b44239"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/format-names.json": {
+            "sha256": "9f860084ee6abb4cabbc90bdddb402cb04f3f5ed39a170e252b3a8fce2debc78"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/limit-boundaries.json": {
+            "sha256": "c507d0f534868fea42c735e9f741aa228699a487652d4212feba9a4d40a04eb2"
+        },
+        "distr/core/contracts/composition-recipe-v1/fixtures/schema-negative.json": {
+            "sha256": "66d4611c4ed4699ff86d1ec3de26cfcc6e52307766b8c7844113dff838737401"
+        },
+        "distr/core/contracts/composition-recipe-v1/inputs.schema.json": {
+            "sha256": "7a05d19fa70e35a2aba0c54cdd89d2b73a3c4417456182e45dd068b9f67457bb"
+        },
+        "distr/core/contracts/composition-recipe-v1/limits.json": {
+            "sha256": "2a8b3d66ed8f4b183f721ffe257f472cfeb835c6e9829d374a3a420122025e10"
+        },
+        "distr/core/contracts/composition-recipe-v1/manifest.schema.json": {
+            "sha256": "3943213661945c3d862de7abadd99c18302b1156c233a51ca09271ca70d79536"
+        },
+        "distr/core/contracts/composition-recipe-v1/recipe.schema.json": {
+            "sha256": "08749a44701f7c3b4fbbab9f936a8b0f9939f1cffd1ba3d4fa724e9addf8d973"
+        },
+        "distr/core/js/alias-table.js": {
+            "sha256": "18e26973f14cabf00af6d469c82e5c2ec367e7e24a1df4cfb19a3c9a80aa2341"
+        },
+        "distr/core/js/composition/builtins.mjs": {
+            "sha256": "dfbe64fa37a1db35af95551ac2efa500d142425a2cf3a477b985eb5bb94a6788"
+        },
+        "distr/core/js/composition/canonical.mjs": {
+            "sha256": "aa6b44b2b81fc71040a32c6d8521201b7b8f23881ba2844c5a749b2e6ba3587c"
+        },
+        "distr/core/js/composition/catalogue.mjs": {
+            "sha256": "965b68ce091d466e6963ad472bda771ffd2eb1c7af101c81f920a45cc39593c4"
+        },
+        "distr/core/js/composition/composed.mjs": {
+            "sha256": "1a28f9dd333471d2673ca26a69d0dff0894c319eb9f7ca422242e7716d61757e"
+        },
+        "distr/core/js/composition/data.mjs": {
+            "sha256": "d7ea3251b8859f978cf9a378e0f73d6120f8d90dd87fbaf473217fec5fd9fca7"
+        },
+        "distr/core/js/composition/editor-words.mjs": {
+            "sha256": "31dae3982d3df2a14a793e931b27cd8d125c1280b7418c7dada65f4337e5927b"
+        },
+        "distr/core/js/composition/editor.mjs": {
+            "sha256": "4753bbd9c85bcca0df70008afc9c08c6946e143cf3340fe75a6ddb101bc407d1"
+        },
+        "distr/core/js/composition/elements.generated.mjs": {
+            "sha256": "94f054248cac2e5fd41f3783753e78770c426ff8ad5e877d03da445880dbc263"
+        },
+        "distr/core/js/composition/elements.mjs": {
+            "sha256": "7e280b1d3b1a7b6520247be4ec7fd414a1923deffe4fb5c68db0ab4822a0acdf"
+        },
+        "distr/core/js/composition/fields.mjs": {
+            "sha256": "edc7263aa8394b83d25f4510669666e8baaf7a8c57924e0b6f9b38b85d243216"
+        },
+        "distr/core/js/composition/file-size.mjs": {
+            "sha256": "8989facd3b0cbdeb292cbfe992913fc4d8c15c7d3dd946746b6f7e8586386486"
+        },
+        "distr/core/js/composition/fragments.mjs": {
+            "sha256": "7c9fed202cd6e229ad4bf7e24b1d32d352d905067465a105a57ae88a9d21c6d6"
+        },
+        "distr/core/js/composition/html-subset.mjs": {
+            "sha256": "20d9de5be17653b2d2ade6c38f9c4f92447d14ab20694eb003659d271be42405"
+        },
+        "distr/core/js/composition/index.mjs": {
+            "sha256": "0a1c570ad1dccca6b93eb37b7f60f09b41a23c9c2c14384342d2a4f00932cc59"
+        },
+        "distr/core/js/composition/inline-model.mjs": {
+            "sha256": "2c723569aeab51c90311b90208f52990b3a5abd6a03ef2f2b813ad76e7544663"
+        },
+        "distr/core/js/composition/parameter-sets.mjs": {
+            "sha256": "a1de43c4830a0b886123f19dd16cea51fbec3a71374027ed7c072db249fcc1cb"
+        },
+        "distr/core/js/composition/recipe.mjs": {
+            "sha256": "855bc06ed56980350e9540c55301464fc8a4d453b6dabfbbab82812dc6992a34"
+        },
+        "distr/core/js/composition/regions.mjs": {
+            "sha256": "5f037d450e4e171ad5246f47748bea680ceba66642fd547527a10c40630c42e9"
+        },
+        "distr/core/js/composition/routing.mjs": {
+            "sha256": "82de69a1fc2734f6fe9bc6d0c6c2b609b2f394a6f25374940c29b2a80b4e92aa"
+        },
+        "distr/core/js/composition/schema-name.mjs": {
+            "sha256": "14a8b733e8a7659c5d1460ec4a602772c4eb0b790d96d9e27547a19ff8f05c78"
+        },
+        "distr/core/js/composition/utilities.mjs": {
+            "sha256": "e0978f9b66ac43179272d4f07977b4f03697125ee7e15b2f93951bc2c965e01c"
+        },
+        "distr/core/js/deprecations.js": {
+            "sha256": "3c9dadb51fa1f57bd2a5b507f2aa5376c9349fb6ac4c356d74b13f9d73187cfb"
+        },
+        "distr/core/js/format.js": {
+            "sha256": "682d284dfc5a369ffac269b9cd833083ccc39e4392b62b19a794fc5943429471"
+        },
+        "distr/core/js/page-language.js": {
+            "sha256": "ec4145250569fa4f522b5b9538cac9d345f8eb79e4078fa666ea5d6034c9e5e4"
+        },
+        "distr/core/js/tag-aliases.generated.js": {
+            "sha256": "ea57f92a3b73cbd8d13939b5b086b53c53abbe2a3c97d4c73b7ff6ebd7eade82"
+        },
+        "distr/core/js/tag-aliases.js": {
+            "sha256": "c984f6d3b1fea2fb03fbf3c4050838668e8312d13773feb134f931c903aee23f"
+        }
+    },
+    "packet_sha256": "fa4eb3bbd7504a1d6509ba0cc3869d6c4de9df97985d3f82202a6992ae746b31"
+}

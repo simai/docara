@@ -125,7 +125,8 @@ Docara 3.0 содержит закреплённый релиз SIMAI Framework 
 коммита) вместе со средой выполнения Composition Recipe: `ui-82fc0ba882ba` в
 версиях 3.0.0–3.0.5, `ui-25beeb814ae8` в версиях 3.1.0–3.5.0,
 `ui-32c7a64e4575` в версиях 3.6.0–3.9.1,
-`ui-7153f7a9c092` начиная с 3.10.0. Для сборки
+`ui-7153f7a9c092` в версиях 3.10.0–3.11.1,
+`ui-c3015f76bcc2` в более поздних версиях. Для сборки
 больше не нужны отдельная копия Framework и переменные окружения:
 `DOCARA_SIMAI_UI_ROOT` и `SIMAI_UI_ROOT` можно убрать из окружения сборки и
 CI. Эти переменные остаются необязательными и нужны только для сборки с другой
@@ -228,8 +229,8 @@ php vendor/bin/docara update --apply
 php -r 'echo json_decode(file_get_contents("simai-framework.lock.json"), true)["runtime"]["pair_id"], PHP_EOL;'
 ```
 
-Значения `ui-7153f7a9c092` (текущий релиз), `ui-32c7a64e4575` (Docara
-3.6.0–3.9.1), `ui-25beeb814ae8` (Docara 3.1.0–3.5.0), `ui-82fc0ba882ba` (Docara 3.0.0–3.0.5) и
+Значения `ui-c3015f76bcc2` (текущий релиз), `ui-7153f7a9c092` (Docara
+3.10.0–3.11.1), `ui-32c7a64e4575` (Docara 3.6.0–3.9.1), `ui-25beeb814ae8` (Docara 3.1.0–3.5.0), `ui-82fc0ba882ba` (Docara 3.0.0–3.0.5) и
 `ui-4f5e5067afeb-smart-7d932ed51408` (lock Docara 2.18)
 собираются с релизом пакета. При любом другом значении замените lock:
 

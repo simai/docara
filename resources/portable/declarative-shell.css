@@ -6,7 +6,7 @@ body{min-height:100vh;background:var(--sf-surface-0);color:var(--sf-on-surface)}
 .docara-skip-link:focus{transform:translateY(0)}
 body[data-docara-shell]{opacity:1!important}
 .docara-outline-mobile{display:none}
-/* The header is the Framework sf-site-header (PortableSiteHeader): the navigation fills the bar between the brand and the tools. */
+/* The header is the Framework sf-header-site (PortableSiteHeader): the navigation fills the bar between the brand and the tools. */
 .docara-header-content{flex:1 1 auto}
 /* The language menu is positioned for its popup, so it would paint over the open panel and its scrim that come before it; they are lifted over the bar's own controls. */
 .docara-header .sf-site-header--open .sf-site-header-scrim,.docara-header .sf-site-header--open .sf-site-header-panel{z-index:1}
@@ -333,7 +333,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-icon[data-docara-icon-variant="outline"] { border: 1px solid var(--docara-icon-color); color: var(--docara-icon-color); }
 .docara-icon[data-docara-icon-container="square"],
 .docara-icon[data-docara-icon-container="circle"] { padding: var(--sf-space-1\/2); }
-.docara-icon[data-docara-icon-container="square"] { border-radius: var(--sf-radius-default); }
+.docara-icon[data-docara-icon-container="square"] { border-radius: var(--sf-radius--surface); }
 .docara-icon[data-docara-icon-container="circle"] { border-radius: 50%; }
 .docara-icon[data-docara-icon-size="1/3"]:not([data-docara-icon-container="none"]) { padding: var(--sf-space-1\/4); }
 .docara-icon[data-docara-icon-size="1/2"]:not([data-docara-icon-container="none"]) { padding: var(--sf-space-1\/3); }

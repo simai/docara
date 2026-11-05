@@ -82,8 +82,8 @@ receipt and the output are sorted canonically.
 
 ## Languages
 
-A redirect does not prove that the content is the same. Do not send an
-English page to a Russian one just to avoid a 404. Keep the old reference, or
+A redirect does not prove that the content is the same. Do not send a
+page to another language just to avoid a 404. Keep the old reference, or
 prepare a page in the same language in a separate site variant.
 
 After a change, run:
@@ -99,4 +99,4 @@ Check the source URL and an ordinary target over HTTP from the same output.
 
 - [Menu and sections](/en/authoring/navigation/) — when a page address changes
 - [Multilingual site](/en/authoring/multilingual-site/) — redirects for addresses without a language prefix
-- [Redirect error codes](/ru/reference/errors/site/#перенаправления) (in Russian)
+- [Redirect error codes](/en/reference/errors/site/#redirects)

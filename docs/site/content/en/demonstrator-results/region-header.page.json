@@ -1,0 +1,35 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Accept your first payment",
+  "description": "Demo payment API documentation page with a button in the header.",
+  "layout": {
+    "regions": {
+      "sidebar": {"enabled": false},
+      "header": {
+        "enabled": true,
+        "sections": [
+          {"id": "site-brand", "section": "docara.header"},
+          {
+            "id": "header-action",
+            "section": "docara.shell",
+            "blocks": [
+              {
+                "id": "get-key",
+                "block": "shell.smart",
+                "slot": "content",
+                "smart": "ui.button",
+                "view": "default",
+                "props": {
+                  "text": "Get a key",
+                  "preset": "primary",
+                  "aria-label": "Get a test API key"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "navigation": {"order": 20}
+}

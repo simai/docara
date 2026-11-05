@@ -138,7 +138,7 @@ What matters here:
 ## If a check stops
 
 Docara prints the error code in square brackets. Find it in the
-[error code reference](/ru/reference/errors/) (in Russian): it gives the cause
+[error code reference](/en/reference/errors/): it gives the cause
 and what to fix. To reproduce the error on your machine, run the same commands
 locally, starting with `composer install`.
 

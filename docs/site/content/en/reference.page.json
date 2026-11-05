@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Reference",
+  "description": "Exact CLI commands, fields of docara.json, section.json, page.json and lang.json, schemas, error codes, limits and a glossary of terms.",
+  "navigation": {
+    "order": 60
+  }
+}

@@ -69,7 +69,7 @@ where you work.
 :::
 ```
 
-Inside the [first screen](/ru/components/hero/) (in Russian) go one `#` heading, a description and a link that
+Inside the [first screen](/en/components/hero/) go one `#` heading, a description and a link that
 becomes a button. `layout=centered` centres everything, `padding=2xl` makes
 the screen tall.
 
@@ -88,8 +88,7 @@ Append to the same file:
 ```
 
 Each list item in a `features` block becomes a card: an icon, a bold title
-and text. Icon names are listed on the [icon page](/ru/components/icon/)
-(in Russian).
+and text. Icon names are listed on the [icon page](/en/components/icon/).
 
 ## 5. End with a call to action
 
@@ -131,13 +130,11 @@ Stop the preview with `Ctrl+C`.
 | `MARKDOWN_BLOCK_UNCLOSED` | A `:::` line is missing after a block. Check that every block is closed. |
 | `MARKDOWN_HERO_H1_REQUIRED`, `MARKDOWN_HERO_STRUCTURE_INVALID` | The first screen is out of order: first one `#` heading, then text, links and an image. |
 
-Other codes are in the [error reference](/ru/reference/errors/content/) (in
-Russian).
+Other codes are in the [error reference](/en/reference/errors/content/).
 
 ## What next
 
 - Add a picture to the first screen with `layout=split` — see the
-  [first screen page](/ru/components/hero/) (in Russian).
-- See more blocks on [«Блоки лендинга»](/ru/components/landing-blocks/) (in Russian).
-- Make a landing page the home page — the [home page of this documentation](/ru/landing/)
-  (in Russian) is built that way.
+  [first screen page](/en/components/hero/).
+- See more blocks on [Landing blocks](/en/components/landing-blocks/).
+- Make a landing page the home page — the [home page of this documentation](/en/landing/) is built that way.

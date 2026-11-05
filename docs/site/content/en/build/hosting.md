@@ -98,10 +98,10 @@ The build puts a `404.html` file into the site root (under `base_url`): a
 theme. It has a heading, a short explanation, a link to the home page and a
 link that opens search (without JavaScript it leads to the home page). The
 text is taken in the main language of the site (`default_locale`); Docara has
-a Russian and an English variant.
+an English and a Russian variant.
 
 The server returns this page for any address that does not exist, for example
-`/ru/a/b/c/`. That is why every link, style, script and the search index on it
+`/en/a/b/c/`. That is why every link, style, script and the search index on it
 is addressed from the site root with `base_url` taken into account, without
 relative paths, and the page works the same at any depth.
 
@@ -164,9 +164,9 @@ the main language:
 ```
 
 To replace the contents as a whole, create a `404.md` page in the content root
-of the main language, for example `content/ru/404.md`. This is ordinary
+of the main language, for example `content/en/404.md`. This is ordinary
 Markdown with front matter and components; the build publishes it as
-`404.html` instead of `/ru/404/`, adds `noindex`, removes the page from the
+`404.html` instead of `/en/404/`, adds `noindex`, removes the page from the
 navigation and the search and turns off breadcrumbs, the outline and the
 "Previous/Next" links on it. Write the links to the home page and to search
 yourself in such a page. A link with the address `#docara-search` opens
@@ -181,9 +181,9 @@ Check the address, start from the [home page](/en/) or
 [open search](#docara-search).
 ```
 
-Write links from the site root (`/ru/start/`), the build will add `base_url`.
+Write links from the site root (`/en/start/`), the build will add `base_url`.
 Relative links and images are turned into addresses from the root by the
-build as well, which assumes that the page sits at `/ru/404/`.
+build as well, which assumes that the page sits at `/en/404/`.
 
 ### Turning it off
 
@@ -196,7 +196,7 @@ build as well, which assumes that the page sits at `/ru/404/`.
 ```
 
 Without the page the build is the same as before `404.html` appeared: the file
-is absent, and `404.md`, if it exists, is published as an ordinary `/ru/404/`
+is absent, and `404.md`, if it exists, is published as an ordinary `/en/404/`
 page.
 
 ### Several languages and the portal

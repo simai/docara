@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Docara development",
+  "description": "For engine developers: getting started with the repository, architecture, interface composition, Smart components, the SDK, testing and examples.",
+  "navigation": {
+    "order": 90
+  }
+}

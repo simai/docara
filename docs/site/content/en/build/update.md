@@ -163,7 +163,7 @@ Markdown table (see [Markdown table](/en/authoring/markdown/#tables)).
   [Quick start](/en/start/quick-start/).
 - `docara` with no arguments and `docara list` with no view print the list of
   commands, and `docara --version` prints the version. The full list is in the
-  [CLI reference](/ru/reference/cli/) (in Russian).
+  [CLI reference](/en/reference/cli/).
 
 #### The build result
 
@@ -172,8 +172,8 @@ Markdown table (see [Markdown table](/en/authoring/markdown/#tables)).
 - The built-in strings Docara writes into pages (the table headings of the
   schema reference, the text of the Atlas index, the default
   `internal_preview` heading, the example caption in a starter) follow the
-  language of the page: Russian for `ru`, English for the other languages. On
-  sites that are not in Russian these strings became English.
+  language of the page. A language without its own built-in strings gets the
+  English ones.
 - The metadata of the component catalogue (`_docara/component-catalog.json`,
   the `metadata` field of the entries) holds `release` — the Docara version —
   and the `source_url` and `history_url` links to the release tag. The
@@ -275,5 +275,5 @@ The next compatible updates inside 3.x are done by the command
 ## See also
 
 - [Publishing and rollback](/en/build/publish/)
-- [Update error codes](/ru/reference/errors/upgrade/) (in Russian)
-- [The upgrade command](/ru/reference/cli/) (in Russian)
+- [Update error codes](/en/reference/errors/upgrade/)
+- [The upgrade command](/en/reference/cli/)

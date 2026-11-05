@@ -1,0 +1,24 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Payments",
+  "navigation": {"hidden": true, "order": 50},
+  "search": {"indexed": false},
+  "layout": {
+    "regions": {
+      "sidebar": {
+        "sections": [
+          {"id": "docs-navigation", "section": "docara.navigation"},
+          {
+            "id": "section-context",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1"],
+            "blocks": [
+              {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "The Payments section covers API version 2026-10.", "utilities": ["m-0"]}}
+            ]
+          }
+        ]
+      },
+      "outline": {"enabled": false}
+    }
+  }
+}

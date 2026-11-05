@@ -88,9 +88,9 @@ The common markers for links and fragments:
 - `@unsafe-fragment-encoding`.
 
 Every check marker with its cause and its fix is collected on the
-[Checking the build](/ru/reference/errors/verify-static/) page (in Russian),
+[Checking the build](/en/reference/errors/verify-static/) page,
 and the build error codes are in the
-[error code reference](/ru/reference/errors/) (in Russian). If the cause is
+[error code reference](/en/reference/errors/). If the cause is
 unclear, keep the command, the exit code, the whole output, the exact source
 revision and the path of the checked folder for diagnosis.
 
@@ -131,7 +131,7 @@ The budgets live in a JSON file, and those of a single page in `pages`:
   "max_page_bytes": 4500000,
   "max_image_bytes": 1300000,
   "pages": {
-    "/ru/components/diagram/": {"max_page_bytes": 6900000, "reason": "Mermaid"}
+    "/en/components/diagram/": {"max_page_bytes": 6900000, "reason": "Mermaid"}
   }
 }
 ```

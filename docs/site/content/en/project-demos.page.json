@@ -1,0 +1,29 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Useful project components",
+  "description": "Components the site loads from its own smart/ folder: an install command builder, a configurator and footer links.",
+  "navigation": {
+    "hidden": true
+  },
+  "search": {
+    "indexed": false
+  },
+  "layout": {
+    "regions": {
+      "footer": {
+        "enabled": true,
+        "sections": [{
+          "id": "project-footer",
+          "section": "project.footer",
+          "blocks": [{
+            "id": "project-footer-notice",
+            "block": "project.footer-smart",
+            "slot": "content",
+            "smart": "project.footer-links",
+            "props": {"title": "Useful links"}
+          }]
+        }]
+      }
+    }
+  }
+}

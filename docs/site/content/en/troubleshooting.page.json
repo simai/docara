@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Troubleshooting",
+  "description": "Troubleshooting by the symptom you see: the build, local preview, page addresses, components, search and themes.",
+  "navigation": {
+    "order": 70
+  }
+}

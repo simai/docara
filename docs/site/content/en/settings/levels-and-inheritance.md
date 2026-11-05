@@ -16,9 +16,9 @@ Docara reads settings from JSON files on three levels:
 Each file has a `schema` field. `version` is optional and, if given, equals
 `1` — it is the file format version, not the documentation version. An
 unknown field, a wrong type, an empty styling branch and an unsafe path stop
-the build. Each field is described in the reference (in Russian):
-[docara.json](/ru/reference/docara-json/) and
-[section.json and page.json](/ru/reference/section-and-page/).
+the build. Each field is described in the reference:
+[docara.json](/en/reference/docara-json/) and
+[section.json and page.json](/en/reference/section-and-page/).
 
 ## What can be set on each level
 
@@ -352,8 +352,7 @@ The inherited `sections` list is kept. If `sections` is given explicitly, the
 new array replaces the previous composition entirely. Details are in
 [Layout regions](/en/settings/layout-and-regions/).
 
-[A live example of site, section and page composition](/ru/examples/composition-inheritance/)
-(in Russian) shows an inherited brand, a replaced sidebar, an aside turned off
+[A live example of site, section and page composition](/en/examples/composition-inheritance/) shows an inherited brand, a replaced sidebar, an aside turned off
 by a section, its reset on the page level and a footer turned on for one page
 only.
 
@@ -376,8 +375,7 @@ Find the page by `output` or `url`, then:
 file name the exact owning file. If a pointer is missing after a reset, the
 value really is removed; the pointer of the cleared branch itself stays and
 names the file that did the reset. The receipt fields are described in the
-[«Схемы JSON»](/ru/reference/schemas/#план-страницы-после-сборки) reference
-(in Russian).
+[JSON schemas](/en/reference/schemas/#the-page-plan-after-the-build) reference.
 
 For one page the same is shown by a command:
 
@@ -396,6 +394,6 @@ receipt is kept.
 
 ## See also
 
-- [docara.json](/ru/reference/docara-json/) (in Russian) — all site fields
-- [section.json and page.json](/ru/reference/section-and-page/) (in Russian) — section and page fields
+- [docara.json](/en/reference/docara-json/) — all site fields
+- [section.json and page.json](/en/reference/section-and-page/) — section and page fields
 - [Brand and theme](/en/settings/branding-and-theme/)

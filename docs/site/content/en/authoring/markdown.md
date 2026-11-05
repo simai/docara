@@ -42,8 +42,7 @@ translation_key: guide.install
 ```
 
 The block accepts only these keys; any other one stops the build with
-[`FRONT_MATTER_KEY_UNKNOWN`](/ru/reference/errors/content/#заголовок-страницы-front-matter)
-(in Russian):
+[`FRONT_MATTER_KEY_UNKNOWN`](/en/reference/errors/content/#page-metadata-front-matter):
 
 - `title` and `description` — the page title and description;
 - `tags` — a one-line list, for example `tags: [deploy, publishing]`;
@@ -65,8 +64,7 @@ The block accepts only these keys; any other one stops the build with
   one-line list such as `template_omit: [classes]`;
 - `composition_recipe` — the path to a Composition Recipe JSON descriptor
   relative to the project; see the example page
-  [Composition Recipe: expanded header](/ru/demonstrator-recipes/expanded/)
-  (in Russian).
+  [Composition Recipe: expanded header](/en/demonstrator-recipes/expanded/).
 
 Layout, HTML and arbitrary fields in the metadata are not allowed. An error
 in the block names the source file, line and column. Other page settings go
@@ -196,7 +194,7 @@ with a clear visual explanation and an accessible description.
 
 :::example {label="A link and an image"}
 ```markdown
-[Open the component catalogue](/ru/components/)
+[Open the component catalogue](/en/components/)
 
 ![Docara mark](../../assets/docara-mark.svg)
 ```
@@ -205,7 +203,7 @@ with a clear visual explanation and an accessible description.
 Use a clear label that shows where the link goes:
 
 - [read the quick start](/en/start/quick-start/);
-- [open the backlinks page](/ru/components/backlinks/) (in Russian);
+- [open the backlinks page](/en/components/backlinks/);
 - [see the Docara repository](https://github.com/simai/docara).
 
 Do not replace the meaning of the label with "click here". Use paths from
@@ -226,8 +224,8 @@ refused.
 
 Alternative text must convey the purpose of the image. Do not use a
 decorative picture instead of a heading or an instruction. An image with a
-caption and set proportions comes from the [Figure](/ru/components/figure/)
-component (in Russian).
+caption and set proportions comes from the [Figure](/en/components/figure/)
+component.
 
 ## Tables
 
@@ -268,8 +266,7 @@ braces, you can give a file name, line numbers and highlighting, focus or a
 terminal frame:
 `` ```php {title="app.php" highlight="2-3" numbers} ``. All options and
 including a fragment from a project file are described on
-[«Код»](/ru/components/code/) and [«Код из файла»](/ru/components/code-from-file/)
-(in Russian).
+[Code](/en/components/code/) and [Code from a file](/en/components/code-from-file/).
 
 Inside an ordinary code block directive lines stay text and are shown safely
 to the reader — this is how you show a component call:
@@ -313,13 +310,13 @@ source.
 
 Raw HTML is removed. If ordinary Markdown is not enough:
 
-1. open the [component catalogue](/ru/components/) (in Russian);
+1. open the [component catalogue](/en/components/);
 2. pick an entry with the `supported` status;
 3. copy the exact call from the component's page;
 4. rebuild and check the site.
 
-For a styled band use [Surface](/ru/components/surface/), and for a first
-screen [Hero](/ru/components/hero/) (both in Russian). Hero, Showcase and
+For a styled band use [Surface](/en/components/surface/), and for a first
+screen [Hero](/en/components/hero/) (both in Russian). Hero, Showcase and
 Promo already use the shared Surface styling: do not nest them in a Surface
 and do not add CSS, a template path or a separate background.
 
@@ -341,5 +338,5 @@ php vendor/bin/docara verify-static build_production
 ## See also
 
 - [Menu and sections](/en/authoring/navigation/) — how a page gets into the menu
-- [Component catalogue](/ru/components/) (in Russian)
-- [Page error codes](/ru/reference/errors/content/) (in Russian)
+- [Component catalogue](/en/components/)
+- [Page error codes](/en/reference/errors/content/)

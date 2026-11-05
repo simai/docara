@@ -1,0 +1,38 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Payment notifications",
+  "description": "Demo page with a warning next to the page outline.",
+  "layout": {
+    "regions": {
+      "outline": {
+        "enabled": true,
+        "sections": [
+          {"id": "page-outline", "section": "docara.outline"},
+          {
+            "id": "aside-note",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1"],
+            "blocks": [
+              {
+                "id": "signature",
+                "block": "shell.smart",
+                "slot": "content",
+                "smart": "ui.alert",
+                "view": "default",
+                "props": {
+                  "type": "warning",
+                  "variant": "outlined",
+                  "title": "Check the signature",
+                  "supporting-text": "Without it, anyone can forge a notification.",
+                  "closable": false,
+                  "aria-label": "Check the notification signature"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "navigation": {"order": 60}
+}

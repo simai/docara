@@ -6,7 +6,7 @@ description: Building the Docara site for one portal path and packing it into a 
 
 A portal gathers several products into one site, for example
 `https://portal.example.com/`: each product takes its own path
-(`/ru/acme/docs/`), while the portal owns the home page, the language prefix
+(`/en/acme/docs/`), while the portal owns the home page, the language prefix
 and the hosting files. The `portal` section in `docara.json` builds the site
 for such a path, and the `portal-artifact` command packs the result into
 three release files that the portal downloads, checks and lays out along its
@@ -35,11 +35,11 @@ path in `base_url`, the full address in `site_url` and the `portal` section.
     "detect_browser_language": false,
     "legacy_unprefixed_redirects": false
   },
-  "base_url": "/ru/acme/docs/",
-  "site_url": "https://portal.example.com/ru/acme/docs/",
+  "base_url": "/en/acme/docs/",
+  "site_url": "https://portal.example.com/en/acme/docs/",
   "portal": {
     "product": "acme-docs",
-    "home_url": "https://portal.example.com/ru/",
+    "home_url": "https://portal.example.com/en/",
     "home_label": "portal.example.com"
   }
 }
@@ -80,8 +80,8 @@ A site without a `portal` section builds as usual.
   true}` in a portal build stops it with `PORTAL_NOT_FOUND_PAGE_FORBIDDEN`,
   and `404.md` is published as an ordinary `404/` page.
 - Links in content written for a site with a language prefix lead to pages
-  without the prefix: `[Start](/ru/start/quick-start/)` in a build for
-  `/ru/acme/docs/` becomes `/ru/acme/docs/start/`. Links from the site root
+  without the prefix: `[Start](/en/start/quick-start/)` in a build for
+  `/en/acme/docs/` becomes `/en/acme/docs/start/`. Links from the site root
   (`/start/`) work the same way.
 - The search index, the assets, the media and the example frames live inside
   the build and are addressed under `base_url`.
@@ -134,7 +134,7 @@ The receipt:
     "repository": "acme/docs",
     "commit": "<40 hex>",
     "locale": "ru",
-    "base_path": "/ru/acme/docs/",
+    "base_path": "/en/acme/docs/",
     "archive": "acme-docs-1.2.0-portal.tar.gz",
     "sha256": "<64 hex>",
     "files": 1706,

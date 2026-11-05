@@ -42,11 +42,10 @@ two ready views — documentation (`docs`) and landing (`landing`).
 - **Simple search.** Search runs in the browser and matches word beginnings,
   without typo correction or stemming. Synonyms are set with page tags.
 - **A bounded set of components.** The components in the
-  [catalogue](/ru/components/) (in Russian) are available; a developer adds a
-  new one along a [checked path](/ru/development/smart-components/) (in Russian).
-- **The Docara documentation is mostly in Russian.** This English version
-  covers getting started; the other sections follow. The `minimal` starter
-  creates a site in English or Russian, `showcase` only in Russian.
+  [catalogue](/en/components/) are available; a developer adds a
+  new one along a [checked path](/en/development/smart-components/).
+- **The `showcase` starter is in Russian only for now.** The `minimal`
+  starter creates a site in English or Russian.
 
 ## What it needs
 

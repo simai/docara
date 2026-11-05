@@ -71,6 +71,23 @@ final class TranslationStatusServiceTest extends TestCase
     }
 
     #[Test]
+    public function localized_values_and_addresses_in_blocks_keep_the_structure(): void
+    {
+        $this->project();
+        file_put_contents($this->tmpPath('content/ru/index.md'), "---\ntranslation_key: guide.start\n---\n# Начало\n\n[SemVer](https://semver.org/lang/ru/)\n\n:::download {title=\"a.zip\" format=\"ZIP\" file_size=\"4,8 МБ\"}\n:::\n\n:::tabs {sync=install default=\"Архив\"}\n:::\n\n::::example {src=\"/ru/demo/\" label=\"Результат\"}\n:::code {src=\"../data/inputs.json\" lang=json}\n:::\n::::\n");
+        file_put_contents($this->tmpPath('content/en/index.md'), "---\ntranslation_key: guide.start\n---\n# Start\n\n[SemVer](https://semver.org/)\n\n:::download {title=\"a.zip\" format=\"ZIP\" file_size=\"4.8 MB\"}\n:::\n\n:::tabs {sync=install default=\"Archive\"}\n:::\n\n::::example {src=\"/en/demo/\" label=\"Result\"}\n:::code {src=\"../data/inputs.en.json\" lang=json}\n:::\n::::\n");
+        $service = new TranslationStatusService;
+        self::assertSame('unverified', $this->item($service->report($this->tmp, 'en'), 'page', 'guide.start')['status']);
+
+        foreach ([['format="ZIP"', 'format="TAR"'], ['sync=install', 'sync=setup'], ['/en/demo/', '/en/other/'], ['inputs.en.json', 'other.en.json'], ['https://semver.org/', 'https://example.org/']] as [$from, $to]) {
+            $original = (string) file_get_contents($this->tmpPath('content/en/index.md'));
+            file_put_contents($this->tmpPath('content/en/index.md'), str_replace($from, $to, $original));
+            self::assertSame('structure_mismatch', $this->item($service->report($this->tmp, 'en'), 'page', 'guide.start')['status'], $to);
+            file_put_contents($this->tmpPath('content/en/index.md'), $original);
+        }
+    }
+
+    #[Test]
     public function stale_plans_and_ambiguous_keys_fail_closed(): void
     {
         $this->project();

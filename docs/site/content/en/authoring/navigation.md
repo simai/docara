@@ -150,6 +150,21 @@ section at the top and sees only its pages on the left. So put the main
 sections into the top menu. Without a top menu the default is `site`. An
 explicit `navigation.scope` wins over this rule.
 
+A section hidden from the site menu (`navigation.hidden: true` in its
+`section.json`) — for example a demo site for examples — shows the menu of
+the whole site on its pages. To let its pages see only each other, add
+`"scope": "section"` to the same `section.json`:
+
+```json
+{
+  "schema": "docara.section.v1",
+  "navigation": {"hidden": true, "scope": "section"}
+}
+```
+
+The pages of such a section follow their `order` in the side panel, and the
+section still stays out of the site menu.
+
 The top menu, breadcrumbs, search and page-to-page links keep using the full
 tree.
 
@@ -183,4 +198,4 @@ links are shared derived data of all pages. When you rename a page, add a
 
 - [Reading context](/en/settings/reading/) — breadcrumbs and page-to-page links
 - [Redirects](/en/authoring/redirects/)
-- [The navigation and header_navigation fields](/ru/reference/section-and-page/) (in Russian)
+- [The navigation and header_navigation fields](/en/reference/section-and-page/)

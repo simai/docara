@@ -151,11 +151,10 @@ H1 does not show an empty outline, but the H1 still gets an anchor.
 
 A change of the `reading` settings for the site or a section needs a full
 build. The resulting values and their sources can be checked in the
-[page plan after the build](/ru/reference/schemas/#план-страницы-после-сборки)
-(in Russian).
+[page plan after the build](/en/reference/schemas/#the-page-plan-after-the-build).
 
 ## See also
 
 - [Menu and sections](/en/authoring/navigation/) — page order in the tree
 - [Reader panel](/en/settings/reader-preferences/) — the "Reading mode" and "Hide page contents" buttons
-- [The reading field](/ru/reference/section-and-page/) (in Russian)
+- [The reading field](/en/reference/section-and-page/)

@@ -1,0 +1,34 @@
+{
+  "schema": "docara.page.v1",
+  "title": "API error codes",
+  "description": "Demo page with a footer of text and a link.",
+  "layout": {
+    "regions": {
+      "footer": {
+        "enabled": true,
+        "sections": [
+          {
+            "id": "site-footer",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1"],
+            "blocks": [
+              {
+                "id": "copyright",
+                "block": "shell.element",
+                "slot": "content",
+                "element": {"tag": "p", "text": "© 2026 Acme Pay. Support is available 24/7.", "utilities": ["m-0"]}
+              },
+              {
+                "id": "status",
+                "block": "shell.element",
+                "slot": "content",
+                "element": {"tag": "a", "text": "Quick start", "href": "/en/demonstrator-results/preset-docs/", "aria_label": "Open the Acme Pay quick start"}
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "navigation": {"order": 80}
+}

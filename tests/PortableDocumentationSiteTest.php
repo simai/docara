@@ -473,8 +473,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // redirects: 2099.
         // SIMAI Framework ui-c3015f76bcc2, whose renamed components are served
         // from their new folders beside the old ones: 2107. The English
-        // translation of the whole documentation: 2207.
-        self::assertCount(2207, $firstFiles);
+        // translation of the whole documentation: 2207. The Framework's
+        // minified twins published beside the readable files: 3203.
+        self::assertCount(3203, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

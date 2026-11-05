@@ -1961,7 +1961,7 @@ MD;
             $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-c3015f76bcc2-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.min\.js\?sf_v=ui-c3015f76bcc2-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));

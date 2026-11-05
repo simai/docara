@@ -19,7 +19,10 @@ the starter at the first `init`
 in a project that already exists, `init` refuses to run.
 
 ```bash
-# A small site in Russian
+# A small site in English (the default)
+php vendor/bin/docara init .
+
+# The same site in Russian
 php vendor/bin/docara init . --lang=ru
 
 # Component catalogue, landing page, nested guides and Smart examples

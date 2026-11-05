@@ -5,24 +5,26 @@ tags: [i18n, l10n, translation, translations, localization, multilingual, langua
 
 # Multilingual site
 
-Docara does not limit a project to Russian and English. A site declares any
+Docara does not limit a project to one or two languages. A site declares any
 number of locales by BCP 47 tags, for example `ar`, `zh-Hans`, `fr-CA` or
 `sr-Latn-RS`. Each locale has its own Markdown tree, a public address prefix,
 a writing direction and an explicit fallback chain for shared interface
 labels. One command builds all declared locales.
 
-In the example below Russian is published under `/ru/`, English under `/en/`,
-Arabic under `/ar/`, and `/` steadily redirects to the main locale.
+In the example below English is the main language of the site and is
+published under `/en/`. Texts are written in Russian (`/ru/`) and translated
+from it into English and Arabic (`/ar/`). `/` steadily redirects to the main
+locale.
 
 ## 1. Create the same content structure
 
 ```text
 content/
-  ru/
+  en/
     index.md
     guide/
       install.md
-  en/
+  ru/
     index.md
     guide/
       install.md
@@ -32,7 +34,7 @@ content/
       install.md
 ```
 
-A minimal English page `content/en/index.md`:
+A minimal page, `content/en/index.md`:
 
 ```markdown
 # Documentation
@@ -40,7 +42,7 @@ A minimal English page `content/en/index.md`:
 Start with the installation guide.
 ```
 
-For `ru` and `ar` create translations with the same relative paths. It is
+Create the pages of the other languages with the same relative paths. It is
 the matching `index.md` and `guide/install.md` that link the pages for
 `hreflang` and the language switcher; Docara does not guess a missing
 translation.
@@ -69,24 +71,24 @@ Replace `docara.json` with a complete working registry:
   "title": "Acme Docs",
   "preset": "docs",
   "framework_lock": "simai-framework.lock.json",
-  "content_root": "content/ru",
-  "default_locale": "ru",
+  "content_root": "content/en",
+  "default_locale": "en",
   "documentation_version": "current",
   "base_url": "/",
   "locales": {
     "missing_page_policy": "skip",
-    "ru": {
-      "label": "Русский",
-      "direction": "ltr",
-      "content_root": "content/ru",
-      "public_prefix": "ru",
-      "fallbacks": []
-    },
     "en": {
       "label": "English",
       "direction": "ltr",
       "content_root": "content/en",
       "public_prefix": "en",
+      "fallbacks": []
+    },
+    "ru": {
+      "label": "Русский",
+      "direction": "ltr",
+      "content_root": "content/ru",
+      "public_prefix": "ru",
       "fallbacks": []
     },
     "ar": {
@@ -166,7 +168,7 @@ labels automatically.
 
 `translation_tracking` does not change routing, fallback or
 `missing_page_policy`. It compares the source Markdown and `lang.json` with
-the base Russian language and builds a report without stopping the build:
+the source language (`source_locale`, Russian here) and builds a report without stopping the build:
 
 ```bash
 php vendor/bin/docara translations status
@@ -363,21 +365,21 @@ So adding a language needs no new generator branch and no copied PHP code.
 
 ```json
 {
-  "default_locale": "ru",
+  "default_locale": "en",
   "locales": {
     "missing_page_policy": "skip",
-    "ru": {
-      "label": "Русский",
-      "direction": "ltr",
-      "content_root": "content/ru",
-      "public_prefix": "ru",
-      "fallbacks": []
-    },
     "en": {
       "label": "English",
       "direction": "ltr",
       "content_root": "content/en",
       "public_prefix": "en",
+      "fallbacks": []
+    },
+    "ru": {
+      "label": "Русский",
+      "direction": "ltr",
+      "content_root": "content/ru",
+      "public_prefix": "ru",
       "fallbacks": []
     },
     "ar": {
@@ -410,8 +412,8 @@ locales must not overlap. The `locales` registry, `default_locale` and
 `locale_routing` are set only in `docara.json`.
 
 `locale_routing.strategy: "prefixed"` turns on symmetric addresses: every
-locale needs a prefix, including the main one — Russian is published under
-`/ru/`, English under `/en/`. `root: "redirect"` creates a static `/` page
+locale needs a prefix, including the main one — English is published under
+`/en/`, Russian under `/ru/`. `root: "redirect"` creates a static `/` page
 that leads to `default_locale`. Automatic browser language detection is off
 on purpose: one address has one stable language identity. With
 `legacy_unprefixed_redirects: true` the build creates a redirect for every

@@ -98,7 +98,7 @@ The build puts a `404.html` file into the site root (under `base_url`): a
 theme. It has a heading, a short explanation, a link to the home page and a
 link that opens search (without JavaScript it leads to the home page). The
 text is taken in the main language of the site (`default_locale`); Docara has
-a Russian and an English variant.
+an English and a Russian variant.
 
 The server returns this page for any address that does not exist, for example
 `/ru/a/b/c/`. That is why every link, style, script and the search index on it

@@ -126,7 +126,7 @@ php vendor/bin/docara scaffold page guides/install --type=tutorial --title="Inst
 Without an address the page goes to the folder of its type, if there is one
 (`getting-started/`, `how-to/`, `reference/`, `explanation/`), and the file
 name comes from the title. The template text is written in the language of
-the main locale: Russian or English, and English for other languages. The
+the main locale: English or Russian, and English for other languages. The
 page is created with `draft: true`: replace the hint text and remove this
 line so the page appears on the site. With `--dry-run` the command only
 prepares a plan, as for Smart components.

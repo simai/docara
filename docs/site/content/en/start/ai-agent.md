@@ -34,7 +34,7 @@ documentation for its skills folder. Building needs the same
 The agent picks the skill on its own when the project has a `docara.json` or you
 mention Docara. Sample tasks:
 
-- "Create a documentation site for my library in Russian and English."
+- "Create a documentation site for my library in English and Russian."
 - "Move the documentation from the `docs/` folder to Docara and set up the menu."
 - "Add an installation page with a tab for each system."
 - "Update Docara to the latest version and check that the site builds."

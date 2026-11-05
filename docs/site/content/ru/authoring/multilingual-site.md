@@ -5,24 +5,25 @@ tags: [i18n, l10n, перевод, переводы, локализация, м�
 
 # Мультиязычный сайт
 
-Docara не ограничивает проект русским и английским языками. Сайт объявляет
+Docara не ограничивает проект одним или двумя языками. Сайт объявляет
 любое количество локалей по тегам BCP 47, например `ar`, `zh-Hans`, `fr-CA`
 или `sr-Latn-RS`. Для каждой локали задаются собственное дерево Markdown,
 публичный префикс адреса, направление письма и явная цепочка fallback для общих
 подписей интерфейса. Одна команда собирает все объявленные локали.
 
-В примере ниже русский публикуется под `/ru/`, английский — под `/en/`,
-арабский — под `/ar/`, а `/` стабильно перенаправляет на основную локаль.
+В примере ниже основной язык сайта — английский, он публикуется под `/en/`.
+Тексты готовят на русском (`/ru/`) и переводят с него на английский и
+арабский (`/ar/`). Адрес `/` стабильно перенаправляет на основную локаль.
 
 ## 1. Создайте одинаковую структуру контента
 
 ```text
 content/
-  ru/
+  en/
     index.md
     guide/
       install.md
-  en/
+  ru/
     index.md
     guide/
       install.md
@@ -32,7 +33,7 @@ content/
       install.md
 ```
 
-Минимальная русская страница `content/ru/index.md`:
+Минимальная страница на исходном языке, `content/ru/index.md`:
 
 ```markdown
 # Документация
@@ -40,7 +41,7 @@ content/
 Начните с руководства по установке.
 ```
 
-Для `en` и `ar` создайте переводы с теми же относительными путями. Именно
+Страницы других языков создайте с теми же относительными путями. Именно
 совпадение `index.md` и `guide/install.md` связывает страницы для `hreflang` и
 переключателя языка; Docara не угадывает отсутствующий перевод.
 
@@ -68,24 +69,24 @@ cp vendor/simai/docara/stubs/minimal/ru/content/ru/lang.json content/ru/lang.jso
   "title": "Acme Docs",
   "preset": "docs",
   "framework_lock": "simai-framework.lock.json",
-  "content_root": "content/ru",
-  "default_locale": "ru",
+  "content_root": "content/en",
+  "default_locale": "en",
   "documentation_version": "current",
   "base_url": "/",
   "locales": {
     "missing_page_policy": "skip",
-    "ru": {
-      "label": "Русский",
-      "direction": "ltr",
-      "content_root": "content/ru",
-      "public_prefix": "ru",
-      "fallbacks": []
-    },
     "en": {
       "label": "English",
       "direction": "ltr",
       "content_root": "content/en",
       "public_prefix": "en",
+      "fallbacks": []
+    },
+    "ru": {
+      "label": "Русский",
+      "direction": "ltr",
+      "content_root": "content/ru",
+      "public_prefix": "ru",
       "fallbacks": []
     },
     "ar": {
@@ -165,7 +166,8 @@ Docara не требует одинакового количества пунк�
 ## 3. Контролируйте актуальность переводов
 
 `translation_tracking` не меняет routing, fallback или `missing_page_policy`.
-Он сравнивает исходный Markdown и `lang.json` с базовым русским языком и
+Он сравнивает Markdown и `lang.json` каждого перевода с исходным языком
+(`source_locale`, здесь — русский) и
 формирует отчёт, не останавливая сборку:
 
 ```bash
@@ -362,21 +364,21 @@ PHP-кода.
 
 ```json
 {
-  "default_locale": "ru",
+  "default_locale": "en",
   "locales": {
     "missing_page_policy": "skip",
-    "ru": {
-      "label": "Русский",
-      "direction": "ltr",
-      "content_root": "content/ru",
-      "public_prefix": "ru",
-      "fallbacks": []
-    },
     "en": {
       "label": "English",
       "direction": "ltr",
       "content_root": "content/en",
       "public_prefix": "en",
+      "fallbacks": []
+    },
+    "ru": {
+      "label": "Русский",
+      "direction": "ltr",
+      "content_root": "content/ru",
+      "public_prefix": "ru",
       "fallbacks": []
     },
     "ar": {
@@ -409,8 +411,8 @@ PHP-кода.
 только в `docara.json`.
 
 `locale_routing.strategy: "prefixed"` включает симметричные адреса: префикс
-обязателен у каждой локали, включая основную, — русский публикуется в `/ru/`,
-английский в `/en/`. `root: "redirect"` создаёт статическую страницу `/`,
+обязателен у каждой локали, включая основную, — английский публикуется в `/en/`,
+русский в `/ru/`. `root: "redirect"` создаёт статическую страницу `/`,
 ведущую на `default_locale`. Автоматический выбор языка браузера намеренно
 выключен: один адрес имеет одну стабильную языковую идентичность. При
 `legacy_unprefixed_redirects: true` сборка создаёт перенаправление для каждого

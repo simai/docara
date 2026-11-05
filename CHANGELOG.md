@@ -47,6 +47,11 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **The "Made with Docara" line shows the new Docara logo.** A grey square
+  with a light ring stands before the wordmark; the letters keep the colour of
+  the line's text, so one logo reads on light and dark sidebars, and on hover
+  the square turns Docara red. The `showcase` starter ships the new mark.
+
 - **A translation may localize block parameters and outside links.** The
   translation structure check no longer reports `structure_mismatch` for the
   text, file size or default tab in `:::` block parameters, for the language

@@ -1314,11 +1314,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/download.md",
-            "source_sha256": "ce64b85bd3486d5d1a222597b221dd2825cc1333a497751b211dffcd6e25e659",
-            "source_structure_sha256": "c40182ab97c887a08ec0e873d9f75c32cba47b148f0ea5ebc54bc786e622d872",
+            "source_sha256": "4ea6d6392a05e06f03f4de70ba5ec3e5e94cce47685232ae64fbfe859ef72e8f",
+            "source_structure_sha256": "e3334f2bc6e5431fc36ce71c4d6cf180b885a820be8454e1d203fd06071478d0",
             "target_path": "content/en/components/download.md",
-            "target_sha256": "7318914d9f4459819504123ecb116e26be05a7efefc82e0acf5acc39689339c6",
-            "target_structure_sha256": "c40182ab97c887a08ec0e873d9f75c32cba47b148f0ea5ebc54bc786e622d872"
+            "target_sha256": "d478e87cb23c7b290459383fe3ca36ffb5cd042a1beee6e4bbd1e3d686c9bf65",
+            "target_structure_sha256": "e3334f2bc6e5431fc36ce71c4d6cf180b885a820be8454e1d203fd06071478d0"
         },
         {
             "key": "components/effects.md",
@@ -2286,10 +2286,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/branding-and-theme.md",
-            "source_sha256": "9f11e8f69c2e19a644a8a36bebc27c668a07ddff1ed79a3e068d99dcf0c3d5fa",
+            "source_sha256": "b7bf975707a658598844eae25e273ccfeec85eb53bb65e2aca2290be84654611",
             "source_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7",
             "target_path": "content/en/settings/branding-and-theme.md",
-            "target_sha256": "d3372b9e2a8446d89cd450ba3b098b51a1bd1a4cc460c122e32910dd89cd8e16",
+            "target_sha256": "d773b3cde167d5bb0b76c41b58a9178db0883afaeedf84810e2a1cff1217ae69",
             "target_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7"
         },
         {

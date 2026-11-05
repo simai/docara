@@ -40,7 +40,7 @@ description: "Как оформить файл для скачивания: им
 
 :::example {label="С контрольной суммой"}
 ```markdown
-:::download {title="docara-mark.svg" format="SVG" file_size="1 КБ" checksum="SHA-256: 1078…aebc"}
+:::download {title="docara-mark.svg" format="SVG" file_size="1 КБ" checksum="SHA-256: 061e…fa90"}
 [Скачать и проверить](../../assets/docara-mark.svg)
 :::
 ```

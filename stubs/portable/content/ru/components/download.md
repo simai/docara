@@ -32,7 +32,7 @@
 а `checksum` — контрольную сумму для проверки целостности. Указывайте только
 проверенные значения; любой из этих параметров можно опустить.
 
-:::download {title="docara-mark.svg" format="SVG" file_size="1 КБ" checksum="SHA-256: 1078…aebc"}
+:::download {title="docara-mark.svg" format="SVG" file_size="1 КБ" checksum="SHA-256: 061e…fa90"}
 [Скачать и проверить](../../assets/docara-mark.svg)
 :::
 

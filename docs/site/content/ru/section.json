@@ -2,6 +2,7 @@
   "schema": "docara.section.v1",
   "title": "Документация Docara",
   "preset": "docs",
+  "branding": {"share_image": "assets/share-ru.webp"},
   "layout": {
     "container": {"max": 7}
   },

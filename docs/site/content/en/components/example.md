@@ -268,6 +268,14 @@ A whole-page example with `sources=false` does not need to list the page's
 files: `:::example {src="/en/start/" sources=false}` with `:::` on the next
 line.
 
+### Full page width
+
+On a landing page (`"preset": "landing"`), `layout=wide` stretches the
+example from edge to edge of the window, like a full-width surface. On a
+documentation page the example stays in the text column. Use it for a showcase on a home page or a
+landing page; with `sources=false` only the result remains:
+`:::example {layout=wide sources=false}`.
+
 ### Loading
 
 An isolated frame loads when it comes close to the screen (within 600 px),
@@ -297,6 +305,7 @@ surrounding documentation.
 | `fullscreen` | `true`, `false` | — | The button for checking at desktop, tablet and phone widths. |
 | `wrap` | `true`, `false` | — | The button for wrapping long lines in the source code. |
 | `sources` | `true`, `false` | `true` | The source code tabs; `false` shows only the result. |
+| `layout` | `column`, `wide` | `column` | The example's width: `column` follows the text column, `wide` spans the window edge to edge on a landing page. |
 
 <!-- docara:component-parameters:end -->
 

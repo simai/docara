@@ -25,6 +25,7 @@ final class PortableExampleRenderer
         bool $wrap = true,
         bool $defaultLabel = false,
         bool $responsive = false,
+        bool $wide = false,
     ): string {
         $safeId = preg_replace('/[^a-z0-9_-]+/i', '-', $id) ?: 'example';
         $previewTabId = $safeId . '-tab-example';
@@ -74,7 +75,10 @@ final class PortableExampleRenderer
             . '" data-docara-example-preview-reason="' . $this->escape($previewReason)
             . '" data-docara-example-fullscreen="' . ($fullscreen ? 'true' : 'false')
             . '" data-docara-example-wrap="' . ($wrap ? 'true' : 'false')
-            . '" data-docara-outline-exclude data-source-active="false" class="docara-example-preview"'
+            . '" data-docara-outline-exclude data-source-active="false"'
+            // A wide example takes the page's full width like a full-width
+            // surface; the shell's data-docara-width rule does the breakout.
+            . ($wide ? ' data-docara-width="full" class="docara-example-preview docara-example-preview--wide"' : ' class="docara-example-preview"')
             . ($legacyComponentId === '' ? '' : ' data-docara-component-example="' . $this->escape($legacyComponentId) . '"')
             . '><div class="docara-example-preview__header">'
             . '<div role="tablist" aria-label="' . $this->escape($exampleLabel)

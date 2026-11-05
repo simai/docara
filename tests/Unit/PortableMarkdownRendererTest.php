@@ -365,6 +365,17 @@ MD);
         self::assertStringNotContainsString('docara-example-preview__panel--source', $resultOnly);
         self::assertStringContainsString('data-docara-example-wrap="false"', $resultOnly);
         self::assertStringNotContainsString('data-docara-example-wrap hidden', $resultOnly);
+        $wide = $renderer->render(":::example {layout=wide sources=false}\n```html\n<p>x</p>\n```\n:::");
+        // A wide example carries the shell's full-width marker on its root.
+        self::assertMatchesRegularExpression('/<section data-docara-example="[^"]+"[^>]* data-docara-width="full" class="docara-example-preview docara-example-preview--wide"/', $wide);
+        self::assertStringNotContainsString('data-docara-width', $resultOnly);
+        try {
+            $renderer->render(":::example {layout=full}\n```html\n<p>x</p>\n```\n:::");
+            self::fail('An example accepted an unknown layout.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID', $exception->errorCode);
+        }
+
         $pageAlone = $renderer->render(":::example {src=/start/ sources=false}\n:::");
         self::assertStringContainsString('data-docara-example-page', $pageAlone);
         self::assertSame(1, substr_count($pageAlone, 'role="tab"'));

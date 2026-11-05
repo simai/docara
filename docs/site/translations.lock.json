@@ -1350,11 +1350,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/example.md",
-            "source_sha256": "32d7fcde754eec238f34f61d20790a92a353c25f1e8037ed6b6cdefe9143815f",
-            "source_structure_sha256": "f48fd13ebd87d77e0a1f0a3dff028a48649b7888e9ef9614f7154d908546e982",
+            "source_sha256": "673352977cc86581d14fcaf14546e014bcec5281a7432e44fa135559393069bf",
+            "source_structure_sha256": "5024f162dbc12535e3894d01e7156886f44668f050c00283c2d9493428b43189",
             "target_path": "content/en/components/example.md",
-            "target_sha256": "7e574c59cd24318847512a81c64227e38fb5f3098bf17b2b1526c7b6c3ed3aa2",
-            "target_structure_sha256": "f48fd13ebd87d77e0a1f0a3dff028a48649b7888e9ef9614f7154d908546e982"
+            "target_sha256": "7f412af4c46c2c51932f8bf4c1557f870a37face43d73c0bbc88c20b0f4979cf",
+            "target_structure_sha256": "5024f162dbc12535e3894d01e7156886f44668f050c00283c2d9493428b43189"
         },
         {
             "key": "components/figure.md",

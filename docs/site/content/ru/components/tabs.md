@@ -98,7 +98,54 @@ apt install docara
 
 ## Варианты
 
-У вкладок нет параметров оформления: вид задаёт SIMAI Framework.
+По умолчанию вкладки подчёркнуты (`variant=underline`). `variant=pills` —
+скруглённый переключатель SIMAI Framework: так на главной странице или в
+лендинге над живыми примерами выбирают, какой показать.
+
+Во вкладку можно положить пример, код, рисунок или предупреждение. Тогда блок
+вкладок открывается четырьмя двоеточиями `::::tabs` и закрывается `::::`,
+чтобы `:::` вложенного блока его не закрывало. Пример в скрытой вкладке
+загружается, когда её открывают.
+
+::::tabs {variant=pills}
+### Кнопка
+
+:::example {label=Кнопка}
+```html
+<button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Сохранить</span></button>
+```
+:::
+
+### Текст
+
+:::example {label=Текст}
+```markdown
+**Готово.** Сайт собран и проверен.
+```
+:::
+::::
+
+Исходник этого блока:
+
+~~~markdown
+::::tabs {variant=pills}
+### Кнопка
+
+:::example {label=Кнопка}
+```html
+<button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Сохранить</span></button>
+```
+:::
+
+### Текст
+
+:::example {label=Текст}
+```markdown
+**Готово.** Сайт собран и проверен.
+```
+:::
+::::
+~~~
 
 ## Состояния
 
@@ -126,6 +173,7 @@ apt install docara
 | --- | --- | --- | --- |
 | `sync` | строка | — | Имя группы: блоки с одним именем переключаются вместе, а выбор читателя сохраняется для следующих страниц. |
 | `default` | строка | — | Какая вкладка открыта при загрузке: подпись вкладки или её имя (подпись строчными буквами, знаки заменены на дефис). |
+| `variant` | `underline`, `pills` | `underline` | Вид вкладок: подчёркнутые вкладки или скруглённый переключатель. |
 
 <!-- docara:component-parameters:end -->
 

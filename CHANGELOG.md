@@ -26,6 +26,12 @@ All notable changes to Docara are recorded here. The format follows
   the result is still built from the block's source, and the width check
   stays. A whole-page example with `sources=false` needs no file tabs.
 
+- **Tabs can be a rounded switch and hold examples.** `:::tabs
+  {variant=pills}` draws the SIMAI Framework pills instead of the underline.
+  A tab may now hold an example, code, a figure or an alert: open the block
+  with `::::tabs` so the nested `:::` does not close it. An example on a
+  hidden tab loads when the tab opens.
+
 - **An example can show a whole page of the site.** Headers, menus, layout
   regions and section settings show only on a whole page, and the examples
   of them were a small frame with the page's own Markdown dumped below it.

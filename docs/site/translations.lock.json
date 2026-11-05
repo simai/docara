@@ -1518,11 +1518,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/tabs.md",
-            "source_sha256": "6f72c22b4195f529ef174d8e93fa979afd84baa264b015cb55ab7d1ae1eb297d",
-            "source_structure_sha256": "651f608b9acba10531fa54e0034129e1a229e78a105939d40830437840a7d09a",
+            "source_sha256": "de185447668648c3bf3a5e1f44617c5d17f1dfa2a74167df80b4e37bdb391013",
+            "source_structure_sha256": "d7e73da3c7bf822b47c9f21976215f03252ac647493f6abffe70be4e36238c99",
             "target_path": "content/en/components/tabs.md",
-            "target_sha256": "f9c4a90d3e6f280cc398709447eed1ea3d013faeacb58ab7f05892487afb1de3",
-            "target_structure_sha256": "651f608b9acba10531fa54e0034129e1a229e78a105939d40830437840a7d09a"
+            "target_sha256": "9091fd9aaf7d4c5267fdcb3c29ca08e0f11ad53d0cf321c9f5f3c7bdbb439b8a",
+            "target_structure_sha256": "d7e73da3c7bf822b47c9f21976215f03252ac647493f6abffe70be4e36238c99"
         },
         {
             "key": "components/tree.md",

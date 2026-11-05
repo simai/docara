@@ -222,7 +222,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/surface.md",
-            "source_sha256": "064e19f026412b2d1cbf7442c67b23b16cd169d576a6d920f65f795ebfaa0616",
+            "source_sha256": "87c4cec76bd93e59ed1c985de5cd73b64d2c4a85998f066aaa2e0845558c3df7",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/docs/site/content/ru/components/surface.md",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/docs/site/content/ru/components/surface.md",
@@ -230,7 +230,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/tabs.md",
-            "source_sha256": "772e67401b8d581846c0f07e14790fa3df7cc98a513290c422174ebb8af8f932",
+            "source_sha256": "e81729f385b53b47ffdc348b714a922af2d5b14ba23f9a88b288cd4de885e350",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/docs/site/content/ru/components/tabs.md",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/docs/site/content/ru/components/tabs.md",
@@ -526,7 +526,7 @@
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.tabs.json",
-            "source_sha256": "5979c062bcfd521152583a96c12555862a1d328693ac1569b7ce4f5c6996958d",
+            "source_sha256": "6532f01ce4d28f2f2fe44477f6ea4a04ed55515169a8cc83b59e73a27e555940",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/resources/component-catalog/typed/docara.tabs.json",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/resources/component-catalog/typed/docara.tabs.json",
@@ -557,5 +557,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "aadb20996aed9529d8962ec4eec0a0ab0d829433b3220b22afb4f309d18b9921"
+    "content_sha256": "711c54c7aa7185b574a19e779f0b3f63fa5d63252f7980222ac7e6c054f92193"
 }

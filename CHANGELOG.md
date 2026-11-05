@@ -47,6 +47,10 @@ All notable changes to Docara are recorded here. The format follows
   is now English, a `view/ru.json` view carries the Russian text, and the
   Russian pages pick it with `"view":"ru"`. The configurator now finds the
   chosen plan by its place in the list, so its prices work in both views.
+- **The showcase starter's demo components speak English by default too.**
+  The copies that `docara init --template showcase` writes into a new project
+  get the same English default views, `view/ru.json` Russian views and plan
+  lookup by position; the starter's Russian pages pick `"view":"ru"`.
 
 - **Parts added to the side columns and the footer line up with Docara's own
   text.** A part under the contents lay on the column's line, and a filled one

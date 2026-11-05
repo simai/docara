@@ -16,7 +16,9 @@
     "frontendOwnership": "none"
   },
   "props": {
-    "title": {"type": "string", "required": true}
+    "title": {"type": "string", "required": true},
+    "docs_link": {"type": "string", "required": false, "default": "Documentation"},
+    "components_link": {"type": "string", "required": false, "default": "Project components"}
   },
   "assets": {
     "css": ["assets/footer-links.css"],

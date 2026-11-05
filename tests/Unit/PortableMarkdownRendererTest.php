@@ -898,6 +898,18 @@ MD);
         // A block without a sync name carries no sync marker, and the
         // Framework tabs script alone switches its panels.
         self::assertStringNotContainsString('data-docara-tabs-sync', $html);
+
+        // variant=pills is the Framework's rounded tabs style; the panels
+        // may hold live examples.
+        $pills = (new PortableMarkdownRenderer)->render("::::tabs {variant=pills}\n### Кнопки\n\n:::example\n```html\n<p>a</p>\n```\n:::\n\n### Поля\n\n:::example\n```html\n<p>b</p>\n```\n:::\n::::\n");
+        self::assertStringContainsString('class="sf-tabs sf-tabs--pills flex flex-col m-bottom-1"', $pills);
+        self::assertSame(2, substr_count($pills, 'data-docara-example="'));
+        try {
+            (new PortableMarkdownRenderer)->render(":::tabs {variant=segmented}\n### A\n\nx\n\n### B\n\ny\n:::\n");
+            self::fail('Tabs accepted a style the Framework does not have.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID', $exception->errorCode);
+        }
     }
 
     #[Test]

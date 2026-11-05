@@ -191,6 +191,7 @@ final class PortableMarkdownRenderer
                 ),
                 TypedRendererId::Grid => $this->renderGridContent($contentHtml, $node->props),
                 TypedRendererId::Card => $this->renderCardContent($contentHtml, $node->props),
+                TypedRendererId::Tabs => $this->renderTabs($contentHtml, $node->props),
                 default => throw new PortableConfigurationException(
                     'DOCUMENT_CONTAINER_RENDERER_UNSUPPORTED',
                     "Container renderer [{$node->renderer}] is not supported by the shared presentation runtime.",
@@ -327,7 +328,10 @@ final class PortableMarkdownRenderer
                     $block['attributes'],
                     $sourceFile,
                 ),
-                TypedRendererId::Tabs => $this->renderTabs($this->converter->convert($blockMarkdown), $block['attributes']),
+                TypedRendererId::Tabs => $this->renderTabs(
+                    $this->renderCompiled($block['markdown'], $sourceRoot, $sourceFile),
+                    $block['attributes'],
+                ),
                 TypedRendererId::Banner => $this->renderBanner($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Diagram => $this->renderDiagram($block['markdown'], $block['attributes']),
                 TypedRendererId::Math => $this->renderMath($block['markdown'], $block['attributes']),
@@ -1975,10 +1979,10 @@ HTML;
     }
 
     /** @param array<string,string> $attributes */
-    private function renderTabs(RenderedContentInterface $rendered, array $attributes = []): string
+    private function renderTabs(string $rendered, array $attributes = []): string
     {
         $this->assertAttributes($attributes, 'tabs');
-        $html = trim((string) $rendered);
+        $html = trim($rendered);
         if (preg_match_all('/<h3[^>]*>(?<label>.*?)<\/h3>\s*(?<content>.*?)(?=<h3\b|\z)/su', $html, $matches, PREG_SET_ORDER) < 2) {
             throw new PortableConfigurationException(
                 'MARKDOWN_TABS_ITEMS_REQUIRED',
@@ -1992,6 +1996,9 @@ HTML;
                 "Markdown component [tabs] has invalid [sync] value [$sync].",
             );
         }
+        // variant is the Framework tabs style: underline (the default) or
+        // pills, the rounded switch a landing page uses above its examples.
+        $variant = $this->catalogueChoice(trim($attributes['variant'] ?? 'underline'), 'tabs', 'variant');
         $wanted = trim($attributes['default'] ?? '');
         $id = 'docara-tabs-' . substr(hash('sha256', $html), 0, 12);
         $items = [];
@@ -2032,14 +2039,14 @@ HTML;
                 . ' class="sf-tabs-main-tab' . ($selected ? ' selected' : '') . '"' . ($selected ? '' : ' hidden') . '>' . $item['content'] . '</section>';
         }
 
-        // The block is the Framework underline tabs: its script switches the
+        // The block is the Framework tabs component: its script switches the
         // panels and handles the keyboard. The selected tab is selected in the
         // markup, so the page reads the same before the script runs, and
         // data-active-index tells the Framework which tab that is. With a sync
         // name the shell script keeps every block of that name on one tab and
         // remembers the reader's choice.
         return '<div data-docara-block="tabs"' . ($sync === '' ? '' : ' data-docara-tabs-sync="' . $this->escapeHtml($sync) . '"')
-            . ' data-active-index="' . $selectedIndex . '" class="sf-tabs sf-tabs--underline flex flex-col m-bottom-1">'
+            . ' data-active-index="' . $selectedIndex . '" class="sf-tabs sf-tabs--' . $variant . ' flex flex-col m-bottom-1">'
             . '<div class="sf-tabs-top-container flex"><nav class="sf-tabs-top flex" role="tablist">' . $tabs . '</nav></div>'
             . '<div class="sf-tabs-main-container">' . $panels . '</div></div>';
     }

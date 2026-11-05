@@ -100,7 +100,54 @@ apt install docara
 
 ## Variants
 
-Tabs have no styling parameters: SIMAI Framework sets the look.
+By default the tabs are underlined (`variant=underline`). `variant=pills` is
+the rounded SIMAI Framework switch: on a home page or a landing page it
+chooses which live example to show.
+
+A tab may hold an example, code, a figure or an alert. Then the tabs block
+opens with four colons `::::tabs` and closes with `::::`, so that the `:::`
+of a nested block does not close it. An example on a hidden tab loads when
+the tab is opened.
+
+::::tabs {variant=pills}
+### Button
+
+:::example {label=Button}
+```html
+<button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Save</span></button>
+```
+:::
+
+### Text
+
+:::example {label=Text}
+```markdown
+**Done.** The site is built and checked.
+```
+:::
+::::
+
+The source of this block:
+
+~~~markdown
+::::tabs {variant=pills}
+### Button
+
+:::example {label=Button}
+```html
+<button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1"><span class="sf-button-text-container">Save</span></button>
+```
+:::
+
+### Text
+
+:::example {label=Text}
+```markdown
+**Done.** The site is built and checked.
+```
+:::
+::::
+~~~
 
 ## States
 
@@ -128,6 +175,7 @@ tab is visible before the scripts load too, so put the important one first.
 | --- | --- | --- | --- |
 | `sync` | string | — | The group name: blocks with the same name switch together, and the reader's choice is kept for the following pages. |
 | `default` | string | — | Which tab is open on load: the tab label or its name (the label in lowercase, punctuation replaced by hyphens). |
+| `variant` | `underline`, `pills` | `underline` | The tabs style: underlined tabs or the rounded switch. |
 
 <!-- docara:component-parameters:end -->
 

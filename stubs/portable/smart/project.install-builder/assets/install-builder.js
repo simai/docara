@@ -11,10 +11,10 @@
     const quote = (value) => `'${String(value).replaceAll("'", "'\"'\"'")}'`;
     const buildCommand = ({os, method, packageName, version, development, preferDist}) => {
         if (!osLabels.has(os) || !methodExecutables.has(method)) {
-            return {ok: false, code: 'PROJECT_INSTALL_SELECTION_INVALID', message: 'Выберите поддерживаемые ОС и способ установки.'};
+            return {ok: false, code: 'PROJECT_INSTALL_SELECTION_INVALID', message: 'Choose a supported operating system and installation method.'};
         }
         if (!packagePattern.test(packageName) || !versionPattern.test(version)) {
-            return {ok: false, code: 'PROJECT_INSTALL_INPUT_INVALID', message: 'Проверьте package и version: разрешены только безопасные значения Composer.'};
+            return {ok: false, code: 'PROJECT_INSTALL_INPUT_INVALID', message: 'Check package and version: only safe Composer values are allowed.'};
         }
         const args = [methodExecutables.get(method), 'require', quote(`${packageName}:${version}`)];
         if (development) args.push('--dev');
@@ -46,7 +46,12 @@
             }
         });
     };
+    const errorTexts = {
+        PROJECT_INSTALL_SELECTION_INVALID: 'textErrorSelection',
+        PROJECT_INSTALL_INPUT_INVALID: 'textErrorInput',
+    };
     const bind = (root) => {
+        const text = (key, fallback) => root.dataset[key] || fallback;
         const output = root.querySelector('[data-install-command]');
         const copy = root.querySelector('[data-install-copy]');
         const status = root.querySelector('[data-install-status]');
@@ -63,10 +68,10 @@
             });
             root.dataset.state = result.ok ? 'valid' : 'invalid';
             copy.disabled = !result.ok;
-            output.textContent = result.ok ? result.command : 'Команда недоступна: исправьте параметры.';
+            output.textContent = result.ok ? result.command : text('textUnavailable', 'Command unavailable: fix the parameters.');
             status.textContent = result.ok
-                ? 'Команда только формируется и никогда не выполняется страницей.'
-                : result.message;
+                ? text('textReady', 'The page only builds the command and never runs it.')
+                : text(errorTexts[result.code] || '', result.message);
             return result;
         };
         root.addEventListener('input', render);
@@ -77,9 +82,9 @@
             if (!result.ok) return;
             try {
                 await navigator.clipboard.writeText(result.command);
-                status.textContent = 'Команда скопирована.';
+                status.textContent = text('textCopied', 'Command copied.');
             } catch {
-                status.textContent = 'Выделите команду и скопируйте вручную.';
+                status.textContent = text('textCopyFailed', 'Select the command and copy it manually.');
             }
         });
         Promise.all(['sf-input', 'sf-dropdown', 'sf-checkbox'].map((name) => customElements.whenDefined(name))).then(render);

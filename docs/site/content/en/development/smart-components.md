@@ -79,6 +79,9 @@ two project components (the showcase starter is written in Russian):
   options of the `ui.dropdown` list in its `options` slot are child
   `ui.list-item` components with `type=text`.
 
+The `default` view of both components is English, and `view/ru.json` carries
+the Russian text: the starter page calls them with `"view":"ru"`.
+
 Neither example contacts a server, orders anything, takes payment or runs
 commands. You can also call them with an underscore —
 `project.install_builder`, `project.product_configurator` — but the main names

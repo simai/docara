@@ -88,6 +88,40 @@ final class ProjectExtensionDemoTest extends TestCase
     }
 
     #[Test]
+    public function project_demos_render_english_by_default_and_russian_with_the_ru_view(): void
+    {
+        file_put_contents($this->tmpPath('content/ru/language-check.md'), <<<'MD'
+# Language check
+
+:::project.install-builder
+{"title":"Default view","package":"simai/docara","version":"^3.0"}
+:::
+
+:::project.product-configurator
+{"title":"Default view","base_price":2500,"team_price":4500,"business_price":8000,"currency":"$"}
+:::
+MD);
+
+        $build = $this->tmpPath('build_language');
+        (new PortableSiteBuilder(new Filesystem, new PortableMarkdownRenderer))->build($this->tmp, $build);
+        $english = (string) file_get_contents($build . '/ru/language-check/index.html');
+        $russian = (string) file_get_contents($build . '/ru/project-demos/index.html');
+
+        foreach (['Operating system', 'How to run Composer', '>Copy<', 'The page only builds the command and never runs it.', 'data-text-copied="Command copied."', 'Product plan', 'Starter — no extra options', 'Advanced analytics', 'data-variant-keys="starter team business"'] as $text) {
+            self::assertStringContainsString($text, $english);
+        }
+        foreach (['Операционная система', 'Способ запуска Composer', 'Копировать', 'data-text-copied="Команда скопирована."', 'Вариант продукта', 'Стартовый — без дополнительных возможностей', 'Расширенная аналитика', 'data-variant-keys="starter team business"', 'Документация'] as $text) {
+            self::assertStringContainsString($text, $russian);
+        }
+        foreach (['Operating system', '>Copy<', 'Product plan', 'no extra options', 'Project components'] as $text) {
+            self::assertStringNotContainsString($text, $russian);
+        }
+        foreach (['Операционная система', 'Копировать', 'Вариант продукта'] as $text) {
+            self::assertStringNotContainsString($text, $english);
+        }
+    }
+
+    #[Test]
     public function project_demo_semantic_contracts_cover_every_control_and_fail_closed(): void
     {
         $node = (new ExecutableFinder)->find('node');
@@ -120,7 +154,9 @@ const payload = {
   team: api.calculateProductConfiguration({variant:'Командный',prices:{starter:2500,team:4500,business:8000},options:[{label:'Аналитика',value:1200,checked:true}]}),
   business: api.calculateProductConfiguration({variant:'Бизнес',prices:{starter:2500,team:4500,business:8000},options:[{label:'Аналитика',value:1200,checked:true},{label:'Команда',value:800,checked:true},{label:'Экспорт',value:500,checked:true}]}),
   productInvalid: api.calculateProductConfiguration({variant:'Чужой',prices:{starter:2500,team:4500,business:8000},options:[]}),
-  optionInvalid: api.calculateProductConfiguration({variant:'Стартовый',prices:{starter:2500,team:4500,business:8000},options:[{label:'Bad',value:'NaN',checked:true}]})
+  optionInvalid: api.calculateProductConfiguration({variant:'Стартовый',prices:{starter:2500,team:4500,business:8000},options:[{label:'Bad',value:'NaN',checked:true}]}),
+  englishTeam: api.calculateProductConfiguration({variant:'Team',prices:{starter:2500,team:4500,business:8000},options:[]}),
+  keyedBusiness: api.calculateProductConfiguration({variant:'Renamed plan',variantKey:'business',prices:{starter:2500,team:4500,business:8000},options:[]})
 };
 process.stdout.write(JSON.stringify(payload));
 JS);
@@ -142,6 +178,8 @@ JS);
         self::assertSame('PROJECT_CONFIG_OPTION_INVALID', $result['optionInvalid']['code']);
         self::assertFalse($result['productInvalid']['ok']);
         self::assertFalse($result['optionInvalid']['ok']);
+        self::assertSame(4500, $result['englishTeam']['total']);
+        self::assertSame(8000, $result['keyedBusiness']['total']);
         self::assertSame('', $process->getErrorOutput());
     }
 

@@ -7,7 +7,7 @@
 Компонент только формирует и копирует команду. Он ничего не запускает.
 
 :::project.install-builder
-{"title":"Соберите команду установки","package":"simai/docara","version":"^3.0"}
+{"view":"ru","title":"Соберите команду установки","package":"simai/docara","version":"^3.0"}
 :::
 
 ## Конфигуратор продукта
@@ -15,5 +15,5 @@
 Расчёт выполняется только в браузере. Демо не отправляет данные и не создаёт заказ.
 
 :::project.product-configurator
-{"title":"Настройте пример продукта","base_price":2500,"team_price":4500,"business_price":8000,"currency":"₽"}
+{"view":"ru","title":"Настройте пример продукта","base_price":2500,"team_price":4500,"business_price":8000,"currency":"₽"}
 :::

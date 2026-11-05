@@ -1782,10 +1782,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/development/smart-components.md",
-            "source_sha256": "1e6c5789649b3d92bd2882f60af2f985faa18004317b02b1a361ed54d070400d",
+            "source_sha256": "39c90a82189b428a765df0aded579d8db2f75fcf055171a936c8737bc920f4d4",
             "source_structure_sha256": "6fa4aa620d90f1256ab15527827c9ece6a566ef917d72b30d87a980a4a2c409b",
             "target_path": "content/en/development/smart-components.md",
-            "target_sha256": "b964ec907eaa4fffe9784d33fd665ac98abc16c2927ebb4664c17a1c8e9f0c51",
+            "target_sha256": "f1a2212400664b8ed22e56402e11df6407debc9cb7c82a04454182d188789488",
             "target_structure_sha256": "6fa4aa620d90f1256ab15527827c9ece6a566ef917d72b30d87a980a4a2c409b"
         },
         {

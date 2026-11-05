@@ -20,7 +20,15 @@
     "base_price": {"type": "number", "required": true},
     "team_price": {"type": "number", "required": false, "default": 4500},
     "business_price": {"type": "number", "required": false, "default": 8000},
-    "currency": {"type": "string", "required": true}
+    "currency": {"type": "string", "required": true},
+    "legend": {"type": "string", "required": false, "default": "Plan and options"},
+    "selected_label": {"type": "string", "required": false, "default": "Selected:"},
+    "total_label": {"type": "string", "required": false, "default": "Sample total:"},
+    "no_options": {"type": "string", "required": false, "default": "no extra options"},
+    "unavailable": {"type": "string", "required": false, "default": "Unavailable"},
+    "disclaimer": {"type": "string", "required": false, "default": "This is an interface demo: it creates no order, takes no payment and sends no data."},
+    "error_variant": {"type": "string", "required": false, "default": "Choose a supported product plan."},
+    "error_option": {"type": "string", "required": false, "default": "The configuration options are damaged."}
   },
   "slots": {
     "controls": {"accepts": ["ui.dropdown", "ui.checkbox"], "required": true, "multiple": true}

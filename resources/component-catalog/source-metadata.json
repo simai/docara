@@ -102,7 +102,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/download.md",
-            "source_sha256": "f362aab4021ce83886e0782a8c0f0468c77f31f167f9c13be3179aefec67fe68",
+            "source_sha256": "c071446dc699f73f75938a57853498ec72731e6e64c95925d6f4a9c31ec2cf5f",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/docs/site/content/ru/components/download.md",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/docs/site/content/ru/components/download.md",
@@ -557,5 +557,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "917e4e01c47d56e5cdb4129fa4a9013f1ea2146c94147ec0a452fd4d039e42eb"
+    "content_sha256": "b6ec2f149616bce10617b4a3e5e94120eabab745ee3d5d259fcbf7da93c1fa51"
 }

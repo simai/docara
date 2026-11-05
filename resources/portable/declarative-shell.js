@@ -233,18 +233,18 @@
   document.addEventListener('docara:open-transient',function(event){
     closeTransientExcept(event.detail&&event.detail.id||'');
   });
-  /* The header's navigation panel is the Framework sf-site-header's own: it opens, closes, traps focus and locks the page. The shell fills its sheet with the sidebar tree as the panel opens, and keeps the panel's scroll. */
+  /* The header's navigation panel is the Framework sf-header-site's own: it opens, closes, traps focus and locks the page. The shell fills its sheet with the sidebar tree as the panel opens, and keeps the panel's scroll. */
   (function(){
     var header=document.querySelector('body[data-docara-shell]>.docara-header');
     var sheet=header&&header.querySelector('[data-docara-sheet-content]');
     if(!sheet)return;
-    header.addEventListener('sf-site-header-open',function(){
+    header.addEventListener('sf-header-site-open',function(){
       var template=sheet.querySelector('template[data-docara-sheet-template]');
       var target=sheet.querySelector('[data-docara-sheet-lazy-content]');
       if(template&&target){target.replaceWith(template.content.cloneNode(true));template.remove()}
     });
-    header.addEventListener('sf-site-header-opened',function(){navigationScroll.openDrawer()});
-    header.addEventListener('sf-site-header-close',function(){navigationScroll.keepDrawer()});
+    header.addEventListener('sf-header-site-opened',function(){navigationScroll.openDrawer()});
+    header.addEventListener('sf-header-site-close',function(){navigationScroll.keepDrawer()});
   })();
   document.querySelectorAll('[data-docara-breadcrumbs]').forEach(function(breadcrumbs){
     var ellipsisLabel=breadcrumbs.dataset.docaraBreadcrumbsEllipsisLabel;

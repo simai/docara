@@ -7,7 +7,7 @@
     var trigger=document.querySelector('[data-docara-reader-settings-trigger]');
     var store=window.DocaraReaderPreferences;
     if(!component||!modal||!trigger||!store)return;
-    if(modal.localName==='sf-context-menu'){bootMenu(modal,trigger,store);return}
+    if(modal.localName==='sf-menu-context'){bootMenu(modal,trigger,store);return}
     booted=true;
     component.dataset.docaraPreferencesRuntime='ready';
     var copyNode=document.getElementById('docara-runtime-copy'),messages={};
@@ -241,7 +241,7 @@
     });
     sync();
   }
-  // The menu view is the Framework sf-context-menu settings panel: it draws
+  // The menu view is the Framework sf-menu-context settings panel: it draws
   // the rows and reports each choice; the page keeps the values (the store
   // the bootstrap applied before first paint) and puts them back on open.
   function bootMenu(menu,trigger,store){
@@ -282,9 +282,9 @@
       restore();
       if(typeof menu.toggleFor==='function')menu.toggleFor(trigger);
     });
-    menu.addEventListener('sf-context-menu-opened',function(){trigger.setAttribute('aria-expanded','true')});
-    menu.addEventListener('sf-context-menu-closed',function(){trigger.setAttribute('aria-expanded','false')});
-    menu.addEventListener('sf-context-menu-changed',function(event){
+    menu.addEventListener('sf-menu-context-opened',function(){trigger.setAttribute('aria-expanded','true')});
+    menu.addEventListener('sf-menu-context-closed',function(){trigger.setAttribute('aria-expanded','false')});
+    menu.addEventListener('sf-menu-context-changed',function(event){
       var detail=event.detail||{};
       var field=fields().filter(function(field){return field.id===detail.id})[0];
       if(!field)return;
@@ -295,7 +295,7 @@
     });
     // The reset row is a command: the page clears its values and the panel
     // shows the declared ones again.
-    menu.addEventListener('sf-context-menu-select',function(event){
+    menu.addEventListener('sf-menu-context-select',function(event){
       if(!event.detail||event.detail.id!=='reset')return;
       store.reset();
       restore();

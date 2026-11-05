@@ -227,7 +227,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString("addEventListener('resize',function()", $shellJs);
         self::assertStringContainsString("Object.assign({type:'docara:example-measure'},environment)", $shellJs);
         self::assertStringContainsString('link[data-docara-declarative-shell-style][rel="stylesheet"]', $shellJs);
-        // The header menu is printed twice: in the sf-site-header first-paint
+        // The header menu is printed twice: in the sf-header-site first-paint
         // picture and as the slotted original the element places.
         self::assertSame(2, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-smart="docara.navigation" data-docara-view="header"'));
@@ -239,7 +239,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-repository-link'));
         self::assertMatchesRegularExpression('~<a href="https://github.com/simai/docara" rel="noopener" data-docara-repository-link [^>]*aria-label="Репозиторий"[^>]*><svg class="docara-repository-mark" viewBox="0 0 16 16"~', $catalogIndex);
         self::assertStringNotContainsString('>GitHub</', $catalogIndex);
-        self::assertSame(1, substr_count($catalogIndex, '<sf-site-header class="docara-header" collapse="xl" sticky'));
+        self::assertSame(1, substr_count($catalogIndex, '<sf-header-site class="docara-header" collapse="xl" sticky'));
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-sheet-content'));
         self::assertStringContainsString(
             ':root{--docara-header-block-size:calc(var(--sf-d0) + var(--sf-space-1) * 2 + var(--sf-a1));'
@@ -461,16 +461,18 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // their two images and the translation lock: 2031.
         // The English Building and publishing section: 2084.
         // The contents, pager, search and settings become the Framework
-        // sf-contents, sf-pager, sf-search and sf-context-menu: Docara's
+        // sf-contents, sf-pager, sf-search and sf-menu-context: Docara's
         // toc.css and toc.js go and the shared shell stylesheets regroup: 2080.
         // The Page templates page in both languages: 2083.
-        // The header becomes the Framework sf-site-header: its stylesheet
+        // The header becomes the Framework sf-header-site: its stylesheet
         // joins the first frame and the shared shell stylesheets regroup: 2088.
         // The developer examples move to the page-example pattern and one
         // example merges into another behind redirects: 2095.
         // The recipe examples move to their own demo section behind
         // redirects: 2099.
-        self::assertCount(2099, $firstFiles);
+        // SIMAI Framework ui-c3015f76bcc2, whose renamed components are served
+        // from their new folders beside the old ones: 2107.
+        self::assertCount(2107, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

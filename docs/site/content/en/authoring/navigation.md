@@ -127,7 +127,7 @@ page item is marked only on the home page itself. The current page gets
 `aria-current="page"` and the section item `aria-current="true"`; both look
 like the active item of the left menu.
 
-The site header is the SIMAI Framework `sf-site-header` component, one header
+The site header is the SIMAI Framework `sf-header-site` component, one header
 for every SIMAI site. On a wide screen the top menu sits between the brand and
 the header buttons: search, language, settings and the repository. Below
 1152 px (the Framework `xl` step) it neither shrinks nor gets cut: a menu

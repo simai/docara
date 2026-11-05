@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\PortableSite;
 
 /**
- * The page header as the SIMAI Framework sf-site-header: one bar for every
+ * The page header as the SIMAI Framework sf-header-site: one bar for every
  * SIMAI site, with Docara's brand, header navigation, tools and the
  * navigation sheet in its slots.
  *
@@ -70,14 +70,14 @@ final readonly class PortableSiteHeader
             . ($tools === '' ? '' : '<div class="sf-site-header-tools">' . $this->copyOf($tools) . '</div>')
             . '</div></header>';
 
-        return '<sf-site-header class="docara-header" collapse="' . $collapse . '" sticky label="' . $copy['navigation.mobile_title'] . '" menu-label="' . $copy['navigation.open'] . '" close-label="' . $copy['navigation.close'] . '" data-docara-region="header"' . $attributes . ' style="display: contents;">'
+        return '<sf-header-site class="docara-header" collapse="' . $collapse . '" sticky label="' . $copy['navigation.mobile_title'] . '" menu-label="' . $copy['navigation.open'] . '" close-label="' . $copy['navigation.close'] . '" data-docara-region="header"' . $attributes . ' style="display: contents;">'
             . $picture
             . $this->held($brand, 'brand')
             . $this->held($content, null)
             . $this->held($actions, 'actions')
             . $this->held($tools, 'tools')
             . $this->held($sheet, 'sheet')
-            . '</sf-site-header>';
+            . '</sf-header-site>';
     }
 
     /**
@@ -124,12 +124,12 @@ final readonly class PortableSiteHeader
         );
     }
 
-    /** A Framework sf-icon-button in its printed form, like the element draws it. */
+    /** A Framework sf-button-icon in its printed form, like the element draws it. */
     private function iconButton(string $class, string $icon, string $label, string $attributes): string
     {
-        return '<sf-icon-button class="' . $class . '" icon="' . $icon . '" appearance="link" scheme="on-surface" size="1" aria-label="' . $label . '"' . $attributes . ' style="display: contents;">'
+        return '<sf-button-icon class="' . $class . '" icon="' . $icon . '" appearance="link" scheme="on-surface" size="1" aria-label="' . $label . '"' . $attributes . ' style="display: contents;">'
             . '<button type="button" class="sf-icon-button sf-icon-button--size-1 sf-icon-button--icon sf-icon-button--link flex items-cross-center sf-icon-button--on-surface" aria-label="' . $label . '"' . $attributes . ' data-sf-static>'
             . '<sf-icon root-class="pointer-event-none" weight="400" aria-hidden="true" filled="false" icon="' . $icon . '" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-event-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>' . $icon . '</i></sf-icon>'
-            . '</button></sf-icon-button>';
+            . '</button></sf-button-icon>';
     }
 }

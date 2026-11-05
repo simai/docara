@@ -919,8 +919,9 @@ MD);
         self::assertStringNotContainsString('data-docara-previous-next', $landing);
         self::assertStringContainsString('<sf-alert', $index);
         self::assertStringContainsString('<sf-alert', $guide);
-        self::assertStringContainsString('<sf-button', $guide);
-        self::assertStringNotContainsString('<sf-button', $landing);
+        // sf-button itself, not sf-button-icon in the header.
+        self::assertMatchesRegularExpression('~<sf-button[\s>]~', $guide);
+        self::assertDoesNotMatchRegularExpression('~<sf-button[\s>]~', $landing);
         self::assertStringNotContainsString('<script id="unsafe">', $index);
         self::assertStringNotContainsString('alert(1)', $index);
         foreach (['docara.smart.brand.css', 'docara.smart.navigation.css', 'docara.smart.navigation.js', 'docara.smart.preferences.css', 'docara.smart.preferences.js'] as $asset) {
@@ -997,7 +998,7 @@ MD);
                 'min-block-size:calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-default))',
                 $surface,
             );
-            // The Framework sf-site-header opens and closes the navigation panel.
+            // The Framework sf-header-site opens and closes the navigation panel.
             self::assertStringNotContainsString('function bindSheet(dialog)', $surface);
             self::assertStringNotContainsString('function trapDialogTab(dialog,event)', $surface);
             self::assertStringContainsString("customElements.whenDefined('sf-modal')", $surface);
@@ -1007,7 +1008,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/7153f7a9c0929a28d67f458e9d9a9f9351f7cf8f/distr/',
+                '/_docara/vendor/simai-framework/runtime/c3015f76bcc20cd502d5fe7931495e35711d6a4d/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -1056,10 +1057,10 @@ MD);
         self::assertStringNotContainsString('data-docara-search-trigger', $landing);
         self::assertStringNotContainsString('data-docara-search-dialog', $landing);
         self::assertStringNotContainsString('data-docara-search-runtime', $landing);
-        // The header is the Framework sf-site-header: its printed first paint,
+        // The header is the Framework sf-header-site: its printed first paint,
         // then the slotted originals it holds until it draws.
         // Without header links the bar collapses where the sidebar hides (lg).
-        self::assertStringContainsString('<sf-site-header class="docara-header" collapse="lg" sticky label="', $guide);
+        self::assertStringContainsString('<sf-header-site class="docara-header" collapse="lg" sticky label="', $guide);
         self::assertStringContainsString('<header class="sf-site-header sf-site-header--collapse-lg sf-site-header--size-1 sf-site-header--sticky" data-sf-static>', $guide);
         self::assertStringContainsString('<div slot="sheet" data-sf-held class="docara-site-header-sheet flex flex-col gap-3" data-docara-sheet-content>', $guide);
         self::assertStringContainsString('<div slot="tools" data-sf-held class="docara-header-tools flex items-cross-center gap-1/3">', $guide);
@@ -1069,7 +1070,7 @@ MD);
         self::assertStringContainsString('class="docara-sidebar" data-docara-region="sidebar" data-sf-observer="ignore"', $guide);
         self::assertStringContainsString('data-docara-sheet-lazy-content', $guide);
         self::assertStringContainsString('template data-docara-sheet-template', $guide);
-        self::assertStringContainsString("header.addEventListener('sf-site-header-open',function(){", $shellRuntime);
+        self::assertStringContainsString("header.addEventListener('sf-header-site-open',function(){", $shellRuntime);
         // The sticky sidebar and outline are sized from the measured header bar.
         self::assertStringContainsString("document.documentElement.style.setProperty('--docara-header-block-size',size+'px')", $shellRuntime);
         self::assertStringContainsString("var bar=host.querySelector(':scope>.sf-site-header');", $shellRuntime);
@@ -1078,7 +1079,7 @@ MD);
         self::assertStringContainsString('sheet.appendChild(credit.cloneNode(true))', $shellRuntime);
         // The narrow-screen contents is the compact sf-contents, not a sheet.
         self::assertStringNotContainsString('id="docara-outline-dialog"', $guide);
-        self::assertStringContainsString('<sf-icon-button class="sf-site-header-menu-button" icon="menu" appearance="link" scheme="on-surface" size="1"', $guide);
+        self::assertStringContainsString('<sf-button-icon class="sf-site-header-menu-button" icon="menu" appearance="link" scheme="on-surface" size="1"', $guide);
         self::assertStringContainsString('data-docara-transient-dialog', $guide);
         self::assertStringContainsString("document.addEventListener('docara:open-transient'", $shellRuntime);
         self::assertStringNotContainsString('id="docara-mobile-navigation"', $guide);
@@ -1274,9 +1275,9 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => 'e86096d4ce8e3fb95966e7fe0913e9d6192d2a87c4f3581ebfaf64b70a63b435',
-            'smart/buttons/js/buttons.js' => '5095cfe2a3d11020806f418f177f33534b9208cedb9e796c7f651c07de9b1b31',
-            'smart/icons/js/icons.js' => '17f9e531c61e7443d2bee58bf18230ce37006872858c9cc7a2e06ab792fec5ba',
+            'smart/alert/js/alert.js' => '798c7c9e09ab6655a1385eadcd22695c1666e526410aa3dd93a7471dfeb11254',
+            'smart/button/js/button.js' => 'd40653d1292868654daa24e913137ef90b1e79456a542b7c4f34a10209ffcb15',
+            'smart/icon/js/icon.js' => '7bc8029fafe1c716bc6b8843fdbfc16758f15498dc071addd0db264531f62a91',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
             self::assertFileExists($published);
@@ -1373,7 +1374,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('ui-7153f7a9c092', $componentCatalog['framework_pair']);
+        self::assertSame('ui-c3015f76bcc2', $componentCatalog['framework_pair']);
         self::assertCount(39, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1721,7 +1722,7 @@ MD);
         );
         self::assertStringNotContainsString('data-docara-region="sidebar"', $html);
         self::assertStringNotContainsString('data-docara-sheet-content', $html);
-        self::assertStringContainsString('<sf-site-header class="docara-header" collapse="none" sticky', $html);
+        self::assertStringContainsString('<sf-header-site class="docara-header" collapse="none" sticky', $html);
         self::assertStringNotContainsString('data-docara-outline-mobile', $html);
         self::assertStringContainsString('data-docara-region="main"', $html);
     }
@@ -1960,7 +1961,7 @@ MD;
             $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-7153f7a9c092-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=ui-c3015f76bcc2-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));

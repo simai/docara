@@ -4,8 +4,8 @@
 declare(strict_types=1);
 
 /**
- * Project every conventional unminified Smart entrypoint from one immutable
- * revision. Shell files stay in asset_projection; the remaining files are
+ * Project every conventional Smart entrypoint, with its minified twin, from
+ * one immutable revision. Shell files stay in asset_projection; the remaining files are
  * published for the dynamic Loader without being loaded eagerly.
  *
  * The source follows the lock: a release lock v1 pair reads the separate
@@ -85,7 +85,11 @@ foreach (preg_split('/\R/', trim($git(['ls-tree', '-r', '--name-only', $revision
 $tree = implode("\n", array_keys($sourcePaths));
 $files = [];
 foreach (preg_split('/\R/', trim($tree)) ?: [] as $relativePath) {
-    if (preg_match('#^smart/([a-z][a-z0-9-]*)/(css|js)/\1\.(css|js)$#D', $relativePath) !== 1) {
+    // The entrypoint and its minified twin: a page links the twin, and the
+    // browser Loader fetches twins for the elements it loads itself.
+    if (preg_match('#^smart/([a-z][a-z0-9-]*)/(css|js)/\1(?:\.min)?\.(css|js)$#D', $relativePath, $entrypoint) !== 1
+        || $entrypoint[2] !== $entrypoint[3]
+    ) {
         continue;
     }
     $bytes = $git(['show', $revision . ':' . $sourcePaths[$relativePath]]);
@@ -93,6 +97,10 @@ foreach (preg_split('/\R/', trim($tree)) ?: [] as $relativePath) {
         throw new RuntimeException('FRAMEWORK_SMART_ASSET_EMPTY: ' . $relativePath);
     }
     $files[$relativePath] = $bytes;
+    // The licence file webpack wrote beside a minified script comes with it.
+    if (isset($sourcePaths[$relativePath . '.LICENSE.txt'])) {
+        $files[$relativePath . '.LICENSE.txt'] = $git(['show', $revision . ':' . $sourcePaths[$relativePath . '.LICENSE.txt']]);
+    }
 }
 ksort($files, SORT_STRING);
 if ($files === []) {
@@ -347,7 +355,9 @@ foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $pr
     $dynamicProjection = [];
     foreach ($files as $relativePath => $bytes) {
         $record = ['sha256' => hash('sha256', $bytes)];
-        if (in_array($relativePath, $eagerPaths, true)) {
+        // A twin goes where its readable entrypoint goes.
+        $readablePath = (string) preg_replace('/\.min\.(css|js)(?:\.LICENSE\.txt)?$/D', '.$1', $relativePath);
+        if (in_array($readablePath, $eagerPaths, true)) {
             $staticProjection[$relativePath] = $record;
         } else {
             $dynamicProjection[$relativePath] = $record;

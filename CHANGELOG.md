@@ -133,6 +133,16 @@ All notable changes to Docara are recorded here. The format follows
   drew its own line a little inside the column, beside the column's border, so
   two lines stood side by side. The column's border is the one line now, and
   the current section's bar lies on it; the entries keep their indent.
+- **Pages load the SIMAI Framework's minified files.** The Framework release
+  ships every stylesheet and script twice, readable and as a `.min` twin, and
+  Docara published only the readable ones. A page now links the twins, the
+  first-frame stylesheets are built from them, and the Framework Loader fetches
+  twins for what it loads itself. A page downloads less: on this site's home
+  page the scripts and stylesheets a browser fetches drop from 749 KB to
+  416 KB compressed, in the same number of requests. The readable files are
+  still bundled, because the build reads them, and a file the release ships
+  without a twin (`utility.full.css`, a utility script) is linked as before. A
+  product package laid without twins keeps the Loader on readable files.
 
 ### Fixed
 

@@ -132,9 +132,10 @@ final readonly class FrameworkAssetPlanner
             'smart' => [
                 'base' => true,
             ],
-            // Docara projects the readable runtime files, not their .min twins;
-            // the Loader fetches the twins unless told otherwise.
-            'minified' => false,
+            // Docara projects every runtime file with its .min twin, so the
+            // Loader keeps its default and fetches the twins, unless a product
+            // package laid before the twins has only the readable files.
+            'minified' => self::packagesCarryTwins($packageProjections),
         ];
         // A product component package is declared before Core starts; the
         // Loader fetches `<base>/rule.js` itself and loads the package's
@@ -301,6 +302,29 @@ final readonly class FrameworkAssetPlanner
             $shell['preload'],
             $shell['diagnostics'],
         );
+    }
+
+    /**
+     * Whether every product package has the minified twin of each component
+     * script and stylesheet it carries: the Loader names files of the free
+     * release and of every package the same way.
+     *
+     * @param  array<string, array<string, mixed>>  $packageProjections
+     */
+    private static function packagesCarryTwins(array $packageProjections): bool
+    {
+        foreach ($packageProjections as $package) {
+            $files = is_array($package['files'] ?? null) ? $package['files'] : [];
+            foreach (array_keys($files) as $relativePath) {
+                if (preg_match('#^smart/([a-z][a-z0-9-]*)/(css|js)/\1\.(css|js)$#D', (string) $relativePath) === 1
+                    && ! isset($files[(string) preg_replace('/\.(css|js)$/D', '.min.$1', (string) $relativePath)])
+                ) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -762,6 +786,23 @@ final readonly class FrameworkAssetPlanner
         }
         $actual = array_values(array_unique($actual));
         sort($actual, SORT_STRING);
+        // A page links a twin in place of its readable entrypoint, and the
+        // twin's licence file is not linked at all.
+        $linked = array_fill_keys($expected, true);
+        foreach ($expected as $relativePath) {
+            $readable = (string) preg_replace('/\.min\.(css|js)(?:\.LICENSE\.txt)?$/D', '.$1', $relativePath);
+            if (! isset($linked[$readable])) {
+                throw new FrameworkComponentException('FRAMEWORK_ASSET_NOT_PROJECTED', $readable);
+            }
+        }
+        $expected = array_values(array_filter(
+            $expected,
+            static fn (string $relativePath): bool => match (true) {
+                str_ends_with($relativePath, '.LICENSE.txt') => false,
+                str_contains($relativePath, '.min.') => true,
+                default => ! isset($linked[(string) preg_replace('/\.(css|js)$/D', '.min.$1', $relativePath)]),
+            },
+        ));
         if ($actual !== $expected) {
             throw new FrameworkComponentException(
                 'FRAMEWORK_ASSET_PROJECTION_CLOSURE_MISMATCH',
@@ -1611,6 +1652,21 @@ final readonly class FrameworkAssetPlanner
     /** @return array{source:string,path:string,sha256:string,content:string,root:string} */
     private function cssInput(string $source, string $path, string $content, string $root): array
     {
+        // A stylesheet the release also ships minified contributes its twin's
+        // bytes: the same rules, and url() references resolve from the same
+        // directory.
+        $twin = match ($root) {
+            'runtime' => $this->repository->runtimeTwin($path),
+            'smart' => $this->repository->smartTwin($path),
+            default => $path,
+        };
+        if ($twin !== $path) {
+            $content = $root === 'runtime'
+                ? $this->repository->bundledRuntimeAsset($twin)
+                : $this->repository->bundledAsset($twin);
+            $source = $root . '/' . $twin;
+            $path = $twin;
+        }
         if (preg_match('//u', $content) !== 1) {
             throw new FrameworkComponentException('FRAMEWORK_SHELL_CSS_ENCODING_INVALID', $source);
         }
@@ -1932,6 +1988,8 @@ final readonly class FrameworkAssetPlanner
         if (! is_array($projection)) {
             throw new FrameworkComponentException('FRAMEWORK_RUNTIME_ASSET_NOT_PROJECTED', $relativePath);
         }
+        // A page links the minified twin wherever the release ships one.
+        $relativePath = $this->repository->runtimeTwin($relativePath);
         $record = $this->repository->runtimeAssetRecord($relativePath);
         $this->repository->bundledRuntimeAsset($relativePath);
 
@@ -1949,7 +2007,7 @@ final readonly class FrameworkAssetPlanner
             throw new FrameworkComponentException('FRAMEWORK_SMART_ASSET_PATH_INVALID', $lockedPath);
         }
 
-        $relativePath = substr($lockedPath, strlen($prefix));
+        $relativePath = $this->repository->smartTwin(substr($lockedPath, strlen($prefix)));
         $sha256 = hash('sha256', $this->repository->bundledAsset($relativePath));
 
         return [

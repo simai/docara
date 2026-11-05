@@ -7,7 +7,7 @@ them and needs no Framework checkout. Everything here is taken from one public
 | Path | What it holds | Refreshed by |
 |---|---|---|
 | `runtime-lock.json` | The Framework runtime record (Core and Smart at one `simai/ui` commit, the contract registry, boot paths, Smart components) plus the asset planner's records of superseded projections. It must equal the `runtime` of the starter and documentation-site locks. | both sync scripts below |
-| `runtime-smart/<revision>/smart/` | Every conventional unminified Smart entrypoint of the release (`distr/smart/<component>/{js,css}/<component>.{js,css}`). The eager subset is the lock's `asset_projection`; the rest is `dynamic_asset_projection`, published for the browser Loader. | `scripts/sync-framework-smart-runtime.php` |
+| `runtime-smart/<revision>/smart/` | Every conventional Smart entrypoint of the release (`distr/smart/<component>/{js,css}/<component>.{js,css}`) with its `.min` twin, which is what a page links and the Loader fetches. The eager subset is the lock's `asset_projection`; the rest is `dynamic_asset_projection`, published for the browser Loader. | `scripts/sync-framework-smart-runtime.php` |
 | `composition-runtime/<revision>/distr/` | The Composition Recipe runtime (the import closure of `core/js/composition/index.mjs`) and the Recipe contract lock with its normative files. Docara resolves every page through it with Node.js. | `scripts/sync-framework-composition-runtime.php` |
 | `manifests/` | The `ui.alert` and `ui.button` component manifests; `provenance.upstream_revision` names the release commit. | by hand, with the lock's `manifests.*.sha256` |
 | `view-utilities.json` | The utility classes Docara views may use, bound to the release and registry digest. | `scripts/sync-framework-rule-registry.php` |
@@ -15,7 +15,8 @@ them and needs no Framework checkout. Everything here is taken from one public
 | `assets/smart/` | The legacy portable Smart files, used only when a lock names a Smart revision that is not bundled. | not refreshed |
 
 The Core runtime projection (rule registry, utility and component styles,
-Core scripts, fonts and notices) lives in
+Core scripts, fonts and notices, each stylesheet and script with its `.min`
+twin where the release ships one) lives in
 `resources/portable/vendor/simai-framework/runtime/<revision>/` with its
 `runtime-manifest.json`, and is written by
 `scripts/sync-framework-rule-registry.php`.

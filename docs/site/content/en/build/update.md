@@ -163,7 +163,7 @@ Markdown table (see [Markdown table](/en/authoring/markdown/#tables)).
   [Quick start](/en/start/quick-start/).
 - `docara` with no arguments and `docara list` with no view print the list of
   commands, and `docara --version` prints the version. The full list is in the
-  [CLI reference](/ru/reference/cli/) (in Russian).
+  [CLI reference](/en/reference/cli/).
 
 #### The build result
 
@@ -275,5 +275,5 @@ The next compatible updates inside 3.x are done by the command
 ## See also
 
 - [Publishing and rollback](/en/build/publish/)
-- [Update error codes](/ru/reference/errors/upgrade/) (in Russian)
-- [The upgrade command](/ru/reference/cli/) (in Russian)
+- [Update error codes](/en/reference/errors/upgrade/)
+- [The upgrade command](/en/reference/cli/)

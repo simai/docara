@@ -452,8 +452,8 @@ be incomplete: Docara looks up a missing required string along the
 explicitly declared `fallbacks` chain, and for strings with built-in text it
 takes the built-in text. A fallback is never picked by guessing from the
 language name and never replaces a Markdown page. All keys of the file are
-listed in the [«Подписи интерфейса lang.json»](/ru/reference/lang-json/)
-reference (in Russian).
+listed in the [lang.json interface labels](/en/reference/lang-json/)
+reference.
 
 ### Build result
 
@@ -488,6 +488,6 @@ reports statuses; the `publish-current` mode is described
 
 ## See also
 
-- [«Подписи интерфейса lang.json»](/ru/reference/lang-json/) (in Russian) — all keys of the file
+- [lang.json interface labels](/en/reference/lang-json/) — all keys of the file
 - [Redirects](/en/authoring/redirects/)
 - [Menu and sections](/en/authoring/navigation/) — the top menu of each locale

@@ -49,8 +49,8 @@ of most of it. The rest depends on the text the author writes.
 **The quality report.** `docara qa report` checks what can be found in the
 text automatically: images without a description, links like "here", heading
 order, tables without a header row and the page language. The finding codes
-are in the [«Доступность»](/ru/reference/errors/quality/#доступность) part
-of the error reference (in Russian).
+are in the [Documentation quality errors](/en/reference/errors/quality/#accessibility) part
+of the error reference.
 
 ```bash
 php vendor/bin/docara build production
@@ -71,5 +71,5 @@ image description is clear or the reading order is right.
 
 - [Documentation quality](/en/authoring/documentation-quality/)
 - [Reader panel](/en/settings/reader-preferences/)
-- [Figure](/ru/components/figure/) (in Russian) — image description and caption
-- [Quality report codes](/ru/reference/errors/quality/) (in Russian)
+- [Figure](/en/components/figure/) — image description and caption
+- [Quality report codes](/en/reference/errors/quality/)

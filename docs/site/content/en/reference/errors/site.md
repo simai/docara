@@ -203,7 +203,7 @@ More in [Building for a portal](/build/portal/).
 | --- | --- |
 | `PORTAL_INVALID` | `portal` is not an object. **What to do:** Write `portal` as an object with `product` and `home_url`. |
 | `PORTAL_PRODUCT_INVALID` | `portal.product` is written incorrectly. **What to do:** Use lowercase Latin letters, digits and a hyphen, starting with a letter. |
-| `PORTAL_HOME_URL_INVALID`, `PORTAL_HOME_INVALID` | `home_url` is not an `https://` address or contains `?` and `#`. **What to do:** Give an address like `https://simai.io/ru/`. |
+| `PORTAL_HOME_URL_INVALID`, `PORTAL_HOME_INVALID` | `home_url` is not an `https://` address or contains `?` and `#`. **What to do:** Give an address like `https://simai.io/en/`. |
 | `PORTAL_HOME_LABEL_INVALID` | `home_label` is empty or longer than 80 characters. **What to do:** Shorten the label. |
 | `PORTAL_SITE_URL_REQUIRED` | There is no `site_url`. **What to do:** Give the full address of the site on the portal. |
 | `PORTAL_SINGLE_LOCALE_REQUIRED` | A portal build has more than one language. **What to do:** Build each language separately. |

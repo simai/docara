@@ -183,4 +183,4 @@ links are shared derived data of all pages. When you rename a page, add a
 
 - [Reading context](/en/settings/reading/) — breadcrumbs and page-to-page links
 - [Redirects](/en/authoring/redirects/)
-- [The navigation and header_navigation fields](/ru/reference/section-and-page/) (in Russian)
+- [The navigation and header_navigation fields](/en/reference/section-and-page/)

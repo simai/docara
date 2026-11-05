@@ -9,7 +9,7 @@ When a build or a command stops, Docara prints a code in square brackets and
 a short explanation in English:
 
 ```text
-[FRONT_MATTER_KEY_UNKNOWN] Supported keys: title, description, ... Source [content/ru/start.md], line [3], column [1].
+[FRONT_MATTER_KEY_UNKNOWN] Supported keys: title, description, ... Source [content/en/start.md], line [3], column [1].
 ```
 
 The code does not change between versions and does not depend on the
@@ -34,7 +34,7 @@ output, `--json` and the optional MCP adapter are three views of one
 docara doctor --json
 docara atlas --json
 docara inspect smart ui.dropdown --json
-docara inspect page /ru/start/component-model/ --json
+docara inspect page /en/start/component-model/ --json
 docara schema smart --json
 ```
 
@@ -89,7 +89,7 @@ folder structure.
 | `PAGE_SLUG_INVALID` | The `slug` of a page contains forbidden characters or `..`. **What to do:** Use lowercase Latin letters, digits, `-` and `/`. |
 | `PAGE_SLUG_RESERVED` | The `slug` takes a Docara service address, for example `_docara`. **What to do:** Choose another address. |
 | `PAGE_DRAFT_NOT_PUBLISHED` | A one-page build (`--page`) was requested for a draft with `draft: true`. **What to do:** Remove `draft` or build another page. |
-| `PAGE_ROUTE_UNKNOWN` | The command got an address that matches no page. **What to do:** Check the address: it starts and ends with `/`, for example `/ru/start/`. |
+| `PAGE_ROUTE_UNKNOWN` | The command got an address that matches no page. **What to do:** Check the address: it starts and ends with `/`, for example `/en/start/`. |
 | `SECTION_DESCRIPTOR_LEGACY_NAME` | A section file with the old name `_section.json` was found. **What to do:** Rename it to `section.json`. Do not keep both files. |
 | `COMPOSITION_RECIPE_RUNTIME_REQUIRED` | The `node` command or the SIMAI Framework page composition code was not found. The build needs Node.js 20 or newer; the finished site does not. **What to do:** Install Node.js 20 or newer, or give the path in the `DOCARA_NODE_BINARY` variable. |
 | `PORTABLE_PAGE_TRANSFORM_FAILED` | A command from `page_transforms` ended with an error. The message has its exit code and output. **What to do:** Fix the command or its input. The command gets the folder of the built site as its last argument. |

@@ -10,7 +10,7 @@ Apache 2.0 license
 
 [Quick start](/en/start/quick-start/)
 
-[See an example](/ru/components/)
+[See an example](/en/components/)
 :::
 
 ## A first site in three commands
@@ -51,16 +51,16 @@ theme or plugins of your own.
 - :icon[search]{size=2 container=square variant=tonal scheme=primary} **Site search.** The index is built at build time and runs in the reader's browser: the server needs no database and no external service.
 - :icon[tune]{size=2 container=square variant=tonal scheme=primary} **Comfortable reading.** Readers choose a light or dark theme, the font size and the text width.
 - :icon[translate]{size=2 container=square variant=tonal scheme=primary} **Several languages.** Each language is its own Markdown folder. Linked pages get a language switcher and `hreflang`; more in [Multilingual site](/en/authoring/multilingual-site/).
-- :icon[web]{size=2 container=square variant=tonal scheme=primary} **A landing page from the same files.** This page is Docara too: the `landing` preset drops the documentation menu and keeps the first screen, the blocks and the call to action. How it is built is described [on a separate page](/ru/landing/) (in Russian).
+- :icon[web]{size=2 container=square variant=tonal scheme=primary} **A landing page from the same files.** This page is Docara too: the `landing` preset drops the documentation menu and keeps the first screen, the blocks and the call to action. How it is built is described [on a separate page](/en/landing/).
 - :icon[verified]{size=2 container=square variant=tonal scheme=primary} **Checked before publishing.** `verify-static` checks the finished site before it goes live: pages, local links, files and the search index. More in [Checking the build](/en/build/verify/).
 :::
 
 ## Example pages
 
 :::features
-- :icon[widgets]{size=2 container=square variant=tonal scheme=primary} **[Component catalogue](/ru/components/)** (in Russian). Every component with a live example, its parameters and code to copy.
-- :icon[dashboard]{size=2 container=square variant=tonal scheme=primary} **[Layout examples](/ru/development/examples/)** (in Russian). Pages with different regions, headers and setting inheritance — with their source files.
-- :icon[extension]{size=2 container=square variant=tonal scheme=primary} **[Project components](/ru/project-demos/)** (in Russian). A site's own components, added without changing Docara: an install command builder and a product configurator.
+- :icon[widgets]{size=2 container=square variant=tonal scheme=primary} **[Component catalogue](/en/components/)**. Every component with a live example, its parameters and code to copy.
+- :icon[dashboard]{size=2 container=square variant=tonal scheme=primary} **[Layout examples](/en/development/examples/)**. Pages with different regions, headers and setting inheritance — with their source files.
+- :icon[extension]{size=2 container=square variant=tonal scheme=primary} **[Project components](/en/project-demos/)**. A site's own components, added without changing Docara: an install command builder and a product configurator.
 :::
 
 ## Frequently asked questions
@@ -96,7 +96,7 @@ drops the documentation menu. This page is built that way.
 
 Yes. Try plain Markdown and the ready Docara blocks first. If they are not
 enough, add a component of your own through the
-[documented contract](/ru/development/#как-развивать-возможности) (in Russian).
+[documented contract](/en/development/#how-to-extend-capabilities).
 :::
 
 :::details {layout=lines}

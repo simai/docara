@@ -109,5 +109,5 @@ works is described in [Page profiles](/en/authoring/page-profiles/).
 ## See also
 
 - [Project files](/en/start/project-files/) — what each file and folder is for
-- [CLI commands](/ru/reference/cli/) (in Russian) — all options of `init`,
+- [CLI commands](/en/reference/cli/) — all options of `init`,
   `capabilities` and `doctor`

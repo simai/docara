@@ -60,7 +60,7 @@ of the site.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `PREVIEW_PAGE_INVALID`, `PREVIEW_PAGE_UNKNOWN` | The page in `--page` is not written as a public address, or there is no such page. **What to do:** Give the address with `/` at the start and end: `/ru/project-demos/`. |
+| `PREVIEW_PAGE_INVALID`, `PREVIEW_PAGE_UNKNOWN` | The page in `--page` is not written as a public address, or there is no such page. **What to do:** Give the address with `/` at the start and end: `/en/project-demos/`. |
 | `PREVIEW_PAGE_MISSING`, `PREVIEW_PAGE_OUTPUT_INVALID`, `PREVIEW_RECEIPT_INVALID` | The page is not built yet, or the build is out of date. **What to do:** Run a full build and try again. |
 | `PREVIEW_SELECTOR_INVALID`, `PREVIEW_SELECTOR_FORBIDDEN` | `--selector` is given for `page` or `layout`, or for other kinds it is missing or written incorrectly. **What to do:** For `page` and `layout` remove `--selector`; for the others give the name in lowercase: `--selector=ui.dropdown`. |
 | `PREVIEW_TARGET_NOT_FOUND` | The page has no such component or region. **What to do:** Choose a page where it stands, or check the name. |

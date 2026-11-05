@@ -43,7 +43,7 @@ old.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `PORTABLE_PAGE_SELECTOR_INVALID` | The page address is not written as a public address. **What to do:** Give the address with `/` at the start and end: `/ru/components/badge/`. |
+| `PORTABLE_PAGE_SELECTOR_INVALID` | The page address is not written as a public address. **What to do:** Give the address with `/` at the start and end: `/en/components/badge/`. |
 | `PORTABLE_PAGE_NOT_FOUND` | The last full build has no page with this address; for example, the page was just added or renamed. **What to do:** Run a full build. |
 | `PORTABLE_INCREMENTAL_BUILD_PURPOSE_CHANGED` | The finished build was made for another environment. **What to do:** Run a full build for the environment you need, then rebuild pages. |
 | `PORTABLE_INCREMENTAL_ENGINE_CHANGED` | Docara or its dependencies were updated after the full build. **What to do:** Run a full build. |

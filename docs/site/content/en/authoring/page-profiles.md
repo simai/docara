@@ -162,8 +162,8 @@ tool.
 - [Page templates](/en/authoring/page-templates/) — the exact list of sections for pages of one kind
 - [Page metadata](/en/authoring/markdown/#page-metadata) — the `profile` key
 - [Starters and environment](/en/start/templates/) — the skeleton by page type and `AGENTS.md`
-- [CLI commands](/ru/reference/cli/) (in Russian) — `scaffold page` and `validate page`
+- [CLI commands](/en/reference/cli/) — `scaffold page` and `validate page`
 - [Documentation quality](/en/authoring/documentation-quality/) — a score from 0 to 100 and the meaning review package
 - [Documentation freshness](/en/authoring/documentation-tracking/)
-- [JSON schemas](/ru/reference/schemas/) (in Russian) — the `docara.authoring.v1` schema
-- [Error codes](/ru/reference/errors/) (in Russian)
+- [JSON schemas](/en/reference/schemas/) — the `docara.authoring.v1` schema
+- [Error codes](/en/reference/errors/)

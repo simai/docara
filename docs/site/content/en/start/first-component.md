@@ -142,15 +142,15 @@ The message names the parameter and the page line. Put `"text"` back.
 | `SCAFFOLD_TARGET_EXISTS` | The component already exists. Pick another name. |
 | `SMART_REGISTRY_COMPONENT_NOT_FOUND` | A typo in the component name on the page: there is no such component in `smart/`. |
 
-Other codes are in the error reference (in Russian):
-[developer tools](/ru/reference/errors/developer/) and
-[layout and extension](/ru/reference/errors/extend/#компоненты-проекта).
+Other codes are in the error reference:
+[developer tools](/en/reference/errors/developer/) and
+[layout and extension](/en/reference/errors/extend/#project-components).
 
 ## What next
 
 - How project components work — styles and scripts in `assets/`, views,
-  presets: [«Smart-компоненты»](/ru/development/smart-components/) (in Russian).
+  presets: [Smart components](/en/development/smart-components/).
 - The whole path from plan to checks for developers and AI agents:
-  [«SDK для разработчика и AI-агента»](/ru/development/developer-sdk/) (in Russian).
-- A component can go inside a [surface](/ru/components/surface/) (in Russian)
+  [SDK for developers and AI agents](/en/development/developer-sdk/).
+- A component can go inside a [surface](/en/components/surface/)
   once it declares itself embeddable.

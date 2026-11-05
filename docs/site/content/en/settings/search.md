@@ -144,5 +144,5 @@ pinned contract.
 ## See also
 
 - [Page metadata](/en/authoring/markdown/#page-metadata) — where the `tags` are set
-- [Search error codes](/ru/reference/errors/site/#поиск) (in Russian)
+- [Search error codes](/en/reference/errors/site/#search)
 - [Menu and sections](/en/authoring/navigation/) — hidden pages and search

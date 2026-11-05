@@ -29,9 +29,9 @@ resulting page plan.
 Languages and translations are described in
 [Multilingual site](/en/authoring/multilingual-site/), the menu in
 [Menu and sections](/en/authoring/navigation/). The full list of fields with
-types and defaults is in the reference (in Russian):
-[docara.json](/ru/reference/docara-json/) and
-[section.json and page.json](/ru/reference/section-and-page/).
+types and defaults is in the reference:
+[docara.json](/en/reference/docara-json/) and
+[section.json and page.json](/en/reference/section-and-page/).
 
 ## A safe order of work
 

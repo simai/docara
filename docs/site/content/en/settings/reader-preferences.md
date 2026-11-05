@@ -196,4 +196,4 @@ source files or the build receipts and is not a source of project settings.
 
 - [Brand and theme](/en/settings/branding-and-theme/) — the site's default theme
 - [Reading context](/en/settings/reading/) — the page outline and breadcrumbs
-- [The reader_preferences field](/ru/reference/docara-json/#меню-чтение-и-поиск) (in Russian)
+- [The reader_preferences field](/en/reference/docara-json/#menu-reading-and-search)

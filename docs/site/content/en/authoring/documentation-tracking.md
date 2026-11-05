@@ -63,4 +63,4 @@ does not call AI or the network and does not edit the documentation itself.
 
 - [Page profiles](/en/authoring/page-profiles/) — another optional page check
 - [Multilingual site](/en/authoring/multilingual-site/) — translation freshness
-- [CLI commands](/ru/reference/cli/) (in Russian) — the `documentation` commands
+- [CLI commands](/en/reference/cli/) — the `documentation` commands

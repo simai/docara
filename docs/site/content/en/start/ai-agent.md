@@ -60,5 +60,5 @@ lacks: settings, components, updates and error diagnosis.
 ## See also
 
 - [Quick start](/en/start/quick-start/): the same steps without an agent.
-- [Developer SDK](/ru/development/developer-sdk/): commands with JSON output and an MCP server for the agent.
+- [Developer SDK](/en/development/developer-sdk/): commands with JSON output and an MCP server for the agent.
 - [Documentation quality](/en/authoring/documentation-quality/): how to check what the agent wrote.

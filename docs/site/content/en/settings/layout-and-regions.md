@@ -66,13 +66,13 @@ Create `content/landing.md` and a sidecar:
 The content stays Markdown, and the landing blocks set the composition (all
 pages in Russian):
 
-- [hero](/ru/components/hero/) creates a full-width first screen;
-- [grid](/ru/components/grid/) and [card](/ru/components/card/) build a row
+- [hero](/en/components/hero/) creates a full-width first screen;
+- [grid](/en/components/grid/) and [card](/en/components/card/) build a row
   of features without a special component;
-- [figure](/ru/components/figure/) or [media](/ru/components/media/) show a
+- [figure](/en/components/figure/) or [media](/en/components/media/) show a
   product screenshot;
-- [logos](/ru/components/logos/) shows participants or customers;
-- [banner](/ru/components/banner/) with [button](/ru/components/button/)
+- [logos](/en/components/logos/) shows participants or customers;
+- [banner](/en/components/banner/) with [button](/en/components/button/)
   ends the page with a clear action.
 
 Ordinary headings, text and code stay in the inner container. Only
@@ -80,7 +80,7 @@ registered full-width blocks take the whole width of the landing area; the
 author adds no negative margins, CSS classes or media sizes.
 
 Ready blocks for benefits, showing a result and a call to action are
-described on [«Блоки лендинга»](/ru/components/landing-blocks/) (in Russian).
+described on [Landing blocks](/en/components/landing-blocks/).
 [Open the home page of this documentation](/en/).
 
 ## Checking both recipes
@@ -170,8 +170,7 @@ sidecar:
 
 What remains is the header and the main content, and both `aside` elements
 and the mobile menu button are absent from the HTML.
-[Open the live example, the result and the exact sources](/examples/regions-disabled/)
-(in Russian).
+[Open the live example, the result and the exact sources](/examples/regions-disabled/).
 
 The setting can go into:
 
@@ -183,7 +182,7 @@ A later level changes only the regions it names explicitly.
 
 You can compare turned-on regions, ready shell recipes, inheritance, both
 page views and Smart components in the
-[developer examples](/ru/development/examples/) (in Russian). Their results
+[developer examples](/en/development/examples/). Their results
 are built by the same generator as the whole site.
 
 ## What a region is built from
@@ -319,7 +318,7 @@ The `items`, `label`, `expand_label`, `collapse_label` and
 `contains_current_label` fields belong to the binding and are not set by
 hand.
 
-Live sources (in Russian):
+Live sources:
 
 - [a branded header](/examples/region-header/);
 - [a sidebar with an extra block](/examples/region-sidebar/);
@@ -356,8 +355,7 @@ of breaking the contract of the existing one.
 `sections` is an array: a later array replaces the inherited one entirely. A
 partial change of `enabled` does not touch the inherited section list.
 Section and block IDs must be unique and keep the deterministic array order.
-[A live example of three levels with reset](/examples/composition-inheritance/)
-(in Russian) shows the result of `docara.json → section.json → page.page.json`.
+[A live example of three levels with reset](/examples/composition-inheritance/) shows the result of `docara.json → section.json → page.page.json`.
 
 The result and the owning file are in:
 
@@ -373,12 +371,12 @@ Check `configuration.layout.regions` and the matching pointers like
 :::
 
 The sections, slots and blocks compatible with regions are listed in
-[«Композиция интерфейса»](/ru/development/composition/) (in Russian). An
+[Interface composition](/en/development/composition/). An
 unknown region, an incompatible section or block, a disallowed View Tree
 utility or an unsafe path are refused before rendering.
 
 ## See also
 
 - [Inheritance of regions](/en/settings/levels-and-inheritance/#layout-regions)
-- [«Smart-компоненты»](/ru/development/smart-components/) (in Russian) — how the header, menu and outline components work
-- [A live example of the header, menu and outline](/ru/examples/regions-composed/) (in Russian)
+- [Smart components](/en/development/smart-components/) — how the header, menu and outline components work
+- [A live example of the header, menu and outline](/en/examples/regions-composed/)

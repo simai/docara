@@ -40,4 +40,4 @@ On a page with several H2/H3 headings also check that:
 
 - [Checking the build](/en/build/verify/)
 - [Building the site](/en/build/php-only/)
-- [The serve command](/ru/reference/cli/) (in Russian)
+- [The serve command](/en/reference/cli/)

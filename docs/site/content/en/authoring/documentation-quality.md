@@ -51,7 +51,7 @@ Documentation quality: 93/100 — 102 page(s) scored, 48 need attention, 15 skip
   links          100
 
 Fix first:
-  1. +0.07  /ru/components/figure/  QUALITY_DESCRIPTION_MISSING
+  1. +0.07  /en/components/figure/  QUALITY_DESCRIPTION_MISSING
        No description in front matter or in the page file. Add description: one sentence about what the reader gets from the page.
 
 Biggest gains by check (fixed on every page):
@@ -86,7 +86,7 @@ stumble. The "advice" level means the page is worth a look.
 | Links | Links lead to existing pages and files of the build, and `#…` anchors exist on the target page. |
 
 The full list of codes with causes and fixes is on
-[«Ошибки качества документации»](/ru/reference/errors/quality/) (in Russian).
+[Documentation quality errors](/en/reference/errors/quality/).
 
 Words are counted in the page text without code blocks, live examples and
 buttons. Latin script is counted only for languages with another script:
@@ -203,13 +203,13 @@ tools.
 - Whether facts and examples are right: these are questions for the meaning
   review package.
 - Styling and layout: the browser checks `docara qa smart`, `region` and
-  `layout` cover that (see the [CLI commands](/ru/reference/cli/#qa), in
+  `layout` cover that (see the [CLI commands](/en/reference/cli/#qa), in
   Russian).
 
 ## See also
 
 - [Page profiles](/en/authoring/page-profiles/) — the parts a page type requires
 - [Documentation freshness](/en/authoring/documentation-tracking/) — the source for the freshness group
-- [«Ошибки качества документации»](/ru/reference/errors/quality/) (in Russian) — all check codes
-- [CLI commands](/ru/reference/cli/#qa) (in Russian) — the options of `qa report` and `qa review-packet`
+- [Documentation quality errors](/en/reference/errors/quality/) — all check codes
+- [CLI commands](/en/reference/cli/#qa) — the options of `qa report` and `qa review-packet`
 - [Checking the build](/en/build/verify/)

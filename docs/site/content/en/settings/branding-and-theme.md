@@ -256,4 +256,4 @@ build must stop before it replaces the previous output.
 
 - [Layout regions](/en/settings/layout-and-regions/) — the header as a layout region
 - [Reader panel](/en/settings/reader-preferences/) — the reader's choice of scheme
-- [The branding, settings and theme fields](/ru/reference/docara-json/#внешний-вид) (in Russian)
+- [The branding, settings and theme fields](/en/reference/docara-json/#appearance)

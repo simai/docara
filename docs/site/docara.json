@@ -2,12 +2,12 @@
   "schema": "docara.site.v1",
   "title": "Docara",
   "preset": "docs",
-  "content_root": "content/ru",
+  "content_root": "content/en",
   "framework_lock": "simai-framework.lock.json",
   "smart": {
     "namespace": "project"
   },
-  "default_locale": "ru",
+  "default_locale": "en",
   "translation_tracking": {
     "enabled": true,
     "source_locale": "ru",
@@ -16,18 +16,18 @@
   },
   "locales": {
     "missing_page_policy": "skip",
-    "ru": {
-      "label": "Русский",
-      "direction": "ltr",
-      "content_root": "content/ru",
-      "public_prefix": "ru",
-      "fallbacks": []
-    },
     "en": {
       "label": "English",
       "direction": "ltr",
       "content_root": "content/en",
       "public_prefix": "en",
+      "fallbacks": []
+    },
+    "ru": {
+      "label": "Русский",
+      "direction": "ltr",
+      "content_root": "content/ru",
+      "public_prefix": "ru",
       "fallbacks": []
     }
   },

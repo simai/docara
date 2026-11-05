@@ -48,7 +48,7 @@ build is atomic: on an error the previous result stays.
 `--page` quickly rebuilds one existing page after the first full build:
 
 ```bash
-php vendor/bin/docara build production --page=/ru/components/badge/
+php vendor/bin/docara build production --page=/en/components/badge/
 ```
 
 Docara checks the accepted full-build receipts, selects the route before
@@ -212,7 +212,7 @@ Shows one registered object with its ownership and provenance. The kind is
 JSON.
 
 ```bash
-php vendor/bin/docara inspect page /ru/start/ --json
+php vendor/bin/docara inspect page /en/start/ --json
 php vendor/bin/docara inspect source simai-framework:component.buttons --json
 ```
 
@@ -241,7 +241,7 @@ design artifact with the same production services as the build. The kind is
 
 ```bash
 php vendor/bin/docara validate project --json
-php vendor/bin/docara validate page /ru/start/ --json
+php vendor/bin/docara validate page /en/start/ --json
 ```
 
 The optional `docara.authoring.json` assigns pages one of the built-in
@@ -336,7 +336,7 @@ only with an unchanged hash-bound plan.
 php vendor/bin/docara documentation status --source=simai-framework --kind=component --json
 php vendor/bin/docara documentation accept \
   --source=simai-framework --key=component.buttons \
-  --route=/ru/components/buttons/ \
+  --route=/en/components/buttons/ \
   --example=default=components/buttons/basic \
   --review=ai_verified --dry-run --json
 ```
@@ -458,7 +458,7 @@ assistant does. Details are in
 ```bash
 php vendor/bin/docara build production
 php vendor/bin/docara qa report --env=production --min-score=80
-php vendor/bin/docara qa review-packet /ru/start/quick-start/ --env=production
+php vendor/bin/docara qa review-packet /en/start/quick-start/ --env=production
 ```
 
 The `smart`, `region` and `layout` kinds plan or check an optional browser,

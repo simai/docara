@@ -99,4 +99,4 @@ Check the source URL and an ordinary target over HTTP from the same output.
 
 - [Menu and sections](/en/authoring/navigation/) — when a page address changes
 - [Multilingual site](/en/authoring/multilingual-site/) — redirects for addresses without a language prefix
-- [Redirect error codes](/ru/reference/errors/site/#перенаправления) (in Russian)
+- [Redirect error codes](/en/reference/errors/site/#redirects)

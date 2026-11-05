@@ -27,7 +27,7 @@ component's page.
 5. If you like, turn on the checks of
    [page profiles](/en/authoring/page-profiles/) and
    [documentation freshness](/en/authoring/documentation-tracking/).
-6. If Markdown is not enough, [find a component](/ru/components/) (in Russian).
+6. If Markdown is not enough, [find a component](/en/components/).
 7. Check that the pages [work for every reader](/en/authoring/accessibility/).
 8. Set up the appearance in [Site settings](/en/settings/) and [build and check the result](/en/build/verify/).
 

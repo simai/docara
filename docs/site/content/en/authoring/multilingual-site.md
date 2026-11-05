@@ -188,6 +188,14 @@ differs, the status is `structure_mismatch`. What a translation may change:
 - the text of headings, labels, paragraphs and links;
 - the language part of an internal link and the anchor: `/ru/start/#шаги`
   and `/en/start/#steps` count as one link, and so do `#шаги` and `#steps`;
+- the address of an external link on the same site: `https://semver.org/lang/ru/`
+  and `https://semver.org/` count as one link, so a translation can send the
+  reader to the version of the outside page in their language;
+- in the parameters of a `:::` block, the reader-facing text (`label`,
+  `title`, `alt`, `caption`, `text`), the file size (`file_size`) and the
+  selected tab (`default`), and the language part of an address in `src` and
+  `href`: `/ru/demo/` and `/en/demo/` count as one address, as do
+  `inputs.json` and `inputs.en.json`;
 - the content of code blocks — comments and sample text. Only the number of
   blocks and their language are compared.
 

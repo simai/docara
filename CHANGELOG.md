@@ -47,6 +47,14 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **A translation may localize block parameters and outside links.** The
+  translation structure check no longer reports `structure_mismatch` for the
+  text, file size or default tab in `:::` block parameters, for the language
+  part of block addresses (`/ru/demo/` and `/en/demo/`, `inputs.json` and
+  `inputs.en.json`), or for an external link that points to another page of
+  the same site. Blocks opened with four or more colons, such as
+  `::::example`, are now compared too.
+
 - **Docara now bundles SIMAI Framework `ui-c3015f76bcc2`.** The Framework
   renamed twenty components to its naming standard (`sf-site-header` is now
   `sf-header-site`, `sf-icon-button` `sf-button-icon`, `sf-context-menu`

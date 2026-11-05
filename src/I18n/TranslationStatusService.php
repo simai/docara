@@ -595,12 +595,22 @@ final class TranslationStatusService
     private function structure(string $markdown, array $prefixes): array
     {
         preg_match_all('/^(#{1,6})\h+/m', $markdown, $headings);
-        preg_match_all('/^:::(?<name>[a-z][a-z0-9_.-]*)(?:\h+\{(?<attrs>[^}]*)})?/m', $markdown, $directives, PREG_SET_ORDER);
+        preg_match_all('/^:{3,}(?<name>[a-z][a-z0-9_.-]*)(?:\h+\{(?<attrs>[^}]*)})?/m', $markdown, $directives, PREG_SET_ORDER);
         preg_match_all('/(?<fence>`{3,}|~{3,})(?<lang>[A-Za-z0-9_-]*)\h*\n(?<code>.*?)\n\k<fence>/s', $markdown, $code, PREG_SET_ORDER);
         preg_match_all('/!?\[[^]]*]\((?<url>[^)\h]+)(?:\h+"[^"]*")?\)/u', $markdown, $links);
         $directiveRecords = [];
         foreach ($directives as $directive) {
-            $attrs = preg_replace('/\b(?:label|title|alt|caption|text)=(?:"[^"]*"|[^\s}]+)/u', '', (string) ($directive['attrs'] ?? ''));
+            // Reader-facing text may be translated; a file size is written the
+            // way the language writes numbers and units, and a default tab is
+            // named by its translated label.
+            $attrs = preg_replace('/\b(?:label|title|alt|caption|text|file_size|default)=(?:"[^"]*"|[^\s}]+)/u', '', (string) ($directive['attrs'] ?? ''));
+            // An address may carry the language: a frame under /en/ instead of
+            // /ru/, or a localized sibling file such as inputs.en.json.
+            $attrs = preg_replace_callback(
+                '/\b(src|href)=(?:"(?<quoted>[^"]*)"|(?<bare>[^\s}]+))/u',
+                static fn (array $match): string => $match[1] . '=' . self::comparableAddress($match['quoted'] !== '' ? $match['quoted'] : ($match['bare'] ?? ''), $prefixes),
+                (string) $attrs,
+            );
             $directiveRecords[] = [$directive['name'], trim((string) $attrs)];
         }
 
@@ -616,10 +626,26 @@ final class TranslationStatusService
     }
 
     /** @param list<string> $prefixes */
+    private static function comparableAddress(string $url, array $prefixes): string
+    {
+        $url = self::comparableLink($url, $prefixes);
+        if ($prefixes === [] || preg_match('#^[a-z][a-z0-9+.-]*:#i', $url) === 1) {
+            return $url;
+        }
+
+        return preg_replace('#\.(?:' . implode('|', $prefixes) . ')(?=\.[A-Za-z0-9]+$)#', '', $url) ?? $url;
+    }
+
+    /** @param list<string> $prefixes */
     private static function comparableLink(string $url, array $prefixes): string
     {
         if (str_starts_with($url, '#')) {
             return '#';
+        }
+        // An external page may have its own version in the reader's language,
+        // so an outside link keeps only its site.
+        if (preg_match('#^(?<origin>https?://[^/?\#]+)#i', $url, $external) === 1) {
+            return strtolower($external['origin']);
         }
         if (! str_starts_with($url, '/') || str_starts_with($url, '//')) {
             return $url;

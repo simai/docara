@@ -1506,11 +1506,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/surface.md",
-            "source_sha256": "d3109cbc052645f41fa989bd1864c1316330d37f082d201f4bc87a50fb176f57",
-            "source_structure_sha256": "bff89d59d62161ef2b0b573a59b0c69152aa10b18bf6fdaeb5aef780fc989100",
+            "source_sha256": "51e9f36e32bd87f3770b4447b38591e020f4e0f43ee0e47d0c67c1704a6552d3",
+            "source_structure_sha256": "d3c01d456a873464bf77bbe3c22d05264c85afd76c9dece83a57611ff4b4c9ca",
             "target_path": "content/en/components/surface.md",
             "target_sha256": "730ace6b9d696e139c9f276cfd2164678d9eceedffc2a1d0654ffd42e0f53366",
-            "target_structure_sha256": "bff89d59d62161ef2b0b573a59b0c69152aa10b18bf6fdaeb5aef780fc989100"
+            "target_structure_sha256": "d3c01d456a873464bf77bbe3c22d05264c85afd76c9dece83a57611ff4b4c9ca"
         },
         {
             "key": "components/tabs.md",
@@ -1818,11 +1818,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/examples/extensions.md",
-            "source_sha256": "a61d41830f3b27abe9313df0d1d834c615d30ed391444184d675139820cf16e3",
-            "source_structure_sha256": "720396729c8b5b0a2de8894e26c9dedc6dace08b23ae0c991ecefbb10c2064d3",
+            "source_sha256": "618a8da1f084f6022330cfd452c59d921125d598118c42a95ac8db9c67ed9617",
+            "source_structure_sha256": "1cf9f9bf4ab8a67c7c8b24978ac02317bbfd21f96badc6b079ae100467065fc2",
             "target_path": "content/en/examples/extensions.md",
-            "target_sha256": "82c2cf55a5aa1872f9a2228e1d6b07d800127a1397450c1c4dbba54c240d455e",
-            "target_structure_sha256": "720396729c8b5b0a2de8894e26c9dedc6dace08b23ae0c991ecefbb10c2064d3"
+            "target_sha256": "ba0ae269b8f62f8556d87e8b5a8a93345f313e058b03893918abbee1c473e09e",
+            "target_structure_sha256": "1cf9f9bf4ab8a67c7c8b24978ac02317bbfd21f96badc6b079ae100467065fc2"
         },
         {
             "key": "examples/inheritance.md",
@@ -2010,7 +2010,7 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/project-demos.md",
-            "source_sha256": "b98ccacaa5609b54783ab20719f4fdaf67eaa4f58a9073643a77533e8af010a7",
+            "source_sha256": "c072143dbc3f561f70628818d447ad7aeab428d12c603099c30f150668f9db61",
             "source_structure_sha256": "662d3971e62f4539401f2479723f2d051730a92bd1a6143adf73307a2cec7d66",
             "target_path": "content/en/project-demos.md",
             "target_sha256": "aa9b201118f253546f306cd41c862ff352147f76c7d9a6a9ca0d7c14b6935ab6",

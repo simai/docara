@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.view",
+  "smart": "project.footer-links",
+  "code": "ru",
+  "template": "default",
+  "props": {
+    "docs_link": "Документация",
+    "components_link": "Компоненты проекта"
+  }
+}

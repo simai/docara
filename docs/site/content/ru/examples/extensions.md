@@ -16,7 +16,7 @@ description: "Как добавить на сайт свой интеракти�
 
 ### manifest.json
 
-:::code {src="../../../smart/project.install-builder/manifest.json" lang=json highlight="18-25"}
+:::code {src="../../../smart/project.install-builder/manifest.json" lang=json highlight="18-32"}
 :::
 
 ### view/default.json
@@ -40,7 +40,8 @@ description: "Как добавить на сайт свой интеракти�
    вложенных элементов (`slots`) и файлы стилей и скриптов.
 3. `view/default.json` собирает компонент из готовых элементов SIMAI
    Framework: выпадающих списков `ui.dropdown`, полей `ui.input` и флажков
-   `ui.checkbox`.
+   `ui.checkbox`. Русские подписи лежат рядом, в `view/ru.json`: русская
+   страница выбирает его параметром `"view":"ru"`.
 4. `template/default.php` — разметка, которую Docara выводит при сборке. Скрипт
    из `assets/` оживляет её в браузере.
 

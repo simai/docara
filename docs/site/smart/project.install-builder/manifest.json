@@ -18,7 +18,14 @@
   "props": {
     "title": {"type": "string", "required": true},
     "package": {"type": "string", "required": true},
-    "version": {"type": "string", "required": true}
+    "version": {"type": "string", "required": true},
+    "copy_label": {"type": "string", "required": false, "default": "Copy"},
+    "status_ready": {"type": "string", "required": false, "default": "The page only builds the command and never runs it."},
+    "status_copied": {"type": "string", "required": false, "default": "Command copied."},
+    "status_copy_failed": {"type": "string", "required": false, "default": "Select the command and copy it manually."},
+    "command_unavailable": {"type": "string", "required": false, "default": "Command unavailable: fix the parameters."},
+    "error_selection": {"type": "string", "required": false, "default": "Choose a supported operating system and installation method."},
+    "error_input": {"type": "string", "required": false, "default": "Check package and version: only safe Composer values are allowed."}
   },
   "slots": {
     "controls": {"accepts": ["ui.dropdown", "ui.input", "ui.checkbox"], "required": true, "multiple": true}

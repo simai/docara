@@ -16,7 +16,7 @@ does not change: the components live in the site's own `smart/` folder.
 
 ### manifest.json
 
-:::code {src="../../../smart/project.install-builder/manifest.json" lang=json highlight="18-25"}
+:::code {src="../../../smart/project.install-builder/manifest.json" lang=json highlight="18-32"}
 :::
 
 ### view/default.json
@@ -40,7 +40,8 @@ changes at once. You can copy it with the "Copy" button.
    nested elements (`slots`) and its style and script files.
 3. `view/default.json` builds the component from ready SIMAI Framework
    elements: `ui.dropdown` lists, `ui.input` fields and `ui.checkbox`
-   checkboxes.
+   checkboxes. The Russian labels sit next to it in `view/ru.json`; the
+   Russian page picks that view with `"view":"ru"`.
 4. `template/default.php` is the markup Docara outputs during the build. A script
    from `assets/` brings it to life in the browser.
 

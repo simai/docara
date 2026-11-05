@@ -94,14 +94,14 @@ description: Оформленная полоса вокруг обычного M
 
 :::::surface {width=content padding=md}
 :::project.product-configurator
-{"title":"Локальный конфигуратор","base_price":2500,"team_price":4500,"business_price":8000,"currency":"₽"}
+{"view":"ru","title":"Локальный конфигуратор","base_price":2500,"team_price":4500,"business_price":8000,"currency":"₽"}
 :::
 :::::
 
 ``````markdown
 :::::surface {width=content padding=md}
 :::project.product-configurator
-{"title":"Локальный конфигуратор","base_price":2500,"team_price":4500,"business_price":8000,"currency":"₽"}
+{"view":"ru","title":"Локальный конфигуратор","base_price":2500,"team_price":4500,"business_price":8000,"currency":"₽"}
 :::
 :::::
 ``````

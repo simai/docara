@@ -222,7 +222,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/surface.md",
-            "source_sha256": "87c4cec76bd93e59ed1c985de5cd73b64d2c4a85998f066aaa2e0845558c3df7",
+            "source_sha256": "064e19f026412b2d1cbf7442c67b23b16cd169d576a6d920f65f795ebfaa0616",
             "release": "3.11.1",
             "source_url": "https://github.com/simai/docara/blob/v3.11.1/docs/site/content/ru/components/surface.md",
             "history_url": "https://github.com/simai/docara/commits/v3.11.1/docs/site/content/ru/components/surface.md",
@@ -557,5 +557,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "b6ec2f149616bce10617b4a3e5e94120eabab745ee3d5d259fcbf7da93c1fa51"
+    "content_sha256": "aadb20996aed9529d8962ec4eec0a0ab0d829433b3220b22afb4f309d18b9921"
 }

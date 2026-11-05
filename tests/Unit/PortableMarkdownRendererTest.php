@@ -351,6 +351,31 @@ MD);
         // Without the viewer there is no responsive check, so no hidden frame.
         self::assertStringNotContainsString('data-docara-example-responsive-frame', $withoutControls);
 
+        $resultOnly = $renderer->render(<<<'MD'
+:::example {label=Пример sources=false}
+```html
+<p class="landing-sample">Готово</p>
+```
+:::
+MD);
+        // The result alone: one tab, the preview built from the source, no
+        // source tab and no wrap button.
+        self::assertSame(1, substr_count($resultOnly, 'role="tab"'));
+        self::assertStringContainsString('landing-sample', $resultOnly);
+        self::assertStringNotContainsString('docara-example-preview__panel--source', $resultOnly);
+        self::assertStringContainsString('data-docara-example-wrap="false"', $resultOnly);
+        self::assertStringNotContainsString('data-docara-example-wrap hidden', $resultOnly);
+        $pageAlone = $renderer->render(":::example {src=/start/ sources=false}\n:::");
+        self::assertStringContainsString('data-docara-example-page', $pageAlone);
+        self::assertSame(1, substr_count($pageAlone, 'role="tab"'));
+
+        try {
+            $renderer->render(":::example {sources=maybe}\n```html\n<p>x</p>\n```\n:::");
+            self::fail('An example accepted a sources value that is not true or false.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID', $exception->errorCode);
+        }
+
         $table = $renderer->render(<<<'MD'
 :::example {label=Таблица}
 ```markdown

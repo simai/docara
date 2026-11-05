@@ -16,6 +16,11 @@ All notable changes to Docara are recorded here. The format follows
   publishes it where the Loader looks for it and declares the package in the
   Loader's set form (`packages.<name> = "<base>"`). A plain package is
   declared as before.
+- **An example can show only its result.** `:::example {sources=false}`
+  removes the source tabs and the line-wrap button, as a landing page needs:
+  the result is still built from the block's source, and the width check
+  stays. A whole-page example with `sources=false` needs no file tabs.
+
 - **An example can show a whole page of the site.** Headers, menus, layout
   regions and section settings show only on a whole page, and the examples
   of them were a small frame with the page's own Markdown dumped below it.

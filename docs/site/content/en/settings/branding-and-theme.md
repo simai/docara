@@ -119,8 +119,8 @@ fields explicitly (see
 ## The "Made with Docara" line
 
 At the bottom of the left menu of every page with a menu, Docara shows a
-small "Made with" line with the Docara logo 14 px high; on Russian pages it
-reads «Сделано на» with the same logo. The whole line is one link to
+small line with the Docara logo 14 px high. The text of the line follows the
+language of the page: "Made with" in English, «Сделано на» in Russian. The whole line is one link to
 <https://docara.simai.io/>, and it opens in the same tab. Screen readers read
 it as "Made with Docara", and the same phrase shows in the tooltip.
 

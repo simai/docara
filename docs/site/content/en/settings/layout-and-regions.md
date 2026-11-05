@@ -63,8 +63,7 @@ Create `content/landing.md` and a sidecar:
 }
 ```
 
-The content stays Markdown, and the landing blocks set the composition (all
-pages in Russian):
+The content stays Markdown, and the landing blocks set the composition:
 
 - [hero](/en/components/hero/) creates a full-width first screen;
 - [grid](/en/components/grid/) and [card](/en/components/card/) build a row

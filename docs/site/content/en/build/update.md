@@ -172,8 +172,8 @@ Markdown table (see [Markdown table](/en/authoring/markdown/#tables)).
 - The built-in strings Docara writes into pages (the table headings of the
   schema reference, the text of the Atlas index, the default
   `internal_preview` heading, the example caption in a starter) follow the
-  language of the page: Russian for `ru`, English for the other languages. On
-  sites that are not in Russian these strings became English.
+  language of the page. A language without its own built-in strings gets the
+  English ones.
 - The metadata of the component catalogue (`_docara/component-catalog.json`,
   the `metadata` field of the entries) holds `release` — the Docara version —
   and the `source_url` and `history_url` links to the release tag. The

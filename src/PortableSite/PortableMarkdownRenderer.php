@@ -429,7 +429,11 @@ final class PortableMarkdownRenderer
                 $renderer,
                 [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex, TypedRendererId::AtlasIndex, TypedRendererId::SchemaReference],
                 true,
-            ) || ($renderer === TypedRendererId::Example && trim($blockAttributes['id'] ?? '') !== '');
+            ) || ($renderer === TypedRendererId::Example && trim($blockAttributes['id'] ?? '') !== '')
+                // A built page shown alone lists no file tabs.
+                || ($renderer === TypedRendererId::Example
+                    && array_key_exists('src', $blockAttributes)
+                    && ($blockAttributes['sources'] ?? null) === 'false');
             if (trim($bodyMarkdown) === '' && ! $allowsEmptyBody) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_BLOCK_EMPTY',
@@ -730,9 +734,15 @@ final class PortableMarkdownRenderer
         $wrap = array_key_exists('wrap', $attributes)
             ? $this->attributeBoolean($attributes['wrap'], 'example', 'wrap')
             : (bool) ($exampleSettings['wrap'] ?? true);
+        // sources=false shows the result alone, as on a landing page: the
+        // source still builds the preview, but no tab shows it, and the
+        // wrap button has no source lines to wrap.
+        $showSources = ! array_key_exists('sources', $attributes)
+            || $this->attributeBoolean($attributes['sources'], 'example', 'sources');
+        $wrap = $wrap && $showSources;
         $baseHref = null;
         if (array_key_exists('src', $attributes)) {
-            return $this->renderPageExample($markdown, $attributes, $label, $defaultLabel, $fullscreen, $wrap, $sourceRoot, $sourceFile);
+            return $this->renderPageExample($markdown, $attributes, $label, $defaultLabel, $fullscreen, $wrap, $sourceRoot, $sourceFile, $showSources);
         }
         if ($exampleId !== '') {
             if (trim($markdown) !== '') {
@@ -829,7 +839,7 @@ final class PortableMarkdownRenderer
         return $this->examples->render(
             id: $renderId,
             preview: $preview,
-            sources: $renderedSources,
+            sources: $showSources ? $renderedSources : [],
             exampleLabel: $label,
             defaultLabel: $defaultLabel,
             copyLabel: 'Copy code',
@@ -908,6 +918,9 @@ final class PortableMarkdownRenderer
             if (array_key_exists('wrap', $attributes)) {
                 $this->attributeBoolean($attributes['wrap'], 'example', 'wrap');
             }
+            if (array_key_exists('sources', $attributes)) {
+                $this->attributeBoolean($attributes['sources'], 'example', 'sources');
+            }
             if (trim($attributes['label'] ?? 'Example') === '') {
                 throw new PortableConfigurationException(
                     'MARKDOWN_EXAMPLE_LABEL_INVALID',
@@ -915,7 +928,11 @@ final class PortableMarkdownRenderer
                 );
             }
             if (array_key_exists('src', $attributes)) {
-                $this->pageExampleParts($attributes, (string) ($directive['body'] ?? ''));
+                $this->pageExampleParts(
+                    $attributes,
+                    (string) ($directive['body'] ?? ''),
+                    ! array_key_exists('sources', $attributes) || $this->attributeBoolean($attributes['sources'], 'example', 'sources'),
+                );
                 $previews[] = [
                     'id' => '',
                     'mode' => 'page',
@@ -991,10 +1008,11 @@ final class PortableMarkdownRenderer
         bool $wrap,
         ?string $sourceRoot,
         ?string $sourceFile,
+        bool $showSources = true,
     ): string {
-        ['src' => $src, 'sections' => $sections] = $this->pageExampleParts($attributes, $markdown);
+        ['src' => $src, 'sections' => $sections] = $this->pageExampleParts($attributes, $markdown, $showSources);
         $sources = [];
-        foreach ($sections as $title => $body) {
+        foreach ($showSources ? $sections : [] as $title => $body) {
             $sources[$title] = $this->renderCompiled($body, $sourceRoot, $sourceFile);
         }
         // The page is a document of the same site: it needs no sandbox, keeps
@@ -1027,7 +1045,7 @@ final class PortableMarkdownRenderer
      * @param  array<string,string>  $attributes
      * @return array{src:string,sections:array<string,string>}
      */
-    private function pageExampleParts(array $attributes, string $markdown): array
+    private function pageExampleParts(array $attributes, string $markdown, bool $showSources = true): array
     {
         foreach (['id', 'preview'] as $conflict) {
             if (array_key_exists($conflict, $attributes)) {
@@ -1053,6 +1071,10 @@ final class PortableMarkdownRenderer
         }
 
         $normalized = trim(str_replace(["\r\n", "\r"], "\n", $markdown));
+        // A page shown alone needs no file tabs.
+        if (! $showSources && $normalized === '') {
+            return ['src' => $src, 'sections' => []];
+        }
         $chunks = preg_split('/^###\h+(.+?)\h*$/m', $normalized, -1, PREG_SPLIT_DELIM_CAPTURE) ?: [''];
         $sections = [];
         for ($index = 1; $index + 1 < count($chunks); $index += 2) {

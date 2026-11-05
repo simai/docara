@@ -241,6 +241,33 @@ Both buttons can be turned off for a site, a section or a page:
 
 or for one block: `:::example {fullscreen=false wrap=false}`.
 
+### Result only
+
+On a home page or a landing page the code next to an example is usually not
+needed. `sources=false` removes the source tabs and the line-wrap button, so
+the reader sees only the result. The source stays in the block and the result
+is still built from it. The width-check button stays.
+
+:::example {label=Result sources=false}
+```markdown
+**Done.** The site is built and checked.
+```
+:::
+
+The source of this block:
+
+~~~markdown
+:::example {label=Result sources=false}
+```markdown
+**Done.** The site is built and checked.
+```
+:::
+~~~
+
+A whole-page example with `sources=false` does not need to list the page's
+files: `:::example {src="/en/start/" sources=false}` with `:::` on the next
+line.
+
 ### Loading
 
 An isolated frame loads when it comes close to the screen (within 600 px),
@@ -269,6 +296,7 @@ surrounding documentation.
 | `preview` | `auto`, `inline`, `sandbox` | `auto` | How to show the result: `auto` chooses by content, `inline` shows it right on the page, `sandbox` in an isolated window. |
 | `fullscreen` | `true`, `false` | — | The button for checking at desktop, tablet and phone widths. |
 | `wrap` | `true`, `false` | — | The button for wrapping long lines in the source code. |
+| `sources` | `true`, `false` | `true` | The source code tabs; `false` shows only the result. |
 
 <!-- docara:component-parameters:end -->
 

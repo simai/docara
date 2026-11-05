@@ -69,7 +69,7 @@ final class PortableSiteBuilderTest extends TestCase
         $this->copyPortableFixture($this->tmp, false);
         $this->createSource([
             'tools/mark.php' => '<?php foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($argv[1], FilesystemIterator::SKIP_DOTS)) as $file) {'
-                . ' if (str_ends_with((string) $file, ".html")) { file_put_contents((string) $file, str_replace("</body>", "<!-- transformed --></body>", (string) file_get_contents((string) $file))); } }',
+                . ' if (str_ends_with((string) $file, ".html")) { file_put_contents((string) $file, str_replace("</body>", "<p class=\\"docara-transformed\\">moved</p><!-- transformed --></body>", (string) file_get_contents((string) $file))); } }',
         ]);
         $site = $this->jsonFile($this->tmpPath('docara.json'));
         $site['page_transforms'] = [['command' => [PHP_BINARY, 'tools/mark.php']]];
@@ -82,6 +82,12 @@ final class PortableSiteBuilderTest extends TestCase
         $performance = $this->jsonFile($destination . '.docara/performance.json');
         $record = array_values(array_filter($performance['pages'], static fn (array $item): bool => $item['output'] === 'ru/index.html'))[0];
         self::assertSame(strlen($page), $record['html_bytes']);
+        // The transform edited the markup: each page's Framework asset plan is
+        // made again from the final HTML, so verify-static accepts the build.
+        self::assertStringContainsString('<p class="docara-transformed">moved</p>', $page);
+        $verification = new Process([PHP_BINARY, 'scripts/verify-static-build.php', $destination], dirname(__DIR__));
+        $verification->run();
+        self::assertSame(0, $verification->getExitCode(), $verification->getErrorOutput() . $verification->getOutput());
 
         $site['page_transforms'] = [['command' => [PHP_BINARY, '-r', 'fwrite(STDERR, "no grammar"); exit(3);']]];
         file_put_contents($this->tmpPath('docara.json'), CanonicalJson::encodePretty($site));

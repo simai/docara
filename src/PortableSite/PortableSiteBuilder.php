@@ -1482,7 +1482,20 @@ final readonly class PortableSiteBuilder
                     PortableVendorAssetSelection::fromBuild($localeDestination),
                 );
             }
+            $pagesBeforeTransforms = ($site['page_transforms'] ?? []) !== [] && $runtime !== null
+                ? $this->pageHashes($destination, array_keys($frameworkAssetPlanReceipts))
+                : [];
             $this->runPageTransforms($root, $destination, $site['page_transforms'] ?? []);
+            // A transform that edits a page's markup changes what its
+            // Framework asset plan was made from, so the plan of each page it
+            // changed is made again from the final HTML, the way verify-static
+            // checks it.
+            foreach ($pagesBeforeTransforms as $output => $before) {
+                $html = $this->files->get(rtrim($destination, '/\\') . '/' . $output);
+                if (hash('sha256', $html) !== $before) {
+                    $frameworkAssetPlanReceipts[$output] = $runtime->planAssetsForHtml($html)->receipt();
+                }
+            }
             if (($site['page_transforms'] ?? []) !== []) {
                 // A transform may change what the pages use.
                 foreach ($localeDestinations as $localeDestination) {
@@ -2756,6 +2769,23 @@ final readonly class PortableSiteBuilder
      *
      * @param  list<array{command: list<string>}>  $transforms
      */
+    /**
+     * @param  list<string>  $outputs
+     * @return array<string, string>
+     */
+    private function pageHashes(string $destination, array $outputs): array
+    {
+        $hashes = [];
+        foreach ($outputs as $output) {
+            $path = rtrim($destination, '/\\') . '/' . $output;
+            if (is_file($path)) {
+                $hashes[$output] = hash_file('sha256', $path);
+            }
+        }
+
+        return $hashes;
+    }
+
     private function runPageTransforms(string $root, string $destination, array $transforms): void
     {
         foreach ($transforms as $transform) {

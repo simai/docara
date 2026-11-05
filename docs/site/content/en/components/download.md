@@ -40,7 +40,7 @@ Give only verified values.
 
 :::example {label="With a checksum"}
 ```markdown
-:::download {title="docara-mark.svg" format="SVG" file_size="1 KB" checksum="SHA-256: 1078…aebc"}
+:::download {title="docara-mark.svg" format="SVG" file_size="1 KB" checksum="SHA-256: 061e…fa90"}
 [Download and verify](../../assets/docara-mark.svg)
 :::
 ```

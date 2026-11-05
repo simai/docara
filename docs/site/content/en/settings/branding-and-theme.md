@@ -124,10 +124,10 @@ language of the page: "Made with" in English, «Сделано на» in Russian
 <https://docara.simai.io/>, and it opens in the same tab. Screen readers read
 it as "Made with Docara", and the same phrase shows in the tooltip.
 
-The logo is embedded in the page as SVG and takes its colour from the line's
-text (`on-surface-variant`) in two grey tones: the ring is more contrasting,
-the letters more muted. So one logo suits the light and dark themes, and on
-hover the line becomes more contrasting.
+The logo is embedded in the page as SVG: a grey square with a light ring, and
+letters in the colour of the line's text (`on-surface-variant`). So one logo
+suits the light and dark themes. On hover the letters become more contrasting
+and the square turns red.
 
 The line is fixed at the bottom of the menu panel and separated from it by a
 thin rule: the menu scrolls above it, and the line itself is always visible,

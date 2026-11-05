@@ -1619,11 +1619,11 @@ MD);
         $credit = static fn (string $words, string $name): string => '<p class="docara-sidebar-credit text-small color-on-surface-variant" data-docara-sidebar-credit>'
             . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.simai.io/" rel="noopener" aria-label="' . $name . '" title="' . $name . '">'
             . '<span class="docara-sidebar-credit-text docara-sidebar-credit-text--before">' . $words . '</span>' . $logo . '</a></p>';
-        self::assertStringStartsWith('<svg class="docara-sidebar-credit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1942 600" width="45" height="14" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="', $logo);
-        // The accented "o" is the last shape, after the other letters.
-        self::assertSame(1, substr_count($logo, '<path class="docara-sidebar-credit-mark" '));
+        // The square mark with its ring comes first, then the letters.
+        self::assertStringStartsWith('<svg class="docara-sidebar-credit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2303 600" width="54" height="14" fill="currentColor" aria-hidden="true" focusable="false"><rect class="docara-sidebar-credit-mark" width="600" height="600" rx="60"/><path class="docara-sidebar-credit-ring" fill-rule="evenodd" d="', $logo);
+        self::assertSame(1, substr_count($logo, 'docara-sidebar-credit-mark'));
+        self::assertSame(1, substr_count($logo, 'docara-sidebar-credit-ring'));
         self::assertStringEndsWith('Z"/></svg>', $logo);
-        self::assertGreaterThan(strpos($logo, '<path fill-rule="evenodd"'), strpos($logo, 'docara-sidebar-credit-mark'));
         self::assertStringNotContainsString('#', $logo);
         foreach ([
             'ru/guides/getting-started/index.html' => ['Сделано на', 'Сделано на Docara'],
@@ -1643,12 +1643,12 @@ MD);
             self::assertStringNotContainsString('target="_blank"', substr($html, (int) strpos($html, 'data-docara-sidebar-credit'), 400));
             self::assertSame(1, substr_count($html, 'docara-sidebar-credit-logo'), $output);
         }
-        // One logo for both themes, two gray tones as in the owner's gray
-        // logo files: the letters are a softer mix of the link colour and the
-        // ring a stronger one, leaning towards on-surface.
+        // One logo for both themes, as in the owner's gray logo file: a gray
+        // square with a light ring, and letters in the colour of the line's
+        // text, so they read on a light and a dark sidebar.
         $shellCss = (string) file_get_contents(dirname(__DIR__) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:color-mix(in srgb,var(--sf-on-surface-variant) 60%,var(--sf-on-surface));color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
-        self::assertStringContainsString('.docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:#505050;--docara-credit-ring:#F7F7F7;color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}.docara-sidebar-credit-ring{fill:var(--docara-credit-ring)}', $shellCss);
         // Hover and keyboard focus show the logo in colour: theme text and the Docara red.
         self::assertStringContainsString('.docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}', $shellCss);
         self::assertStringContainsString('.docara-sidebar-credit-link:focus-visible{outline:', $shellCss);

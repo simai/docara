@@ -8,6 +8,14 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **A component set's package is taken as a set.** A set build lists its
+  passport `set.json` beside `smart/` in the package receipt, and Docara
+  refused every such receipt (`FRAMEWORK_PACKAGE_RECEIPT_INVALID files`).
+  `scripts/sync-framework-package-runtime.php` now accepts the passport the
+  receipt names, lays it beside `smart/` and records it in the lock; the build
+  publishes it where the Loader looks for it and declares the package in the
+  Loader's set form (`packages.<name> = "<base>"`). A plain package is
+  declared as before.
 - **An example can show a whole page of the site.** Headers, menus, layout
   regions and section settings show only on a whole page, and the examples
   of them were a small frame with the page's own Markdown dumped below it.

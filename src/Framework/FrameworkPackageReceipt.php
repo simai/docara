@@ -15,12 +15,18 @@ namespace Simai\Docara\Framework;
  * and every file Docara lays is checked against the receipt's hashes, read
  * either from the deterministic archive the receipt names (whose SHA-256 must
  * match) or from an output directory holding `smart/`.
+ *
+ * A component set's build (standard `simai.component-set`) also lists its
+ * passport `set.json` beside `smart/` and names it under `set`; that one file
+ * is the only file outside `smart/` a receipt may list.
  */
 final readonly class FrameworkPackageReceipt
 {
     public const SCHEMA = 'simai.framework.product-package-receipt';
 
     public const SCHEMA_VERSION = 1;
+
+    public const SET_PASSPORT = 'set.json';
 
     /** @var array<string, array{sha256: string, size: int}> */
     private array $files;
@@ -112,6 +118,15 @@ final readonly class FrameworkPackageReceipt
         ) {
             $invalid('output');
         }
+        $set = $data['set'] ?? null;
+        if ($set !== null
+            && (! is_array($set)
+                || ($set['id'] ?? null) !== $package
+                || ($set['passport'] ?? null) !== self::SET_PASSPORT
+                || ! self::isSha256($set['sha256'] ?? null))
+        ) {
+            $invalid('set');
+        }
         foreach (['files', 'required_files'] as $list) {
             if (! is_array($data[$list] ?? null) || ! array_is_list($data[$list]) || $data[$list] === []) {
                 $invalid($list);
@@ -120,7 +135,8 @@ final readonly class FrameworkPackageReceipt
                 if (! is_array($file)
                     || ! is_string($file['path'] ?? null)
                     || ! self::isSafeRelativePath($file['path'])
-                    || ! str_starts_with($file['path'], 'smart/')
+                    || ! (str_starts_with($file['path'], 'smart/')
+                        || ($list === 'files' && $set !== null && $file['path'] === self::SET_PASSPORT))
                     || ! self::isSha256($file['sha256'] ?? null)
                     || ! is_int($file['size'] ?? null)
                     || $file['size'] < 0
@@ -144,6 +160,9 @@ final readonly class FrameworkPackageReceipt
         $byPath = array_column($manifest, null, 'path');
         if (count($byPath) !== count($manifest)) {
             $invalid('files');
+        }
+        if ($set !== null && ($byPath[self::SET_PASSPORT]['sha256'] ?? null) !== $set['sha256']) {
+            throw new FrameworkComponentException('FRAMEWORK_PACKAGE_RECEIPT_REQUIRED_FILE_UNLISTED', self::SET_PASSPORT);
         }
         $required = array_column($data['required_files'], 'path');
         if (! in_array('smart/rule.js', $required, true)) {
@@ -172,6 +191,12 @@ final readonly class FrameworkPackageReceipt
     public function frameworkRelease(): string
     {
         return $this->data['framework']['release'];
+    }
+
+    /** The set passport's path when the package is a component set, else null. */
+    public function setPassport(): ?string
+    {
+        return isset($this->data['set']) ? self::SET_PASSPORT : null;
     }
 
     public function archiveName(): string
@@ -230,9 +255,9 @@ final readonly class FrameworkPackageReceipt
     }
 
     /**
-     * Every file of the package from an output directory holding `smart/`,
-     * each checked against the receipt. The directory must hold exactly the
-     * receipt's files.
+     * Every file of the package from an output directory holding `smart/`
+     * (and, for a set, its passport beside it), each checked against the
+     * receipt. The directory must hold exactly the receipt's files.
      *
      * @return array<string, string>
      */
@@ -255,6 +280,10 @@ final readonly class FrameworkPackageReceipt
             }
             $relativePath = 'smart/' . str_replace('\\', '/', substr($entry->getPathname(), strlen($root) + 1));
             $files[$relativePath] = (string) file_get_contents($entry->getPathname());
+        }
+        $passport = rtrim($directory, '/') . '/' . self::SET_PASSPORT;
+        if ($this->setPassport() !== null && is_file($passport) && ! is_link($passport)) {
+            $files[self::SET_PASSPORT] = (string) file_get_contents($passport);
         }
 
         return $this->checked($files);

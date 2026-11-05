@@ -142,10 +142,14 @@ final readonly class FrameworkAssetPlanner
         // components from that base. Each package build is served under its
         // own mount, named by its source revision, so its files never share a
         // URL with another build's under Core's cache version.
+        // A component set (its passport projected beside smart/) is declared
+        // by its base alone, the Loader's set form, so the Loader reads the
+        // passport; a plain package keeps {base}.
         foreach ($packageProjections as $name => $package) {
-            $bootConfiguration['packages'][$name] = [
-                'base' => $this->projectedRuntimeBase((string) $package['mount']) . '/smart',
-            ];
+            $base = $this->projectedRuntimeBase((string) $package['mount']) . '/smart';
+            $bootConfiguration['packages'][$name] = isset($package['files'][FrameworkPackageReceipt::SET_PASSPORT])
+                ? $base
+                : ['base' => $base];
         }
 
         $shell = $html === null

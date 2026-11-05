@@ -36,7 +36,9 @@ declare(strict_types=1);
  * is ignored in this repository. A site lays them into its installed copy of
  * Docara at build time; a build publishes them under
  * `_docara/framework-packages/<name>/<package revision>/smart/` and declares
- * `SF_BOOT_CONFIG.packages.<name> = {base}` before Core.
+ * `SF_BOOT_CONFIG.packages.<name> = {base}` before Core. A component set's
+ * passport `set.json` is laid beside `smart/`, and the set is declared by its
+ * base alone (`packages.<name> = "<base>"`), the Loader's set form.
  */
 $root = dirname(__DIR__);
 $autoload = null;
@@ -107,6 +109,11 @@ foreach ($all as $relativePath => $bytes) {
     ) {
         $files[$relativePath] = $bytes;
     }
+}
+// A component set's passport goes beside smart/, where the Loader reads
+// <base>/../set.json, and makes the build declare the package as a set.
+if ($receipt->setPassport() !== null) {
+    $files[$receipt->setPassport()] = $all[$receipt->setPassport()];
 }
 ksort($files, SORT_STRING);
 foreach ($receipt->requiredFiles() as $required) {

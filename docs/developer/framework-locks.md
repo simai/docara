@@ -51,6 +51,15 @@ Loader fetches `rule.js` itself. Package bytes are never committed
 its installed copy at build time. Run the script once per receipt to serve
 several packages.
 
+A component set's build (standard `simai.component-set`) also lists its
+passport `set.json` beside `smart/` and names it under the receipt's `set`
+(`id`, `passport`, `sha256`). That one file is the only one a receipt may list
+outside `smart/`. The script lays it beside `smart/`, so the build publishes
+it at `_docara/framework-packages/<name>/<package revision>/set.json`, where
+the Loader reads `<base>/../set.json`; and the build declares the set by its
+base alone, `SF_BOOT_CONFIG.packages.<name> = '.../smart'`, the Loader's set
+form. A plain package keeps `{base}`.
+
 The script ships in the Composer package (Composer installs the tagged source
 tree) but not in the release ZIP, whose contents are listed in
 `resources/release/package-surface.json`.

@@ -196,6 +196,55 @@ final class FrameworkPackageReceiptTest extends TestCase
         self::assertStringContainsString('FRAMEWORK_PACKAGE_FRAMEWORK_MISMATCH', $output);
     }
 
+    #[Test]
+    public function a_component_set_brings_its_passport_beside_smart_and_is_declared_as_a_set(): void
+    {
+        $files = $this->setFiles();
+        [$receipt, $directory, $archive] = $this->packageOutput($files);
+
+        self::assertSame('set.json', $receipt->setPassport());
+        self::assertSame($files, $receipt->readArchive($archive));
+        self::assertSame($files, $receipt->readDirectory($directory));
+        self::assertNull(FrameworkPackageReceipt::fromArray($this->receipt($this->packageFiles()))->setPassport());
+
+        // Only the passport the receipt names may sit outside smart/.
+        $other = $this->receipt($files);
+        unset($other['set']);
+        $this->assertRefused('FRAMEWORK_PACKAGE_RECEIPT_INVALID', fn () => FrameworkPackageReceipt::fromArray($other));
+        $other = $this->receipt($files);
+        $other['set']['sha256'] = str_repeat('0', 64);
+        $this->assertRefused('FRAMEWORK_PACKAGE_RECEIPT_REQUIRED_FILE_UNLISTED', fn () => FrameworkPackageReceipt::fromArray($other));
+        $other = $this->receipt($files);
+        $other['set']['id'] = 'another';
+        $this->assertRefused('FRAMEWORK_PACKAGE_RECEIPT_INVALID', fn () => FrameworkPackageReceipt::fromArray($other));
+
+        $lock = json_decode(
+            (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $lock = $this->v2Lock($lock);
+        $projection = $receipt->projection(array_map(
+            static fn (string $bytes): array => ['sha256' => hash('sha256', $bytes)],
+            array_intersect_key($files, array_flip(['set.json', 'smart/rule.js'])),
+        ));
+        $projection['requires'] = $lock['runtime']['pair_id'];
+        $lock['package_projections'] = ['larena' => $projection];
+        self::assertSame(['set.json', 'smart/rule.js'], array_keys(FrameworkLock::fromArray($lock)->packageProjections()['larena']['files']));
+    }
+
+    /** @return array<string, string> */
+    private function setFiles(): array
+    {
+        $files = $this->packageFiles() + [
+            'set.json' => "{\"schema\":\"simai.framework.component-set\",\"id\":\"larena\"}\n",
+        ];
+        ksort($files, SORT_STRING);
+
+        return $files;
+    }
+
     /** @return array<string, string> */
     private function packageFiles(): array
     {
@@ -259,7 +308,11 @@ final class FrameworkPackageReceiptTest extends TestCase
             ],
             'files' => $list,
             'claims' => ['production_ready' => false],
-        ];
+        ] + (isset($byPath['set.json']) ? ['set' => [
+            'id' => 'larena',
+            'passport' => 'set.json',
+            'sha256' => $byPath['set.json']['sha256'],
+        ]] : []);
     }
 
     /**

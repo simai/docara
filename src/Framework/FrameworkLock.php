@@ -523,7 +523,7 @@ final readonly class FrameworkLock
             foreach ($package['files'] as $relativePath => $record) {
                 if (! is_string($relativePath)
                     || ! $this->isSafeRelativePath($relativePath)
-                    || ! str_starts_with($relativePath, 'smart/')
+                    || ! (str_starts_with($relativePath, 'smart/') || $relativePath === FrameworkPackageReceipt::SET_PASSPORT)
                     || ! is_array($record)
                     || array_keys($record) !== ['sha256']
                     || ! $this->isSha256($record['sha256'] ?? null)

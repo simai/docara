@@ -24,6 +24,8 @@ final class FrameworkReleaseLockV2Test extends TestCase
 
     private const RULE_FILE = "SF.RuleLoader.registerPackage(\"larena\", {rules: {}});\n";
 
+    private const PASSPORT = "{\"schema\":\"simai.framework.component-set\",\"id\":\"larena\"}\n";
+
     private ?string $temporaryRoot = null;
 
     protected function tearDown(): void
@@ -264,6 +266,26 @@ final class FrameworkReleaseLockV2Test extends TestCase
         );
     }
 
+    /**
+     * A component set's passport is projected beside smart/, where the
+     * Loader reads <base>/../set.json, and the set is declared by its base
+     * alone, the Loader's set form (ui-view request 1 and 2).
+     */
+    #[Test]
+    public function a_component_set_is_declared_as_a_set_and_its_passport_is_served_beside_smart(): void
+    {
+        [$repository] = $this->v2Repository(withPackage: true, asSet: true);
+
+        $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->plan([]);
+        $boot = (string) array_column($plan->assets, null, 'key')['simai.framework.boot']['content'];
+
+        self::assertStringContainsString(
+            '"packages":{"larena":"/_docara/framework-packages/larena/' . self::PACKAGE_REVISION . '/smart"}',
+            $boot,
+        );
+        self::assertSame(self::PASSPORT, $repository->bundledPackageAsset('larena', 'set.json'));
+    }
+
     #[Test]
     public function a_v2_release_without_a_package_declares_none(): void
     {
@@ -418,7 +440,7 @@ final class FrameworkReleaseLockV2Test extends TestCase
      * @return array{0: FrameworkManifestRepository, 1: array<string, mixed>, 2: string}
      */
     /** @param array<string, string> $packageFiles extra package files under smart/, by path */
-    private function v2Repository(bool $withPackage, array $packageFiles = []): array
+    private function v2Repository(bool $withPackage, array $packageFiles = [], bool $asSet = false): array
     {
         $this->temporaryRoot = sys_get_temp_dir() . '/docara-lock-v2-' . bin2hex(random_bytes(6));
         $resources = $this->temporaryRoot . '/resources';
@@ -468,6 +490,11 @@ final class FrameworkReleaseLockV2Test extends TestCase
                 file_put_contents($packageRoot . '/' . $relativePath, $bytes);
                 $lock['package_projections']['larena']['files']['smart/' . $relativePath] = ['sha256' => hash('sha256', $bytes)];
             }
+            if ($asSet) {
+                file_put_contents(dirname($packageRoot) . '/set.json', self::PASSPORT);
+                $lock['package_projections']['larena']['files']['set.json'] = ['sha256' => hash('sha256', self::PASSPORT)];
+            }
+            ksort($lock['package_projections']['larena']['files'], SORT_STRING);
         }
 
         return [

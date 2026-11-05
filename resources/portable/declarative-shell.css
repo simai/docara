@@ -216,6 +216,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--sf-f8)),1fr))}
 .docara-example-grid .sf-button{margin-block-start:auto;align-self:flex-start}
 .docara-example-preview{overflow:hidden;margin-block-end:var(--sf-space-1);border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius--surface);background:var(--sf-surface-0)}
+/* layout=wide: the example spans the page edge to edge like a full-width surface, so its frame loses the side borders and the rounded corners that would sit on the window edge. */
+.docara-example-preview--wide{border-inline:0;border-radius:0}
 .docara-example-preview__header{border-block-end:1px solid var(--sf-outline-variant)}
 .docara-example-inline{display:flow-root;min-inline-size:0}
 .docara-example-preview__tabs{display:inline-flex;inline-size:max-content;max-inline-size:100%;align-items:center;gap:0;overflow-x:auto}

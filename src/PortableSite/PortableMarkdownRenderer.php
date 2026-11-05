@@ -740,9 +740,12 @@ final class PortableMarkdownRenderer
         $showSources = ! array_key_exists('sources', $attributes)
             || $this->attributeBoolean($attributes['sources'], 'example', 'sources');
         $wrap = $wrap && $showSources;
+        // layout=wide lets a showcase example leave the reading column and
+        // take the page's full width, as a landing page needs.
+        $wide = $this->catalogueChoice(trim($attributes['layout'] ?? 'column'), 'example', 'layout') === 'wide';
         $baseHref = null;
         if (array_key_exists('src', $attributes)) {
-            return $this->renderPageExample($markdown, $attributes, $label, $defaultLabel, $fullscreen, $wrap, $sourceRoot, $sourceFile, $showSources);
+            return $this->renderPageExample($markdown, $attributes, $label, $defaultLabel, $fullscreen, $wrap, $sourceRoot, $sourceFile, $showSources, $wide);
         }
         if ($exampleId !== '') {
             if (trim($markdown) !== '') {
@@ -850,6 +853,7 @@ final class PortableMarkdownRenderer
             fullscreen: $fullscreen,
             wrap: $wrap,
             responsive: $responsive,
+            wide: $wide,
         );
     }
 
@@ -921,6 +925,7 @@ final class PortableMarkdownRenderer
             if (array_key_exists('sources', $attributes)) {
                 $this->attributeBoolean($attributes['sources'], 'example', 'sources');
             }
+            $this->catalogueChoice(trim($attributes['layout'] ?? 'column'), 'example', 'layout');
             if (trim($attributes['label'] ?? 'Example') === '') {
                 throw new PortableConfigurationException(
                     'MARKDOWN_EXAMPLE_LABEL_INVALID',
@@ -1009,6 +1014,7 @@ final class PortableMarkdownRenderer
         ?string $sourceRoot,
         ?string $sourceFile,
         bool $showSources = true,
+        bool $wide = false,
     ): string {
         ['src' => $src, 'sections' => $sections] = $this->pageExampleParts($attributes, $markdown, $showSources);
         $sources = [];
@@ -1038,6 +1044,7 @@ final class PortableMarkdownRenderer
             fullscreen: $fullscreen,
             wrap: $wrap,
             responsive: true,
+            wide: $wide,
         );
     }
 

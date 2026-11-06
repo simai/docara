@@ -8,6 +8,12 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **Every example can be opened full screen.** An inline HTML example
+  (`admitted_html`, most component examples) now has the same full-screen
+  viewer with desktop, tablet and mobile widths as a framed or Markdown
+  example. Its hidden frame holds the same sources and loads only when the
+  reader opens the viewer; `fullscreen=false` still turns the control off.
+
 - **`docara init --template=set`: the site of a component set.** The
   new starter writes the five sections every SIMAI Framework component
   set's site has, in menu order: Overview, Connection, Components, Demos

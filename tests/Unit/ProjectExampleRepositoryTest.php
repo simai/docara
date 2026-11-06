@@ -75,8 +75,10 @@ final class ProjectExampleRepositoryTest extends TestCase
         );
         self::assertSame(1, substr_count($html, '<iframe title="Result" data-docara-example-frame'));
         self::assertStringNotContainsString('data-docara-example-source="components/script"', $html);
-        self::assertStringNotContainsString('&lt;base href=&quot;/docs/_docara/examples/components/tooltip/', $html);
-        $outsideFrames = (string) preg_replace('/\ssrcdoc="[^"]*"/', '', $html);
+        // The inline example also carries the hidden frame of the full-screen
+        // viewer, which loads only when the reader opens it.
+        self::assertSame(1, substr_count($html, '<iframe data-docara-example-responsive-frame '));
+        $outsideFrames = (string) preg_replace('/\s(?:data-docara-)?srcdoc="[^"]*"/', '', $html);
         self::assertStringNotContainsString('<style', $outsideFrames);
         self::assertStringNotContainsString('<script', $outsideFrames);
 

@@ -834,6 +834,18 @@ final class PortableMarkdownRenderer
             $preview = '<div data-docara-example-inline-preview="html"'
                 . ($exampleId === '' ? '' : ' data-docara-example-source="' . $this->escapeHtml($exampleId) . '"')
                 . ' class="docara-example-inline">' . $this->nestInlineHeadings($compiledPreview) . '</div>';
+            // An admitted HTML example opens in the same full-screen viewer
+            // with device widths: the hidden frame holds the same sources and
+            // loads only when the reader opens the viewer.
+            if ($fullscreen) {
+                $responsive = true;
+                $preview .= preg_replace('/^<iframe /', '<iframe data-docara-example-responsive-frame ', $this->renderExampleDocument(
+                    $sources,
+                    $baseHref,
+                    $label,
+                    $defaultLabel,
+                ), 1);
+            }
         }
         $renderedSources = [];
         foreach ($sources as $language => $source) {

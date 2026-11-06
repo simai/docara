@@ -129,7 +129,13 @@ MD);
         self::assertStringContainsString('data-docara-example-preview-resolved="inline"', $automatic);
         self::assertStringContainsString('data-docara-example-preview-reason="admitted_html"', $automatic);
         self::assertStringContainsString('data-docara-example-inline-preview', $automatic);
-        self::assertStringNotContainsString('data-docara-example-frame', $automatic);
+        // The inline preview is the page's own markup; the only frame is the
+        // hidden one the full-screen viewer loads on demand.
+        self::assertSame(1, substr_count($automatic, '<iframe '));
+        self::assertStringContainsString('<iframe data-docara-example-responsive-frame ', $automatic);
+        self::assertStringContainsString('data-docara-srcdoc=', $automatic);
+        self::assertStringNotContainsString(' srcdoc=', $automatic);
+        self::assertStringContainsString('data-docara-example-viewer hidden', $automatic);
 
         $isolated = $renderer->render(<<<'MD'
 :::example {label="Interactive"}

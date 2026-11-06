@@ -313,6 +313,30 @@ final readonly class DeclarativePageCompiler
 
                 continue;
             }
+            if (($blockDefinition['kind'] ?? null) === 'set-passport') {
+                $package = (string) $blockConfiguration['package'];
+                $passport = $composition->setPassports[$package] ?? null;
+                if (! is_array($passport)) {
+                    throw new PortableConfigurationException(
+                        'SET_PASSPORT_PACKAGE_UNKNOWN',
+                        "Set passport block [{$configuration['id']}.{$blockConfiguration['id']}] names [$package], which is no component set in the Framework lock.",
+                    );
+                }
+                $blocks[] = $this->blocks->create(
+                    (string) $configuration['id'] . '.' . $blockConfiguration['id'],
+                    $blockKey,
+                    (string) $blockConfiguration['slot'],
+                    [
+                        'passport' => $passport + ['package' => $package],
+                        'history_href' => is_string($blockConfiguration['history'] ?? null) ? $blockConfiguration['history'] : null,
+                        'source' => $configurationSource,
+                    ],
+                    null,
+                    $definition,
+                );
+
+                continue;
+            }
             if (($blockDefinition['kind'] ?? null) !== 'smart') {
                 throw new PortableConfigurationException(
                     'DECLARATIVE_REGION_BLOCK_KIND_FORBIDDEN',

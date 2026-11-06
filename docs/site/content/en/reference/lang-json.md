@@ -205,6 +205,13 @@ You can also set them in `lang.json`, in the groups `error`, `language`, `blocks
 | `atlas.authoring` — The label of the connection method in the Design Atlas | authoring | способ подключения |
 | `atlas.capabilities` — The capabilities label in the Design Atlas | Capabilities | Возможности |
 | `atlas.container` — The label of the container nesting rules in the Design Atlas | Container | Правила вложения |
+| `set.version` — The component set's name and release number in the footer (`shell.set-passport`) | {title} {version} | {title} {version} |
+| `set.build` — The set's name and short build code while the set has no release number | {title}, build {revision} | {title}, сборка {revision} |
+| `set.framework_from` — Which SIMAI Framework the set needs, when a lower bound is given | For SIMAI Framework {version} and later | Для SIMAI Framework {version} и новее |
+| `set.framework` — Which SIMAI Framework the set needs, for any other range | For SIMAI Framework {range} | Для SIMAI Framework {range} |
+| `set.licence` — The set's licence in the footer | Licence: {licence} | Лицензия: {licence} |
+| `set.source` — The link to the set's source code in the footer | Source code | Исходный код |
+| `set.history` — The link to the version history in the footer | Version history | История версий |
 
 ### Built-in strings that do not change
 

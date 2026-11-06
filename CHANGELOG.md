@@ -8,6 +8,12 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **A component set's line in the footer.** The `shell.set-passport` footer
+  block shows a set's name and release (or its short build code), the SIMAI
+  Framework it needs, its licence and links to its source code and version
+  history, read on every build from the set's `set.json` and package receipt
+  in the Framework lock. Texts come from `lang.json` (`set.*`).
+
 - **A component set's package is taken as a set.** A set build lists its
   passport `set.json` beside `smart/` in the package receipt, and Docara
   refused every such receipt (`FRAMEWORK_PACKAGE_RECEIPT_INVALID files`).

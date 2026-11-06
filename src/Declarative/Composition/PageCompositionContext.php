@@ -14,6 +14,7 @@ final readonly class PageCompositionContext
      * @param  list<array<string, mixed>>  $headerNavigation
      * @param  list<array{id:string,level:int,text:string}>  $outline
      * @param  array{label:string,expand:string,collapse:string,contains_current:string}  $navigationCopy
+     * @param  array<string, array<string, mixed>>  $setPassports  component set footer lines by package (SetPassportCatalogue::localized)
      */
     public function __construct(
         public array $branding,
@@ -23,6 +24,7 @@ final readonly class PageCompositionContext
         public array $navigationCopy,
         public string $headerNavigationLabel,
         public string $tocLabel,
+        public array $setPassports = [],
     ) {
         $this->assertBranding();
         $this->assertNavigation($navigation);
@@ -43,6 +45,7 @@ final readonly class PageCompositionContext
         array $copy = [],
         array $headerNavigation = [],
         string $currentUrl = '',
+        array $setPassports = [],
     ): self {
         $normalizedOutline = [];
         foreach ($outline as $item) {
@@ -74,6 +77,7 @@ final readonly class PageCompositionContext
             ],
             self::copy($copy, 'navigation.primary', 'Primary navigation'),
             self::copy($copy, 'navigation.outline', 'Contents'),
+            $setPassports,
         );
     }
 
@@ -88,6 +92,9 @@ final readonly class PageCompositionContext
             'navigation_copy' => $this->navigationCopy,
             'header_navigation_label' => $this->headerNavigationLabel,
             'toc_label' => $this->tocLabel,
+            // Only sites that use a component set's footer line carry it, so
+            // every other page's recorded context stays as before.
+            ...($this->setPassports === [] ? [] : ['set_passports' => $this->setPassports]),
         ];
     }
 

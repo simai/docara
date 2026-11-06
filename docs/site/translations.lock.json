@@ -2106,11 +2106,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/extend.md",
-            "source_sha256": "ee55f25d1543a2ab364f747a214ca13a698fc8251c3b42808af93cb00b246610",
-            "source_structure_sha256": "ea06cfbd158148f96d571aecad09df2ebb24f88630864cda057f2dcfedb188a4",
+            "source_sha256": "f6598609b3275a7dd1dd3b24c2bb87afbcd7745211071247e3045aae4f57a8ce",
+            "source_structure_sha256": "dd4ecf1d3cb420a85355e467e9a51c0d45756f427ee33fd3aee94cf30df43350",
             "target_path": "content/en/reference/errors/extend.md",
-            "target_sha256": "1329c6daeb64ee9269aa74f4c37382c6cf7e00c2a5ed228e62c3f3aa0ee7c8a7",
-            "target_structure_sha256": "ea06cfbd158148f96d571aecad09df2ebb24f88630864cda057f2dcfedb188a4"
+            "target_sha256": "7a925c3c83426d31ecb0b0b2e712258473cdd826b36a34615f4e4b67cff27db5",
+            "target_structure_sha256": "dd4ecf1d3cb420a85355e467e9a51c0d45756f427ee33fd3aee94cf30df43350"
         },
         {
             "key": "reference/errors/framework.md",
@@ -2214,11 +2214,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/lang-json.md",
-            "source_sha256": "f8c840ec208aef92e77dc3bd0206f866943a3881ff1b700de6bbd63c30e9edac",
-            "source_structure_sha256": "75d91cb3be69e223191e3d0d0919ccbdc8297024bc45b1884f1d3fda8583550c",
+            "source_sha256": "4b01bb9c966375148681c8de745c48cd077596a1189b1b69ca0233002d1c9a48",
+            "source_structure_sha256": "b56e8a5e98752f375c4934afa6476e5b4affb7890ecf861298b2f6b75fc71de3",
             "target_path": "content/en/reference/lang-json.md",
-            "target_sha256": "0078149c8f56dfde974a856c0020eb4c17e2a0708fb16d3fbe77869096fe8eff",
-            "target_structure_sha256": "75d91cb3be69e223191e3d0d0919ccbdc8297024bc45b1884f1d3fda8583550c"
+            "target_sha256": "4becd8fed11a120c1024f8e1b189d5347136342e3bd61ca2764c739979fd6fda",
+            "target_structure_sha256": "b56e8a5e98752f375c4934afa6476e5b4affb7890ecf861298b2f6b75fc71de3"
         },
         {
             "key": "reference/schemas.md",
@@ -2298,11 +2298,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/layout-and-regions.md",
-            "source_sha256": "7d5d3d32880caed953ca3663ba70214f27c606aa90c3d9aabe2dc454c9477823",
-            "source_structure_sha256": "12d38a92dfe43f36e31ed3cf2104db6964b894a63ce50928b4142a360896651e",
+            "source_sha256": "9e4421f0d0da5c1baef1692e3f623f07819df7dee1d1c12dfda1129f1f767425",
+            "source_structure_sha256": "84f14e7e0aaa1a8bfe4ebf53594a4d0d520a4dcd992781711678af7d7ddb1887",
             "target_path": "content/en/settings/layout-and-regions.md",
-            "target_sha256": "6be58011c95aec1007163e13d82228b7c1598d602a14c0a014cf0ab9c99cd75e",
-            "target_structure_sha256": "12d38a92dfe43f36e31ed3cf2104db6964b894a63ce50928b4142a360896651e"
+            "target_sha256": "d16c9a819bff398bfde14474ba61188e27445ee5bc866f020a8ebcd38dc92a40",
+            "target_structure_sha256": "84f14e7e0aaa1a8bfe4ebf53594a4d0d520a4dcd992781711678af7d7ddb1887"
         },
         {
             "key": "settings/levels-and-inheritance.md",

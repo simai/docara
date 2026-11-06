@@ -10,6 +10,8 @@ use Simai\Docara\Framework\FrameworkAssetPlanner;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
+use Simai\Docara\I18n\UiCopy;
+use Simai\Docara\PortableSite\SetPassportCatalogue;
 
 /**
  * Release lock v2: a Framework release is one `ui` commit whose distribution
@@ -24,7 +26,7 @@ final class FrameworkReleaseLockV2Test extends TestCase
 
     private const RULE_FILE = "SF.RuleLoader.registerPackage(\"larena\", {rules: {}});\n";
 
-    private const PASSPORT = "{\"schema\":\"simai.framework.component-set\",\"id\":\"larena\"}\n";
+    private const PASSPORT = "{\"schema\":\"simai.framework.component-set\",\"id\":\"larena\",\"title\":\"Larena UI\",\"licence\":{\"spdx\":\"MIT\"}}\n";
 
     private ?string $temporaryRoot = null;
 
@@ -284,6 +286,20 @@ final class FrameworkReleaseLockV2Test extends TestCase
             $boot,
         );
         self::assertSame(self::PASSPORT, $repository->bundledPackageAsset('larena', 'set.json'));
+    }
+
+    /** The set's footer line reads the passport through the lock's hash. */
+    #[Test]
+    public function a_component_set_footer_line_reads_the_projected_passport(): void
+    {
+        [$repository] = $this->v2Repository(withPackage: true, asSet: true);
+
+        $line = SetPassportCatalogue::fromRepository($repository)->localized(UiCopy::buildDefaults('en'))['larena'];
+
+        self::assertSame('Larena UI, build 98ad1a0', $line['name']);
+        self::assertSame('Licence: MIT', $line['licence']);
+        self::assertSame('https://github.com/simai/larena-ui', $line['source']['href']);
+        self::assertSame([], SetPassportCatalogue::fromRepository($this->v2Repository(withPackage: true)[0])->localized(UiCopy::buildDefaults('en')));
     }
 
     #[Test]

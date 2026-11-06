@@ -67,7 +67,7 @@ final class HeroPaddingTest extends TestCase
         self::assertStringContainsString('items-cross-center docara-padding-2xl">', $html);
 
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString('[data-docara-block="hero"][data-sf-effect]{position:relative}', $css);
+        self::assertStringContainsString('[data-docara-block="hero"][data-sf-effect]{position:relative;', $css);
         // The pause button sits in the hero's bottom padding instead of a row
         // of its own: a 2xl padding holds it (the button keeps --sf-space-1
         // from the bottom, or the middle of a barely taller padding), and an

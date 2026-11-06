@@ -165,8 +165,10 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-landing{display:block;min-height:auto;container-type:inline-size}
 .docara-landing [data-docara-block="hero"]:not([data-docara-surface]){background:radial-gradient(circle at 12% 18%,color-mix(in srgb,var(--sf-primary-container) 72%,transparent),transparent 46%),radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--sf-tertiary-container) 58%,transparent),transparent 38%),color-mix(in srgb,var(--sf-surface-container) 76%,transparent)}
 /* A hero with a background effect: the Framework gives the area the theme the effect draws (sf-effect-area with theme-dark or theme-light). The area takes that theme's surface and ink, so the text never keeps the page's colour over a scene of the other theme while the effect loads, draws translucently or is hidden. */
-[data-docara-block="hero"][data-sf-effect]{position:relative}
-[data-docara-block="hero"][data-sf-effect].sf-effect-area{background:var(--sf-surface-0);color:var(--sf-on-surface)}
+/* Before the effect loads (or when it is refused) the hero already has the plain surface the effect draws on, in the effect's theme, so the background does not jump when the scene appears. */
+[data-docara-block="hero"][data-sf-effect]{position:relative;background:var(--sf-surface-0);color:var(--sf-on-surface)}
+[data-docara-block="hero"][data-sf-effect-theme="dark"]{color-scheme:dark}
+[data-docara-block="hero"][data-sf-effect-theme="light"]{color-scheme:light}
 /* Hero padding=2xl: a tall first screen whose vertical padding grows with the viewport from --sf-d2 (3rem) on a phone to --sf-e4 (7rem) on a wide screen, with no breakpoint. The Framework has no fluid spacing utility; the limits are its spacing tokens. The value is a property so the pause button below can be placed inside it. */
 :root{--docara-padding-2xl:clamp(var(--sf-d2),var(--sf-c2) + 6vw,var(--sf-e4))}
 .docara-padding-2xl{padding-block:var(--docara-padding-2xl)}

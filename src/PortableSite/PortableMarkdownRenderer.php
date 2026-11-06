@@ -2486,7 +2486,9 @@ HTML;
         $title = '';
         if ($hasTitle && preg_match('/^(?<title><strong>(?:(?!<strong>).)*?<\/strong>)\s*/su', $body, $match) === 1) {
             $title = $match['title'];
-            $body = substr($body, strlen($match[0]));
+            // "**Title**. Text" and "**Title** — text" read as one sentence in
+            // Markdown; once the title is its own line, the joining mark goes.
+            $body = (string) preg_replace('/\A[.:;,—–]\s*/u', '', substr($body, strlen($match[0])));
         }
         $body = trim($body);
 

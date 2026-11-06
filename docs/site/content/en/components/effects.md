@@ -24,7 +24,7 @@ The catalogue is set once for the whole site in `docara.json`:
 ```json
 {
   "effects": {
-    "catalogue": "https://cdn.jsdelivr.net/gh/simai/ui-effects@ad508268dbf322ecaaf2820a06da8dc8285d4ec1/"
+    "catalogue": "https://cdn.jsdelivr.net/gh/simai/ui-effects@264cb2efc182fd7af6bc273bdcc3006f1588af18/"
   }
 }
 ```

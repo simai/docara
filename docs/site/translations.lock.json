@@ -1326,11 +1326,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/effects.md",
-            "source_sha256": "b6d4ba53a8cb4b9b25f88216866dc6dd019a9063fbe8cbf03173286cec77b3a0",
-            "source_structure_sha256": "49f9dbd54b728051969a460f9da12280a8d14ce94b987cbf80a165da58858784",
+            "source_sha256": "776ff6de8973aca20dcefda220acb35e1e8edd519635ca8c50161bc945f7d955",
+            "source_structure_sha256": "7e6ce6591ede4f2aff25b791cd4b1e55ea8e55ffc722fce31bd7832cb82c4e2e",
             "target_path": "content/en/components/effects.md",
-            "target_sha256": "2436742375b713beecc54bcc458aa394e294d85ddd91330f621bf6dc09278a70",
-            "target_structure_sha256": "49f9dbd54b728051969a460f9da12280a8d14ce94b987cbf80a165da58858784"
+            "target_sha256": "881428d6c0ede712569f9a7c7a5ac247e4d2faefb101bfad265f0e227e5fef84",
+            "target_structure_sha256": "7e6ce6591ede4f2aff25b791cd4b1e55ea8e55ffc722fce31bd7832cb82c4e2e"
         },
         {
             "key": "components/embed.md",

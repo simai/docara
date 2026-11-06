@@ -75,10 +75,15 @@ final class HeroEffectTest extends TestCase
             self::assertStringContainsString($needle, $shell);
         }
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString(
-            '[data-docara-block="hero"][data-sf-effect].sf-effect-area{background:var(--sf-surface-0);color:var(--sf-on-surface)}',
-            $css,
-        );
+        // The hero has the effect's plain surface before the scene loads, in the
+        // effect's own theme, so the background does not jump when it appears.
+        foreach ([
+            '[data-docara-block="hero"][data-sf-effect]{position:relative;background:var(--sf-surface-0);color:var(--sf-on-surface)}',
+            '[data-docara-block="hero"][data-sf-effect-theme="dark"]{color-scheme:dark}',
+            '[data-docara-block="hero"][data-sf-effect-theme="light"]{color-scheme:light}',
+        ] as $rule) {
+            self::assertStringContainsString($rule, $css);
+        }
     }
 
     #[Test]

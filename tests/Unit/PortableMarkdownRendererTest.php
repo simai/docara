@@ -894,6 +894,22 @@ MD);
     }
 
     #[Test]
+    public function the_mark_that_joins_a_feature_title_to_its_text_is_dropped(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::features
+- **[Catalogue](/components/)**. Every component with a live example.
+- **Layouts** — pages with different regions.
+- **Fast.** Static output.
+:::
+MD);
+
+        self::assertStringContainsString('<strong><a href="/components/">Catalogue</a></strong><span class="min-w-0">Every component with a live example.</span>', $html);
+        self::assertStringContainsString('<strong>Layouts</strong><span class="min-w-0">pages with different regions.</span>', $html);
+        self::assertStringContainsString('<strong>Fast.</strong><span class="min-w-0">Static output.</span>', $html);
+    }
+
+    #[Test]
     public function a_named_current_step_is_announced_and_an_unnamed_one_is_not(): void
     {
         $renderer = new PortableMarkdownRenderer;

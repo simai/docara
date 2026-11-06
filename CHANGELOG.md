@@ -57,6 +57,19 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- A hero with a background effect has the effect's plain surface, in the
+  effect's theme, before the scene loads or when it is refused, so the
+  background no longer jumps from the muted panel colour when the scene
+  appears.
+- A feature card whose Markdown reads `**Title**. Text` or `**Title** —
+  text` no longer starts its text with the joining mark once the title
+  stands on its own line.
+- The documentation home banner's Chladni effect runs again: the site's
+  effects catalogue was pinned to a revision of simai/ui-effects from
+  before that effect was added, so the browser refused it as not in the
+  catalogue. The site and the effects page example now pin
+  `264cb2efc182fd7af6bc273bdcc3006f1588af18`.
+
 - **A page transform may change a page's markup.** `page_transforms` ran
   after each page's Framework asset plan was recorded, so a transform that
   edited anything outside code blocks failed `verify-static` with

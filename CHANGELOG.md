@@ -35,6 +35,12 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **A page transform may change a page's markup.** `page_transforms` ran
+  after each page's Framework asset plan was recorded, so a transform that
+  edited anything outside code blocks failed `verify-static` with
+  "Generated Framework page asset plan [...] does not match final HTML". The
+  plan of each page a transform changed is now made again from the final HTML.
+
 - **Parts added to the side columns and the footer line up with Docara's own
   text.** A part under the contents lay on the column's line, and a filled one
   cut it in two; a part under the menu started left of the menu items; the

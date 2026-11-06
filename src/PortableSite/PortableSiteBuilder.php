@@ -96,6 +96,24 @@ final readonly class PortableSiteBuilder
         ?string $onlyPage = null,
         BuildPurpose $purpose = BuildPurpose::Production,
     ): Collection {
+        $buildLock = null;
+        try {
+            return $this->buildUnderLock($root, $destination, $onlyPage, $purpose, $buildLock);
+        } finally {
+            // Released explicitly: a caught exception's trace may still hold
+            // the handle, so scope alone does not free the lock.
+            $this->releaseBuildLock($buildLock);
+        }
+    }
+
+    /** @return Collection<string, array<string, mixed>> */
+    private function buildUnderLock(
+        string $root,
+        string $destination,
+        ?string $onlyPage,
+        BuildPurpose $purpose,
+        mixed &$buildLock,
+    ): Collection {
         // Validate the caller's lexical root before realpath normalization so
         // link, link/ and link/. cannot hide the same symbolic-link root.
         $loader = new PortableConfigurationLoader($root);
@@ -229,8 +247,7 @@ final readonly class PortableSiteBuilder
         );
         $finalDestination = $destination;
         $destination = $this->candidateDestination($root, $finalDestination);
-        // Held until build() returns or throws: PHP closes the handle, and
-        // with it the lock, when the local goes out of scope.
+        // Held until build() returns or throws; build() releases it.
         $buildLock = $this->acquireBuildLock($finalDestination);
         $selectedPageUrl = $onlyPage === null ? null : $this->normalizePageSelector($onlyPage);
         $existingDiagnostics = [];
@@ -2359,6 +2376,14 @@ final readonly class PortableSiteBuilder
         }
 
         return $handle;
+    }
+
+    private function releaseBuildLock(mixed $buildLock): void
+    {
+        if (is_resource($buildLock)) {
+            flock($buildLock, LOCK_UN);
+            fclose($buildLock);
+        }
     }
 
     private function promoteCandidate(string $root, string $candidate, string $destination): void

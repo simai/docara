@@ -13,7 +13,7 @@
             },
             {
                 "code": "DESIGN_REGISTRY_VALID",
-                "count": 18,
+                "count": 19,
                 "status": "pass"
             },
             {
@@ -27,7 +27,7 @@
                 "status": "pass"
             }
         ],
-        "design_fingerprint": "426cd3fea5dbf6edd4ced6e495942553577efd629e9ca4bc329bb87ca4896490"
+        "design_fingerprint": "6360238ace41236e9077d3c00d2d8963f50d0e6c4caa842d126a25795a429128"
     },
     "diagnostics": [],
     "exit_code": 0,

@@ -168,17 +168,19 @@ final class FrameworkPackageReceiptTest extends TestCase
         $result = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
         self::assertSame('larena', $result['package']);
         self::assertSame('archive', $result['read_from']);
-        self::assertSame(3, $result['files']);
+        self::assertSame(4, $result['files']);
 
+        // The minified twin comes with its script; the compressed copy stays.
         $written = FrameworkLock::fromJsonFile($lockPath)->packageProjections();
         self::assertSame(['larena'], array_keys($written));
         self::assertSame(
-            ['smart/rule.js', 'smart/table/css/table.css', 'smart/table/js/table.js'],
+            ['smart/rule.js', 'smart/table/css/table.css', 'smart/table/js/table.js', 'smart/table/js/table.min.js'],
             array_keys($written['larena']['files']),
         );
         $laid = $docara . '/resources/framework/runtime-packages/larena/' . self::PACKAGE_REVISION;
         self::assertSame($this->packageFiles()['smart/table/js/table.js'], file_get_contents($laid . '/smart/table/js/table.js'));
         self::assertFileDoesNotExist($laid . '/smart/rule.js.gz');
+        self::assertSame($this->packageFiles()['smart/table/js/table.min.js'], file_get_contents($laid . '/smart/table/js/table.min.js'));
 
         [$status] = $run(['--receipt', $receiptPath, '--from', $directory, '--lock', $lockPath]);
         self::assertSame(0, $status);

@@ -113,8 +113,8 @@ final class DiscoveryAndStrictTranslationBuildTest extends TestCase
 
         $ruHome = (string) file_get_contents($build . '/ru/index.html');
         self::assertStringContainsString('<title>Моя документация</title>', $ruHome);
-        // Core's chunk preloads repeat core.js's URL, so it carries no query.
-        self::assertMatchesRegularExpression('#<script defer src="/docs/_docara/vendor/simai-framework/runtime/[a-f0-9]{40}/distr/core/js/core\.js" data-docara-framework-asset="simai\.framework\.core\.js">#', $ruHome);
+        // Core's chunk preloads repeat core.min.js's URL, so it carries no query.
+        self::assertMatchesRegularExpression('#<script defer src="/docs/_docara/vendor/simai-framework/runtime/[a-f0-9]{40}/distr/core/js/core\.min\.js" data-docara-framework-asset="simai\.framework\.core\.js">#', $ruHome);
         $held = (string) file_get_contents($build . '/en/writing/index.html');
         self::assertStringContainsString('<html lang="en"', $held);
         self::assertStringContainsString('data-docara-translation-fallback="stale"', $held);

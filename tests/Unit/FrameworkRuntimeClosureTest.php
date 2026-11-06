@@ -84,9 +84,23 @@ final class FrameworkRuntimeClosureTest extends TestCase
             $manifestTags[] = $manifest['frontend']['tag'];
         }
         $derived = FrameworkRuntimeClosure::eagerSmartFiles($lock['runtime'], $manifestTags);
+        // The lock carries each eager file with its minified twin (and the
+        // twin's licence file); without them it is exactly the closure.
         $locked = array_keys($lock['asset_projection']['files']);
-        sort($locked, SORT_STRING);
-        self::assertSame($derived, $locked);
+        $readable = array_values(array_filter(
+            $locked,
+            static fn (string $path): bool => ! str_contains($path, '.min.'),
+        ));
+        sort($readable, SORT_STRING);
+        self::assertSame($derived, $readable);
+        $twins = [];
+        foreach ($derived as $path) {
+            $twin = (string) preg_replace('/\.(css|js)$/D', '.min.$1', $path);
+            if (in_array($twin, $locked, true)) {
+                $twins[$path] = $twin;
+            }
+        }
+        self::assertCount(count($derived), $twins, 'Every eager entrypoint has its minified twin.');
 
         // The planner's own closure check agrees with the derivation.
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($lock));
@@ -103,6 +117,9 @@ final class FrameworkRuntimeClosureTest extends TestCase
         }
         $planned = array_values(array_unique($planned));
         sort($planned, SORT_STRING);
-        self::assertSame($derived, $planned);
+        // A page links the twins.
+        $linkedTwins = array_values($twins);
+        sort($linkedTwins, SORT_STRING);
+        self::assertSame($linkedTwins, $planned);
     }
 }

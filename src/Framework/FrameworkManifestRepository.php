@@ -464,6 +464,44 @@ final readonly class FrameworkManifestRepository
         return $manifest;
     }
 
+    /**
+     * The minified twin of a projected runtime stylesheet or script, or the
+     * path itself when the release ships none (utility.full.css, a utility
+     * script) or the projection predates the twins.
+     */
+    public function runtimeTwin(string $relativePath): string
+    {
+        $twin = self::minifiedTwinPath($relativePath);
+
+        return $twin !== null && is_array($this->runtimeManifest()['files'][$twin] ?? null)
+            ? $twin
+            : $relativePath;
+    }
+
+    /** The minified twin of a projected Smart entrypoint, or the path itself. */
+    public function smartTwin(string $relativePath): string
+    {
+        $twin = self::minifiedTwinPath($relativePath);
+        if ($twin === null) {
+            return $relativePath;
+        }
+        $dynamicProjection = $this->lock->dynamicAssetProjection();
+
+        return is_array($this->lock->assetProjection()['files'][$twin] ?? null)
+            || (is_array($dynamicProjection) && is_array($dynamicProjection['files'][$twin] ?? null))
+            ? $twin
+            : $relativePath;
+    }
+
+    private static function minifiedTwinPath(string $relativePath): ?string
+    {
+        if (str_contains($relativePath, '.min.') || preg_match('/\.(css|js)$/D', $relativePath) !== 1) {
+            return null;
+        }
+
+        return (string) preg_replace('/\.(css|js)$/D', '.min.$1', $relativePath);
+    }
+
     /** @return array{sha256: string} */
     public function runtimeAssetRecord(string $relativePath): array
     {

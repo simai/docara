@@ -166,6 +166,21 @@ final class FrameworkReleaseLockV2Test extends TestCase
     }
 
     #[Test]
+    public function a_package_without_minified_twins_keeps_the_loader_on_readable_files(): void
+    {
+        foreach ([
+            'readable only' => [['ledger/js/ledger.js' => 'customElements;'], false],
+            'with twins' => [['ledger/js/ledger.js' => 'customElements;', 'ledger/js/ledger.min.js' => 'customElements;'], true],
+        ] as $case => [$packageFiles, $minified]) {
+            [$repository] = $this->v2Repository(withPackage: true, packageFiles: $packageFiles);
+            $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->plan([]);
+            $boot = (string) array_column($plan->assets, null, 'key')['simai.framework.boot']['content'];
+            self::assertStringContainsString('"minified":' . ($minified ? 'true' : 'false'), $boot, $case);
+            exec('rm -rf ' . escapeshellarg((string) $this->temporaryRoot));
+        }
+    }
+
+    #[Test]
     public function the_planner_declares_the_package_before_core_and_serves_it_from_its_own_mount(): void
     {
         [$repository, $lock] = $this->v2Repository(withPackage: true);
@@ -181,9 +196,9 @@ final class FrameworkReleaseLockV2Test extends TestCase
             $boot,
         );
         self::assertStringContainsString('"pluginListVersion":"' . $pairId . '"', $boot);
-        // The site serves the readable runtime files; the Loader is told not to
-        // fetch their .min twins, which the projection does not publish.
-        self::assertStringContainsString('"minified":false', $boot);
+        // The projection publishes every runtime file with its .min twin, so
+        // the Loader keeps fetching twins.
+        self::assertStringContainsString('"minified":true', $boot);
         // Docara serves Smart from its own projection, so it still names that
         // root; the lock no longer names a separate Smart repository.
         self::assertStringContainsString('window.sfSmartPath="/_docara/framework-runtime"', $boot);
@@ -402,7 +417,8 @@ final class FrameworkReleaseLockV2Test extends TestCase
      *
      * @return array{0: FrameworkManifestRepository, 1: array<string, mixed>, 2: string}
      */
-    private function v2Repository(bool $withPackage): array
+    /** @param array<string, string> $packageFiles extra package files under smart/, by path */
+    private function v2Repository(bool $withPackage, array $packageFiles = []): array
     {
         $this->temporaryRoot = sys_get_temp_dir() . '/docara-lock-v2-' . bin2hex(random_bytes(6));
         $resources = $this->temporaryRoot . '/resources';
@@ -445,6 +461,13 @@ final class FrameworkReleaseLockV2Test extends TestCase
             $packageRoot = $resources . '/framework/runtime-packages/larena/' . self::PACKAGE_REVISION . '/smart';
             mkdir($packageRoot, 0755, true);
             file_put_contents($packageRoot . '/rule.js', self::RULE_FILE);
+            foreach ($packageFiles as $relativePath => $bytes) {
+                if (! is_dir(dirname($packageRoot . '/' . $relativePath))) {
+                    mkdir(dirname($packageRoot . '/' . $relativePath), 0755, true);
+                }
+                file_put_contents($packageRoot . '/' . $relativePath, $bytes);
+                $lock['package_projections']['larena']['files']['smart/' . $relativePath] = ['sha256' => hash('sha256', $bytes)];
+            }
         }
 
         return [

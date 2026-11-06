@@ -158,6 +158,18 @@ final class PortableVendorAssetSelectionTest extends TestCase
                     continue;
                 }
                 $name = basename($file->getPathname());
+                // A minified twin is the same build as its readable file, whose
+                // names the checks below read.
+                if (str_ends_with($name, '.min.js')) {
+                    $readable = substr($file->getPathname(), 0, -strlen('.min.js')) . '.js';
+                    if (! is_file($readable)) {
+                        $offenders[] = substr($file->getPathname(), strlen($resources) + 1);
+
+                        continue;
+                    }
+                    $name = basename($readable);
+                    $source = (string) file_get_contents($readable);
+                }
                 if ($name === 'core-loader.js'
                     || ($name === 'icons.js' && str_contains($source, 'this.getProp("type")'))
                     || ($name === 'icon.js' && str_contains($source, 'requestedType'))

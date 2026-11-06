@@ -94,8 +94,8 @@ chmod($temporary, 0644);
 rename($temporary, $target);
 
 // Production planning needs every utility stylesheet that the canonical rule
-// registry may select. JavaScript and precompressed/minified variants are not
-// copied here; the exact page plan publishes only selected unminified CSS.
+// registry may select. JavaScript and precompressed variants are not copied
+// here; the minified twins are added with every other twin further down.
 $tree = $git(['ls-tree', '-r', '--name-only', $revision, 'distr/utility']);
 foreach (preg_split('/\R/', trim($tree)) ?: [] as $sourcePath) {
     if (preg_match('#^distr/utility/[A-Za-z0-9/-]+/css/[A-Za-z0-9-]+\.css$#D', $sourcePath) !== 1
@@ -275,8 +275,8 @@ if ($coreFiles === []) {
 // Framework itself. Nothing loads them, so the entrypoint and url() walks above
 // never reach them; they are named here so every projected runtime carries
 // them. An explicit list, not a glob over core/contracts, and never the .gz
-// variants. The .min.js.LICENSE.txt files stay out with the .min.js they
-// annotate, which this projection does not ship.
+// variants. A .min.js.LICENSE.txt file comes with the twin it annotates
+// (below).
 $noticeFiles = [
     'core/contracts/third-party-notices.v1.json',
 ];
@@ -396,12 +396,66 @@ foreach (array_keys($foundationDependencies) as $relativePath) {
     chmod($assetTarget, 0644);
 }
 
+// The minified twins. Every projected stylesheet and script that the release
+// ships as <name>.min.css or <name>.min.js gets its twin beside it: a page
+// links the twin, and the browser Loader, left on its minified default, fetches
+// twins for what it loads itself. The readable files stay, because the build
+// reads them (cascade layers, font faces, highlight chunks). A twin's webpack
+// licence file comes with it, so the comment that names it still resolves.
+$minifiedTwins = [];
+$upstreamNames = $useWorkingRegistry
+    ? []
+    : array_fill_keys(preg_split('/\R/', trim($git(['ls-tree', '-r', '--name-only', $revision, 'distr']))) ?: [], true);
+foreach (new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($distribution, FilesystemIterator::SKIP_DOTS),
+) as $file) {
+    $relativePath = str_replace('\\', '/', substr($file->getPathname(), strlen($distribution) + 1));
+    if (! $file->isFile()
+        || $file->isLink()
+        || str_contains($relativePath, '.min.')
+        || preg_match('/\.(css|js)$/D', $relativePath) !== 1
+    ) {
+        continue;
+    }
+    $twin = (string) preg_replace('/\.(css|js)$/D', '.min.$1', $relativePath);
+    foreach ([$twin, $twin . '.LICENSE.txt'] as $twinFile) {
+        $twinBytes = $useWorkingRegistry
+            ? (is_file(realpath($uiRoot) . '/distr/' . $twinFile) ? file_get_contents(realpath($uiRoot) . '/distr/' . $twinFile) : '')
+            : (isset($upstreamNames['distr/' . $twinFile]) ? $git(['show', $revision . ':distr/' . $twinFile]) : '');
+        if (! is_string($twinBytes) || $twinBytes === '') {
+            continue;
+        }
+        $minifiedTwins[$twinFile] = $twinBytes;
+    }
+}
+ksort($minifiedTwins, SORT_STRING);
+foreach ($minifiedTwins as $twinFile => $twinBytes) {
+    file_put_contents($distribution . '/' . $twinFile, $twinBytes, LOCK_EX);
+    chmod($distribution . '/' . $twinFile, 0644);
+    // A twin stylesheet names the same sibling files as the readable one; one
+    // that points elsewhere would publish a broken reference.
+    if (str_ends_with($twinFile, '.css')) {
+        preg_match_all('#url\(\s*(["\']?)([^"\')]+)\1\s*\)#i', $twinBytes, $urlMatches);
+        foreach ($urlMatches[2] ?? [] as $url) {
+            $url = trim((string) $url);
+            if ($url === '' || str_starts_with($url, '#') || preg_match('#^(?:data:|https?:|//|/)#i', $url) === 1) {
+                continue;
+            }
+            $dependency = $normalizeRelativePath(dirname($twinFile) . '/' . (preg_split('/[?#]/', $url, 2)[0] ?? ''));
+            if (! is_string($dependency) || ! is_file($distribution . '/' . $dependency)) {
+                throw new RuntimeException('FRAMEWORK_RUNTIME_TWIN_DEPENDENCY_MISSING: ' . $twinFile . ' -> ' . $url);
+            }
+        }
+    }
+}
+
 $manifestPath = $runtimeBase . '/runtime-manifest.json';
 $manifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
 $manifest['source'] = $projection['source'];
 $manifest['files'] = array_filter(
     $manifest['files'],
     static fn (string $relativePath): bool => ! str_starts_with($relativePath, 'utility/')
+        && ! str_contains($relativePath, '.min.')
         && ! str_starts_with($relativePath, 'core/js/')
         && ! str_starts_with($relativePath, 'core/css/')
         && ! str_starts_with($relativePath, 'core/contracts/')
@@ -473,6 +527,9 @@ foreach (array_keys($componentDependencies) as $relativePath) {
     $manifest['files'][$relativePath] = [
         'sha256' => hash_file('sha256', $distribution . '/' . $relativePath),
     ];
+}
+foreach ($minifiedTwins as $twinFile => $twinBytes) {
+    $manifest['files'][$twinFile] = ['sha256' => hash('sha256', $twinBytes)];
 }
 ksort($manifest['files'], SORT_STRING);
 

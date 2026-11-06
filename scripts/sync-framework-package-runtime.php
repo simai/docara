@@ -95,13 +95,15 @@ $all = is_file($fromPath)
     ? $receipt->readArchive($fromPath)
     : $receipt->readDirectory($fromPath);
 
-// The rule file and each component's own script and stylesheet, as the free
-// Smart projection takes them; minified and compressed copies, templates and
-// manifests stay behind.
+// The rule file and each component's own script and stylesheet with its
+// minified twin, as the free Smart projection takes them; compressed copies,
+// templates and manifests stay behind. A build serves the Loader the twins
+// only when every package carries them.
 $files = [];
 foreach ($all as $relativePath => $bytes) {
     if ($relativePath === 'smart/rule.js'
-        || preg_match('#^smart/([a-z][a-z0-9-]*)/(css|js)/\1\.(css|js)$#D', $relativePath) === 1
+        || (preg_match('#^smart/([a-z][a-z0-9-]*)/(css|js)/\1(?:\.min)?\.(css|js)$#D', $relativePath, $entrypoint) === 1
+            && $entrypoint[2] === $entrypoint[3])
     ) {
         $files[$relativePath] = $bytes;
     }

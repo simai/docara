@@ -81,6 +81,8 @@ final class HeroEffectTest extends TestCase
             '[data-docara-block="hero"][data-sf-effect]{position:relative;background:var(--sf-surface-0);color:var(--sf-on-surface)}',
             '[data-docara-block="hero"][data-sf-effect-theme="dark"]{color-scheme:dark}',
             '[data-docara-block="hero"][data-sf-effect-theme="light"]{color-scheme:light}',
+            // The landing's decorative gradient is for heroes without an effect.
+            '.docara-landing [data-docara-block="hero"]:not([data-docara-surface]):not([data-sf-effect]){background:radial-gradient(',
         ] as $rule) {
             self::assertStringContainsString($rule, $css);
         }

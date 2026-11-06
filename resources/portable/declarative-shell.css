@@ -33,7 +33,7 @@ body[data-docara-shell]{opacity:1!important}
 .docara-sidebar-panel>.docara-sidebar-credit{position:relative}
 .docara-sidebar-panel>.docara-sidebar-credit::before{content:"";position:absolute;inset-block-start:-1px;inset-inline-end:100%;inline-size:100vw;border-block-start:1px solid var(--sf-outline-variant);pointer-events:none}
 /* The logo is sized from the text: its lowercase letters (250 of the 600-unit height) match the text's x-height (about 0.55em), and its baseline (175 units above the bottom) sits on the text's baseline. */
-.docara-sidebar-credit-link{--docara-credit-logo-size:1.3em;--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:#505050;--docara-credit-ring:#F7F7F7;color:var(--sf-on-surface-variant);text-decoration:none}
+.docara-sidebar-credit-link{--docara-credit-logo-size:1.25rem;--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:#505050;--docara-credit-ring:#F7F7F7;color:var(--sf-on-surface-variant);text-decoration:none}
 /* One logo, two colour variables: the letters and the accented "o". Hover and focus only swap their values, from the two grays to the theme text colour and the Docara red. */
 .docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}
 .docara-sidebar-credit-link:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}

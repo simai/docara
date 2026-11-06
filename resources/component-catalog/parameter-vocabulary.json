@@ -61,6 +61,10 @@
             "components": ["code", "fence"],
             "reason": "Lines of the shown code to keep in focus while the others dim (1,4-6). Code-only, like highlight; VitePress offers the same as [!code focus]."
         },
+        "sources": {
+            "components": ["example"],
+            "reason": "Whether an example shows its source tabs (HTML, CSS, JS) beside the result. It switches a part of the example on or off, so it is no style, status or arrangement; open is about a block starting open, not about which parts exist."
+        },
         "region": {
             "components": ["code"],
             "reason": "Name of a #region marker in the source file to show; selects part of a file by name, as lines does by number."

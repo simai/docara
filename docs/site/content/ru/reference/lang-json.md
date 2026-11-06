@@ -202,6 +202,13 @@ Docara нет.
 | `atlas.authoring` — Подпись способа подключения в Design Atlas | authoring | способ подключения |
 | `atlas.capabilities` — Подпись возможностей в Design Atlas | Capabilities | Возможности |
 | `atlas.container` — Подпись правил вложения контейнера в Design Atlas | Container | Правила вложения |
+| `set.version` — Название и номер выпуска набора компонентов в подвале (`shell.set-passport`) | {title} {version} | {title} {version} |
+| `set.build` — Название набора и короткий код сборки, пока у набора нет номера выпуска | {title}, build {revision} | {title}, сборка {revision} |
+| `set.framework_from` — Какой SIMAI Framework нужен набору, когда указана нижняя граница | For SIMAI Framework {version} and later | Для SIMAI Framework {version} и новее |
+| `set.framework` — Какой SIMAI Framework нужен набору, для любого другого диапазона | For SIMAI Framework {range} | Для SIMAI Framework {range} |
+| `set.licence` — Лицензия набора в подвале | Licence: {licence} | Лицензия: {licence} |
+| `set.source` — Ссылка на исходный код набора в подвале | Source code | Исходный код |
+| `set.history` — Ссылка на историю версий в подвале | Version history | История версий |
 
 ### Встроенные строки, которые не меняются
 

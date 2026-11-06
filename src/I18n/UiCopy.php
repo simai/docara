@@ -173,6 +173,13 @@ final readonly class UiCopy
             'error.not_found.message' => 'There is no page at this address. It may have moved, or the address has a typo.',
             'error.not_found.home' => 'Go to the home page',
             'error.not_found.search' => 'Search the documentation',
+            'set.version' => '{title} {version}',
+            'set.build' => '{title}, build {revision}',
+            'set.framework_from' => 'For SIMAI Framework {version} and later',
+            'set.framework' => 'For SIMAI Framework {range}',
+            'set.licence' => 'Licence: {licence}',
+            'set.source' => 'Source code',
+            'set.history' => 'Version history',
         ],
         'ru' => [
             'examples.preview_title' => 'Результат примера',
@@ -210,6 +217,13 @@ final readonly class UiCopy
             'error.not_found.message' => 'По этому адресу страницы нет. Возможно, её перенесли или в адресе опечатка.',
             'error.not_found.home' => 'На главную',
             'error.not_found.search' => 'Искать в документации',
+            'set.version' => '{title} {version}',
+            'set.build' => '{title}, сборка {revision}',
+            'set.framework_from' => 'Для SIMAI Framework {version} и новее',
+            'set.framework' => 'Для SIMAI Framework {range}',
+            'set.licence' => 'Лицензия: {licence}',
+            'set.source' => 'Исходный код',
+            'set.history' => 'История версий',
         ],
     ];
 
@@ -242,6 +256,13 @@ final readonly class UiCopy
         'atlas.authoring',
         'atlas.capabilities',
         'atlas.container',
+        'set.version',
+        'set.build',
+        'set.framework_from',
+        'set.framework',
+        'set.licence',
+        'set.source',
+        'set.history',
     ];
 
     public function __construct(private Translator $translator) {}

@@ -1174,6 +1174,13 @@ final readonly class PortableSiteBuilder
                 $pageNavigation = $hiddenSection
                     ?? $navigationBuilder->scoped($pageNavigation, $navigationActiveUrl, $navigationScope, $headerGroups);
                 $activeNavigation = $navigationBuilder->activate($pageNavigation, $navigationActiveUrl);
+                // A component set's footer line reads the set's passport
+                // only when a page's layout asks for one.
+                $setPassports = [];
+                if ($this->usesSetPassport($declarativePlan->configuration['layout'] ?? null)) {
+                    $setPassportCatalogue ??= SetPassportCatalogue::fromLock($declarativePlan->frameworkLock);
+                    $setPassports = $setPassportCatalogue->localized($uiCopy->buildCopy($pageLocale));
+                }
                 $composition = PageCompositionContext::fromBuilder(
                     $page['branding'],
                     (string) $page['home_url'],
@@ -1187,6 +1194,7 @@ final readonly class PortableSiteBuilder
                         )
                         : [],
                     (string) $page['url'],
+                    $setPassports,
                 );
                 $page['header_navigation'] = $composition->headerNavigation;
                 $headerRepository = data_get($declarativePlan->configuration, 'header_navigation.repository');
@@ -2317,6 +2325,22 @@ final readonly class PortableSiteBuilder
         $this->assertDestinationShape($root, $candidate);
 
         return $candidate;
+    }
+
+    /** Whether a layout's regions call a component set's footer line. */
+    private function usesSetPassport(mixed $layout): bool
+    {
+        foreach ((is_array($layout) && is_array($layout['regions'] ?? null) ? $layout['regions'] : []) as $region) {
+            foreach ((is_array($region) && is_array($region['sections'] ?? null) ? $region['sections'] : []) as $section) {
+                foreach ((is_array($section) && is_array($section['blocks'] ?? null) ? $section['blocks'] : []) as $block) {
+                    if (is_array($block) && ($block['block'] ?? null) === 'shell.set-passport') {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private function promoteCandidate(string $root, string $candidate, string $destination): void

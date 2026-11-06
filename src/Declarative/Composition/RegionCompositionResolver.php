@@ -246,6 +246,7 @@ final readonly class RegionCompositionResolver
             match ($definition['kind']) {
                 'element' => $this->assertElementBlock($sectionId, $id, $block),
                 'smart' => $this->assertSmartBlock($sectionId, $id, $block, $section, $regionCapabilities),
+                'set-passport' => $this->assertSetPassportBlock($sectionId, $id, $block, $region),
                 default => throw new PortableConfigurationException(
                     'DECLARATIVE_REGION_BLOCK_KIND_FORBIDDEN',
                     "Block [$key] cannot be authored in a shell region.",
@@ -277,6 +278,32 @@ final readonly class RegionCompositionResolver
             throw new PortableConfigurationException(
                 'DECLARATIVE_REGION_ELEMENT_INVALID',
                 "Declarative element block [$sectionId.$id] is invalid.",
+            );
+        }
+    }
+
+    /**
+     * A component set's passport line (shell.set-passport): the build turns
+     * it into plain elements from the set's set.json and package receipt, so
+     * here only its call is checked. It belongs in the footer.
+     *
+     * @param  array<string, mixed>  $block
+     */
+    private function assertSetPassportBlock(string $sectionId, string $id, array $block, string $region): void
+    {
+        $history = $block['history'] ?? null;
+        if ($region !== 'footer'
+            || array_diff(array_keys($block), ['id', 'block', 'slot', 'package', 'history']) !== []
+            || ! is_string($block['package'] ?? null)
+            || preg_match('/\A[a-z][a-z0-9-]*\z/D', $block['package']) !== 1
+            || ($history !== null && (! is_string($history)
+                || (! str_starts_with($history, '/') && ! str_starts_with($history, 'https://'))
+                || str_starts_with($history, '//')
+                || mb_strlen($history) > 500))
+        ) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_REGION_SET_PASSPORT_INVALID',
+                "Set passport block [$sectionId.$id] needs a package name, may name a version history link, and belongs in the footer.",
             );
         }
     }

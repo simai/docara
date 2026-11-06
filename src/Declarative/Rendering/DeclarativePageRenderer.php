@@ -150,6 +150,20 @@ final readonly class DeclarativePageRenderer
         if ($block->renderer === 'block.smart' && $block->smart !== null) {
             return $this->smart->render($block->smart);
         }
+        if ($block->renderer === 'block.set-passport' && is_array($block->data['passport'] ?? null)) {
+            return new RenderArtifact(
+                (new SetPassportRenderer)->render(
+                    $block->data['passport'],
+                    is_string($block->data['history_href'] ?? null) ? $block->data['history_href'] : null,
+                ),
+                [],
+                ['runtime' => 'docara.safe_element.v1'],
+                $block->provenance + [
+                    'block' => $block->block,
+                    'source' => $block->data['source'] ?? '@layout-configuration',
+                ],
+            );
+        }
         if ($block->renderer === 'block.element' && is_array($block->data['element'] ?? null)) {
             return new RenderArtifact(
                 $this->elements->render($block->data['element']),

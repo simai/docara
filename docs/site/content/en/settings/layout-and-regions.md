@@ -324,6 +324,38 @@ Live sources:
 - [an aside with an outline and an Alert](/examples/region-aside/);
 - [a footer from safe elements](/examples/region-footer/).
 
+### A component set's line in the footer
+
+The documentation site of a component set (SIMAI View, for example) shows in
+the footer of every page which set it is: its name and release, the SIMAI
+Framework it needs, its licence, and links to its source code and to the
+version history. This line is not written by hand. The `shell.set-passport`
+block builds it on every build from the set's description `set.json` and its
+package receipt, pinned in `simai-framework.lock.json`. When the set is
+updated, the line follows.
+
+```json
+{
+  "id": "set",
+  "block": "shell.set-passport",
+  "slot": "content",
+  "package": "view",
+  "history": "/ru/guide/history/"
+}
+```
+
+- `package` — the set's name in the lock's `package_projections`; the package
+  must be a set, that is, carry `set.json`.
+- `history` — an optional link to the version history page, an address from
+  the site root.
+
+While `set.json` has no release number, the package's short build code is
+shown in its place: "SIMAI View, build 4d70706". The source code link leads to
+the set's GitHub repository named in its description; it is the only outside
+link Docara puts in the footer itself. The block belongs in the `footer`
+region only. The line's texts are set in `lang.json` with the `set.*` keys
+(see the [`lang.json` reference](/reference/lang-json/)).
+
 ## How the markup is formed
 
 Layout and Section refer to registered safe View Trees:

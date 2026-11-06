@@ -204,6 +204,18 @@
                         "props": {"type": "object", "maxProperties": 32}
                     },
                     "additionalProperties": false
+                },
+                {
+                    "type": "object",
+                    "required": ["id", "block", "slot", "package"],
+                    "properties": {
+                        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+                        "block": {"const": "shell.set-passport"},
+                        "slot": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+                        "package": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+                        "history": {"type": "string", "maxLength": 500, "pattern": "^(?:/(?!/)|https://)[^\\u0000-\\u0020\\\"'<>\\\\]*$"}
+                    },
+                    "additionalProperties": false
                 }
             ]
         },

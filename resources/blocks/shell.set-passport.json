@@ -1,0 +1,6 @@
+{
+  "schema": "docara.block.v1",
+  "key": "shell.set-passport",
+  "kind": "set-passport",
+  "renderer": "block.set-passport"
+}

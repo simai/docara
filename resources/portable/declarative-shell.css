@@ -32,11 +32,12 @@ body[data-docara-shell]{opacity:1!important}
 /* The container's gutter grows with the window and a wide page centres the container, so the line above the credit is drawn on through any gutter to the window edge instead of moving the credit. */
 .docara-sidebar-panel>.docara-sidebar-credit{position:relative}
 .docara-sidebar-panel>.docara-sidebar-credit::before{content:"";position:absolute;inset-block-start:-1px;inset-inline-end:100%;inline-size:100vw;border-block-start:1px solid var(--sf-outline-variant);pointer-events:none}
-.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-b6);--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:#505050;--docara-credit-ring:#F7F7F7;color:var(--sf-on-surface-variant);text-decoration:none}
+/* The logo is sized from the text: its lowercase letters (250 of the 600-unit height) match the text's x-height (about 0.55em), and its baseline (175 units above the bottom) sits on the text's baseline. */
+.docara-sidebar-credit-link{--docara-credit-logo-size:1.3em;--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:#505050;--docara-credit-ring:#F7F7F7;color:var(--sf-on-surface-variant);text-decoration:none}
 /* One logo, two colour variables: the letters and the accented "o". Hover and focus only swap their values, from the two grays to the theme text colour and the Docara red. */
 .docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}
 .docara-sidebar-credit-link:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
-.docara-sidebar-credit-logo{display:inline-block;block-size:var(--docara-credit-logo-size);inline-size:auto;vertical-align:calc(var(--docara-credit-logo-size) * -0.25);fill:var(--docara-credit-wordmark)}
+.docara-sidebar-credit-logo{display:inline-block;block-size:var(--docara-credit-logo-size);inline-size:auto;vertical-align:calc(var(--docara-credit-logo-size) * -0.2917);fill:var(--docara-credit-wordmark)}
 .docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}.docara-sidebar-credit-ring{fill:var(--docara-credit-ring)}
 .docara-sidebar-credit-text--before{margin-inline-end:var(--sf-a4)}.docara-sidebar-credit-text--after{margin-inline-start:var(--sf-a4)}
 .docara-sidebar-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-block:var(--sf-space-1);padding-inline-end:var(--sf-space-1);padding-inline-start:0}

@@ -18,6 +18,7 @@ final readonly class ProjectFilesystemGuard
         'build_preview-cache.docara',
         'build_preview-cache.docara.rollback',
         'build_preview-cache.docara-candidate',
+        'build_preview-cache.docara-lock',
         'build_preview-cache.docara-rollback',
         'design',
         'smart',

@@ -64,7 +64,7 @@ components and changes are reference, connection and demos are articles.
 
 The line about the set's release at the foot of every page comes from the
 `shell.set-passport` block in the `footer` region, once the set's package
-is pinned in `simai-framework.lock.json`; see [A component set's line in the footer](/en/settings/layout-and-regions/#a-component-sets-line-in-the-footer).
+is pinned in `simai-framework.lock.json`; see [A component set's line in the footer](/en/settings/layout-and-regions/#a-component-set-s-line-in-the-footer).
 
 ## Build environment
 

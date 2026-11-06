@@ -8,6 +8,16 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **`docara init --template=set`: the site of a component set.** The
+  new starter writes the five sections every SIMAI Framework component
+  set's site has, in menu order: Overview, Connection, Components, Demos
+  and Changes, in English or Russian. `--set=<id>` takes the set id from
+  its `set.json` and writes it into the `data-sf-sets` connection line,
+  the `SF_BOOT_CONFIG` setting and the titles; an id that is not a set id
+  stops `init` before it writes anything. `docara.authoring.json` gives
+  the sections their page types instead of the four page-type folders, and
+  both languages build to 100/100 in the quality report.
+
 - **A component set's line in the footer.** The `shell.set-passport` footer
   block shows a set's name and release (or its short build code), the SIMAI
   Framework it needs, its licence and links to its source code and version

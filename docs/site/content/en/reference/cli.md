@@ -17,7 +17,7 @@ machine-readable result of the operation and an exit code.
 ## `init`
 
 ```bash
-php vendor/bin/docara init [path] [--template=minimal|showcase] [--lang=en|ru]
+php vendor/bin/docara init [path] [--template=minimal|showcase|set] [--lang=en|ru] [--set=<id>]
 ```
 
 Creates a project in an empty folder, or in a folder that holds only the
@@ -26,11 +26,18 @@ checked project-local `composer.json`, `composer.lock` and `vendor/` with
 current folder.
 
 - `--template` (`-t`) — the starter: `minimal` (the default; a home page, a
-  page about writing pages and a components page) or `showcase` (a component
-  catalogue, a landing page, nested guides and project Smart examples).
+  page about writing pages and a components page), `showcase` (a component
+  catalogue, a landing page, nested guides and project Smart examples) or
+  `set` (the site of a SIMAI Framework component set: overview, connection,
+  components, demos and changes).
 - `--lang` (`-l`) — the language of the starter content: `en` (the default)
   or `ru`. `showcase` is available only with `--lang=ru`; combined with
   `--lang=en` it stops with an error and writes nothing.
+- `--set` — for `--template=set`: the set id from its `set.json`, such as
+  `view` (the default is `my-set`). The starter writes it into the
+  connection line and the titles. Lowercase Latin letters, digits and
+  hyphens, starting with a letter; any other id stops with an error and
+  writes nothing.
 - `--update` (`-u`) — a guard flag: the command stops with an error, creates
   nothing and points to the explicit order `update --verify`, then
   `--dry-run`, then `--apply`.

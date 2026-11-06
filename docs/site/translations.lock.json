@@ -2034,11 +2034,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/cli.md",
-            "source_sha256": "c3d1fd70c9afc742211d44ccba3b2b4c5503294d816e7e1cb09b8c90324a27af",
-            "source_structure_sha256": "b8f2f11ba7b81dd3ba7b2a97f5416e341e4fefebbf2cfa7a92d408f6513cfa62",
+            "source_sha256": "5023a44705e4391b58f6502931236f8b91f49ac567ae4f9f18a831f3f8a2589e",
+            "source_structure_sha256": "255e923c7673dd1bdc0362bb0ef80fa954c5b04567c5c4f7efb0c98b094bb5d9",
             "target_path": "content/en/reference/cli.md",
-            "target_sha256": "2d1eb0cc5627c11a149adc862758928823eb19dfaf2c908e63404a00371e2e7a",
-            "target_structure_sha256": "b8f2f11ba7b81dd3ba7b2a97f5416e341e4fefebbf2cfa7a92d408f6513cfa62"
+            "target_sha256": "aa8f0124e7702ef6f7720c135c789628fd8dc1349e914e8490e71622ba61dab6",
+            "target_structure_sha256": "255e923c7673dd1bdc0362bb0ef80fa954c5b04567c5c4f7efb0c98b094bb5d9"
         },
         {
             "key": "reference/docara-json.md",
@@ -2454,11 +2454,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/start/templates.md",
-            "source_sha256": "5beef09d598f9b82effd2148e9eb52bc0b044b771d0545e1cbe3fa6095fa9eb1",
-            "source_structure_sha256": "4455bccb87534c97d9c84ae8a1d3fb4a5aaa20e77aa4cbafefc2a10e006452fe",
+            "source_sha256": "3f5fd1f19c438abb94aedbedd4b207fd210f52ce01e046c19fdad51015239322",
+            "source_structure_sha256": "d4b7b999b337341e25423b189fc6f55d642591893f304796da28801b51bb15cf",
             "target_path": "content/en/start/templates.md",
-            "target_sha256": "3bc8fea0e42898e06909fd952f3387a52a2dd004e9c4588fc74e556d0c4e0429",
-            "target_structure_sha256": "4455bccb87534c97d9c84ae8a1d3fb4a5aaa20e77aa4cbafefc2a10e006452fe"
+            "target_sha256": "55d6bbc6aa8ba136b69d9abbc445e5583b87c1f8a419eeba8963e1d6a8a4b00f",
+            "target_structure_sha256": "d4b7b999b337341e25423b189fc6f55d642591893f304796da28801b51bb15cf"
         },
         {
             "key": "start/what-is-docara.md",

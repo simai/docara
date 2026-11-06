@@ -482,6 +482,52 @@ class PortableInitCommandTest extends TestCase
      * @param  array<string, mixed>  $arguments
      * @return array{int, CommandTester}
      */
+    /** @return array<string, array{string}> */
+    public static function setLanguages(): array
+    {
+        return ['English' => ['en'], 'Russian' => ['ru']];
+    }
+
+    #[Test]
+    #[DataProvider('setLanguages')]
+    public function the_set_template_writes_the_five_set_sections_with_the_set_id(string $language): void
+    {
+        [$status, $console] = $this->executeInit(['--template' => 'set', '--lang' => $language, '--set' => 'view'], showcase: false);
+
+        $this->assertSame(Command::SUCCESS, $status, $console->getDisplay());
+        $orders = [];
+        foreach (['index.page.json', 'connection.page.json', 'components/section.json', 'demos/section.json', 'changes.page.json'] as $file) {
+            $orders[$file] = $this->json("content/{$language}/{$file}")['navigation']['order'];
+        }
+        $this->assertSame([10, 20, 30, 40, 50], array_values($orders), 'Overview, Connection, Components, Demos, Changes.');
+        $connection = (string) file_get_contents($this->tmpPath("content/{$language}/connection.md"));
+        $this->assertStringContainsString('data-sf-sets="view"', $connection);
+        $this->assertStringContainsString("'view': {base: '/assets/view/smart'", $connection);
+        $this->assertStringNotContainsString('{set}', $connection);
+        $this->assertStringContainsString('view', $this->json('docara.json')['title']);
+        $this->assertSame(
+            ['index.md' => 'landing', 'connection.md' => 'article', 'components/**' => 'reference', 'demos/**' => 'article', 'changes.md' => 'reference'],
+            array_column($this->json('docara.authoring.json')['rules'], 'profile', 'match'),
+        );
+        // The five sections are the set's skeleton: no page-type samples.
+        $this->assertDirectoryDoesNotExist($this->tmpPath("content/{$language}/getting-started"));
+        $this->assertSame(
+            array_map('basename', glob(dirname(__DIR__) . '/stubs/set/en/content/en/{,*/}*', GLOB_BRACE) ?: []),
+            array_map('basename', glob(dirname(__DIR__) . "/stubs/set/{$language}/content/{$language}/{,*/}*", GLOB_BRACE) ?: []),
+            'Both languages of the set starter have the same pages.',
+        );
+    }
+
+    #[Test]
+    public function the_set_template_refuses_an_id_that_is_not_a_set_id(): void
+    {
+        [$status, $console] = $this->executeInit(['--template' => 'set', '--set' => 'View Set'], showcase: false);
+
+        $this->assertSame(Command::FAILURE, $status);
+        $this->assertStringContainsString('The set id "view set" is not valid', $console->getDisplay());
+        $this->assertFileDoesNotExist($this->tmpPath('docara.json'));
+    }
+
     private function executeInit(array $arguments, bool $showcase = true): array
     {
         if ($showcase) {

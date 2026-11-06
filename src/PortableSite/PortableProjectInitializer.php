@@ -18,17 +18,24 @@ final readonly class PortableProjectInitializer
 
     public const DEFAULT_LANGUAGE = 'en';
 
+    /** The component set id the set template writes when none is given. */
+    public const DEFAULT_SET = 'my-set';
+
     /**
      * The starter templates and the content languages each one is written in.
      *
      * minimal:  a home page and two pages (Markdown, an example, Framework components).
      * showcase: the component catalogue, a landing page and project Smart demos.
+     * set:      the documentation site of a SIMAI Framework component set, in
+     *           the five sections every set has: overview, connection,
+     *           components, demos and changes.
      *
      * @var array<string, list<string>>
      */
     public const TEMPLATES = [
         'minimal' => ['en', 'ru'],
         'showcase' => ['ru'],
+        'set' => ['en', 'ru'],
     ];
 
     /**
@@ -76,10 +83,23 @@ final readonly class PortableProjectInitializer
         }
     }
 
+    /** Throws when the id is not a component set id (the id field of set.json). */
+    public static function assertSetId(string $set): void
+    {
+        if (preg_match('/\A[a-z][a-z0-9-]{0,39}\z/D', $set) !== 1) {
+            throw new InvalidArgumentException(sprintf(
+                'The set id "%s" is not valid. Use the id from the set\'s set.json: lowercase Latin letters, digits and hyphens, starting with a letter, such as --set=view.',
+                $set,
+            ));
+        }
+    }
+
     /**
      * Every template also gets the documentation standard of its language
      * from stubs/standard: docara.authoring.json and one example page per
-     * page type (getting started, how-to guides, reference, explanation).
+     * page type (getting started, how-to guides, reference, explanation),
+     * except the set template, whose five sections are its own skeleton.
+     * The set template writes the set id in place of {set} in its pages.
      *
      * @return array{copied:int,preserved:int,engine_files:int,engine_sha256:string,template:string,language:string,agents:?string,agents_existing:bool}
      */
@@ -87,8 +107,10 @@ final readonly class PortableProjectInitializer
         string $root,
         string $template = self::DEFAULT_TEMPLATE,
         string $language = self::DEFAULT_LANGUAGE,
+        string $set = self::DEFAULT_SET,
     ): array {
         self::assertSupported($template, $language);
+        self::assertSetId($set);
         $stubs = dirname(__DIR__, 2) . '/stubs';
         $showcase = $stubs . '/portable';
         if (! $this->files->isDirectory($showcase)) {
@@ -107,11 +129,14 @@ final readonly class PortableProjectInitializer
             $sources[] = [$own, null];
             $sources[] = [$showcase, self::SHARED];
         }
-        $standard = $stubs . '/standard/' . $language;
-        if (! $this->files->isDirectory($standard)) {
-            throw new RuntimeException("Documentation standard starter was not found at {$standard}.");
+        if ($template !== 'set') {
+            $standard = $stubs . '/standard/' . $language;
+            if (! $this->files->isDirectory($standard)) {
+                throw new RuntimeException("Documentation standard starter was not found at {$standard}.");
+            }
+            $sources[] = [$standard, null];
         }
-        $sources[] = [$standard, null];
+        $ownRoot = $stubs . '/' . $template . '/' . $language;
 
         $copied = 0;
         $preserved = 0;
@@ -128,7 +153,11 @@ final readonly class PortableProjectInitializer
                 }
 
                 $this->files->ensureDirectoryExists(dirname($destination));
-                $this->files->copy($path, $destination);
+                if ($template === 'set' && $source === $ownRoot && preg_match('/\.(?:md|json)\z/', $relative) === 1) {
+                    $this->files->put($destination, str_replace('{set}', $set, (string) file_get_contents($path)));
+                } else {
+                    $this->files->copy($path, $destination);
+                }
                 $copied++;
             }
         }

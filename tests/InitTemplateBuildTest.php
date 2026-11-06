@@ -32,6 +32,9 @@ final class InitTemplateBuildTest extends TestCase
             'minimal, English' => ['minimal', 'en', ['index.html', 'writing/index.html', 'components/index.html', ...$skeleton]],
             'minimal, Russian' => ['minimal', 'ru', ['index.html', 'writing/index.html', 'components/index.html', ...$skeleton]],
             'showcase, Russian' => ['showcase', 'ru', ['index.html', 'guides/getting-started/index.html', 'components/index.html', ...$skeleton]],
+            // The set template has the five sections of a component set's site instead.
+            'set, English' => ['set', 'en', $set = ['index.html', 'connection/index.html', 'components/index.html', 'components/first-component/index.html', 'demos/index.html', 'changes/index.html']],
+            'set, Russian' => ['set', 'ru', $set],
         ];
     }
 

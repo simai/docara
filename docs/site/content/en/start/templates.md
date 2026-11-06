@@ -1,5 +1,5 @@
 ---
-description: The minimal and showcase starters of init, the files they create, what the build environment needs and how to check the installation.
+description: The minimal, showcase and set starters of init, the files they create, what the build environment needs and how to check the installation.
 tags: [init, starter, template]
 ---
 
@@ -11,7 +11,7 @@ appears in the folder and what the build environment needs.
 
 ## Choosing a starter
 
-`init` takes two options: `--template` (`-t`) picks the starter and
+`init` takes two main options: `--template` (`-t`) picks the starter and
 `--lang` (`-l`) the language of its content. The default is
 `--template=minimal --lang=en`: a small working site in English. You choose
 the starter at the first `init`
@@ -27,15 +27,44 @@ php vendor/bin/docara init . --lang=ru
 
 # Component catalogue, landing page, nested guides and Smart examples
 php vendor/bin/docara init . --template=showcase --lang=ru
+
+# The site of a SIMAI Framework component set with the id "view"
+php vendor/bin/docara init . --template=set --set=view --lang=ru
 ```
 
 | Starter | Content | Languages |
 | --- | --- | --- |
 | `minimal` | a home page, a page about writing pages (Markdown, code, a table, `:::example`) and a components page (alert, button, the JSON component `:::ui.button`) | `en`, `ru` |
 | `showcase` | a component catalogue, a landing page, nested guides and project Smart examples | `ru` |
+| `set` | the site of a SIMAI Framework component set: overview, connection, components, demos and changes | `en`, `ru` |
 
 The `showcase` starter is written in Russian only. The combination
 `--template=showcase --lang=en` stops with a clear error and writes nothing.
+
+## A component set's site
+
+The `set` starter is the documentation of a SIMAI Framework component set.
+It has the five sections every set's site has, in this order in the menu:
+
+| Section | Page | What to replace with your own |
+| --- | --- | --- |
+| Overview | `index.md` | the component table, the licence |
+| Connection | `connection.md` | the table of releases; the connection line already has the set id |
+| Components | `components/` | one page per component instead of the sample `first-component.md` |
+| Demos | `demos/` | pages with screens built from the components |
+| Changes | `changes.md` | a section for each version of the set |
+
+The `--set` option is the set id from its `set.json`, such as `view`. The
+starter writes it into the `data-sf-sets` connection line, the
+`SF_BOOT_CONFIG` setting and the titles. Without `--set` it writes
+`my-set`; `init` refuses an id with capital letters or spaces and writes
+nothing. Instead of the four page-type folders, `docara.authoring.json`
+gives these sections their types: the overview is a landing page,
+components and changes are reference, connection and demos are articles.
+
+The line about the set's release at the foot of every page comes from the
+`shell.set-passport` block in the `footer` region, once the set's package
+is pinned in `simai-framework.lock.json`; see [A component set's line in the footer](/en/settings/layout-and-regions/#a-component-sets-line-in-the-footer).
 
 ## Build environment
 

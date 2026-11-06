@@ -52,7 +52,7 @@ final class InitCommand extends Command
                 'template',
                 't',
                 InputOption::VALUE_REQUIRED,
-                'Starter template: "minimal" (a home page and two pages) or "showcase" (the component catalogue and project Smart demos).',
+                'Starter template: "minimal" (a home page and two pages), "showcase" (the component catalogue and project Smart demos) or "set" (the documentation site of a SIMAI Framework component set).',
                 PortableProjectInitializer::DEFAULT_TEMPLATE,
             )
             ->addOption(
@@ -61,6 +61,13 @@ final class InitCommand extends Command
                 InputOption::VALUE_REQUIRED,
                 'Language of the starter content: "en" or "ru". The showcase template is Russian only.',
                 PortableProjectInitializer::DEFAULT_LANGUAGE,
+            )
+            ->addOption(
+                'set',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'For --template=set: the component set id from its set.json, such as "view". It is written into the connection line and the pages.',
+                PortableProjectInitializer::DEFAULT_SET,
             )
             ->addOption(
                 'update',
@@ -74,8 +81,10 @@ final class InitCommand extends Command
     {
         $template = strtolower(trim((string) $this->input->getOption('template')));
         $language = strtolower(trim((string) $this->input->getOption('lang')));
+        $set = strtolower(trim((string) $this->input->getOption('set')));
         try {
             PortableProjectInitializer::assertSupported($template, $language);
+            PortableProjectInitializer::assertSetId($set);
         } catch (InvalidArgumentException $exception) {
             $this->console->error($exception->getMessage() . ' No files were changed.');
 
@@ -125,7 +134,7 @@ final class InitCommand extends Command
         }
 
         try {
-            $result = $this->initializer->initialize($target, $template, $language);
+            $result = $this->initializer->initialize($target, $template, $language, $set);
         } catch (Throwable $exception) {
             $this->console->error($exception->getMessage());
 

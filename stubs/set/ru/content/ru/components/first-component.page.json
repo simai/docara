@@ -1,0 +1,7 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Первый компонент",
+  "navigation": {
+    "order": 20
+  }
+}

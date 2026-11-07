@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.12.1] - 2026-11-07
+
 ### Fixed
 
 - The contents beside a page list a heading's words without its inline

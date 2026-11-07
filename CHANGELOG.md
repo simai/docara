@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.13.1] - 2026-11-08
+
 ### Fixed
 
 - In the example viewer, choosing a width moves focus to that width's

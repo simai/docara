@@ -59,9 +59,21 @@
 <?php } ?>
         <div class="docara-reading-column flex min-w-0 flex-col gap-2 p-3">
             <div class="docara-reading-toolbar flex items-cross-center gap-1 min-w-0"><div class="docara-reading-toolbar__location flex-1 min-w-0"><?= $view->chrome['breadcrumbs'] ?></div><?= $view->chrome['reading_actions'] ?></div>
-            <?= $view->chrome['mobile_toc'] ?>
+<?php
+// On a phone the contents button stands under the page title, so the title
+// stays the first thing a reader sees; a page without a leading title keeps
+// it above the article.
+$docaraMain = $view->regions['main'];
+    $docaraMobileToc = $view->chrome['mobile_toc'];
+    $docaraTitleEnd = str_starts_with(ltrim($docaraMain), '<h1') ? strpos($docaraMain, '</h1>') : false;
+    if ($docaraMobileToc !== '' && $docaraTitleEnd !== false) {
+        $docaraMain = substr($docaraMain, 0, $docaraTitleEnd + 5) . $docaraMobileToc . substr($docaraMain, $docaraTitleEnd + 5);
+        $docaraMobileToc = '';
+    }
+    ?>
+            <?= $docaraMobileToc ?>
             <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-docara-region="main">
-                <article class="docara-prose min-w-0<?= $view->contentGap === 0 ? '' : ' flex flex-col gap-' . $view->contentGap ?>"<?= $view->contentLanguage ?>><?= $view->regions['main'] ?></article>
+                <article class="docara-prose min-w-0<?= $view->contentGap === 0 ? '' : ' flex flex-col gap-' . $view->contentGap ?>"<?= $view->contentLanguage ?>><?= $docaraMain ?></article>
                 <?= $view->chrome['pager'] ?>
             </main>
         </div>

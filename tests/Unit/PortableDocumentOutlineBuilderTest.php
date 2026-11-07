@@ -33,6 +33,24 @@ final class PortableDocumentOutlineBuilderTest extends TestCase
     }
 
     #[Test]
+    public function the_contents_carry_a_headings_words_without_its_inline_code(): void
+    {
+        $result = (new PortableDocumentOutlineBuilder)->build(
+            '<h2>Схема <code>scheme</code> и статус <code>status</code></h2>'
+            . '<h3>Вид <code>appearance</code></h3>'
+            . '<h3><code>sf-button</code></h3>',
+            3,
+        );
+
+        // Anchors keep the full heading so existing links still land.
+        self::assertSame([
+            ['id' => 'схема-scheme-и-статус-status', 'level' => 2, 'text' => 'Схема и статус'],
+            ['id' => 'вид-appearance', 'level' => 3, 'text' => 'Вид'],
+            ['id' => 'sf-button', 'level' => 3, 'text' => 'sf-button'],
+        ], $result['items']);
+    }
+
+    #[Test]
     public function combining_marks_and_skipped_levels_are_stable_at_both_depth_boundaries(): void
     {
         $html = '<h1>Document</h1>'

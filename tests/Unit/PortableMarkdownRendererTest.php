@@ -905,6 +905,20 @@ MD);
     }
 
     #[Test]
+    public function a_fence_without_a_language_that_opens_with_a_tag_is_html(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $markup = $renderer->render("```\n<sf-button text=\"Save\"></sf-button>\n```\n");
+        $plain = $renderer->render("```\nnpm install\n```\n");
+
+        self::assertStringContainsString('data-docara-code-language="html"', $markup);
+        self::assertStringContainsString('<span class="flex sf-text-1/3 weight-5">HTML</span>', $markup);
+        self::assertStringContainsString('class="language-html"', $markup);
+        self::assertStringContainsString('data-docara-code-language="code"', $plain);
+        self::assertStringContainsString('<span class="flex sf-text-1/3 weight-5">Code</span>', $plain);
+    }
+
+    #[Test]
     public function the_mark_that_joins_a_feature_title_to_its_text_is_dropped(): void
     {
         $html = (new PortableMarkdownRenderer)->render(<<<'MD'

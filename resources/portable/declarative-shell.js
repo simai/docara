@@ -379,7 +379,9 @@
       var stored=localStorage.getItem(sourceWrapStorageKey);
       if(stored==='true'||stored==='false')return stored==='true';
     }catch(error){}
-    return Boolean(window.matchMedia&&window.matchMedia('not all and (min-width: 44rem)').matches);
+    // A long line scrolls inside its block on every screen, as the docs
+    // promise: wrapping on phones split tags and aligned comments.
+    return false;
   }
   var sourceWrapActive=storedSourceWrap();
   function setSourceWrap(active,notify){

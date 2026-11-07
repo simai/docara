@@ -103,10 +103,14 @@ final readonly class PortableDocumentOutlineBuilder
 
             $level = (int) substr(strtolower($heading->tagName), 1);
             if ($level >= 2 && $level <= $maximumLevel) {
+                // The contents carry the heading's words: inline code such as
+                // an attribute name stays in the heading only. A heading that
+                // is all code keeps its code.
+                $label = $this->normalizeText($this->accessibleText($heading, true));
                 $items[] = [
                     'id' => $id,
                     'level' => $level,
-                    'text' => $text,
+                    'text' => $label === '' ? $text : $label,
                 ];
             }
         }
@@ -129,8 +133,11 @@ final readonly class PortableDocumentOutlineBuilder
         return ['html' => HtmlAttributeQuoting::normalize($decorated), 'items' => $items];
     }
 
-    private function accessibleText(DOMNode $node): string
+    private function accessibleText(DOMNode $node, bool $withoutCode = false): string
     {
+        if ($withoutCode && $node instanceof DOMElement && strtolower($node->tagName) === 'code') {
+            return ' ';
+        }
         if ($node->nodeType === XML_TEXT_NODE) {
             return $node->nodeValue ?? '';
         }
@@ -140,7 +147,7 @@ final readonly class PortableDocumentOutlineBuilder
 
         $text = '';
         foreach ($node->childNodes as $child) {
-            $text .= $this->accessibleText($child);
+            $text .= $this->accessibleText($child, $withoutCode);
         }
 
         return $text;

@@ -3565,6 +3565,13 @@ HTML;
         $language = 'code';
         if (preg_match('/(?:language|lang)-([a-z0-9_+-]+)/i', $attributes, $languageMatch) === 1) {
             $language = strtolower((string) $languageMatch[1]);
+        } elseif (preg_match('/\A\s*&lt;[a-z!][^&]*?(?:&gt;|\s)/i', $content) === 1) {
+            // A block without a language whose text opens with a tag is
+            // markup: its header names HTML and the highlighter reads it so.
+            $language = 'html';
+            $attributes = str_contains($attributes, 'class="')
+                ? preg_replace('/class="/', 'class="language-html ', $attributes, 1) ?? $attributes
+                : $attributes . ' class="language-html"';
         }
         $labels = [
             'html' => 'HTML', 'xhtml' => 'HTML', 'css' => 'CSS', 'js' => 'JavaScript',

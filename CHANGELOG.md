@@ -8,6 +8,19 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- The contents beside a page list a heading's words without its inline
+  code: «Вид `appearance`» shows as «Вид». Anchors keep the full heading,
+  so existing links still land; a heading that is all code keeps it.
+- Inline code in text and tables no longer breaks inside a token such as
+  `icon-start` or `on-surface-variant`; the line wraps before it, and a
+  table with such cells scrolls inside its frame.
+- A long code line scrolls inside its block on phones too, as the code
+  page promises; wrapping split tags and aligned comments. The wrap button
+  still turns wrapping on and remembers the choice.
+- A code block without a language whose text starts with a tag is shown as
+  HTML: its header says HTML instead of Code and it is highlighted as markup.
+- On a phone the contents button stands under the page title instead of
+  above it.
 - A code block's header no longer blurs what is behind it. It stands on
   the block's own surface, so the blur changed nothing visible but made the
   browser keep extra layers on pages with many code blocks, which can blank

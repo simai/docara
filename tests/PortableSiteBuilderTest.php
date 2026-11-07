@@ -1613,6 +1613,8 @@ MD);
         $this->builder()->build($this->tmp, $this->tmpPath('build_always'));
         $always = (string) file_get_contents($this->tmpPath('build_always/guides/getting-started/index.html'));
         self::assertStringContainsString('data-docara-outline-mobile', $always);
+        // On a phone the contents button stands under the page title.
+        self::assertMatchesRegularExpression('~<article[^>]*>\s*<h1[^>]*>.*?</h1>\s*<div data-docara-outline-mobile~s', $always);
         // The Framework sf-contents twice: the column, and its compact copy
         // (a button that opens the list) for the narrow screen.
         self::assertStringContainsString('layout="column" sticky="false"', $always);

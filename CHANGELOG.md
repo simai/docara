@@ -6,6 +6,14 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- A code block's header keeps its language (HTML, JavaScript) after the
+  page loads. The shell read the language only from the highlighter's
+  `data-requested-lang`, which a Markdown fence does not carry, and wrote
+  Code over the right label; it now reads the fence's `language-*` class
+  and keeps the rendered label when it finds none.
+
 ## [3.12.1] - 2026-11-07
 
 ### Fixed

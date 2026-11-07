@@ -94,11 +94,14 @@
       var block=button.closest('[data-docara-code-block]');
       if(block&&!block.closest('[data-docara-example-panel]')){
         var code=block.querySelector('code');
-        var language=(code&&code.dataset.requestedLang||'').trim().toLowerCase();
+        // The highlighter may record the language it was asked for; a fence
+        // rendered by Docara names it only in its language-* class.
+        var classLanguage=code&&/(?:^|\s)language-([\w+-]+)/.exec(code.className||'');
+        var language=(code&&code.dataset.requestedLang||classLanguage&&classLanguage[1]||'').trim().toLowerCase();
         var head=block.querySelector(':scope > .sf--highlight-head,:scope > [data-docara-code-fallback]');
         var title=head&&head.querySelector(':scope > span');
         var languageLabels={html:'HTML',xhtml:'HTML',css:'CSS',js:'JavaScript',javascript:'JavaScript',json:'JSON',php:'PHP',bash:'Bash',shell:'Shell',markdown:'Markdown',md:'Markdown',text:'Code',plaintext:'Code'};
-        var languageLabel=block.dataset.docaraCodeTitle||languageLabels[language]||language||'Code';
+        var languageLabel=block.dataset.docaraCodeTitle||languageLabels[language]||language||(title&&title.textContent.trim())||'Code';
         if(head){head.classList.add('docara-code-header')}
         if(title&&title.textContent!==languageLabel){title.textContent=languageLabel}
         button.classList.remove('sf-button','sf-button--size-1/3','sf-button--on-surface','sf-button--link');

@@ -108,6 +108,8 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-prose dt{font-weight:var(--sf-weight--medium)}
 /* Inline code never breaks inside a token such as icon-start or on-surface-variant; the line wraps before it instead, and a table with such cells scrolls in its frame. */
 .docara-prose :not(pre)>code:not(:where(.docara-example-inline *)){white-space:nowrap;hyphens:none}
+/* A bullet between spaces in prose separates parts of a meta line: smaller, in the caption colour, centred on the line. The spaces around it stay, so the margin only tops them up to the gap the prototype drew. */
+.docara-sep{display:inline-block;margin-inline:.15em;font-size:.8em;position:relative;top:-.05em;color:var(--sf-on-surface-variant)}
 .docara-prose dd{margin-inline-start:var(--sf-space-2)}
 .docara-prose dl>dt:not(:first-child){margin-block-start:var(--sf-space-1)}
 .docara-code-block.bg-surface-container{background:var(--sf-surface-0)}

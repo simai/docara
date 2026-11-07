@@ -60,6 +60,9 @@ final readonly class PortableMarkdownProfile
         $environment->addExtension(new TaskListExtension);
         $environment->addExtension(new DescriptionListExtension);
         $environment->addExtension(new HighlightExtension);
+        $separator = new ProseSeparator;
+        $environment->addInlineParser($separator);
+        $environment->addRenderer(ProseSeparator::class, $separator);
         // Keeps a fence's {…} options for the code presenter.
         $environment->addRenderer(FencedCode::class, new PortableFencedCodeRenderer, 10);
 

@@ -919,6 +919,22 @@ MD);
     }
 
     #[Test]
+    public function a_bullet_between_spaces_in_prose_is_a_separator(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(
+            "`appearance` • по умолчанию `default` • [справочник](#attributes)\n\n"
+            . "а•б, `x • y`\n\n```text\na • b\n```\n",
+        );
+        $separator = '<span class="docara-sep" aria-hidden="true">•</span>';
+
+        self::assertSame(2, substr_count($html, $separator));
+        self::assertStringContainsString('<code>appearance</code> ' . $separator . ' по умолчанию', $html);
+        self::assertStringContainsString('а•б', $html);
+        self::assertStringContainsString('<code>x • y</code>', $html);
+        self::assertStringContainsString('a • b', $html);
+    }
+
+    #[Test]
     public function the_mark_that_joins_a_feature_title_to_its_text_is_dropped(): void
     {
         $html = (new PortableMarkdownRenderer)->render(<<<'MD'

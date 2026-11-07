@@ -111,6 +111,19 @@ signs highlight a word as a marker pen would: that is how you mark what the
 reader looks for, a match inside an example, say. Do not use arbitrary HTML
 instead of Markdown.
 
+Separate the short parts of a line, such as a caption under a section
+heading, with a bullet `•` with a space on each side. Such a bullet becomes a
+separator: a little smaller and lighter than the text, centred on the line,
+and skipped by screen readers.
+
+:::example {label="A separator in a line"}
+```markdown
+`appearance` • default `default` • [reference](#headings-and-text)
+```
+:::
+
+A bullet without spaces around it and a bullet inside code stay plain.
+
 Headings get deterministic anchors you can link to; how an anchor is built is
 described in [Reading context](/en/settings/reading/#how-anchors-are-built).
 Renaming a heading changes the fragment address, so run

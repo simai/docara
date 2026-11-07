@@ -990,11 +990,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/markdown.md",
-            "source_sha256": "ef50cacde17a7907b0b496eb04a66db2abf2a062d43fb8af37e40835b5ce7ec4",
-            "source_structure_sha256": "c5274792c1ebb1aa9de55316414e63259727c94123fa51ba8b6d6a7a4590a37b",
+            "source_sha256": "f35d35f7925b101bfdeac4a440230d48928c671fee1e59b970c60695e9e4fae9",
+            "source_structure_sha256": "de53ddd312628ca546e5f922099ef5c43a644fc501aea3edb765b53ae58b3f40",
             "target_path": "content/en/authoring/markdown.md",
-            "target_sha256": "62b9f160900d53fad5ea7e7d558dbf12952fe756b25b07953e2ffde454aa07cb",
-            "target_structure_sha256": "c5274792c1ebb1aa9de55316414e63259727c94123fa51ba8b6d6a7a4590a37b"
+            "target_sha256": "909c8d61df9bb4412022da8a3dd0e5e73dca5f2ead74d52e589eaf08af6143b8",
+            "target_structure_sha256": "de53ddd312628ca546e5f922099ef5c43a644fc501aea3edb765b53ae58b3f40"
         },
         {
             "key": "authoring/multilingual-site.md",

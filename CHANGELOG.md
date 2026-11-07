@@ -6,6 +6,14 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **A bullet between spaces separates parts of a line.** In prose,
+  `` `appearance` • по умолчанию `default` `` draws the `•` as a separator:
+  a little smaller than the text, in the caption colour, centred on the
+  line, and hidden from screen readers. A bullet without spaces around it
+  and one inside code stay plain.
+
 ## [3.12.2] - 2026-11-07
 
 ### Fixed

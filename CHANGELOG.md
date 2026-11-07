@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.13.0] - 2026-11-07
+
 ### Added
 
 - **A bullet between spaces separates parts of a line.** In prose,
@@ -26,6 +28,11 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **The header's language button is the Framework's `sf-language`.** Its
+  menu lists the site's languages, marks the current one and opens this
+  page in the chosen language, as the globe menu did; the globe menu's own
+  script and styles are gone. The header keeps the button's place while
+  the picker loads, so the tools do not shift.
 - **Docara bundles SIMAI Framework `ui-2a671352d67b`** (registry bound at
   `3f56fa78a`) instead of `ui-c3015f76bcc2`. What sites see:
   - the reader settings menu (`sf-menu-context` 1.8.0) keeps its search

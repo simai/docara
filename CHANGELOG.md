@@ -13,6 +13,16 @@ All notable changes to Docara are recorded here. The format follows
   a little smaller than the text, in the caption colour, centred on the
   line, and hidden from screen readers. A bullet without spaces around it
   and one inside code stay plain.
+- An example can show a log under it: `:::example {log="click sf-button-press"}`
+  records those events from the example with the time and a short summary
+  of their data, newest first. `log_console=true` adds a Console tab with
+  the example's `console.log`, `info`, `warn` and `error`, and
+  `log_open=false` opens the log collapsed. The example's own code can add
+  a line with `docara.example.log(name, detail)`. The log is part of the
+  example's frame, works for inline and framed examples and in the
+  responsive viewer, and is off unless an example asks for it. Its captions
+  are the `examples.log_*` strings of `lang.json`. An inline example runs
+  no script of its own, so its Console tab shows the page's console.
 
 ## [3.12.2] - 2026-11-07
 

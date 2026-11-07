@@ -2036,4 +2036,109 @@ MD);
             self::assertSame(1, substr_count($html, '<section'));
         }
     }
+
+    #[Test]
+    public function an_example_has_no_log_unless_it_asks_for_one(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(":::example\n```html\n<button type=\"button\">Go</button>\n```\n:::\n");
+
+        self::assertStringNotContainsString('data-docara-example-log', $html);
+        self::assertStringNotContainsString('docara:example-log', $html);
+    }
+
+    #[Test]
+    public function an_inline_example_log_lists_its_events_tabs_and_controls_under_the_panels(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(
+            ":::example {log=\"click sf-button-press\" log_console=true log_open=false}\n```html\n<button type=\"button\">Go</button>\n```\n:::\n",
+        );
+
+        self::assertStringContainsString('data-docara-example-preview-resolved="inline"', $html);
+        self::assertMatchesRegularExpression(
+            '~<div class="docara-example-preview__panels">.*</div><section data-docara-example-log data-docara-example-log-events="click sf-button-press"'
+            . ' data-docara-example-log-console="true" data-docara-example-log-state="collapsed" aria-label="Example log" class="docara-example-log">~s',
+            $html,
+        );
+        self::assertStringContainsString('role="tablist" aria-label="Example log" class="docara-example-preview__tabs docara-example-log__tabs"', $html);
+        self::assertStringContainsString('aria-selected="true" tabindex="0" data-docara-example-log-tab="events" class="docara-example-preview__tab docara-example-log__tab"', $html);
+        self::assertStringContainsString('aria-selected="false" tabindex="-1" data-docara-example-log-tab="console"', $html);
+        self::assertSame(2, substr_count($html, 'data-docara-example-log-count class="docara-example-log__count">0</span>'));
+        self::assertStringContainsString('<sf-icon icon="delete" aria-hidden="true"></sf-icon>', $html);
+        self::assertStringContainsString('aria-expanded="false" aria-label="Expand the log"', $html);
+        self::assertStringContainsString('<sf-icon icon="expand_more" aria-hidden="true"></sf-icon>', $html);
+        self::assertMatchesRegularExpression('~<div id="[^"]+-log-panels" hidden class="docara-example-log__panels">~', $html);
+        self::assertSame(2, substr_count($html, '<div role="log" class="docara-example-log__rows"></div>'));
+        self::assertStringContainsString('<span class="docara-example-log__indicator" aria-hidden="true"></span>', $html);
+        self::assertStringNotContainsString('<svg', $html);
+        // The device-width viewer shows the inline example in a frame of its
+        // own: that document records the same events and console.
+        preg_match('~<iframe data-docara-example-responsive-frame [^>]*data-docara-srcdoc="([^"]*)"~', $html, $frame);
+        $document = html_entity_decode($frame[1] ?? '', ENT_QUOTES | ENT_HTML5);
+        self::assertStringContainsString('<script data-docara-example-log-runtime>(function(){var config={"events":["click","sf-button-press"],"console":true};', $document);
+    }
+
+    #[Test]
+    public function a_framed_example_log_runtime_runs_before_the_example_script(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(
+            ":::example {log=sf-button-press}\n```html\n<button type=\"button\">Go</button>\n```\n```javascript\nconsole.log('ready');\n```\n:::\n",
+        );
+
+        self::assertStringContainsString('data-docara-example-preview-resolved="sandbox"', $html);
+        self::assertStringContainsString('data-docara-example-log-console="false" data-docara-example-log-state="expanded"', $html);
+        self::assertStringNotContainsString('data-docara-example-log-tab="console"', $html);
+        preg_match('~data-docara-srcdoc="([^"]*)"~', $html, $frame);
+        $document = html_entity_decode($frame[1] ?? '', ENT_QUOTES | ENT_HTML5);
+        $runtime = strpos($document, '<script data-docara-example-log-runtime>');
+        self::assertIsInt($runtime);
+        self::assertLessThan(strpos($document, '</head>'), $runtime);
+        self::assertLessThan(strpos($document, "console.log('ready');"), $runtime);
+        self::assertStringContainsString('var config={"events":["sf-button-press"],"console":false};', $document);
+    }
+
+    #[Test]
+    public function a_console_log_alone_turns_the_log_on_with_both_tabs(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(":::example {log_console=true}\n```markdown\nText\n```\n:::\n");
+
+        self::assertStringContainsString('data-docara-example-log-events="" data-docara-example-log-console="true"', $html);
+        self::assertStringContainsString('data-docara-example-log-tab="events"', $html);
+        self::assertStringContainsString('data-docara-example-log-tab="console"', $html);
+    }
+
+    #[Test]
+    public function invalid_example_log_parameters_stop_the_build_with_a_diagnostic(): void
+    {
+        $cases = [
+            '{log="1click"}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            '{log="click click"}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            '{log="on<click>"}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            '{log=" "}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            '{log="' . implode(' ', array_map(static fn (int $index): string => 'event' . $index, range(1, 17))) . '"}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            '{log=click log_console=yes}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            '{log=click log_open=1}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            '{log_open=false}' => 'MARKDOWN_EXAMPLE_LOG_REQUIRED',
+            '{log_console=false}' => 'MARKDOWN_EXAMPLE_LOG_REQUIRED',
+            '{logs=click}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN',
+        ];
+        $renderer = new PortableMarkdownRenderer;
+        foreach ($cases as $attributes => $code) {
+            $markdown = ":::example $attributes\n```html\n<p>Text</p>\n```\n:::\n";
+            foreach (['render', 'examplePreviews'] as $method) {
+                try {
+                    $renderer->{$method}($markdown);
+                    self::fail("[$attributes] was accepted by $method.");
+                } catch (PortableConfigurationException $exception) {
+                    self::assertSame($code, $exception->errorCode, "$attributes via $method");
+                }
+            }
+        }
+
+        try {
+            $renderer->render("::::example {src=\"/demo/\" log=click}\n### A\n\ntext\n::::\n");
+            self::fail('A page example accepted a log.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_EXAMPLE_SRC_CONFLICT', $exception->errorCode);
+        }
+    }
 }

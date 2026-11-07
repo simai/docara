@@ -129,6 +129,18 @@
             "components": ["example"],
             "reason": "Whether long source lines wrap; the same switch as docara.json example settings."
         },
+        "log": {
+            "components": ["example"],
+            "reason": "The event names an example's log records from the example's root, as DOM event types (click, sf-button-press). It adds a part of the example's frame, so it is no style, status or arrangement."
+        },
+        "log_console": {
+            "components": ["example"],
+            "reason": "Whether the example log has a Console tab for the example's console; a switch of the log named after it."
+        },
+        "log_open": {
+            "components": ["example"],
+            "reason": "The initial disclosure state of the example log, the vocabulary's open applied to that part of the example; plain open would read as the whole example starting open."
+        },
         "fit": {
             "components": ["figure", "image"],
             "reason": "How the image fills its ratio box (cover, contain), after CSS object-fit."

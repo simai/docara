@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Docara\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
@@ -300,6 +301,64 @@ JS;
             'https://docs.example/_docara/late.js',
         ], $result['all']);
         self::assertSame(0, $result['loadsBeforeAnyEvent']);
+    }
+
+    public function test_a_framed_example_log_posts_events_own_lines_and_console_rows_to_the_page(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(
+            ":::example {log=\"click sf-button-press\" log_console=true}\n```html\n<button type=\"button\">Go</button>\n```\n```javascript\nconsole.log('ready');\n```\n:::\n",
+        );
+        self::assertSame(1, preg_match('~data-docara-srcdoc="([^"]*)"~', $html, $frame));
+        $document = html_entity_decode($frame[1], ENT_QUOTES | ENT_HTML5);
+        self::assertSame(1, preg_match('~<script data-docara-example-log-runtime>(.*?)</script>~s', $document, $runtime));
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The frame log check runs the runtime in Node.js.');
+
+        $script = <<<'JS'
+const listeners={},posted=[],printed=[];
+globalThis.window=globalThis;
+window.addEventListener=(type,listener,capture)=>{listeners[type]={listener,capture}};
+globalThis.parent={postMessage(data,origin){posted.push({data,origin})}};
+globalThis.console={log(...a){printed.push(['log',a])},info(...a){printed.push(['info',a])},warn(...a){printed.push(['warn',a])},error(...a){printed.push(['error',a])}};
+JS;
+        $script .= $runtime[1] . <<<'JS'
+
+listeners['sf-button-press'].listener(new CustomEvent('sf-button-press',{detail:{href:'/ru/guide/',target:'x'.repeat(60),count:2,nested:{a:1},extra:true}}));
+listeners.click.listener({type:'click',detail:1,target:{nodeType:1,tagName:'BUTTON',textContent:'  Go  '}});
+docara.example.log('submit',{name:'plan',value:'pro'});
+console.warn('careful',{x:1});
+console.error(new Error('broken'));
+process.stdout.write(JSON.stringify({captures:Object.values(listeners).map(entry=>entry.capture),posted,printed:printed.map(entry=>entry[0])}));
+JS;
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertNotContains(false, $result['captures'], 'Events are heard in the capture phase, before the example can stop them.');
+        self::assertSame(['warn', 'error'], $result['printed'], 'The console still prints what the example writes.');
+        $rows = array_map(static fn (array $message): array => $message['data'], $result['posted']);
+        self::assertSame([
+            ['type' => 'docara:example-log', 'tab' => 'events', 'level' => '', 'name' => 'sf-button-press', 'detail' => '{href: "/ru/guide/", target: "' . str_repeat('x', 39) . '…", count: 2, nested: {…}, …}'],
+            ['type' => 'docara:example-log', 'tab' => 'events', 'level' => '', 'name' => 'click', 'detail' => '<button> Go'],
+            ['type' => 'docara:example-log', 'tab' => 'events', 'level' => '', 'name' => 'submit', 'detail' => '{name: "plan", value: "pro"}'],
+            ['type' => 'docara:example-log', 'tab' => 'console', 'level' => 'warn', 'name' => 'warn', 'detail' => 'careful {x: 1}'],
+            ['type' => 'docara:example-log', 'tab' => 'console', 'level' => 'error', 'name' => 'error', 'detail' => 'Error: broken'],
+        ], $rows);
+    }
+
+    public function test_the_page_writes_log_rows_only_from_its_own_example_frames(): void
+    {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+
+        self::assertStringContainsString("if(!data||data.type!=='docara:example-log')return;\n      var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;", $shell);
+        self::assertStringContainsString("if(!entry||(data.tab!=='events'&&!(data.tab==='console'&&entry.console)))return;", $shell);
+        self::assertStringContainsString("if(['','log','info','warn','error'].indexOf(data.level)===-1||typeof data.name!=='string'", $shell);
+        // Row text is set as text, never parsed as markup.
+        self::assertStringContainsString('cell.textContent=part[1];', $shell);
+        self::assertStringNotContainsString('row.innerHTML', $shell);
+        // The page console is wrapped only when an inline example asks for it.
+        self::assertStringContainsString("var consoleLogs=exampleLogs.filter(function(entry){return entry.inline&&entry.console});\n    if(!consoleLogs.length)return;", $shell);
+        self::assertStringContainsString('api.example.log=function(name,detail,target){', $shell);
     }
 
     public function test_a_deferred_example_frame_gets_an_absolute_base_so_each_relative_image_is_fetched_once(): void

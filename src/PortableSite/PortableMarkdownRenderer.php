@@ -747,6 +747,7 @@ final class PortableMarkdownRenderer
         // layout=wide lets a showcase example leave the reading column and
         // take the page's full width, as a landing page needs.
         $wide = $this->catalogueChoice(trim($attributes['layout'] ?? 'column'), 'example', 'layout') === 'wide';
+        $log = $this->exampleLog($attributes);
         $baseHref = null;
         if (array_key_exists('src', $attributes)) {
             return $this->renderPageExample($markdown, $attributes, $label, $defaultLabel, $fullscreen, $wrap, $sourceRoot, $sourceFile, $showSources, $wide);
@@ -814,6 +815,7 @@ final class PortableMarkdownRenderer
                 $baseHref,
                 $label,
                 $defaultLabel,
+                $log,
             );
         } elseif ($hasMarkdown) {
             $preview = '<div data-docara-example-inline-preview>' . $this->nestInlineHeadings($compiledPreview) . '</div>';
@@ -828,6 +830,7 @@ final class PortableMarkdownRenderer
                     $baseHref,
                     $label,
                     $defaultLabel,
+                    $log,
                 ), 1);
             }
         } else {
@@ -844,6 +847,7 @@ final class PortableMarkdownRenderer
                     $baseHref,
                     $label,
                     $defaultLabel,
+                    $log,
                 ), 1);
             }
         }
@@ -870,6 +874,7 @@ final class PortableMarkdownRenderer
             wrap: $wrap,
             responsive: $responsive,
             wide: $wide,
+            log: $log,
         );
     }
 
@@ -942,6 +947,7 @@ final class PortableMarkdownRenderer
                 $this->attributeBoolean($attributes['sources'], 'example', 'sources');
             }
             $this->catalogueChoice(trim($attributes['layout'] ?? 'column'), 'example', 'layout');
+            $this->exampleLog($attributes);
             if (trim($attributes['label'] ?? 'Example') === '') {
                 throw new PortableConfigurationException(
                     'MARKDOWN_EXAMPLE_LABEL_INVALID',
@@ -1070,7 +1076,9 @@ final class PortableMarkdownRenderer
      */
     private function pageExampleParts(array $attributes, string $markdown, bool $showSources = true): array
     {
-        foreach (['id', 'preview'] as $conflict) {
+        // The log listens inside the example's own document; a page example
+        // shows a whole built page, which keeps its own console and events.
+        foreach (['id', 'preview', 'log', 'log_console', 'log_open'] as $conflict) {
             if (array_key_exists($conflict, $attributes)) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_EXAMPLE_SRC_CONFLICT',
@@ -1196,6 +1204,7 @@ final class PortableMarkdownRenderer
         ?string $baseHref = null,
         string $label = 'Example',
         bool $defaultLabel = true,
+        ?ExampleLog $log = null,
     ): string {
         $document = '<!doctype html><html><head><meta charset="utf-8">'
             . '<meta name="viewport" content="width=device-width,initial-scale=1">'
@@ -1206,6 +1215,9 @@ final class PortableMarkdownRenderer
             // body keeps room for the ring's width and offset.
             . '<style>body{padding:calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}</style>'
             . (isset($sources['CSS']) ? '<style>' . $sources['CSS'] . '</style>' : '')
+            // The log runtime comes before the example's markup and script,
+            // so it hears the first events and console calls.
+            . ($log === null ? '' : $this->exampleLogRuntime($log))
             . '</head><body>' . $sources['HTML']
             . (isset($sources['JavaScript']) ? '<script>' . str_replace('</script', '<\\/script', $sources['JavaScript']) . '</script>' : '')
             . $this->exampleAutoHeightRuntime()
@@ -1231,6 +1243,116 @@ final class PortableMarkdownRenderer
             // announces itself and the shell sizes the frame.
             . ' data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" scrolling="no" loading="lazy" data-docara-srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
+    }
+
+    /**
+     * Reads an example's log parameters. `log` names the events recorded on
+     * the example's root, `log_console=true` adds the Console tab (and turns
+     * the log on by itself), `log_open=false` opens the log collapsed.
+     * Without `log` or `log_console=true` the example has no log.
+     *
+     * @param  array<string,string>  $attributes
+     */
+    private function exampleLog(array $attributes): ?ExampleLog
+    {
+        $console = array_key_exists('log_console', $attributes)
+            && $this->attributeBoolean($attributes['log_console'], 'example', 'log_console');
+        $collapsed = array_key_exists('log_open', $attributes)
+            && ! $this->attributeBoolean($attributes['log_open'], 'example', 'log_open');
+        $events = [];
+        if (array_key_exists('log', $attributes)) {
+            $events = preg_split('/\s+/', trim($attributes['log']), -1, PREG_SPLIT_NO_EMPTY) ?: [];
+            if ($events === []
+                || count($events) > ExampleLog::MAX_EVENTS
+                || count(array_unique($events)) !== count($events)
+                || array_filter($events, static fn (string $name): bool => ! ExampleLog::isEventName($name)) !== []
+            ) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+                    'Markdown component [example] has invalid [log] value [' . $attributes['log'] . ']: give 1 to '
+                        . ExampleLog::MAX_EVENTS . ' different event names separated by spaces, such as "click sf-button-press".',
+                );
+            }
+        }
+        if ($events === [] && ! $console) {
+            if (array_key_exists('log_open', $attributes) || array_key_exists('log_console', $attributes)) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_EXAMPLE_LOG_REQUIRED',
+                    'An example log option needs the log itself: name the events in [log] or set [log_console=true].',
+                );
+            }
+
+            return null;
+        }
+
+        return new ExampleLog(array_values($events), $console, $collapsed);
+    }
+
+    /**
+     * Runs in an example frame when the example has a log: records the named
+     * events on the document, the example's own lines from
+     * docara.example.log(name, detail) and, with the Console tab, the frame's
+     * console.log/info/warn/error and uncaught errors. Each row goes to the
+     * page as a docara:example-log message; the page checks that it comes
+     * from one of its example frames and writes it into that example's log.
+     */
+    private function exampleLogRuntime(ExampleLog $log): string
+    {
+        $configuration = json_encode($log->frameConfiguration(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+
+        return '<script data-docara-example-log-runtime>(function(){var config=' . $configuration . ';' . <<<'JS'
+function cut(text,limit){text=String(text);return text.length>limit?text.slice(0,limit-1)+'…':text}
+function value(item){
+if(item===null)return 'null';
+var type=typeof item;
+if(type==='string')return '"'+cut(item,40)+'"';
+if(type==='number'||type==='boolean'||type==='bigint'||type==='undefined')return String(item);
+if(type==='function')return 'ƒ';
+if(item&&item.nodeType===1)return '<'+String(item.tagName).toLowerCase()+'>';
+if(Array.isArray(item))return '['+item.length+']';
+return '{…}';
+}
+function detail(item){
+if(item===undefined||item===null||item==='')return '';
+if(typeof item!=='object'||item.nodeType===1)return value(item);
+if(item instanceof Error)return cut((item.name||'Error')+': '+item.message,120);
+if(Array.isArray(item))return '['+item.slice(0,4).map(value).join(', ')+(item.length>4?', …':'')+']';
+var keys=Object.keys(item);
+return '{'+keys.slice(0,4).map(function(key){return key+': '+value(item[key])}).join(', ')+(keys.length>4?', …':'')+'}';
+}
+function eventDetail(event){
+if(event.detail!==null&&typeof event.detail==='object')return detail(event.detail);
+if(typeof CustomEvent==='function'&&event instanceof CustomEvent)return detail(event.detail);
+var target=event.target;
+if(!target||target.nodeType!==1)return '';
+target=target.closest&&target.closest('a,button,input,select,textarea,summary,label,[role],[tabindex]')||target;
+var text=(target.textContent||'').trim().replace(/\s+/g,' ');
+return '<'+String(target.tagName).toLowerCase()+'>'+(text?' '+cut(text,40):'');
+}
+function post(tab,level,name,text){
+try{parent.postMessage({type:'docara:example-log',tab:tab,level:level,name:cut(name,80),detail:cut(text,300)},'*')}catch(error){}
+}
+config.events.forEach(function(name){
+window.addEventListener(name,function(event){post('events','',event.type,eventDetail(event))},true);
+});
+var api=window.docara=window.docara&&typeof window.docara==='object'?window.docara:{};
+api.example=api.example&&typeof api.example==='object'?api.example:{};
+api.example.log=function(name,data){post('events','',String(name),detail(data))};
+if(!config.console)return;
+var busy=false;
+['log','info','warn','error'].forEach(function(level){
+var original=console[level];
+if(typeof original!=='function')return;
+console[level]=function(){
+var result=original.apply(console,arguments);
+if(!busy){busy=true;try{post('console',level,level,Array.prototype.map.call(arguments,function(item){return typeof item==='string'?item:detail(item)}).join(' '))}finally{busy=false}}
+return result;
+};
+});
+window.addEventListener('error',function(event){post('console','error','error',event.message||'Error')});
+window.addEventListener('unhandledrejection',function(event){post('console','error','error',detail(event.reason)||'Unhandled rejection')});
+})();</script>
+JS;
     }
 
     private function exampleAutoHeightRuntime(): string

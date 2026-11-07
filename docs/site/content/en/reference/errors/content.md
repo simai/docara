@@ -133,7 +133,8 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 | `MARKDOWN_EXAMPLE_ID_INVALID` | The `id` of an example from the `examples/` folder is written incorrectly. **What to do:** Give a lowercase path with `/` inside `examples/`. |
 | `MARKDOWN_EXAMPLE_ID_BODY_CONFLICT` | The example has both an `id` and code inside the block. **What to do:** Keep one of them. |
 | `MARKDOWN_EXAMPLE_SRC_UNSAFE` | The page address in the `src` of the example leads to another site or is written incorrectly. **What to do:** Give a path from the root of this site, for example `/en/demo/`. |
-| `MARKDOWN_EXAMPLE_SRC_CONFLICT` | A whole-page example has `src` together with `id` or `preview`. **What to do:** Keep only `src`. |
+| `MARKDOWN_EXAMPLE_SRC_CONFLICT` | A whole-page example has `src` together with `id`, `preview` or the log (`log`, `log_console`, `log_open`). **What to do:** Keep only `src`. |
+| `MARKDOWN_EXAMPLE_LOG_REQUIRED` | The example has `log_open` or `log_console=false`, but its log is not turned on. **What to do:** Name the events in `log` or set `log_console=true`; otherwise remove the parameter. |
 | `MARKDOWN_EXAMPLE_PAGE_SOURCE_INVALID` | A whole-page example has no tabs, a tab is empty or repeats, or there is text before the first `###`. **What to do:** Start the block with `### File name` and put a `:::code` block under each heading. |
 | `MARKDOWN_EXAMPLE_PROJECT_CONTEXT_REQUIRED` | An example by `id` is used outside a project build. **What to do:** Build the page with `docara build` in the site folder. |
 | `MARKDOWN_EXAMPLE_INLINE_ID_DUPLICATE` | Two examples on a page got the same identifier. **What to do:** Give the examples different `id`s or labels. |

@@ -162,6 +162,14 @@ Docara нет.
 | `examples.viewport_desktop` — Вариант ширины «компьютер» | Desktop | Десктоп |
 | `examples.viewport_tablet` — Вариант ширины «планшет» | Tablet | Планшет |
 | `examples.viewport_mobile` — Вариант ширины «телефон» | Mobile | Телефон |
+| `examples.log_title` — Подпись журнала под примером | Example log | Журнал примера |
+| `examples.log_events` — Вкладка событий в журнале примера | Events | События |
+| `examples.log_console` — Вкладка консоли в журнале примера | Console | Консоль |
+| `examples.log_clear` — Кнопка очистки журнала примера | Clear the log | Очистить журнал |
+| `examples.log_collapse` — Кнопка, сворачивающая журнал примера | Collapse the log | Свернуть журнал |
+| `examples.log_expand` — Кнопка, разворачивающая журнал примера | Expand the log | Развернуть журнал |
+| `examples.log_events_empty` — Текст пустой вкладки событий | The example's events appear here | Здесь появятся события примера |
+| `examples.log_console_empty` — Текст пустой вкладки консоли | The console is empty | Консоль пуста |
 | `reader.font_size_title` — Название настройки размера шрифта | Font size | Размер шрифта |
 | `reader.font_size_description` — Пояснение к настройке размера шрифта | Changes the size of the whole documentation interface. | Меняет размер всего интерфейса документации. |
 | `reader.font_size_small` — Вариант мелкого шрифта | Small | Мелкий |

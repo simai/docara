@@ -60,6 +60,94 @@ document.querySelector('.example-button').addEventListener('click', () => {
 ```
 :::
 
+### Журнал примера
+
+Под примером можно показать журнал: события, которые происходят в примере,
+и его консоль. Читатель нажимает кнопки и сразу видит, что пример
+сообщает, — без инструментов разработчика. Журнал — часть рамки примера, а
+не его содержимого; по умолчанию его нет.
+
+:::example {label="Ссылки" log=click log_console=true}
+```html
+<div class="links">
+  <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1 inline-flex items-center" data-href="/ru/start/"><span class="sf-button-text-container">Руководство</span></button>
+  <button type="button" class="sf-button sf-button--outline sf-button--primary sf-button--size-1 inline-flex items-center" data-href="#параметры"><span class="sf-button-text-container">Справочник</span></button>
+  <button type="button" class="sf-button sf-button--tonal sf-button--primary sf-button--size-1 inline-flex items-center" data-href="mailto:team@example.com"><span class="sf-button-text-container">Написать</span></button>
+  <button type="button" class="sf-button sf-button--link sf-button--primary sf-button--size-1 inline-flex items-center" data-href="ftp://example.com"><span class="sf-button-text-container">Не ссылка</span></button>
+</div>
+```
+```css
+.links { display: flex; flex-wrap: wrap; gap: .75rem; }
+```
+```javascript
+document.querySelector('.links').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-href]');
+  if (!button) return;
+  const href = button.dataset.href;
+  docara.example.log('navigate', { href, text: button.textContent.trim() });
+  if (href.startsWith('ftp:')) {
+    console.warn('Схема ftp: браузер её не открывает');
+  } else {
+    console.log('Переход отменён:', href);
+  }
+});
+```
+:::
+
+Журнал включается параметрами примера:
+
+~~~markdown
+:::example {label="Ссылки" log=click log_console=true}
+```html
+…
+```
+```javascript
+docara.example.log('navigate', { href, text });
+console.log('Переход отменён:', href);
+```
+:::
+~~~
+
+- `log` — имена событий через пробел, например `log="click sf-button-press"`.
+  Docara слушает их на корне примера раньше самого примера, поэтому в журнал
+  попадают и события, которые пример останавливает. Строка показывает время,
+  имя события и короткие данные: до четырёх полей `event.detail`, длинные
+  значения обрезаются многоточием. У события без своих данных, такого как
+  `click`, вместо данных — элемент и его текст.
+- `log_console=true` добавляет вкладку «Консоль»: `console.log`,
+  `console.info`, `console.warn` и `console.error` примера и его
+  необработанные ошибки. Предупреждения и ошибки выделены цветом. Этот
+  параметр включает журнал и без `log`.
+- `log_open=false` — журнал открывается свёрнутым.
+- Своя строка из кода примера: `docara.example.log('submit', { plan: 'pro' })`
+  — имя и необязательные данные. Вызов доступен в коде любого примера с
+  журналом.
+
+Новые строки появляются сверху, счётчик на вкладке показывает, сколько их
+(хранятся последние 200). Кнопка с корзиной очищает открытую вкладку, стрелка
+сворачивает журнал. Журнал виден и в изолированной рамке, и во встроенном
+примере, и в проверке на разной ширине.
+
+Встроенный пример тоже может вести журнал — например, свёрнутый до первого
+взгляда:
+
+:::example {label="Встроенный пример" log=click log_open=false}
+```html
+<button type="button" class="sf-button sf-button--outline sf-button--primary sf-button--size-1 inline-flex items-center"><span class="sf-button-text-container">Нажмите</span></button>
+```
+:::
+
+Встроенный пример не запускает своих скриптов: скрипт переводит пример в
+изолированную рамку. Поэтому вкладка «Консоль» у встроенного примера
+показывает консоль всей страницы, а не только примера. В проверке на разной
+ширине встроенный пример открывается в рамке, и там журнал получает консоль
+самого примера.
+
+Неверное или повторённое имя события и больше 16 имён останавливают сборку
+с ошибкой `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID`; `log_open` без
+`log` и `log_console=true` — с ошибкой `MARKDOWN_EXAMPLE_LOG_REQUIRED`.
+Подписи журнала берутся из `lang.json` (строки `examples.log_*`).
+
 ### Общий пример из проекта
 
 Если пример нужен на нескольких страницах или во всех языках, храните его
@@ -118,7 +206,8 @@ Docara показывает только существующие вкладки
 - В статье страница показывается как экран компьютера шириной 1280 px,
   уменьшенный под ширину колонки. Кнопка проверки ширины открывает её на весь
   экран в настоящую ширину компьютера, планшета или телефона.
-- `id` и `preview` с `src` не сочетаются.
+- `id`, `preview` и журнал (`log`, `log_console`, `log_open`) с `src`
+  не сочетаются: показанная страница живёт своей жизнью.
 
 Готовый образец — [Шапка с кнопкой действия](/ru/examples/region-header/).
 
@@ -287,6 +376,9 @@ Docara показывает только существующие вкладки
 - Рамка результата называется подписью `label`: задавайте понятную подпись.
 - Режим проверки ширины — диалог: фокус остаётся в нём, Escape закрывает его
   и возвращает фокус на кнопку.
+- Журнал примера — область с подписью «Журнал примера». Его вкладки
+  переключаются стрелками, строки объявляются программой экранного доступа
+  как журнал, а кнопка сворачивания сообщает, развёрнут ли он.
 
 ## Параметры
 
@@ -302,6 +394,9 @@ Docara показывает только существующие вкладки
 | `wrap` | `true`, `false` | — | Кнопка переноса длинных строк в исходном коде. |
 | `sources` | `true`, `false` | `true` | Вкладки с исходным кодом; `false` показывает только результат. |
 | `layout` | `column`, `wide` | `column` | Ширина примера: `column` — по колонке текста, `wide` — от края до края окна на лендинге. |
+| `log` | строка | — | Журнал примера: имена событий через пробел, которые записываются с корня примера, например `"click sf-button-press"`. |
+| `log_console` | `true`, `false` | `false` | Вкладка «Консоль» в журнале: `console.log`, `info`, `warn` и `error` примера. Включает журнал и без `log`. |
+| `log_open` | `true`, `false` | `true` | Открыт ли журнал сразу; `false` — журнал открывается свёрнутым. |
 
 <!-- docara:component-parameters:end -->
 

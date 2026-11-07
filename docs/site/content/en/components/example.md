@@ -61,6 +61,95 @@ document.querySelector('.example-button').addEventListener('click', () => {
 ```
 :::
 
+### Example log
+
+An example can show a log under it: the events that happen in the example
+and its console. The reader presses the buttons and sees at once what the
+example reports, without developer tools. The log is part of the example's
+frame, not of its content; by default there is none.
+
+:::example {label="Links" log=click log_console=true}
+```html
+<div class="links">
+  <button type="button" class="sf-button sf-button--default sf-button--primary sf-button--size-1 inline-flex items-center" data-href="/en/start/"><span class="sf-button-text-container">Guide</span></button>
+  <button type="button" class="sf-button sf-button--outline sf-button--primary sf-button--size-1 inline-flex items-center" data-href="#parameters"><span class="sf-button-text-container">Reference</span></button>
+  <button type="button" class="sf-button sf-button--tonal sf-button--primary sf-button--size-1 inline-flex items-center" data-href="mailto:team@example.com"><span class="sf-button-text-container">Write to us</span></button>
+  <button type="button" class="sf-button sf-button--link sf-button--primary sf-button--size-1 inline-flex items-center" data-href="ftp://example.com"><span class="sf-button-text-container">Not a link</span></button>
+</div>
+```
+```css
+.links { display: flex; flex-wrap: wrap; gap: .75rem; }
+```
+```javascript
+document.querySelector('.links').addEventListener('click', (event) => {
+  const button = event.target.closest('[data-href]');
+  if (!button) return;
+  const href = button.dataset.href;
+  docara.example.log('navigate', { href, text: button.textContent.trim() });
+  if (href.startsWith('ftp:')) {
+    console.warn('The browser does not open the ftp: scheme');
+  } else {
+    console.log('Navigation cancelled:', href);
+  }
+});
+```
+:::
+
+The log is turned on with the example's parameters:
+
+~~~markdown
+:::example {label="Links" log=click log_console=true}
+```html
+…
+```
+```javascript
+docara.example.log('navigate', { href, text });
+console.log('Navigation cancelled:', href);
+```
+:::
+~~~
+
+- `log` lists event names separated by spaces, for example
+  `log="click sf-button-press"`. Docara listens for them on the example's
+  root before the example does, so the log also gets events the example
+  stops. A row shows the time, the event name and short data: up to four
+  fields of `event.detail`, long values cut with an ellipsis. For an event
+  without data of its own, such as `click`, the row shows the element and
+  its text instead.
+- `log_console=true` adds the "Console" tab: the example's `console.log`,
+  `console.info`, `console.warn` and `console.error` and its uncaught
+  errors. Warnings and errors are coloured. This parameter turns the log on
+  even without `log`.
+- `log_open=false` opens the log collapsed.
+- A line of the example's own from its code:
+  `docara.example.log('submit', { plan: 'pro' })` — a name and optional
+  data. The call is available in the code of any example with a log.
+
+New rows appear at the top, and the counter on a tab shows how many there
+are (the last 200 are kept). The trash button clears the open tab, the arrow
+collapses the log. The log works in an isolated frame, in an inline example
+and in the check at different widths.
+
+An inline example can keep a log too — for example, collapsed until the
+reader looks:
+
+:::example {label="Inline example" log=click log_open=false}
+```html
+<button type="button" class="sf-button sf-button--outline sf-button--primary sf-button--size-1 inline-flex items-center"><span class="sf-button-text-container">Press</span></button>
+```
+:::
+
+An inline example runs no scripts of its own: a script moves the example
+into an isolated frame. That is why the "Console" tab of an inline example
+shows the console of the whole page, not only of the example. In the check
+at different widths an inline example opens in a frame, and there the log
+gets the console of the example itself.
+
+An invalid or repeated event name, or more than 16 names, stops the build
+with `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID`; `log_open` without
+`log` and `log_console=true` stops it with `MARKDOWN_EXAMPLE_LOG_REQUIRED`.
+The log's captions come from `lang.json` (the `examples.log_*` strings).
+
 ### Shared example from the project
 
 If an example is needed on several pages or in all languages, keep it once
@@ -120,7 +209,8 @@ address in `src`, and inside the block list the files it is built from. Each
 - In the article the page is shown as a 1280 px desktop screen, scaled down
   to the column width. The width check button opens it full screen at the
   real width of a desktop, tablet or phone.
-- `id` and `preview` do not combine with `src`.
+- `id`, `preview` and the log (`log`, `log_console`, `log_open`) do
+  not combine with `src`: the page shown lives a life of its own.
 
 A ready sample is [Header with an action button](/en/examples/region-header/).
 
@@ -291,6 +381,9 @@ surrounding documentation.
 - The result frame is named by the `label` caption: give a clear caption.
 - The width check mode is a dialog: focus stays inside it, Escape closes it
   and returns focus to the button.
+- The example log is a region captioned "Example log". Its tabs switch with
+  the arrow keys, a screen reader announces its rows as a log, and the
+  collapse button tells whether the log is expanded.
 
 ## Parameters
 
@@ -306,6 +399,9 @@ surrounding documentation.
 | `wrap` | `true`, `false` | — | The button for wrapping long lines in the source code. |
 | `sources` | `true`, `false` | `true` | The source code tabs; `false` shows only the result. |
 | `layout` | `column`, `wide` | `column` | The example's width: `column` follows the text column, `wide` spans the window edge to edge on a landing page. |
+| `log` | string | — | The example log: event names separated by spaces that are recorded from the example's root, for example `"click sf-button-press"`. |
+| `log_console` | `true`, `false` | `false` | The "Console" tab in the log: the example's `console.log`, `info`, `warn` and `error`. Turns the log on even without `log`. |
+| `log_open` | `true`, `false` | `true` | Whether the log opens expanded; `false` opens it collapsed. |
 
 <!-- docara:component-parameters:end -->
 

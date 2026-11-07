@@ -309,9 +309,14 @@
     }
   }
   function positionExampleIndicator(example,animate){
-    var selected=example.querySelector('[data-docara-example-tab][aria-selected="true"]');
-    var indicator=example.querySelector('.docara-example-preview__indicator');
-    var header=example.querySelector('.docara-example-preview__header');
+    positionTabIndicator(
+      example.querySelector('[data-docara-example-tab][aria-selected="true"]'),
+      example.querySelector('.docara-example-preview__indicator'),
+      example.querySelector('.docara-example-preview__header'),
+      animate
+    );
+  }
+  function positionTabIndicator(selected,indicator,header,animate){
     if(!selected||!indicator||!header)return;
     if(animate===false){indicator.style.transition='none'}
     var tabRect=selected.getBoundingClientRect();
@@ -916,6 +921,198 @@
   window.addEventListener('resize',function(){
     docaraExamples.forEach(function(example){positionExampleIndicator(example,false)});
   },{passive:true});
+  /* An example log (:::example {log="…"}) is a section of the example's frame under its panels: tabs for the example's events and, with log_console=true, its console, newest row first. An inline example is part of the page, so the shell listens on its root here; a framed example's runtime records the rows in its own document and posts them as docara:example-log messages, which count only from one of the page's example frames. */
+  (function(){
+    var exampleLogs=[];
+    function logCut(text,limit){text=String(text);return text.length>limit?text.slice(0,limit-1)+'…':text}
+    function logValue(item){
+      if(item===null)return 'null';
+      var type=typeof item;
+      if(type==='string')return '"'+logCut(item,40)+'"';
+      if(type==='number'||type==='boolean'||type==='bigint'||type==='undefined')return String(item);
+      if(type==='function')return 'ƒ';
+      if(item&&item.nodeType===1)return '<'+String(item.tagName).toLowerCase()+'>';
+      if(Array.isArray(item))return '['+item.length+']';
+      return '{…}';
+    }
+    /* A short detail: up to four keys of an object, each long value cut with an ellipsis. */
+    function logDetail(item){
+      if(item===undefined||item===null||item==='')return '';
+      if(typeof item!=='object'||item.nodeType===1)return logValue(item);
+      if(item instanceof Error)return logCut((item.name||'Error')+': '+item.message,120);
+      if(Array.isArray(item))return '['+item.slice(0,4).map(logValue).join(', ')+(item.length>4?', …':'')+']';
+      var keys=Object.keys(item);
+      return '{'+keys.slice(0,4).map(function(key){return key+': '+logValue(item[key])}).join(', ')+(keys.length>4?', …':'')+'}';
+    }
+    /* A custom event shows its detail; any other event names the control it happened on and its text. */
+    function logEventDetail(event){
+      if(event.detail!==null&&typeof event.detail==='object')return logDetail(event.detail);
+      if(typeof CustomEvent==='function'&&event instanceof CustomEvent)return logDetail(event.detail);
+      var target=event.target;
+      if(!target||target.nodeType!==1)return '';
+      /* The control the reader used, not the text inside it. */
+      target=target.closest('a,button,input,select,textarea,summary,label,[role],[tabindex]')||target;
+      var text=(target.textContent||'').trim().replace(/\s+/g,' ');
+      return '<'+String(target.tagName).toLowerCase()+'>'+(text?' '+logCut(text,40):'');
+    }
+    function logTime(){
+      var now=new Date();
+      return [now.getHours(),now.getMinutes(),now.getSeconds()].map(function(part){return part<10?'0'+part:String(part)}).join(':');
+    }
+    function logText(id,fallback){var value=message(id);return value===id?fallback:value}
+    function logFor(element){
+      var example=element&&element.nodeType===1?element.closest('[data-docara-example]'):null;
+      return exampleLogs.find(function(entry){return entry.example===example})||null;
+    }
+    docaraExamples.forEach(function(example){
+      var section=Array.from(example.querySelectorAll('[data-docara-example-log]')).find(function(candidate){return candidate.closest('[data-docara-example]')===example});
+      if(!section)return;
+      var head=section.querySelector('.docara-example-log__head');
+      var indicator=section.querySelector('.docara-example-log__indicator');
+      var tabs=Array.from(section.querySelectorAll('[data-docara-example-log-tab]'));
+      var panels=section.querySelector('.docara-example-log__panels');
+      var clearButton=section.querySelector('[data-docara-example-log-clear]');
+      var toggleButton=section.querySelector('[data-docara-example-log-toggle]');
+      var tablist=section.querySelector('[role="tablist"]');
+      if(!tabs.length||!panels||!clearButton||!toggleButton)return;
+      function panelOf(key){return section.querySelector('[data-docara-example-log-panel="'+key+'"]')}
+      function selectedTab(){return tabs.find(function(tab){return tab.getAttribute('aria-selected')==='true'})||tabs[0]}
+      function placeIndicator(animate){positionTabIndicator(selectedTab(),indicator,head,animate)}
+      var title=logText('examples.log_title','Example log');
+      section.setAttribute('aria-label',title);
+      if(tablist)tablist.setAttribute('aria-label',title);
+      var clearLabel=logText('examples.log_clear','Clear the log');
+      clearButton.setAttribute('aria-label',clearLabel);
+      clearButton.title=clearLabel;
+      tabs.forEach(function(tab){
+        var key=tab.dataset.docaraExampleLogTab;
+        var label=tab.querySelector('[data-docara-example-log-label]');
+        if(label)label.textContent=logText('examples.log_'+key,label.textContent);
+        var panel=panelOf(key),empty=panel&&panel.querySelector('[data-docara-example-log-empty]');
+        if(empty)empty.textContent=logText('examples.log_'+key+'_empty',empty.textContent);
+      });
+      function isCollapsed(){return section.dataset.docaraExampleLogState==='collapsed'}
+      function setCollapsed(collapsed){
+        section.dataset.docaraExampleLogState=collapsed?'collapsed':'expanded';
+        panels.hidden=collapsed;
+        var label=collapsed?logText('examples.log_expand','Expand the log'):logText('examples.log_collapse','Collapse the log');
+        toggleButton.setAttribute('aria-expanded',collapsed?'false':'true');
+        toggleButton.setAttribute('aria-label',label);
+        toggleButton.title=label;
+        var icon=toggleButton.querySelector('sf-icon');
+        if(icon)icon.setAttribute('icon',collapsed?(toggleButton.dataset.expandIcon||'expand_more'):(toggleButton.dataset.collapseIcon||'expand_less'));
+      }
+      function selectTab(tab,moveFocus){
+        tabs.forEach(function(candidate){
+          var selected=candidate===tab,panel=panelOf(candidate.dataset.docaraExampleLogTab);
+          candidate.setAttribute('aria-selected',selected?'true':'false');
+          candidate.tabIndex=selected?0:-1;
+          if(panel)panel.hidden=!selected;
+        });
+        placeIndicator(true);
+        if(moveFocus)tab.focus();
+      }
+      function updateCount(key){
+        var tab=tabs.find(function(candidate){return candidate.dataset.docaraExampleLogTab===key});
+        var count=tab&&tab.querySelector('[data-docara-example-log-count]'),panel=panelOf(key);
+        if(count&&panel)count.textContent=String(panel.querySelectorAll('.docara-example-log__row').length);
+      }
+      function write(key,level,name,detail){
+        var panel=panelOf(key),rows=panel&&panel.querySelector('[role="log"]');
+        if(!rows)return;
+        var empty=panel.querySelector('[data-docara-example-log-empty]');
+        if(empty)empty.hidden=true;
+        var row=document.createElement('div');
+        row.className='docara-example-log__row';
+        if(level)row.dataset.level=level;
+        [['time',logTime()],['name',name],['detail',detail]].forEach(function(part){
+          var cell=document.createElement('span');
+          cell.className='docara-example-log__'+part[0];
+          cell.textContent=part[1];
+          row.appendChild(cell);
+        });
+        rows.insertBefore(row,rows.querySelector('.docara-example-log__row'));
+        var all=rows.querySelectorAll('.docara-example-log__row');
+        if(all.length>200)all[all.length-1].remove();
+        updateCount(key);
+      }
+      tabs.forEach(function(tab,index){
+        tab.addEventListener('click',function(){selectTab(tab,false);if(isCollapsed())setCollapsed(false)});
+        tab.addEventListener('keydown',function(event){
+          var next=index;
+          if(event.key==='ArrowRight'){next=(index+1)%tabs.length}
+          else if(event.key==='ArrowLeft'){next=(index-1+tabs.length)%tabs.length}
+          else if(event.key==='Home'){next=0}
+          else if(event.key==='End'){next=tabs.length-1}
+          else{return}
+          event.preventDefault();selectTab(tabs[next],true);
+        });
+      });
+      clearButton.addEventListener('click',function(){
+        var key=selectedTab().dataset.docaraExampleLogTab,panel=panelOf(key);
+        if(!panel)return;
+        panel.querySelectorAll('.docara-example-log__row').forEach(function(row){row.remove()});
+        var empty=panel.querySelector('[data-docara-example-log-empty]');
+        if(empty)empty.hidden=false;
+        updateCount(key);
+      });
+      toggleButton.addEventListener('click',function(){setCollapsed(!isCollapsed())});
+      setCollapsed(isCollapsed());
+      var events=(section.dataset.docaraExampleLogEvents||'').split(/\s+/).filter(Boolean);
+      var root=Array.from(example.querySelectorAll('[data-docara-example-inline-preview]')).find(function(candidate){return candidate.closest('[data-docara-example]')===example})||null;
+      if(root){
+        events.forEach(function(name){
+          root.addEventListener(name,function(event){write('events','',event.type,logEventDetail(event))},true);
+        });
+      }
+      exampleLogs.push({example:example,write:write,place:placeIndicator,inline:Boolean(root),console:section.dataset.docaraExampleLogConsole==='true'});
+      placeIndicator(false);
+    });
+    if(!exampleLogs.length)return;
+    if(document.fonts&&document.fonts.ready){
+      document.fonts.ready.then(function(){exampleLogs.forEach(function(entry){entry.place(false)})});
+    }
+    window.addEventListener('resize',function(){exampleLogs.forEach(function(entry){entry.place(false)})},{passive:true});
+    window.addEventListener('message',function(event){
+      var data=event.data;
+      if(!data||data.type!=='docara:example-log')return;
+      var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
+      var entry=frame?logFor(frame):null;
+      if(!entry||(data.tab!=='events'&&!(data.tab==='console'&&entry.console)))return;
+      if(['','log','info','warn','error'].indexOf(data.level)===-1||typeof data.name!=='string'||data.name===''||typeof data.detail!=='string')return;
+      entry.write(data.tab,data.level,logCut(data.name,80),logCut(data.detail,300));
+    });
+    /* docara.example.log(name, detail) writes the example's own line. In a frame the frame's runtime defines it. On the page the line goes to the example that holds the given element or the running script, else the example the reader last touched, else the only example with a log. */
+    var lastLog=null;
+    ['pointerdown','focusin','keydown'].forEach(function(type){
+      document.addEventListener(type,function(event){var entry=logFor(event.target);if(entry)lastLog=entry},true);
+    });
+    var api=window.docara&&typeof window.docara==='object'?window.docara:(window.docara={});
+    api.example=api.example&&typeof api.example==='object'?api.example:{};
+    api.example.log=function(name,detail,target){
+      var entry=logFor(target)||logFor(document.currentScript)||lastLog||(exampleLogs.length===1?exampleLogs[0]:null);
+      if(entry)entry.write('events','',logCut(String(name),80),logDetail(detail));
+    };
+    /* An inline example runs no script of its own (a script sends it to a frame), so the page's console cannot be split by example: the Console tab of an inline example shows the page's console.log, info, warn and error while the page is open. The wrapper is installed only when such an example asks for it, and a call made by a script inside an example goes to that example alone. */
+    var consoleLogs=exampleLogs.filter(function(entry){return entry.inline&&entry.console});
+    if(!consoleLogs.length)return;
+    var writingConsole=false;
+    ['log','info','warn','error'].forEach(function(level){
+      var original=console[level];
+      if(typeof original!=='function')return;
+      console[level]=function(){
+        var result=original.apply(console,arguments);
+        if(writingConsole)return result;
+        writingConsole=true;
+        try{
+          var text=logCut(Array.prototype.map.call(arguments,function(item){return typeof item==='string'?item:logDetail(item)}).join(' '),300);
+          var own=logFor(document.currentScript);
+          (own&&own.inline&&own.console?[own]:consoleLogs).forEach(function(entry){entry.write('console',level,level,text)});
+        }finally{writingConsole=false}
+        return result;
+      };
+    });
+  })();
   // Reading layout: hide the outline rail and the reading (focus) mode. The
   // preferences boot script restores both as root attributes before first
   // paint; this binds the toolbar buttons, keeps aria-pressed in sync and

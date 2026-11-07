@@ -91,7 +91,15 @@
         "viewport_group": "Preview width",
         "viewport_desktop": "Desktop",
         "viewport_tablet": "Tablet",
-        "viewport_mobile": "Mobile"
+        "viewport_mobile": "Mobile",
+        "log_title": "Example log",
+        "log_events": "Events",
+        "log_console": "Console",
+        "log_clear": "Clear the log",
+        "log_collapse": "Collapse the log",
+        "log_expand": "Expand the log",
+        "log_events_empty": "The example's events appear here",
+        "log_console_empty": "The console is empty"
     },
     "common": {
         "continue": "Continue",

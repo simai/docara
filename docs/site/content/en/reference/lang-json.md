@@ -165,6 +165,14 @@ If a string is missing from `lang.json`, Docara takes the built-in text: Russian
 | `examples.viewport_desktop` — The "desktop" width option | Desktop | Десктоп |
 | `examples.viewport_tablet` — The "tablet" width option | Tablet | Планшет |
 | `examples.viewport_mobile` — The "phone" width option | Mobile | Телефон |
+| `examples.log_title` — The label of the log under an example | Example log | Журнал примера |
+| `examples.log_events` — The events tab of the example log | Events | События |
+| `examples.log_console` — The console tab of the example log | Console | Консоль |
+| `examples.log_clear` — The button that clears the example log | Clear the log | Очистить журнал |
+| `examples.log_collapse` — The button that collapses the example log | Collapse the log | Свернуть журнал |
+| `examples.log_expand` — The button that expands the example log | Expand the log | Развернуть журнал |
+| `examples.log_events_empty` — The text of an empty events tab | The example's events appear here | Здесь появятся события примера |
+| `examples.log_console_empty` — The text of an empty console tab | The console is empty | Консоль пуста |
 | `reader.font_size_title` — The name of the font size setting | Font size | Размер шрифта |
 | `reader.font_size_description` — The explanation of the font size setting | Changes the size of the whole documentation interface. | Меняет размер всего интерфейса документации. |
 | `reader.font_size_small` — The small font option | Small | Мелкий |

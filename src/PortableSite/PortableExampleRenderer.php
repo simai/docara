@@ -26,6 +26,7 @@ final class PortableExampleRenderer
         bool $defaultLabel = false,
         bool $responsive = false,
         bool $wide = false,
+        ?ExampleLog $log = null,
     ): string {
         $safeId = preg_replace('/[^a-z0-9_-]+/i', '-', $id) ?: 'example';
         $previewTabId = $safeId . '-tab-example';
@@ -107,7 +108,65 @@ final class PortableExampleRenderer
             . ' class="docara-example-preview__copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
             . '<sf-icon icon="content_copy" aria-hidden="true"></sf-icon>'
             . '</button></div><span class="docara-example-preview__indicator" aria-hidden="true"></span></div>'
-            . '<div class="docara-example-preview__panels">' . implode('', $panels) . '</div></section>';
+            . '<div class="docara-example-preview__panels">' . implode('', $panels) . '</div>'
+            . ($log === null ? '' : $this->log($safeId, $log))
+            . '</section>';
+    }
+
+    /**
+     * The example log is part of the example's frame, not of its content: a
+     * bottom section under a line whose head repeats the top tab bar (the
+     * same tab classes and an indicator on the line). The texts are the
+     * English defaults; the shell replaces them with the page's language
+     * from lang.json (examples.log_*) and writes the rows.
+     */
+    private function log(string $id, ExampleLog $log): string
+    {
+        $tabs = ['events' => 'Events'];
+        if ($log->console) {
+            $tabs['console'] = 'Console';
+        }
+        $empty = [
+            'events' => 'The example\'s events appear here',
+            'console' => 'The console is empty',
+        ];
+        $panelsId = $id . '-log-panels';
+        $buttons = '';
+        $panels = '';
+        foreach (array_keys($tabs) as $index => $key) {
+            $tabId = $id . '-log-tab-' . $key;
+            $panelId = $id . '-log-panel-' . $key;
+            $selected = $index === 0;
+            $buttons .= '<button type="button" role="tab" id="' . $tabId . '" aria-controls="' . $panelId
+                . '" aria-selected="' . ($selected ? 'true' : 'false') . '" tabindex="' . ($selected ? '0' : '-1')
+                . '" data-docara-example-log-tab="' . $key . '" class="docara-example-preview__tab docara-example-log__tab">'
+                . '<span data-docara-example-log-label>' . $tabs[$key] . '</span>'
+                . '<span data-docara-example-log-count class="docara-example-log__count">0</span></button>';
+            $panels .= '<div role="tabpanel" id="' . $panelId . '" aria-labelledby="' . $tabId . '" tabindex="0"'
+                . ' data-docara-example-log-panel="' . $key . '"' . ($selected ? '' : ' hidden')
+                . ' class="docara-example-log__panel">'
+                . '<p data-docara-example-log-empty class="docara-example-log__empty">' . $this->escape($empty[$key]) . '</p>'
+                . '<div role="log" class="docara-example-log__rows"></div></div>';
+        }
+        $button = ' class="docara-example-preview__action docara-example-log__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0"';
+
+        return '<section data-docara-example-log data-docara-example-log-events="' . $this->escape(implode(' ', $log->events))
+            . '" data-docara-example-log-console="' . ($log->console ? 'true' : 'false')
+            . '" data-docara-example-log-state="' . ($log->collapsed ? 'collapsed' : 'expanded')
+            . '" aria-label="Example log" class="docara-example-log">'
+            . '<div class="docara-example-log__head">'
+            . '<div role="tablist" aria-label="Example log" class="docara-example-preview__tabs docara-example-log__tabs">' . $buttons . '</div>'
+            . '<div class="docara-example-log__actions">'
+            . '<button type="button" data-docara-example-log-clear aria-label="Clear the log" title="Clear the log"' . $button . '>'
+            . '<sf-icon icon="delete" aria-hidden="true"></sf-icon></button>'
+            . '<button type="button" data-docara-example-log-toggle aria-controls="' . $panelsId . '" aria-expanded="'
+            . ($log->collapsed ? 'false' : 'true') . '" aria-label="' . ($log->collapsed ? 'Expand the log' : 'Collapse the log')
+            . '" title="' . ($log->collapsed ? 'Expand the log' : 'Collapse the log') . '"'
+            . ' data-collapse-icon="expand_less" data-expand-icon="expand_more"' . $button . '>'
+            . '<sf-icon icon="' . ($log->collapsed ? 'expand_more' : 'expand_less') . '" aria-hidden="true"></sf-icon></button>'
+            . '</div><span class="docara-example-log__indicator" aria-hidden="true"></span></div>'
+            . '<div id="' . $panelsId . '"' . ($log->collapsed ? ' hidden' : '') . ' class="docara-example-log__panels">' . $panels . '</div>'
+            . '</section>';
     }
 
     private function escape(string $value): string

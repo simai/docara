@@ -85,6 +85,102 @@
             "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
         },
         {
+            "key": "examples.log_clear",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/examples/log_clear",
+            "source_sha256": "fafd0c22168cae1147239c05dfd928c62aac30ec10644a8ddbebcaf908cfd396",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/examples/log_clear",
+            "target_sha256": "eba123dd0e53c741d19b70e9ec829c596f08670b83f21758411063d23946cacb",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "examples.log_collapse",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/examples/log_collapse",
+            "source_sha256": "435348c535e42d5e1f8c6e8b17ce42b48bfbbe5c3ad1b979daf19dc56171f1fa",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/examples/log_collapse",
+            "target_sha256": "77eeedc299931fd05bd5ba1c90cf066ff78060193eb7be6774875400622add4b",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "examples.log_console",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/examples/log_console",
+            "source_sha256": "a58f47dbc474014560f7698af4a65c3137fc2c236d1e9fb73ba6137daa126f4b",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/examples/log_console",
+            "target_sha256": "29a40861bafe31e774190c795fc6fe4b8c012fea4707010f4102e52d74eafa15",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "examples.log_console_empty",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/examples/log_console_empty",
+            "source_sha256": "14dcbd58c41efcaa4a48e859e07a82bbb0ab8afab57c935f91bb71362279e646",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/examples/log_console_empty",
+            "target_sha256": "c33553c4f061a82e899a34c59aae5de9999a94f36dfe06ddda74de2a795b767c",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "examples.log_events",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/examples/log_events",
+            "source_sha256": "210d9860bdff421167d4397da354093962626ddf6129b6550875cfbfa911587d",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/examples/log_events",
+            "target_sha256": "8d14f6e72de8f18ab1ee5c5330f00653c0c3ce099e63024454f80af97e72d333",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "examples.log_events_empty",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/examples/log_events_empty",
+            "source_sha256": "91fe1ca433b6421b997fab19a340901f775e3361589114665a35f59ac917075d",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/examples/log_events_empty",
+            "target_sha256": "9a8fdb842a8674724cc8beea9fe0293cc711813c5714e240f2ae61c74b2aef10",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "examples.log_expand",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/examples/log_expand",
+            "source_sha256": "3caa22cf1cac7539cd7cdfb332f494af01d2492ee01db1e84f0ef1056464f30b",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/examples/log_expand",
+            "target_sha256": "fe1e53e945426677a59ac3dddef854b96b1e58395661977cda4442960ae72592",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "examples.log_title",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/examples/log_title",
+            "source_sha256": "c084a46c644cf45ddefde07b52316a83997b6c51583f08e039da3c7a1d2ed6d9",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/examples/log_title",
+            "target_sha256": "d9c9d03b2413b455e444ec4a9ef4f718cab3be619c02c016145fce3b22447fd5",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
             "key": "examples.viewer",
             "kind": "lang",
             "locale": "en",
@@ -1350,11 +1446,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/example.md",
-            "source_sha256": "673352977cc86581d14fcaf14546e014bcec5281a7432e44fa135559393069bf",
-            "source_structure_sha256": "5024f162dbc12535e3894d01e7156886f44668f050c00283c2d9493428b43189",
+            "source_sha256": "c9dea331724072e943269d9f200adffe1f682bd978b47a3702f93e0100e980bf",
+            "source_structure_sha256": "b64f3e6ee7b6f55a91a25442fa7562f3a4699ffd9adf89a64db99563a4a9c934",
             "target_path": "content/en/components/example.md",
-            "target_sha256": "7f412af4c46c2c51932f8bf4c1557f870a37face43d73c0bbc88c20b0f4979cf",
-            "target_structure_sha256": "5024f162dbc12535e3894d01e7156886f44668f050c00283c2d9493428b43189"
+            "target_sha256": "adf4ddf87fccc06818ff894f16beb52de40dea6cea65869fb9067817f4d6f3cb",
+            "target_structure_sha256": "b64f3e6ee7b6f55a91a25442fa7562f3a4699ffd9adf89a64db99563a4a9c934"
         },
         {
             "key": "components/figure.md",
@@ -2082,11 +2178,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/content.md",
-            "source_sha256": "de5f0a6a217032a27fb43925836c51c48ec026f56b01eb3e0f765ea3d1e1210a",
-            "source_structure_sha256": "83d015048f5c4ea8101bba01fc0b21c9654058d394aa164c0d7ebd07f980b304",
+            "source_sha256": "d10eb36fe4634998e582fda7b0ba99ed8b952be549e76dda2113aecb1851aa50",
+            "source_structure_sha256": "73c0fa425ce8981a3a45eef06e0a47c85c600c2fbd021f87a5b819e232cc5714",
             "target_path": "content/en/reference/errors/content.md",
-            "target_sha256": "2c59089c14a6b6b88160f874322c15e89dd57a937c88bd684985d484e1a4adf7",
-            "target_structure_sha256": "83d015048f5c4ea8101bba01fc0b21c9654058d394aa164c0d7ebd07f980b304"
+            "target_sha256": "4434ba6fea89e72eac2c0dd9808d130adec436dde0b43f1676b1189f51a90ed3",
+            "target_structure_sha256": "73c0fa425ce8981a3a45eef06e0a47c85c600c2fbd021f87a5b819e232cc5714"
         },
         {
             "key": "reference/errors/developer.md",
@@ -2214,11 +2310,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/lang-json.md",
-            "source_sha256": "4b01bb9c966375148681c8de745c48cd077596a1189b1b69ca0233002d1c9a48",
-            "source_structure_sha256": "b56e8a5e98752f375c4934afa6476e5b4affb7890ecf861298b2f6b75fc71de3",
+            "source_sha256": "280d2af146abd14bb22e57be8186d0942466dd3a83ce0237886b5b1d3fd44721",
+            "source_structure_sha256": "6d2944237a0687caf8b48062d5fb5def16ecfe4bfc176c49f288197391bc3423",
             "target_path": "content/en/reference/lang-json.md",
-            "target_sha256": "4becd8fed11a120c1024f8e1b189d5347136342e3bd61ca2764c739979fd6fda",
-            "target_structure_sha256": "b56e8a5e98752f375c4934afa6476e5b4affb7890ecf861298b2f6b75fc71de3"
+            "target_sha256": "4fdec25b8701dbf0fa9072d3e8645313d11e95f38f2d7f56c96c1b805e1a76e5",
+            "target_structure_sha256": "6d2944237a0687caf8b48062d5fb5def16ecfe4bfc176c49f288197391bc3423"
         },
         {
             "key": "reference/schemas.md",

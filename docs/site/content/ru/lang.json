@@ -95,6 +95,14 @@
         "viewport_group": "Ширина примера",
         "viewport_desktop": "Десктоп",
         "viewport_tablet": "Планшет",
-        "viewport_mobile": "Телефон"
+        "viewport_mobile": "Телефон",
+        "log_title": "Журнал примера",
+        "log_events": "События",
+        "log_console": "Консоль",
+        "log_clear": "Очистить журнал",
+        "log_collapse": "Свернуть журнал",
+        "log_expand": "Развернуть журнал",
+        "log_events_empty": "Здесь появятся события примера",
+        "log_console_empty": "Консоль пуста"
     }
 }

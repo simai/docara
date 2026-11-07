@@ -478,8 +478,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // SIMAI Framework ui-2a671352d67b, whose new Smart components
         // (sf-alert-bar, sf-list, sf-language, sf-wizard and the rest) are
         // published for the Loader (22 files), and four more shell
-        // stylesheet groups: 3229.
-        self::assertCount(3229, $firstFiles);
+        // stylesheet groups: 3229. The example log, the prose separator and
+        // the sf-language picker's reserved place add four more shell
+        // stylesheet groups (66 in all): 3233.
+        self::assertCount(3233, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

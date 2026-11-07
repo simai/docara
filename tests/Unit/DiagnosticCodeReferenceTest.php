@@ -17,6 +17,7 @@ final class DiagnosticCodeReferenceTest extends TestCase
         'DOCARA_NODE_BINARY' => 'environment variable',
         'DOCARA_SIMAI_UI_ROOT' => 'environment variable',
         'SIMAI_UI_ROOT' => 'environment variable',
+        'SF_BOOT_CONFIG' => 'Framework loader setting written by the set starter',
     ];
 
     /**

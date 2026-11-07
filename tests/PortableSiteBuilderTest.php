@@ -459,7 +459,7 @@ MD);
         self::assertStringContainsString('position="right"', $russian);
         self::assertStringContainsString('<html lang="ar" dir="rtl"', $arabic);
         self::assertStringContainsString('position="left"', $arabic);
-        self::assertStringContainsString('aria-label="اللغة"', $arabic);
+        self::assertStringContainsString('<sf-language data-docara-language mode="menu" size="1" value="ar" label="اللغة"', $arabic);
         self::assertStringContainsString('>إعدادات القراءة</h2>', $arabic);
         self::assertStringContainsString('data-docara-smart="docara.navigation"', $arabic);
         self::assertStringContainsString('aria-label="الأقسام"', $arabic);

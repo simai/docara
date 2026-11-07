@@ -27,6 +27,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
         self::assertStringNotContainsString('<sf-icon icon="language"', $template);
         self::assertStringNotContainsString('data-docara-language-menu', $runtime);
         self::assertStringNotContainsString('.docara-language-menu', $css);
+        self::assertStringContainsString('.docara-header-tools>sf-language[data-docara-language]:not([data-look]){display:inline-block;inline-size:2.5rem;block-size:2.5rem}', $css);
         self::assertStringContainsString('[data-docara-block="features"]>li>.docara-icon{align-self:flex-start}', $css);
         self::assertStringContainsString("head.classList.add('docara-code-header')", $runtime);
         self::assertStringContainsString('title&&title.textContent!==languageLabel', $runtime);

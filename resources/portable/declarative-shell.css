@@ -8,6 +8,8 @@ body[data-docara-shell]{opacity:1!important}
 .docara-outline-mobile{display:none}
 /* The header is the Framework sf-header-site (PortableSiteHeader): the navigation fills the bar between the brand and the tools. */
 .docara-header-content{flex:1 1 auto}
+/* Until sf-language has drawn its trigger (it then sets data-look), it holds the place of one size-1 icon button, so the tools do not shift while its script loads. */
+.docara-header-tools>sf-language[data-docara-language]:not([data-look]){display:inline-block;inline-size:2.5rem;block-size:2.5rem}
 /* The language menu is positioned for its popup, so it would paint over the open panel and its scrim that come before it; they are lifted over the bar's own controls. */
 .docara-header .sf-site-header--open .sf-site-header-scrim,.docara-header .sf-site-header--open .sf-site-header-panel{z-index:1}
 /* The search field follows the Framework size-1 control height, which is smaller on phones, like the icon buttons beside it. */

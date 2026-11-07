@@ -260,18 +260,6 @@
     localizeBreadcrumbEllipsis();
     new MutationObserver(localizeBreadcrumbEllipsis).observe(breadcrumbs,{childList:true});
   });
-  document.querySelectorAll('[data-docara-language-menu]').forEach(function(menu){
-    var trigger=menu.querySelector('[data-docara-language-trigger]');
-    if(!trigger)return;
-    function closeMenu(focus){
-      menu.open=false;
-      trigger.setAttribute('aria-expanded','false');
-      if(focus)trigger.focus();
-    }
-    menu.addEventListener('toggle',function(){trigger.setAttribute('aria-expanded',menu.open?'true':'false')});
-    menu.addEventListener('keydown',function(event){if(event.key==='Escape'&&menu.open){event.preventDefault();closeMenu(true)}});
-    document.addEventListener('click',function(event){if(menu.open&&!menu.contains(event.target)){closeMenu(false)}});
-  });
   document.querySelectorAll('[data-docara-embed-load]').forEach(function(button){
     button.addEventListener('click',function(){
       var embed=button.closest('[data-docara-block="embed"]');

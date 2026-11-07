@@ -478,10 +478,8 @@ MD);
         ] as $alternate) {
             self::assertStringContainsString($alternate, $arabic);
         }
-        self::assertStringContainsString(
-            'data-docara-language-option href="/ar/" lang="ar" hreflang="ar" aria-current="page"',
-            $arabic,
-        );
+        self::assertStringContainsString('<sf-language data-docara-language mode="menu" size="1" value="ar"', $arabic);
+        self::assertStringContainsString('{"code":"ar","label":"العربية","href":"/ar/"}', $arabic);
 
         $search = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertSame(

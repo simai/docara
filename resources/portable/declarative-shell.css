@@ -14,12 +14,6 @@ body[data-docara-shell]{opacity:1!important}
 .docara-header{--docara-header-control-size:calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-default))}
 .docara-header .docara-brand--logo{--docara-brand-mark-size:var(--sf-c6)}
 .docara-search-trigger{--sf-button--border-color:var(--sf-outline-variant)}
-.docara-language-menu>summary{list-style:none}
-.docara-language-menu>summary::-webkit-details-marker{display:none}
-.docara-language-menu__popup{position:absolute;inset-block-start:calc(100% + var(--sf-space-1\/3));inset-inline-end:0;z-index:10;min-inline-size:var(--sf-f0);border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius--surface);background:var(--sf-surface-0);box-shadow:var(--sf-ui-shadow-2)}
-.docara-language-menu:not([open])>.docara-language-menu__popup{display:none}
-.docara-language-menu__option:hover{background:var(--sf-surface-container-hover)}
-.docara-language-menu__option:focus-visible{background:var(--sf-surface-container-active);outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);outline-offset:calc(var(--sf-focus--width) * -1)}
 /* The header row, docs layout, landing content and footer are all Framework containers: they take its side padding steps, so the logo, sidebar, content and footer start on one line at every width. */
 .docara-docs-layout{display:grid;grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}
 .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr) var(--sf-f2)}

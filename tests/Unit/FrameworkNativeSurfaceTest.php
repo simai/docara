@@ -20,14 +20,13 @@ final class FrameworkNativeSurfaceTest extends TestCase
         self::assertIsString($template);
         self::assertIsString($runtime);
         self::assertIsString($css);
-        self::assertStringContainsString('data-docara-language-menu', $template);
-        self::assertStringContainsString('data-docara-language-trigger', $template);
-        self::assertStringContainsString('<sf-icon icon="language"', $template);
-        self::assertStringContainsString('data-docara-language-option', $template);
-        self::assertStringContainsString('aria-current="page"', $template);
-        self::assertStringNotContainsString('<select data-docara-language-switcher', $template);
-        self::assertStringContainsString("event.key==='Escape'", $runtime);
-        self::assertStringContainsString('.docara-language-menu__popup{position:absolute', $css);
+        // The Framework's language picker replaces Docara's own globe menu.
+        self::assertStringContainsString('<sf-language data-docara-language mode="menu" size="1"', $template);
+        self::assertStringContainsString('<script type="application/json" data-sf-settings>', $template);
+        self::assertStringNotContainsString('data-docara-language-menu', $template);
+        self::assertStringNotContainsString('<sf-icon icon="language"', $template);
+        self::assertStringNotContainsString('data-docara-language-menu', $runtime);
+        self::assertStringNotContainsString('.docara-language-menu', $css);
         self::assertStringContainsString('[data-docara-block="features"]>li>.docara-icon{align-self:flex-start}', $css);
         self::assertStringContainsString("head.classList.add('docara-code-header')", $runtime);
         self::assertStringContainsString('title&&title.textContent!==languageLabel', $runtime);
@@ -39,7 +38,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
             $css,
         );
         self::assertStringContainsString(
-            '.docara-code-header,.docara-code-block>.sf--highlight-head,.docara-example-preview__header{position:relative;box-sizing:border-box;display:grid;',
+            '.docara-code-header,.docara-code-block>.sf--highlight-head,.docara-example-preview__header,.docara-example-log__head{position:relative;box-sizing:border-box;display:grid;',
             $css,
         );
         self::assertStringContainsString(

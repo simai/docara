@@ -822,7 +822,12 @@
       });
     });
     viewportButtons.forEach(function(button){
-      button.addEventListener('click',function(){setViewport(button.dataset.docaraExampleViewport,true)});
+      button.addEventListener('click',function(){
+        setViewport(button.dataset.docaraExampleViewport,true);
+        // Safari does not focus a button it clicks, so focus stayed on the
+        // width the viewer opened with and kept its ring beside the pressed one.
+        if(document.activeElement!==button){button.focus()}
+      });
     });
     document.addEventListener('docara:example-viewport-change',function(event){
       var viewport=event.detail&&event.detail.viewport;

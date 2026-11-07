@@ -6,6 +6,12 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- In the example viewer, choosing a width moves focus to that width's
+  button, so the width the viewer opened with no longer keeps its focus
+  ring beside the pressed one (Safari does not focus a clicked button).
+
 ## [3.13.0] - 2026-11-07
 
 ### Added

@@ -233,6 +233,8 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('syncSourceWrapIcon(wrapButton,active)', $shell);
         self::assertStringContainsString("block.dataset.docaraCodeWrapActive=active?'true':'false'", $shell);
         self::assertStringNotContainsString("window.matchMedia('not all and (min-width: 44rem)').matches", $shell);
+        self::assertStringContainsString("setViewport(button.dataset.docaraExampleViewport,true);\n        // Safari", $shell);
+        self::assertStringContainsString('if(document.activeElement!==button){button.focus()}', $shell);
         // A fence names its language in its language-* class only; the header keeps it.
         self::assertStringContainsString("/(?:^|\\s)language-([\\w+-]+)/.exec(code.className||'')", $shell);
         self::assertStringContainsString("||(title&&title.textContent.trim())||'Code'", $shell);

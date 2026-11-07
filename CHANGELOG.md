@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.12.0] - 2026-11-07
+
 ### Added
 
 - **Every example can be opened full screen.** An inline HTML example
@@ -73,9 +75,9 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
-- The Docara logo in the "Made with Docara" line is sized from the
-  text, so its lowercase letters match the words around it, and it sits
-  on their baseline.
+- The Docara logo in the "Made with Docara" line is 20 px (1.25rem)
+  tall, so its letters read the same size as the words around it, and it
+  sits on their baseline.
 - A hero with a background effect has the effect's plain surface, in the
   effect's theme, before the scene loads or when it is refused, so the
   background no longer jumps from the muted panel colour when the scene

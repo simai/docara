@@ -65,6 +65,7 @@ html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-sect
 /* The Framework sf-contents reads the covered top of the page from scroll-padding: under the sticky header, like the heading anchors. Its compact button sticks below the header. */
 html{scroll-padding-block-start:var(--docara-anchor-offset)}
 .docara-outline-mobile{--sf-contents-inset-block-start:var(--docara-header-block-size);--sf-contents-background:var(--sf-surface)}
+.docara-prose>.docara-outline-mobile{margin-block-end:var(--sf-space-1)}
 html[data-docara-focus-mode] body:has(>.docara-docs-layout){--docara-header-block-size:0px;--docara-anchor-offset:var(--sf-space-2)}
 .docara-content{color:var(--sf-on-surface);scroll-margin-block-start:var(--docara-anchor-offset)}
 [data-docara-region="main"]{container-type:inline-size}

@@ -753,6 +753,11 @@ MD;
             $html,
         );
         self::assertStringContainsString('data-docara-code-fallback', $html);
+        // The header sits on the block's own surface, so it needs no backdrop
+        // blur; a blur on every code header made the sticky header and outline
+        // blank out for a frame while the page scrolled.
+        self::assertStringContainsString('<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center">', $html);
+        self::assertStringNotContainsString('bg-surface-overlay', $html);
         self::assertStringContainsString('data-docara-code-actions', $html);
         self::assertStringContainsString('data-docara-code-wrap-toggle', $html);
         self::assertStringContainsString('data-docara-code-copy', $html);

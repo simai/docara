@@ -3613,7 +3613,7 @@ HTML;
         return '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="' . $this->escapeHtml($language)
             . '" data-docara-code-wrap="' . ($wrap ? 'true' : 'false') . '"' . $blockAttributes
             . ' class="source init sf-code-surface docara-code-block' . $blockClasses . ' min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-surface m-bottom-1">'
-            . '<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center bg-surface-overlay">'
+            . '<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center">'
             . '<span class="flex sf-text-1/3 weight-5">' . $this->escapeHtml($label) . '</span>'
             . '<div data-docara-code-actions class="docara-code-actions flex items-cross-center gap-1/3">'
             . ($wrap ? '<button type="button" data-docara-code-wrap-toggle hidden data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow" class="docara-code-wrap sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Wrap source lines" aria-pressed="false">'

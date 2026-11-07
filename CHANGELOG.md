@@ -6,6 +6,13 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- A code block's header no longer blurs what is behind it. It stands on
+  the block's own surface, so the blur changed nothing visible but made the
+  browser keep extra layers on pages with many code blocks, which can blank
+  the sticky header and outline for a frame while the page scrolls.
+
 ## [3.12.0] - 2026-11-07
 
 ### Added

@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.12.2] - 2026-11-07
+
 ### Fixed
 
 - A code block's header keeps its language (HTML, JavaScript) after the

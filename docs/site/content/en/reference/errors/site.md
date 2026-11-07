@@ -114,6 +114,31 @@ with `translation_tracking` turned on.
 | `TRANSLATION_GATE_REPORT_INVALID` | The `publish-current` mode is on without a translation report. **What to do:** Turn on `translation_tracking.enabled`. |
 | `TRANSLATION_DUPLICATE_KEY_BLOCKS_PUBLICATION` | Several pages of one language share a `translation_key`. **What to do:** Give each page its own key. |
 
+## Adding a language: `locale add`
+
+These codes come from the `docara locale add` command. On an error it writes
+nothing. How the command works is described in
+[Multilingual site](/en/authoring/multilingual-site/).
+
+| Code | Cause and what to do |
+| --- | --- |
+| `LOCALE_ACTION_INVALID` | An unknown action of the command. **What to do:** Use `docara locale add <code>`. |
+| `LOCALE_ADD_CODE_INVALID` | The code is not a BCP 47 tag with a two- or three-letter language, for example `english` or `en_US`. **What to do:** Give a code such as `en`, `de`, `pt-BR` or `zh-Hans`. |
+| `LOCALE_ADD_EXISTS` | The language is already in `locales`, also in another spelling (`EN` and `en`). **What to do:** Translate its pages; to make it the default, change `default_locale` by hand. |
+| `LOCALE_ADD_SITE_INVALID` | `docara.json` does not pass the check; the original error code is in the message. **What to do:** Fix the file until `docara validate project` passes, and run the command again. |
+| `LOCALE_ADD_PORTAL_SINGLE_LOCALE` | The site is built for a portal (`portal`), and such a build publishes one language. **What to do:** Make a separate site for the other language. |
+| `LOCALE_ADD_CONTENT_LAYOUT_UNSUPPORTED` | The pages of the default language lie directly in `content/`, not in a language folder, so a new folder has no place beside it. **What to do:** Move the pages to `content/<language>/`, for example `content/en/`, set that folder as the language's `content_root`, and run the command again. |
+| `LOCALE_ADD_CONTENT_ROOT_UNSAFE` | A file or a symbolic link is where the new language's folder or its `lang.json` should be. **What to do:** Replace it with an ordinary folder or delete it, and run the command again. |
+| `LOCALE_ADD_DIRECTION_INVALID` | `--direction` is not `ltr` or `rtl`. **What to do:** Give `--direction=ltr` or `--direction=rtl`. |
+| `LOCALE_ADD_ROUTE_COLLISION` | The unprefixed default language has a page whose address starts with the new language's prefix, for example `/en/`. **What to do:** Rename or move that page, and run the command again. |
+| `LOCALE_DEFAULT_HOME_MISSING` | With `--default`, the new language has no published home page: `content/<code>/index.md` is missing or a draft. **What to do:** Translate the home page first, or add the language without `--default`. |
+| `LOCALE_DEFAULT_REDIRECTS_INVALID` | The redirects file cannot be read as a `docara.redirects.v1` list, or it is not an ordinary file. **What to do:** Fix the file and run the command again. |
+| `LOCALE_DEFAULT_REDIRECT_CONFLICT` | An old page address already redirects to another page. **What to do:** Remove or correct the redirect named in the message, and run the command again. |
+| `LOCALE_ADD_CHANGED_DURING_WRITE` | Another program changed a file while the command was writing it. What was written has been put back. **What to do:** Run the command again. |
+| `LOCALE_ADD_WRITE_FAILED` | A file or folder could not be written, for example because of permissions or a missing folder for the redirects file. What was written has been put back. **What to do:** Check the permissions and the path from the message, and run the command again. |
+| `LOCALE_ADD_TRACKING_DISABLED` | A warning: `translation_tracking` is off, so the translation report will not show the new language. **What to do:** Turn on `translation_tracking.enabled`. |
+| `LOCALE_ADD_PAGES_MISSING` | A warning: with `missing_page_policy: "error"` the build stops until the new language has every page. **What to do:** Translate the pages, or set `"skip"` while the translation is in progress. |
+
 ## Search
 
 | Code | Cause and what to do |

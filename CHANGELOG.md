@@ -6,6 +6,29 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **`docara locale add <code>` adds a language in one step.** It writes the
+  locale to `docara.json` (the language's own name as the label, its usual
+  writing direction, the lowercase code as the address prefix), creates
+  `content/<code>/` with a `lang.json` (Docara's own for English and
+  Russian; otherwise an empty one with the source language as fallback),
+  puts the source home page there as a `draft: true` page to translate when
+  the folder has no pages, and turns on `translation_tracking` with
+  `translations.lock.json`. `--default` also makes it `default_locale`: the
+  site moves to prefixed addresses with `/` redirecting to the new default,
+  every page of the former default language keeps its old unprefixed
+  address as a redirect in `redirects.json` (redirects that
+  `legacy_unprefixed_redirects` generated are written down and the flag is
+  turned off), redirects to those pages follow them, and the source
+  language of translation stays as it was. `--default` needs a published
+  `content/<code>/index.md`. `--dry-run` shows every change without writing;
+  `--json` gives the operation result. An invalid code, an existing locale,
+  a portal site or a `docara.json` that does not pass the check is refused
+  before anything is written, and the files are written together or put
+  back. The `LOCALE_ADD_*` and `LOCALE_DEFAULT_*` codes are on the site
+  settings error page.
+
 ### Removed
 
 - The unused `.docara-example-source` rule left over from 3.0 is gone from

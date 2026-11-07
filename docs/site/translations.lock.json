@@ -1098,11 +1098,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/multilingual-site.md",
-            "source_sha256": "e05f7d5f1eec1c5c3f843efc02c804abefaf07cde1e64012372c51b454861a32",
-            "source_structure_sha256": "d3036da6a4305ac404cfdc96f1bbbf7293c3dd97faea036f6030ba6885a8f832",
+            "source_sha256": "efecc7e5c044b509788d219fef3ebe2d02f50b983069f54fd5f3b12e459e4b3a",
+            "source_structure_sha256": "99c173de87164faae684eb9fdfdf81af02ed2c2560444f853440675365eb32b2",
             "target_path": "content/en/authoring/multilingual-site.md",
-            "target_sha256": "345ecc95c63f9a22e7b039b1cfc9a2ef62a9a22ced576abf17ec07654c8fbcf0",
-            "target_structure_sha256": "d3036da6a4305ac404cfdc96f1bbbf7293c3dd97faea036f6030ba6885a8f832"
+            "target_sha256": "092222793bf97f415996249a88a575e1197286f5674d61ef5480a51b4fe4362d",
+            "target_structure_sha256": "99c173de87164faae684eb9fdfdf81af02ed2c2560444f853440675365eb32b2"
         },
         {
             "key": "authoring/navigation.md",
@@ -2130,11 +2130,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/cli.md",
-            "source_sha256": "5023a44705e4391b58f6502931236f8b91f49ac567ae4f9f18a831f3f8a2589e",
-            "source_structure_sha256": "255e923c7673dd1bdc0362bb0ef80fa954c5b04567c5c4f7efb0c98b094bb5d9",
+            "source_sha256": "d065ed5b5d2c2f37b6695868b062560adef87daa217bbfb4f8208042ff252ef7",
+            "source_structure_sha256": "269aaea967e267d275463b013186a0dc78630adc6ebad2daf73fb2f25b7ca8a3",
             "target_path": "content/en/reference/cli.md",
-            "target_sha256": "aa8f0124e7702ef6f7720c135c789628fd8dc1349e914e8490e71622ba61dab6",
-            "target_structure_sha256": "255e923c7673dd1bdc0362bb0ef80fa954c5b04567c5c4f7efb0c98b094bb5d9"
+            "target_sha256": "f7cfd402cd0abb5a3ece317f8704eacdc5a26855402fad9011e854146ac1585b",
+            "target_structure_sha256": "269aaea967e267d275463b013186a0dc78630adc6ebad2daf73fb2f25b7ca8a3"
         },
         {
             "key": "reference/docara-json.md",
@@ -2250,11 +2250,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/site.md",
-            "source_sha256": "a0d653e64f1a1eb5b4e397f9271469d23994d8291d19701d47f991db52d8fe0d",
-            "source_structure_sha256": "3ebf8dbf62630a224418876f1341bbee2a0cfaf1df0dca66e91fd57a958cc33c",
+            "source_sha256": "4fa0dcc3137d804609a161e32120cd6bd675dc4e478634db4ecb68fc3520cad0",
+            "source_structure_sha256": "cbdda888a77e57df2f7a61ddf368519e73eb30c199c716d535330f76e7e19636",
             "target_path": "content/en/reference/errors/site.md",
-            "target_sha256": "c908bd213ca6f9990a2b804578bbfc55d4d69129a8603f6529244b0a060bacf3",
-            "target_structure_sha256": "3ebf8dbf62630a224418876f1341bbee2a0cfaf1df0dca66e91fd57a958cc33c"
+            "target_sha256": "cfde25f02745f865ea3b938651d51c7bab0f7668dcfc1c8d5f537051a5e77197",
+            "target_structure_sha256": "cbdda888a77e57df2f7a61ddf368519e73eb30c199c716d535330f76e7e19636"
         },
         {
             "key": "reference/errors/upgrade.md",

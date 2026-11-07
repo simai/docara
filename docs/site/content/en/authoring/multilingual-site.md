@@ -488,6 +488,81 @@ reports statuses; the `publish-current` mode is described
 
 ## How to add another language
 
+One command adds a language:
+
+```bash
+php vendor/bin/docara locale add en --dry-run
+php vendor/bin/docara locale add en
+```
+
+`--dry-run` shows every change and writes nothing. Without it the command:
+
+1. Adds the locale to `locales` in `docara.json`: the label is the
+   language's own name (`English`, `Deutsch`), the writing direction is the
+   usual one for the language (`rtl` for Arabic, Hebrew, Persian), the address
+   prefix is the code in lowercase (`fr-ca` for `fr-CA`). The label and the
+   direction can be given explicitly:
+   `--label="Français (Canada)" --direction=ltr`.
+2. Creates the folder `content/<code>/` beside the folder of the default
+   language and puts a `lang.json` in it. For English and Russian this is
+   Docara's ready-made file; for other languages it is an empty file, and the
+   source language is written to `fallbacks`: the interface labels come from
+   it until you translate them.
+3. If the folder has no pages yet, puts the source language's home page there
+   marked `draft: true`. The build needs at least one page in every language,
+   and a draft is not published: untranslated text does not reach the site.
+   Translate the page and remove `draft: true`.
+4. Turns on `translation_tracking` with the source language — the former
+   default one, if tracking was not set up yet — and creates
+   `translations.lock.json`. The report `translations status --locale=<code>`
+   shows right away which pages still need a translation.
+
+The command does not copy the other pages: a translation is created with the
+same relative paths, and until it exists the page is skipped by the
+`missing_page_policy` rule. If the language folder already exists with
+translated pages in it, the command leaves them as they are and only
+registers the language.
+
+### Making the new language the default
+
+The `--default` flag also makes the language the default one
+(`default_locale`):
+
+```bash
+php vendor/bin/docara locale add en --default
+```
+
+The default language needs a published home page, so translate at least
+`content/en/index.md` first; without it the command stops with the code
+`LOCALE_DEFAULT_HOME_MISSING`. Then the command:
+
+- moves every language to prefixed addresses (`strategy: "prefixed"`,
+  `root: "redirect"`): `/` leads to `/en/`, and the former default language is
+  published under its prefix, for example `/ru/`;
+- writes to `redirects.json` a redirect for every published page of the
+  former default language that had an address without a prefix:
+  `guide/install` → `ru/guide/install`. Old links and bookmarks lead to the
+  same page in the same language. If `legacy_unprefixed_redirects` created
+  these redirects, the command writes them into the file and turns the flag
+  off: otherwise, after the default changes, they would lead to another
+  language;
+- rewrites redirects that led to unprefixed pages of the former default
+  language to their new addresses, so no redirect chains remain;
+- keeps the former source language of translation: texts are still written
+  in it, only the language the reader sees first changes.
+
+If the site already used prefixes and had no `legacy_unprefixed_redirects`,
+page addresses do not change and `redirects.json` stays as it was.
+
+The command writes nothing if the language code is not a BCP 47 code with a
+two- or three-letter language, the language is already in `locales`,
+`docara.json` does not pass the check, or the site is built for a portal. All
+files are written together; if writing fails, the files already written are
+put back as they were. The error codes are in
+[Site settings errors](/en/reference/errors/site/).
+
+To add a language by hand:
+
 1. Add the locale to `locales`.
 2. Create its `content_root` and a Markdown tree with the same relative paths.
 3. Create `content/<locale>/lang.json` with the shared interface labels.

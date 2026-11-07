@@ -9,6 +9,7 @@ use Simai\Docara\Application\ArtifactTestService;
 use Simai\Docara\Application\CapabilitiesService;
 use Simai\Docara\Application\DesignAtlasService;
 use Simai\Docara\Application\DiscoveryService;
+use Simai\Docara\Application\LocaleAddService;
 use Simai\Docara\Application\ProjectUpgradeService;
 use Simai\Docara\Application\QaService;
 use Simai\Docara\Application\ScaffoldService;
@@ -48,6 +49,7 @@ final class ApplicationFactory
             (new UpdateCommand(new PortableProjectUpdater($files)))->setBase($base),
             (new BuildCommand($builder))->setBase($base),
             (new TranslationsCommand(new TranslationStatusService))->setBase($base),
+            (new LocaleCommand(new LocaleAddService))->setBase($base),
             (new DocumentationCommand(new DocumentationStatusService))->setBase($base),
             (new PreviewCommand($preview, new PreviewShell($files, $writes)))->setBase($base),
             (new ServeCommand)->setBase($base),

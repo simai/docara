@@ -392,6 +392,31 @@ current translations and prints a list of held-back pages and strings; see
 printed as a warning and do not fail the build. `--apply` changes only the
 named lock file, and only if all input hashes match the plan.
 
+## `locale`
+
+```text
+php vendor/bin/docara locale add <code> [--default] [--label=<label>] [--direction=ltr|rtl] [--dry-run] [--json]
+```
+
+The action is `add`. The code is a BCP 47 tag with a two- or three-letter
+language: `en`, `de`, `fr-CA`.
+
+- `--default` — make the language the default one (`default_locale`); the
+  language must already have a published `content/<code>/index.md`;
+- `--label` — the label in the language switch; by default, the language's
+  own name;
+- `--direction` — `ltr` or `rtl`; by default, the usual direction of the
+  language;
+- `--dry-run` — show every change without writing anything;
+- `--json` — the result as JSON.
+
+The command adds the language to `docara.json`, creates
+`content/<code>/lang.json` and a draft home page if there are no pages yet,
+and turns on `translation_tracking`. With `--default` it moves the addresses
+to prefixes and writes to `redirects.json` redirects from the old addresses
+of the former default language. All files are written together or not at
+all. Details are in [Multilingual site](/en/authoring/multilingual-site/).
+
 ## `atlas`
 
 ```bash

@@ -475,7 +475,11 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // from their new folders beside the old ones: 2107. The English
         // translation of the whole documentation: 2207. The Framework's
         // minified twins published beside the readable files: 3203.
-        self::assertCount(3203, $firstFiles);
+        // SIMAI Framework ui-2a671352d67b, whose new Smart components
+        // (sf-alert-bar, sf-list, sf-language, sf-wizard and the rest) are
+        // published for the Loader (22 files), and four more shell
+        // stylesheet groups: 3229.
+        self::assertCount(3229, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

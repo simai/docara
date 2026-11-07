@@ -91,7 +91,7 @@ final class HeroPaddingTest extends TestCase
         self::assertSame(1, substr_count($css, self::FLUID_RULE));
 
         $core = (string) file_get_contents(
-            $root . '/resources/portable/vendor/simai-framework/runtime/c3015f76bcc20cd502d5fe7931495e35711d6a4d/distr/core/css/core.css',
+            $root . '/resources/portable/vendor/simai-framework/runtime/2a671352d67b15acf233805767dd4cb4b6b6aad4/distr/core/css/core.css',
         );
         foreach (['--sf-d2: 3rem', '--sf-c2: 1.5rem', '--sf-e4: 7rem'] as $token) {
             self::assertStringContainsString($token, $core);

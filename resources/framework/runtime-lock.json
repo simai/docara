@@ -98,6 +98,12 @@
                 "runtime_projection_packet_sha256": "105d6b4734c35e3304698ad236169965f90a88b1fa09febc018beddf52671ac3",
                 "runtime_projection_files": 1389,
                 "runtime_projection_manifest_sha256": "e0857085160c316c78a3ba371906b7c03d18fc9e215a60edc2efb8d0dcbec510"
+            },
+            {
+                "runtime_sha256": "b126b2a283aad1dc663da28eac08ab7cbf7f1ee4326fbf2c002987e40c090484",
+                "runtime_projection_packet_sha256": "a06b34c0dd6f88adfb7196fd1d386ccd5a51a54a944f5eec8b72ff288eb25922",
+                "runtime_projection_files": 2228,
+                "runtime_projection_manifest_sha256": "d066b306e20222d76168e6eabbc92c622905754fe6e16710b77d6c782c332a9a"
             }
         ],
         "superseded_typography_projections": [
@@ -112,44 +118,44 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "ui-c3015f76bcc2",
-    "bundle_id": "ui-c3015f76bcc2-registry-03a1d11f-verified-commit-candidate-v1",
+    "pair_id": "ui-2a671352d67b",
+    "bundle_id": "ui-2a671352d67b-registry-2c3e7085-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
     "tag": null,
     "ui": {
         "tag": null,
-        "commit": "c3015f76bcc20cd502d5fe7931495e35711d6a4d",
+        "commit": "2a671352d67b15acf233805767dd4cb4b6b6aad4",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "939065eedc93ec7faa454aacad6ec0857202893dc045cfa5c1c023edbd3ee96b",
-        "files": 11644
+        "sha256": "e7bb2eb212d949fc0f93f3a7fb5d1946a8bd35393718457e6b15da1f1624cc26",
+        "files": 12036
     },
     "ui_smart": {
         "tag": null,
-        "commit": "c3015f76bcc20cd502d5fe7931495e35711d6a4d",
+        "commit": "2a671352d67b15acf233805767dd4cb4b6b6aad4",
         "tree": "distr/smart",
         "mount": "ui",
-        "sha256": "e85e2f109454d9e8ecd1429dbb773bb33c95a70598e00e2b8ec65876c0948073",
-        "files": 2884
+        "sha256": "c2b039b6fb86f788757e0f3825a29aefe0824778e52dffa3060c5dacec187fba",
+        "files": 3184
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "ui-c3015f76bcc2",
+        "compatibility_id": "ui-2a671352d67b",
         "profile": "plain-assets-v1",
         "relative_path": "contracts/generated/framework-contract-registry.json",
-        "file_sha256": "03a1d11fc200d4469f46b3fcb8cc285103d559807d82a115ea3d5eecf014f3a2",
+        "file_sha256": "2c3e70859ab29211813b7327164bba0756d65ceb9167d30cc24db4a52eebddf9",
         "source": {
-            "commit": "0f6029f5e8ca9adf76be91ed8e6953da2a08289e",
+            "commit": "3f56fa78aab1e9b9ed79dffa80c2b438f76e7dfd",
             "tree": "contracts/generated",
-            "tree_oid": "ae397428d2800d9cb6934a752a1b75712ddf4228",
+            "tree_oid": "71555b2d421f375496145acd95050bffeadf82df",
             "mount": "contract",
-            "sha256": "25b039fdcecc72781eb4126964f060819d3d01e4d794b9409bda86054ca48467",
+            "sha256": "46ce7d6c6b6597fd96014557965a8119736e0681c176b1f355db1668844c3a9a",
             "files": 2
         },
         "documentation_source": {
             "schema": "docara.documentation_source.v1",
             "relative_path": "contracts/generated/documentation-source.json",
-            "file_sha256": "b2a75748a1a95d199c0fb6214f6f8d9f2ee8a7ba9525ba4eff69bacfeb8f3bbf"
+            "file_sha256": "1e14d08ae04128f4afd01c8bc4cec1483230a4568d6cb95c2f674c2b41185cf8"
         }
     },
     "boot": {
@@ -230,6 +236,27 @@
                 "title",
                 "type",
                 "variant"
+            ]
+        },
+        "sf-alert-bar": {
+            "source": "smart/alert-bar",
+            "javascript": "smart/smart/alert-bar/js/alert-bar.js",
+            "css": "smart/smart/alert-bar/css/alert-bar.css",
+            "attributes": [
+                "items",
+                "label",
+                "minimized",
+                "root-class",
+                "root-style",
+                "size",
+                "template"
+            ],
+            "requires": [
+                "sf-badge",
+                "sf-button",
+                "sf-button-icon",
+                "sf-icon",
+                "sf-icon-button"
             ]
         },
         "sf-avatar": {
@@ -320,6 +347,7 @@
                 "status",
                 "template",
                 "text",
+                "tight",
                 "type"
             ]
         },
@@ -369,6 +397,7 @@
                 "aria-label",
                 "disabled",
                 "expanded",
+                "form",
                 "href",
                 "icon",
                 "icon-end",
@@ -377,6 +406,7 @@
                 "icon-right",
                 "icon-start",
                 "loading",
+                "name",
                 "native-type",
                 "pressed",
                 "radius",
@@ -393,7 +423,8 @@
                 "text",
                 "text-position",
                 "tightness",
-                "type"
+                "type",
+                "value"
             ],
             "requires": [
                 "sf-icon"
@@ -795,6 +826,7 @@
                 "insertion-target",
                 "label",
                 "messages",
+                "passive",
                 "placement",
                 "root-class",
                 "root-style",
@@ -1277,7 +1309,11 @@
                 "mask-pattern",
                 "mask-placeholder-char",
                 "max-date",
+                "max-time",
                 "min-date",
+                "min-time",
+                "minute-step",
+                "mode",
                 "month",
                 "name",
                 "open",
@@ -1475,6 +1511,90 @@
                 "type",
                 "value",
                 "wrap"
+            ]
+        },
+        "sf-language": {
+            "source": "smart/language",
+            "javascript": "smart/smart/language/js/language.js",
+            "css": null,
+            "attributes": [
+                "apply",
+                "compact",
+                "disabled",
+                "href",
+                "inline-max",
+                "items",
+                "label",
+                "languages",
+                "mode",
+                "name",
+                "remember",
+                "root-class",
+                "root-style",
+                "search-from",
+                "size",
+                "template",
+                "value"
+            ],
+            "requires": [
+                "sf-button-group",
+                "sf-button-icon",
+                "sf-context-menu",
+                "sf-icon",
+                "sf-icon-button",
+                "sf-menu-context"
+            ]
+        },
+        "sf-list": {
+            "source": "smart/list",
+            "javascript": "smart/smart/list/js/list.js",
+            "css": "smart/smart/list/css/list.css",
+            "attributes": [
+                "actions",
+                "empty-text",
+                "group-by",
+                "groups",
+                "has-more",
+                "heading-level",
+                "items",
+                "label",
+                "loading",
+                "renamable",
+                "root-class",
+                "root-style",
+                "selected",
+                "size",
+                "template"
+            ],
+            "requires": [
+                "sf-avatar",
+                "sf-badge",
+                "sf-button",
+                "sf-context-menu",
+                "sf-empty-state",
+                "sf-icon",
+                "sf-list-item",
+                "sf-menu-context"
+            ]
+        },
+        "sf-list-feed": {
+            "source": "smart/list-feed",
+            "javascript": "smart/smart/list-feed/js/list-feed.js",
+            "css": "smart/smart/list-feed/css/list-feed.css",
+            "attributes": [
+                "changes",
+                "has-more",
+                "items",
+                "label",
+                "live",
+                "root-class",
+                "root-style",
+                "template"
+            ],
+            "requires": [
+                "sf-button",
+                "sf-button-icon",
+                "sf-icon-button"
             ]
         },
         "sf-list-item": {
@@ -1748,6 +1868,7 @@
             "attributes": [
                 "dismissible",
                 "label",
+                "offset",
                 "open",
                 "placement",
                 "root-class",
@@ -1950,6 +2071,26 @@
                 "sf-icon-button"
             ]
         },
+        "sf-settings": {
+            "source": "smart/settings",
+            "javascript": "smart/smart/settings/js/settings.js",
+            "css": null,
+            "attributes": [
+                "for",
+                "items",
+                "label",
+                "look",
+                "remember",
+                "root-class",
+                "root-style",
+                "size",
+                "template"
+            ],
+            "requires": [
+                "sf-context-menu",
+                "sf-menu-context"
+            ]
+        },
         "sf-site-header": {
             "source": "smart/header-site",
             "javascript": "smart/smart/header-site/js/header-site.js",
@@ -2092,8 +2233,10 @@
                 "items",
                 "root-class",
                 "root-style",
+                "running-label",
                 "separator-icon",
                 "size",
+                "skipped-label",
                 "template"
             ]
         },
@@ -2318,6 +2461,65 @@
             ],
             "requires": [
                 "sf-icon"
+            ]
+        },
+        "sf-wizard": {
+            "source": "smart/wizard",
+            "javascript": "smart/smart/wizard/js/wizard.js",
+            "css": "smart/smart/wizard/css/wizard.css",
+            "attributes": [
+                "action-name",
+                "current",
+                "done-href",
+                "focus-title",
+                "for",
+                "heading",
+                "label",
+                "later",
+                "later-href",
+                "level",
+                "navigation",
+                "open",
+                "place",
+                "progress",
+                "remember",
+                "root-class",
+                "root-style",
+                "running-text",
+                "size",
+                "template",
+                "value"
+            ],
+            "requires": [
+                "sf-alert",
+                "sf-button",
+                "sf-confirm",
+                "sf-icon",
+                "sf-modal",
+                "sf-progress-bar",
+                "sf-spinner",
+                "sf-steps",
+                "sf-wizard-step"
+            ]
+        },
+        "sf-wizard-step": {
+            "source": "smart/wizard-step",
+            "javascript": "smart/smart/wizard-step/js/wizard-step.js",
+            "css": null,
+            "attributes": [
+                "action-text",
+                "description",
+                "heading",
+                "href",
+                "label",
+                "message",
+                "name",
+                "optional",
+                "root-class",
+                "root-style",
+                "state",
+                "template",
+                "type"
             ]
         }
     }

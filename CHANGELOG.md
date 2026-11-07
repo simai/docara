@@ -24,6 +24,26 @@ All notable changes to Docara are recorded here. The format follows
   are the `examples.log_*` strings of `lang.json`. An inline example runs
   no script of its own, so its Console tab shows the page's console.
 
+### Changed
+
+- **Docara bundles SIMAI Framework `ui-2a671352d67b`** (registry bound at
+  `3f56fa78a`) instead of `ui-c3015f76bcc2`. What sites see:
+  - the reader settings menu (`sf-menu-context` 1.8.0) keeps its search
+    field in place over the rows, fills the chosen row and leads it with a
+    tick, fits a choice option in its row on a phone, keeps the wheel inside
+    the menu and shows no scrollbar when the rows fit;
+  - `sf-button` stays on one line at a segment join and shows keyboard keys
+    on a filled button; `sf-badge` has one height per size; `sf-switch`,
+    `sf-popover` (an offset for the gap) and `sf-dropdown` (an empty state)
+    are updated, and code highlighting follows `component.highlight` 1.1.1;
+  - new Smart components are available on pages: `sf-alert-bar`, `sf-list`,
+    `sf-list-feed`, `sf-language`, `sf-settings`, `sf-wizard` and
+    `sf-wizard-step`, with `sf-input-date` gaining time;
+  - an inline `style` on a Smart element now reaches its markup.
+
+  Sites that pin `ui-c3015f76bcc2` (Docara 3.12.0 to 3.12.2) build with the
+  new release.
+
 ## [3.12.2] - 2026-11-07
 
 ### Fixed

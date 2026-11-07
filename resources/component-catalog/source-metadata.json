@@ -542,7 +542,7 @@
         },
         {
             "source_ref": "resources/framework/manifests/ui-alert.json",
-            "source_sha256": "8101209084e857c90d439fa85e6320b78da40e9080dfb5e939c86d4b2fdc52da",
+            "source_sha256": "957a8b06a946aa4e3e77aa7eef23ffae3bdbd1be194cd1d8aed2caecf561be06",
             "release": "3.12.2",
             "source_url": "https://github.com/simai/docara/blob/v3.12.2/resources/framework/manifests/ui-alert.json",
             "history_url": "https://github.com/simai/docara/commits/v3.12.2/resources/framework/manifests/ui-alert.json",
@@ -550,12 +550,12 @@
         },
         {
             "source_ref": "resources/framework/manifests/ui-button.json",
-            "source_sha256": "6915e6d52547f5a50c0dcad80109c80014ab1035ba0b6180e9952cd164220d37",
+            "source_sha256": "053a713c2ed2962275002edbaef887324bb2d1c1d3dc2819f43a0a789048f7ab",
             "release": "3.12.2",
             "source_url": "https://github.com/simai/docara/blob/v3.12.2/resources/framework/manifests/ui-button.json",
             "history_url": "https://github.com/simai/docara/commits/v3.12.2/resources/framework/manifests/ui-button.json",
             "history_exact": false
         }
     ],
-    "content_sha256": "b3433026fd76e948c4c169b98609bb629959acda0d65df069f6ed0877ef829f9"
+    "content_sha256": "ea230aea4e76b0d54750e38263bfb00c8149d1cee8c74a0a5ba23dcbb9a3fbdb"
 }

@@ -1242,10 +1242,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/build/update.md",
-            "source_sha256": "72d8b5617c4e53760091cd0dd4dc6c2605adbc0bcc1dd8f988862e4a4ea861b7",
+            "source_sha256": "ce0588e1494973dd1c485e117c715981947269fae0edf70b204066bf58d9860e",
             "source_structure_sha256": "48d3983bb0222d77e2d4e98fdff213189d12f6c6aaecdd63cff6d3860ee51d3c",
             "target_path": "content/en/build/update.md",
-            "target_sha256": "396750d88906b88188bf9ba420036a7a493290cae079eb2e90c3c05caefb896a",
+            "target_sha256": "3d01c8a561c768a86d4e11338ec36b5dd7179c2f77bda51e28d2d6662268b1c9",
             "target_structure_sha256": "48d3983bb0222d77e2d4e98fdff213189d12f6c6aaecdd63cff6d3860ee51d3c"
         },
         {

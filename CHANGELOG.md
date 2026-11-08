@@ -6,6 +6,12 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Removed
+
+- The unused `.docara-example-source` rule left over from 3.0 is gone from
+  the shell stylesheet; no page used the class, and it named a colour token
+  the Framework does not define.
+
 ## [3.13.1] - 2026-11-08
 
 ### Fixed

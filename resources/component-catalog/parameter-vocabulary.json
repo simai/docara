@@ -298,11 +298,11 @@
             "reason": "Internal build view: the field names to list."
         },
         "component": {
-            "components": ["reference"],
+            "components": ["component_reference"],
             "reason": "The custom element tag whose manifests the reference reads (sf-view-table); a tag, not an address, so it is no src."
         },
         "sections": {
-            "components": ["reference"],
+            "components": ["component_reference"],
             "reason": "Which parts of the component reference to show, in order; a list of fixed part names, so it is no layout, type or variant."
         }
     },

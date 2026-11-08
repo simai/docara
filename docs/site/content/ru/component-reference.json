@@ -1,6 +1,6 @@
 {
     "schema": "docara.component_reference.v1",
-    "$comment": "Русский текст для строк манифестов, которые показывают блоки :::reference на страницах ru (components/component-reference.md).",
+    "$comment": "Русский текст для строк манифестов, которые показывают блоки :::component_reference на страницах ru (components/component-reference.md).",
     "strings": {
         "A number field with minus and plus buttons that keeps its value within the limits.": "Числовое поле с кнопками «минус» и «плюс», которое держит значение в заданных пределах.",
         "The field's name for assistive technology.": "Название поля для программ экранного доступа.",

@@ -341,7 +341,7 @@ final class PortableMarkdownRenderer
                 TypedRendererId::ComponentIndex => $this->renderComponentIndex($block['attributes']),
                 TypedRendererId::AtlasIndex => $this->renderAtlasIndex($block['attributes']),
                 TypedRendererId::SchemaReference => $this->renderSchemaReference($block['attributes']),
-                TypedRendererId::Reference => $this->renderReference($block['attributes']),
+                TypedRendererId::ComponentReference => $this->renderComponentReference($block['attributes']),
                 TypedRendererId::Surface => $this->renderSurface(
                     $block['markdown'],
                     $block['attributes'],
@@ -432,7 +432,7 @@ final class PortableMarkdownRenderer
             $blockAttributes = $this->attributes->parse((string) ($directive['attributes'] ?? ''), $type);
             $allowsEmptyBody = in_array(
                 $renderer,
-                [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex, TypedRendererId::AtlasIndex, TypedRendererId::SchemaReference, TypedRendererId::Reference],
+                [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex, TypedRendererId::AtlasIndex, TypedRendererId::SchemaReference, TypedRendererId::ComponentReference],
                 true,
             ) || ($renderer === TypedRendererId::Example && trim($blockAttributes['id'] ?? '') !== '')
                 // A built page shown alone lists no file tabs.
@@ -1965,14 +1965,14 @@ HTML;
      *
      * @param  array<string,string>  $attributes
      */
-    private function renderReference(array $attributes): string
+    private function renderComponentReference(array $attributes): string
     {
-        $this->assertAttributes($attributes, 'reference');
+        $this->assertAttributes($attributes, 'component_reference');
         $component = trim($attributes['component'] ?? '');
         if (! ComponentReferenceRepository::isTag($component)) {
             throw new PortableConfigurationException(
-                'MARKDOWN_REFERENCE_COMPONENT_INVALID',
-                "reference component [$component] must be a custom element tag such as sf-view-table.",
+                'MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID',
+                "component_reference component [$component] must be a custom element tag such as sf-view-table.",
             );
         }
         $sections = trim($attributes['sections'] ?? '');
@@ -1981,21 +1981,21 @@ HTML;
             foreach ($names as $name) {
                 if (! in_array($name, PortableComponentReferenceHydrator::SECTIONS, true)) {
                     throw new PortableConfigurationException(
-                        'MARKDOWN_REFERENCE_SECTIONS_INVALID',
-                        "reference sections [$sections] must list " . implode(', ', PortableComponentReferenceHydrator::SECTIONS)
+                        'MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID',
+                        "component_reference sections [$sections] must list " . implode(', ', PortableComponentReferenceHydrator::SECTIONS)
                             . ', separated by commas without spaces.',
                     );
                 }
             }
             if (count(array_unique($names)) !== count($names)) {
                 throw new PortableConfigurationException(
-                    'MARKDOWN_REFERENCE_SECTIONS_INVALID',
-                    "reference sections [$sections] name a section twice.",
+                    'MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID',
+                    "component_reference sections [$sections] name a section twice.",
                 );
             }
         }
 
-        return '<div data-docara-block="reference" data-docara-component-reference'
+        return '<div data-docara-block="component-reference" data-docara-component-reference'
             . ' data-component="' . $this->escapeHtml($component) . '"'
             . ($sections === '' ? '' : ' data-sections="' . $this->escapeHtml($sections) . '"') . '></div>';
     }

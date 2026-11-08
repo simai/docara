@@ -221,38 +221,38 @@ You can also set them in `lang.json`, in the groups `error`, `language`, `blocks
 | `set.licence` — The set's licence in the footer | Licence: {licence} | Лицензия: {licence} |
 | `set.source` — The link to the set's source code in the footer | Source code | Исходный код |
 | `set.history` — The link to the version history in the footer | Version history | История версий |
-| `reference.tag` — The component tag label in the `:::reference` block | Tag | Тег |
-| `reference.summary` — The component purpose label in the `:::reference` block | Purpose | Назначение |
-| `reference.contract` — The contract label: the manifest id and version in the `:::reference` block | Contract | Контракт |
-| `reference.contract_version` — The contract and manifest version; `{id}` and `{version}` are the values in the `:::reference` block | {id}, version {version} | {id}, версия {version} |
-| `reference.lifecycle` — The component lifecycle label in the `:::reference` block | Lifecycle | Жизненный цикл |
-| `reference.lifecycle_experimental` — The `experimental` lifecycle in the `:::reference` block | experimental: the API may change between releases | экспериментальный: API может меняться между выпусками |
-| `reference.lifecycle_stable` — The `stable` lifecycle in the `:::reference` block | stable | стабильный |
-| `reference.section_attributes` — The heading of the attributes part in the `:::reference` block | Attributes | Атрибуты |
-| `reference.section_events` — The heading of the events part in the `:::reference` block | Events | События |
-| `reference.section_methods` — The heading of the methods part in the `:::reference` block | Methods | Методы |
-| `reference.section_css` — The heading of the CSS variables part in the `:::reference` block | CSS variables | CSS-переменные |
-| `reference.section_accessibility` — The heading of the accessibility part in the `:::reference` block | Accessibility | Доступность |
-| `reference.attribute` — The attribute column header in the `:::reference` block | Attribute | Атрибут |
-| `reference.values` — The attribute values column header in the `:::reference` block | Values | Значения |
-| `reference.default` — The default value column header in the `:::reference` block | Default | По умолчанию |
-| `reference.description` — The description column header in the `:::reference` block | Description | Описание |
-| `reference.required` — The mark of a required attribute in the `:::reference` block | required | обязательный |
-| `reference.empty` — An empty string as a value in the `:::reference` block | empty | пусто |
-| `reference.event` — The event column header in the `:::reference` block | Event | Событие |
-| `reference.detail` — The event data column header in the `:::reference` block | Data in detail | Данные в detail |
-| `reference.former_events` — The line before the former event names in the `:::reference` block | Former names, still sent after the current event with the same detail: | Прежние имена, которые ещё приходят следом с тем же detail: |
-| `reference.method` — The method column header in the `:::reference` block | Method | Метод |
-| `reference.returns` — The method result column header in the `:::reference` block | Returns | Возвращает |
-| `reference.variable` — The CSS variable column header in the `:::reference` block | Variable | Переменная |
-| `reference.type` — The CSS variable type column header in the `:::reference` block | Type | Тип |
-| `reference.role` — The role label in the `:::reference` block | Role | Роль |
-| `reference.accessible_name` — The accessible name label in the `:::reference` block | Accessible name | Доступное имя |
-| `reference.name_required` — The `required` accessible name in the `:::reference` block | required | обязательно |
-| `reference.name_optional` — The `optional` accessible name in the `:::reference` block | optional | необязательно |
-| `reference.keyboard` — The keyboard label in the `:::reference` block | Keyboard | Клавиши |
-| `reference.focus` — The focus behaviour label in the `:::reference` block | Focus | Фокус |
-| `reference.none` — The text of a part the manifest does not declare in the `:::reference` block | Not declared in the manifest. | В манифесте не объявлено. |
+| `reference.tag` — The component tag label in the `:::component_reference` block | Tag | Тег |
+| `reference.summary` — The component purpose label in the `:::component_reference` block | Purpose | Назначение |
+| `reference.contract` — The contract label: the manifest id and version in the `:::component_reference` block | Contract | Контракт |
+| `reference.contract_version` — The contract and manifest version; `{id}` and `{version}` are the values in the `:::component_reference` block | {id}, version {version} | {id}, версия {version} |
+| `reference.lifecycle` — The component lifecycle label in the `:::component_reference` block | Lifecycle | Жизненный цикл |
+| `reference.lifecycle_experimental` — The `experimental` lifecycle in the `:::component_reference` block | experimental: the API may change between releases | экспериментальный: API может меняться между выпусками |
+| `reference.lifecycle_stable` — The `stable` lifecycle in the `:::component_reference` block | stable | стабильный |
+| `reference.section_attributes` — The heading of the attributes part in the `:::component_reference` block | Attributes | Атрибуты |
+| `reference.section_events` — The heading of the events part in the `:::component_reference` block | Events | События |
+| `reference.section_methods` — The heading of the methods part in the `:::component_reference` block | Methods | Методы |
+| `reference.section_css` — The heading of the CSS variables part in the `:::component_reference` block | CSS variables | CSS-переменные |
+| `reference.section_accessibility` — The heading of the accessibility part in the `:::component_reference` block | Accessibility | Доступность |
+| `reference.attribute` — The attribute column header in the `:::component_reference` block | Attribute | Атрибут |
+| `reference.values` — The attribute values column header in the `:::component_reference` block | Values | Значения |
+| `reference.default` — The default value column header in the `:::component_reference` block | Default | По умолчанию |
+| `reference.description` — The description column header in the `:::component_reference` block | Description | Описание |
+| `reference.required` — The mark of a required attribute in the `:::component_reference` block | required | обязательный |
+| `reference.empty` — An empty string as a value in the `:::component_reference` block | empty | пусто |
+| `reference.event` — The event column header in the `:::component_reference` block | Event | Событие |
+| `reference.detail` — The event data column header in the `:::component_reference` block | Data in detail | Данные в detail |
+| `reference.former_events` — The line before the former event names in the `:::component_reference` block | Former names, still sent after the current event with the same detail: | Прежние имена, которые ещё приходят следом с тем же detail: |
+| `reference.method` — The method column header in the `:::component_reference` block | Method | Метод |
+| `reference.returns` — The method result column header in the `:::component_reference` block | Returns | Возвращает |
+| `reference.variable` — The CSS variable column header in the `:::component_reference` block | Variable | Переменная |
+| `reference.type` — The CSS variable type column header in the `:::component_reference` block | Type | Тип |
+| `reference.role` — The role label in the `:::component_reference` block | Role | Роль |
+| `reference.accessible_name` — The accessible name label in the `:::component_reference` block | Accessible name | Доступное имя |
+| `reference.name_required` — The `required` accessible name in the `:::component_reference` block | required | обязательно |
+| `reference.name_optional` — The `optional` accessible name in the `:::component_reference` block | optional | необязательно |
+| `reference.keyboard` — The keyboard label in the `:::component_reference` block | Keyboard | Клавиши |
+| `reference.focus` — The focus behaviour label in the `:::component_reference` block | Focus | Фокус |
+| `reference.none` — The text of a part the manifest does not declare in the `:::component_reference` block | Not declared in the manifest. | В манифесте не объявлено. |
 
 ### Built-in strings that do not change
 

@@ -20,10 +20,10 @@ final class PortableComponentReferenceTest extends TestCase
     #[Test]
     public function the_block_leaves_a_marker_for_the_build(): void
     {
-        $html = (new PortableMarkdownRenderer)->render(":::reference {component=sf-view-table sections=events,methods}\n:::\n");
+        $html = (new PortableMarkdownRenderer)->render(":::component_reference {component=sf-view-table sections=events,methods}\n:::\n");
 
         self::assertSame(
-            '<div data-docara-block="reference" data-docara-component-reference data-component="sf-view-table" data-sections="events,methods"></div>',
+            '<div data-docara-block="component-reference" data-docara-component-reference data-component="sf-view-table" data-sections="events,methods"></div>',
             trim($html),
         );
     }
@@ -31,13 +31,13 @@ final class PortableComponentReferenceTest extends TestCase
     /** @return iterable<string, array{string, string}> */
     public static function invalidBlocks(): iterable
     {
-        yield 'no component' => [":::reference\n:::\n", 'MARKDOWN_REFERENCE_COMPONENT_INVALID'];
-        yield 'not a tag' => [":::reference {component=Table}\n:::\n", 'MARKDOWN_REFERENCE_COMPONENT_INVALID'];
-        yield 'no hyphen' => [":::reference {component=table}\n:::\n", 'MARKDOWN_REFERENCE_COMPONENT_INVALID'];
-        yield 'unknown section' => [":::reference {component=sf-x sections=slots}\n:::\n", 'MARKDOWN_REFERENCE_SECTIONS_INVALID'];
-        yield 'spaces in sections' => [":::reference {component=sf-x sections=\"events, methods\"}\n:::\n", 'MARKDOWN_REFERENCE_SECTIONS_INVALID'];
-        yield 'repeated section' => [":::reference {component=sf-x sections=events,events}\n:::\n", 'MARKDOWN_REFERENCE_SECTIONS_INVALID'];
-        yield 'unknown attribute' => [":::reference {component=sf-x tag=sf-x}\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN'];
+        yield 'no component' => [":::component_reference\n:::\n", 'MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID'];
+        yield 'not a tag' => [":::component_reference {component=Table}\n:::\n", 'MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID'];
+        yield 'no hyphen' => [":::component_reference {component=table}\n:::\n", 'MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID'];
+        yield 'unknown section' => [":::component_reference {component=sf-x sections=slots}\n:::\n", 'MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID'];
+        yield 'spaces in sections' => [":::component_reference {component=sf-x sections=\"events, methods\"}\n:::\n", 'MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID'];
+        yield 'repeated section' => [":::component_reference {component=sf-x sections=events,events}\n:::\n", 'MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID'];
+        yield 'unknown attribute' => [":::component_reference {component=sf-x tag=sf-x}\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN'];
     }
 
     #[Test]
@@ -50,7 +50,7 @@ final class PortableComponentReferenceTest extends TestCase
     #[Test]
     public function the_reference_is_written_from_the_manifests_in_english_without_a_dictionary(): void
     {
-        $html = $this->hydrate('en', ':::reference {component=demo-counter}');
+        $html = $this->hydrate('en', ':::component_reference {component=demo-counter}');
 
         self::assertStringContainsString('<dt>Tag</dt>', $html);
         self::assertStringContainsString('<code>&lt;demo-counter&gt;</code>', $html);
@@ -76,7 +76,7 @@ final class PortableComponentReferenceTest extends TestCase
     #[Test]
     public function an_example_shows_the_reference_inline_and_in_its_responsive_frame(): void
     {
-        $html = $this->hydrate('en', ":::example {label=\"Reference\"}\n```markdown\n:::reference {component=demo-counter sections=css}\n:::\n```", complete: false);
+        $html = $this->hydrate('en', ":::example {label=\"Reference\"}\n```markdown\n:::component_reference {component=demo-counter sections=css}\n:::\n```", complete: false);
 
         self::assertStringNotContainsString('data-docara-component-reference', $html);
         self::assertSame(2, substr_count($html, '--demo-counter-gap'), 'once inline, once in the frame document');
@@ -86,7 +86,7 @@ final class PortableComponentReferenceTest extends TestCase
     #[Test]
     public function a_locale_dictionary_translates_every_shown_string(): void
     {
-        $html = $this->hydrate('ru', ':::reference {component=demo-counter}');
+        $html = $this->hydrate('ru', ':::component_reference {component=demo-counter}');
 
         self::assertStringContainsString('<dt>Тег</dt>', $html);
         self::assertStringContainsString('<h3>События</h3>', $html);
@@ -99,14 +99,14 @@ final class PortableComponentReferenceTest extends TestCase
     #[Test]
     public function sections_choose_parts_and_a_single_part_has_no_heading(): void
     {
-        $html = $this->hydrate('en', ':::reference {component=demo-counter sections=events}', complete: false);
+        $html = $this->hydrate('en', ':::component_reference {component=demo-counter sections=events}', complete: false);
 
         self::assertStringContainsString('<code>demo-counter-change</code>', $html);
         self::assertStringNotContainsString('<h3>', $html);
         self::assertStringNotContainsString('<dt>Tag</dt>', $html);
         self::assertStringNotContainsString('<code>label</code>', $html);
 
-        $two = $this->hydrate('en', ':::reference {component=demo-counter sections=methods,events}', complete: false);
+        $two = $this->hydrate('en', ':::component_reference {component=demo-counter sections=methods,events}', complete: false);
         self::assertLessThan(strpos($two, '<h3>Events</h3>'), strpos($two, '<h3>Methods</h3>'));
     }
 
@@ -210,7 +210,7 @@ final class PortableComponentReferenceTest extends TestCase
 
         $this->assertFailsWith(
             'COMPONENT_REFERENCE_TRANSLATION_MISSING',
-            fn () => $this->hydrate('ru', ':::reference {component=demo-counter}', $project),
+            fn () => $this->hydrate('ru', ':::component_reference {component=demo-counter}', $project),
             'has no translation for 2 manifest string(s)',
         );
     }
@@ -221,12 +221,12 @@ final class PortableComponentReferenceTest extends TestCase
         $project = $this->project('ru', static fn (array $strings): array => $strings + ['A sentence the manifest lost.' => 'Предложение, которого нет.']);
 
         // One-page rebuild: it sees one page, so it cannot call a string stale.
-        $html = $this->hydrate('ru', ':::reference {component=demo-counter}', $project, complete: false);
+        $html = $this->hydrate('ru', ':::component_reference {component=demo-counter}', $project, complete: false);
         self::assertStringContainsString('Текущее значение.', $html);
 
         $this->assertFailsWith(
             'COMPONENT_REFERENCE_TRANSLATION_STALE',
-            fn () => $this->hydrate('ru', ':::reference {component=demo-counter}', $project),
+            fn () => $this->hydrate('ru', ':::component_reference {component=demo-counter}', $project),
             'A sentence the manifest lost.',
         );
     }
@@ -236,7 +236,7 @@ final class PortableComponentReferenceTest extends TestCase
     {
         $this->assertFailsWith(
             'COMPONENT_REFERENCE_TRANSLATION_STALE',
-            fn () => $this->hydrate('ru', ':::reference {component=demo-counter sections=events}'),
+            fn () => $this->hydrate('ru', ':::component_reference {component=demo-counter sections=events}'),
         );
     }
 
@@ -254,7 +254,7 @@ final class PortableComponentReferenceTest extends TestCase
         $hydrator = new PortableComponentReferenceHydrator($repository, new PortableMarkdownRenderer);
         $pages = $hydrator->hydrate([[
             'locale' => 'en',
-            'content_html' => '<div data-docara-block="reference" data-docara-component-reference data-component="x-probe"></div>',
+            'content_html' => '<div data-docara-block="component-reference" data-docara-component-reference data-component="x-probe"></div>',
         ]]);
         $html = (string) $pages[0]['content_html'];
 
@@ -275,10 +275,10 @@ final class PortableComponentReferenceTest extends TestCase
         $pages = [];
         foreach (['ru', 'en'] as $locale) {
             $source = (string) file_get_contents(self::DOCS_SITE . "/content/$locale/components/component-reference.md");
-            self::assertStringContainsString(':::reference {component=demo-counter}', $source);
+            self::assertStringContainsString(':::component_reference {component=demo-counter}', $source);
             $pages[] = [
                 'locale' => $locale,
-                'content_html' => $renderer->render(":::reference {component=demo-counter}\n:::\n\n:::reference {component=demo-counter sections=events}\n:::\n"),
+                'content_html' => $renderer->render(":::component_reference {component=demo-counter}\n:::\n\n:::component_reference {component=demo-counter sections=events}\n:::\n"),
             ];
         }
         $pages = (new PortableComponentReferenceHydrator($repository, $renderer))->hydrate($pages);

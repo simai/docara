@@ -14,7 +14,7 @@ heading.
 
 :::example {label="Component reference"}
 ```markdown
-:::reference {component=demo-counter}
+:::component_reference {component=demo-counter}
 :::
 ```
 :::
@@ -22,7 +22,7 @@ heading.
 ## Markup
 
 ```markdown
-:::reference {component=sf-view-table}
+:::component_reference {component=sf-view-table}
 :::
 ```
 
@@ -74,7 +74,7 @@ without a heading: the page author writes it.
 
 :::example {label="Events only"}
 ```markdown
-:::reference {component=demo-counter sections=events}
+:::component_reference {component=demo-counter sections=events}
 :::
 ```
 :::

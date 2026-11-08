@@ -8,7 +8,7 @@ use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 /**
- * Writes the :::reference blocks of the built pages: a component's tag,
+ * Writes the :::component_reference blocks of the built pages: a component's tag,
  * attributes, events, methods, CSS variables and accessibility, read from
  * its manifests (ComponentReferenceRepository). The tables are Markdown run
  * through the page renderer, so they are the site's ordinary tables.
@@ -123,7 +123,7 @@ final class PortableComponentReferenceHydrator
         $tag = html_entity_decode((string) ($component['value'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         $names = ($sections['value'] ?? '') === '' ? self::SECTIONS : explode(',', (string) $sections['value']);
 
-        return '<div data-docara-block="reference" data-component="' . $this->escape($tag) . '">'
+        return '<div data-docara-block="component-reference" data-component="' . $this->escape($tag) . '">'
             . $this->markdown->render($this->markdownFor($tag, $names, $copy, $locale))
             . '</div>';
     }
@@ -152,8 +152,8 @@ final class PortableComponentReferenceHydrator
                 'css' => $this->variables($source['component'], $copy, $locale),
                 'accessibility' => $this->accessibility($manifest, $copy, $locale),
                 default => throw new PortableConfigurationException(
-                    'MARKDOWN_REFERENCE_SECTIONS_INVALID',
-                    "reference section [$section] is unknown.",
+                    'MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID',
+                    "component_reference section [$section] is unknown.",
                 ),
             };
             if ($headings && $section !== 'overview') {

@@ -72,7 +72,7 @@ final class PortableSiteBuilderTest extends TestCase
         copy($docs . '/content/ru/component-reference.json', $this->tmpPath('content/ru/component-reference.json'));
         file_put_contents(
             $this->tmpPath('content/ru/index.md'),
-            "# Счётчик\n\n## Справочник\n\n:::reference {component=demo-counter}\n:::\n",
+            "# Счётчик\n\n## Справочник\n\n:::component_reference {component=demo-counter}\n:::\n",
         );
         $destination = $this->tmpPath('build_local');
         $this->builder()->build($this->tmp, $destination);

@@ -219,38 +219,38 @@ Docara нет.
 | `set.licence` — Лицензия набора в подвале | Licence: {licence} | Лицензия: {licence} |
 | `set.source` — Ссылка на исходный код набора в подвале | Source code | Исходный код |
 | `set.history` — Ссылка на историю версий в подвале | Version history | История версий |
-| `reference.tag` — Подпись тега компонента в справочнике `:::reference` | Tag | Тег |
-| `reference.summary` — Подпись назначения компонента в справочнике `:::reference` | Purpose | Назначение |
-| `reference.contract` — Подпись контракта: id и версии манифеста в справочнике `:::reference` | Contract | Контракт |
-| `reference.contract_version` — Контракт и версия манифеста в справочнике `:::reference` | {id}, version {version} | {id}, версия {version} |
-| `reference.lifecycle` — Подпись жизненного цикла компонента в справочнике `:::reference` | Lifecycle | Жизненный цикл |
-| `reference.lifecycle_experimental` — Жизненный цикл `experimental` в справочнике `:::reference` | experimental: the API may change between releases | экспериментальный: API может меняться между выпусками |
-| `reference.lifecycle_stable` — Жизненный цикл `stable` в справочнике `:::reference` | stable | стабильный |
-| `reference.section_attributes` — Заголовок раздела атрибутов в справочнике `:::reference` | Attributes | Атрибуты |
-| `reference.section_events` — Заголовок раздела событий в справочнике `:::reference` | Events | События |
-| `reference.section_methods` — Заголовок раздела методов в справочнике `:::reference` | Methods | Методы |
-| `reference.section_css` — Заголовок раздела CSS-переменных в справочнике `:::reference` | CSS variables | CSS-переменные |
-| `reference.section_accessibility` — Заголовок раздела доступности в справочнике `:::reference` | Accessibility | Доступность |
-| `reference.attribute` — Столбец атрибута в справочнике `:::reference` | Attribute | Атрибут |
-| `reference.values` — Столбец значений атрибута в справочнике `:::reference` | Values | Значения |
-| `reference.default` — Столбец значения по умолчанию в справочнике `:::reference` | Default | По умолчанию |
-| `reference.description` — Столбец описания в справочнике `:::reference` | Description | Описание |
-| `reference.required` — Отметка обязательного атрибута в справочнике `:::reference` | required | обязательный |
-| `reference.empty` — Пустая строка как значение в справочнике `:::reference` | empty | пусто |
-| `reference.event` — Столбец события в справочнике `:::reference` | Event | Событие |
-| `reference.detail` — Столбец данных события в справочнике `:::reference` | Data in detail | Данные в detail |
-| `reference.former_events` — Строка перед прежними именами событий в справочнике `:::reference` | Former names, still sent after the current event with the same detail: | Прежние имена, которые ещё приходят следом с тем же detail: |
-| `reference.method` — Столбец метода в справочнике `:::reference` | Method | Метод |
-| `reference.returns` — Столбец результата метода в справочнике `:::reference` | Returns | Возвращает |
-| `reference.variable` — Столбец CSS-переменной в справочнике `:::reference` | Variable | Переменная |
-| `reference.type` — Столбец типа CSS-переменной в справочнике `:::reference` | Type | Тип |
-| `reference.role` — Подпись роли в справочнике `:::reference` | Role | Роль |
-| `reference.accessible_name` — Подпись доступного имени в справочнике `:::reference` | Accessible name | Доступное имя |
-| `reference.name_required` — Доступное имя `required` в справочнике `:::reference` | required | обязательно |
-| `reference.name_optional` — Доступное имя `optional` в справочнике `:::reference` | optional | необязательно |
-| `reference.keyboard` — Подпись клавиш в справочнике `:::reference` | Keyboard | Клавиши |
-| `reference.focus` — Подпись поведения фокуса в справочнике `:::reference` | Focus | Фокус |
-| `reference.none` — Текст части справочника `:::reference`, которой нет в манифесте | Not declared in the manifest. | В манифесте не объявлено. |
+| `reference.tag` — Подпись тега компонента в справочнике `:::component_reference` | Tag | Тег |
+| `reference.summary` — Подпись назначения компонента в справочнике `:::component_reference` | Purpose | Назначение |
+| `reference.contract` — Подпись контракта: id и версии манифеста в справочнике `:::component_reference` | Contract | Контракт |
+| `reference.contract_version` — Контракт и версия манифеста в справочнике `:::component_reference` | {id}, version {version} | {id}, версия {version} |
+| `reference.lifecycle` — Подпись жизненного цикла компонента в справочнике `:::component_reference` | Lifecycle | Жизненный цикл |
+| `reference.lifecycle_experimental` — Жизненный цикл `experimental` в справочнике `:::component_reference` | experimental: the API may change between releases | экспериментальный: API может меняться между выпусками |
+| `reference.lifecycle_stable` — Жизненный цикл `stable` в справочнике `:::component_reference` | stable | стабильный |
+| `reference.section_attributes` — Заголовок раздела атрибутов в справочнике `:::component_reference` | Attributes | Атрибуты |
+| `reference.section_events` — Заголовок раздела событий в справочнике `:::component_reference` | Events | События |
+| `reference.section_methods` — Заголовок раздела методов в справочнике `:::component_reference` | Methods | Методы |
+| `reference.section_css` — Заголовок раздела CSS-переменных в справочнике `:::component_reference` | CSS variables | CSS-переменные |
+| `reference.section_accessibility` — Заголовок раздела доступности в справочнике `:::component_reference` | Accessibility | Доступность |
+| `reference.attribute` — Столбец атрибута в справочнике `:::component_reference` | Attribute | Атрибут |
+| `reference.values` — Столбец значений атрибута в справочнике `:::component_reference` | Values | Значения |
+| `reference.default` — Столбец значения по умолчанию в справочнике `:::component_reference` | Default | По умолчанию |
+| `reference.description` — Столбец описания в справочнике `:::component_reference` | Description | Описание |
+| `reference.required` — Отметка обязательного атрибута в справочнике `:::component_reference` | required | обязательный |
+| `reference.empty` — Пустая строка как значение в справочнике `:::component_reference` | empty | пусто |
+| `reference.event` — Столбец события в справочнике `:::component_reference` | Event | Событие |
+| `reference.detail` — Столбец данных события в справочнике `:::component_reference` | Data in detail | Данные в detail |
+| `reference.former_events` — Строка перед прежними именами событий в справочнике `:::component_reference` | Former names, still sent after the current event with the same detail: | Прежние имена, которые ещё приходят следом с тем же detail: |
+| `reference.method` — Столбец метода в справочнике `:::component_reference` | Method | Метод |
+| `reference.returns` — Столбец результата метода в справочнике `:::component_reference` | Returns | Возвращает |
+| `reference.variable` — Столбец CSS-переменной в справочнике `:::component_reference` | Variable | Переменная |
+| `reference.type` — Столбец типа CSS-переменной в справочнике `:::component_reference` | Type | Тип |
+| `reference.role` — Подпись роли в справочнике `:::component_reference` | Role | Роль |
+| `reference.accessible_name` — Подпись доступного имени в справочнике `:::component_reference` | Accessible name | Доступное имя |
+| `reference.name_required` — Доступное имя `required` в справочнике `:::component_reference` | required | обязательно |
+| `reference.name_optional` — Доступное имя `optional` в справочнике `:::component_reference` | optional | необязательно |
+| `reference.keyboard` — Подпись клавиш в справочнике `:::component_reference` | Keyboard | Клавиши |
+| `reference.focus` — Подпись поведения фокуса в справочнике `:::component_reference` | Focus | Фокус |
+| `reference.none` — Текст части справочника `:::component_reference`, которой нет в манифесте | Not declared in the manifest. | В манифесте не объявлено. |
 
 ### Встроенные строки, которые не меняются
 

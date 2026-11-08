@@ -1,5 +1,5 @@
 {
-    "$comment": "A demonstration manifest for the :::reference page (components/component-reference.md). No such component ships; the file shows the fields the block reads.",
+    "$comment": "A demonstration manifest for the :::component_reference page (components/component-reference.md). No such component ships; the file shows the fields the block reads.",
     "schema_version": 2,
     "id": "demo.counter",
     "version": "1.0.0",

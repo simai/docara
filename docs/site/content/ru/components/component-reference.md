@@ -13,7 +13,7 @@ CSS-переменные и доступность. Сборка читает и
 
 :::example {label="Справочник компонента"}
 ```markdown
-:::reference {component=demo-counter}
+:::component_reference {component=demo-counter}
 :::
 ```
 :::
@@ -21,7 +21,7 @@ CSS-переменные и доступность. Сборка читает и
 ## Разметка
 
 ```markdown
-:::reference {component=sf-view-table}
+:::component_reference {component=sf-view-table}
 :::
 ```
 
@@ -72,7 +72,7 @@ method reset.», не показываются. Раздела, которого
 
 :::example {label="Только события"}
 ```markdown
-:::reference {component=demo-counter sections=events}
+:::component_reference {component=demo-counter sections=events}
 :::
 ```
 :::

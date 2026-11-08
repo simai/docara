@@ -38,7 +38,7 @@ All notable changes to Docara are recorded here. The format follows
   `preview=inline` fails with `MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED`, and a
   page example (`src`) with it fails with `MARKDOWN_EXAMPLE_SRC_CONFLICT`.
   Default examples are unchanged.
-- **A component reference from its manifests.** `:::reference
+- **A component reference from its manifests.** `:::component_reference
   {component=sf-view-table}` writes the component's tag, attributes, events,
   methods, CSS variables and accessibility at build time from
   `components/view-table/smart.manifest.json` and `component.json` in the

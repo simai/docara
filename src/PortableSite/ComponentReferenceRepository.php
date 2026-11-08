@@ -8,7 +8,7 @@ use JsonException;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 /**
- * The inputs of the :::reference block, read from fixed places in the site
+ * The inputs of the :::component_reference block, read from fixed places in the site
  * project so a build never depends on anything outside it:
  *
  * - components/<folder>/smart.manifest.json and, when present,

@@ -109,13 +109,13 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `MARKDOWN_REFERENCE_COMPONENT_INVALID` | `component` of a [component reference](/components/component-reference/) is empty or does not look like a tag: it needs lowercase Latin letters, digits and at least one hyphen. **What to do:** Give the tag, for example `component=sf-view-table`. |
-| `MARKDOWN_REFERENCE_SECTIONS_INVALID` | `sections` names an unknown part, repeats a part or is written with spaces. **What to do:** List parts from `overview`, `attributes`, `events`, `methods`, `css`, `accessibility`, separated by commas without spaces. |
+| `MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID` | `component` of a [component reference](/components/component-reference/) is empty or does not look like a tag: it needs lowercase Latin letters, digits and at least one hyphen. **What to do:** Give the tag, for example `component=sf-view-table`. |
+| `MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID` | `sections` names an unknown part, repeats a part or is written with spaces. **What to do:** List parts from `overview`, `attributes`, `events`, `methods`, `css`, `accessibility`, separated by commas without spaces. |
 | `COMPONENT_REFERENCE_MANIFEST_MISSING` | There is no `components/<folder>/smart.manifest.json` for the tag in `component`. The folder is the tag without the `sf-` prefix. **What to do:** Copy the component's manifest into that folder or fix the tag. |
 | `COMPONENT_REFERENCE_MANIFEST_INVALID` | `smart.manifest.json` or `component.json` is not a JSON object, is larger than 4 MB, is a symbolic link, describes another tag (`custom_element`), or its `inputs`, `events`, `methods`, `accessibility` or `css-variables` field is not an object. **What to do:** Take the manifest from the component's release unchanged and check that `custom_element` matches `component`. |
 | `COMPONENT_REFERENCE_DICTIONARY_INVALID` | The `component-reference.json` dictionary in a locale folder is not JSON, has no `"schema": "docara.component_reference.v1"` and `strings`, has other keys, or a translation is empty. **What to do:** Keep `schema`, `strings` and, if needed, `$comment`; every string needs a non-empty translation. |
 | `COMPONENT_REFERENCE_TRANSLATION_MISSING` | The locale's dictionary has no translation for a manifest string a block shows, usually after the manifest was updated. The message names the dictionary and the first such strings. **What to do:** Add those strings to `strings` exactly as in the manifest, with their translation; for a CSS variable the key is `css:<name>`. |
-| `COMPONENT_REFERENCE_TRANSLATION_STALE` | The locale's dictionary holds a string no `:::reference` block on the site shows: the manifest text changed or the component left the pages. Checked on full builds only. **What to do:** Remove the string or replace the key with the new manifest text. |
+| `COMPONENT_REFERENCE_TRANSLATION_STALE` | The locale's dictionary holds a string no `:::component_reference` block on the site shows: the manifest text changed or the component left the pages. Checked on full builds only. **What to do:** Remove the string or replace the key with the new manifest text. |
 
 ## Embedding and preview
 

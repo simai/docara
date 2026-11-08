@@ -35,7 +35,7 @@ enum TypedRendererId: string
     case ComponentIndex = 'docara.component_index.v1';
     case AtlasIndex = 'docara.atlas_index.v1';
     case SchemaReference = 'docara.schema_reference.v1';
-    case Reference = 'docara.reference.v1';
+    case ComponentReference = 'docara.component_reference.v1';
     case Surface = 'docara.surface.v1';
 
     public function componentId(): string

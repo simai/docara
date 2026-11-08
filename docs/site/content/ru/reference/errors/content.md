@@ -108,13 +108,13 @@ Front matter — блок между двумя строками `---` в нач
 
 | Код | Причина и что сделать |
 | --- | --- |
-| `MARKDOWN_REFERENCE_COMPONENT_INVALID` | `component` у [справочника компонента](/components/component-reference/) пустой или не похож на тег: нужны строчные латинские буквы, цифры и хотя бы один дефис. **Что сделать:** Укажите тег, например `component=sf-view-table`. |
-| `MARKDOWN_REFERENCE_SECTIONS_INVALID` | `sections` называет неизвестную часть, повторяет часть или записан с пробелами. **Что сделать:** Перечислите через запятую без пробелов части из `overview`, `attributes`, `events`, `methods`, `css`, `accessibility`. |
+| `MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID` | `component` у [справочника компонента](/components/component-reference/) пустой или не похож на тег: нужны строчные латинские буквы, цифры и хотя бы один дефис. **Что сделать:** Укажите тег, например `component=sf-view-table`. |
+| `MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID` | `sections` называет неизвестную часть, повторяет часть или записан с пробелами. **Что сделать:** Перечислите через запятую без пробелов части из `overview`, `attributes`, `events`, `methods`, `css`, `accessibility`. |
 | `COMPONENT_REFERENCE_MANIFEST_MISSING` | Нет файла `components/<папка>/smart.manifest.json` для тега из `component`. Папка — тег без приставки `sf-`. **Что сделать:** Скопируйте манифест компонента в эту папку или исправьте тег. |
 | `COMPONENT_REFERENCE_MANIFEST_INVALID` | `smart.manifest.json` или `component.json` — не JSON-объект, больше 4 МБ, символическая ссылка, описывает другой тег (`custom_element`) или поля `inputs`, `events`, `methods`, `accessibility`, `css-variables` не объекты. **Что сделать:** Возьмите манифест из выпуска компонента без правок и проверьте, что `custom_element` совпадает с `component`. |
 | `COMPONENT_REFERENCE_DICTIONARY_INVALID` | Словарь `component-reference.json` в папке языка — не JSON, в нём нет `"schema": "docara.component_reference.v1"` и `strings`, есть другие ключи или перевод пустой. **Что сделать:** Оставьте `schema`, `strings` и, если нужно, `$comment`; у каждой строки должен быть непустой перевод. |
 | `COMPONENT_REFERENCE_TRANSLATION_MISSING` | В словаре языка нет перевода строки манифеста, которую показывает блок, — обычно после обновления манифеста. Сообщение называет словарь и первые такие строки. **Что сделать:** Добавьте в `strings` эти строки ровно как в манифесте с переводом; для CSS-переменной ключ — `css:<имя>`. |
-| `COMPONENT_REFERENCE_TRANSLATION_STALE` | В словаре языка есть строка, которую не показывает ни один блок `:::reference` сайта: текст манифеста изменился или компонент убрали со страниц. Проверяется только при полной сборке. **Что сделать:** Удалите строку или замените ключ новым текстом манифеста. |
+| `COMPONENT_REFERENCE_TRANSLATION_STALE` | В словаре языка есть строка, которую не показывает ни один блок `:::component_reference` сайта: текст манифеста изменился или компонент убрали со страниц. Проверяется только при полной сборке. **Что сделать:** Удалите строку или замените ключ новым текстом манифеста. |
 
 ## Встраивание и предпросмотр
 

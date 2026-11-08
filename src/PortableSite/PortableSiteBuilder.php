@@ -818,7 +818,7 @@ final readonly class PortableSiteBuilder
             }
         }
         $pages = (new PortableSchemaReferenceHydrator($schemaReferenceProjector))->hydrate($pages);
-        // :::reference: a component's reference from components/<folder>/,
+        // :::component_reference: a component's reference from components/<folder>/,
         // in each page's language. A one-page rebuild sees one page, so only
         // a full build reports dictionary strings no page shows.
         $pages = (new PortableComponentReferenceHydrator(
@@ -2613,7 +2613,7 @@ final readonly class PortableSiteBuilder
             if (in_array($extension, ['md', 'markdown'], true)
                 || $name === 'section.json'
                 || $name === 'lang.json'
-                // The locale's dictionary for :::reference (ComponentReferenceRepository).
+                // The locale's dictionary for :::component_reference (ComponentReferenceRepository).
                 || ($name === ComponentReferenceRepository::DICTIONARY && $file->getPath() === rtrim($contentPath, '/\\'))
                 || str_ends_with($name, '.page.json')
             ) {

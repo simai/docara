@@ -1,0 +1,77 @@
+{
+    "$comment": "A demonstration manifest for the :::reference page (components/component-reference.md). No such component ships; the file shows the fields the block reads.",
+    "schema_version": 2,
+    "id": "demo.counter",
+    "version": "1.0.0",
+    "title": "Counter",
+    "summary": "A number field with minus and plus buttons that keeps its value within the limits.",
+    "lifecycle": "experimental",
+    "custom_element": "demo-counter",
+    "inputs": {
+        "type": "object",
+        "required": ["label"],
+        "properties": {
+            "label": {
+                "type": "string",
+                "description": "The field's name for assistive technology."
+            },
+            "value": {
+                "type": "number",
+                "default": 0,
+                "description": "The current value."
+            },
+            "step": {
+                "type": "number",
+                "default": 1,
+                "description": "How much one press of a button changes the value."
+            },
+            "size": {
+                "type": "string",
+                "default": "1",
+                "enum": ["1/2", "1", "2"],
+                "description": "A step of the Framework size scale."
+            },
+            "placeholder": {
+                "type": "string",
+                "default": "",
+                "description": "Text shown while the field is empty."
+            }
+        }
+    },
+    "events": {
+        "demo-counter-change": {
+            "summary": "The value changed after a press, a key or typing.",
+            "payload": {
+                "type": "object",
+                "required": ["value"],
+                "properties": {
+                    "value": {"type": "number"},
+                    "previous": {"type": "number"}
+                }
+            }
+        },
+        "demo-counter-input": {
+            "summary": "Runtime event demo-counter-input.",
+            "alias_of": "demo-counter-change",
+            "payload": {"type": "object"}
+        }
+    },
+    "methods": {
+        "increment": {
+            "summary": "Adds the step, or the given amount, and returns the new value.",
+            "arguments": [{"name": "amount", "required": false, "schema": {"type": "number"}}],
+            "returns": {"type": "number"}
+        },
+        "reset": {
+            "summary": "Public runtime method reset.",
+            "arguments": [],
+            "returns": {"type": ["object", "boolean", "null"]}
+        }
+    },
+    "accessibility": {
+        "role": "spinbutton",
+        "accessible_name": "required",
+        "keyboard": ["ArrowUp", "ArrowDown", "Home sets the value to zero"],
+        "focus": "The field takes focus; Tab skips the buttons."
+    }
+}

@@ -341,6 +341,7 @@ final class PortableMarkdownRenderer
                 TypedRendererId::ComponentIndex => $this->renderComponentIndex($block['attributes']),
                 TypedRendererId::AtlasIndex => $this->renderAtlasIndex($block['attributes']),
                 TypedRendererId::SchemaReference => $this->renderSchemaReference($block['attributes']),
+                TypedRendererId::Reference => $this->renderReference($block['attributes']),
                 TypedRendererId::Surface => $this->renderSurface(
                     $block['markdown'],
                     $block['attributes'],
@@ -431,7 +432,7 @@ final class PortableMarkdownRenderer
             $blockAttributes = $this->attributes->parse((string) ($directive['attributes'] ?? ''), $type);
             $allowsEmptyBody = in_array(
                 $renderer,
-                [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex, TypedRendererId::AtlasIndex, TypedRendererId::SchemaReference],
+                [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex, TypedRendererId::AtlasIndex, TypedRendererId::SchemaReference, TypedRendererId::Reference],
                 true,
             ) || ($renderer === TypedRendererId::Example && trim($blockAttributes['id'] ?? '') !== '')
                 // A built page shown alone lists no file tabs.
@@ -1955,6 +1956,48 @@ HTML;
             . ' data-schema-name="' . $this->escapeHtml($schema) . '"'
             . ' data-schema-scope="' . $this->escapeHtml($scope) . '"'
             . ($fields === '' ? '' : ' data-schema-fields="' . $this->escapeHtml($fields) . '"') . '></div>';
+    }
+
+    /**
+     * A component's reference from its manifests. The block leaves a marker;
+     * the site build reads components/<folder>/ and writes the tables in the
+     * page's language (PortableComponentReferenceHydrator).
+     *
+     * @param  array<string,string>  $attributes
+     */
+    private function renderReference(array $attributes): string
+    {
+        $this->assertAttributes($attributes, 'reference');
+        $component = trim($attributes['component'] ?? '');
+        if (! ComponentReferenceRepository::isTag($component)) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_REFERENCE_COMPONENT_INVALID',
+                "reference component [$component] must be a custom element tag such as sf-view-table.",
+            );
+        }
+        $sections = trim($attributes['sections'] ?? '');
+        if ($sections !== '') {
+            $names = explode(',', $sections);
+            foreach ($names as $name) {
+                if (! in_array($name, PortableComponentReferenceHydrator::SECTIONS, true)) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_REFERENCE_SECTIONS_INVALID',
+                        "reference sections [$sections] must list " . implode(', ', PortableComponentReferenceHydrator::SECTIONS)
+                            . ', separated by commas without spaces.',
+                    );
+                }
+            }
+            if (count(array_unique($names)) !== count($names)) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_REFERENCE_SECTIONS_INVALID',
+                    "reference sections [$sections] name a section twice.",
+                );
+            }
+        }
+
+        return '<div data-docara-block="reference" data-docara-component-reference'
+            . ' data-component="' . $this->escapeHtml($component) . '"'
+            . ($sections === '' ? '' : ' data-sections="' . $this->escapeHtml($sections) . '"') . '></div>';
     }
 
     /** @param array<string,string> $attributes */

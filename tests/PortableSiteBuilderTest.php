@@ -64,6 +64,53 @@ final class PortableSiteBuilderTest extends TestCase
     }
 
     #[Test]
+    public function a_component_reference_is_built_from_the_project_manifests_in_the_page_language(): void
+    {
+        $this->copyPortableFixture($this->tmp, false);
+        $docs = dirname(__DIR__) . '/docs/site';
+        $this->filesystem->copyDirectory($docs . '/components/demo-counter', $this->tmpPath('components/demo-counter'));
+        copy($docs . '/content/ru/component-reference.json', $this->tmpPath('content/ru/component-reference.json'));
+        file_put_contents(
+            $this->tmpPath('content/ru/index.md'),
+            "# Счётчик\n\n## Справочник\n\n:::reference {component=demo-counter}\n:::\n",
+        );
+        $destination = $this->tmpPath('build_local');
+        $this->builder()->build($this->tmp, $destination);
+
+        $html = (string) file_get_contents($destination . '/ru/index.html');
+        self::assertStringContainsString('<code>&lt;demo-counter&gt;</code>', $html);
+        self::assertStringContainsString('Текущее значение.', $html);
+        self::assertStringContainsString('<table class="table table-stripe">', $html);
+        self::assertMatchesRegularExpression('#<h3 id="[^"]+"[^>]*>(?:<[^>]+>)*События#u', $html);
+        self::assertStringNotContainsString('data-docara-component-reference', $html);
+        // The dictionary is build input, not a published file.
+        self::assertFileDoesNotExist($destination . '/ru/component-reference.json');
+
+        // A one-page rebuild does not judge strings other pages may show ...
+        $dictionary = $this->jsonFile($this->tmpPath('content/ru/component-reference.json'));
+        $dictionary['strings']['A sentence no manifest has.'] = 'Строка, которой нет.';
+        file_put_contents($this->tmpPath('content/ru/component-reference.json'), json_encode($dictionary, JSON_UNESCAPED_UNICODE));
+        $this->builder()->build($this->tmp, $destination, '/ru/');
+
+        // ... a full build does.
+        try {
+            $this->builder()->build($this->tmp, $destination);
+            self::fail('A full build accepted a dictionary string no block shows.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('COMPONENT_REFERENCE_TRANSLATION_STALE', $exception->errorCode);
+            self::assertStringContainsString('content/ru/component-reference.json', $exception->getMessage());
+        }
+
+        $this->filesystem->deleteDirectory($this->tmpPath('components/demo-counter'));
+        try {
+            $this->builder()->build($this->tmp, $destination);
+            self::fail('A build accepted a reference without its manifest.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('COMPONENT_REFERENCE_MANIFEST_MISSING', $exception->errorCode);
+        }
+    }
+
+    #[Test]
     public function page_transforms_rewrite_the_written_pages_before_docara_measures_them(): void
     {
         $this->copyPortableFixture($this->tmp, false);

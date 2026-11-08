@@ -1,0 +1,10 @@
+{
+    "$comment": "The CSS variables of the demonstration manifest beside it.",
+    "id": "demo.counter",
+    "tag": "demo-counter",
+    "version": "1.0.0",
+    "css-variables": {
+        "--demo-counter-gap": {"type": "length", "state": "default"},
+        "--demo-counter-accent": {"type": "color", "state": "default"}
+    }
+}

@@ -42,6 +42,7 @@ described on one page, [Markdown](/en/authoring/markdown/).
 | [Diagram gallery](/en/components/diagram-gallery/) | All 22 Mermaid diagram types with a live result and the source |
 | [Math formula](/en/components/math/) | A formula written in TeX |
 | [Isolated HTML](/en/components/html/) | Checked HTML markup in a separate frame |
+| [Component reference](/en/components/component-reference/) | Attributes, events, methods and CSS variables from the component manifest |
 
 ## Layout
 

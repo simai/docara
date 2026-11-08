@@ -139,7 +139,7 @@ final class DocumentationContractTest extends TestCase
         );
         self::assertSame([
             'accessibility', 'atlas', 'blocks', 'code', 'common', 'copy', 'effects', 'error', 'examples', 'language',
-            'navigation', 'reader', 'redirect', 'search', 'shell', 'toc', 'transitions',
+            'navigation', 'reader', 'redirect', 'reference', 'search', 'shell', 'toc', 'transitions',
         ], $this->langNamespaces($langSchema));
 
         foreach ([$this->repositoryRoot() . '/README.md', ...$this->markdownDocuments()] as $path) {

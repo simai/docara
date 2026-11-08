@@ -1,0 +1,18 @@
+{
+    "schema": "docara.component_reference.v1",
+    "$comment": "Русский текст для строк манифестов, которые показывают блоки :::reference на страницах ru (components/component-reference.md).",
+    "strings": {
+        "A number field with minus and plus buttons that keeps its value within the limits.": "Числовое поле с кнопками «минус» и «плюс», которое держит значение в заданных пределах.",
+        "The field's name for assistive technology.": "Название поля для программ экранного доступа.",
+        "The current value.": "Текущее значение.",
+        "How much one press of a button changes the value.": "На сколько меняет значение одно нажатие кнопки.",
+        "A step of the Framework size scale.": "Шаг шкалы размеров Framework.",
+        "Text shown while the field is empty.": "Текст, который видно, пока поле пустое.",
+        "The value changed after a press, a key or typing.": "Значение изменилось после нажатия кнопки, клавиши или ввода.",
+        "Adds the step, or the given amount, and returns the new value.": "Прибавляет шаг или указанное число и возвращает новое значение.",
+        "Home sets the value to zero": "Home обнуляет значение",
+        "The field takes focus; Tab skips the buttons.": "Фокус получает поле; Tab пропускает кнопки.",
+        "css:--demo-counter-gap": "Расстояние между полем и кнопками.",
+        "css:--demo-counter-accent": "Цвет кнопок при наведении."
+    }
+}

@@ -14,7 +14,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components.md",
-            "source_sha256": "637903c21217e251416cd25eed2127e52a21d7ef22f35e253327dddadc9ff4ce",
+            "source_sha256": "7ffb25f0acc83eeb1f42ffea8b1623c430eb8aa54cc07d5de0c12bbedee9e66c",
             "release": "3.13.1",
             "source_url": "https://github.com/simai/docara/blob/v3.13.1/docs/site/content/ru/components.md",
             "history_url": "https://github.com/simai/docara/commits/v3.13.1/docs/site/content/ru/components.md",
@@ -82,6 +82,14 @@
             "release": "3.13.1",
             "source_url": "https://github.com/simai/docara/blob/v3.13.1/docs/site/content/ru/components/code.md",
             "history_url": "https://github.com/simai/docara/commits/v3.13.1/docs/site/content/ru/components/code.md",
+            "history_exact": false
+        },
+        {
+            "source_ref": "docs/site/content/ru/components/component-reference.md",
+            "source_sha256": "b46edc799ac8fbe58d779105c505dff5580d2ea7e4c28d72a4ee72d979995876",
+            "release": "3.13.1",
+            "source_url": "https://github.com/simai/docara/blob/v3.13.1/docs/site/content/ru/components/component-reference.md",
+            "history_url": "https://github.com/simai/docara/commits/v3.13.1/docs/site/content/ru/components/component-reference.md",
             "history_exact": false
         },
         {
@@ -493,6 +501,14 @@
             "history_exact": false
         },
         {
+            "source_ref": "resources/component-catalog/typed/docara.reference.json",
+            "source_sha256": "fe7c29a7a04401bef4b99d15d6e7a94fae73536e1dd5087d60a97d8bf6417775",
+            "release": "3.13.1",
+            "source_url": "https://github.com/simai/docara/blob/v3.13.1/resources/component-catalog/typed/docara.reference.json",
+            "history_url": "https://github.com/simai/docara/commits/v3.13.1/resources/component-catalog/typed/docara.reference.json",
+            "history_exact": false
+        },
+        {
             "source_ref": "resources/component-catalog/typed/docara.schema_reference.json",
             "source_sha256": "13e57f1b747c6133e6baaf9b691bce83a190690a5d0e62a508b2f5699626a1a3",
             "release": "3.13.1",
@@ -557,5 +573,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "b8be045c08ea55886a820c91b14857c2542373f5e0ef063dcd29dfb84fcb72f5"
+    "content_sha256": "022d95496011f3b95ac62b394473aa2a044185e0e44f49890f3b3adfd14397ba"
 }

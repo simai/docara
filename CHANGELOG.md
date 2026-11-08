@@ -38,6 +38,20 @@ All notable changes to Docara are recorded here. The format follows
   `preview=inline` fails with `MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED`, and a
   page example (`src`) with it fails with `MARKDOWN_EXAMPLE_SRC_CONFLICT`.
   Default examples are unchanged.
+- **A component reference from its manifests.** `:::reference
+  {component=sf-view-table}` writes the component's tag, attributes, events,
+  methods, CSS variables and accessibility at build time from
+  `components/view-table/smart.manifest.json` and `component.json` in the
+  site project (the folder is the tag without `sf-`, the layout of a
+  Framework or set `smart/` folder). `sections=events,methods` shows only
+  those parts. The tables are the site's ordinary Framework tables, and the
+  labels are the `reference.*` strings of `lang.json`. A locale translates
+  the manifest text with `component-reference.json` next to its
+  `lang.json`; the build stops when a shown string has no translation
+  (`COMPONENT_REFERENCE_TRANSLATION_MISSING`) and, on a full build, when the
+  dictionary keeps a string no block shows any more
+  (`COMPONENT_REFERENCE_TRANSLATION_STALE`). A missing or malformed manifest
+  stops it too. Sites no longer need their own reference generator.
 
 ### Fixed
 

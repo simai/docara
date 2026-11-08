@@ -73,6 +73,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'math',
             'media',
             'promo',
+            'reference',
             'schema_reference',
             'showcase',
             'steps',
@@ -105,6 +106,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.math',
             'docara.media',
             'docara.promo',
+            'docara.reference',
             'docara.schema_reference',
             'docara.showcase',
             'docara.steps',
@@ -408,6 +410,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.logos' => 'docs/site/content/ru/components/logos.md',
             'docara.math' => 'docs/site/content/ru/components/math.md',
             'docara.media' => 'docs/site/content/ru/components/media.md',
+            'docara.reference' => 'docs/site/content/ru/components/component-reference.md',
             'docara.steps' => 'docs/site/content/ru/components/steps.md',
             'docara.surface' => 'docs/site/content/ru/components/surface.md',
             'docara.tabs' => 'docs/site/content/ru/components/tabs.md',
@@ -733,6 +736,10 @@ final class EffectiveComponentCatalogTest extends TestCase
                 'data-docara-block="math"',
                 'role="math"',
             ],
+            'docara.reference' => [
+                '<div data-docara-block="reference" data-docara-component-reference',
+                'data-component="sf-view-table" data-sections="attributes,events"',
+            ],
             'docara.steps' => [
                 '<section data-docara-block="steps" data-view="timeline" class="m-bottom-1">',
                 '<ol class="m-0 p-0">',
@@ -764,7 +771,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(35, $supported);
+        self::assertCount(36, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),
@@ -825,6 +832,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                 'docara.logos',
                 'docara.math',
                 'docara.media',
+                'docara.reference',
                 'docara.steps',
                 'docara.tabs',
                 'docara.tree',
@@ -855,6 +863,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                     'docara.logos' => 'logos',
                     'docara.math' => 'math',
                     'docara.media' => 'media',
+                    'docara.reference' => 'component-reference',
                     'docara.steps' => 'steps',
                     'docara.surface' => 'surface',
                     'docara.tabs' => 'tabs',

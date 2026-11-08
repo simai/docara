@@ -23,6 +23,7 @@
         "blocks": {"$ref": "#/$defs/group"},
         "atlas": {"$ref": "#/$defs/group"},
         "examples": {"$ref": "#/$defs/group"},
+        "reference": {"$ref": "#/$defs/group"},
         "shell": {"$ref": "#/$defs/group"}
     },
     "additionalProperties": false,

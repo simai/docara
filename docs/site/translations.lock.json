@@ -1266,11 +1266,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components.md",
-            "source_sha256": "637903c21217e251416cd25eed2127e52a21d7ef22f35e253327dddadc9ff4ce",
-            "source_structure_sha256": "7c463694f07640c5ea548bc089dbf0da8e1849d66e9b1fe2fbc29c87a32d24dc",
+            "source_sha256": "7ffb25f0acc83eeb1f42ffea8b1623c430eb8aa54cc07d5de0c12bbedee9e66c",
+            "source_structure_sha256": "32df429c343c36f37161c795a33a2673f7a98148134511a6ef383402a3340284",
             "target_path": "content/en/components.md",
-            "target_sha256": "9365ec088ea826dea57bdabeaa6e2fbe1bda400ae2e1fe33f20ad95cbc221637",
-            "target_structure_sha256": "7c463694f07640c5ea548bc089dbf0da8e1849d66e9b1fe2fbc29c87a32d24dc"
+            "target_sha256": "b350c385aff5325158cb150afed394a954a3b10060a55082f26de04f956de2a0",
+            "target_structure_sha256": "32df429c343c36f37161c795a33a2673f7a98148134511a6ef383402a3340284"
         },
         {
             "key": "components/alert.md",
@@ -1367,6 +1367,18 @@
             "target_path": "content/en/components/code.md",
             "target_sha256": "7dfbff7cefb5dbe73b374527173caa17c76b6ca1f11ad294b8336d30301b71b4",
             "target_structure_sha256": "4ed4732f6a463b1abf68c1d5149545abbff3d06ccb93cf062706a07c44d6a8f4"
+        },
+        {
+            "key": "components/component-reference.md",
+            "kind": "page",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/components/component-reference.md",
+            "source_sha256": "f75406a524b16595b68c5af16caacc0b02e3ecc0c150f073ee59b9ebff0c2d8a",
+            "source_structure_sha256": "6d20d5a54ca1ffb813e3e24a99effd80b8dfdb7c64cc65d8ca5f5b29ef1a54c7",
+            "target_path": "content/en/components/component-reference.md",
+            "target_sha256": "37b2b0a7c0ae97738ce2bbe8efc54192ff9c9154ae321ef6b74bedb95b8e25c4",
+            "target_structure_sha256": "6d20d5a54ca1ffb813e3e24a99effd80b8dfdb7c64cc65d8ca5f5b29ef1a54c7"
         },
         {
             "key": "components/details.md",
@@ -2178,11 +2190,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/content.md",
-            "source_sha256": "a6ab7f348cacf4e2b01240dda42136a7d99861d029457222aeb4b20b437254fd",
-            "source_structure_sha256": "73c0fa425ce8981a3a45eef06e0a47c85c600c2fbd021f87a5b819e232cc5714",
+            "source_sha256": "3633c6e44307a215a3ecfd8d931f2d251cd5490cdb0bc7109067f8ed5eb04c93",
+            "source_structure_sha256": "11cb32731eb3dbf0c8b1eee6dba17f3147e687e67b0c179d0ab579a58c648a32",
             "target_path": "content/en/reference/errors/content.md",
-            "target_sha256": "5ba3f5982ccdb56ab206f22318dd5204011759ffb666b362437135e56be90545",
-            "target_structure_sha256": "73c0fa425ce8981a3a45eef06e0a47c85c600c2fbd021f87a5b819e232cc5714"
+            "target_sha256": "4be406211b50050b079a5bd242fd71b24763543edd4311a39fbe09b284a54f09",
+            "target_structure_sha256": "11cb32731eb3dbf0c8b1eee6dba17f3147e687e67b0c179d0ab579a58c648a32"
         },
         {
             "key": "reference/errors/developer.md",
@@ -2310,11 +2322,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/lang-json.md",
-            "source_sha256": "280d2af146abd14bb22e57be8186d0942466dd3a83ce0237886b5b1d3fd44721",
-            "source_structure_sha256": "6d2944237a0687caf8b48062d5fb5def16ecfe4bfc176c49f288197391bc3423",
+            "source_sha256": "a1588a2cc8a100d8e6c8abf2f8951e8a7ceb1ad0a859085d3b3ed8c843ec62d7",
+            "source_structure_sha256": "dbe0c8528c8995804e96b42c483059fad04aaa7104843c90bcbc61fe42fbd825",
             "target_path": "content/en/reference/lang-json.md",
-            "target_sha256": "4fdec25b8701dbf0fa9072d3e8645313d11e95f38f2d7f56c96c1b805e1a76e5",
-            "target_structure_sha256": "6d2944237a0687caf8b48062d5fb5def16ecfe4bfc176c49f288197391bc3423"
+            "target_sha256": "14179e2a5ba3d67be623e1f5473c71be157d7801286510028e549dd503af0761",
+            "target_structure_sha256": "dbe0c8528c8995804e96b42c483059fad04aaa7104843c90bcbc61fe42fbd825"
         },
         {
             "key": "reference/schemas.md",

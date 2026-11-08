@@ -28,6 +28,24 @@ All notable changes to Docara are recorded here. The format follows
   before anything is written, and the files are written together or put
   back. The `LOCALE_ADD_*` and `LOCALE_DEFAULT_*` codes are on the site
   settings error page.
+- **An example can switch its own theme.** `:::example {theme_switch=true}`
+  turns the Framework Loader's theme API on inside the example's frame, so a
+  theme switch (`sf-button-group theme-switch`, `sf-theme-button`,
+  `SF.Loader.setTheme()`) works there. The frame starts in the page's theme
+  and follows it until the reader chooses in the example; the page's theme
+  and the reader's stored choice stay untouched, and the frame keeps its
+  `sf-theme` cookie in memory only. Such an example always gets a frame:
+  `preview=inline` fails with `MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED`, and a
+  page example (`src`) with it fails with `MARKDOWN_EXAMPLE_SRC_CONFLICT`.
+  Default examples are unchanged.
+
+### Fixed
+
+- **Copy buttons work in example frames.** Inline example frames, their
+  responsive-check frames and page example frames now carry
+  `allow="clipboard-write"`, so `sf-button-copy` and other
+  `navigator.clipboard.writeText()` calls inside an example are no longer
+  blocked by the frame's permissions policy.
 
 ### Removed
 

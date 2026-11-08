@@ -128,11 +128,11 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_EXAMPLE_SOURCE_DUPLICATE` | Два блока кода одного языка. **Что сделать:** Объедините их в один. |
 | `MARKDOWN_EXAMPLE_LABEL_INVALID` | Подпись примера пустая. **Что сделать:** Напишите подпись или удалите атрибут. |
 | `MARKDOWN_EXAMPLE_PREVIEW_INVALID` | `preview` не равен `auto`, `inline` или `sandbox`. **Что сделать:** Укажите одно из трёх значений. |
-| `MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED` | Указан `preview=inline`, но пример запускает скрипт или стили, которым нужна изолированная рамка. **Что сделать:** Уберите `preview=inline` или укажите `preview=sandbox`. |
+| `MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED` | Указан `preview=inline`, но пример запускает скрипт или стили либо меняет свою тему (`theme_switch=true`), а для этого нужна изолированная рамка. **Что сделать:** Уберите `preview=inline` или укажите `preview=sandbox`. |
 | `MARKDOWN_EXAMPLE_ID_INVALID` | `id` примера из каталога `examples/` записан неверно. **Что сделать:** Укажите путь строчными буквами через `/` внутри `examples/`. |
 | `MARKDOWN_EXAMPLE_ID_BODY_CONFLICT` | У примера одновременно `id` и код внутри блока. **Что сделать:** Оставьте что-то одно. |
 | `MARKDOWN_EXAMPLE_SRC_UNSAFE` | Адрес страницы в `src` примера ведёт на другой сайт или записан неверно. **Что сделать:** Укажите путь от корня этого сайта, например `/ru/demo/`. |
-| `MARKDOWN_EXAMPLE_SRC_CONFLICT` | У примера целой страницы одновременно `src` и `id`, `preview` или журнал (`log`, `log_console`, `log_open`). **Что сделать:** Оставьте только `src`. |
+| `MARKDOWN_EXAMPLE_SRC_CONFLICT` | У примера целой страницы одновременно `src` и `id`, `preview` журнал (`log`, `log_console`, `log_open`) или `theme_switch`. **Что сделать:** Оставьте только `src`. |
 | `MARKDOWN_EXAMPLE_LOG_REQUIRED` | У примера есть `log_open` или `log_console=false`, но журнал не включён. **Что сделать:** Назовите события в `log` или включите `log_console=true`; иначе удалите параметр. |
 | `MARKDOWN_EXAMPLE_PAGE_SOURCE_INVALID` | В примере целой страницы нет вкладок, вкладка пустая или повторяется, или перед первым `###` есть текст. **Что сделать:** Начните блок с `### Имя файла` и поставьте под каждым заголовком блок `:::code`. |
 | `MARKDOWN_EXAMPLE_PROJECT_CONTEXT_REQUIRED` | Пример по `id` используется вне сборки проекта. **Что сделать:** Собирайте страницу командой `docara build` в каталоге сайта. |

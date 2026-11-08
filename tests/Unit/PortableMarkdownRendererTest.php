@@ -58,7 +58,7 @@ final class PortableMarkdownRendererTest extends TestCase
 MD);
         // Both frames load when the reader nears them.
         self::assertStringContainsString('sandbox loading="lazy" data-docara-srcdoc=', $sandboxed);
-        self::assertStringContainsString('sandbox="allow-scripts" scrolling="no" loading="lazy" data-docara-srcdoc=', $sandboxed);
+        self::assertStringContainsString('sandbox="allow-scripts" allow="clipboard-write" scrolling="no" loading="lazy" data-docara-srcdoc=', $sandboxed);
         self::assertStringNotContainsString(' srcdoc=', $sandboxed);
     }
 
@@ -2139,6 +2139,109 @@ MD);
             self::fail('A page example accepted a log.');
         } catch (PortableConfigurationException $exception) {
             self::assertSame('MARKDOWN_EXAMPLE_SRC_CONFLICT', $exception->errorCode);
+        }
+    }
+
+    #[Test]
+    public function every_example_frame_may_write_to_the_clipboard(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $framed = $renderer->render(":::example\n```html\n<sf-button-copy text=\"x\"></sf-button-copy>\n```\n```javascript\n1;\n```\n:::\n");
+        $responsive = $renderer->render(":::example {fullscreen=true}\n```html\n<p>Text</p>\n```\n:::\n");
+        $page = $renderer->render("::::example {src=\"/demo/\"}\n### A\n\ntext\n::::\n");
+
+        self::assertStringContainsString('data-docara-example-preview-resolved="sandbox"', $framed);
+        self::assertMatchesRegularExpression('~<iframe [^>]*data-docara-example-frame [^>]*sandbox="allow-scripts" allow="clipboard-write" ~', $framed);
+        self::assertStringContainsString('data-docara-example-preview-resolved="inline"', $responsive);
+        self::assertMatchesRegularExpression('~<iframe data-docara-example-responsive-frame [^>]*allow="clipboard-write"~', $responsive);
+        self::assertMatchesRegularExpression('~<iframe src="/demo/"[^>]*data-docara-example-page[^>]*allow="clipboard-write"~', $page);
+        // The permission widens no sandbox: the frame stays an opaque origin.
+        self::assertStringNotContainsString('allow-same-origin', $framed);
+        self::assertStringNotContainsString('allow-same-origin', $responsive);
+        // An embed of another site keeps its own policy.
+        $embed = $renderer->render(":::embed {provider=video}\n[Open](https://www.youtube-nocookie.com/embed/example)\n:::\n");
+        self::assertStringNotContainsString('clipboard-write', $embed);
+    }
+
+    #[Test]
+    public function an_example_keeps_the_page_theme_unless_it_switches_its_own(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $default = $renderer->render(":::example\n```html\n<p>Text</p>\n```\n:::\n");
+        $off = $renderer->render(":::example {theme_switch=false}\n```html\n<p>Text</p>\n```\n:::\n");
+
+        foreach ([$default, $off] as $html) {
+            self::assertStringContainsString('data-docara-example-preview-resolved="inline"', $html);
+            self::assertStringNotContainsString('<html data-docara-example-own-theme>', html_entity_decode($html, ENT_QUOTES | ENT_HTML5));
+            self::assertStringNotContainsString('data-docara-example-own-theme-runtime', html_entity_decode($html, ENT_QUOTES | ENT_HTML5));
+        }
+        self::assertSame(
+            [['id' => '', 'mode' => 'inline', 'requested_preview' => 'auto', 'resolved_preview' => 'inline', 'reason' => 'admitted_html']],
+            $renderer->examplePreviews(":::example {theme_switch=false}\n```html\n<p>Text</p>\n```\n:::\n"),
+        );
+    }
+
+    #[Test]
+    public function an_example_with_its_own_theme_gets_a_frame_with_the_loader_theme_and_a_memory_cookie_jar(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $markdown = ":::example {theme_switch=true}\n```html\n<sf-button-group appearance=\"segmented\" theme-switch></sf-button-group>\n```\n:::\n";
+        $html = $renderer->render($markdown);
+
+        self::assertStringContainsString('data-docara-example-preview-resolved="sandbox"', $html);
+        self::assertStringContainsString('data-docara-example-preview-reason="theme_switch"', $html);
+        self::assertSame(
+            [['id' => '', 'mode' => 'inline', 'requested_preview' => 'auto', 'resolved_preview' => 'sandbox', 'reason' => 'theme_switch']],
+            $renderer->examplePreviews($markdown),
+        );
+        preg_match('~data-docara-srcdoc="([^"]*)"~', $html, $frame);
+        $document = html_entity_decode($frame[1] ?? '', ENT_QUOTES | ENT_HTML5);
+        self::assertStringStartsWith('<!doctype html><html data-docara-example-own-theme><head>', $document);
+        // The cookie jar is in place before any boot state or Framework code.
+        $jar = strpos($document, '<script data-docara-example-own-theme-runtime>');
+        self::assertIsInt($jar);
+        self::assertLessThan(strpos($document, '</head>'), $jar);
+        self::assertStringContainsString("Object.defineProperty(document,'cookie'", $document);
+        // The frame runtime turns the Loader's theme back on only for its own theme.
+        self::assertStringContainsString('if(ownTheme&&window.SF_BOOT_CONFIG&&window.SF_BOOT_CONFIG.theme===false){delete window.SF_BOOT_CONFIG.theme}', $document);
+        self::assertStringContainsString("var ownTheme=document.documentElement.hasAttribute('data-docara-example-own-theme')", $document);
+
+        // Sandbox stays the author's explicit choice too.
+        self::assertStringContainsString(
+            'data-docara-example-preview-reason="forced_sandbox"',
+            $renderer->render(":::example {theme_switch=true preview=sandbox}\n```markdown\nText\n```\n:::\n"),
+        );
+    }
+
+    #[Test]
+    public function an_example_theme_switch_fails_closed_where_it_would_reach_the_page(): void
+    {
+        $cases = [
+            ':::example {theme_switch=local}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            ':::example {theme_switch=yes}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            ':::example {theme_switch=true preview=inline}' => 'MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED',
+            ':::example {theme=local}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN',
+        ];
+        $renderer = new PortableMarkdownRenderer;
+        foreach ($cases as $opening => $code) {
+            $markdown = "$opening\n```html\n<p>Text</p>\n```\n:::\n";
+            foreach (['render', 'examplePreviews'] as $method) {
+                try {
+                    $renderer->{$method}($markdown);
+                    self::fail("[$opening] was accepted by $method.");
+                } catch (PortableConfigurationException $exception) {
+                    self::assertSame($code, $exception->errorCode, "$opening via $method");
+                }
+            }
+        }
+
+        foreach (['render', 'examplePreviews'] as $method) {
+            try {
+                $renderer->{$method}("::::example {src=\"/demo/\" theme_switch=true}\n### A\n\ntext\n::::\n");
+                self::fail("A page example accepted theme_switch via $method.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('MARKDOWN_EXAMPLE_SRC_CONFLICT', $exception->errorCode);
+            }
         }
     }
 }

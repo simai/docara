@@ -137,6 +137,10 @@
             "components": ["example"],
             "reason": "Whether the example log has a Console tab for the example's console; a switch of the log named after it."
         },
+        "theme_switch": {
+            "components": ["example"],
+            "reason": "Whether the example switches the light/dark theme in its own frame, the same name as the Framework's sf-button-group theme-switch. Plain theme is the vocabulary's synonym of variant, a visual style, so it cannot name the page's light/dark mode."
+        },
         "log_open": {
             "components": ["example"],
             "reason": "The initial disclosure state of the example log, the vocabulary's open applied to that part of the example; plain open would read as the whole example starting open."

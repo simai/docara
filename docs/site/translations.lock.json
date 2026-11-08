@@ -1446,11 +1446,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/example.md",
-            "source_sha256": "c9dea331724072e943269d9f200adffe1f682bd978b47a3702f93e0100e980bf",
-            "source_structure_sha256": "b64f3e6ee7b6f55a91a25442fa7562f3a4699ffd9adf89a64db99563a4a9c934",
+            "source_sha256": "0ecf59160d1150fa3c1914bda53a841fc81c946aa21438f24b8d4770e42be39c",
+            "source_structure_sha256": "e71178ba513d2849578599e83305985a7d7cf5f74b212f48a376a470064ab02f",
             "target_path": "content/en/components/example.md",
-            "target_sha256": "adf4ddf87fccc06818ff894f16beb52de40dea6cea65869fb9067817f4d6f3cb",
-            "target_structure_sha256": "b64f3e6ee7b6f55a91a25442fa7562f3a4699ffd9adf89a64db99563a4a9c934"
+            "target_sha256": "b3fb8a31edd9a45afd2b4bdcdefd86d1cf48e236967d2bb509de956d3ca4596e",
+            "target_structure_sha256": "e71178ba513d2849578599e83305985a7d7cf5f74b212f48a376a470064ab02f"
         },
         {
             "key": "components/figure.md",
@@ -2178,10 +2178,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/content.md",
-            "source_sha256": "d10eb36fe4634998e582fda7b0ba99ed8b952be549e76dda2113aecb1851aa50",
+            "source_sha256": "a6ab7f348cacf4e2b01240dda42136a7d99861d029457222aeb4b20b437254fd",
             "source_structure_sha256": "73c0fa425ce8981a3a45eef06e0a47c85c600c2fbd021f87a5b819e232cc5714",
             "target_path": "content/en/reference/errors/content.md",
-            "target_sha256": "4434ba6fea89e72eac2c0dd9808d130adec436dde0b43f1676b1189f51a90ed3",
+            "target_sha256": "5ba3f5982ccdb56ab206f22318dd5204011759ffb666b362437135e56be90545",
             "target_structure_sha256": "73c0fa425ce8981a3a45eef06e0a47c85c600c2fbd021f87a5b819e232cc5714"
         },
         {

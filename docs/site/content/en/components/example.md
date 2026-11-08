@@ -150,6 +150,35 @@ with `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID`; `log_open` without
 `log` and `log_console=true` stops it with `MARKDOWN_EXAMPLE_LOG_REQUIRED`.
 The log's captions come from `lang.json` (the `examples.log_*` strings).
 
+### The example's own theme
+
+An example is usually shown in the page's theme, and theme switches inside
+an example do not work: the reader chooses the theme for the whole site. To
+show a theme switch itself, add `theme_switch=true`: the theme then changes
+only inside the example's frame:
+
+:::example {label="Theme switch" theme_switch=true}
+```html
+<div class="flex flex-col gap-2 items-cross-start p-1 radius-1 bg-surface-1">
+  <sf-button-group appearance="segmented" theme-switch size="1/2"></sf-button-group>
+  <p class="m-0 text-1/2">The theme changes only in this frame.</p>
+</div>
+```
+:::
+
+- The example always opens in an isolated frame and starts in the page's
+  theme. Until the reader chooses a theme in the example itself, the frame
+  follows the page's theme.
+- Framework switches (`sf-button-group theme-switch`, `sf-theme-button`
+  buttons, `SF.Loader.setTheme()`) work inside the frame. The page's theme
+  and the reader's choice in the site settings do not change, and the choice
+  made in the example is saved nowhere: after a reload the example is in the
+  page's theme again.
+- `preview=inline` with `theme_switch=true` stops the build with
+  `MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED`: on the page the switch would change
+  the theme of the whole site. An invalid value stops it with
+  `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID`.
+
 ### Shared example from the project
 
 If an example is needed on several pages or in all languages, keep it once
@@ -209,8 +238,9 @@ address in `src`, and inside the block list the files it is built from. Each
 - In the article the page is shown as a 1280 px desktop screen, scaled down
   to the column width. The width check button opens it full screen at the
   real width of a desktop, tablet or phone.
-- `id`, `preview` and the log (`log`, `log_console`, `log_open`) do
-  not combine with `src`: the page shown lives a life of its own.
+- `id`, `preview`, the log (`log`, `log_console`, `log_open`) and
+  `theme_switch` do not combine with `src`: the page shown lives a life of
+  its own.
 
 A ready sample is [Header with an action button](/en/examples/region-header/).
 
@@ -402,6 +432,7 @@ surrounding documentation.
 | `log` | string | — | The example log: event names separated by spaces that are recorded from the example's root, for example `"click sf-button-press"`. |
 | `log_console` | `true`, `false` | `false` | The "Console" tab in the log: the example's `console.log`, `info`, `warn` and `error`. Turns the log on even without `log`. |
 | `log_open` | `true`, `false` | `true` | Whether the log opens expanded; `false` opens it collapsed. |
+| `theme_switch` | `true`, `false` | `false` | The example's own theme: with `true` a theme switch in the example changes the theme only in its frame, not on the page. |
 
 <!-- docara:component-parameters:end -->
 

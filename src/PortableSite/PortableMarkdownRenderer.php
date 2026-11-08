@@ -748,6 +748,9 @@ final class PortableMarkdownRenderer
         // take the page's full width, as a landing page needs.
         $wide = $this->catalogueChoice(trim($attributes['layout'] ?? 'column'), 'example', 'layout') === 'wide';
         $log = $this->exampleLog($attributes);
+        // theme_switch=true gives the example a theme of its own: its frame
+        // starts in the page's theme and its own switch changes only itself.
+        $ownTheme = $this->exampleOwnTheme($attributes);
         $baseHref = null;
         if (array_key_exists('src', $attributes)) {
             return $this->renderPageExample($markdown, $attributes, $label, $defaultLabel, $fullscreen, $wrap, $sourceRoot, $sourceFile, $showSources, $wide);
@@ -785,7 +788,7 @@ final class PortableMarkdownRenderer
             );
         }
 
-        $previewDecision = $this->examplePreviewPolicy->resolve($sources, $exampleId !== '', $requestedPreview);
+        $previewDecision = $this->examplePreviewPolicy->resolve($sources, $exampleId !== '', $requestedPreview, $ownTheme);
         $renderId = 'markdown-example-' . substr(hash('sha256', $exampleId !== '' ? $exampleId : $markdown), 0, 12);
         if ($this->projectExamples instanceof ProjectExampleRepository && is_string($sourceFile) && $sourceFile !== '') {
             $hashSources = $sources;
@@ -816,6 +819,7 @@ final class PortableMarkdownRenderer
                 $label,
                 $defaultLabel,
                 $log,
+                $ownTheme,
             );
         } elseif ($hasMarkdown) {
             $preview = '<div data-docara-example-inline-preview>' . $this->nestInlineHeadings($compiledPreview) . '</div>';
@@ -948,6 +952,7 @@ final class PortableMarkdownRenderer
             }
             $this->catalogueChoice(trim($attributes['layout'] ?? 'column'), 'example', 'layout');
             $this->exampleLog($attributes);
+            $ownTheme = $this->exampleOwnTheme($attributes);
             if (trim($attributes['label'] ?? 'Example') === '') {
                 throw new PortableConfigurationException(
                     'MARKDOWN_EXAMPLE_LABEL_INVALID',
@@ -1005,6 +1010,7 @@ final class PortableMarkdownRenderer
                 $sources,
                 $exampleId !== '',
                 trim($attributes['preview'] ?? 'auto'),
+                $ownTheme,
             );
             $previews[] = [
                 'id' => $exampleId,
@@ -1049,7 +1055,7 @@ final class PortableMarkdownRenderer
         $preview = '<iframe src="' . $this->escapeHtml($src) . '" title="' . $this->escapeHtml($label) . '"'
             . ($defaultLabel ? ' data-docara-example-default-label' : '')
             . ' data-docara-example-frame data-docara-example-page data-sf-observer="ignore"'
-            . ' class="w-full border-0 bg-surface-0" loading="lazy"></iframe>';
+            . ' class="w-full border-0 bg-surface-0" allow="clipboard-write" loading="lazy"></iframe>';
         $renderId = 'markdown-example-' . substr(hash('sha256', $src . "\n" . $markdown), 0, 12);
 
         return $this->examples->render(
@@ -1077,8 +1083,9 @@ final class PortableMarkdownRenderer
     private function pageExampleParts(array $attributes, string $markdown, bool $showSources = true): array
     {
         // The log listens inside the example's own document; a page example
-        // shows a whole built page, which keeps its own console and events.
-        foreach (['id', 'preview', 'log', 'log_console', 'log_open'] as $conflict) {
+        // shows a whole built page, which keeps its own console and events,
+        // and follows the reader's theme from the site's storage.
+        foreach (['id', 'preview', 'log', 'log_console', 'log_open', 'theme_switch'] as $conflict) {
             if (array_key_exists($conflict, $attributes)) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_EXAMPLE_SRC_CONFLICT',
@@ -1205,8 +1212,9 @@ final class PortableMarkdownRenderer
         string $label = 'Example',
         bool $defaultLabel = true,
         ?ExampleLog $log = null,
+        bool $ownTheme = false,
     ): string {
-        $document = '<!doctype html><html><head><meta charset="utf-8">'
+        $document = '<!doctype html><html' . ($ownTheme ? ' data-docara-example-own-theme' : '') . '><head><meta charset="utf-8">'
             . '<meta name="viewport" content="width=device-width,initial-scale=1">'
             . '<title>' . $this->escapeHtml($label) . '</title>'
             . ($baseHref === null ? '' : '<base href="' . $this->escapeHtml($baseHref) . '">')
@@ -1215,6 +1223,7 @@ final class PortableMarkdownRenderer
             // body keeps room for the ring's width and offset.
             . '<style>body{padding:calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}</style>'
             . (isset($sources['CSS']) ? '<style>' . $sources['CSS'] . '</style>' : '')
+            . ($ownTheme ? $this->exampleOwnThemeRuntime() : '')
             // The log runtime comes before the example's markup and script,
             // so it hears the first events and console calls.
             . ($log === null ? '' : $this->exampleLogRuntime($log))
@@ -1241,8 +1250,40 @@ final class PortableMarkdownRenderer
             // frame at once even with loading="lazy", so the shell moves it to
             // srcdoc when the frame nears the screen. The document then
             // announces itself and the shell sizes the frame.
-            . ' data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" scrolling="no" loading="lazy" data-docara-srcdoc="'
+            . ' data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" allow="clipboard-write" scrolling="no" loading="lazy" data-docara-srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
+    }
+
+    /**
+     * Reads `theme_switch`: true lets the example switch its own theme. The
+     * Framework Loader's theme API is on in its frame, starting from the
+     * page's theme; the page and the reader's stored choice stay as they are.
+     *
+     * @param  array<string,string>  $attributes
+     */
+    private function exampleOwnTheme(array $attributes): bool
+    {
+        return array_key_exists('theme_switch', $attributes)
+            && $this->attributeBoolean($attributes['theme_switch'], 'example', 'theme_switch');
+    }
+
+    /**
+     * Runs first in an example frame with its own theme, before any Framework
+     * boot state: the Loader keeps the theme in an sf-theme cookie, and this
+     * frame's cookies live only in its memory, so a theme chosen in the
+     * example is never written to the site's cookies, even where the frame
+     * could reach them. The frame runtime seeds the jar with the page's theme.
+     */
+    private function exampleOwnThemeRuntime(): string
+    {
+        return <<<'HTML'
+<script data-docara-example-own-theme-runtime>(function(){var jar={};
+try{Object.defineProperty(document,'cookie',{configurable:true,
+get:function(){return Object.keys(jar).map(function(name){return name+'='+jar[name]}).join('; ')},
+set:function(text){text=String(text);var pair=text.split(';')[0],at=pair.indexOf('=');if(at<1)return;var name=pair.slice(0,at).trim(),value=pair.slice(at+1).trim();
+if(value===''||/;\s*max-age\s*=\s*(?:0|-)/i.test(text)||/;\s*expires\s*=[^;]*1970/i.test(text))delete jar[name];else jar[name]=value}})}catch(error){}
+})();</script>
+HTML;
     }
 
     /**
@@ -1360,6 +1401,34 @@ JS;
         return <<<'HTML'
 <script data-docara-example-resize>(function(){
 var body=document.body,lastHeight=0,scheduled=false,frameworkScriptSources={};
+/* An example with its own theme (theme_switch=true) takes the page's theme until the reader switches it inside the example; from then on the frame keeps its own. */
+var ownTheme=document.documentElement.hasAttribute('data-docara-example-own-theme'),ownThemeChosen=false,pageTheme='';
+function applyFrameTheme(theme){
+document.documentElement.classList.remove('theme-light','theme-dark');
+document.documentElement.classList.add('theme-'+theme);
+/* Framework colours are light-dark() pairs, which follow the used colour scheme. The frame takes the page's theme, not the reader's system setting. */
+document.documentElement.style.colorScheme=theme;
+body.classList.remove('theme-light','theme-dark');
+body.classList.add('theme-'+theme);
+}
+if(ownTheme){
+window.addEventListener('sf-theme-change',function(event){
+var theme=event.detail&&event.detail.theme==='dark'?'dark':'light';
+/* The Loader announces the page's theme too, when it starts and when the page's theme reaches it; any other preference is the reader's choice in the example. */
+if(!event.detail||event.detail.preference!==pageTheme)ownThemeChosen=true;
+applyFrameTheme(theme);
+measureSettled();
+});
+}
+function applyPageTheme(theme){
+if(!ownTheme){applyFrameTheme(theme);return}
+if(ownThemeChosen)return;
+/* The Loader reads the frame's own cookie jar (the own-theme runtime), never the site's. */
+pageTheme=theme;
+try{document.cookie='sf-theme='+theme+'; path=/'}catch(error){}
+try{if(window.SF&&SF.Loader&&typeof SF.Loader.checkTheme==='function')SF.Loader.checkTheme()}catch(error){}
+applyFrameTheme(theme);
+}
 /* Marks the document as an example frame for the Framework icon runtime, which then asks the shell for the full icon font instead of fetching it. */
 document.documentElement.setAttribute('data-docara-example-frame','');
 document.documentElement.style.overflow='hidden';
@@ -1381,12 +1450,7 @@ document.documentElement.style.minHeight='0';
 document.documentElement.style.height='auto';
 body.style.minHeight='0';
 body.style.height='auto';
-document.documentElement.classList.remove('theme-light','theme-dark');
-document.documentElement.classList.add('theme-'+theme);
-/* Framework colours are light-dark() pairs, which follow the used colour scheme. The frame takes the page's theme, not the reader's system setting. */
-document.documentElement.style.colorScheme=theme;
-body.classList.remove('theme-light','theme-dark');
-body.classList.add('theme-'+theme);
+applyPageTheme(theme);
 document.documentElement.dir=direction;
 body.dir=direction;
 if(typeof data.lang==='string'&&/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$/.test(data.lang)){document.documentElement.lang=data.lang}
@@ -1450,6 +1514,8 @@ script.setAttribute('data-docara-example-framework-boot',item.key);
 document.head.appendChild(script);
 currentBoot.push(item.key);
 });
+/* The page's boot state turns the Loader's theme off (Docara resolves the page theme itself); an example with its own theme keeps the Loader's theme API, which then works on this frame alone. */
+if(ownTheme&&window.SF_BOOT_CONFIG&&window.SF_BOOT_CONFIG.theme===false){delete window.SF_BOOT_CONFIG.theme}
 var scriptsLoaded=loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);
 /* Once the page's styles are in and the Framework scripts have run, the frame looks like the page: the shell may then show it in a responsive check instead of the inline preview. */
 if((Array.isArray(data.stylesheets)&&data.stylesheets.length)||(Array.isArray(data.inlineStyles)&&data.inlineStyles.length)){

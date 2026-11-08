@@ -165,10 +165,14 @@ final class ExamplePreviewPolicy
     }
 
     /**
+     * $ownTheme is an example that switches its own theme (theme_switch=true):
+     * inline it would switch the documentation page's theme, so it always
+     * gets a frame, and an explicit preview=inline fails closed.
+     *
      * @param  array<string,string>  $sources
      * @return array{requested:string,resolved:string,reason:string}
      */
-    public function resolve(array $sources, bool $reusable, string $requested): array
+    public function resolve(array $sources, bool $reusable, string $requested, bool $ownTheme = false): array
     {
         if (! in_array($requested, ['auto', 'inline', 'sandbox'], true)) {
             throw new PortableConfigurationException(
@@ -179,6 +183,17 @@ final class ExamplePreviewPolicy
 
         if ($requested === 'sandbox') {
             return ['requested' => $requested, 'resolved' => 'sandbox', 'reason' => 'forced_sandbox'];
+        }
+
+        if ($ownTheme) {
+            if ($requested === 'inline') {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED',
+                    'Example preview cannot be inline because [theme_switch] requires sandbox isolation.',
+                );
+            }
+
+            return ['requested' => $requested, 'resolved' => 'sandbox', 'reason' => 'theme_switch'];
         }
 
         if (isset($sources['Markdown'])) {

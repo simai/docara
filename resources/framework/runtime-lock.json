@@ -12,6 +12,11 @@
                 "packet_sha256": "58d3893974dd083b074eb325445ac590f8154b8f1e3eda70fe0ea45deabf35c4",
                 "files": 884,
                 "manifest_sha256": "df814b06ed2b3eb19da3a920ff427da3d3611754c27e7833638b5f7c31e5d478"
+            },
+            {
+                "packet_sha256": "99a85367f689d9b999612282583feb539aaf5363f5905441322153e3c858650c",
+                "files": 2228,
+                "manifest_sha256": "b3a6c03dcb8609ed65bffe056f9721870434a6e83b83be1b475fadd1daeddb74"
             }
         ],
         "superseded_framework_locks": [

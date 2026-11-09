@@ -88,6 +88,15 @@ All notable changes to Docara are recorded here. The format follows
   long class name, wraps where a line allows and, where a part is still
   too long, inside the token. Shorter inline code still stays on one
   line, and tables, code blocks and live examples are unchanged.
+- A page no longer asks the server for Framework files Docara never
+  published. The Framework release ships an empty minified script for 18
+  components whose script has no code of its own (`tags`, `pagination`,
+  `step` and others), and Docara left those twins out while the Loader,
+  told to use minified files, still asked for them: three 404s and three
+  extra requests on a page that used such a component. The runtime
+  projection now carries the empty twins as the release ships them (2246
+  files instead of 2228), and a site whose lock names the projection
+  Docara 3.13.1 shipped builds with the new one.
 
 ### Removed
 

@@ -41,7 +41,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-2a671352d67b', $repository->runtime()['pair_id']);
-        self::assertSame(2228, $repository->runtimeProjection()['files']);
+        self::assertSame(2246, $repository->runtimeProjection()['files']);
         self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $previous['runtime']['pair_id']);
 
         $previous['runtime']['ui']['files'] = 6772;
@@ -62,7 +62,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-4f5e5067afeb-smart-7d932ed51408', $previous['runtime']['pair_id']);
         self::assertSame('ui-2a671352d67b', $repository->runtime()['pair_id']);
-        self::assertSame(2228, $repository->runtimeProjection()['files']);
+        self::assertSame(2246, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 6144;
         $this->expectException(FrameworkComponentException::class);
@@ -82,7 +82,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-82fc0ba882ba', $previous['runtime']['pair_id']);
         self::assertSame('ui-2a671352d67b', $repository->runtime()['pair_id']);
-        self::assertSame(2228, $repository->runtimeProjection()['files']);
+        self::assertSame(2246, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 8090;
         $this->expectException(FrameworkComponentException::class);
@@ -103,7 +103,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-25beeb814ae8', $previous['runtime']['pair_id']);
         self::assertSame('ui-2a671352d67b', $repository->runtime()['pair_id']);
-        self::assertSame(2228, $repository->runtimeProjection()['files']);
+        self::assertSame(2246, $repository->runtimeProjection()['files']);
 
         $previous['runtime']['ui']['files'] = 8558;
         $this->expectException(FrameworkComponentException::class);
@@ -123,7 +123,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-32c7a64e4575', $previous['runtime']['pair_id']);
         self::assertSame('ui-2a671352d67b', $repository->runtime()['pair_id']);
-        self::assertSame(2228, $repository->runtimeProjection()['files']);
+        self::assertSame(2246, $repository->runtimeProjection()['files']);
     }
 
     #[Test]
@@ -139,7 +139,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-7153f7a9c092', $previous['runtime']['pair_id']);
         self::assertSame('ui-2a671352d67b', $repository->runtime()['pair_id']);
-        self::assertSame(2228, $repository->runtimeProjection()['files']);
+        self::assertSame(2246, $repository->runtimeProjection()['files']);
     }
 
     #[Test]
@@ -155,7 +155,60 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
         self::assertSame('ui-c3015f76bcc2', $previous['runtime']['pair_id']);
         self::assertSame('ui-2a671352d67b', $repository->runtime()['pair_id']);
-        self::assertSame(2228, $repository->runtimeProjection()['files']);
+        self::assertSame(2246, $repository->runtimeProjection()['files']);
+    }
+
+    #[Test]
+    public function the_projection_docara_3_13_shipped_is_upgraded_to_the_one_with_empty_twins(): void
+    {
+        // Docara 3.13.1 shipped the projection without the release's 0-byte
+        // .min.js twins (2228 files); a site lock that names it builds with the
+        // projection that carries them.
+        $path = dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json';
+        $shipped = FrameworkLock::fromJsonFile($path)->toArray();
+        $shipped['runtime_projection']['packet_sha256'] = '99a85367f689d9b999612282583feb539aaf5363f5905441322153e3c858650c';
+        $shipped['runtime_projection']['files'] = 2228;
+        $shipped['runtime_projection']['manifest']['sha256'] = 'b3a6c03dcb8609ed65bffe056f9721870434a6e83b83be1b475fadd1daeddb74';
+
+        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($shipped));
+        self::assertSame(2246, $repository->runtimeProjection()['files']);
+    }
+
+    #[Test]
+    public function every_component_file_the_minified_loader_asks_for_is_projected(): void
+    {
+        // The boot leaves the Loader on minified files, so for each component
+        // the registry gives a script or a stylesheet the Loader asks for
+        // component/<name>/{js,css}/<name>.min.{js,css}. The release ships a
+        // 0-byte .min.js for a component whose script has no code of its own
+        // (tags, pagination, step); a twin left out of the projection was a
+        // 404 and a second request on every page that used the component.
+        $path = dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json';
+        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromJsonFile($path));
+        $files = $repository->runtimeManifest()['files'];
+        $rules = json_decode($repository->bundledRuntimeAsset('rule/rule.json'), true, 512, JSON_THROW_ON_ERROR);
+        $asked = [];
+        foreach ($rules as $rule) {
+            if (($rule['type'] ?? null) !== 'component' || ! is_string($rule['name'] ?? null)) {
+                continue;
+            }
+            foreach (['js', 'css'] as $kind) {
+                if (($rule[$kind] ?? false) === true) {
+                    $asked[] = 'component/' . $rule['name'] . '/' . $kind . '/' . $rule['name'] . '.min.' . $kind;
+                }
+            }
+        }
+        self::assertNotSame([], $asked);
+        $missing = array_values(array_filter($asked, static fn (string $file): bool => ! isset($files[$file])));
+        self::assertSame([], $missing);
+
+        self::assertContains('component/tags/js/tags.min.js', $asked);
+        self::assertSame('', $repository->bundledRuntimeAsset('component/tags/js/tags.min.js'));
+        self::assertSame('component/tags/js/tags.min.js', $repository->runtimeTwin('component/tags/js/tags.js'));
+        // Only a minified twin the manifest records empty may be empty.
+        self::assertTrue(FrameworkManifestRepository::isEmptyMinifiedTwin('component/tags/js/tags.min.js', hash('sha256', '')));
+        self::assertFalse(FrameworkManifestRepository::isEmptyMinifiedTwin('component/tags/js/tags.js', hash('sha256', '')));
+        self::assertFalse(FrameworkManifestRepository::isEmptyMinifiedTwin('component/tags/js/tags.min.js', str_repeat('a', 64)));
     }
 
     #[Test]
@@ -169,7 +222,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $legacy['runtime_projection']['manifest']['sha256'] = '8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e';
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($legacy));
-        self::assertSame(2228, $repository->runtimeProjection()['files']);
+        self::assertSame(2246, $repository->runtimeProjection()['files']);
         self::assertArrayHasKey('rule/rule.json', $repository->runtimeManifest()['files']);
         self::assertSame(117, $legacy['runtime_projection']['files']);
 
@@ -296,9 +349,9 @@ final class FrameworkTypographyProjectionTest extends TestCase
         }
         $runtime = $repository->runtimeProjection();
         self::assertIsArray($runtime);
-        self::assertSame(2228, $runtime['files']);
+        self::assertSame(2246, $runtime['files']);
         $runtimeFiles = $repository->runtimeManifest()['files'];
-        self::assertCount(2228, $runtimeFiles);
+        self::assertCount(2246, $runtimeFiles);
         self::assertArrayHasKey('rule/rule.json', $runtimeFiles);
         self::assertArrayHasKey('utility/theme/default/css/default.css', $runtimeFiles);
         self::assertArrayHasKey('component/highlight/js/highlight.js', $runtimeFiles);
@@ -345,7 +398,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             }
         }
         self::assertSame(
-            '99a85367f689d9b999612282583feb539aaf5363f5905441322153e3c858650c',
+            'd0f9586f047f8883b838acebb24ea19289cbce74002adfca8172ab2f3f71a910',
             $runtime['packet_sha256'],
         );
         $coreLoader = $repository->bundledRuntimeAsset('core/js/core-loader.js');

@@ -168,7 +168,13 @@ final readonly class PortablePublisherAssetPublisher
             );
         }
         $bytes = file_get_contents($source);
-        if (! is_string($bytes) || $bytes === '') {
+        // A Framework runtime twin may be empty: the release ships a 0-byte
+        // .min.js for a component whose script has no code of its own, and the
+        // Loader asks for it (the build has checked it against the manifest).
+        if (! is_string($bytes)
+            || ($bytes === ''
+                && preg_match('#^vendor/simai-framework/runtime/[a-f0-9]{40}/distr/.+\.min\.(?:css|js)$#D', $label) !== 1)
+        ) {
             throw new PortableConfigurationException($errorPrefix . '_INVALID', "Asset [$label] is invalid.");
         }
         $this->files->ensureDirectoryExists(dirname($target));

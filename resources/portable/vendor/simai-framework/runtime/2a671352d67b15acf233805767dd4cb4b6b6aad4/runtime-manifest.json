@@ -52,6 +52,9 @@
         "component/avatars/js/avatars.js": {
             "sha256": "426e89d98dbc61457f03f9745c5fa7d281d8a84edb023a0a352c6b1405229d7e"
         },
+        "component/avatars/js/avatars.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/badges/css/badges.css": {
             "sha256": "00840262f332e34a3cf5b9e571f45e2e1a1d36f5fc8cd572d2615224a540b03f"
         },
@@ -109,6 +112,9 @@
         "component/card/js/card.js": {
             "sha256": "c1bc459b27344b369ea367cb8954b6f74f79af53ef018a3a0b7bb31b5876b7dd"
         },
+        "component/card/js/card.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/carousel/css/carousel.css": {
             "sha256": "bf2c0d721b6206e858230d1d100f942a9ceac716531658eab966335a79f5fb6e"
         },
@@ -160,6 +166,9 @@
         "component/contentDivider/js/contentDivider.js": {
             "sha256": "86b42f58fa4f66afd6ba0a295e964f089967c8f6472ae7cd7feece3e65400cb3"
         },
+        "component/contentDivider/js/contentDivider.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/context-menu/css/context-menu.css": {
             "sha256": "c0e337c05c81038e0fdc7120121c46bb1f4d9ef09d9e5581dd675a918d31beac"
         },
@@ -192,6 +201,9 @@
         },
         "component/doc/js/doc.js": {
             "sha256": "4c64daccacfd6a5f9263e374043f2af803297b80ab2d3ef981726400207ad66a"
+        },
+        "component/doc/js/doc.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         },
         "component/dot/css/dot.css": {
             "sha256": "9692818e96fd69bd117ab05cd2704c7fe759dfbce0af2012dff853b6fac428f1"
@@ -256,6 +268,9 @@
         "component/featured-icon/js/featured-icon.js": {
             "sha256": "75205a47add669e714a1c2b2dddc5aec50a3d3c21c02a71c842ecd581b67806a"
         },
+        "component/featured-icon/js/featured-icon.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/figure/css/figure.css": {
             "sha256": "26b501f7ac53636d8a93b571db89efa43739608590ca1d28f2298a695a7be2cb"
         },
@@ -265,6 +280,9 @@
         "component/figure/js/figure.js": {
             "sha256": "e760838fcc262361bea85d8f0907d97acb7805a83a4846648b97b558f088b3f6"
         },
+        "component/figure/js/figure.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/file-preview/css/file-preview.css": {
             "sha256": "1ba3aac7622e2f4d8d441c1762c025b9946022f06cc0e26e9ec939fd3554517f"
         },
@@ -273,6 +291,9 @@
         },
         "component/file-preview/js/file-preview.js": {
             "sha256": "8ab19716482d8c7d8473a281b521b9436824b8760a95eb0d8fcc484dba783d1b"
+        },
+        "component/file-preview/js/file-preview.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         },
         "component/file-upload/css/file-upload.css": {
             "sha256": "b0470efd689a1202dc640b23c0068c7ab70a34c3a4bdf2942a48c329119910df"
@@ -1834,6 +1855,9 @@
         "component/icons/js/icons.js": {
             "sha256": "b745d4e37314ce07dd7b9834bc653e643a3aaac5939889b73850253b4346bfa9"
         },
+        "component/icons/js/icons.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/inputs/css/inputs.css": {
             "sha256": "5f8b8f54015a3af38414aada351742a0fcbe6bf900bb509b0c0d6a20c30e350b"
         },
@@ -1855,6 +1879,9 @@
         "component/kbd/js/kbd.js": {
             "sha256": "a9521ec566c199c89e6c11817c09d0cae5b11f0d86fdd2c5e9e9afd26ababd87"
         },
+        "component/kbd/js/kbd.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/link/css/link.css": {
             "sha256": "719f98b3a1b0f7ddc0773e366f585ff06fa590b73468c9c9b493e5614c4b3ee9"
         },
@@ -1863,6 +1890,9 @@
         },
         "component/link/js/link.js": {
             "sha256": "e3b7f1be96c6d536b823b3218bb6e71098f1edd953841836be078ab4618cc9df"
+        },
+        "component/link/js/link.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         },
         "component/menu/css/menu.css": {
             "sha256": "539b6b7b9fa8faf93910a575d5f1d1a9264b39cbf5ed3bd98fb8cca69687ce4a"
@@ -1897,6 +1927,9 @@
         "component/outline/js/outline.js": {
             "sha256": "725517f544026da773ee46c429a9a63f0f2d11239bc5c5850d25fcbe9437e664"
         },
+        "component/outline/js/outline.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/pagination/css/pagination.css": {
             "sha256": "cf14ef16da41e6b639379736ab6fe378b7b504ff63c01345278bcf0bde1182d0"
         },
@@ -1905,6 +1938,9 @@
         },
         "component/pagination/js/pagination.js": {
             "sha256": "885b2d134aa1269e61d5ba74de31265108cc6187bae4f5d393f877ca3311d63e"
+        },
+        "component/pagination/js/pagination.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         },
         "component/placeholder/css/placeholder.css": {
             "sha256": "d9682043f308a9bd17242ad5e111a4f79322169c95e70b232bb8b3b4ac40b737"
@@ -1915,6 +1951,9 @@
         "component/placeholder/js/placeholder.js": {
             "sha256": "42ba7de1194f6445225869a8386531aa907da1e17d05736df1633d83d3571d53"
         },
+        "component/placeholder/js/placeholder.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/procedure/css/procedure.css": {
             "sha256": "22d8c1fe14bb65dc3ed1a5f6769cbfdf71c9fc40fa5fe8c3bf1694f1bc94c728"
         },
@@ -1923,6 +1962,9 @@
         },
         "component/procedure/js/procedure.js": {
             "sha256": "5df5d0e46b417976e93b8362af3b45ee9820f21a35e2cfdf3be73765b6612918"
+        },
+        "component/procedure/js/procedure.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         },
         "component/progress-bar/css/progress-bar.css": {
             "sha256": "dcee1bfc5d2c49d89955645152dd8f830aecdd4b4f98ff1878e081d46b135aa4"
@@ -1944,6 +1986,9 @@
         },
         "component/progress-ring/js/progress-ring.js": {
             "sha256": "a016bd4cc29a4375a1de8fd5944c82630aeabfcd0b4373f6a3d1268b2abe21e5"
+        },
+        "component/progress-ring/js/progress-ring.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         },
         "component/progress-scale/css/progress-scale.css": {
             "sha256": "6a6b214747b3ba240bd1a8f9b6659a65610df27b279bb5ac6b5236bb4198953f"
@@ -2001,6 +2046,9 @@
         },
         "component/reference-link/js/reference-link.js": {
             "sha256": "61359d10865481316a92871500cd2ee2f315501f4c0828acab95ae3ecb6b38a5"
+        },
+        "component/reference-link/js/reference-link.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         },
         "component/scrollbar/css/scrollbar.css": {
             "sha256": "e1a195349eda203a4c54e55a1f7908ea5a5a7aa5783caa19b8fcc98e00084846"
@@ -2077,6 +2125,9 @@
         "component/step/js/step.js": {
             "sha256": "06f6ad52d09488eb18f1c51202ca5d662ffd7dfc4f3ef5df46d87dbff5208bf6"
         },
+        "component/step/js/step.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
         "component/swiper/css/swiper.css": {
             "sha256": "aecaf2b84316aeec6ed70945c039971d3a9dbeeba37be1ab9d701b42698fd0bc"
         },
@@ -2133,6 +2184,9 @@
         },
         "component/tags/js/tags.js": {
             "sha256": "511d51a5e41245218f663a035994da056b13bec860f9b482b6bbafad825a2923"
+        },
+        "component/tags/js/tags.min.js": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         },
         "component/textarea/css/textarea.css": {
             "sha256": "38a6bdeaf28eac6c834cc1253911e9c9450f804e69a5db8e75f5080a55c84c12"
@@ -6692,5 +6746,5 @@
             "sha256": "fb6947c4e8176eecc1ae2c769efa0ba7eb2a7dba4bac210509164cf2d240ed83"
         }
     },
-    "packet_sha256": "99a85367f689d9b999612282583feb539aaf5363f5905441322153e3c858650c"
+    "packet_sha256": "d0f9586f047f8883b838acebb24ea19289cbce74002adfca8172ab2f3f71a910"
 }

@@ -422,7 +422,17 @@ foreach (new RecursiveIteratorIterator(
         $twinBytes = $useWorkingRegistry
             ? (is_file(realpath($uiRoot) . '/distr/' . $twinFile) ? file_get_contents(realpath($uiRoot) . '/distr/' . $twinFile) : '')
             : (isset($upstreamNames['distr/' . $twinFile]) ? $git(['show', $revision . ':distr/' . $twinFile]) : '');
-        if (! is_string($twinBytes) || $twinBytes === '') {
+        if (! is_string($twinBytes)) {
+            continue;
+        }
+        // The release ships a 0-byte twin for a component whose script has no
+        // code of its own (tags, avatars, kbd). It is projected all the same:
+        // the Loader, on its minified default, asks for exactly that file, and
+        // a skipped twin left a 404 and a second request on every page.
+        $upstreamTwin = $useWorkingRegistry
+            ? is_file(realpath($uiRoot) . '/distr/' . $twinFile)
+            : isset($upstreamNames['distr/' . $twinFile]);
+        if (! $upstreamTwin || ($twinBytes === '' && str_ends_with($twinFile, '.LICENSE.txt'))) {
             continue;
         }
         $minifiedTwins[$twinFile] = $twinBytes;
@@ -617,7 +627,8 @@ foreach (array_keys($manifest['files']) as $relativePath) {
         throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_UNSAFE: ' . $relativePath);
     }
     $asset = file_get_contents($path);
-    if (! is_string($asset) || $asset === '') {
+    // Only a minified twin may be empty (see the twins above).
+    if (! is_string($asset) || ($asset === '' && ! isset($minifiedTwins[$relativePath]))) {
         throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_MISSING: ' . $relativePath);
     }
     $sha256 = hash('sha256', $asset);

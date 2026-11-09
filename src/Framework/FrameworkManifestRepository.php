@@ -493,6 +493,18 @@ final readonly class FrameworkManifestRepository
             : $relativePath;
     }
 
+    /**
+     * The release ships a 0-byte minified twin for a component whose script
+     * has no code of its own (tags, avatars, kbd). The twin is projected as
+     * shipped, because the Loader asks for it; it is the one runtime file that
+     * may be empty, and only when the manifest records it empty.
+     */
+    public static function isEmptyMinifiedTwin(string $relativePath, string $sha256): bool
+    {
+        return preg_match('/\.min\.(css|js)$/D', $relativePath) === 1
+            && hash_equals(hash('sha256', ''), $sha256);
+    }
+
     private static function minifiedTwinPath(string $relativePath): ?string
     {
         if (str_contains($relativePath, '.min.') || preg_match('/\.(css|js)$/D', $relativePath) !== 1) {
@@ -541,7 +553,7 @@ final readonly class FrameworkManifestRepository
             $relativePath,
         );
         $bytes = @file_get_contents($path);
-        if (! is_string($bytes) || $bytes === '') {
+        if (! is_string($bytes) || ($bytes === '' && ! self::isEmptyMinifiedTwin($relativePath, $record['sha256']))) {
             throw new FrameworkComponentException('FRAMEWORK_RUNTIME_ASSET_MISSING', $relativePath);
         }
         if (! hash_equals($record['sha256'], hash('sha256', $bytes))) {

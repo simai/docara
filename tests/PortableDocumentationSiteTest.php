@@ -482,8 +482,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // the sf-language picker's reserved place add four more shell
         // stylesheet groups (66 in all): 3233. The component reference page
         // (ru, en and its unprefixed redirect) and two more shell stylesheet
-        // groups: 3238.
-        self::assertCount(3238, $firstFiles);
+        // groups: 3238. The Framework's 0-byte .min.js twins published (18
+        // files), SIMAI Framework ui-b4a77681f0a7 with its new Smart files (28)
+        // and the shell files that follow it and the preloaded sheets: 3290.
+        self::assertCount(3290, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

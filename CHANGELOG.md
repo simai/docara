@@ -110,7 +110,8 @@ All notable changes to Docara are recorded here. The format follows
     and `sf-segmented`, of which `sf-button-group` is now a dated alias;
   - the Framework's colour purposes, shadows and elevation levels, heading
     ladder and compact density, with the previous variable names kept as
-    aliases; popups open on the top layer;
+    aliases; popups open on the top layer; a site `theme` colour now gives
+    288 variables (160 translucent steps instead of 98);
   - new Smart components on pages: `sf-input-choice`, `sf-list-description`,
     `sf-list-timeline`, `sf-list-attention`, `sf-tile-metric` and
     `sf-progress-run`;
@@ -119,6 +120,14 @@ All notable changes to Docara are recorded here. The format follows
   Sites that pin `ui-2a671352d67b` (Docara 3.13.0 to 3.13.1) build with the
   new release.
 
+- A page with a code block carries the Framework's code highlighting,
+  copy button and scrollbar styles in its first frame and lists them as
+  loaded, so the Loader no longer links those three stylesheets after the
+  page has drawn. Docara left the code blocks out when it looked for what a
+  page uses, which also hid the code markup the Framework highlights. A page
+  whose Smart element opens another one later (the header's `sf-language`
+  opens `sf-menu-context`) likewise carries that one's stylesheet-only
+  parts (`context-menu`, `kbd`).
 ### Removed
 
 - The unused `.docara-example-source` rule left over from 3.0 is gone from

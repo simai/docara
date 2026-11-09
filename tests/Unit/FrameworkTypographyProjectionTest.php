@@ -688,6 +688,31 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertNotContains($lazy, $tabsPlan->preload['modules']);
         }
 
+        // A code block selects the Loader's highlight rule with its relations
+        // (clipboard, scrollbar), although the text of the code is not
+        // scanned: a tag named in a sample selects nothing.
+        $codePlan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml(
+            '<main><pre><code class="language-html">&lt;sf-tabs&gt;&lt;/sf-tabs&gt; <sf-tabs></sf-tabs></code></pre></main>',
+            [],
+        );
+        foreach (['highlight', 'clipboard', 'scrollbar'] as $module) {
+            self::assertContains($module, $codePlan->preload['modules']);
+            self::assertTrue($codePlan->preload['loaded_plugins'][$module]['ready']);
+        }
+        self::assertNotContains('cl-tabs', $codePlan->preload['modules']);
+        $prosePlan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml('<main><p>Text</p></main>', []);
+        self::assertNotContains('highlight', $prosePlan->preload['modules']);
+
+        // sf-language reaches sf-menu-context lazily; its stylesheet-only
+        // components are preloaded so the Loader links no sheet for them,
+        // while sf-menu-context itself stays with the Loader.
+        $languagePlan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml('<header><sf-language></sf-language></header>', []);
+        foreach (['context-menu', 'kbd'] as $module) {
+            self::assertContains($module, $languagePlan->preload['modules']);
+            self::assertSame(['css' => true, 'js' => false, 'ready' => true], $languagePlan->preload['loaded_plugins'][$module]);
+        }
+        self::assertNotContains('cl-menu-context', $languagePlan->preload['modules']);
+        self::assertStringContainsString('"context-menu":{"css":true,"js":false,"ready":true}', (string) array_column($languagePlan->assets, null, 'key')['simai.framework.preloaded']['content']);
 
         $nested = (new FrameworkAssetPlanner($repository, '/project~/docs/_docara/framework-runtime'))->plan([]);
         $nestedAssets = array_column($nested->assets, null, 'key');

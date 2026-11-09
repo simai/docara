@@ -15,6 +15,9 @@ final readonly class FrameworkAssetPlanner
 
     private const SHELL_CSS_SOURCE = 'declarative-shell.css';
 
+    /** Loader rules that match code markup (`<pre><code>`, `language-*`). */
+    private const CODE_MARKUP_RULES = ['highlight'];
+
     private const ICON_SUBSET_MANIFEST = 'vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.1923885bcfbdb6f0ece3.manifest.json';
 
     private const ICON_SUBSET_MANIFEST_SHA256 = 'a874fabe777d87aae248407d65a7417ffaebf327fbea52813fcb6667d43cfae5';
@@ -1130,6 +1133,15 @@ final readonly class FrameworkAssetPlanner
             throw new FrameworkComponentException('FRAMEWORK_ASSET_PLAN_HTML_INVALID');
         }
         $scanHtml .= $exampleHtml;
+        // Code blocks are left out of the scan below, so that the text of a
+        // code sample never selects a component. The Loader's own rules for
+        // code markup (`<pre><code>`, `language-*`) still match the page in
+        // the browser, so those rules alone are matched against the markup
+        // with its code blocks kept.
+        $codeScanHtml = preg_replace('~<(script|style)\b[^>]*>.*?</\1\s*>~is', '', $scanHtml);
+        if (! is_string($codeScanHtml)) {
+            throw new FrameworkComponentException('FRAMEWORK_ASSET_PLAN_HTML_INVALID');
+        }
         $scanHtml = preg_replace(
             '~<(pre|code|script|style)\b[^>]*>.*?</\1\s*>~is',
             '',
@@ -1184,7 +1196,7 @@ final readonly class FrameworkAssetPlanner
             if ($loaderRegex !== null && $this->loaderRegexMatches(
                 $loaderRegex,
                 $name,
-                $scanHtml,
+                in_array($name, self::CODE_MARKUP_RULES, true) ? $codeScanHtml : $scanHtml,
                 ($rule['type'] ?? 'utility') === 'utility' ? $classTokens : [],
             )) {
                 $selected[$name] = true;
@@ -1303,6 +1315,39 @@ final readonly class FrameworkAssetPlanner
             $name = (string) $rule['name'];
             if (isset($selected[$name])) {
                 $visit($name);
+            }
+        }
+        // A Smart element on the page reaches another one lazily (sf-language
+        // opens sf-menu-context), and the Loader links that one's stylesheets
+        // when it loads it. A stylesheet-only component of such an element
+        // (context-menu, kbd) is preloaded, so it sits in the shell and in
+        // SF_PRELOADED and the Loader links nothing more. The lazily reached
+        // element itself, with its script, stays with the Loader.
+        foreach ($ordered as $name) {
+            if (($byName[$name]['type'] ?? null) !== 'smart') {
+                continue;
+            }
+            foreach (($byName[$name]['relation'] ?? []) as $relation) {
+                $lazyName = is_array($relation) ? ($relation['name'] ?? null) : null;
+                if (! self::isLazyRelation($relation)
+                    || ! is_string($lazyName)
+                    || ($byName[$lazyName]['type'] ?? null) !== 'smart'
+                ) {
+                    continue;
+                }
+                foreach (($byName[$lazyName]['relation'] ?? []) as $lazyRelation) {
+                    $dependency = is_array($lazyRelation) ? ($lazyRelation['name'] ?? null) : null;
+                    $dependencyRule = is_string($dependency) ? ($byName[$dependency] ?? null) : null;
+                    if (! self::isLazyRelation($lazyRelation)
+                        && is_array($dependencyRule)
+                        && ($dependencyRule['type'] ?? null) === 'component'
+                        && ($dependencyRule['css'] ?? false) === true
+                        && ($dependencyRule['js'] ?? false) !== true
+                        && ($dependencyRule['relation'] ?? []) === []
+                    ) {
+                        $visit((string) $dependency);
+                    }
+                }
             }
         }
         $ordered = self::breakpointOrdered($ordered);

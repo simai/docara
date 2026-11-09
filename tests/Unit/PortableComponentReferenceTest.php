@@ -60,7 +60,7 @@ final class PortableComponentReferenceTest extends TestCase
         self::assertStringContainsString('<td><code>label</code> (required)</td>', $html);
         self::assertStringContainsString('<td><code>1/2</code>, <code>1</code>, <code>2</code></td>', $html);
         self::assertStringContainsString('<td>empty</td>', $html);
-        self::assertStringContainsString('<code>{ value: number, previous?: number }</code>', $html);
+        self::assertStringContainsString('<code data-docara-code-wrap>{ value: number, previous?: number }</code>', $html);
         self::assertStringContainsString('<code>demo-counter-input</code> → <code>demo-counter-change</code>', $html);
         self::assertStringContainsString('<code>increment(amount?: number)</code>', $html);
         // Generated text that only repeats the name, and the unknown result

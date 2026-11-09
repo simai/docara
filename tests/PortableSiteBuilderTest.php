@@ -1364,9 +1364,9 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => '798c7c9e09ab6655a1385eadcd22695c1666e526410aa3dd93a7471dfeb11254',
-            'smart/button/js/button.js' => '5b89d732f393e67b6de7354a5f178bd3eb9a63f46cd4d307a0a0b055d56152d3',
-            'smart/icon/js/icon.js' => '7bc8029fafe1c716bc6b8843fdbfc16758f15498dc071addd0db264531f62a91',
+            'smart/alert/js/alert.js' => 'ef768d0a3fccfac3f322d96bd683de7582985d7d513ecfe92f979741b0046653',
+            'smart/button/js/button.js' => '476eeb5739db710eafcd2341744e2b753a3dbe1599f7989037f68e4466ab70fd',
+            'smart/icon/js/icon.js' => '9570598e6e97e4b5b2bca7711a9eb7e802d1af9ea78b8d57aa8efcc4b52d05c5',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
             self::assertFileExists($published);

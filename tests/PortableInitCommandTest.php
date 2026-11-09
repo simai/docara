@@ -192,10 +192,10 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame('ui-b4a77681f0a7', $lock['runtime']['pair_id']);
         $this->assertSame('b4a77681f0a7f1c540566e5abac2a4f9d3082a3d', $lock['runtime']['ui']['commit']);
         $this->assertSame('b4a77681f0a7f1c540566e5abac2a4f9d3082a3d', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('3f56fa78aab1e9b9ed79dffa80c2b438f76e7dfd', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('c62eae925213318fca769c5cf0149f60b53df76c', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('053a713c2ed2962275002edbaef887324bb2d1c1d3dc2819f43a0a789048f7ab', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('957a8b06a946aa4e3e77aa7eef23ffae3bdbd1be194cd1d8aed2caecf561be06', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('0faae4d38be9c9df8c25596e8efc38d454c7b1bf6f25a74c2dbf9fa95b51b7fd', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('b3d33db0792d44111af9a9063463e24c9fe35ba2aa7ad4c130de67cf625d3389', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui', $lock['asset_projection']['source']['provider']);
@@ -204,20 +204,22 @@ class PortableInitCommandTest extends TestCase
             $lock['asset_projection']['source']['revision'],
         );
         $this->assertSame([
-            'smart/alert/js/alert.js' => '798c7c9e09ab6655a1385eadcd22695c1666e526410aa3dd93a7471dfeb11254',
-            'smart/alert/js/alert.min.js' => '8aa705e4f65278c9e601ecbeb4f0353735ff07cee09f2367ecad3db0c2a3bdfa',
-            'smart/button-close/js/button-close.js' => '60655c690168463233d10cbf556fca8f1e4b6d6125a48d724d313a4af7ebf8bd',
-            'smart/button-close/js/button-close.min.js' => 'ed5ca25d592d5c6a7350e9ebaaad7a9d7b2149d395fac0d329bea50671f78999',
+            'smart/alert/js/alert.js' => 'ef768d0a3fccfac3f322d96bd683de7582985d7d513ecfe92f979741b0046653',
+            'smart/alert/js/alert.min.js' => 'd24577eb620139b8a947177f4d1aaef914868239621cc79af1b6e42ac265d863',
+            'smart/button-close/css/button-close.css' => '50e5e65952dddb9e9adfe12af5d149325a681860664ba44f95844a0aa9a28c79',
+            'smart/button-close/css/button-close.min.css' => '18875be1c1729fd41a62dda93d12c6bfb658b37d330fc8d38102cb4a17cca366',
+            'smart/button-close/js/button-close.js' => '6e40c75ae4693df26a6d098cc82d9908901ad0bb2b44c39e3ba1d6a65fda911a',
+            'smart/button-close/js/button-close.min.js' => '89cb0dea990078542d71f8a08b001072065bc42f75e0835a3bb2b1815f27268b',
             'smart/button-icon/css/button-icon.css' => '07f0395401f507a3ec6d1e762e775a4b9c7a878fae4de9e760ca28c5d25de03f',
             'smart/button-icon/css/button-icon.min.css' => '95bba0cba15d9d6c36f042d8d1e10ab5560e7e2353feee0f3c02a64adda074c4',
-            'smart/button-icon/js/button-icon.js' => '6bc556fc7ce175119d96d6c4907603d8964693313b99cfdd6f05c2243d2c0166',
-            'smart/button-icon/js/button-icon.min.js' => 'f68d5400ef612d771c2278b5d38f593bee02693962a45c04253ea14894490ccd',
-            'smart/button/js/button.js' => '5b89d732f393e67b6de7354a5f178bd3eb9a63f46cd4d307a0a0b055d56152d3',
-            'smart/button/js/button.min.js' => '227d317648b5e02c47e1519fbfe8d1680a5eb6cfceb292d2e14a0ab87c7b3ebc',
-            'smart/icon/js/icon.js' => '7bc8029fafe1c716bc6b8843fdbfc16758f15498dc071addd0db264531f62a91',
-            'smart/icon/js/icon.min.js' => '08b9e2eeffb2bfdf7674faa6347d40b064406bef483842be2baa66f87166dec8',
-            'smart/modal/js/modal.js' => '12eb421b5ca364e5d5ab5319f904f24e9ddfd939f697694445f80de4f93b4f52',
-            'smart/modal/js/modal.min.js' => '66f5e0edfacf2fbdaed57db01b2c5987d7ca0c7d3e8d1a41b30cdb53a62688ff',
+            'smart/button-icon/js/button-icon.js' => '780f4dacf6ef404d0639619dae01ecddb9c4e303e20a76b1e22e80a4ed34de6c',
+            'smart/button-icon/js/button-icon.min.js' => '855e25ec2697f824e9f96dc5067ae15f99bcf1a6982546a8186aec4d6275b3de',
+            'smart/button/js/button.js' => '476eeb5739db710eafcd2341744e2b753a3dbe1599f7989037f68e4466ab70fd',
+            'smart/button/js/button.min.js' => '2e8d0f194a5955bb891dfeb2f821eaed34829a93b7df1a5e37cc09e559eefa8f',
+            'smart/icon/js/icon.js' => '9570598e6e97e4b5b2bca7711a9eb7e802d1af9ea78b8d57aa8efcc4b52d05c5',
+            'smart/icon/js/icon.min.js' => 'a30bae10c4b9f21b2fcdbf7ebacb688ed47a10c8aeb56d608d0eb8f53acda5c0',
+            'smart/modal/js/modal.js' => '3bcf0516a12993ae1ce7d9b8b27e4f039ee70e8d7bb00d4658688abc92e12c0c',
+            'smart/modal/js/modal.min.js' => '5ac86b53729be0961c5e9adef5219d0763b4b97096e8a03417ed54a4b86dadc5',
         ], array_map(
             static fn (array $record): string => $record['sha256'],
             $lock['asset_projection']['files'],
@@ -225,9 +227,9 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame('docara.framework_dynamic_asset_projection.v1', $lock['dynamic_asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['dynamic_asset_projection']['mount']);
         $this->assertSame($lock['runtime']['ui_smart']['commit'], $lock['dynamic_asset_projection']['source']['revision']);
-        $this->assertCount(288, $lock['dynamic_asset_projection']['files']);
+        $this->assertCount(314, $lock['dynamic_asset_projection']['files']);
         $this->assertSame(
-            'bb48bae969557e29b2cc83ddcad24b8dce9f0fbff7602b76ae6f8ccfa73e577e',
+            'c3c11c74369b327846e3d97a520b5676c755a268cf2e707914f23f0c41b5c7e7',
             $lock['dynamic_asset_projection']['files']['smart/input/js/input.js']['sha256'],
         );
         $this->assertSame('docara.framework_icon_projection.v1', $lock['icon_projection']['schema']);

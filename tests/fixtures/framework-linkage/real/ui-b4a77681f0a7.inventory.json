@@ -1,0 +1,280 @@
+{
+  "schema": "simai.framework.unit-inventory",
+  "schema_version": 1,
+  "source": "simai/ui-source",
+  "revision": "a29cc9989bebace9a98c235b074ce23998ad39c6",
+  "release": "ui-b4a77681f0a7",
+  "units": [
+    {
+      "id": "component.accordion",
+      "kind": "component",
+      "version": "1.0.1",
+      "content_sha256": "f42fdd9bdbdabfb41311b96daf73ead31e5b8afbc2a0a0e34b607f3ac964113d",
+      "dependencies": [
+        {
+          "id": "core.runtime",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "module.component-shared",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.border",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.colour",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.motion",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.radius",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.size",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.space",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.typography",
+          "range": "^1.0.0"
+        }
+      ]
+    },
+    {
+      "id": "core.runtime",
+      "kind": "core",
+      "version": "1.47.0",
+      "content_sha256": "929f09caedc0d7b9fdc9fc4b1aa6f6385c50c2aeb32e4da1a1e216509e00c340",
+      "dependencies": [
+        {
+          "id": "core.styles",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.colour",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.radius",
+          "range": "^1.1.0"
+        },
+        {
+          "id": "tokens.space",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.typography",
+          "range": "^1.1.0"
+        }
+      ]
+    },
+    {
+      "id": "smart.button",
+      "kind": "smart",
+      "version": "1.10.0",
+      "content_sha256": "45156c2dc73bd9256e3b1071bdc1982257ea3e1ed082474290f161b9f5e03b2b",
+      "dependencies": [
+        {
+          "id": "component.buttons",
+          "range": "^1.8.1"
+        },
+        {
+          "id": "component.kbd",
+          "range": "^1.2.0"
+        },
+        {
+          "id": "component.spinner",
+          "range": "^1.1.0"
+        },
+        {
+          "id": "core.runtime",
+          "range": "^1.47.0"
+        },
+        {
+          "id": "module.smart-helpers",
+          "range": "^1.3.2"
+        },
+        {
+          "id": "smart.icon",
+          "range": "^1.1.6"
+        },
+        {
+          "id": "utility.pointer-events",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "utility.text-align",
+          "range": "^1.0.0"
+        }
+      ]
+    },
+    {
+      "id": "smart.tag",
+      "kind": "smart",
+      "version": "1.3.1",
+      "content_sha256": "3beaf078ad5a5da266ee0375b59f2bde5f99cf5ae5b36b5b9d4ff932adf6d233",
+      "dependencies": [
+        {
+          "id": "component.avatars",
+          "range": "^1.3.3"
+        },
+        {
+          "id": "component.dot",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "component.icon-buttons",
+          "range": "^1.4.1"
+        },
+        {
+          "id": "component.tags",
+          "range": "^1.2.0"
+        },
+        {
+          "id": "core.runtime",
+          "range": "^1.47.0"
+        },
+        {
+          "id": "module.component-shared",
+          "range": "^1.2.0"
+        },
+        {
+          "id": "smart.button-icon",
+          "range": "^1.7.1"
+        },
+        {
+          "id": "tokens.border",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.colour",
+          "range": "^1.7.0"
+        },
+        {
+          "id": "tokens.size",
+          "range": "^1.1.0"
+        }
+      ]
+    },
+    {
+      "id": "tokens.colour",
+      "kind": "tokens",
+      "version": "1.7.0",
+      "content_sha256": "3726b03204301b477ccc570eb9678152d86f62f638916991bca25cd1dffa68df",
+      "dependencies": [
+        {
+          "id": "tokens.elevation",
+          "range": "^1.0.0"
+        }
+      ]
+    },
+    {
+      "id": "tokens.elevation",
+      "kind": "tokens",
+      "version": "1.2.0",
+      "content_sha256": "8538158456fa9339a7b918883bff51a8db4c0463b08534d7ddd53fd996246970",
+      "dependencies": [
+        {
+          "id": "tokens.border",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.colour",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.size",
+          "range": "^1.0.0"
+        }
+      ]
+    },
+    {
+      "id": "tokens.space",
+      "kind": "tokens",
+      "version": "1.0.4",
+      "content_sha256": "c819debd5f81698d777916b88b5a997ae5e89db3373cb23f071904d02841efd6",
+      "dependencies": []
+    },
+    {
+      "id": "tokens.typography",
+      "kind": "tokens",
+      "version": "1.6.3",
+      "content_sha256": "b1b45e3f403e18d2414b19c84c71843ac9b97ca41098c0fc333df98291a1832f",
+      "dependencies": [
+        {
+          "id": "font.inter",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.border",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.breakpoint",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.colour",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.motion",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.radius",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.size",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "tokens.space",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "utility.font-weight",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "utility.letter-spacing",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "utility.line-height",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "utility.text-max-width",
+          "range": "^1.0.0"
+        }
+      ]
+    },
+    {
+      "id": "utility.gap",
+      "kind": "utility",
+      "version": "1.0.0",
+      "content_sha256": "993278e83f592f512096a5ceb1dddd8dfca1cb57fdc7c4d5d1c12e7549e0abc1",
+      "dependencies": [
+        {
+          "id": "tokens.breakpoint",
+          "range": "^1.0.0"
+        },
+        {
+          "id": "utility.padding",
+          "range": "^1.0.0"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "schema": "simai.change-journal",
+  "schema_version": 1,
+  "policy": "contracts/lifecycle-policy.json",
+  "records": [
+    {
+      "id": "token-button-loading-stripe",
+      "recorded_on": "2026-10-20",
+      "stage": "compat",
+      "kind": "token",
+      "summary": "A loading button shows the spinner at its icon's size (simai/ui-source#10) -- sf-button, sf-icon-button and the buttons of sf-button-group, the segmented one included -- and the moving stripes are no longer the loading look. The Framework no longer sets --sf-button-loading-stripe or --sf-icon-button-loading-stripe; a page that sets either still gets still stripes in that colour over a loading button until remove_after, and nothing when it is unset.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "--sf-button-loading-stripe",
+          "to": null,
+          "match": "--sf-button-loading-stripe\\b"
+        },
+        {
+          "component": "sf-icon-button",
+          "from": "--sf-icon-button-loading-stripe",
+          "to": null,
+          "match": "--sf-icon-button-loading-stripe\\b"
+        }
+      ],
+      "deprecated_on": "2026-10-20",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Delete the variable: a loading button shows the spinner, in the button's ink. To colour the spinner, set --sf-loader--color on the button or an ancestor.",
+      "owner": "ui-source",
+      "source": "src/component/buttons/scss/_css__buttons_custom.scss, src/component/icon-buttons/scss/_css_icon_buttons_custom.scss"
+    },
+    {
+      "id": "path-smart-buttons-to-button",
+      "recorded_on": "2026-10-27",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-button is served from smart/button/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/button.js, loader bundle cl-button. The old path keeps working until remove_after: smart/buttons/js/buttons.js is a forwarding script that notes the path in SF.deprecations and loads smart/button/js/button.js, the Loader forwards the bundle name cl-buttons to cl-button (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.buttons is a dated alias of smart.button, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-button",
+          "from": "smart/buttons/js/buttons.js",
+          "to": "smart/button/js/button.js",
+          "match": "smart/buttons/js/buttons(?:\\.min)?\\.js"
+        },
+        {
+          "component": "loader",
+          "from": "cl-buttons",
+          "to": "cl-button",
+          "match": "['\"]cl-buttons['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.buttons",
+          "to": "smart.button",
+          "match": "['\"]smart\\.buttons['\"]"
+        }
+      ],
+      "deprecated_on": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Write smart/button/ for smart/buttons/ and button for buttons in the file names (js/button.js, js/button.min.js); in a product rule's relation write cl-button for cl-buttons, and in a manifest or a package contract smart.button for smart.buttons. A page that lets the Loader fetch sf-button needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/buttons/js/buttons.js\"></script>",
+        "after": "<script src=\"/distr/smart/button/js/button.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/buttons/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/button/smart.manifest.json"
+    },
+    {
+      "id": "path-smart-tags-to-tag",
+      "recorded_on": "2026-10-27",
+      "stage": "compat",
+      "kind": "component",
+      "summary": "sf-tag is served from smart/tag/ since its folder took the tag's name (standard simai.smart-component 1.3.8 §3, §21): js/tag.js and css/tag.css, loader bundle cl-tag. The old path keeps working until remove_after: smart/tags/js/tags.js is a forwarding script that notes the path in SF.deprecations and loads smart/tag/js/tag.js, smart/tags/css/tags.css is sf-tag's sheet, the Loader forwards the bundle name cl-tags to cl-tag (src/core/contracts/smart-rule-forwards.v1.json), and the registry id smart.tags is a dated alias of smart.tag, the id that follows the folder and the tag.",
+      "items": [
+        {
+          "component": "sf-tag",
+          "from": "smart/tags/js/tags.js",
+          "to": "smart/tag/js/tag.js",
+          "match": "smart/tags/js/tags(?:\\.min)?\\.js"
+        },
+        {
+          "component": "sf-tag",
+          "from": "smart/tags/css/tags.css",
+          "to": "smart/tag/css/tag.css",
+          "match": "smart/tags/css/tags(?:\\.min)?\\.css"
+        },
+        {
+          "component": "loader",
+          "from": "cl-tags",
+          "to": "cl-tag",
+          "match": "['\"]cl-tags['\"]"
+        },
+        {
+          "component": "registry",
+          "from": "smart.tags",
+          "to": "smart.tag",
+          "match": "['\"]smart\\.tags['\"]"
+        }
+      ],
+      "deprecated_on": "2026-10-27",
+      "remove_after": "2026-12-01",
+      "rewrite": "manual",
+      "manual": "Write smart/tag/ for smart/tags/ and tag for tags in the file names (js/tag.js, js/tag.min.js, css/tag.css, css/tag.min.css); in a product rule's relation write cl-tag for cl-tags, and in a manifest or a package contract smart.tag for smart.tags. A page that lets the Loader fetch sf-tag needs no change.",
+      "examples": {
+        "before": "<script src=\"/distr/smart/tags/js/tags.js\"></script>",
+        "after": "<script src=\"/distr/smart/tag/js/tag.js\"></script>"
+      },
+      "owner": "ui-source",
+      "source": "src/smart/tags/index.js, src/core/contracts/smart-rule-forwards.v1.json, src/smart/tag/smart.manifest.json"
+    }
+  ]
+}

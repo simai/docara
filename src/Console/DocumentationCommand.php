@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Console;
 
 use Simai\Docara\Documentation\DocumentationStatusService;
+use Simai\Docara\Documentation\FrameworkLinkageService;
 use Simai\Docara\Portable\CanonicalJson;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -14,8 +15,10 @@ final class DocumentationCommand extends Command
 {
     private string $base;
 
-    public function __construct(private readonly DocumentationStatusService $service)
-    {
+    public function __construct(
+        private readonly DocumentationStatusService $service,
+        private readonly FrameworkLinkageService $linkage = new FrameworkLinkageService,
+    ) {
         $this->setBase();
         parent::__construct();
     }
@@ -30,7 +33,7 @@ final class DocumentationCommand extends Command
     protected function configure(): void
     {
         $this->setName('documentation')->setDescription('Report or accept source-backed documentation freshness without editing content during build.')
-            ->addArgument('action', InputArgument::REQUIRED, 'status|accept')
+            ->addArgument('action', InputArgument::REQUIRED, 'status|accept|linkage')
             ->addOption('source', null, InputOption::VALUE_REQUIRED, 'Configured documentation source id.')
             ->addOption('kind', null, InputOption::VALUE_REQUIRED, 'Filter entity kind.')
             ->addOption('status', null, InputOption::VALUE_REQUIRED, 'Filter report status.')
@@ -41,6 +44,7 @@ final class DocumentationCommand extends Command
             ->addOption('exclude-reason', null, InputOption::VALUE_REQUIRED, 'Mark the source entity intentionally excluded.')
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Create a hash-bound acceptance plan.')
             ->addOption('apply', null, InputOption::VALUE_REQUIRED, 'Apply an exact acceptance plan SHA-256.')
+            ->addOption('today', null, InputOption::VALUE_REQUIRED, 'linkage: the day former names are checked against (yyyy-mm-dd).')
             ->addOption('json', null, InputOption::VALUE_NONE, 'Emit stable JSON.');
     }
 
@@ -63,8 +67,24 @@ final class DocumentationCommand extends Command
 
                 return self::SUCCESS;
             }
+            if ($action === 'linkage') {
+                $today = $this->option('today');
+                if ($today !== null && preg_match('/^\d{4}-\d{2}-\d{2}$/D', $today) !== 1) {
+                    throw new \InvalidArgumentException('--today must be yyyy-mm-dd.');
+                }
+                $report = $this->linkage->report($this->base, $this->option('source'), $today);
+                if ((bool) $this->input->getOption('json')) {
+                    $this->output->write(CanonicalJson::encodePretty($report));
+                } else {
+                    foreach (FrameworkLinkageService::lines($report) as $line) {
+                        $this->console->write($line);
+                    }
+                }
+
+                return self::SUCCESS;
+            }
             if ($action !== 'accept') {
-                throw new \InvalidArgumentException('Documentation action must be status or accept.');
+                throw new \InvalidArgumentException('Documentation action must be status, accept or linkage.');
             }
             $apply = $this->option('apply');
             if ($apply !== null) {

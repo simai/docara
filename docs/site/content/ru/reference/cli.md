@@ -307,9 +307,10 @@ php vendor/bin/docara documentation accept --source=<id> --key=<key> \
   --route=<route> --example=<case>=<example-id> \
   --review=ai_verified|human_reviewed --dry-run [--json]
 php vendor/bin/docara documentation accept --apply=<plan-sha256> [--json]
+php vendor/bin/docara documentation linkage [--source=<id>] [--today=<yyyy-mm-dd>] [--json]
 ```
 
-Действие: `status` или `accept`. Необязательный `documentation_tracking`
+Действие: `status`, `accept` или `linkage`. Необязательный `documentation_tracking`
 сопоставляет Markdown и общие примеры с публичным контрактом исходного
 проекта.
 
@@ -324,7 +325,14 @@ php vendor/bin/docara documentation accept --apply=<plan-sha256> [--json]
 - `--exclude-reason` — намеренно исключить сущность с содержательной причиной;
 - `--dry-run` — создать hash-bound план принятия;
 - `--apply` — применить точный план по SHA-256;
+- `--today` — для `linkage`: день, с которым сравнивается срок прежних имён;
 - `--json` — результат в JSON.
+
+`linkage` сверяет страницы с выпуском SIMAI Framework по стандарту
+`simai.linkage`, если у источника задан `linkage`: какие страницы описывают
+компоненты, изменившиеся с выпуска `since`, с цитатой из журнала изменений.
+Сборка пишет то же в `build_<environment>.docara/framework-linkage.json` и не
+останавливается из-за найденного.
 
 `status`, `validate` и build только читают входы; сборка создаёт квитанцию
 `build_<environment>.docara/documentation-status.json`, но не останавливается из-за редакционных

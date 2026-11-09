@@ -241,7 +241,8 @@
                     "properties": {
                         "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
                         "provider": {"const": "simai_framework"},
-                        "framework_lock": {"type": "string", "format": "docara-relative-path"}
+                        "framework_lock": {"type": "string", "format": "docara-relative-path"},
+                        "linkage": {"$ref": "#/$defs/documentationLinkage"}
                     },
                     "additionalProperties": false
                 },
@@ -251,11 +252,26 @@
                     "properties": {
                         "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
                         "provider": {"const": "contract_json"},
-                        "file": {"type": "string", "format": "docara-relative-path"}
+                        "file": {"type": "string", "format": "docara-relative-path"},
+                        "linkage": {"$ref": "#/$defs/documentationLinkage"}
                     },
                     "additionalProperties": false
                 }
             ]
+        },
+        "documentationLinkage": {
+            "description": "Framework linkage (standard simai.linkage): the unit inventories, change reports and change journal the site keeps, so docara documentation linkage and the build report which pages describe units that changed.",
+            "type": "object",
+            "required": ["inventory"],
+            "properties": {
+                "inventory": {"type": "string", "format": "docara-relative-path", "description": "The simai.framework.unit-inventory of the release the site builds against."},
+                "since": {"type": "string", "format": "docara-relative-path", "description": "The inventory of the release the pages were last brought up to; required unless usage is given."},
+                "changes": {"type": "array", "items": {"type": "string", "format": "docara-relative-path"}, "description": "simai.framework.unit-change-report files between since and inventory."},
+                "journal": {"type": "string", "format": "docara-relative-path", "description": "The simai.change-journal whose instructions are quoted."},
+                "usage": {"type": "string", "format": "docara-relative-path", "description": "A hand-kept simai.framework.unit-usage record used instead of the one derived from the documentation lock."},
+                "brought_up_on": {"type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "description": "The day the pages were brought up to since; journal records without a unit version count when recorded later."}
+            },
+            "additionalProperties": false
         },
         "translationTracking": {
             "type": "object",

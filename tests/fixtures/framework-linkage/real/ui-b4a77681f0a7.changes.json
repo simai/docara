@@ -1,0 +1,134 @@
+{
+  "schema": "simai.framework.unit-change-report",
+  "schema_version": 1,
+  "source": "simai/ui-source",
+  "from": {
+    "revision": "44a5efda6649def849c960c11ac56b2db90693b8",
+    "release": "ui-cb287da78ab1"
+  },
+  "to": {
+    "revision": "a29cc9989bebace9a98c235b074ce23998ad39c6",
+    "release": "ui-b4a77681f0a7"
+  },
+  "added": [],
+  "removed": [],
+  "changed": [
+    {
+      "id": "core.runtime",
+      "from_version": "1.45.0",
+      "to_version": "1.47.0",
+      "step": "minor"
+    },
+    {
+      "id": "smart.button",
+      "from_version": "1.9.0",
+      "to_version": "1.10.0",
+      "step": "minor"
+    },
+    {
+      "id": "smart.tag",
+      "from_version": "1.2.1",
+      "to_version": "1.3.1",
+      "step": "minor"
+    },
+    {
+      "id": "tokens.colour",
+      "from_version": "1.5.1",
+      "to_version": "1.7.0",
+      "step": "minor"
+    },
+    {
+      "id": "tokens.elevation",
+      "from_version": "1.1.0",
+      "to_version": "1.2.0",
+      "step": "minor"
+    },
+    {
+      "id": "tokens.space",
+      "from_version": "1.0.3",
+      "to_version": "1.0.4",
+      "step": "patch"
+    },
+    {
+      "id": "tokens.typography",
+      "from_version": "1.6.0",
+      "to_version": "1.6.3",
+      "step": "patch"
+    }
+  ],
+  "dependencies_changed": [
+    {
+      "id": "component.accordion",
+      "added": [],
+      "removed": [],
+      "moved": [
+        "core.runtime",
+        "tokens.colour",
+        "tokens.size",
+        "tokens.space",
+        "tokens.typography"
+      ]
+    },
+    {
+      "id": "core.runtime",
+      "added": [],
+      "removed": [],
+      "moved": [
+        "core.styles",
+        "tokens.colour",
+        "tokens.space",
+        "tokens.typography"
+      ]
+    },
+    {
+      "id": "smart.button",
+      "added": [],
+      "removed": [],
+      "moved": [
+        "component.buttons",
+        "core.runtime",
+        "module.smart-helpers"
+      ]
+    },
+    {
+      "id": "smart.tag",
+      "added": [],
+      "removed": [],
+      "moved": [
+        "component.avatars",
+        "component.tags",
+        "core.runtime",
+        "tokens.colour",
+        "tokens.size"
+      ]
+    },
+    {
+      "id": "tokens.colour",
+      "added": [],
+      "removed": [],
+      "moved": [
+        "tokens.elevation"
+      ]
+    },
+    {
+      "id": "tokens.elevation",
+      "added": [],
+      "removed": [],
+      "moved": [
+        "tokens.colour",
+        "tokens.size"
+      ]
+    },
+    {
+      "id": "tokens.typography",
+      "added": [],
+      "removed": [],
+      "moved": [
+        "tokens.colour",
+        "tokens.size",
+        "tokens.space"
+      ]
+    }
+  ],
+  "violations": []
+}

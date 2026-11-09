@@ -314,9 +314,10 @@ php vendor/bin/docara documentation accept --source=<id> --key=<key> \
   --route=<route> --example=<case>=<example-id> \
   --review=ai_verified|human_reviewed --dry-run [--json]
 php vendor/bin/docara documentation accept --apply=<plan-sha256> [--json]
+php vendor/bin/docara documentation linkage [--source=<id>] [--today=<yyyy-mm-dd>] [--json]
 ```
 
-The action is `status` or `accept`. The optional `documentation_tracking`
+The action is `status`, `accept` or `linkage`. The optional `documentation_tracking`
 matches the Markdown and shared examples with the public contract of the
 source project.
 
@@ -332,7 +333,14 @@ source project.
   reason;
 - `--dry-run` — create a hash-bound acceptance plan;
 - `--apply` — apply the exact plan by SHA-256;
+- `--today` — for `linkage`: the day the dates of former names are checked against;
 - `--json` — the result as JSON.
+
+`linkage` checks the pages against a SIMAI Framework release by standard
+`simai.linkage` when a source sets `linkage`: which pages describe units that
+changed since the `since` release, with the change journal's quote. The build
+writes the same to `build_<environment>.docara/framework-linkage.json` and
+does not stop because of what it finds.
 
 `status`, `validate` and build only read the inputs; the build creates the
 receipt `build_<environment>.docara/documentation-status.json` but does not

@@ -6,6 +6,7 @@ namespace Simai\Docara\Console;
 
 use Simai\Docara\Application\PageInspectionService;
 use Simai\Docara\Authoring\AuthoringContract;
+use Simai\Docara\Documentation\FrameworkLinkageService;
 use Simai\Docara\PortableSite\BuildReceipts;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Quality\QualityReportService;
@@ -170,6 +171,16 @@ final class BuildCommand extends Command
                 ));
                 if ($issues > 0) {
                     $this->console->comment("Documentation tracking reported $issues item(s) that need attention; the build remains valid in report mode.");
+                }
+            }
+        }
+        $linkageReport = BuildReceipts::existing($destination) . '/framework-linkage.json';
+        if (is_file($linkageReport) && ! is_link($linkageReport)) {
+            $report = json_decode((string) file_get_contents($linkageReport), true);
+            if (is_array($report) && is_array($report['sources'] ?? null) && ($report['status'] ?? 'current') !== 'current') {
+                $this->console->comment('Framework linkage: some pages describe units that changed; the build remains valid.');
+                foreach (FrameworkLinkageService::lines($report, 10) as $line) {
+                    $this->console->write($line);
                 }
             }
         }

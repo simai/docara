@@ -1,0 +1,243 @@
+{
+  "schema": "simai.framework.unit-reconcile-report",
+  "schema_version": 1,
+  "checked_on": "2026-11-09",
+  "consumer": {
+    "id": "simai-framework",
+    "kind": "docs"
+  },
+  "record_sources": [
+    {
+      "source": "simai/ui-source",
+      "release": "ui-cb287da78ab1",
+      "revision": "44a5efda6649def849c960c11ac56b2db90693b8",
+      "brought_up_on": "2026-10-15"
+    }
+  ],
+  "inventories": [
+    {
+      "source": "simai/ui-source",
+      "release": "ui-b4a77681f0a7",
+      "revision": "a29cc9989bebace9a98c235b074ce23998ad39c6"
+    }
+  ],
+  "since": [
+    {
+      "source": "simai/ui-source",
+      "release": "ui-cb287da78ab1",
+      "revision": "44a5efda6649def849c960c11ac56b2db90693b8"
+    }
+  ],
+  "journal": {
+    "records": 3
+  },
+  "status": "action-needed",
+  "totals": {
+    "places": {
+      "current": 1,
+      "update-available": 1,
+      "former-name": 0,
+      "action-needed": 2,
+      "missing": 0
+    },
+    "units": {
+      "current": 1,
+      "update-available": 1,
+      "former-name": 0,
+      "action-needed": 2,
+      "missing": 0
+    }
+  },
+  "places": [
+    {
+      "place": "docs:/ru/components/accordion/",
+      "status": "update-available",
+      "note": "content/ru/components/accordion.md",
+      "units": [
+        {
+          "id": "component.accordion",
+          "version": "1.0.1",
+          "content_sha256": "f42fdd9bdbdabfb41311b96daf73ead31e5b8afbc2a0a0e34b607f3ac964113d",
+          "current": {
+            "id": "component.accordion",
+            "version": "1.0.1",
+            "content_sha256": "f42fdd9bdbdabfb41311b96daf73ead31e5b8afbc2a0a0e34b607f3ac964113d"
+          },
+          "via": [
+            {
+              "id": "tokens.colour",
+              "kind": "tokens",
+              "from_version": "1.5.1",
+              "to_version": "1.7.0",
+              "step": "minor",
+              "status": "update-available",
+              "chain": [
+                "component.accordion",
+                "tokens.colour"
+              ]
+            },
+            {
+              "id": "tokens.elevation",
+              "kind": "tokens",
+              "from_version": "1.1.0",
+              "to_version": "1.2.0",
+              "step": "minor",
+              "status": "update-available",
+              "chain": [
+                "component.accordion",
+                "tokens.colour",
+                "tokens.elevation"
+              ]
+            },
+            {
+              "id": "tokens.space",
+              "kind": "tokens",
+              "from_version": "1.0.3",
+              "to_version": "1.0.4",
+              "step": "patch",
+              "status": "update-available",
+              "chain": [
+                "component.accordion",
+                "tokens.space"
+              ]
+            },
+            {
+              "id": "tokens.typography",
+              "kind": "tokens",
+              "from_version": "1.6.0",
+              "to_version": "1.6.3",
+              "step": "patch",
+              "status": "update-available",
+              "chain": [
+                "component.accordion",
+                "tokens.typography"
+              ]
+            }
+          ],
+          "status": "update-available",
+          "reasons": [
+            "foundations moved: tokens.colour 1.5.1 -> 1.7.0, tokens.elevation 1.1.0 -> 1.2.0, tokens.space 1.0.3 -> 1.0.4, tokens.typography 1.6.0 -> 1.6.3"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "docs:/ru/smart/button/",
+      "status": "action-needed",
+      "note": "content/ru/smart/button.md",
+      "units": [
+        {
+          "id": "smart.button",
+          "version": "1.9.0",
+          "content_sha256": "4c928a7f8011264fdb06e88740cd98105cc16fade4a16bb613ab42eb3b2527b2",
+          "current": {
+            "id": "smart.button",
+            "version": "1.10.0",
+            "content_sha256": "45156c2dc73bd9256e3b1071bdc1982257ea3e1ed082474290f161b9f5e03b2b"
+          },
+          "step": "minor",
+          "journal": [
+            {
+              "id": "token-button-loading-stripe",
+              "recorded_on": "2026-10-20",
+              "stage": "compat",
+              "remove_after": "2026-12-01",
+              "instruction": "Delete the variable: a loading button shows the spinner, in the button's ink. To colour the spinner, set --sf-loader--color on the button or an ancestor."
+            },
+            {
+              "id": "path-smart-buttons-to-button",
+              "recorded_on": "2026-10-27",
+              "stage": "compat",
+              "remove_after": "2026-12-01",
+              "instruction": "Write smart/button/ for smart/buttons/ and button for buttons in the file names (js/button.js, js/button.min.js); in a product rule's relation write cl-button for cl-buttons, and in a manifest or a package contract smart.button for smart.buttons. A page that lets the Loader fetch sf-button needs no change."
+            }
+          ],
+          "status": "action-needed",
+          "reasons": [
+            "minor 1.9.0 -> 1.10.0",
+            "2 journal entries ask for a change"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "docs:/ru/smart/tag/",
+      "status": "action-needed",
+      "note": "content/ru/smart/tag.md",
+      "units": [
+        {
+          "id": "smart.tag",
+          "version": "1.2.1",
+          "content_sha256": "1ce553baf4321c9077f3455dda21d0488e9aac6220cc4a7f94a46e8dc35a0195",
+          "current": {
+            "id": "smart.tag",
+            "version": "1.3.1",
+            "content_sha256": "3beaf078ad5a5da266ee0375b59f2bde5f99cf5ae5b36b5b9d4ff932adf6d233"
+          },
+          "step": "minor",
+          "journal": [
+            {
+              "id": "path-smart-tags-to-tag",
+              "recorded_on": "2026-10-27",
+              "stage": "compat",
+              "remove_after": "2026-12-01",
+              "instruction": "Write smart/tag/ for smart/tags/ and tag for tags in the file names (js/tag.js, js/tag.min.js, css/tag.css, css/tag.min.css); in a product rule's relation write cl-tag for cl-tags, and in a manifest or a package contract smart.tag for smart.tags. A page that lets the Loader fetch sf-tag needs no change."
+            }
+          ],
+          "via": [
+            {
+              "id": "tokens.colour",
+              "kind": "tokens",
+              "from_version": "1.5.1",
+              "to_version": "1.7.0",
+              "step": "minor",
+              "status": "update-available",
+              "chain": [
+                "smart.tag",
+                "tokens.colour"
+              ]
+            },
+            {
+              "id": "tokens.elevation",
+              "kind": "tokens",
+              "from_version": "1.1.0",
+              "to_version": "1.2.0",
+              "step": "minor",
+              "status": "update-available",
+              "chain": [
+                "smart.tag",
+                "tokens.colour",
+                "tokens.elevation"
+              ]
+            }
+          ],
+          "status": "action-needed",
+          "reasons": [
+            "minor 1.2.1 -> 1.3.1",
+            "1 journal entry asks for a change",
+            "foundations moved: tokens.colour 1.5.1 -> 1.7.0, tokens.elevation 1.1.0 -> 1.2.0"
+          ]
+        }
+      ]
+    },
+    {
+      "place": "docs:/ru/utilities/gap/",
+      "status": "current",
+      "note": "content/ru/utilities/gap.md",
+      "units": [
+        {
+          "id": "utility.gap",
+          "version": "1.0.0",
+          "content_sha256": "993278e83f592f512096a5ceb1dddd8dfca1cb57fdc7c4d5d1c12e7549e0abc1",
+          "current": {
+            "id": "utility.gap",
+            "version": "1.0.0",
+            "content_sha256": "993278e83f592f512096a5ceb1dddd8dfca1cb57fdc7c4d5d1c12e7549e0abc1"
+          },
+          "status": "current"
+        }
+      ]
+    }
+  ],
+  "notes": []
+}

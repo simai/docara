@@ -208,8 +208,13 @@ final class DocumentationSourceRepository
         }
     }
 
-    /** @return array<string,mixed> */
-    private function decode(string $root, string $relative, string $code): array
+    /**
+     * A JSON object read from a regular, non-linked UTF-8 file inside the
+     * project; framework linkage reads its inputs the same way.
+     *
+     * @return array<string,mixed>
+     */
+    public function decode(string $root, string $relative, string $code): array
     {
         $path = $this->regularFile($root, $relative, $code);
         try {

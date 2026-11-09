@@ -24,6 +24,7 @@ use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Design\Registry\DesignRegistry;
 use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\Documentation\DocumentationStatusService;
+use Simai\Docara\Documentation\FrameworkLinkageService;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
@@ -1084,6 +1085,15 @@ final readonly class PortableSiteBuilder
                 $this->files->put(
                     rtrim($destination, '/\\') . '/.docara/documentation-status.json',
                     $this->prettyCanonicalJson((new DocumentationStatusService)->report($root)),
+                );
+            }
+            // Framework linkage (standard simai.linkage): which pages describe
+            // units that changed since they were brought up. Read only; the
+            // build command prints the summary and never fails on it.
+            if (FrameworkLinkageService::configured($site)) {
+                $this->files->put(
+                    rtrim($destination, '/\\') . '/.docara/framework-linkage.json',
+                    $this->prettyCanonicalJson((new FrameworkLinkageService)->report($root)),
                 );
             }
             $result = collect();

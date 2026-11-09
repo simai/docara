@@ -87,7 +87,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
                 && ($entry['docs_ref'] ?? null) === 'docs/site/content/ru/authoring/markdown.md'),
         ));
 
-        self::assertCount(259, $pages);
+        self::assertCount(261, $pages);
         $performanceProjection = json_decode(
             (string) file_get_contents($build . '.docara/performance.json'),
             true,
@@ -104,7 +104,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
-        self::assertCount(485, $htmlPages);
+        self::assertCount(488, $htmlPages);
         $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
         $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
         $singleNonIndexed = $this->documentationBuilder($filesystem)
@@ -112,9 +112,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(1, $singleNonIndexed);
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
-        self::assertCount(198, $search['documents']);
-        self::assertCount(39, $catalog['entries']);
-        self::assertCount(33, $supported);
+        self::assertCount(200, $search['documents']);
+        self::assertCount(40, $catalog['entries']);
+        self::assertCount(34, $supported);
         self::assertCount(4, $unavailable);
         self::assertFileDoesNotExist($build . '.docara/component-catalog-pages.json');
         self::assertFileDoesNotExist($build . '.docara/declarative-example-pages.json');
@@ -128,7 +128,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             )->count(),
         );
         self::assertCount(97, $redirectReceipt['redirects']);
-        self::assertCount(129, $localeRouteReceipt['redirects']);
+        self::assertCount(130, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -190,7 +190,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $examplePage = (string) file_get_contents($build . '/ru/components/example/index.html');
         self::assertSame(7, substr_count($catalogIndex, 'data-docara-table-scroll'));
         preg_match_all('~href="(/ru/components/[a-z0-9-]+/)"~', $catalogIndex, $componentLinks);
-        self::assertSame(30, count(array_unique($componentLinks[1] ?? [])));
+        self::assertSame(31, count(array_unique($componentLinks[1] ?? [])));
         self::assertStringContainsString('Текст и Markdown', $catalogIndex);
         self::assertStringContainsString('Содержательные блоки', $catalogIndex);
         self::assertStringContainsString('Код и данные', $catalogIndex);
@@ -342,7 +342,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         );
 
         $pages = $builder->build($site, $site . '/build_test');
-        self::assertCount(259, $pages);
+        self::assertCount(261, $pages);
         self::assertStringContainsString(
             'Поиск из content lang',
             (string) file_get_contents($site . '/build_test/ru/index.html'),
@@ -480,8 +480,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // published for the Loader (22 files), and four more shell
         // stylesheet groups: 3229. The example log, the prose separator and
         // the sf-language picker's reserved place add four more shell
-        // stylesheet groups (66 in all): 3233.
-        self::assertCount(3233, $firstFiles);
+        // stylesheet groups (66 in all): 3233. The component reference page
+        // (ru, en and its unprefixed redirect) and two more shell stylesheet
+        // groups: 3238.
+        self::assertCount(3238, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),
@@ -503,7 +505,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertArrayHasKey('performance.json', $this->treeHashes($firstBuild . '.docara'));
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
-        self::assertCount(258, $metadata['pages']);
+        self::assertCount(260, $metadata['pages']);
         foreach ($metadata['pages'] as $page) {
             self::assertNull($page['updated_at']);
             self::assertNull($page['revision']);

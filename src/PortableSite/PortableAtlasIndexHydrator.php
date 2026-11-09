@@ -85,7 +85,7 @@ final class PortableAtlasIndexHydrator
                 ? $this->containerContract($entry['container_contract'], $copy)
                 : '';
             $items .= '<li class="p-y-2 border-bottom-1 border-bottom-solid border-outline-variant">'
-                . '<div class="flex flex-wrap gap-1 items-cross-center"><code>' . $this->escape((string) $entry['id']) . '</code>'
+                . '<div class="flex flex-wrap gap-1 items-cross-center">' . $this->code((string) $entry['id'])
                 . '<span class="label-small">' . $this->escape((string) $entry['kind']) . '</span>'
                 . '<span class="label-small">' . $this->escape((string) $entry['support']) . '</span></div>'
                 . '<p class="m-top-1 m-bottom-0 color-on-surface-variant">' . $this->escape($copy['atlas.owner']) . ': '
@@ -107,7 +107,7 @@ final class PortableAtlasIndexHydrator
     /** An identifier from the registry, shown as code. */
     private function code(string $value): string
     {
-        return '<code>' . $this->escape($value) . '</code>';
+        return PortableInlineCodeRenderer::openingTag($value) . $this->escape($value) . '</code>';
     }
 
     private function escape(string $value): string
@@ -125,12 +125,14 @@ final class PortableAtlasIndexHydrator
         $slots = array_values(array_filter($contract['slots'] ?? [], 'is_string'));
 
         return '<p class="m-top-1 m-bottom-0" data-docara-container-contract>'
-            . $this->escape($copy['atlas.container']) . ': <code>allowed_children=[' . $this->escape(implode(', ', $children)) . ']; '
-            . 'slots=[' . $this->escape(implode(', ', $slots)) . ']; '
-            . 'min_children=' . $this->escape((string) ($contract['min_children'] ?? '')) . '; '
-            . 'max_children=' . $this->escape((string) ($contract['max_children'] ?? '')) . '; '
-            . 'order=' . $this->escape((string) ($contract['order'] ?? '')) . '; '
-            . 'max_depth=' . $this->escape((string) ($contract['max_depth'] ?? '')) . ', '
-            . 'depth_semantics=' . $this->escape((string) ($contract['depth_semantics'] ?? '')) . '</code>.</p>';
+            . $this->escape($copy['atlas.container']) . ': '
+            . $this->code('allowed_children=[' . implode(', ', $children) . ']; '
+                . 'slots=[' . implode(', ', $slots) . ']; '
+                . 'min_children=' . (string) ($contract['min_children'] ?? '') . '; '
+                . 'max_children=' . (string) ($contract['max_children'] ?? '') . '; '
+                . 'order=' . (string) ($contract['order'] ?? '') . '; '
+                . 'max_depth=' . (string) ($contract['max_depth'] ?? '') . ', '
+                . 'depth_semantics=' . (string) ($contract['depth_semantics'] ?? ''))
+            . '.</p>';
     }
 }

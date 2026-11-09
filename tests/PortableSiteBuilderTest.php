@@ -885,11 +885,18 @@ MD);
             'The declarative main-region wrapper must not inset full-width landing blocks.',
         );
         self::assertStringContainsString(
-            '.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}',
+            '.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100vw;margin-inline:calc(50% - 50vw)}',
             $shellCss,
-            'Direct and Section-wrapped full-width surfaces must reach only their admitted main-region boundary.',
+            'Direct and Section-wrapped full-width landing surfaces must reach the window edges.',
         );
-        self::assertStringContainsString('[data-docara-region="main"]{container-type:inline-size}', $shellCss);
+        self::assertStringContainsString(
+            '.docara-docs-layout [data-docara-region="main"]>.docara-prose>[data-docara-width="full"],.docara-docs-layout [data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100%;margin-inline:0}',
+            $shellCss,
+            'Direct and Section-wrapped full-width surfaces in the documentation layout must keep the main column.',
+        );
+        // The main region is no size container: it would capture the
+        // position:fixed popups of inline examples.
+        self::assertStringNotContainsString('container-type', $shellCss);
         self::assertStringContainsString('.docara-surface>[data-docara-container]{box-sizing:border-box}', $shellCss);
         self::assertStringContainsString('.docara-surface>[data-docara-container]:not(.docara-landing *){max-inline-size:100%}', $shellCss);
         self::assertStringContainsString('.docara-prose img{max-inline-size:100%}', $shellCss);

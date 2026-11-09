@@ -8,6 +8,7 @@ use JsonException;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 use League\CommonMark\Extension\DescriptionList\DescriptionListExtension;
 use League\CommonMark\Extension\Footnote\FootnoteExtension;
 use League\CommonMark\Extension\Highlight\HighlightExtension;
@@ -65,6 +66,8 @@ final readonly class PortableMarkdownProfile
         $environment->addRenderer(ProseSeparator::class, $separator);
         // Keeps a fence's {…} options for the code presenter.
         $environment->addRenderer(FencedCode::class, new PortableFencedCodeRenderer, 10);
+        // Marks long inline code that may wrap on a narrow screen.
+        $environment->addRenderer(Code::class, new PortableInlineCodeRenderer, 10);
 
         return $environment;
     }

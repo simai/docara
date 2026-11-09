@@ -3760,8 +3760,8 @@ HTML;
         // Inline code that shows [!name …] keeps it: the Framework loader
         // would otherwise take it for a shortcode (CodeLinePresenter).
         $html = preg_replace(
-            '/(?<!<pre>)<code>(?=[^<]*\[!)/',
-            '<code ' . CodeLinePresenter::SHORTCODE_GUARD . '>',
+            '/(?<!<pre>)<code(?<wrap> ' . PortableInlineCodeRenderer::WRAP_ATTRIBUTE . ')?>(?=[^<]*\[!)/',
+            '<code$1 ' . CodeLinePresenter::SHORTCODE_GUARD . '>',
             $html,
         ) ?? $html;
 

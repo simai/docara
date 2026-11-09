@@ -64,7 +64,6 @@ html{scroll-padding-block-start:var(--docara-anchor-offset)}
 .docara-prose>.docara-outline-mobile{margin-block-end:var(--sf-space-1)}
 html[data-docara-focus-mode] body:has(>.docara-docs-layout){--docara-header-block-size:0px;--docara-anchor-offset:var(--sf-space-2)}
 .docara-content{color:var(--sf-on-surface);scroll-margin-block-start:var(--docara-anchor-offset)}
-[data-docara-region="main"]{container-type:inline-size}
 /* Reader font size: one step of the root size. Framework type, spacing, controls and container steps are rem-based, so the header, navigation, outline, breadcrumbs and content all follow, like a browser text-size change: 16px body text becomes 14px or 18px (--sf-b4 / --sf-b8 over --sf-b6). Percentages keep the reader's own browser default as the base. */
 html[data-docara-font-size="small"]{font-size:87.5%}
 html[data-docara-font-size="large"]{font-size:112.5%}
@@ -104,6 +103,8 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-prose dt{font-weight:var(--sf-weight--medium)}
 /* Inline code never breaks inside a token such as icon-start or on-surface-variant; the line wraps before it instead, and a table with such cells scrolls in its frame. */
 .docara-prose :not(pre)>code:not(:where(.docara-example-inline *)){white-space:nowrap;hyphens:none}
+/* A long piece the build marks with data-docara-code-wrap (a path, a URN or a class name longer than 32 characters, 16 in a heading) would make the page wider than a phone on one line: it wraps where a line allows and, where a part is still too long, inside the token. A table cell keeps it on one line and the table scrolls in its frame. */
+.docara-prose :not(pre)>code[data-docara-code-wrap]:not(:where(.docara-example-inline *,table *)){white-space:normal;overflow-wrap:anywhere}
 /* A bullet between spaces in prose separates parts of a meta line: smaller, in the caption colour, centred on the line. The spaces around it stay, so the margin only tops them up to the gap the prototype drew. */
 .docara-sep{display:inline-block;margin-inline:.15em;font-size:.8em;position:relative;top:-.05em;color:var(--sf-on-surface-variant)}
 .docara-prose dd{margin-inline-start:var(--sf-space-2)}
@@ -164,7 +165,8 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:block}
 .docara-prose sf-alert:not(:where(.docara-example-inline *)),.docara-prose sf-button:not(:where(.docara-example-inline *)){margin-block:var(--sf-space-2)}
 .docara-prose>.docara-smart-block{margin-block:var(--sf-space-2)}
-.docara-landing{display:block;min-height:auto;container-type:inline-size}
+/* No element around the article is a size container: a browser that gives a size container layout containment also makes it the containing block of position:fixed descendants, so a Framework popup in an inline example (a date picker calendar, a dropdown) would be placed against the main region instead of the window and open far from its field. A landing's full-width block measures the window instead (below), and the landing clips the half scrollbar a classic scrollbar adds to it. */
+.docara-landing{display:block;min-height:auto;overflow-x:clip}
 .docara-landing [data-docara-block="hero"]:not([data-docara-surface]):not([data-sf-effect]){background:radial-gradient(circle at 12% 18%,color-mix(in srgb,var(--sf-primary-container) 72%,transparent),transparent 46%),radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--sf-tertiary-container) 58%,transparent),transparent 38%),color-mix(in srgb,var(--sf-surface-container) 76%,transparent)}
 /* A hero with a background effect: the Framework gives the area the theme the effect draws (sf-effect-area with theme-dark or theme-light). The area takes that theme's surface and ink, so the text never keeps the page's colour over a scene of the other theme while the effect loads, draws translucently or is hidden. */
 /* Before the effect loads (or when it is refused) the hero already has the plain surface the effect draws on, in the effect's theme, so the background does not jump when the scene appears. */
@@ -181,7 +183,9 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 @media (prefers-reduced-motion:no-preference){[data-docara-block="hero"]:has(>.docara-effect-toggle)>[data-docara-container]:not(.docara-padding-2xl){padding-block-end:calc(var(--sf-ui-1--control-height) + 2*var(--sf-space-1\/3))}}
 .docara-landing .docara-content{width:100%}
 .docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]{box-sizing:border-box;width:100%;max-width:none;margin:0;padding:0}
-.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}
+/* A full-width block reaches the edges of the main region. On a landing the main region spans the window, so the block takes the window width centred on the article; in the documentation layout the article already fills the main region, so the block keeps the column width. */
+.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100vw;margin-inline:calc(50% - 50vw)}
+.docara-docs-layout [data-docara-region="main"]>.docara-prose>[data-docara-width="full"],.docara-docs-layout [data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100%;margin-inline:0}
 .docara-landing [data-docara-container]{box-sizing:border-box;width:100%}
 .docara-surface>[data-docara-surface-background],.docara-surface>[data-docara-surface-overlay]{position:absolute;inset:0;inline-size:100%;block-size:100%;pointer-events:none}
 .docara-surface>[data-docara-container]{box-sizing:border-box}

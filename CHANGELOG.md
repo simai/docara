@@ -60,6 +60,21 @@ All notable changes to Docara are recorded here. The format follows
   `allow="clipboard-write"`, so `sf-button-copy` and other
   `navigator.clipboard.writeText()` calls inside an example are no longer
   blocked by the frame's permissions policy.
+- A Framework popup in an inline example, such as a date picker's
+  calendar, opens at its field again. The main region was a size
+  container, and a browser that gives a container layout containment
+  placed position:fixed popups against the main region instead of the
+  window, far below the field. Nothing around the article is a container
+  now; a landing's full-width blocks still reach the window edges, and in
+  the documentation layout they keep the column width as before. Markup
+  written straight into the article with the Framework's `cq-` utilities
+  no longer finds a container there; an example with them already opens
+  in its own frame.
+- Long inline code no longer makes a page wider than a phone. A piece
+  longer than 32 characters (16 in a heading), such as a path, a URN or a
+  long class name, wraps where a line allows and, where a part is still
+  too long, inside the token. Shorter inline code still stays on one
+  line, and tables, code blocks and live examples are unchanged.
 
 ### Removed
 

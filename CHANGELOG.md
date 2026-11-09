@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.14.0] - 2026-11-10
+
 ### Added
 
 - **`docara locale add <code>` adds a language in one step.** It writes the

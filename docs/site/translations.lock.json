@@ -2142,11 +2142,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/cli.md",
-            "source_sha256": "d065ed5b5d2c2f37b6695868b062560adef87daa217bbfb4f8208042ff252ef7",
-            "source_structure_sha256": "269aaea967e267d275463b013186a0dc78630adc6ebad2daf73fb2f25b7ca8a3",
+            "source_sha256": "27aa90244b7c4fc08bac3f8db74b05f31d3bf0c10955e2d1e42a4672c1227243",
+            "source_structure_sha256": "5db80d5faef6551cda9eb82559598cfdb780eb7615190f376ef8c4852f751148",
             "target_path": "content/en/reference/cli.md",
-            "target_sha256": "f7cfd402cd0abb5a3ece317f8704eacdc5a26855402fad9011e854146ac1585b",
-            "target_structure_sha256": "269aaea967e267d275463b013186a0dc78630adc6ebad2daf73fb2f25b7ca8a3"
+            "target_sha256": "6e27a9a23eece03bf247a2ae69007c9bb32050a4bc2423fb9b8473c69127003d",
+            "target_structure_sha256": "5db80d5faef6551cda9eb82559598cfdb780eb7615190f376ef8c4852f751148"
         },
         {
             "key": "reference/docara-json.md",
@@ -2202,11 +2202,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/developer.md",
-            "source_sha256": "5fbf58a5a5da628d6323cda8d6b9f845b64680a5718536970f6a46b353fe181e",
-            "source_structure_sha256": "79c852e15a7dbfad78d1e464a52919837bdd51c014b1da6532a39eb304f93675",
+            "source_sha256": "09e43c86d126f7f36789f0d3f4f83fda510d740697dc7be490ce29c5e0b449b7",
+            "source_structure_sha256": "e57a78060c73eb9885b67569cce402603522a9964eb1850d0f5ca252f80e00d6",
             "target_path": "content/en/reference/errors/developer.md",
-            "target_sha256": "a48ab55b498515a962b82ee3d1bb90f1e1b7d2f6c861963180613c1094b10beb",
-            "target_structure_sha256": "79c852e15a7dbfad78d1e464a52919837bdd51c014b1da6532a39eb304f93675"
+            "target_sha256": "559f9d0afbc75bb260895cb3b52bda4c70183d290394269b3b870bd563de73b7",
+            "target_structure_sha256": "e57a78060c73eb9885b67569cce402603522a9964eb1850d0f5ca252f80e00d6"
         },
         {
             "key": "reference/errors/extend.md",

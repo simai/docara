@@ -53,6 +53,19 @@ All notable changes to Docara are recorded here. The format follows
   (`COMPONENT_REFERENCE_TRANSLATION_STALE`). A missing or malformed manifest
   stops it too. Sites no longer need their own reference generator.
 
+- **Documentation tracking can report Framework changes (read only).** A
+  `documentation_tracking.sources` entry may carry a `linkage` block
+  (`inventory`, `since`, `changes`, `journal`, `usage`, `brought_up_on`) that
+  points at the Framework's unit inventory, change report and change journal.
+  `docara documentation linkage [--source] [--today] [--json]` lists the pages
+  whose documented units changed, with the journal quote and the foundations
+  (tokens, font, icons) behind the change; the build writes
+  `.docara/framework-linkage.json` and prints up to ten pages that need a look.
+  It never fails a build; broken inputs stop the command with the
+  `DOCUMENTATION_LINKAGE_*` codes on the developer error page. The design and
+  the questions still open with the Framework are in
+  `docs/developer/framework-linkage-tracking.md`.
+
 ### Fixed
 
 - **Copy buttons work in example frames.** Inline example frames, their

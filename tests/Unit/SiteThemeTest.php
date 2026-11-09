@@ -95,10 +95,13 @@ final class SiteThemeTest extends TestCase
         $result = $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0a7d4f']));
         [$comment, $css] = explode("\n", $result['content'], 2);
 
-        // SF.ThemePalette.themeToCss(themeFromColor('#0a7d4f')) of ui-source
-        // 481b50fe9 (the release's source), run outside Docara: the 128 tones
-        // and the 98 translucent steps.
-        self::assertSame('2b532b922254a9e8779e7fe983e0eaac6a738a5bf380d326d9de45aa9b10100c', hash('sha256', $css));
+        // SF.ThemePalette.themeToCss(themeFromColor('#0a7d4f')): the 128 tones
+        // and the translucent steps (98 of them, 160 from ui-b4a77681f0a7). It
+        // was 2b532b92... (ui-source 481b50fe9, run outside Docara) up to
+        // ui-2a671352d67b; ui-b4a77681f0a7 changed the palette (C17 static
+        // palette and hues), and this digest is the bundled release's own
+        // output through Docara's runner.
+        self::assertSame('3cb8a206b415f7ec5be94188cc4843eb336ced7bbc21ba0fde44129cb56e4e0c', hash('sha256', $css));
         self::assertStringContainsString('  --sf-primary-50--alfa-12: #0088561f;', $css);
         self::assertStringContainsString('  --sf-neutral-90--alfa-8: #e0e3de14;', $css);
         self::assertStringContainsString('  --sf-primary-40: #006d44;', $css);
@@ -112,7 +115,7 @@ final class SiteThemeTest extends TestCase
         self::assertSame('docara.site_theme.v1', $receipt['schema']);
         self::assertSame(['hue' => 161, 'chroma' => 85], $receipt['palette']);
         self::assertSame('ui-b4a77681f0a7', $receipt['framework']['pair_id']);
-        self::assertSame(226, $receipt['stylesheet']['variables']);
+        self::assertSame(288, $receipt['stylesheet']['variables']);
         self::assertSame('docara-theme.' . hash('sha256', $result['content']) . '.css', $receipt['stylesheet']['filename']);
 
         self::assertSame($result, $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0A7D4F'])), 'The same colour gives the same bytes.');
@@ -138,6 +141,12 @@ final class SiteThemeTest extends TestCase
         preg_match_all('/^  (--sf-[a-z]+-[0-9]+): (#[0-9a-f]{6});$/m', $result['content'], $theme, PREG_SET_ORDER);
         self::assertCount(128, $theme, 'The 128 tones; translucent steps are checked by the palette.');
         foreach ($theme as [, $name, $value]) {
+            // From ui-b4a77681f0a7 (C17) the status palettes (error, warning,
+            // success, info) are aliases of the static hues: --sf-error-5 is
+            // var(--sf-red-5), and the hue carries the shipped value.
+            if (preg_match('/' . preg_quote($name, '/') . ':\s*var\((--sf-[a-z]+-[0-9]+)\);/', $core, $alias) === 1) {
+                $name = $alias[1];
+            }
             self::assertMatchesRegularExpression(
                 '/' . preg_quote($name, '/') . ':\s*' . preg_quote($value, '/') . ';/i',
                 $core,

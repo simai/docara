@@ -419,7 +419,7 @@ final class DeclarativeViewCompositionTest extends TestCase
 
         self::assertSame('ui-b4a77681f0a7', $provenance['compatibility_id']);
         self::assertSame(
-            '2c3e70859ab29211813b7327164bba0756d65ceb9167d30cc24db4a52eebddf9',
+            '2a708b6203373d64be7f8607a6845e9cda180a1bd44ecb0e7b8f6d4c21789bc3',
             $provenance['registry_sha256'],
         );
     }

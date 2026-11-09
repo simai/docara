@@ -2394,10 +2394,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/branding-and-theme.md",
-            "source_sha256": "b7bf975707a658598844eae25e273ccfeec85eb53bb65e2aca2290be84654611",
+            "source_sha256": "f93b46b42d2532e63b244e8631dc13e1464e0bff8c2e7b8a43dede336a71edd7",
             "source_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7",
             "target_path": "content/en/settings/branding-and-theme.md",
-            "target_sha256": "d773b3cde167d5bb0b76c41b58a9178db0883afaeedf84810e2a1cff1217ae69",
+            "target_sha256": "f20f224ad9617e6047fd8574cf887c97515e385a9270a87d65d799f992bb8b76",
             "target_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7"
         },
         {

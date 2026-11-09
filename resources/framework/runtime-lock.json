@@ -109,6 +109,12 @@
                 "runtime_projection_packet_sha256": "a06b34c0dd6f88adfb7196fd1d386ccd5a51a54a944f5eec8b72ff288eb25922",
                 "runtime_projection_files": 2228,
                 "runtime_projection_manifest_sha256": "d066b306e20222d76168e6eabbc92c622905754fe6e16710b77d6c782c332a9a"
+            },
+            {
+                "runtime_sha256": "6a1b53af08216866faa47a5cdd91cf0082c342bcaa8124ad404c7eb5b06d5d25",
+                "runtime_projection_packet_sha256": "99a85367f689d9b999612282583feb539aaf5363f5905441322153e3c858650c",
+                "runtime_projection_files": 2228,
+                "runtime_projection_manifest_sha256": "b3a6c03dcb8609ed65bffe056f9721870434a6e83b83be1b475fadd1daeddb74"
             }
         ],
         "superseded_typography_projections": [
@@ -123,44 +129,44 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "ui-2a671352d67b",
-    "bundle_id": "ui-2a671352d67b-registry-2c3e7085-verified-commit-candidate-v1",
+    "pair_id": "ui-b4a77681f0a7",
+    "bundle_id": "ui-b4a77681f0a7-registry-2a708b62-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
     "tag": null,
     "ui": {
         "tag": null,
-        "commit": "2a671352d67b15acf233805767dd4cb4b6b6aad4",
+        "commit": "b4a77681f0a7f1c540566e5abac2a4f9d3082a3d",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "e7bb2eb212d949fc0f93f3a7fb5d1946a8bd35393718457e6b15da1f1624cc26",
-        "files": 12036
+        "sha256": "29f2e0fba8215c530cf9f0f44cf9f8b51f1eb98e51e997982fd3561ea77d904a",
+        "files": 12538
     },
     "ui_smart": {
         "tag": null,
-        "commit": "2a671352d67b15acf233805767dd4cb4b6b6aad4",
+        "commit": "b4a77681f0a7f1c540566e5abac2a4f9d3082a3d",
         "tree": "distr/smart",
         "mount": "ui",
-        "sha256": "c2b039b6fb86f788757e0f3825a29aefe0824778e52dffa3060c5dacec187fba",
-        "files": 3184
+        "sha256": "6bf5934a817abfdbe8d8de3db458b174ebc3da498d4534a58089504a85a8e669",
+        "files": 3452
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "ui-2a671352d67b",
+        "compatibility_id": "ui-b4a77681f0a7",
         "profile": "plain-assets-v1",
         "relative_path": "contracts/generated/framework-contract-registry.json",
-        "file_sha256": "2c3e70859ab29211813b7327164bba0756d65ceb9167d30cc24db4a52eebddf9",
+        "file_sha256": "2a708b6203373d64be7f8607a6845e9cda180a1bd44ecb0e7b8f6d4c21789bc3",
         "source": {
-            "commit": "3f56fa78aab1e9b9ed79dffa80c2b438f76e7dfd",
+            "commit": "c62eae925213318fca769c5cf0149f60b53df76c",
             "tree": "contracts/generated",
-            "tree_oid": "71555b2d421f375496145acd95050bffeadf82df",
+            "tree_oid": "38afacf25d12b125e88199a4794a7982fda93888",
             "mount": "contract",
-            "sha256": "46ce7d6c6b6597fd96014557965a8119736e0681c176b1f355db1668844c3a9a",
+            "sha256": "00344d6a6b387bc476559a5d0e07d59b67710cf22ef361bc52965d35544de5aa",
             "files": 2
         },
         "documentation_source": {
             "schema": "docara.documentation_source.v1",
             "relative_path": "contracts/generated/documentation-source.json",
-            "file_sha256": "1e14d08ae04128f4afd01c8bc4cec1483230a4568d6cb95c2f674c2b41185cf8"
+            "file_sha256": "22198dbe9a5fbb9b1f5e4c4970580d12ba653f1e1aca7d69b5d7964fb84a88dc"
         }
     },
     "boot": {
@@ -278,6 +284,7 @@
                 "description",
                 "disabled",
                 "heading",
+                "hue",
                 "image-alt",
                 "image-url",
                 "line",
@@ -400,9 +407,11 @@
             "attributes": [
                 "appearance",
                 "aria-label",
+                "cycle",
                 "disabled",
                 "expanded",
                 "form",
+                "height",
                 "href",
                 "icon",
                 "icon-end",
@@ -415,6 +424,7 @@
                 "native-type",
                 "pressed",
                 "radius",
+                "rel",
                 "root-class",
                 "root-style",
                 "scheme",
@@ -424,9 +434,12 @@
                 "size",
                 "spacing",
                 "status",
+                "target",
                 "template",
                 "text",
                 "text-position",
+                "text-pressed",
+                "theme-cycle",
                 "tightness",
                 "type",
                 "value"
@@ -438,10 +451,16 @@
         "sf-button-close": {
             "source": "smart/button-close",
             "javascript": "smart/smart/button-close/js/button-close.js",
-            "css": null,
+            "css": "smart/smart/button-close/css/button-close.css",
             "attributes": [
+                "appearance",
+                "aria-label",
+                "backdrop",
+                "disabled",
+                "radius",
                 "root-class",
                 "root-style",
+                "scheme",
                 "size",
                 "template"
             ]
@@ -474,29 +493,10 @@
             ]
         },
         "sf-button-group": {
-            "source": "smart/button-group",
-            "javascript": "smart/smart/button-group/js/button-group.js",
+            "source": "smart/segmented",
+            "javascript": "smart/smart/segmented/js/segmented.js",
             "css": null,
-            "attributes": [
-                "appearance",
-                "aria-label",
-                "disabled",
-                "full-width",
-                "items",
-                "name",
-                "orientation",
-                "plate",
-                "radius",
-                "root-class",
-                "root-style",
-                "scheme",
-                "size",
-                "spacing",
-                "template",
-                "theme-switch",
-                "tightness",
-                "value"
-            ],
+            "attributes": [],
             "requires": [
                 "sf-button",
                 "sf-icon"
@@ -514,10 +514,12 @@
                 "badge-dot",
                 "badge-label",
                 "button-attributes",
+                "cycle",
                 "disabled",
                 "filled",
                 "icon",
                 "kind",
+                "label-pressed",
                 "loading",
                 "native-type",
                 "pressed",
@@ -530,8 +532,10 @@
                 "spacing",
                 "status",
                 "template",
+                "theme-cycle",
                 "tightness",
                 "type",
+                "value",
                 "variant"
             ],
             "requires": [
@@ -579,7 +583,7 @@
         "sf-close": {
             "source": "smart/button-close",
             "javascript": "smart/smart/button-close/js/button-close.js",
-            "css": null,
+            "css": "smart/smart/button-close/css/button-close.css",
             "attributes": []
         },
         "sf-code-input": {
@@ -625,7 +629,9 @@
                 "question",
                 "root-class",
                 "root-style",
+                "size",
                 "state",
+                "status",
                 "template"
             ],
             "requires": [
@@ -728,6 +734,7 @@
             "css": null,
             "attributes": [],
             "requires": [
+                "sf-alert",
                 "sf-icon"
             ]
         },
@@ -876,17 +883,21 @@
                 "aria-label",
                 "disabled",
                 "download",
+                "error-text",
                 "file-name",
                 "file-size",
+                "file-type",
                 "href",
                 "icon",
                 "root-class",
                 "root-style",
                 "size",
+                "state",
                 "target",
                 "template"
             ],
             "requires": [
+                "sf-alert",
                 "sf-icon"
             ]
         },
@@ -1173,11 +1184,14 @@
                 "mask-options",
                 "mask-pattern",
                 "mask-placeholder-char",
+                "max",
                 "maxlength",
+                "min",
                 "minlength",
                 "name",
                 "pattern",
                 "placeholder",
+                "radius",
                 "readonly",
                 "required",
                 "reset-label",
@@ -1185,6 +1199,7 @@
                 "root-class",
                 "root-style",
                 "size",
+                "step",
                 "template",
                 "text-end",
                 "type",
@@ -1192,6 +1207,32 @@
             ],
             "requires": [
                 "sf-icon"
+            ]
+        },
+        "sf-input-choice": {
+            "source": "smart/input-choice",
+            "javascript": "smart/smart/input-choice/js/input-choice.js",
+            "css": "smart/smart/input-choice/css/input-choice.css",
+            "attributes": [
+                "aria-label",
+                "columns",
+                "disabled",
+                "error-message",
+                "hint",
+                "invalid",
+                "items",
+                "label",
+                "layout",
+                "multiple",
+                "name",
+                "required",
+                "root-class",
+                "root-style",
+                "template",
+                "value"
+            ],
+            "requires": [
+                "sf-badge"
             ]
         },
         "sf-input-code": {
@@ -1483,6 +1524,8 @@
             "css": "smart/smart/input-textarea/css/input-textarea.css",
             "attributes": [
                 "appearance",
+                "aria-label",
+                "aria-labelledby",
                 "auto-grow",
                 "autocomplete",
                 "disabled",
@@ -1547,7 +1590,8 @@
                 "sf-context-menu",
                 "sf-icon",
                 "sf-icon-button",
-                "sf-menu-context"
+                "sf-menu-context",
+                "sf-segmented"
             ]
         },
         "sf-list": {
@@ -1564,6 +1608,7 @@
                 "items",
                 "label",
                 "loading",
+                "no-wrap",
                 "renamable",
                 "root-class",
                 "root-style",
@@ -1580,6 +1625,49 @@
                 "sf-icon",
                 "sf-list-item",
                 "sf-menu-context"
+            ]
+        },
+        "sf-list-attention": {
+            "source": "smart/list-attention",
+            "javascript": "smart/smart/list-attention/js/list-attention.js",
+            "css": "smart/smart/list-attention/css/list-attention.css",
+            "attributes": [
+                "empty",
+                "empty-text",
+                "heading-level",
+                "items",
+                "label",
+                "root-class",
+                "root-style",
+                "size",
+                "template"
+            ],
+            "requires": [
+                "sf-badge",
+                "sf-button",
+                "sf-icon"
+            ]
+        },
+        "sf-list-description": {
+            "source": "smart/list-description",
+            "javascript": "smart/smart/list-description/js/list-description.js",
+            "css": "smart/smart/list-description/css/list-description.css",
+            "attributes": [
+                "dividers",
+                "empty-text",
+                "items",
+                "label",
+                "layout",
+                "overflow",
+                "root-class",
+                "root-style",
+                "size",
+                "template"
+            ],
+            "requires": [
+                "sf-button-copy",
+                "sf-copy-button",
+                "sf-icon"
             ]
         },
         "sf-list-feed": {
@@ -1629,6 +1717,31 @@
                 "value"
             ]
         },
+        "sf-list-timeline": {
+            "source": "smart/list-timeline",
+            "javascript": "smart/smart/list-timeline/js/list-timeline.js",
+            "css": "smart/smart/list-timeline/css/list-timeline.css",
+            "attributes": [
+                "density",
+                "empty-text",
+                "group",
+                "has-more",
+                "heading-level",
+                "items",
+                "label",
+                "loading",
+                "now",
+                "root-class",
+                "root-style",
+                "size",
+                "template",
+                "time-format"
+            ],
+            "requires": [
+                "sf-button",
+                "sf-icon"
+            ]
+        },
         "sf-lookup": {
             "source": "smart/input-lookup",
             "javascript": "smart/smart/input-lookup/js/input-lookup.js",
@@ -1655,6 +1768,7 @@
                 "orientation",
                 "root-class",
                 "root-style",
+                "sticky",
                 "template",
                 "toggle-label"
             ]
@@ -1912,6 +2026,7 @@
             "css": null,
             "attributes": [
                 "aria-label",
+                "error-at",
                 "label",
                 "root-class",
                 "root-style",
@@ -1921,7 +2036,8 @@
                 "text-position",
                 "tone",
                 "value",
-                "value-text"
+                "value-text",
+                "warning-at"
             ]
         },
         "sf-progress-ring": {
@@ -1941,6 +2057,36 @@
                 "template",
                 "value",
                 "value-text"
+            ]
+        },
+        "sf-progress-run": {
+            "source": "smart/progress-run",
+            "javascript": "smart/smart/progress-run/js/progress-run.js",
+            "css": "smart/smart/progress-run/css/progress-run.css",
+            "attributes": [
+                "cancelable",
+                "file-name",
+                "hideable",
+                "label",
+                "output",
+                "output-label",
+                "output-open",
+                "result-text",
+                "retryable",
+                "root-class",
+                "root-style",
+                "run-state",
+                "size",
+                "steps",
+                "template"
+            ],
+            "requires": [
+                "sf-button",
+                "sf-button-copy",
+                "sf-button-icon",
+                "sf-copy-button",
+                "sf-icon",
+                "sf-icon-button"
             ]
         },
         "sf-progress-scale": {
@@ -2074,6 +2220,36 @@
             "requires": [
                 "sf-button-icon",
                 "sf-icon-button"
+            ]
+        },
+        "sf-segmented": {
+            "source": "smart/segmented",
+            "javascript": "smart/smart/segmented/js/segmented.js",
+            "css": null,
+            "attributes": [
+                "appearance",
+                "aria-label",
+                "backdrop",
+                "disabled",
+                "full-width",
+                "items",
+                "name",
+                "orientation",
+                "plate",
+                "radius",
+                "root-class",
+                "root-style",
+                "scheme",
+                "size",
+                "spacing",
+                "template",
+                "theme-switch",
+                "tightness",
+                "value"
+            ],
+            "requires": [
+                "sf-button",
+                "sf-icon"
             ]
         },
         "sf-settings": {
@@ -2369,6 +2545,41 @@
                 "sf-input-color"
             ]
         },
+        "sf-tile-metric": {
+            "source": "smart/tile-metric",
+            "javascript": "smart/smart/tile-metric/js/tile-metric.js",
+            "css": "smart/smart/tile-metric/css/tile-metric.css",
+            "attributes": [
+                "better",
+                "delta",
+                "delta-format",
+                "error-at",
+                "format",
+                "hint",
+                "href",
+                "label",
+                "limit-text",
+                "loading",
+                "max",
+                "openable",
+                "period-text",
+                "previous",
+                "root-class",
+                "root-style",
+                "size",
+                "status",
+                "template",
+                "unit",
+                "value",
+                "value-text",
+                "warning-at"
+            ],
+            "requires": [
+                "sf-badge",
+                "sf-icon",
+                "sf-progress-bar"
+            ]
+        },
         "sf-toast": {
             "source": "smart/toast",
             "javascript": "smart/smart/toast/js/toast.js",
@@ -2405,6 +2616,7 @@
                 "arrow",
                 "root-class",
                 "root-style",
+                "shortcut",
                 "size",
                 "supporting-text",
                 "template",

@@ -1,7 +1,7 @@
 {
     "schema": "docara.framework_view_utilities.v1",
-    "compatibility_id": "ui-2a671352d67b",
-    "registry_sha256": "2c3e70859ab29211813b7327164bba0756d65ceb9167d30cc24db4a52eebddf9",
+    "compatibility_id": "ui-b4a77681f0a7",
+    "registry_sha256": "2a708b6203373d64be7f8607a6845e9cda180a1bd44ecb0e7b8f6d4c21789bc3",
     "utilities": [
         "bg-surface-0",
         "border-bottom-1",

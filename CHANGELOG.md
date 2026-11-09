@@ -98,6 +98,27 @@ All notable changes to Docara are recorded here. The format follows
   files instead of 2228), and a site whose lock names the projection
   Docara 3.13.1 shipped builds with the new one.
 
+### Changed
+
+- **Docara bundles SIMAI Framework `ui-b4a77681f0a7`** (registry bound at
+  `c62eae925`) instead of `ui-2a671352d67b`. What sites see:
+  - menus and dropping panels: `sf-menu-context` 1.12 (panels that drop
+    from their field, keyboard keys shown with `sf-kbd`, items given as a
+    property, Escape closes), `sf-dropdown` 1.7 and `sf-search` 1.3;
+  - buttons and fields: `sf-button` 1.9 and `sf-button-icon` 1.7 (one
+    height per density, the pressed look), `sf-input` 1.6, `sf-tag` 1.2,
+    and `sf-segmented`, of which `sf-button-group` is now a dated alias;
+  - the Framework's colour purposes, shadows and elevation levels, heading
+    ladder and compact density, with the previous variable names kept as
+    aliases; popups open on the top layer;
+  - new Smart components on pages: `sf-input-choice`, `sf-list-description`,
+    `sf-list-timeline`, `sf-list-attention`, `sf-tile-metric` and
+    `sf-progress-run`;
+  - the Loader no longer links a stylesheet the page already has.
+
+  Sites that pin `ui-2a671352d67b` (Docara 3.13.0 to 3.13.1) build with the
+  new release.
+
 ### Removed
 
 - The unused `.docara-example-source` rule left over from 3.0 is gone from

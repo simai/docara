@@ -6,6 +6,31 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.14.1] - 2026-11-10
+
+### Fixed
+
+- **A link to `#part` inside an example frame stays in the example.** The
+  frame document has a `<base href>` to its example folder, so a click on a
+  same-document link loaded that folder into the frame (a 404) and blanked
+  the example. The click now scrolls the example to its target, when it
+  has one; an example that handles the click itself keeps it.
+- **An example frame starts in the page's language.** Its `<html>` gets the
+  page's `lang` (and `dir="rtl"` on a right-to-left page) before any script
+  in it runs, so Framework scripts format sizes, dates and default labels
+  in that language (`106 Б` on a Russian page, not `106 B`).
+- **Code blocks inside an inline HTML example are the example's own.**
+  Docara's code-block header no longer takes over a `<pre><code>` in the
+  example's markup, so a Framework highlight there shows its language, its
+  `data-chrome` and `data-wrap` settings and its wrap button. Tables and
+  images inside the example are left as written too.
+- **Docara writes `bg-surface-page` instead of `bg-surface-0`.** SIMAI
+  Framework renamed the surface-0 background to the page surface; the
+  colour is the same. Example frames, cards, the skip link and the reader
+  settings use the new class. In `docara.json` layouts `bg-surface-0` is
+  still accepted: it renders as `bg-surface-page` and is noted in the page
+  plan's `deprecated_utilities`, as `surface-0` already was.
+
 ## [3.14.0] - 2026-11-10
 
 ### Added

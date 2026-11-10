@@ -17,6 +17,7 @@ final class SharedSurfaceAdoptionTest extends TestCase
     public function semantic_blocks_keep_the_frozen_default_bytes_on_one_surface_presentation(): void
     {
         $renderer = new PortableMarkdownRenderer;
+        // 3.14.1 writes the renamed bg-surface-page for bg-surface-0.
         // 3.3.0 changed only the frame's padding inside the container from
         // p-N to p-top-N p-bottom-N, so the band's text keeps the page's edge.
         $cases = [
@@ -26,7 +27,7 @@ final class SharedSurfaceAdoptionTest extends TestCase
             ],
             'showcase' => [
                 ":::showcase\n## Проверяемый результат\n\nСобранная документация видна до публикации.\n\n[Открыть пример](/landing/)\n\n![Интерфейс Docara](/assets/screen.png)\n:::\n",
-                '0b0d0b1ab3c259cc6bf1deabf497fc03438888e17a9ff066416e5e3fa750e744',
+                '7d7e42d7c7d271afb79acea9bd884ec5097a4b8b5a6671cdac839698d770d86b',
             ],
             'promo' => [
                 ":::promo\n## Соберите первый сайт\n\nСоздайте проект и получите статический результат.\n\n[Начать](/start/)\n\n![](/assets/promo.png)\n:::\n",
@@ -77,7 +78,7 @@ final class SharedSurfaceAdoptionTest extends TestCase
         self::assertNotContains('docara.showcase', $typed);
         self::assertContains('docara.promo', $typed);
         self::assertSame(
-            '388faf29fd302db2a7d1c458b1bb27069d287bde9f7b804d42dfddec331cc020',
+            '94abfcb4715b54fab95824fb70ef683a936e3621b1154fff3b541db4f68de4ba',
             hash('sha256', $result->contentHtml),
         );
         foreach (['hero' => 1, 'features' => 3, 'showcase' => 0, 'promo' => 1] as $block => $count) {

@@ -27,9 +27,9 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('inlineStyles=styles', $shell);
         self::assertStringContainsString('simai.framework.icon_fallback_font.css', $shell);
         self::assertStringContainsString('function exampleDesignTokens()', $shell);
-        self::assertStringContainsString('function collectExampleTokenNames(rules,names)', $shell);
+        self::assertStringContainsString('function collectExampleTokenNames(rules,names,declared,widthScoped,inWidth)', $shell);
         self::assertStringContainsString("names=new Set(['--sf-text--size','--sf-text--height'])", $shell);
-        self::assertStringContainsString('collectExampleTokenNames(sheet.cssRules,names)', $shell);
+        self::assertStringContainsString('collectExampleTokenNames(sheet.cssRules,names,declared,widthScoped,', $shell);
         self::assertStringContainsString('designTokens:exampleDesignTokens()', $shell);
         self::assertStringContainsString('rootFontSize:getComputedStyle(document.documentElement).fontSize', $shell);
         self::assertStringContainsString('Array.isArray(data.scripts)?data.scripts:[]', $renderer);
@@ -212,6 +212,40 @@ final class ExampleRuntimeContractTest extends TestCase
         foreach (['frame with a language', 'page without a language', 'invalid language'] as $unchanged) {
             self::assertSame($cases[$unchanged][2], $result[$unchanged], $unchanged);
         }
+    }
+
+    public function test_a_frame_takes_the_page_tokens_but_not_the_width_ladder(): void
+    {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertSame(1, preg_match('/\n  function collectExampleTokenNames\(rules,names,declared,widthScoped,inWidth\)\{\n.*?\n  function exampleDesignTokens\(\)\{\n.*?\n    return tokens;\n  \}\n/s', $shell, $match));
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The shell check runs the function in Node.js.');
+
+        // A stylesheet like the Framework's: colours for every width, a size
+        // ladder switched by a width query, a token built from the ladder,
+        // a reader setting on the root element and a measured breakout width.
+        $script = <<<'JS'
+const style=(declarations)=>{const names=Object.keys(declarations);const s={length:names.length,getPropertyValue:(n)=>declarations[n]||''};names.forEach((n,i)=>{s[i]=n});return s};
+const computedValues={'--sf-primary':'#0a6cff','--sf-text--height-1':'1.5rem','--sf-ui-1--control-height':'calc(1.5rem + 2 * 0.5rem)','--sf-radius--ui':'0.5rem','--sf-container-breakout--page':'1440px','--sf-text--size':'1rem','--sf-text--height':'1.5'};
+const computed=style(computedValues);
+const root={style:style({'--sf-radius--ui':'var(--sf-radius-1)','--sf-container-breakout--page':'1440px'})};
+globalThis.document={documentElement:root,styleSheets:[{media:{mediaText:''},cssRules:[
+  {style:style({'--sf-primary':'#0a6cff','--sf-text--height-1':'1.25rem','--sf-ui-1--control-height':'calc(var(--sf-text--height-1) + 2 * 0.5rem)','--sf-text--size':'1rem','--sf-text--height':'1.5'})},
+  {media:{mediaText:'(min-width: 60rem)'},cssRules:[{style:style({'--sf-text--height-1':'1.5rem'})}]}
+]}]};
+globalThis.getComputedStyle=()=>computed;
+JS;
+        $script .= $match[0] . 'process.stdout.write(JSON.stringify(exampleDesignTokens()));';
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $tokens = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame([
+            '--sf-primary' => '#0a6cff',
+            '--sf-radius--ui' => 'var(--sf-radius-1)',
+            '--sf-text--height' => '1.5',
+            '--sf-text--size' => '1rem',
+        ], $tokens);
     }
 
     public function test_example_height_measures_content_instead_of_its_current_viewport(): void

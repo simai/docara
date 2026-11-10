@@ -489,27 +489,44 @@
       return content===null?null:portableExampleStyle(content,resolved.href,codepoints,faces);
     });
   }
-  function collectExampleTokenNames(rules,names){
+  /* The frame gets the page's design tokens, except those that follow the viewport width: the Framework switches its size ladder (text, control heights, spacing, containers) with width media queries, and a frame narrower than the page must take the ladder of its own width. A token declared under a width query, or declared from such a token, is left to the frame's own stylesheets; a token the page sets on its root element itself (a reader setting such as the UI radius) is sent as written, so the frame resolves it against its own ladder. */
+  function collectExampleTokenNames(rules,names,declared,widthScoped,inWidth){
     Array.from(rules||[]).forEach(function(rule){
+      var scoped=inWidth||Boolean(rule.media&&/width/i.test(rule.media.mediaText||''));
       if(rule.style){
         for(var index=0;index<rule.style.length;index++){
           var name=rule.style[index];
-          if(typeof name==='string'&&name.indexOf('--sf-')===0&&/^--sf-[a-z0-9_\\/.-]+$/.test(name)){names.add(name)}
+          if(typeof name==='string'&&name.indexOf('--sf-')===0&&/^--sf-[a-z0-9_\\/.-]+$/.test(name)){
+            names.add(name);
+            if(scoped)widthScoped.add(name);
+            if(!declared[name])declared[name]=[];
+            declared[name].push(rule.style.getPropertyValue(name));
+          }
         }
       }
-      try{if(rule.cssRules){collectExampleTokenNames(rule.cssRules,names)}}catch(error){}
+      try{if(rule.cssRules){collectExampleTokenNames(rule.cssRules,names,declared,widthScoped,scoped)}}catch(error){}
     });
   }
   function exampleDesignTokens(){
-    var computed=getComputedStyle(document.documentElement),names=new Set(['--sf-text--size','--sf-text--height']);
+    var root=document.documentElement,computed=getComputedStyle(root),names=new Set(['--sf-text--size','--sf-text--height']),declared=Object.create(null),widthScoped=new Set();
     for(var index=0;index<computed.length;index++){
       var name=computed[index];
       if(typeof name==='string'&&name.indexOf('--sf-')===0&&/^--sf-[a-z0-9_\\/.-]+$/.test(name)){names.add(name)}
     }
-    Array.from(document.styleSheets).forEach(function(sheet){try{collectExampleTokenNames(sheet.cssRules,names)}catch(error){}});
+    Array.from(document.styleSheets).forEach(function(sheet){try{collectExampleTokenNames(sheet.cssRules,names,declared,widthScoped,Boolean(sheet.media&&/width/i.test(sheet.media.mediaText||'')))}catch(error){}});
+    var changed=true;
+    while(changed){
+      changed=false;
+      Object.keys(declared).forEach(function(name){
+        if(widthScoped.has(name))return;
+        if(declared[name].some(function(value){var reference=/var\(\s*(--sf-[a-z0-9_\\/.-]+)/gi,match;while((match=reference.exec(value))!==null){if(widthScoped.has(match[1]))return true}return false})){widthScoped.add(name);changed=true}
+      });
+    }
     var tokens=Object.create(null);
     Array.from(names).sort().slice(0,4096).forEach(function(name){
-      var value=computed.getPropertyValue(name).trim();
+      /* A breakout or viewport width the Framework measures on the page is the page's own; the frame measures its own. */
+      if(/breakout|viewport/.test(name))return;
+      var own=root.style.getPropertyValue(name).trim(),value=own||(widthScoped.has(name)?'':computed.getPropertyValue(name).trim());
       if(!value||value.length>512||/url\s*\(|@import|expression\s*\(/i.test(value))return;
       tokens[name]=value;
     });

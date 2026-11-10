@@ -288,9 +288,9 @@ Framework и два типа вызовов:
 шаблонам остаются недоступны.
 
 Разрешённые утилиты перечислены в `resources/framework/view-utilities.json`;
-это классы SIMAI Framework, например `bg-surface-0` для фона поверхности и пара
-`border-bottom-1 border-bottom-solid` для нижней границы. Прежние имена
-`surface-0` и `border-bottom` во Framework не существуют, но Docara их
+это классы SIMAI Framework, например `bg-surface-page` для фона страницы и пара
+`border-bottom-1 border-bottom-solid` для нижней границы. Прежних имён
+`surface-0`, `bg-surface-0` и `border-bottom` во Framework больше нет, но Docara их
 по-прежнему принимает: на странице вместо них выводятся эти классы Framework, а
 замена отмечается в плане страницы (`deprecated_utilities`). В новых файлах
 пишите имена Framework.

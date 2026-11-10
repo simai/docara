@@ -120,16 +120,20 @@ final class RendererFrameworkUtilityTest extends TestCase
         $root = dirname(__DIR__, 2);
         $registry = json_decode((string) file_get_contents($root . '/resources/framework/view-utilities.json'), true, 512, JSON_THROW_ON_ERROR);
         $allowed = $registry['utilities'];
-        self::assertContains('bg-surface-0', $allowed);
+        self::assertContains('bg-surface-page', $allowed);
         self::assertContains('border-bottom-1', $allowed);
         self::assertContains('border-bottom-solid', $allowed);
         self::assertSame([], $this->unknown(array_fill_keys($allowed, true)), 'The view utility allow-list names classes the bundled SIMAI Framework does not define.');
 
-        // The deprecated names are accepted for compatibility only because
-        // the Framework does not define them; each maps to Framework classes.
-        self::assertSame(['border-bottom', 'surface-0'], array_keys($registry['deprecated']));
+        // The deprecated names are accepted for compatibility: the Framework
+        // does not define them, or keeps them only as the former name of a
+        // renamed class (bg-surface-0 is now bg-surface-page). Each maps to
+        // Framework classes.
+        self::assertSame(['bg-surface-0', 'border-bottom', 'surface-0'], array_keys($registry['deprecated']));
         foreach ($registry['deprecated'] as $name => $entry) {
-            self::assertSame([$name], $this->unknown([$name => true]));
+            if ($name !== 'bg-surface-0') {
+                self::assertSame([$name], $this->unknown([$name => true]));
+            }
             self::assertNotContains($name, $allowed);
             self::assertSame([], array_diff($entry['replacement'], $allowed));
         }

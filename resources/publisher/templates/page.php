@@ -35,7 +35,7 @@
 <?= $view->chrome['head'] ?>
 </head>
 <body class="bg-surface <?= $view->containerClass ?>" data-docara-shell>
-    <a class="docara-skip-link bg-surface-0 border radius-1 p-1" href="#docara-main"><?= $view->copy['shell.skip_to_content'] ?></a>
+    <a class="docara-skip-link bg-surface-page border radius-1 p-1" href="#docara-main"><?= $view->copy['shell.skip_to_content'] ?></a>
     <?= $view->chrome['site_header'] ?>
 <?php if ($view->preset === 'landing') { ?>
     <main id="docara-main" tabindex="-1" class="docara-landing" data-docara-region="main">

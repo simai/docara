@@ -673,7 +673,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                 'class="sf-alert sf-alert--info sf-alert--default flex items-cross-start m-bottom-1"',
             ],
             'docara.card' => [
-                '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-0 border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1">',
+                '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-page border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1">',
                 '<h3>Portable project</h3>',
             ],
             'docara.banner' => [

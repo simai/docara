@@ -290,10 +290,10 @@ HTML, event handlers, JavaScript URLs, style or class strings, callbacks and
 template paths stay out of reach.
 
 The allowed utilities are listed in `resources/framework/view-utilities.json`;
-these are SIMAI Framework classes, for example `bg-surface-0` for the surface
+these are SIMAI Framework classes, for example `bg-surface-page` for the page
 background and the pair `border-bottom-1 border-bottom-solid` for a bottom
-border. The former names `surface-0` and `border-bottom` do not exist in the
-Framework, but Docara still accepts them: the page gets these Framework
+border. The former names `surface-0`, `bg-surface-0` and `border-bottom` are
+gone from the Framework, but Docara still accepts them: the page gets these Framework
 classes instead, and the replacement is noted in the page plan
 (`deprecated_utilities`). Write the Framework names in new files.
 

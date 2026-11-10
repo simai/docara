@@ -827,9 +827,9 @@ MD);
             $shellCss,
         );
         self::assertStringNotContainsString('minmax(12rem,15rem)', $shellCss);
-        self::assertStringNotContainsString('docara-sidebar bg-surface-0 border radius-surface', $index);
-        self::assertStringNotContainsString('docara-content bg-surface-0 border radius-surface', $index);
-        self::assertStringNotContainsString('docara-outline-rail bg-surface-0 border radius-surface', $guide);
+        self::assertStringNotContainsString('docara-sidebar bg-surface-page border radius-surface', $index);
+        self::assertStringNotContainsString('docara-content bg-surface-page border radius-surface', $index);
+        self::assertStringNotContainsString('docara-outline-rail bg-surface-page border radius-surface', $guide);
         self::assertStringContainsString(
             '<div class="docara-sidebar-scroll sf-scrollbar">',
             $guide,
@@ -854,7 +854,7 @@ MD);
         self::assertStringNotContainsString('docara-prose flex', $guide);
         self::assertStringNotContainsString('docara-prose container w-full m-inline-auto flex', $landing);
         self::assertStringNotContainsString(
-            'docara-content docara-prose bg-surface-0 border radius-3',
+            'docara-content docara-prose bg-surface-page border radius-3',
             $landing,
         );
         self::assertStringContainsString(
@@ -875,7 +875,7 @@ MD);
             $landing,
         );
         self::assertStringContainsString(
-            '<li class="bg-surface-0 border border-outline-variant radius-surface p-3 flex min-w-0 max-w-none flex-col gap-1">',
+            '<li class="bg-surface-page border border-outline-variant radius-surface p-3 flex min-w-0 max-w-none flex-col gap-1">',
             $landing,
         );
         self::assertStringNotContainsString('docara-feature-grid', $landing);
@@ -1211,7 +1211,7 @@ MD);
         self::assertStringContainsString('new MutationObserver(localizeBreadcrumbEllipsis)', $shellRuntime);
         self::assertStringContainsString('[data-sf-breadcrumbs-generated="ellipsis"][aria-label]', $shellRuntime);
         self::assertStringNotContainsString('docara-header-actions', $fourthLevel);
-        self::assertStringNotContainsString('docara-mobile-navigation bg-surface-0', $fourthLevel);
+        self::assertStringNotContainsString('docara-mobile-navigation bg-surface-page', $fourthLevel);
         self::assertStringNotContainsString('class="docara-search-input ', $fourthLevel);
         self::assertStringNotContainsString('.docara-header-actions{', $shellCss);
         self::assertStringNotContainsString('.docara-reading-column,.docara-content{min-width:0}', $shellCss);

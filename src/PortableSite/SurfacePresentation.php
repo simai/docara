@@ -91,7 +91,7 @@ final readonly class SurfacePresentation
         }
 
         $surfaceClass = match ($tone) {
-            'default' => 'bg-surface-0',
+            'default' => 'bg-surface-page',
             'muted' => 'bg-surface-container',
             default => throw new \LogicException('SURFACE_SEMANTIC_TONE_INVALID'),
         };
@@ -114,7 +114,7 @@ final readonly class SurfacePresentation
             'muted' => 'bg-surface-1 color-on-surface',
             'accent' => 'bg-primary-container color-on-primary-container',
             'contrast' => 'bg-surface-inverse color-on-surface-inverse',
-            default => 'bg-surface-0 color-on-surface',
+            default => 'bg-surface-page color-on-surface',
         };
     }
 

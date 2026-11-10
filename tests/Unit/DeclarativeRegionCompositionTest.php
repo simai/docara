@@ -134,7 +134,7 @@ final class DeclarativeRegionCompositionTest extends TestCase
                     'element' => [
                         'tag' => 'p',
                         'text' => 'Docara — документация как код',
-                        'utilities' => ['m-0', 'p-2', 'bg-surface-0'],
+                        'utilities' => ['m-0', 'p-2', 'bg-surface-page'],
                     ],
                 ], [
                     'id' => 'home',
@@ -168,7 +168,7 @@ final class DeclarativeRegionCompositionTest extends TestCase
         self::assertSame('ui.button', $plan->regions['header'][1]->blocks[0]->smart?->smart);
         self::assertSame('content/shell.page.json', $plan->regions['footer'][0]->blocks[0]->data['source']);
         self::assertStringContainsString('<sf-button', $html);
-        self::assertStringContainsString('<p class="m-0 p-2 bg-surface-0">Docara — документация как код</p>', $html);
+        self::assertStringContainsString('<p class="m-0 p-2 bg-surface-page">Docara — документация как код</p>', $html);
         self::assertArrayNotHasKey('deprecated_utilities', $plan->regions['footer'][0]->blocks[0]->data);
         self::assertArrayNotHasKey('deprecated_utilities', $plan->regions['footer'][0]->provenance);
         self::assertStringContainsString('<a href="/" aria-label="На главную страницу">На главную</a>', $html);
@@ -210,15 +210,16 @@ final class DeclarativeRegionCompositionTest extends TestCase
 
         // The old names are replaced in place by the classes the Framework
         // defines, without duplicates.
-        self::assertStringContainsString('<p class="bg-surface-0 m-0">Docara — документация как код</p>', $html);
+        self::assertStringContainsString('<p class="bg-surface-page m-0">Docara — документация как код</p>', $html);
         self::assertStringContainsString(
-            '<section id="site-footer" data-docara-section="docara.shell" data-docara-region-owner="footer" class="p-2 bg-surface-0 border-bottom-1 border-bottom-solid">',
+            '<section id="site-footer" data-docara-section="docara.shell" data-docara-region-owner="footer" class="p-2 bg-surface-page border-bottom-1 border-bottom-solid">',
             $html,
         );
         preg_match_all('/\sclass="([^"]*)"/', $html, $classes);
         foreach ($classes[1] as $value) {
             $tokens = preg_split('/\s+/', $value, -1, PREG_SPLIT_NO_EMPTY) ?: [];
             self::assertNotContains('surface-0', $tokens);
+            self::assertNotContains('bg-surface-0', $tokens);
             self::assertNotContains('border-bottom', $tokens);
             self::assertSame($tokens, array_values(array_unique($tokens)));
         }
@@ -227,7 +228,7 @@ final class DeclarativeRegionCompositionTest extends TestCase
         $section = $plan->regions['footer'][0];
         self::assertSame(
             [
-                ['utility' => 'surface-0', 'replacement' => ['bg-surface-0']],
+                ['utility' => 'surface-0', 'replacement' => ['bg-surface-page']],
                 ['utility' => 'border-bottom', 'replacement' => ['border-bottom-1', 'border-bottom-solid']],
             ],
             array_map(
@@ -236,7 +237,8 @@ final class DeclarativeRegionCompositionTest extends TestCase
             ),
         );
         self::assertSame('surface-0', $section->blocks[0]->data['deprecated_utilities'][0]['utility']);
-        self::assertCount(1, $section->blocks[0]->data['deprecated_utilities']);
+        self::assertSame('bg-surface-0', $section->blocks[0]->data['deprecated_utilities'][1]['utility']);
+        self::assertCount(2, $section->blocks[0]->data['deprecated_utilities']);
     }
 
     public function test_unknown_utilities_are_still_refused(): void

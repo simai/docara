@@ -733,7 +733,7 @@ MD;
         $html = (new PortableMarkdownRenderer)->render($markdown);
 
         self::assertStringContainsString(
-            '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-0 border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1">',
+            '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-page border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1">',
             $html,
         );
         self::assertStringContainsString(
@@ -847,7 +847,7 @@ MD;
         );
         self::assertSame(3, substr_count(
             $html,
-            '<li class="bg-surface-0 border border-outline-variant radius-surface p-3 flex min-w-0 max-w-none flex-col gap-1">',
+            '<li class="bg-surface-page border border-outline-variant radius-surface p-3 flex min-w-0 max-w-none flex-col gap-1">',
         ));
         self::assertStringContainsString(
             '<img data-docara-media="feature-icon" loading="lazy" decoding="async" src="/assets/markdown.png" alt="" />',
@@ -1234,7 +1234,7 @@ MD);
 MD);
 
         self::assertStringContainsString(
-            '<section data-docara-block="showcase" data-docara-width="full" class="bg-surface-0',
+            '<section data-docara-block="showcase" data-docara-width="full" class="bg-surface-page',
             $html,
         );
         self::assertStringContainsString(
@@ -2161,6 +2161,42 @@ MD);
         // An embed of another site keeps its own policy.
         $embed = $renderer->render(":::embed {provider=video}\n[Open](https://www.youtube-nocookie.com/embed/example)\n:::\n");
         self::assertStringNotContainsString('clipboard-write', $embed);
+    }
+
+    #[Test]
+    public function an_inline_html_example_keeps_its_own_code_blocks(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $html = $renderer->render(
+            ":::example\n```html\n<pre><code class=\"language-go\">fmt.Println(1)</code></pre>\n<pre><code>plain</code></pre>\n```\n:::\n\n```js\nconsole.log(1)\n```\n",
+        );
+
+        self::assertStringContainsString('data-docara-example-preview-resolved="inline"', $html);
+        // The example shows the author's code blocks as they are: a Framework
+        // highlight inside it draws its own chrome.
+        self::assertStringContainsString('<pre><code class="language-go">fmt.Println(1)</code></pre>', $html);
+        self::assertStringContainsString('<pre><code>plain</code></pre>', $html);
+        $preview = substr($html, (int) strpos($html, 'data-docara-example-inline-preview="html"'));
+        $preview = substr($preview, 0, (int) strpos($preview, '<pre><code>plain</code></pre>'));
+        self::assertStringNotContainsString('data-docara-code-block', $preview);
+        // A code block of the page around it is still Docara's.
+        self::assertSame(1, substr_count($html, 'data-docara-code-language="javascript"') + substr_count($html, 'data-docara-code-language="js"'));
+        self::assertStringNotContainsString('DOCARA_INLINE_EXAMPLE_', $html);
+    }
+
+    #[Test]
+    public function a_same_document_link_stays_inside_its_example_frame(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $html = $renderer->render(":::example\n```html\n<a href=\"#part\">Part</a><p id=\"part\">Part</p>\n```\n```javascript\n1;\n```\n:::\n");
+        preg_match('~data-docara-srcdoc="([^"]*)"~', $html, $frame);
+        $document = html_entity_decode($frame[1] ?? '', ENT_QUOTES | ENT_HTML5);
+
+        self::assertStringContainsString('data-docara-example-preview-resolved="sandbox"', $html);
+        self::assertStringContainsString("href.charAt(0)!=='#'", $document);
+        self::assertStringContainsString('event.preventDefault();', $document);
+        self::assertStringContainsString('target.scrollIntoView', $document);
+        self::assertMatchesRegularExpression('~<iframe [^>]*data-docara-example-frame [^>]*class="w-full border-0 bg-surface-page"~', $html);
     }
 
     #[Test]

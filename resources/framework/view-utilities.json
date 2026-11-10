@@ -3,7 +3,7 @@
     "compatibility_id": "ui-b4a77681f0a7",
     "registry_sha256": "2a708b6203373d64be7f8607a6845e9cda180a1bd44ecb0e7b8f6d4c21789bc3",
     "utilities": [
-        "bg-surface-0",
+        "bg-surface-page",
         "border-bottom-1",
         "border-bottom-solid",
         "border-outline-variant",
@@ -19,6 +19,12 @@
         "w-full"
     ],
     "deprecated": {
+        "bg-surface-0": {
+            "replacement": [
+                "bg-surface-page"
+            ],
+            "reason": "SIMAI Framework renamed the surface-0 background to the page surface; bg-surface-0 is its former name."
+        },
         "border-bottom": {
             "replacement": [
                 "border-bottom-1",
@@ -28,9 +34,9 @@
         },
         "surface-0": {
             "replacement": [
-                "bg-surface-0"
+                "bg-surface-page"
             ],
-            "reason": "SIMAI Framework has no surface-0 utility; the surface background is bg-surface-0."
+            "reason": "SIMAI Framework has no surface-0 utility; the page surface background is bg-surface-page."
         }
     }
 }

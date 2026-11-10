@@ -318,6 +318,13 @@
   }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));
   var docaraExampleFrames=Array.from(document.querySelectorAll('iframe[data-docara-example-frame]'));
+  /* A frame document starts in the page's language and direction: scripts inside it read <html lang> as they start (file sizes, dates, default labels), before the frame runtime hears from the page. */
+  function docaraFrameSource(source){
+    var lang=document.documentElement.lang||'',direction=document.documentElement.dir==='rtl'?'rtl':'';
+    if(!/^<!doctype html><html[\s>]/i.test(source)||/^<!doctype html><html[^>]*\slang=/i.test(source))return source;
+    var attributes=(/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$/.test(lang)?' lang="'+lang+'"':'')+(direction?' dir="rtl"':'');
+    return attributes?source.replace(/^(<!doctype html><html)/i,'$1'+attributes):source;
+  }
   /* Example and HTML-block frames carry their document in data-docara-srcdoc: a browser loads a srcdoc frame with the page even when it is marked loading="lazy". The document moves to srcdoc when the frame comes within 600px of the screen; a frame in a hidden tab waits until the tab is shown. */
   (function(){
     var deferred=Array.from(document.querySelectorAll('iframe[data-docara-srcdoc]'));
@@ -331,7 +338,7 @@
       var source=frame.getAttribute('data-docara-srcdoc');
       if(source===null)return;
       frame.removeAttribute('data-docara-srcdoc');
-      frame.setAttribute('srcdoc',absoluteBase(source));
+      frame.setAttribute('srcdoc',absoluteBase(docaraFrameSource(source)));
     }
     if(!deferred.length)return;
     if(typeof IntersectionObserver!=='function'){deferred.forEach(load);return}
@@ -670,7 +677,7 @@
       if(!responsiveFrame||!responsiveFrame.hasAttribute('data-docara-srcdoc'))return;
       var source=responsiveFrame.getAttribute('data-docara-srcdoc');
       responsiveFrame.removeAttribute('data-docara-srcdoc');
-      responsiveFrame.setAttribute('srcdoc',source);
+      responsiveFrame.setAttribute('srcdoc',docaraFrameSource(source));
     }
     var wrapButton=owned('[data-docara-example-wrap]')[0]||null;
     if(!tabs.length||!panels.length)return;

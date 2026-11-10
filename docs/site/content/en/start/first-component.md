@@ -88,7 +88,7 @@ declare(strict_types=1);
 
 $title = htmlspecialchars((string) ($props['title'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $text = htmlspecialchars((string) ($props['text'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-echo '<aside data-docara-smart="project.notice-card" class="flex flex-col gap-1/2 p-2 radius-surface border bg-surface-0 m-bottom-1">'
+echo '<aside data-docara-smart="project.notice-card" class="flex flex-col gap-1/2 p-2 radius-surface border bg-surface-page m-bottom-1">'
     . '<strong>' . $title . '</strong>'
     . '<p class="m-0">' . $text . '</p>'
     . '</aside>';
@@ -96,7 +96,7 @@ echo '<aside data-docara-smart="project.notice-card" class="flex flex-col gap-1/
 
 - `htmlspecialchars` escapes the text, so nobody can slip markup in through
   the parameters. Do not remove it.
-- `flex`, `p-2`, `radius-surface`, `border` and `bg-surface-0` are SIMAI Framework
+- `flex`, `p-2`, `radius-surface`, `border` and `bg-surface-page` are SIMAI Framework
   utilities. Docara loads their styles itself and adapts the colours to the
   light and dark themes.
 

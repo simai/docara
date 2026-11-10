@@ -182,6 +182,38 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString("'<title>' . \$this->escapeHtml(\$label) . '</title>'", $renderer);
     }
 
+    public function test_a_frame_document_starts_in_the_page_language_before_its_scripts_run(): void
+    {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertSame(1, preg_match('/\n  function docaraFrameSource\(source\)\{\n.*?\n  \}\n/s', $shell, $match));
+        self::assertStringContainsString("responsiveFrame.setAttribute('srcdoc',docaraFrameSource(source));", $shell);
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The shell check runs the function in Node.js.');
+
+        $cases = [
+            'russian page' => ['ru', '', '<!doctype html><html><head></head><body></body></html>'],
+            'own theme frame' => ['ru', '', '<!doctype html><html data-docara-example-own-theme><head></head><body></body></html>'],
+            'right to left page' => ['ar', 'rtl', '<!doctype html><html><head></head><body></body></html>'],
+            'frame with a language' => ['ru', '', '<!doctype html><html lang="en"><head></head><body></body></html>'],
+            'page without a language' => ['', '', '<!doctype html><html><head></head><body></body></html>'],
+            'invalid language' => ['"><script>', '', '<!doctype html><html><head></head><body></body></html>'],
+        ];
+        $script = 'const out={};const cases=' . json_encode($cases, JSON_THROW_ON_ERROR) . ';'
+            . 'for(const [name,[lang,dir,source]] of Object.entries(cases)){globalThis.document={documentElement:{lang,dir}};'
+            . $match[0] . 'out[name]=docaraFrameSource(source)}'
+            . 'process.stdout.write(JSON.stringify(out));';
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame('<!doctype html><html lang="ru"><head></head><body></body></html>', $result['russian page']);
+        self::assertSame('<!doctype html><html lang="ru" data-docara-example-own-theme><head></head><body></body></html>', $result['own theme frame']);
+        self::assertSame('<!doctype html><html lang="ar" dir="rtl"><head></head><body></body></html>', $result['right to left page']);
+        foreach (['frame with a language', 'page without a language', 'invalid language'] as $unchanged) {
+            self::assertSame($cases[$unchanged][2], $result[$unchanged], $unchanged);
+        }
+    }
+
     public function test_example_height_measures_content_instead_of_its_current_viewport(): void
     {
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
@@ -367,7 +399,7 @@ JS;
     {
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
         self::assertSame(1, preg_match('/\n    function absoluteBase\(source\)\{\n.*?\n    \}\n/s', $shell, $match));
-        self::assertStringContainsString("frame.setAttribute('srcdoc',absoluteBase(source));", $shell);
+        self::assertStringContainsString("frame.setAttribute('srcdoc',absoluteBase(docaraFrameSource(source)));", $shell);
         $node = (new ExecutableFinder)->find('node');
         self::assertIsString($node, 'The shell check runs the function in Node.js.');
 

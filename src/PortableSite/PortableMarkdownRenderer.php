@@ -628,7 +628,7 @@ final class PortableMarkdownRenderer
 
         $sectionClass = $view === 'timeline'
             ? 'm-bottom-1'
-            : 'bg-surface-0 border border-outline-variant radius-surface p-3 m-bottom-1';
+            : 'bg-surface-page border border-outline-variant radius-surface p-3 m-bottom-1';
 
         return '<section data-docara-block="steps" data-view="' . $view
             . '" class="' . $sectionClass . '">'
@@ -1056,7 +1056,7 @@ final class PortableMarkdownRenderer
         $preview = '<iframe src="' . $this->escapeHtml($src) . '" title="' . $this->escapeHtml($label) . '"'
             . ($defaultLabel ? ' data-docara-example-default-label' : '')
             . ' data-docara-example-frame data-docara-example-page data-sf-observer="ignore"'
-            . ' class="w-full border-0 bg-surface-0" allow="clipboard-write" loading="lazy"></iframe>';
+            . ' class="w-full border-0 bg-surface-page" allow="clipboard-write" loading="lazy"></iframe>';
         $renderId = 'markdown-example-' . substr(hash('sha256', $src . "\n" . $markdown), 0, 12);
 
         return $this->examples->render(
@@ -1251,7 +1251,7 @@ final class PortableMarkdownRenderer
             // frame at once even with loading="lazy", so the shell moves it to
             // srcdoc when the frame nears the screen. The document then
             // announces itself and the shell sizes the frame.
-            . ' data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" allow="clipboard-write" scrolling="no" loading="lazy" data-docara-srcdoc="'
+            . ' data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-page" sandbox="allow-scripts" allow="clipboard-write" scrolling="no" loading="lazy" data-docara-srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
     }
 
@@ -1402,6 +1402,18 @@ JS;
         return <<<'HTML'
 <script data-docara-example-resize>(function(){
 var body=document.body,lastHeight=0,scheduled=false,frameworkScriptSources={};
+/* The frame document has a <base href> to its example folder, so a link to #part would load that folder in the frame and blank the example. A same-document link stays in the example: it scrolls to its target, if the example has one. An example that handles the click itself keeps it. */
+document.addEventListener('click',function(event){
+if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+var link=event.target&&event.target.closest?event.target.closest('a[href]'):null;
+var href=link?link.getAttribute('href')||'':'';
+if(href.charAt(0)!=='#'||(link.target&&link.target!=='_self'))return;
+event.preventDefault();
+var id=href.slice(1),target=null;
+try{id=decodeURIComponent(id)}catch(error){}
+if(id!=='')target=document.getElementById(id)||document.getElementsByName(id)[0]||null;
+if(target&&target.scrollIntoView)target.scrollIntoView({block:'nearest'});
+});
 /* An example with its own theme (theme_switch=true) takes the page's theme until the reader switches it inside the example; from then on the frame keeps its own. */
 var ownTheme=document.documentElement.hasAttribute('data-docara-example-own-theme'),ownThemeChosen=false,pageTheme='';
 function applyFrameTheme(theme){
@@ -1696,7 +1708,7 @@ HTML;
             );
         }
 
-        return '<div data-docara-block="internal-preview" class="docara-example-preview bg-surface-0 border border-outline-variant radius-surface overflow-hidden"'
+        return '<div data-docara-block="internal-preview" class="docara-example-preview bg-surface-page border border-outline-variant radius-surface overflow-hidden"'
             . ' data-preview-size="' . $size . '"><iframe src="' . $this->escapeHtml($url)
             . '" title="' . $this->escapeHtml($title) . '"'
             . ($defaultTitle ? ' ' . self::INTERNAL_PREVIEW_DEFAULT_TITLE_MARKER : '')
@@ -2412,7 +2424,7 @@ HTML;
         $document = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>'
             . $match['source'] . '</body></html>';
 
-        return '<iframe data-docara-block="html" ' . self::DEFAULT_LABEL_MARKER . '="html" title="' . self::DEFAULT_LABELS['html'] . '" class="w-full border border-outline-variant radius-surface bg-surface-0 m-bottom-1" sandbox loading="lazy" data-docara-srcdoc="'
+        return '<iframe data-docara-block="html" ' . self::DEFAULT_LABEL_MARKER . '="html" title="' . self::DEFAULT_LABELS['html'] . '" class="w-full border border-outline-variant radius-surface bg-surface-page m-bottom-1" sandbox loading="lazy" data-docara-srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
     }
 
@@ -2492,7 +2504,7 @@ HTML;
     {
         $classes = $variant === 'plain'
             ? 'flex flex-col gap-1 m-bottom-1'
-            : 'bg-surface-0 border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1';
+            : 'bg-surface-page border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1';
 
         return '<section data-docara-block="card" data-docara-card-variant="' . $variant
             . '" class="' . $classes . '">';
@@ -2704,7 +2716,7 @@ HTML;
             function (array $match) use (&$index, $leadingTitles, $iconPlaceholders): string {
                 $hasTitle = $leadingTitles[$index++] ?? false;
 
-                return '<li class="bg-surface-0 border border-outline-variant radius-surface p-3 flex min-w-0 max-w-none flex-col gap-1">'
+                return '<li class="bg-surface-page border border-outline-variant radius-surface p-3 flex min-w-0 max-w-none flex-col gap-1">'
                     . $this->featureCardBody($match['body'], $hasTitle, $iconPlaceholders) . '</li>';
             },
             $content,
@@ -3696,6 +3708,56 @@ HTML;
     }
 
     private function decorateNativeMarkdown(string $html, bool $wrap = true): string
+    {
+        // An inline HTML example is the author's own markup: its code blocks,
+        // tables and images are what the example shows (a Framework highlight
+        // with its own chrome, say), so Docara's prose decoration skips it.
+        [$html, $verbatim] = $this->setAsideInlineHtmlPreviews($html);
+
+        return strtr($this->decorateNativeMarkup($html, $wrap), $verbatim);
+    }
+
+    /**
+     * Swaps every inline HTML example root for a token and returns the
+     * tokens with the markup they stand for.
+     *
+     * @return array{0:string,1:array<string,string>}
+     */
+    private function setAsideInlineHtmlPreviews(string $html): array
+    {
+        $marker = '<div data-docara-example-inline-preview="html"';
+        $verbatim = [];
+        $offset = 0;
+        while (($start = strpos($html, $marker, $offset)) !== false) {
+            if (preg_match_all('/<div\b|<\/div>/i', $html, $tags, PREG_OFFSET_CAPTURE, $start) === false) {
+                break;
+            }
+            $depth = 0;
+            $end = null;
+            foreach ($tags[0] as [$tag, $position]) {
+                $depth += $tag[1] === '/' ? -1 : 1;
+                if ($depth === 0) {
+                    $end = $position + strlen($tag);
+                    break;
+                }
+            }
+            if ($end === null) {
+                break;
+            }
+            $seed = hash('sha256', $html);
+            do {
+                $token = 'DOCARA_INLINE_EXAMPLE_' . substr($seed, 0, 16) . '_' . count($verbatim);
+                $seed = hash('sha256', $seed);
+            } while (str_contains($html, $token));
+            $verbatim[$token] = substr($html, $start, $end - $start);
+            $html = substr($html, 0, $start) . $token . substr($html, $end);
+            $offset = $start + strlen($token);
+        }
+
+        return [$html, $verbatim];
+    }
+
+    private function decorateNativeMarkup(string $html, bool $wrap): string
     {
         $html = preg_replace_callback(
             '/<blockquote>\s*<p>(?<content>.*?)\s*\{(?<config>(?=[^{}]*(?:author|source)\s*=)[^{}]+)\}<\/p>\s*<\/blockquote>/su',

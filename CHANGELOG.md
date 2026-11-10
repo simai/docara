@@ -6,6 +6,21 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.14.2] - 2026-11-10
+
+### Fixed
+
+- **An example frame takes the size ladder of its own width.** The page
+  sent every one of its design tokens to the frame, so a frame narrower
+  than the page kept the page's desktop sizes (40 px controls, 16 px text)
+  while its own width queries, density among them, read the phone side.
+  Tokens declared under a width query, tokens built from them and the
+  breakout width the Framework measures are now left to the frame's own
+  stylesheets: a 760 px frame on a 1440 px page draws 36 px controls and
+  14 px text. Colours and the other page tokens still reach the frame, and
+  a token the page sets on its root (the reader's UI radius) is sent as
+  written, so the frame resolves it against its own sizes.
+
 ## [3.14.1] - 2026-11-10
 
 ### Fixed

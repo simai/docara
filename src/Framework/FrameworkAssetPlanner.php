@@ -2256,6 +2256,20 @@ final readonly class FrameworkAssetPlanner
             . "try{Object.defineProperty(window,'localStorage',{configurable:true,enumerable:true,value:storage})}catch(error){try{window.localStorage=storage}catch(ignored){}}try{if(window.localStorage===storage){document.documentElement.dataset.docaraFrameworkStorage='memory'}}catch(error){}})();";
     }
 
+    /**
+     * A preloaded font lives under a commit- or digest-named directory. A
+     * Framework core face is either a hashed file (distr/core/<20 hex>.woff2)
+     * or a named Inter file (distr/core/fonts/inter/<name>.woff2); a name is
+     * one path segment that does not start with a dot, so it cannot climb out.
+     */
+    private static function immutableFontUrl(string $url): bool
+    {
+        return preg_match(
+            '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/(?:simai-framework/typography/[a-f0-9]{20}|simai-framework/runtime/[a-f0-9]{40}/distr/core/(?:[a-f0-9]{20}|fonts/inter/[A-Za-z0-9_-][A-Za-z0-9._-]*)|google/material-symbols/[a-f0-9]{40}/MaterialSymbolsOutlined|docara/icon-subset/[a-f0-9]{40}/material-symbols-outlined\.[a-f0-9]{20})\.woff2$#D',
+            $url,
+        ) === 1;
+    }
+
     /** @param list<array<string, mixed>> $assets */
     private function assertImmutable(array $assets): void
     {
@@ -2289,10 +2303,7 @@ final readonly class FrameworkAssetPlanner
                     && preg_match('/^[a-f0-9]{40}$/', $asset['source_revision']) === 1
                     && is_string($asset['sha256'] ?? null)
                     && preg_match('/^[a-f0-9]{64}$/', $asset['sha256']) === 1
-                    && preg_match(
-                        '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/(?:simai-framework/typography/[a-f0-9]{20}|simai-framework/runtime/[a-f0-9]{40}/distr/core/[a-f0-9]{20}|google/material-symbols/[a-f0-9]{40}/MaterialSymbolsOutlined|docara/icon-subset/[a-f0-9]{40}/material-symbols-outlined\.[a-f0-9]{20})\.woff2$#D',
-                        $url,
-                    ) === 1
+                    && self::immutableFontUrl($url)
                 ) {
                     continue;
                 }

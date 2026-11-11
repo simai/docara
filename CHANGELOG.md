@@ -36,6 +36,12 @@ All notable changes to Docara are recorded here. The format follows
   Framework sets the class. An icon font that reaches an example frame as
   bytes is also added to the frame's `document.fonts`, already loaded, so
   the Framework sees it there.
+- **A Framework build that names its Inter files is accepted.** The check
+  on preloaded fonts accepted a Framework core face only as a hashed file
+  (`distr/core/<hash>.woff2`), so a build that ships Inter as
+  `distr/core/fonts/inter/<name>.woff2` was refused. Both forms are now
+  accepted; a name must be a single file name that does not start with a
+  dot, so a path cannot climb out of the font folder.
 
 ## [3.14.2] - 2026-11-11
 

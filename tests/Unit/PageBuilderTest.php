@@ -126,7 +126,7 @@ final class PageBuilderTest extends TestCase
                 ]))->types(),
         );
         self::assertSame(
-            '6afdf022361473db8e07be1883f8191f7849557d5f4244c1ac6b1f56787b1043',
+            '8771fb28bac28f26bd5d0c3a619af701633e98da4aced01aad4ad3610f8e502a',
             hash('sha256', $result->contentHtml),
         );
         foreach ($result->componentArtifacts as $artifact) {

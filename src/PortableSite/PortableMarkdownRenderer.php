@@ -1573,6 +1573,8 @@ var style=getComputedStyle(body),rect=body.getBoundingClientRect();
 var marginTop=parseFloat(style.marginTop)||0,marginBottom=parseFloat(style.marginBottom)||0;
 var contentTop=rect.top-marginTop,contentBottom=rect.bottom+marginBottom,pinnedExtent=0;
 Array.from(body.children).forEach(function(child){
+/* An open popover or dialog is measured with the top layer below. */
+var open=false;try{open=child.matches(':popover-open,dialog[open]')}catch(error){}if(open)return;
 var childRect=child.getBoundingClientRect(),childStyle=getComputedStyle(child);
 /* A block fixed to the frame's bottom edge, such as a toast container, moves down as far as the frame grows: it counts with its own height and its gap to that edge, and an empty one not at all. */
 if(childStyle.position==='fixed'&&bottomPinned(child)){if(childRect.height>0)pinnedExtent=Math.max(pinnedExtent,Math.max(0,innerHeight-childRect.bottom)+naturalBlockSize(child));return}
@@ -1581,13 +1583,14 @@ contentBottom=Math.max(contentBottom,childRect.bottom+(parseFloat(childStyle.mar
 });
 contentBottom=Math.max(contentBottom,contentTop+pinnedExtent);
 /* An open menu or dialog sits in the top layer, which a frame clips at its own height, and a positioned menu shrinks to the room it has. The frame grows to the layer's full height, so the menu gets its natural size: the part a scrolling list hides counts too. */
-var layers=[];try{layers=Array.from(document.querySelectorAll(':popover-open,dialog[open]'))}catch(error){}
+var layers=[],flowBottom=contentBottom,overlays=[];try{layers=Array.from(document.querySelectorAll(':popover-open,dialog[open]'))}catch(error){}
 /* A layer pinned to the frame's bottom edge, such as a notification area, moves down as far as the frame grows: it needs its own height and its gap to that edge, not room below its bottom, or the frame would chase it. */
-layers.forEach(function(layer){var layerRect=layer.getBoundingClientRect(),hidden=Math.max(0,layer.scrollHeight-layer.clientHeight);Array.prototype.forEach.call(layer.querySelectorAll('*'),function(part){var overflow=getComputedStyle(part).overflowY;if(overflow==='auto'||overflow==='scroll')hidden=Math.max(hidden,part.scrollHeight-part.clientHeight)});var seen=layerPlaces.get(layer),viewport=innerHeight;if(!seen){seen={pinned:bottomPinned(layer)};layerPlaces.set(layer,seen)}else if(seen.viewport!==viewport&&Math.abs((layerRect.top-seen.top)-(viewport-seen.viewport))<1)seen.pinned=true;seen.viewport=viewport;seen.top=layerRect.top;contentBottom=Math.max(contentBottom,seen.pinned?contentTop+Math.max(0,viewport-layerRect.bottom)+naturalBlockSize(layer)+8:layerRect.bottom+hidden+8)});
-var height=Math.ceil(Math.max(0,contentBottom-contentTop));
-if(height===lastHeight)return;
-lastHeight=height;
-parent.postMessage({type:'docara:example-height',height:height},'*');
+layers.forEach(function(layer){var layerRect=layer.getBoundingClientRect(),hidden=Math.max(0,layer.scrollHeight-layer.clientHeight);Array.prototype.forEach.call(layer.querySelectorAll('*'),function(part){var overflow=getComputedStyle(part).overflowY;if(overflow==='auto'||overflow==='scroll')hidden=Math.max(hidden,part.scrollHeight-part.clientHeight)});var seen=layerPlaces.get(layer),viewport=innerHeight;if(!seen){seen={pinned:bottomPinned(layer)};layerPlaces.set(layer,seen)}else if(seen.viewport!==viewport&&Math.abs((layerRect.top-seen.top)-(viewport-seen.viewport))<1)seen.pinned=true;seen.viewport=viewport;seen.top=layerRect.top;if(seen.pinned){contentBottom=Math.max(contentBottom,contentTop+Math.max(0,viewport-layerRect.bottom)+naturalBlockSize(layer)+12);return}var reach=layerRect.bottom+hidden+12;if(reach>contentBottom)contentBottom=reach;overlays.push([Math.floor(layerRect.left-12),Math.floor(layerRect.top-contentTop-12),Math.ceil(layerRect.right+12),Math.ceil(reach-contentTop)])});
+var height=Math.ceil(Math.max(0,contentBottom-contentTop)),flow=Math.ceil(Math.max(0,flowBottom-contentTop)),report=height+'/'+flow+'/'+overlays.join(';');
+if(report===lastHeight)return;
+lastHeight=report;
+/* The page lays the frame out at its flow height and shows an open menu's room over what follows, so the menu does not push the page down. */
+parent.postMessage({type:'docara:example-height',height:height,flow:flow,overlays:overlays},'*');
 }
 function measureSettled(){
 measure();

@@ -262,7 +262,17 @@ JS;
         self::assertStringContainsString('Object.keys(tokens).sort().slice(0,4096)', $renderer);
         self::assertStringContainsString('contentBottom-contentTop', $renderer);
         self::assertStringNotContainsString('body.scrollHeight,root.scrollHeight', $renderer);
-        self::assertStringContainsString("frame.style.blockSize=Math.max(32,Math.ceil(height))+'px'", $shell);
+        self::assertStringContainsString("frame.style.blockSize=size+'px'", $shell);
+        // An open menu's room hangs over what follows instead of pushing the
+        // page down: the frame keeps its flow height in the layout, and a clip
+        // path shows only the flow box and the menus.
+        self::assertStringContainsString("var extra=Number.isFinite(flow)&&boxes.length?Math.max(0,size-Math.max(32,Math.ceil(flow))):0;", $shell);
+        self::assertStringContainsString("frame.style.marginBlockEnd=(-extra)+'px';", $shell);
+        self::assertStringContainsString("frame.style.clipPath=\"path('\"+path+\"')\"", $shell);
+        self::assertStringContainsString(".docara-example-preview[data-docara-example-overlay]{overflow:visible}", (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css'));
+        self::assertStringContainsString("parent.postMessage({type:'docara:example-height',height:height,flow:flow,overlays:overlays},'*')", $renderer);
+        self::assertStringContainsString("var reach=layerRect.bottom+hidden+12;", $renderer);
+        self::assertStringContainsString("try{open=child.matches(':popover-open,dialog[open]')}catch(error){}if(open)return;", $renderer);
         self::assertStringNotContainsString('Math.min(4096', $shell);
     }
 

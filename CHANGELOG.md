@@ -26,6 +26,12 @@ All notable changes to Docara are recorded here. The format follows
   on a toast placement example) and clipped the toast's top. Such a block
   now counts with its own height and its gap to that edge: the frame grows
   once and shows the whole toast.
+- **An open menu in an example frame no longer pushes the page down.** A
+  date picker, menu or dialog that needs more room than the example grew
+  the frame and moved everything below it (118 to 496 px on a date and time
+  example), then moved it back on close. The frame now keeps its own height
+  in the page and shows the menu's room over what follows, as a menu does
+  on a page, with 12 px to spare below the menu instead of 8.
 - **The Framework preloader stays off in example frames.** The page turns
   it off in its preference script, which a frame does not get, so a slow
   load covered a finished example with the preloader.

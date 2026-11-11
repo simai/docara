@@ -655,7 +655,27 @@
     var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
     var height=Number(event.data.height);
     if(!frame||!Number.isFinite(height))return;
-    frame.style.blockSize=Math.max(32,Math.ceil(height))+'px';
+    var size=Math.max(32,Math.ceil(height)),flow=Number(event.data.flow);
+    var boxes=Array.isArray(event.data.overlays)?event.data.overlays.filter(function(box){return Array.isArray(box)&&box.length===4&&box.every(Number.isFinite)}):[];
+    var extra=Number.isFinite(flow)&&boxes.length?Math.max(0,size-Math.max(32,Math.ceil(flow))):0;
+    var preview=frame.closest('.docara-example-preview');
+    frame.style.blockSize=size+'px';
+    /* An open menu's room hangs below the frame's flow height over what follows, as a menu does on a page: the page keeps its place, and only the frame's flow box and the menus stay visible and clickable. */
+    if(extra>0){
+      var width=frame.clientWidth,flowSize=size-extra;
+      var path='M0 0H'+width+'V'+flowSize+'H0Z'+boxes.map(function(box){return 'M'+box[0]+' '+box[1]+'H'+box[2]+'V'+box[3]+'H'+box[0]+'Z'}).join('');
+      frame.style.marginBlockEnd=(-extra)+'px';
+      frame.style.position='relative';
+      frame.style.zIndex='5';
+      frame.style.clipPath="path('"+path+"')";
+      if(preview)preview.setAttribute('data-docara-example-overlay','');
+    }else{
+      frame.style.marginBlockEnd='';
+      frame.style.position='';
+      frame.style.zIndex='';
+      frame.style.clipPath='';
+      if(preview)preview.removeAttribute('data-docara-example-overlay');
+    }
   });
   docaraExampleFrames.forEach(function(frame){
     frame.addEventListener('load',function(){requestExampleHeight(frame)});

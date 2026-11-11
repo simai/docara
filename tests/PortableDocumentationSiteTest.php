@@ -213,7 +213,8 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString('localizeCodeCopy', $shellJs);
         self::assertStringContainsString('showCopyState(false);', $shellJs);
         self::assertStringContainsString("event.data.type!=='docara:example-height'", $shellJs);
-        self::assertStringContainsString("frame.style.blockSize=Math.max(32,Math.ceil(height))+'px'", $shellJs);
+        self::assertStringContainsString("frame.style.blockSize=size+'px'", $shellJs);
+        self::assertStringContainsString("frame.style.clipPath=\"path('\"+path+\"')\"", $shellJs);
         self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shellJs);
         self::assertStringContainsString('return exampleEnvironment(frame).then(function(environment)', $shellJs);
         self::assertStringContainsString('script[data-docara-framework-asset="simai.framework.boot"]:not([src])', $shellJs);

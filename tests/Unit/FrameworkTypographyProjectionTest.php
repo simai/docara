@@ -531,6 +531,12 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $assets['simai.framework.icon_font.ready']['content'],
         );
         self::assertSame(1, substr_count($assets['simai.framework.icon_font.ready']['content'], 'icon.classList.toggle('));
+        // The Framework owns sf-icon-loaded, on the page and in example frames.
+        self::assertStringNotContainsString('sf-icon-loaded', $assets['simai.framework.icon_font.ready']['content']);
+        self::assertStringContainsString(
+            'document.fonts.load(key,current||undefined):Promise.resolve([]))}).catch(function(){})}',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
         // The subset draws every name written with its own characters; only
         // a name with another character leaves it.
         self::assertStringContainsString(

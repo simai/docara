@@ -2237,8 +2237,11 @@ final readonly class FrameworkAssetPlanner
             // whole class list) drops the face class chosen here; the recorded
             // face puts it back without loading the font again.
             . 'function faceClass(icon){return icon.classList.contains("sf-icon-full-font")?"full":icon.classList.contains("sf-icon-complete")?"complete":""}'
-            . 'function ready(icon){var current=iconName(icon);if(icon.classList.contains("sf-icon-loaded")&&icon.getAttribute("data-docara-icon-name")===current){if(icon.getAttribute("data-docara-icon-face")!==faceClass(icon)){family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon))}return}classSet(icon,"sf-icon-loaded",false);icon.setAttribute("data-docara-icon-name",current);var face=family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon));'
-            . 'ensureFace(face).then(function(){var key=face.weight+\' 24px "\'+face.family+\'"\';return loaded[key]||(loaded[key]=document.fonts&&document.fonts.load?document.fonts.load(key,current||undefined):Promise.resolve([true]))}).then(function(faces){if(faces&&faces.length)classSet(icon,"sf-icon-loaded",true)}).catch(function(){})}'
+            // The Framework owns sf-icon-loaded, on the page and in example
+            // frames: it watches document.fonts. This script only chooses the
+            // face and loads it, so the Framework sees the face arrive.
+            . 'function ready(icon){var current=iconName(icon);if(icon.getAttribute("data-docara-icon-name")===current){if(icon.getAttribute("data-docara-icon-face")!==faceClass(icon)){family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon))}return}icon.setAttribute("data-docara-icon-name",current);var face=family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon));'
+            . 'ensureFace(face).then(function(){var key=face.weight+\' 24px "\'+face.family+\'"\';return loaded[key]||(loaded[key]=document.fonts&&document.fonts.load?document.fonts.load(key,current||undefined):Promise.resolve([]))}).catch(function(){})}'
             . 'function mark(root){if(root.nodeType===1&&root.matches(".sf-icon"))ready(root);if(root.querySelectorAll){root.querySelectorAll(".sf-icon").forEach(ready)}}'
             . 'function owner(node){var element=node&&node.nodeType===1?node:node&&node.parentElement;return element&&element.closest?element.closest(".sf-icon"):null}'
             . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark);var icon=owner(record.target);if(icon)ready(icon)})}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["icon","class"]})}'

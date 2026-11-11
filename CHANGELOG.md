@@ -29,6 +29,13 @@ All notable changes to Docara are recorded here. The format follows
   page has a script still loads that script by its address. The chunks that
   Framework Core loads itself (such as core-rules) still come one request
   per frame.
+- **The Framework decides when an icon has loaded, in examples too.**
+  Docara's icon script set and cleared the Framework's `sf-icon-loaded`
+  class itself, on the page and in example frames, so the two could
+  disagree. Docara now only picks the icon's font face and loads it; the
+  Framework sets the class. An icon font that reaches an example frame as
+  bytes is also added to the frame's `document.fonts`, already loaded, so
+  the Framework sees it there.
 
 ## [3.14.2] - 2026-11-11
 

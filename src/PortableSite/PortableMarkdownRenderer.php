@@ -1456,6 +1456,20 @@ root.style.setProperty(name,value);
 if(typeof data.rootFontSize==='string'&&/^\d+(?:\.\d+)?px$/.test(data.rootFontSize)){root.style.fontSize=data.rootFontSize}
 /* The frame takes the page's font families with the other tokens. Its opaque origin cannot fetch site fonts without CORS, so the shell sends the faces the frame's text needs as bytes; a face it cannot send falls back to the family's local faces. */
 }
+/* An icon font comes to the frame as bytes, behind a blob URL in its @font-face rule. The face is also added to document.fonts from the bytes, loaded at once, so the Framework, which marks an icon loaded when its face is in document.fonts, sees it without a fetch. Text fonts stay with their rules. */
+var registeredIconFaces={};
+function registerIconFaces(content,font){
+if(typeof FontFace!=='function'||!document.fonts||typeof document.fonts.add!=='function'||registeredIconFaces[font.token])return;
+var rules=content.match(/@font-face\s*\{[^}]*\}/gi)||[];
+rules.forEach(function(rule){
+if(rule.indexOf(font.token)===-1)return;
+var clean=rule.replace(/\\(["'])/g,'$1'),family=/font-family\s*:\s*["']?([^"';}]+)/i.exec(clean);
+if(!family||!/^Material (?:Symbols|Icons)/i.test(family[1].trim()))return;
+var descriptors={},names={'font-weight':'weight','font-style':'style','font-stretch':'stretch','unicode-range':'unicodeRange','font-display':'display'};
+Object.keys(names).forEach(function(name){var match=new RegExp(name+'\\s*:\\s*([^;}]+)','i').exec(clean);if(match)descriptors[names[name]]=match[1].trim()});
+try{var face=new FontFace(family[1].trim(),font.bytes,descriptors);document.fonts.add(face);registeredIconFaces[font.token]=true;face.load().catch(function(){})}catch(error){}
+});
+}
 function applyEnvironment(data){
 var theme=data.theme==='dark'?'dark':'light',direction=data.direction==='rtl'?'rtl':'ltr';
 applyDesignEnvironment(data);
@@ -1476,6 +1490,7 @@ var content=item.content;
 (Array.isArray(item.fonts)?item.fonts:[]).forEach(function(font){
 if(!font||typeof font.token!=='string'||!(font.bytes instanceof ArrayBuffer))return;
 var blobUrl=URL.createObjectURL(new Blob([font.bytes],{type:typeof font.type==='string'?font.type:'font/woff2'}));
+registerIconFaces(content,font);
 content=content.split(font.token).join(blobUrl);
 });
 style.textContent=content;
@@ -1508,6 +1523,7 @@ var content=item.content;
 (Array.isArray(item.fonts)?item.fonts:[]).forEach(function(font){
 if(!font||typeof font.token!=='string'||!(font.bytes instanceof ArrayBuffer))return;
 var blobUrl=URL.createObjectURL(new Blob([font.bytes],{type:typeof font.type==='string'?font.type:'font/woff2'}));
+registerIconFaces(content,font);
 content=content.split(font.token).join(blobUrl);
 });
 script.textContent=content;

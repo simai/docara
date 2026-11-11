@@ -77,6 +77,41 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString("},{rootMargin:'600px 0px'});", $shell);
     }
 
+    public function test_an_icon_font_sent_as_bytes_is_registered_with_document_fonts(): void
+    {
+        $renderer = (string) file_get_contents(dirname(__DIR__, 2) . '/src/PortableSite/PortableMarkdownRenderer.php');
+        self::assertSame(2, substr_count($renderer, "registerIconFaces(content,font);\ncontent=content.split(font.token).join(blobUrl);"));
+        self::assertSame(1, preg_match('/\nfunction registerIconFaces\(content,font\)\{\n.*?\n\}\n/s', $renderer, $match));
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The font registration check runs the function in Node.js.');
+
+        $script = <<<'JS'
+const added=[];let loads=0;
+globalThis.FontFace=class{constructor(family,source,descriptors){this.family=family;this.source=source;this.descriptors=descriptors}load(){loads++;return Promise.resolve(this)}};
+globalThis.document={fonts:{add(face){added.push(face)}}};
+const registeredIconFaces={};
+JS;
+        $script .= $match[0] . <<<'JS'
+const bytes=new ArrayBuffer(8);
+const css='@font-face{font-family:"Inter";src:url(__TEXT__)}@font-face{font-family:"Material Symbols Outlined";font-style:normal;font-weight:400;font-display:block;src:url(__ICON__) format("woff2")}';
+registerIconFaces(css,{token:'__ICON__',bytes});
+registerIconFaces(css,{token:'__ICON__',bytes});
+registerIconFaces(css,{token:'__TEXT__',bytes});
+/* The icon runtime carries its fallback face as CSS inside a JavaScript string. */
+registerIconFaces('var fallbackCss="@font-face{font-family:\\"Material Symbols Outlined Full\\";font-weight:100 700;src:url(__FULL__)}";',{token:'__FULL__',bytes});
+process.stdout.write(JSON.stringify({added:added.map(face=>({family:face.family,bytes:face.source===bytes,descriptors:face.descriptors})),loads}));
+JS;
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame([
+            ['family' => 'Material Symbols Outlined', 'bytes' => true, 'descriptors' => ['weight' => '400', 'style' => 'normal', 'display' => 'block']],
+            ['family' => 'Material Symbols Outlined Full', 'bytes' => true, 'descriptors' => ['weight' => '100 700']],
+        ], $result['added'], 'Each icon face is added once from its bytes; a text font is left to its rule.');
+        self::assertSame(2, $result['loads']);
+    }
+
     public function test_a_press_outside_a_frame_with_an_open_menu_dismisses_it(): void
     {
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');

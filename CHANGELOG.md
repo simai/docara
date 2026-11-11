@@ -32,6 +32,11 @@ All notable changes to Docara are recorded here. The format follows
   example), then moved it back on close. The frame now keeps its own height
   in the page and shows the menu's room over what follows, as a menu does
   on a page, with 12 px to spare below the menu instead of 8.
+- **An open list no longer stretches its example frame without end.** The
+  frame added the rows a list scrolls inside its own popup, and a list
+  capped to the frame's height then got taller as the frame grew: a country
+  input with its list open reached a 9815 px frame. The frame now reaches
+  the menu's drawn box only.
 - **The Framework preloader stays off in example frames.** The page turns
   it off in its preference script, which a frame does not get, so a slow
   load covered a finished example with the preloader.

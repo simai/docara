@@ -452,9 +452,11 @@ MD);
         self::assertStringNotContainsString('body.scrollHeight,root.scrollHeight', $web);
         self::assertStringContainsString('function measureSettled()', $web);
         // An open menu sits in the top layer, which the frame clips; the frame
-        // grows to the menu's natural height, the part its list scrolls included.
+        // reaches the menu's drawn box. Rows the list scrolls stay out, or a
+        // list capped to the viewport would grow the frame without end.
         self::assertStringContainsString('querySelectorAll(&apos;:popover-open,dialog[open]&apos;)', $web);
-        self::assertStringContainsString('hidden=Math.max(hidden,part.scrollHeight-part.clientHeight)', $web);
+        self::assertStringContainsString('var reach=layerRect.bottom+12;', $web);
+        self::assertStringNotContainsString('part.scrollHeight-part.clientHeight', $web);
         self::assertStringContainsString('document.addEventListener(&apos;toggle&apos;,measureSettled,true)', $web);
         self::assertStringContainsString('setTimeout(measureNow,100)', $web);
         // A toast container fixed to the frame's bottom edge moves down as the

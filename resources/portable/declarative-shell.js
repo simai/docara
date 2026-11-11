@@ -661,6 +661,7 @@
       lang:document.documentElement.lang||'',
       title:frame.getAttribute('title')||'',
       rootFontSize:getComputedStyle(document.documentElement).fontSize,
+      inset:exampleInset(frame),
       designTokens:exampleDesignTokens()
     };
     return Promise.all(inlineStyles.map(function(item){return portableExampleStyle(item.content,document.baseURI,codepoints).then(function(portable){
@@ -682,6 +683,18 @@
         return environment;
       });
     });
+  }
+  /* A frame paints nothing outside itself, so a shadow at a sample's edge was cut flat at the frame's edge. The preview panel's padding moves into the inline frame (its body pads by the same amount), so the visible spacing stays and the shadow draws in it. The viewer's frame takes a device width and keeps none; a page example and a frame in no panel keep the panel as it is. */
+  function exampleInset(frame){
+    var panel=frame.closest('[data-docara-example-panel]');
+    /* A frame still waiting for its document keeps the panel's padding until its runtime can take it. */
+    if(!panel||frame.hasAttribute('data-docara-srcdoc')||frame.hasAttribute('data-docara-example-responsive-frame')||frame.hasAttribute('data-docara-example-page'))return '0px';
+    if(frame.closest('[data-docara-example-viewer-active="true"]')){panel.removeAttribute('data-docara-example-inset');return '0px'}
+    if(!panel.hasAttribute('data-docara-example-inset')){
+      var padding=parseFloat(getComputedStyle(panel).paddingTop)||0;
+      panel.setAttribute('data-docara-example-inset',Math.max(0,Math.round(padding))+'px');
+    }
+    return panel.getAttribute('data-docara-example-inset');
   }
   function requestExampleHeight(frame){
     /* A page example shows a built page of the site: it keeps the frame height the stylesheet gives it. */
@@ -888,6 +901,8 @@
       }
       if(active){setViewport(activeViewport,false)}else{resetViewport()}
       fitPageFrame();
+      /* The inline frame keeps the panel's padding inside, the viewer's frame none. */
+      if(previewFrame)requestExampleHeight(previewFrame);
       var icon=viewerButton.querySelector('sf-icon');
       if(icon){icon.setAttribute('icon',active
         ?(viewerButton.dataset.viewerExitIcon||'close')

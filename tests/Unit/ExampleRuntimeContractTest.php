@@ -56,7 +56,7 @@ final class ExampleRuntimeContractTest extends TestCase
         // Script text: read once from the page's cache, sent once per frame document.
         self::assertStringContainsString('function portableExampleScript(src){', $shell);
         self::assertStringContainsString("pageScriptArrived(resolved.href).then(function(){return fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'})})", $shell);
-        self::assertStringContainsString("if(resolved.origin!==location.origin)return null;", $shell);
+        self::assertStringContainsString('if(resolved.origin!==location.origin)return null;', $shell);
         self::assertStringContainsString("if(performance.getEntriesByName(href,'resource').length){done();return}", $shell);
         self::assertStringContainsString("document.addEventListener('DOMContentLoaded',done,{once:true});", $shell);
         // A frame never waits for script text: what the page does not hold yet goes by URL.
@@ -72,7 +72,7 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString("if(!event.data||event.data.type!=='docara:example-styled')return;\n      var item=booting.find(", $shell);
         self::assertStringContainsString('if(!entry.isIntersecting){if(index!==-1)near.splice(index,1);free(frame);return}', $shell);
         self::assertStringContainsString('function release(frame){if(free(frame))pump()}', $shell);
-        self::assertStringContainsString("if(!boots(frame)){observer.unobserve(frame);load(frame);return}", $shell);
+        self::assertStringContainsString('if(!boots(frame)){observer.unobserve(frame);load(frame);return}', $shell);
         self::assertStringContainsString("return frame.hasAttribute('data-docara-example-frame')&&!frame.hasAttribute('data-docara-example-page')", $shell);
         self::assertStringContainsString("},{rootMargin:'600px 0px'});", $shell);
     }
@@ -636,5 +636,45 @@ JS;
         foreach (['absolute base', 'protocol-relative base', 'no base in the head', 'opaque page origin'] as $unchanged) {
             self::assertSame($cases[$unchanged][1], $result[$unchanged], $unchanged);
         }
+    }
+
+    public function test_an_inline_frame_takes_the_preview_padding_so_a_shadow_at_its_edge_draws(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
+        $css = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
+        self::assertSame(1, preg_match('/\n  function exampleInset\(frame\)\{\n.*?\n  \}\n/s', $shell, $match));
+        self::assertStringContainsString('inset:exampleInset(frame),', $shell);
+        self::assertStringContainsString('if(previewFrame)requestExampleHeight(previewFrame);', $shell);
+        self::assertStringContainsString("root.style.setProperty('--docara-example-inset',data.inset)", $renderer);
+        self::assertStringContainsString('body{padding:calc(var(--docara-example-inset,0px) + ', $renderer);
+        self::assertStringContainsString('.docara-example-preview__panel[data-docara-example-inset]{padding:0}', $css);
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The inset check runs the function in Node.js.');
+
+        $script = <<<'JS'
+            function el(attrs){return{attrs:{...attrs},hasAttribute(n){return n in this.attrs},getAttribute(n){return n in this.attrs?this.attrs[n]:null},setAttribute(n,v){this.attrs[n]=String(v)},removeAttribute(n){delete this.attrs[n]}}}
+            globalThis.getComputedStyle=()=>({paddingTop:'19.6px'});
+            function frame(attrs,panel,viewer){const f=el(attrs);f.closest=s=>s==='[data-docara-example-panel]'?panel:(viewer?{}:null);return f}
+            const out={};
+            let panel=el({});out.inline=[exampleInset(frame({},panel)),panel.getAttribute('data-docara-example-inset')];
+            out.viewer=[exampleInset(frame({},panel,true)),panel.hasAttribute('data-docara-example-inset')];
+            panel=el({});out.waiting=[exampleInset(frame({'data-docara-srcdoc':''},panel)),panel.hasAttribute('data-docara-example-inset')];
+            out.responsive=exampleInset(frame({'data-docara-example-responsive-frame':''},el({})));
+            out.page=exampleInset(frame({'data-docara-example-page':''},el({})));
+            out.nopanel=exampleInset(frame({},null));
+            process.stdout.write(JSON.stringify(out));
+            JS;
+        $process = new Process([$node, '-e', $match[0] . $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame(['20px', '20px'], $result['inline']);
+        self::assertSame(['0px', false], $result['viewer']);
+        self::assertSame(['0px', false], $result['waiting']);
+        self::assertSame('0px', $result['responsive']);
+        self::assertSame('0px', $result['page']);
+        self::assertSame('0px', $result['nopanel']);
     }
 }

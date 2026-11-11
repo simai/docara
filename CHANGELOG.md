@@ -50,6 +50,12 @@ All notable changes to Docara are recorded here. The format follows
   `distr/core/fonts/inter/<name>.woff2` was refused. Both forms are now
   accepted; a name must be a single file name that does not start with a
   dot, so a path cannot climb out of the font folder.
+- **A shadow at an example's edge is no longer cut.** A frame paints
+  nothing outside itself, so the shadow of a sample at its edge, such as a
+  toast, stopped flat at the frame's edge. The preview's padding now moves
+  into the inline frame: the frame body pads by the same amount, so the
+  spacing on the page is unchanged and the shadow draws in it. The device
+  viewer's frame and a page example keep no extra padding.
 
 ## [3.14.2] - 2026-11-11
 

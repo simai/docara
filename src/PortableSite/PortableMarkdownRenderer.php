@@ -1219,10 +1219,12 @@ final class PortableMarkdownRenderer
             . '<meta name="viewport" content="width=device-width,initial-scale=1">'
             . '<title>' . $this->escapeHtml($label) . '</title>'
             . ($baseHref === null ? '' : '<base href="' . $this->escapeHtml($baseHref) . '">')
-            // The frame clips at its edges, and a focus ring is drawn outside
-            // the element: a sample at the edge loses part of its ring. The
-            // body keeps room for the ring's width and offset.
-            . '<style>body{padding:calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}</style>'
+            // The frame clips at its edges, and a focus ring or a shadow is
+            // drawn outside the element: a sample at the edge loses part of
+            // its ring or shadow. The body keeps room for the ring's width and
+            // offset, and for the preview's own padding, which the page moves
+            // into the frame (--docara-example-inset) so shadows draw there.
+            . '<style>body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}</style>'
             . (isset($sources['CSS']) ? '<style>' . $sources['CSS'] . '</style>' : '')
             . ($ownTheme ? $this->exampleOwnThemeRuntime() : '')
             // The log runtime comes before the example's markup and script,
@@ -1454,6 +1456,8 @@ if(!/^--sf-[a-z0-9_\\/.-]+$/.test(name)||typeof value!=='string'||value===''||va
 root.style.setProperty(name,value);
 });
 if(typeof data.rootFontSize==='string'&&/^\d+(?:\.\d+)?px$/.test(data.rootFontSize)){root.style.fontSize=data.rootFontSize}
+/* The preview's padding, moved into the frame so a shadow at the sample's edge draws in it; 0 in the viewer, where the frame takes a device width. */
+if(typeof data.inset==='string'&&/^\d+(?:\.\d+)?px$/.test(data.inset)){root.style.setProperty('--docara-example-inset',data.inset)}
 /* The frame takes the page's font families with the other tokens. Its opaque origin cannot fetch site fonts without CORS, so the shell sends the faces the frame's text needs as bytes; a face it cannot send falls back to the family's local faces. */
 }
 /* An icon font comes to the frame as bytes, behind a blob URL in its @font-face rule. The face is also added to document.fonts from the bytes, loaded at once, so the Framework, which marks an icon loaded when its face is in document.fonts, sees it without a fetch. Text fonts stay with their rules. */

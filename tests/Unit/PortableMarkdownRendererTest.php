@@ -150,10 +150,10 @@ MD);
         self::assertStringContainsString('data-docara-example-preview-resolved="sandbox"', $isolated);
         self::assertStringContainsString('data-docara-example-preview-reason="javascript"', $isolated);
         self::assertStringContainsString('data-docara-example-frame', $isolated);
-        // The frame body leaves room for a focus ring drawn outside a sample
-        // at its edge, which the frame would otherwise clip.
+        // The frame body leaves room for a focus ring or a shadow drawn
+        // outside a sample at its edge, which the frame would otherwise clip.
         self::assertStringContainsString(
-            'body{padding:calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}',
+            'body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}',
             html_entity_decode($isolated),
         );
 

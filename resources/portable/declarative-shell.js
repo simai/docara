@@ -514,7 +514,11 @@
   /* faces='text' removes icon faces from a stylesheet and faces='icons' keeps only them, so the large icon fonts travel apart from the stylesheet that declares them. */
   function portableExampleStyle(content,baseHref,codepoints,faces){
     if(faces==='icons'){content=(content.match(/@font-face\s*\{[^}]*\}/gi)||[]).filter(exampleIconFace).join('\n')}
-    content=content.replace(/@font-face\s*\{[^}]*\}/gi,function(rule){return (faces==='text'&&exampleIconFace(rule))||!exampleFaceNeeded(rule,codepoints)?'':rule});
+    /* A frame lays out its markup before these rules arrive, so a text face with font-display: optional (the Framework's Inter) is past its short block period by then and the frame keeps the fallback for good. In a frame such a face swaps in instead; the page keeps optional. Icon faces keep their own display. */
+    content=content.replace(/@font-face\s*\{[^}]*\}/gi,function(rule){
+      if((faces==='text'&&exampleIconFace(rule))||!exampleFaceNeeded(rule,codepoints))return '';
+      return exampleIconFace(rule)?rule:rule.replace(/font-display\s*:\s*optional/gi,'font-display:swap');
+    });
     var matches=[],pattern=/url\(\s*(["']?)([^"')]+)\1\s*\)/g,match;
     while((match=pattern.exec(content))!==null){matches.push({token:match[0],url:match[2]})}
     return Promise.all(matches.map(function(item){return exampleFontAsset(item.url,baseHref)})).then(function(assets){

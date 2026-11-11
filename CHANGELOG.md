@@ -36,6 +36,14 @@ All notable changes to Docara are recorded here. The format follows
   Framework sets the class. An icon font that reaches an example frame as
   bytes is also added to the frame's `document.fonts`, already loaded, so
   the Framework sees it there.
+- **Examples draw in Inter.** A frame lays out its markup before the page
+  hands it the Framework styles, and the Framework's Inter faces use
+  `font-display: optional`, so a frame could give up on Inter for good and
+  stay in the fallback, with weight 500 looking regular. In example frames
+  a text face with `optional` now swaps in when it loads (the page keeps
+  `optional`), and a frame counts as styled only once its text face at
+  weight 500 has loaded, or after a second: the full-screen viewer keeps the
+  inline preview until then.
 - **A Framework build that names its Inter files is accepted.** The check
   on preloaded fonts accepted a Framework core face only as a hashed file
   (`distr/core/<hash>.woff2`), so a build that ships Inter as

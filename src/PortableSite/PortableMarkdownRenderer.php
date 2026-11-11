@@ -1470,6 +1470,13 @@ Object.keys(names).forEach(function(name){var match=new RegExp(name+'\\s*:\\s*([
 try{var face=new FontFace(family[1].trim(),font.bytes,descriptors);document.fonts.add(face);registeredIconFaces[font.token]=true;face.load().catch(function(){})}catch(error){}
 });
 }
+/* The frame counts as styled once its text face has loaded too, at most a second later, so the shell keeps the inline preview until the example draws in the page's font (weight 500, as on labels). */
+function textFontLoaded(){
+if(!document.fonts||typeof document.fonts.load!=='function')return Promise.resolve();
+var family='';try{family=getComputedStyle(body).fontFamily}catch(error){}
+var load;try{load=document.fonts.load('500 1em '+(family||'"Inter Variable"'))}catch(error){return Promise.resolve()}
+return Promise.race([Promise.resolve(load).catch(function(){}),new Promise(function(resolve){setTimeout(resolve,1000)})]);
+}
 function applyEnvironment(data){
 var theme=data.theme==='dark'?'dark':'light',direction=data.direction==='rtl'?'rtl':'ltr';
 applyDesignEnvironment(data);
@@ -1550,7 +1557,7 @@ if(ownTheme&&window.SF_BOOT_CONFIG&&window.SF_BOOT_CONFIG.theme===false){delete 
 var scriptsLoaded=loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[],data.scriptTexts&&typeof data.scriptTexts==='object'?data.scriptTexts:{});
 /* Once the page's styles are in and the Framework scripts have run, the frame looks like the page: the shell may then show it in a responsive check instead of the inline preview. */
 if((Array.isArray(data.stylesheets)&&data.stylesheets.length)||(Array.isArray(data.inlineStyles)&&data.inlineStyles.length)){
-Promise.all([stylesApplied,scriptsLoaded]).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});
+Promise.all([stylesApplied,scriptsLoaded]).then(textFontLoaded).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});
 }
 }
 /* The Framework scripts go in all at once. A script inserted with async=false is fetched at once and still runs after every async=false script inserted before it, in this and in later environments, so Core runs after the scripts it needs, as on the page. The frame's opaque origin shares no cache with the page, so waiting for each script before asking for the next cost a round trip per script. The page sends the text of the scripts it could read: such a script runs from a blob URL made in the frame, which keeps its place in that order and its load event, and gives Core's script loader the src it reads as it starts. Core does not recognise a blob URL as its own and takes its base from sfPath, set by the boot state, so the chunks it loads itself come from the page's Framework files, as before. A script the page could not read loads by its URL. */

@@ -77,6 +77,48 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString("},{rootMargin:'600px 0px'});", $shell);
     }
 
+    public function test_a_frame_swaps_in_an_optional_text_face_and_is_styled_once_its_text_face_loaded(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
+
+        self::assertStringContainsString("return exampleIconFace(rule)?rule:rule.replace(/font-display\\s*:\\s*optional/gi,'font-display:swap');", $shell);
+        self::assertStringContainsString("Promise.all([stylesApplied,scriptsLoaded]).then(textFontLoaded).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});", $renderer);
+        self::assertSame(1, preg_match('/\n  function portableExampleStyle\(content,baseHref,codepoints,faces\)\{\n.*?\n  \}\n/s', $shell, $style));
+        self::assertSame(1, preg_match('/\nfunction textFontLoaded\(\)\{\n.*?\n\}\n/s', $renderer, $font));
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The frame font check runs the functions in Node.js.');
+
+        $script = <<<'JS'
+function exampleIconFace(rule){return /font-family\s*:\s*["']?Material (?:Symbols|Icons)/i.test(rule)}
+function exampleFaceNeeded(){return true}
+function exampleFontAsset(){return Promise.resolve(null)}
+globalThis.location={origin:'https://docs.example'};
+const loads=[];let mode='fast';
+globalThis.document={baseURI:'https://docs.example/',fonts:{load(spec){loads.push(spec);return mode==='fast'?Promise.resolve([1]):new Promise(()=>{})}}};
+const body={};
+globalThis.getComputedStyle=()=>({fontFamily:'"Inter Variable", "Inter Fallback", system-ui'});
+JS;
+        $script .= $style[0] . $font[0] . <<<'JS'
+const css='@font-face{font-family:"Inter Variable";font-display:optional;src:url(https://cdn.example/a.woff2)}@font-face{font-family:"Material Symbols Outlined";font-display:block;src:url(https://cdn.example/b.woff2)}';
+(async()=>{
+  const text=(await portableExampleStyle(css,'https://docs.example/',null,'text')).content;
+  const t0=Date.now();await textFontLoaded();const fast=Date.now()-t0;
+  mode='hang';const t1=Date.now();await textFontLoaded();const capped=Date.now()-t1;
+  process.stdout.write(JSON.stringify({text,loads,fast:fast<200,capped:capped>=900&&capped<2000}));
+})();
+JS;
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame('@font-face{font-family:"Inter Variable";font-display:swap;src:url(https://cdn.example/a.woff2)}', $result['text'], 'In a frame the text face swaps in; the icon face is not sent with the text faces.');
+        self::assertSame(['500 1em "Inter Variable", "Inter Fallback", system-ui', '500 1em "Inter Variable", "Inter Fallback", system-ui'], $result['loads']);
+        self::assertTrue($result['fast'], 'A loaded face lets the frame report styled at once.');
+        self::assertTrue($result['capped'], 'A face that never loads holds the styled report for about a second.');
+    }
+
     public function test_an_icon_font_sent_as_bytes_is_registered_with_document_fonts(): void
     {
         $renderer = (string) file_get_contents(dirname(__DIR__, 2) . '/src/PortableSite/PortableMarkdownRenderer.php');
@@ -198,7 +240,7 @@ JS;
         self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shell);
         self::assertStringContainsString('codepoints=exampleCodepoints(source)', $shell);
         self::assertStringContainsString('portableExampleStylesheet(item.link,codepoints,item.faces)', $shell);
-        self::assertStringContainsString('||!exampleFaceNeeded(rule,codepoints)?\'\':rule', $shell);
+        self::assertStringContainsString('||!exampleFaceNeeded(rule,codepoints))return \'\';', $shell);
         self::assertStringContainsString('function exampleFaceNeeded(rule,codepoints)', $shell);
         self::assertStringContainsString('missing.some(function(token){return rule.indexOf(token)!==-1})?\'\':rule', $shell);
         self::assertStringContainsString("exampleFontAssets[resolved.href]=exampleFontsSettled.then(function(){return fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'})})", $shell);

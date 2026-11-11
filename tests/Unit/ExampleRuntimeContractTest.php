@@ -49,6 +49,85 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('script.async=false', $renderer);
     }
 
+    public function test_the_page_shares_framework_script_text_and_boots_visible_frames_first(): void
+    {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+
+        // Script text: read once from the page's cache, sent once per frame document.
+        self::assertStringContainsString('function portableExampleScript(src){', $shell);
+        self::assertStringContainsString("pageScriptArrived(resolved.href).then(function(){return fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'})})", $shell);
+        self::assertStringContainsString("if(resolved.origin!==location.origin)return null;", $shell);
+        self::assertStringContainsString("if(performance.getEntriesByName(href,'resource').length){done();return}", $shell);
+        self::assertStringContainsString("document.addEventListener('DOMContentLoaded',done,{once:true});", $shell);
+        // A frame never waits for script text: what the page does not hold yet goes by URL.
+        self::assertStringContainsString("if(typeof content==='string'&&content!==''&&fresh('script:'+src))environment.scriptTexts[src]=content;", $shell);
+        self::assertStringContainsString("Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]')).forEach(function(script){portableExampleScript(script.src)});", $shell);
+        self::assertStringContainsString('scriptTexts:{},', $shell);
+
+        // Boot queue: at most two example frames boot at once, nearest first; a boot ends on styled or after 4 s.
+        self::assertStringContainsString('var near=[],booting=[],bootLimit=2,bootTimeout=4000;', $shell);
+        self::assertStringContainsString("if(typeof IntersectionObserver!=='function'){deferred.forEach(load);return}", $shell);
+        self::assertStringContainsString('near.sort(function(a,b){return distance(a)-distance(b)});', $shell);
+        self::assertStringContainsString('booting.push({frame:frame,timer:setTimeout(release.bind(null,frame),bootTimeout)});', $shell);
+        self::assertStringContainsString("if(!event.data||event.data.type!=='docara:example-styled')return;\n      var item=booting.find(", $shell);
+        self::assertStringContainsString('if(!entry.isIntersecting){if(index!==-1)near.splice(index,1);free(frame);return}', $shell);
+        self::assertStringContainsString('function release(frame){if(free(frame))pump()}', $shell);
+        self::assertStringContainsString("if(!boots(frame)){observer.unobserve(frame);load(frame);return}", $shell);
+        self::assertStringContainsString("return frame.hasAttribute('data-docara-example-frame')&&!frame.hasAttribute('data-docara-example-page')", $shell);
+        self::assertStringContainsString("},{rootMargin:'600px 0px'});", $shell);
+    }
+
+    public function test_a_press_outside_a_frame_with_an_open_menu_dismisses_it(): void
+    {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents(dirname(__DIR__, 2) . '/src/PortableSite/PortableMarkdownRenderer.php');
+
+        self::assertStringContainsString("document.addEventListener('pointerdown',function(event){", $shell);
+        self::assertStringContainsString("if(!frame.contentWindow||event.target===frame||!exampleFrameState(frame).layers)return;\n        frame.contentWindow.postMessage({type:'docara:example-dismiss'},'*');", $shell);
+        self::assertStringContainsString('exampleFrameState(frame).layers=boxes.length;', $shell);
+        self::assertStringContainsString("if(event.source===parent&&event.data&&event.data.type==='docara:example-dismiss'){dismissLayers();return}", $renderer);
+        self::assertSame(1, preg_match('/\nfunction dismissLayers\(\)\{\n.*?\n\}\n/s', $renderer, $match));
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The dismiss check runs the function in Node.js.');
+
+        $script = <<<'JS'
+const hidden=[],closed=[],keys=[];
+function popover(name,kind){return{name,popover:kind,open:true,getAttribute(){return kind},hidePopover(){this.open=false;hidden.push(name)}}}
+function dialog(name,by){return{name,closedBy:by,open:true,getAttribute(){return by},requestClose(){this.open=false;closed.push(name)}}}
+const layers=[popover('auto','auto'),popover('hint','hint'),popover('menu','manual'),popover('toasts','manual')];
+/* A notification area pinned to the frame's bottom edge is no menu: it stays open and gets no Escape. */
+const layerPlaces=new Map([[layers[3],{pinned:true}]]);
+function bottomPinned(){return false}
+const dialogs=[dialog('any','any'),dialog('modal','closerequest')];
+const focused={dispatchEvent(event){keys.push([event.type,event.key,event.bubbles]);/* Escape closes the top level of the menu: two levels are open */if(keys.length===2)layers[2].open=false}};
+globalThis.KeyboardEvent=class{constructor(type,init){this.type=type;Object.assign(this,init)}};
+globalThis.document={
+  documentElement:{},activeElement:focused,
+  querySelectorAll(selector){return selector==='dialog[open]'?dialogs.filter(item=>item.open):layers.filter(item=>item.open)},
+};
+const body={dispatchEvent(){throw new Error('focused element expected')}};
+JS;
+        $script .= $match[0] . <<<'JS'
+dismissLayers();
+const afterManual={hidden:[...hidden],closed:[...closed],keys:[...keys]};
+keys.length=0;
+dismissLayers();
+const keysWhenOnlyAModalIsOpen=keys.length;
+dialogs[1].open=false;
+dismissLayers();
+process.stdout.write(JSON.stringify({afterManual,keysWhenOnlyAModalIsOpen,keysWhenNothingOpen:keys.length}));
+JS;
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame(['auto', 'hint'], $result['afterManual']['hidden'], 'Only light-dismiss popovers are hidden.');
+        self::assertSame(['any'], $result['afterManual']['closed'], 'Only a dialog that closes on any press is closed.');
+        self::assertSame([['keydown', 'Escape', true], ['keydown', 'Escape', true]], $result['afterManual']['keys'], 'A popover left open gets an Escape at the focused element per open level, until it closes.');
+        self::assertSame(0, $result['keysWhenOnlyAModalIsOpen'], 'A press on the page never closes a modal dialog.');
+        self::assertSame(0, $result['keysWhenNothingOpen']);
+    }
+
     public function test_inline_examples_cannot_submit_a_form_through_the_documentation_page(): void
     {
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
@@ -334,8 +413,8 @@ JS;
     public function test_a_frame_asks_for_every_framework_script_at_once_and_keeps_their_order(): void
     {
         $renderer = (string) file_get_contents(dirname(__DIR__, 2) . '/src/PortableSite/PortableMarkdownRenderer.php');
-        self::assertSame(1, preg_match('/\nfunction loadFrameworkScripts\(sources\)\{\n.*?\n\}\n/s', $renderer, $match));
-        self::assertStringContainsString('loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);', $renderer);
+        self::assertSame(1, preg_match('/\nfunction loadFrameworkScripts\(sources,texts\)\{\n.*?\n\}\n/s', $renderer, $match));
+        self::assertStringContainsString("loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[],data.scriptTexts&&typeof data.scriptTexts==='object'?data.scriptTexts:{});", $renderer);
         // Each script used to wait for the one before it to load.
         self::assertStringNotContainsString('scriptQueue', $renderer);
         $node = (new ExecutableFinder)->find('node');
@@ -346,7 +425,7 @@ JS;
         // of them could have loaded.
         $script = <<<'JS'
 const head=[];let loads=0;
-function element(src,existing){return{src,async:true,attributes:{},listeners:{},existing,setAttribute(name,value){this.attributes[name]=value},addEventListener(type,listener){this.listeners[type]=listener}}}
+function element(src,existing){return{src,async:true,attributes:{},listeners:{},existing,setAttribute(name,value){this.attributes[name]=value},getAttribute(name){return name in this.attributes?this.attributes[name]:null},addEventListener(type,listener){this.listeners[type]=listener}}}
 globalThis.document={
   head:{appendChild(node){head.push(node)}},
   createElement(){return element('',false)},
@@ -361,7 +440,9 @@ loadFrameworkScripts(page);
 const first=head.map(node=>({src:node.src,async:node.async,marked:'data-docara-example-framework-script' in node.attributes,listens:typeof node.listeners.load==='function'}));
 /* A later environment sends the same list and one more script: only the new one is added, after the others. */
 loadFrameworkScripts([...page,'https://docs.example/_docara/late.js',42]);
-process.stdout.write(JSON.stringify({first,all:head.map(node=>node.src),loadsBeforeAnyEvent:loads}));
+/* The page sends the text of a script it could read: it runs from a blob URL in its place, and is still known by its own URL. */
+loadFrameworkScripts([...page,'https://docs.example/_docara/late.js','https://docs.example/_docara/shared.js','https://docs.example/_docara/missing.js'],{'https://docs.example/_docara/shared.js':'window.shared=1','https://docs.example/_docara/core.js':'window.again=1'});
+process.stdout.write(JSON.stringify({first,all:head.map(node=>node.src.startsWith('blob:')?'blob':node.src),keys:head.map(node=>node.attributes['data-docara-example-framework-script']),loadsBeforeAnyEvent:loads}));
 JS;
         $process = new Process([$node, '-e', $script]);
         $process->mustRun();
@@ -377,7 +458,17 @@ JS;
             'https://docs.example/_docara/icons.js',
             'https://docs.example/_docara/core.js',
             'https://docs.example/_docara/late.js',
-        ], $result['all']);
+            'blob',
+            'https://docs.example/_docara/missing.js',
+        ], $result['all'], 'A script with text runs from a blob URL in its place; a script already in the frame is not added again.');
+        self::assertSame([
+            'https://docs.example/_docara/smart-base.js',
+            'https://docs.example/_docara/icons.js',
+            'https://docs.example/_docara/core.js',
+            'https://docs.example/_docara/late.js',
+            'https://docs.example/_docara/shared.js',
+            'https://docs.example/_docara/missing.js',
+        ], $result['keys']);
         self::assertSame(0, $result['loadsBeforeAnyEvent']);
     }
 

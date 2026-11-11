@@ -6,6 +6,30 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- **A press on the page closes a menu left open in an example.** A press
+  outside an example frame never reached the frame, so a menu opened in it
+  stayed open while the reader went on with the page. The page now asks a
+  frame with an open menu to close it: popovers that close on an outside
+  press close, and a Framework menu gets Escape, one level at a time, until
+  it is closed. A modal dialog in an example stays open.
+- **The example on the screen starts first.** Every example frame within
+  600 px of the screen started the Framework at once, so the one the reader
+  looks at waited for the others. At most two example frames now start at a
+  time, those on the screen first and then the nearest; a frame's turn ends
+  when it is styled, after four seconds, or when the reader scrolls it far
+  away. A frame that is scrolled far away before its turn waits until it
+  comes back.
+- **Example frames no longer download the Framework scripts again.** A
+  frame shares no browser cache with the page, so each frame fetched every
+  Framework script itself (24 requests on the Smart menu page). The page now
+  reads each script once from its own cache and hands the text to the
+  frames, which run it in the same order; a frame that starts before the
+  page has a script still loads that script by its address. The chunks that
+  Framework Core loads itself (such as core-rules) still come one request
+  per frame.
+
 ## [3.14.2] - 2026-11-11
 
 ### Fixed

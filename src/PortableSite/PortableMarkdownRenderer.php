@@ -1531,23 +1531,26 @@ currentBoot.push(item.key);
 window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};
 /* The page's boot state turns the Loader's theme off (Docara resolves the page theme itself); an example with its own theme keeps the Loader's theme API, which then works on this frame alone. */
 if(ownTheme&&window.SF_BOOT_CONFIG&&window.SF_BOOT_CONFIG.theme===false){delete window.SF_BOOT_CONFIG.theme}
-var scriptsLoaded=loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);
+var scriptsLoaded=loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[],data.scriptTexts&&typeof data.scriptTexts==='object'?data.scriptTexts:{});
 /* Once the page's styles are in and the Framework scripts have run, the frame looks like the page: the shell may then show it in a responsive check instead of the inline preview. */
 if((Array.isArray(data.stylesheets)&&data.stylesheets.length)||(Array.isArray(data.inlineStyles)&&data.inlineStyles.length)){
 Promise.all([stylesApplied,scriptsLoaded]).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});
 }
 }
-/* The Framework scripts go in all at once. A script inserted with async=false is fetched at once and still runs after every async=false script inserted before it, in this and in later environments, so Core runs after the scripts it needs, as on the page. The frame's opaque origin shares no cache with the page, so waiting for each script before asking for the next cost a round trip per script. */
-function loadFrameworkScripts(sources){
+/* The Framework scripts go in all at once. A script inserted with async=false is fetched at once and still runs after every async=false script inserted before it, in this and in later environments, so Core runs after the scripts it needs, as on the page. The frame's opaque origin shares no cache with the page, so waiting for each script before asking for the next cost a round trip per script. The page sends the text of the scripts it could read: such a script runs from a blob URL made in the frame, which keeps its place in that order and its load event, and gives Core's script loader the src it reads as it starts. Core does not recognise a blob URL as its own and takes its base from sfPath, set by the boot state, so the chunks it loads itself come from the page's Framework files, as before. A script the page could not read loads by its URL. */
+function loadFrameworkScripts(sources,texts){
 var loads=[];
-Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).forEach(function(script){frameworkScriptSources[script.src]=true});
+texts=texts||{};
+Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).forEach(function(script){frameworkScriptSources[script.getAttribute('data-docara-example-framework-script')||script.src]=true});
 sources.forEach(function(src){
 if(typeof src!=='string'||frameworkScriptSources[src])return;
 frameworkScriptSources[src]=true;
-var script=document.createElement('script');
-script.src=src;
+var script=document.createElement('script'),text=Object.prototype.hasOwnProperty.call(texts,src)&&typeof texts[src]==='string'?texts[src]:'',blob='';
+if(text!==''){try{blob=URL.createObjectURL(new Blob([text],{type:'text/javascript'}))}catch(error){blob=''}}
+script.src=blob||src;
 script.async=false;
-script.setAttribute('data-docara-example-framework-script','');
+script.setAttribute('data-docara-example-framework-script',src);
+if(blob){var revoke=function(){URL.revokeObjectURL(blob)};script.addEventListener('load',revoke,{once:true});script.addEventListener('error',revoke,{once:true})}
 script.addEventListener('load',measureSettled,{once:true});
 loads.push(new Promise(function(resolve){script.addEventListener('load',resolve,{once:true});script.addEventListener('error',resolve,{once:true})}));
 document.head.appendChild(script);
@@ -1621,7 +1624,19 @@ addEventListener('load',measureSettled);
 addEventListener('resize',measureSettled);
 /* A popover's toggle does not bubble; the capture phase sees every one. */
 document.addEventListener('toggle',measureSettled,true);
+/* A press on the page outside this frame closes what a press outside would close here: an open auto or hint popover, and a dialog that closes on any press (closedby="any"); a modal dialog without it and a manual popover stay. While a popover is still open, a component that closes on Escape (a Framework menu shows a manual popover) gets an Escape keydown at the focused element, as from the keyboard, once per open level (Escape closes the top one), up to six; a dialog left open alone gets none, so a press on the page never closes a modal, and neither does a notification area pinned to the frame's bottom edge, which is no menu. */
+function dismissLayers(){
+var layers=[];try{layers=Array.from(document.querySelectorAll(':popover-open'))}catch(error){}
+layers.forEach(function(layer){var kind=layer.popover||layer.getAttribute('popover');if(kind===''||kind==='auto'||kind==='hint'){try{layer.hidePopover()}catch(error){}}});
+Array.from(document.querySelectorAll('dialog[open]')).forEach(function(dialog){if((dialog.closedBy||dialog.getAttribute('closedby'))!=='any')return;try{if(typeof dialog.requestClose==='function')dialog.requestClose();else dialog.close()}catch(error){}});
+for(var round=0;round<6;round++){
+var open=[];try{open=Array.from(document.querySelectorAll(':popover-open'))}catch(error){}
+if(!open.some(function(layer){var seen=layerPlaces.get(layer);return !(seen&&seen.pinned)&&!bottomPinned(layer)}))return;
+var target=document.activeElement&&document.activeElement!==document.documentElement?document.activeElement:body;
+target.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',keyCode:27,which:27,bubbles:true,cancelable:true,composed:true}))}
+}
 addEventListener('message',function(event){
+if(event.source===parent&&event.data&&event.data.type==='docara:example-dismiss'){dismissLayers();return}
 if(event.source===parent&&event.data&&event.data.type==='docara:example-measure'){
 applyEnvironment(event.data);
 lastHeight=-1;

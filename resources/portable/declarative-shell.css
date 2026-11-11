@@ -243,7 +243,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-preview__panels{background:var(--sf-surface-0)}
 .docara-example-preview[data-docara-example-overlay]{overflow:visible}
 .docara-example-preview__panel{display:none;min-inline-size:0;padding:var(--sf-space-2)}
-.docara-example-preview__panel[data-docara-example-inset]{padding:0}
+.docara-example-preview__panel[data-docara-example-inset]{padding-block:0}
 .docara-example-preview__panel>:last-child{margin-block-end:0}
 .docara-example-preview__panel--source{padding:0}
 .docara-example-preview__panel.is-active{display:block}

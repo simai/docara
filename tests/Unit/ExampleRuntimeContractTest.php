@@ -648,8 +648,10 @@ JS;
         self::assertStringContainsString('inset:exampleInset(frame),', $shell);
         self::assertStringContainsString('if(previewFrame)requestExampleHeight(previewFrame);', $shell);
         self::assertStringContainsString("root.style.setProperty('--docara-example-inset',data.inset)", $renderer);
-        self::assertStringContainsString('body{padding:calc(var(--docara-example-inset,0px) + ', $renderer);
-        self::assertStringContainsString('.docara-example-preview__panel[data-docara-example-inset]{padding:0}', $css);
+        self::assertStringContainsString('body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px)) calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}', $renderer);
+        self::assertStringContainsString('.docara-example-preview__panel[data-docara-example-inset]{padding-block:0}', $css);
+        // Only the block padding moves in: an inline inset would make the frame wider than the sample and flip its breakpoints early.
+        self::assertStringNotContainsString('[data-docara-example-inset]{padding:0}', $css);
         $node = (new ExecutableFinder)->find('node');
         self::assertIsString($node, 'The inset check runs the function in Node.js.');
 

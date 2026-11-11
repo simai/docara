@@ -684,7 +684,7 @@
       });
     });
   }
-  /* A frame paints nothing outside itself, so a shadow at a sample's edge was cut flat at the frame's edge. The preview panel's padding moves into the inline frame (its body pads by the same amount), so the visible spacing stays and the shadow draws in it. The viewer's frame takes a device width and keeps none; a page example and a frame in no panel keep the panel as it is. */
+  /* A frame paints nothing outside itself, so a shadow at a sample's edge was cut flat at the frame's edge. The preview panel's padding above and below moves into the inline frame (its body pads by the same amount), so the visible spacing stays and a shadow below or above a sample draws in it. The side padding stays on the panel, so the frame is as wide as the sample and its breakpoints read that width. The viewer's frame takes a device width and keeps none; a page example and a frame in no panel keep the panel as it is. */
   function exampleInset(frame){
     var panel=frame.closest('[data-docara-example-panel]');
     /* A frame still waiting for its document keeps the panel's padding until its runtime can take it. */

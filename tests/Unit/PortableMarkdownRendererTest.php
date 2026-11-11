@@ -153,7 +153,7 @@ MD);
         // The frame body leaves room for a focus ring or a shadow drawn
         // outside a sample at its edge, which the frame would otherwise clip.
         self::assertStringContainsString(
-            'body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}',
+            'body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px)) calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}',
             html_entity_decode($isolated),
         );
 

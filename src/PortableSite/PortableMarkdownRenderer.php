@@ -1222,9 +1222,12 @@ final class PortableMarkdownRenderer
             // The frame clips at its edges, and a focus ring or a shadow is
             // drawn outside the element: a sample at the edge loses part of
             // its ring or shadow. The body keeps room for the ring's width and
-            // offset, and for the preview's own padding, which the page moves
-            // into the frame (--docara-example-inset) so shadows draw there.
-            . '<style>body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}</style>'
+            // offset, and above and below it for the preview's own padding,
+            // which the page moves into the frame (--docara-example-inset) so
+            // shadows draw there. The sides stay with the panel: the frame's
+            // width is the sample's width, so its media queries and the
+            // Framework's size ladder read the width the sample really has.
+            . '<style>body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px)) calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}</style>'
             . (isset($sources['CSS']) ? '<style>' . $sources['CSS'] . '</style>' : '')
             . ($ownTheme ? $this->exampleOwnThemeRuntime() : '')
             // The log runtime comes before the example's markup and script,

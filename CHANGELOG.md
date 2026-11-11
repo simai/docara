@@ -6,7 +6,7 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
-## [3.14.2] - 2026-11-10
+## [3.14.2] - 2026-11-11
 
 ### Fixed
 
@@ -20,6 +20,15 @@ All notable changes to Docara are recorded here. The format follows
   14 px text. Colours and the other page tokens still reach the frame, and
   a token the page sets on its root (the reader's UI radius) is sent as
   written, so the frame resolves it against its own sizes.
+- **An example frame settles when a toast is fixed to its bottom edge.** A
+  block or popover fixed to the frame's bottom moved down as far as the
+  frame grew, so the frame chased it (56 and 62 px about 40 times a second
+  on a toast placement example) and clipped the toast's top. Such a block
+  now counts with its own height and its gap to that edge: the frame grows
+  once and shows the whole toast.
+- **The Framework preloader stays off in example frames.** The page turns
+  it off in its preference script, which a frame does not get, so a slow
+  load covered a finished example with the preloader.
 
 ## [3.14.1] - 2026-11-10
 

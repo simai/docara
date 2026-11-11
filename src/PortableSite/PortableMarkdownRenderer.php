@@ -1527,6 +1527,8 @@ script.setAttribute('data-docara-example-framework-boot',item.key);
 document.head.appendChild(script);
 currentBoot.push(item.key);
 });
+/* The page turns the Framework preloader off in its own preference script, which a frame does not get: without it a slow load covers the finished example with the preloader. */
+window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};
 /* The page's boot state turns the Loader's theme off (Docara resolves the page theme itself); an example with its own theme keeps the Loader's theme API, which then works on this frame alone. */
 if(ownTheme&&window.SF_BOOT_CONFIG&&window.SF_BOOT_CONFIG.theme===false){delete window.SF_BOOT_CONFIG.theme}
 var scriptsLoaded=loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);

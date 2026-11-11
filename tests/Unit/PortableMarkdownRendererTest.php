@@ -460,6 +460,9 @@ MD);
         // A toast container fixed to the frame's bottom edge moves down as the
         // frame grows: it counts with its own uncapped height and its gap to
         // that edge, so the frame settles instead of chasing it.
+        // The page turns the Framework preloader off; a frame does the same,
+        // or a slow load covers the finished example.
+        self::assertStringContainsString('window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};', $web);
         self::assertStringContainsString('function bottomPinned(layer)', $web);
         self::assertStringContainsString('map.get(&apos;top&apos;).toString()===&apos;auto&apos;', $web);
         self::assertStringContainsString('function naturalBlockSize(layer)', $web);

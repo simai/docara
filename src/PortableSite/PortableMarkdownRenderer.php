@@ -1561,18 +1561,27 @@ measureNow();
 });
 }
 /* Offscreen sandboxed frames get no animation frames, so timers measure directly to size them before they scroll into view. */
+var layerPlaces=typeof WeakMap==='function'?new WeakMap():{get:function(){},set:function(){}};
+/* Typed OM tells a layer whose top is auto and bottom is set; elsewhere a layer that moves by exactly the frame's growth is taken as pinned. */
+/* A notification area is capped at the frame's height and squeezes its messages in a short frame; without the cap it shows the height it needs. The cap comes back before anything paints, and the observer drops the change. */
+function naturalBlockSize(layer){var value=layer.style.getPropertyValue('max-block-size'),priority=layer.style.getPropertyPriority('max-block-size'),size;layer.style.setProperty('max-block-size','none','important');size=Math.max(layer.getBoundingClientRect().height,layer.scrollHeight);if(value)layer.style.setProperty('max-block-size',value,priority);else layer.style.removeProperty('max-block-size');if(bodyObserver)bodyObserver.takeRecords();return size}
+function bottomPinned(layer){try{var map=layer.computedStyleMap();return map.get('position').toString()==='fixed'&&map.get('top').toString()==='auto'&&map.get('bottom').toString()!=='auto'}catch(error){return false}}
 function measureNow(){
 var style=getComputedStyle(body),rect=body.getBoundingClientRect();
 var marginTop=parseFloat(style.marginTop)||0,marginBottom=parseFloat(style.marginBottom)||0;
-var contentTop=rect.top-marginTop,contentBottom=rect.bottom+marginBottom;
+var contentTop=rect.top-marginTop,contentBottom=rect.bottom+marginBottom,pinnedExtent=0;
 Array.from(body.children).forEach(function(child){
 var childRect=child.getBoundingClientRect(),childStyle=getComputedStyle(child);
+/* A block fixed to the frame's bottom edge, such as a toast container, moves down as far as the frame grows: it counts with its own height and its gap to that edge, and an empty one not at all. */
+if(childStyle.position==='fixed'&&bottomPinned(child)){if(childRect.height>0)pinnedExtent=Math.max(pinnedExtent,Math.max(0,innerHeight-childRect.bottom)+naturalBlockSize(child));return}
 contentTop=Math.min(contentTop,childRect.top-(parseFloat(childStyle.marginTop)||0));
 contentBottom=Math.max(contentBottom,childRect.bottom+(parseFloat(childStyle.marginBottom)||0));
 });
+contentBottom=Math.max(contentBottom,contentTop+pinnedExtent);
 /* An open menu or dialog sits in the top layer, which a frame clips at its own height, and a positioned menu shrinks to the room it has. The frame grows to the layer's full height, so the menu gets its natural size: the part a scrolling list hides counts too. */
 var layers=[];try{layers=Array.from(document.querySelectorAll(':popover-open,dialog[open]'))}catch(error){}
-layers.forEach(function(layer){var layerRect=layer.getBoundingClientRect(),hidden=Math.max(0,layer.scrollHeight-layer.clientHeight);Array.prototype.forEach.call(layer.querySelectorAll('*'),function(part){var overflow=getComputedStyle(part).overflowY;if(overflow==='auto'||overflow==='scroll')hidden=Math.max(hidden,part.scrollHeight-part.clientHeight)});contentBottom=Math.max(contentBottom,layerRect.bottom+hidden+8)});
+/* A layer pinned to the frame's bottom edge, such as a notification area, moves down as far as the frame grows: it needs its own height and its gap to that edge, not room below its bottom, or the frame would chase it. */
+layers.forEach(function(layer){var layerRect=layer.getBoundingClientRect(),hidden=Math.max(0,layer.scrollHeight-layer.clientHeight);Array.prototype.forEach.call(layer.querySelectorAll('*'),function(part){var overflow=getComputedStyle(part).overflowY;if(overflow==='auto'||overflow==='scroll')hidden=Math.max(hidden,part.scrollHeight-part.clientHeight)});var seen=layerPlaces.get(layer),viewport=innerHeight;if(!seen){seen={pinned:bottomPinned(layer)};layerPlaces.set(layer,seen)}else if(seen.viewport!==viewport&&Math.abs((layerRect.top-seen.top)-(viewport-seen.viewport))<1)seen.pinned=true;seen.viewport=viewport;seen.top=layerRect.top;contentBottom=Math.max(contentBottom,seen.pinned?contentTop+Math.max(0,viewport-layerRect.bottom)+naturalBlockSize(layer)+8:layerRect.bottom+hidden+8)});
 var height=Math.ceil(Math.max(0,contentBottom-contentTop));
 if(height===lastHeight)return;
 lastHeight=height;
@@ -1617,7 +1626,8 @@ scheduleIconReport();
 });
 if(typeof ResizeObserver==='function')new ResizeObserver(measure).observe(body);
 if(typeof ResizeObserver==='function')new ResizeObserver(measure).observe(document.documentElement);
-if(typeof MutationObserver==='function')new MutationObserver(measure).observe(body,{childList:true,subtree:true,attributes:true,characterData:true});
+var bodyObserver=null;
+if(typeof MutationObserver==='function'){bodyObserver=new MutationObserver(measure);bodyObserver.observe(body,{childList:true,subtree:true,attributes:true,characterData:true})}
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measureSettled);
 measureSettled();
 /* A fresh frame document holds nothing yet; this asks the shell for the whole environment. */

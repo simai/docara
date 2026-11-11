@@ -457,6 +457,18 @@ MD);
         self::assertStringContainsString('hidden=Math.max(hidden,part.scrollHeight-part.clientHeight)', $web);
         self::assertStringContainsString('document.addEventListener(&apos;toggle&apos;,measureSettled,true)', $web);
         self::assertStringContainsString('setTimeout(measureNow,100)', $web);
+        // A toast container fixed to the frame's bottom edge moves down as the
+        // frame grows: it counts with its own uncapped height and its gap to
+        // that edge, so the frame settles instead of chasing it.
+        self::assertStringContainsString('function bottomPinned(layer)', $web);
+        self::assertStringContainsString('map.get(&apos;top&apos;).toString()===&apos;auto&apos;', $web);
+        self::assertStringContainsString('function naturalBlockSize(layer)', $web);
+        self::assertStringContainsString('layer.style.setProperty(&apos;max-block-size&apos;,&apos;none&apos;,&apos;important&apos;)', $web);
+        self::assertStringContainsString('if(bodyObserver)bodyObserver.takeRecords()', $web);
+        self::assertStringContainsString('if(childStyle.position===&apos;fixed&apos;&amp;&amp;bottomPinned(child))', $web);
+        self::assertStringContainsString('pinnedExtent=Math.max(pinnedExtent,Math.max(0,innerHeight-childRect.bottom)+naturalBlockSize(child))', $web);
+        self::assertStringContainsString('contentBottom=Math.max(contentBottom,contentTop+pinnedExtent)', $web);
+        self::assertStringNotContainsString('new MutationObserver(measure).observe(body', $web);
         self::assertStringContainsString('script.setAttribute(&apos;data-docara-example-framework-boot&apos;,item.key)', $web);
         self::assertStringContainsString('link.setAttribute(&apos;data-docara-example-framework-style&apos;,&apos;&apos;)', $web);
         self::assertStringContainsString('document.documentElement.classList.add(&apos;theme-&apos;+theme)', $web);

@@ -8,6 +8,13 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **Inline code wraps as the Framework sets it.** Docara held every piece
+  of inline code on one line, which outranked the Framework's own rule, so
+  a table with code in its cells grew wider than a phone and the page
+  scrolled sideways (750 px at 390 on one component page). Docara now
+  leaves wrapping to the Framework, which breaks a long piece in a table
+  cell only where it cannot fit a line; Docara still stops hyphens inside
+  a token.
 - **A press on the page closes a menu left open in an example.** A press
   outside an example frame never reached the frame, so a menu opened in it
   stayed open while the reader went on with the page. The page now asks a

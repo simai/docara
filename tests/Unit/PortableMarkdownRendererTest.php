@@ -710,7 +710,7 @@ MD);
     }
 
     #[Test]
-    public function trees_render_as_the_framework_tree_and_static_trees_are_left_unbound(): void
+    public function trees_render_as_the_framework_tree_and_static_trees_as_nested_lists_with_type_icons(): void
     {
         $renderer = new PortableMarkdownRenderer;
         $interactive = $renderer->render(<<<'MD'
@@ -733,8 +733,8 @@ MD);
             trim($interactive),
         );
 
-        // A static tree is marked as bound, so the Framework script leaves
-        // it open, and its folder icons are not buttons.
+        // A static tree is a nested list (C102, C109): no toggle column, an
+        // icon before each name, nothing to press.
         $static = $renderer->render(<<<'MD'
 :::tree {interactive=false}
 - content
@@ -742,9 +742,23 @@ MD);
 - docara.json
 :::
 MD);
-        self::assertStringStartsWith('<div data-docara-block="tree" data-interactive="false" class="sf-tree flex flex-col m-bottom-1" data-sf-tree-bound="1">', trim($static));
-        self::assertStringNotContainsString('<button', $static);
-        self::assertStringContainsString('<span class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></span>', $static);
+        $row = static fn (string $icon, string $name): string => '<span class="docara-tree__row"><i class="sf-icon docara-tree__icon" aria-hidden="true">'
+            . $icon . '</i><span class="docara-tree__name">' . $name . '</span></span>';
+        self::assertSame(
+            '<ul data-docara-block="tree" data-interactive="false" class="docara-tree m-bottom-1">'
+            . '<li class="docara-tree__item">' . $row('folder_open', 'content')
+            . '<ul class="docara-tree__group"><li class="docara-tree__item">' . $row('draft', 'index.md') . '</li></ul></li>'
+            . '<li class="docara-tree__item">' . $row('draft', 'docara.json') . '</li></ul>',
+            trim($static),
+        );
+        self::assertStringNotContainsString('sf-tree', $static);
+
+        // The level step is the icon and the row gap, the same gap as inside
+        // a row, so a child's icon stands under its parent's name.
+        $css = (string) file_get_contents(dirname(__DIR__, 2).'/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('.docara-tree__group{margin-block:0;padding-inline-start:calc(var(--sf-icon-size-3) + var(--sf-space-1\\/2))}', $css);
+        self::assertStringContainsString('.docara-tree__row{display:flex;align-items:center;gap:var(--sf-space-1\\/2);', $css);
+        self::assertStringContainsString('.docara-tree__icon{flex:none;inline-size:var(--sf-icon-size-3);', $css);
     }
 
     #[Test]

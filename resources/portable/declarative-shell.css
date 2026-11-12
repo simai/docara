@@ -108,6 +108,12 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-prose dt{font-weight:var(--sf-weight--medium)}
 /* Inline code wraps as the Framework sets it: a table cell breaks a long run only where it cannot fit a line, so a table no longer grows past a phone. Docara only stops hyphens inside a token such as on-surface-variant. */
 .docara-prose :not(pre)>code:not(:where(.docara-example-inline *)){hyphens:none}
+/* A static tree (C102, C109): a type icon, the row gap, the name; a level steps by icon and gap, so a child's icon stands under its parent's name. */
+.docara-tree,.docara-tree__group{list-style:none;padding:0;margin-inline:0}.docara-tree__group{margin-block:0;padding-inline-start:calc(var(--sf-icon-size-3) + var(--sf-space-1\/2))}
+.docara-tree .docara-tree__item{margin:0;max-width:none}.docara-tree__item::marker{content:none}
+.docara-tree__row{display:flex;align-items:center;gap:var(--sf-space-1\/2);min-block-size:var(--sf-text-height-1)}
+.docara-tree__icon{flex:none;inline-size:var(--sf-icon-size-3);font-size:var(--sf-icon-size-3);color:var(--sf-on-surface-variant)}
+.docara-tree__name{min-width:0;overflow-wrap:anywhere;font-family:var(--sf-code--font-family,ui-monospace,monospace);font-size:var(--sf-text-size-1\/2)}
 /* A long piece the build marks with data-docara-code-wrap (a path, a URN or a class name longer than 32 characters, 16 in a heading) would make the page wider than a phone on one line: it wraps where a line allows and, where a part is still too long, inside the token. In a table cell the Framework breaks it where it cannot fit. */
 .docara-prose :not(pre)>code[data-docara-code-wrap]:not(:where(.docara-example-inline *,table *)){white-space:normal;overflow-wrap:anywhere}
 /* A bullet between spaces in prose separates parts of a meta line: smaller, in the caption colour, centred on the line. The spaces around it stay, so the margin only tops them up to the gap the prototype drew. */

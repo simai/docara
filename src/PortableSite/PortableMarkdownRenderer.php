@@ -2220,17 +2220,47 @@ HTML;
         $list = trim((string) $rendered);
         $list = preg_replace('~^<ul>|</ul>$~u', '', $list) ?? $list;
 
-        // The block is the Framework tree: branches open by default, with
-        // the folder toggle the Framework tree script turns into a keyboard
-        // tree. A static tree is marked as already bound, so the script
-        // leaves it alone and every branch stays open.
-        return '<div data-docara-block="tree" data-interactive="' . ($interactive ? 'true' : 'false')
-            . '" class="sf-tree flex flex-col m-bottom-1"' . ($interactive ? '' : ' data-sf-tree-bound="1"') . '>'
-            . $this->treeItems($list, $interactive) . '</div>';
+        if (! $interactive) {
+            // A static tree is a nested list with nothing to press (owner
+            // decisions C102 and C109): no toggle column, a type icon before
+            // each name, and a level steps by that icon and the row gap, so
+            // a child's icon stands under its parent's name.
+            return '<ul data-docara-block="tree" data-interactive="false" class="docara-tree m-bottom-1">'
+                . $this->staticTreeItems($list) . '</ul>';
+        }
+
+        // The interactive block is the Framework tree: branches open by
+        // default, with the folder toggle the Framework tree script turns
+        // into a keyboard tree.
+        return '<div data-docara-block="tree" data-interactive="true" class="sf-tree flex flex-col m-bottom-1">'
+            . $this->treeItems($list) . '</div>';
+    }
+
+    /** Turns the items of one rendered Markdown list into static tree rows. */
+    private function staticTreeItems(string $list): string
+    {
+        $html = '';
+        foreach ($this->topLevelListItems($list) as $item) {
+            $nested = strpos($item, '<ul>');
+            $label = trim($nested === false ? $item : substr($item, 0, $nested));
+            $label = preg_replace('~^<p>(.*)</p>$~su', '$1', $label) ?? $label;
+            // A branch is an open folder; a leaf is the Framework's generic
+            // file icon until the Framework ships its file type map.
+            $html .= '<li class="docara-tree__item"><span class="docara-tree__row">'
+                . '<i class="sf-icon docara-tree__icon" aria-hidden="true">' . ($nested === false ? 'draft' : 'folder_open') . '</i>'
+                . '<span class="docara-tree__name">' . $label . '</span></span>';
+            if ($nested !== false) {
+                $children = substr($item, $nested + 4, (int) strrpos($item, '</ul>') - $nested - 4);
+                $html .= '<ul class="docara-tree__group">' . $this->staticTreeItems($children) . '</ul>';
+            }
+            $html .= '</li>';
+        }
+
+        return $html;
     }
 
     /** Turns the items of one rendered Markdown list into Framework tree items. */
-    private function treeItems(string $list, bool $interactive): string
+    private function treeItems(string $list): string
     {
         $html = '';
         foreach ($this->topLevelListItems($list) as $item) {
@@ -2245,12 +2275,10 @@ HTML;
                 continue;
             }
             $children = substr($item, $nested + 4, (int) strrpos($item, '</ul>') - $nested - 4);
-            $toggle = $interactive
-                ? '<button type="button" class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>'
-                : '<span class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></span>';
+            $toggle = '<button type="button" class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>';
             $html .= '<div class="sf-tree-item open"><div class="sf-tree-item-container flex items-cross-center">'
                 . $toggle . $name . '</div><div class="sf-tree-group">'
-                . $this->treeItems($children, $interactive) . '</div></div>';
+                . $this->treeItems($children) . '</div></div>';
         }
 
         return $html;

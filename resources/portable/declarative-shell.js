@@ -895,11 +895,7 @@
       var selected=example.dataset.sourceActive!=='true';
       viewerButton.hidden=!active&&!selected;
       viewerButton.setAttribute('aria-pressed',active?'true':'false');
-      /* Closed, the button reads its visible words; open, it is the close icon named by its action. */
-      var viewerText=viewerButton.querySelector('[data-docara-example-viewer-text]');
-      if(viewerText){var openText=message('examples.viewer_open');if(openText!=='examples.viewer_open')viewerText.textContent=openText;viewerText.hidden=active}
-      if(active)viewerButton.setAttribute('aria-label',message('examples.viewer_exit'));else viewerButton.removeAttribute('aria-label');
-      viewerButton.title=message(active?'examples.viewer_exit':'examples.viewer');
+      viewerButton.setAttribute('aria-label',message(active?'examples.viewer_exit':'examples.viewer'));
       if(viewportControls){
         viewportControls.hidden=!active||!selected;
         viewportControls.setAttribute('aria-label',message('examples.viewport_group'));

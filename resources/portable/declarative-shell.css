@@ -279,7 +279,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll code{min-inline-size:0;white-space:pre-wrap;overflow-wrap:anywhere}
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln{inline-size:100%;table-layout:fixed}
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln-code{white-space:pre-wrap;overflow-wrap:anywhere}
-[data-docara-example-copy][hidden],[data-docara-example-viewer][hidden],[data-docara-example-viewer-text][hidden],[data-docara-example-viewports][hidden],[data-docara-example-wrap][hidden]{display:none}
+[data-docara-example-copy][hidden],[data-docara-example-viewer][hidden],[data-docara-example-viewports][hidden],[data-docara-example-wrap][hidden]{display:none}
 /* The example log: a bottom section of the example's frame. Its head repeats the top tab bar (same header box, tab and indicator rules); the line under the head goes when the log is collapsed. */
 .docara-example-log{border-block-start:1px solid var(--sf-outline-variant);background:var(--sf-surface-0)}
 .docara-example-log__head{border-block-end:1px solid var(--sf-outline-variant)}

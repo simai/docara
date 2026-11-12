@@ -386,7 +386,7 @@
     },{rootMargin:'600px 0px'});
     deferred.forEach(function(frame){observer.observe(frame)});
   })();
-  /* An example without its own label is named with the localized "Example": the tab, its tab list, the frame's title attribute and, through the environment, the frame document's title. */
+  /* The first tab of every example reads the localized "Example"; an example without its own label also takes it for its tab list, the frame's title attribute and, through the environment, the frame document's title. */
   (function(){
     var label=message('examples.example');
     if(label==='examples.example')return;
@@ -394,7 +394,8 @@
       if(element.tagName==='IFRAME'){element.setAttribute('title',label);return}
       element.textContent=label;
       var list=element.closest('[role="tablist"]');
-      if(list)list.setAttribute('aria-label',label);
+      /* A captioned example's tab list is named by its caption. */
+      if(list&&!list.hasAttribute('aria-labelledby'))list.setAttribute('aria-label',label);
     });
   })();
   /* An inline example may hold a demo form. Capturing on the example root cancels every submission that starts inside it before any other listener runs, so the form can never navigate or reload the documentation page. */
@@ -923,7 +924,8 @@
       document.body.appendChild(viewerDialog);
       viewerDialog.appendChild(example);
       example.dataset.docaraExampleViewerActive='true';
-      viewerDialog.setAttribute('aria-label',message('examples.viewer_dialog'));
+      var viewerTitle=example.querySelector('[data-docara-example-title]');
+      viewerDialog.setAttribute('aria-label',viewerTitle?viewerTitle.textContent:message('examples.viewer_dialog'));
       try{viewerDialog.showModal()}catch(error){restoreViewer();return}
       loadResponsiveFrame();
       syncViewer();

@@ -126,7 +126,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/example.md",
-            "source_sha256": "b12bc5240f5a91906c333e59117e9f9a8e302d321241aced54348aff638f4d2d",
+            "source_sha256": "75512880f050a6f6d4c38080391d8d848a8803e2536cd867609a77735934107e",
             "release": "3.14.2",
             "source_url": "https://github.com/simai/docara/blob/v3.14.2/docs/site/content/ru/components/example.md",
             "history_url": "https://github.com/simai/docara/commits/v3.14.2/docs/site/content/ru/components/example.md",
@@ -573,5 +573,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "f21810db28747f24145673a7640d01e181bf2bb80864ea7d59c766560d74df24"
+    "content_sha256": "bab79e65e6903503a9d9d23ef9304d382bcdc4af30efa7c1e753fb2634533df7"
 }

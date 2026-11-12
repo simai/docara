@@ -183,7 +183,10 @@ MD);
 MD);
         self::assertStringContainsString('<iframe title="Save &lt;button&gt;" data-docara-example-frame', $labelled);
         self::assertStringContainsString(htmlspecialchars('<title>Save &lt;button&gt;</title>', ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8'), $labelled);
-        self::assertStringNotContainsString('data-docara-example-default-label', $labelled);
+        // The frame keeps the author's label; only the first tab reads the localized "Example".
+        self::assertStringNotContainsString('<iframe title="Save &lt;button&gt;" data-docara-example-default-label', $labelled);
+        self::assertSame(1, substr_count($labelled, 'data-docara-example-default-label'));
+        self::assertStringContainsString('class="docara-example-preview__caption">Save &lt;button&gt;</figcaption>', $labelled);
         self::assertStringNotContainsString('data-docara-example-icons', $labelled);
 
         $unlabelled = $renderer->render(<<<'MD'
@@ -292,6 +295,46 @@ MD);
     }
 
     #[Test]
+    public function an_example_label_is_a_caption_under_the_frame_and_the_first_tab_stays_short(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        // A descriptive label as long as the longest one on a component site.
+        $label = 'Положения стрелки подсказки относительно элемента на странице и в таблицах';
+        self::assertSame(74, mb_strlen($label));
+        $html = $renderer->render(":::example {label=\"{$label}\"}\n```html\n<p>x</p>\n```\n:::");
+
+        $caption = 'class="docara-example-preview__caption">' . $label . '</figcaption></figure>';
+        self::assertStringStartsWith('<figure data-docara-example-figure class="docara-example-figure"><section data-docara-example="', $html);
+        self::assertStringEndsWith($caption, trim($html));
+        preg_match('/<figcaption id="([^"]+)"/', $html, $id);
+        self::assertNotEmpty($id);
+        // The frame and its tab list are named by the caption; no tab holds the label.
+        self::assertStringContainsString(' aria-labelledby="' . $id[1] . '"><div class="docara-example-preview__header">', $html);
+        self::assertStringContainsString('<div role="tablist" aria-labelledby="' . $id[1] . '" class="docara-example-preview__tabs">', $html);
+        self::assertSame(0, preg_match('~role="tab"[^>]*>[^<]*' . preg_quote($label, '~') . '~u', $html));
+        // The viewer header repeats the text; the preview frame keeps it as its title.
+        self::assertStringContainsString('<span data-docara-example-title class="docara-example-preview__title">' . $label . '</span>', $html);
+        self::assertStringContainsString('title="' . $label . '"', $html);
+
+        $resultOnly = $renderer->render(":::example {label=\"{$label}\" sources=false}\n```html\n<p>x</p>\n```\n:::");
+        self::assertSame(1, substr_count($resultOnly, 'role="tab"'));
+        self::assertStringEndsWith($caption, trim($resultOnly));
+
+        // Without a label the frame has no caption and no figure.
+        $plain = $renderer->render(":::example\n```html\n<p>x</p>\n```\n:::");
+        self::assertStringStartsWith('<section data-docara-example="', trim($plain));
+        self::assertStringNotContainsString('<figcaption', $plain);
+        self::assertStringNotContainsString('data-docara-example-title', $plain);
+        self::assertStringContainsString('<div role="tablist" aria-label="Example" class="docara-example-preview__tabs">', $plain);
+
+        // The caption reads like one under a picture and the tab row never scrolls.
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('.docara-example-preview__caption{margin-block-start:var(--sf-space-1\\/3);font-size:var(--sf-text-size-1\\/2);line-height:var(--sf-text-height-1\\/2);color:var(--sf-on-surface-variant);overflow-wrap:break-word}', $css);
+        self::assertStringContainsString('.docara-example-preview__tabs{display:inline-flex;inline-size:max-content;max-inline-size:100%;align-items:center;gap:0}', $css);
+        self::assertStringContainsString('.docara-example-preview__title{display:none}', $css);
+    }
+
+    #[Test]
     public function it_renders_markdown_and_multifile_examples_as_one_tabbed_surface(): void
     {
         $renderer = new PortableMarkdownRenderer;
@@ -304,13 +347,15 @@ MD);
 MD);
 
         self::assertStringContainsString('data-docara-example=', $markdown);
-        self::assertStringContainsString('class="docara-example-preview__tab">Пример</button>', $markdown);
+        // The first tab is the localized "Example"; the author's label is the caption under the frame.
+        self::assertStringContainsString('data-docara-example-default-label class="docara-example-preview__tab">Example</button>', $markdown);
+        self::assertStringContainsString('class="docara-example-preview__caption">Пример</figcaption></figure>', $markdown);
         self::assertStringContainsString('data-docara-example-tab="markdown"', $markdown);
         self::assertStringContainsString(
             'data-docara-example-panel="markdown" aria-hidden="true" class="docara-example-preview__panel docara-example-preview__panel--source"',
             $markdown,
         );
-        self::assertStringContainsString('data-docara-example-tab="example" class="docara-example-preview__tab"', $markdown);
+        self::assertStringContainsString('data-docara-example-tab="example" data-docara-example-default-label class="docara-example-preview__tab"', $markdown);
         self::assertStringContainsString('data-docara-example-tab="markdown" class="docara-example-preview__tab"', $markdown);
         self::assertStringContainsString('data-docara-example-copy', $markdown);
         self::assertStringContainsString('data-docara-example-fullscreen="true"', $markdown);
@@ -375,6 +420,10 @@ MD);
         // A wide example carries the shell's full-width marker on its root.
         self::assertMatchesRegularExpression('/<section data-docara-example="[^"]+"[^>]* data-docara-width="full" class="docara-example-preview docara-example-preview--wide"/', $wide);
         self::assertStringNotContainsString('data-docara-width', $resultOnly);
+        // With a caption the figure around the frame takes the full-width marker.
+        $wideCaptioned = $renderer->render(":::example {label=Витрина layout=wide sources=false}\n```html\n<p>x</p>\n```\n:::");
+        self::assertStringContainsString('<figure data-docara-example-figure data-docara-width="full" class="docara-example-figure"><section ', $wideCaptioned);
+        self::assertSame(1, substr_count($wideCaptioned, 'data-docara-width="full"'));
         try {
             $renderer->render(":::example {layout=full}\n```html\n<p>x</p>\n```\n:::");
             self::fail('An example accepted an unknown layout.');

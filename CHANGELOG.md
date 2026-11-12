@@ -6,6 +6,17 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **An example's label is a caption under the frame.** The `label` of
+  `:::example` was the first tab, and a descriptive label made the tab row
+  scroll, so the code tabs slid out of view. The label now sits under the
+  frame as a small muted caption that wraps, like one under a picture
+  (`figure` and `figcaption`), and names the frame and its tabs. The first
+  tab always reads the localized "Example", the tab row no longer scrolls,
+  and the full-screen viewer shows the caption in its header. An example
+  without a label has no caption.
+
 ### Fixed
 
 - **Inline code wraps as the Framework sets it.** Docara held every piece

@@ -28,8 +28,10 @@ the exact call.
 
 - Inside is the example source in a code block: one `markdown` block or an
   `html` block with optional `css` and `javascript`.
-- `label` is the caption of the result tab. Without it the tab is called
-  "Example" (the `examples.example` string from `lang.json`).
+- `label` is the caption under the example, as under a picture: small
+  muted text that wraps when long. The first tab is always called
+  "Example" (the `examples.example` string from `lang.json`), so the code
+  tabs stay in view. Without `label` there is no caption.
 - Instead of the source you can refer to a shared project example:
   `id="…"`. You cannot mix the two ways.
 - To show a whole site page and the files it is built from, give its
@@ -408,7 +410,7 @@ surrounding documentation.
 
 - The example tabs switch with the arrow keys; Tab moves focus to the copy,
   wrap and width check buttons.
-- The result frame is named by the `label` caption: give a clear caption.
+- The example frame and its tabs are named by the `label` caption: give a clear caption.
 - The width check mode is a dialog: focus stays inside it, Escape closes it
   and returns focus to the button.
 - The example log is a region captioned "Example log". Its tabs switch with
@@ -423,7 +425,7 @@ surrounding documentation.
 | --- | --- | --- | --- |
 | `id` | string | — | The identifier of a shared example from the project's `examples/` folder. |
 | `src` | string | — | The address of a built page of this site that the example shows whole; the page's files are listed as tabs inside the block. |
-| `label` | string | `Example` | The caption of the result tab. |
+| `label` | string | `Example` | The caption under the example. Without it there is no caption and the frame is called "Example". |
 | `preview` | `auto`, `inline`, `sandbox` | `auto` | How to show the result: `auto` chooses by content, `inline` shows it right on the page, `sandbox` in an isolated window. |
 | `fullscreen` | `true`, `false` | — | The button for checking at desktop, tablet and phone widths. |
 | `wrap` | `true`, `false` | — | The button for wrapping long lines in the source code. |

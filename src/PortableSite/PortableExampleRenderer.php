@@ -31,13 +31,18 @@ final class PortableExampleRenderer
         $safeId = preg_replace('/[^a-z0-9_-]+/i', '-', $id) ?: 'example';
         $previewTabId = $safeId . '-tab-example';
         $previewPanelId = $safeId . '-panel-example';
+        // The author's label is a caption under the frame, as under a
+        // picture, not the first tab: a descriptive label made the tab row
+        // scroll and pushed the code tabs away. The first tab is always the
+        // localized "Example"; an example without a label has no caption.
+        $caption = $defaultLabel ? null : $exampleLabel;
+        $captionId = $safeId . '-caption';
         $tabs = [
             '<button type="button" role="tab" id="' . $previewTabId
                 . '" aria-controls="' . $previewPanelId
                 . '" aria-selected="true" tabindex="0" data-docara-example-tab="example"'
-                . ($defaultLabel ? ' data-docara-example-default-label' : '')
-                . ' class="docara-example-preview__tab">'
-                . $this->escape($exampleLabel) . '</button>',
+                . ' data-docara-example-default-label'
+                . ' class="docara-example-preview__tab">Example</button>',
         ];
         $panels = [
             '<div role="tabpanel" id="' . $previewPanelId . '" aria-labelledby="'
@@ -70,7 +75,7 @@ final class PortableExampleRenderer
                 . $source . '</div>';
         }
 
-        return '<section data-docara-example="' . $this->escape($safeId)
+        $section = '<section data-docara-example="' . $this->escape($safeId)
             . '" data-docara-example-preview-requested="' . $this->escape($requestedPreview)
             . '" data-docara-example-preview-resolved="' . $this->escape($resolvedPreview)
             . '" data-docara-example-preview-reason="' . $this->escape($previewReason)
@@ -79,11 +84,17 @@ final class PortableExampleRenderer
             . '" data-docara-outline-exclude data-source-active="false"'
             // A wide example takes the page's full width like a full-width
             // surface; the shell's data-docara-width rule does the breakout.
-            . ($wide ? ' data-docara-width="full" class="docara-example-preview docara-example-preview--wide"' : ' class="docara-example-preview"')
+            // With a caption the figure around the frame does the breakout.
+            . ($wide ? ($caption === null ? ' data-docara-width="full"' : '') . ' class="docara-example-preview docara-example-preview--wide"' : ' class="docara-example-preview"')
             . ($legacyComponentId === '' ? '' : ' data-docara-component-example="' . $this->escape($legacyComponentId) . '"')
+            . ($caption === null ? '' : ' aria-labelledby="' . $captionId . '"')
             . '><div class="docara-example-preview__header">'
-            . '<div role="tablist" aria-label="' . $this->escape($exampleLabel)
-            . '" class="docara-example-preview__tabs">' . implode('', $tabs) . '</div>'
+            // The full-screen viewer takes the frame out of its figure, so
+            // the header carries the caption's text, shown only there.
+            . ($caption === null ? '' : '<span data-docara-example-title class="docara-example-preview__title">' . $this->escape($caption) . '</span>')
+            . '<div role="tablist" '
+            . ($caption === null ? 'aria-label="' . $this->escape($exampleLabel) . '"' : 'aria-labelledby="' . $captionId . '"')
+            . ' class="docara-example-preview__tabs">' . implode('', $tabs) . '</div>'
             . '<div class="docara-example-preview__actions">'
             // The width switcher is three Framework icon buttons like the
             // close button beside it; the chosen width is pressed.
@@ -109,8 +120,18 @@ final class PortableExampleRenderer
             . '<sf-icon icon="content_copy" aria-hidden="true"></sf-icon>'
             . '</button></div><span class="docara-example-preview__indicator" aria-hidden="true"></span></div>'
             . '<div class="docara-example-preview__panels">' . implode('', $panels) . '</div>'
-            . ($log === null ? '' : $this->log($safeId, $log))
+            . ($log === null ? '' : $this->log($safeId, $log, $caption))
             . '</section>';
+
+        if ($caption === null) {
+            return $section;
+        }
+
+        return '<figure data-docara-example-figure'
+            . ($wide ? ' data-docara-width="full"' : '')
+            . ' class="docara-example-figure">' . $section
+            . '<figcaption id="' . $captionId . '" class="docara-example-preview__caption">'
+            . $this->escape($caption) . '</figcaption></figure>';
     }
 
     /**
@@ -120,7 +141,7 @@ final class PortableExampleRenderer
      * English defaults; the shell replaces them with the page's language
      * from lang.json (examples.log_*) and writes the rows.
      */
-    private function log(string $id, ExampleLog $log): string
+    private function log(string $id, ExampleLog $log, ?string $caption = null): string
     {
         $tabs = ['events' => 'Events'];
         if ($log->console) {
@@ -153,7 +174,11 @@ final class PortableExampleRenderer
         return '<section data-docara-example-log data-docara-example-log-events="' . $this->escape(implode(' ', $log->events))
             . '" data-docara-example-log-console="' . ($log->console ? 'true' : 'false')
             . '" data-docara-example-log-state="' . ($log->collapsed ? 'collapsed' : 'expanded')
-            . '" aria-label="Example log" class="docara-example-log">'
+            . '" aria-label="Example log"'
+            // The log belongs to the captioned example: a screen reader hears
+            // the caption with the log's name.
+            . ($caption === null ? '' : ' aria-describedby="' . $id . '-caption"')
+            . ' class="docara-example-log">'
             . '<div class="docara-example-log__head">'
             . '<div role="tablist" aria-label="Example log" class="docara-example-preview__tabs docara-example-log__tabs">' . $buttons . '</div>'
             . '<div class="docara-example-log__actions">'

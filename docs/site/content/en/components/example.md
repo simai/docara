@@ -10,7 +10,7 @@ the exact call.
 
 ## Example
 
-:::example {label="Example"}
+:::example
 ```markdown
 :badge[Done]{variant=main scheme=success size=1/2}
 ```

@@ -9,7 +9,7 @@ description: "Как показать интерактивный пример: �
 
 ## Пример
 
-:::example {label="Пример"}
+:::example
 ```markdown
 :badge[Готово]{variant=main scheme=success size=1/2}
 ```

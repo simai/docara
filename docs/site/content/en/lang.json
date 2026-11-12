@@ -86,6 +86,7 @@
     "examples": {
         "example": "Example",
         "viewer": "Check responsive preview",
+        "viewer_open": "Full screen",
         "viewer_exit": "Exit responsive preview",
         "viewer_dialog": "Responsive example preview",
         "viewport_group": "Preview width",

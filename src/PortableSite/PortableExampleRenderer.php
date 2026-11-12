@@ -104,10 +104,13 @@ final class PortableExampleRenderer
                 . $this->viewportButton('desktop', 'desktop_windows', 'Desktop', true)
                 . $this->viewportButton('tablet', 'tablet', 'Tablet', false)
                 . $this->viewportButton('mobile', 'smartphone', 'Mobile', false)
-                . '</div><button type="button" data-docara-example-viewer hidden aria-pressed="false" aria-label="Check responsive preview"'
+                // The viewer opens from words, not an icon alone: readers did
+                // not find the bare devices glyph. Inside the viewer the
+                // button is the close icon and its words hide.
+                . '</div><button type="button" data-docara-example-viewer hidden aria-pressed="false" title="Check responsive preview"'
                 . ' data-viewer-icon="devices" data-viewer-exit-icon="close"'
-                . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
-                . '<sf-icon icon="devices" aria-hidden="true"></sf-icon></button>' : '')
+                . ' class="docara-example-preview__action docara-example-preview__viewer sf-button sf-button--link sf-button--on-surface sf-button--size-1/2 inline-flex items-cross-center m-0">'
+                . '<sf-icon icon="devices" aria-hidden="true"></sf-icon><span data-docara-example-viewer-text class="sf-button-text-container">Full screen</span></button>' : '')
             . ($wrap ? '<button type="button" data-docara-example-wrap hidden aria-pressed="false" aria-label="Wrap source lines"'
                 . ' data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow"'
                 . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'

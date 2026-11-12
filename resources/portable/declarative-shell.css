@@ -83,9 +83,14 @@ html[data-docara-focus-mode] body:has(>.docara-docs-layout)>[data-docara-region=
 html[data-docara-focus-mode] .docara-docs-layout.docara-docs-layout{grid-template-columns:minmax(0,1fr)}
 /* Reading mode sets the whole column, toolbar, code, tables and examples alike, on the prose measure and centres it, so nothing runs wider than the text; the reader wide format keeps the full width. */
 html[data-docara-focus-mode]:not([data-docara-content-width="wide"]) .docara-docs-layout .docara-reading-column>*{inline-size:100%;max-inline-size:var(--sf-text--measure-wide);margin-inline:auto}
+/* An example in reading mode leaves the text measure: it takes the column up to the Framework container step 3, centred on the text, so it is never narrower than on the normal page. */
+html[data-docara-focus-mode]:not([data-docara-content-width="wide"]) .docara-docs-layout .docara-reading-column{container-type:inline-size}
+html[data-docara-focus-mode]:not([data-docara-content-width="wide"]) .docara-docs-layout .docara-prose :is(figure[data-docara-example-figure],section[data-docara-example]:not(figure>*)):not([data-docara-width="full"]){box-sizing:border-box;inline-size:min(var(--sf-container-3--size-max),100cqi);max-inline-size:none;margin-inline:calc(50% - min(var(--sf-container-3--size-max),100cqi) / 2)}
 @media not all and (min-width:72rem){.docara-outline-toggle{display:none}}
 /* Reader wide format: the shell takes the Framework's widest container step (layout.container.max 8) instead of the authored one, and prose lines lose their measure limit. The container tokens exist from the Framework lg breakpoint (60rem), like max-container-N. */
 @media(min-width:60rem){html[data-docara-content-width="wide"] body[data-docara-shell] .docara-header .sf-site-header-row,html[data-docara-content-width="wide"] body[data-docara-shell] .docara-docs-layout,html[data-docara-content-width="wide"] body[data-docara-shell]>[data-docara-region="footer"]{max-inline-size:var(--sf-container-8--size-max)}}
+/* The reader wide format also gives the outline rail's place to the column: the page contents move into the menu above the article, as on a narrower screen. */
+@media(min-width:72rem){html[data-docara-content-width="wide"]:not([data-docara-focus-mode]) .docara-docs-layout[data-outline="true"]:not([data-sidebar="false"]){grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}html[data-docara-content-width="wide"]:not([data-docara-focus-mode]) .docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr)}html[data-docara-content-width="wide"] .docara-docs-layout>.docara-outline-rail,html[data-docara-content-width="wide"] .docara-outline-toggle{display:none}html[data-docara-content-width="wide"]:not([data-docara-focus-mode]) .docara-outline-mobile{display:block}}
 html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:where(.docara-example-inline *)),html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose li:not(:where(.docara-example-inline *)){max-width:none}
 /* The Framework pager (sf-pager) draws the previous and next pages; the shell only sets it apart from the article. */
 [data-docara-previous-next]>.sf-pager{margin-block-start:var(--sf-space-4)}
@@ -274,7 +279,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll code{min-inline-size:0;white-space:pre-wrap;overflow-wrap:anywhere}
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln{inline-size:100%;table-layout:fixed}
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln-code{white-space:pre-wrap;overflow-wrap:anywhere}
-[data-docara-example-copy][hidden],[data-docara-example-viewer][hidden],[data-docara-example-viewports][hidden],[data-docara-example-wrap][hidden]{display:none}
+[data-docara-example-copy][hidden],[data-docara-example-viewer][hidden],[data-docara-example-viewer-text][hidden],[data-docara-example-viewports][hidden],[data-docara-example-wrap][hidden]{display:none}
 /* The example log: a bottom section of the example's frame. Its head repeats the top tab bar (same header box, tab and indicator rules); the line under the head goes when the log is collapsed. */
 .docara-example-log{border-block-start:1px solid var(--sf-outline-variant);background:var(--sf-surface-0)}
 .docara-example-log__head{border-block-end:1px solid var(--sf-outline-variant)}

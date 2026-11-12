@@ -398,6 +398,33 @@ documentation page the example stays in the text column. Use it for a showcase o
 landing page; with `sources=false` only the result remains:
 `:::example {layout=wide sources=false}`.
 
+### Desktop example
+
+A site header, a menu row or a page layout is made for a wide screen.
+`viewport=desktop` shows such an example at its own width, 1280 px, without
+scaling it down. In a column wider than 512 px the frame scrolls sideways, a
+fade at an edge shows there is more, and the head reads "1280 · 100 % ·
+scroll". In a column narrower than 512 px, on a phone, the example takes the
+column's width. The device preview shows it without scrolling, at the chosen
+device's width.
+
+:::example {viewport=desktop label="Site row: on a desktop the whole menu shows"}
+```html
+<div class="flex items-cross-center gap-2 p-1 bg-surface-container radius-1">
+  <strong>Docara</strong>
+  <div class="hidden md:flex gap-2">
+    <span>Products</span><span>Documentation</span><span>Pricing</span><span>Blog</span>
+  </div>
+  <span class="md:hidden">☰</span>
+  <span class="m-inline-start-auto">Sign in</span>
+</div>
+<p class="m-top-1">Below 768 px the menu folds into one button.</p>
+```
+:::
+
+Such an example always gets an isolated frame. Docara does not detect wide
+examples on its own: mark them yourself.
+
 ### Loading
 
 An isolated frame loads when it comes close to the screen (within 600 px),
@@ -411,6 +438,9 @@ surrounding documentation.
 - The example tabs switch with the arrow keys; Tab moves focus to the copy,
   wrap and width check buttons.
 - The example frame and its tabs are named by the `label` caption: give a clear caption.
+- The scrolling frame of a desktop example takes focus and is named
+  "Example 1280 px wide, scrolls sideways"; the left and right arrows
+  scroll it.
 - The width check mode is a dialog: focus stays inside it, Escape closes it
   and returns focus to the button.
 - The example log is a region captioned "Example log". Its tabs switch with

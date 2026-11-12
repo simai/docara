@@ -121,6 +121,10 @@
             "components": ["example"],
             "reason": "How the example is shown: inline on the page or in an isolated frame."
         },
+        "viewport": {
+            "components": ["example"],
+            "reason": "The screen the example is made for: the text column or a 1280 desktop it scrolls sideways in."
+        },
         "fullscreen": {
             "components": ["example"],
             "reason": "Whether the example offers a full-screen view; a behaviour switch."

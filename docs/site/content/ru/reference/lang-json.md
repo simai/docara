@@ -160,6 +160,8 @@ Docara нет.
 | `examples.viewer` — Кнопка проверки примера на разной ширине | Check responsive preview | Проверить адаптивность |
 | `examples.viewer_exit` — Кнопка выхода из проверки ширины | Exit responsive preview | Выйти из режима просмотра |
 | `examples.viewer_dialog` — Подпись окна проверки ширины | Responsive example preview | Адаптивный просмотр примера |
+| `examples.desktop_scroll` — Подпись над примером рабочего стола, который прокручивается вбок | 1280 · 100 % · scroll | 1280 · 100 % · прокрутка |
+| `examples.desktop_scroll_label` — Имя области прокрутки примера рабочего стола | Example 1280 px wide, scrolls sideways | Пример шириной 1280, прокручивается вбок |
 | `examples.viewport_group` — Подпись переключателя ширины | Preview width | Ширина примера |
 | `examples.viewport_desktop` — Вариант ширины «компьютер» | Desktop | Десктоп |
 | `examples.viewport_tablet` — Вариант ширины «планшет» | Tablet | Планшет |

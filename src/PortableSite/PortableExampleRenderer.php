@@ -27,10 +27,21 @@ final class PortableExampleRenderer
         bool $responsive = false,
         bool $wide = false,
         ?ExampleLog $log = null,
+        bool $desktop = false,
     ): string {
         $safeId = preg_replace('/[^a-z0-9_-]+/i', '-', $id) ?: 'example';
         $previewTabId = $safeId . '-tab-example';
         $previewPanelId = $safeId . '-panel-example';
+        // A desktop example (owner decision C111) draws at 1280 at full
+        // scale: in a column of 512 or more the shell sets that width and the
+        // body under the frame scrolls sideways, with a fade on a side that
+        // still hides content. The words are the English defaults the shell
+        // replaces from lang.json (examples.desktop_*).
+        if ($desktop) {
+            $preview = '<div data-docara-example-scroll class="docara-example-scroll">'
+                . '<div data-docara-example-scroll-body data-docara-example-scrolling="false" class="docara-example-scroll__body">'
+                . $preview . '</div></div>';
+        }
         // The author's label is a caption under the frame, as under a
         // picture, not the first tab: a descriptive label made the tab row
         // scroll and pushed the code tabs away. The first tab is always the
@@ -82,6 +93,7 @@ final class PortableExampleRenderer
             . '" data-docara-example-fullscreen="' . ($fullscreen ? 'true' : 'false')
             . '" data-docara-example-wrap="' . ($wrap ? 'true' : 'false')
             . '" data-docara-outline-exclude data-source-active="false"'
+            . ($desktop ? ' data-docara-example-desktop' : '')
             // A wide example takes the page's full width like a full-width
             // surface; the shell's data-docara-width rule does the breakout.
             // With a caption the figure around the frame does the breakout.
@@ -96,6 +108,7 @@ final class PortableExampleRenderer
             . ($caption === null ? 'aria-label="' . $this->escape($exampleLabel) . '"' : 'aria-labelledby="' . $captionId . '"')
             . ' class="docara-example-preview__tabs">' . implode('', $tabs) . '</div>'
             . '<div class="docara-example-preview__actions">'
+            . ($desktop ? '<span data-docara-example-desktop-chip hidden class="docara-example-preview__chip">1280 · 100 % · scroll</span>' : '')
             // The width switcher is three Framework icon buttons like the
             // close button beside it; the chosen width is pressed.
             // An inline Markdown example gets the switcher when its preview

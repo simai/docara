@@ -889,6 +889,35 @@
       panel.style.blockSize=Math.round(800*scale)+'px';
     }
     if(pageFrame&&typeof ResizeObserver==='function'){new ResizeObserver(fitPageFrame).observe(pageFrame.parentElement)}
+    /* A desktop example (viewport=desktop, owner decision C111) draws at 1280 at full scale in a column of 512 or more: the body under the frame scrolls sideways and takes focus, a fade marks a side that still hides content, and the head chip says so. A narrower column and the viewer show it at their own width. */
+    var desktopBody=example.hasAttribute('data-docara-example-desktop')&&previewFrame?previewFrame.closest('[data-docara-example-scroll-body]'):null;
+    var desktopChip=owned('[data-docara-example-desktop-chip]')[0]||null;
+    function desktopEdges(){
+      if(!desktopBody)return;
+      var hidden=desktopBody.scrollWidth-desktopBody.clientWidth,left=Math.abs(desktopBody.scrollLeft);
+      desktopBody.parentElement.toggleAttribute('data-more-start',hidden>1&&left>1);
+      desktopBody.parentElement.toggleAttribute('data-more-end',hidden>1&&left<hidden-1);
+    }
+    function fitDesktopFrame(){
+      if(!desktopBody)return;
+      var viewer=isViewerOpen(),width=desktopBody.clientWidth;
+      if(!width&&!viewer)return;
+      var scrolls=!viewer&&width>=512;
+      if(!viewer){
+        if(scrolls){previewFrame.style.inlineSize=exampleViewportWidths.desktop+'px';previewFrame.style.maxInlineSize='none'}
+        else{previewFrame.style.removeProperty('inline-size');previewFrame.style.removeProperty('max-inline-size')}
+      }
+      desktopBody.dataset.docaraExampleScrolling=scrolls?'true':'false';
+      if(scrolls){desktopBody.tabIndex=0;desktopBody.setAttribute('role','region');desktopBody.setAttribute('aria-label',message('examples.desktop_scroll_label'))}
+      else{desktopBody.removeAttribute('tabindex');desktopBody.removeAttribute('role');desktopBody.removeAttribute('aria-label');desktopBody.scrollLeft=0}
+      if(desktopChip){var chip=message('examples.desktop_scroll');if(chip!=='examples.desktop_scroll')desktopChip.textContent=chip;desktopChip.hidden=!scrolls}
+      desktopEdges();
+      requestExampleHeight(previewFrame);
+    }
+    if(desktopBody){
+      desktopBody.addEventListener('scroll',desktopEdges,{passive:true});
+      if(typeof ResizeObserver==='function'){new ResizeObserver(fitDesktopFrame).observe(desktopBody)}
+    }
     function syncViewer(){
       if(!viewerButton)return;
       var active=isViewerOpen();
@@ -902,6 +931,7 @@
       }
       if(active){setViewport(activeViewport,false)}else{resetViewport()}
       fitPageFrame();
+      fitDesktopFrame();
       /* The inline frame keeps the panel's padding inside, the viewer's frame none. */
       if(previewFrame)requestExampleHeight(previewFrame);
       var icon=viewerButton.querySelector('sf-icon');

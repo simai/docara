@@ -748,6 +748,10 @@ final class PortableMarkdownRenderer
         // layout=wide lets a showcase example leave the reading column and
         // take the page's full width, as a landing page needs.
         $wide = $this->catalogueChoice(trim($attributes['layout'] ?? 'column'), 'example', 'layout') === 'wide';
+        // viewport=desktop (owner decision C111) marks an example made for a
+        // desktop screen, such as a site header: it draws at 1280 in a frame
+        // of its own and scrolls sideways in the column.
+        $desktop = $this->catalogueChoice(trim($attributes['viewport'] ?? 'column'), 'example', 'viewport') === 'desktop';
         $log = $this->exampleLog($attributes);
         // theme_switch=true gives the example a theme of its own: its frame
         // starts in the page's theme and its own switch changes only itself.
@@ -789,7 +793,7 @@ final class PortableMarkdownRenderer
             );
         }
 
-        $previewDecision = $this->examplePreviewPolicy->resolve($sources, $exampleId !== '', $requestedPreview, $ownTheme);
+        $previewDecision = $this->examplePreviewPolicy->resolve($sources, $exampleId !== '', $requestedPreview, $ownTheme, $desktop);
         $renderId = 'markdown-example-' . substr(hash('sha256', $exampleId !== '' ? $exampleId : $markdown), 0, 12);
         if ($this->projectExamples instanceof ProjectExampleRepository && is_string($sourceFile) && $sourceFile !== '') {
             $hashSources = $sources;
@@ -880,6 +884,7 @@ final class PortableMarkdownRenderer
             responsive: $responsive,
             wide: $wide,
             log: $log,
+            desktop: $desktop,
         );
     }
 
@@ -1012,6 +1017,7 @@ final class PortableMarkdownRenderer
                 $exampleId !== '',
                 trim($attributes['preview'] ?? 'auto'),
                 $ownTheme,
+                $this->catalogueChoice(trim($attributes['viewport'] ?? 'column'), 'example', 'viewport') === 'desktop',
             );
             $previews[] = [
                 'id' => $exampleId,
@@ -1085,8 +1091,9 @@ final class PortableMarkdownRenderer
     {
         // The log listens inside the example's own document; a page example
         // shows a whole built page, which keeps its own console and events,
-        // and follows the reader's theme from the site's storage.
-        foreach (['id', 'preview', 'log', 'log_console', 'log_open', 'theme_switch'] as $conflict) {
+        // and follows the reader's theme from the site's storage. It already
+        // draws a desktop screen, so viewport has nothing to change.
+        foreach (['id', 'preview', 'log', 'log_console', 'log_open', 'theme_switch', 'viewport'] as $conflict) {
             if (array_key_exists($conflict, $attributes)) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_EXAMPLE_SRC_CONFLICT',

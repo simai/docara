@@ -115,6 +115,8 @@ final class LangReference
         'examples.viewer' => 'Кнопка проверки примера на разной ширине',
         'examples.viewer_exit' => 'Кнопка выхода из проверки ширины',
         'examples.viewer_dialog' => 'Подпись окна проверки ширины',
+        'examples.desktop_scroll' => 'Подпись над примером рабочего стола, который прокручивается вбок',
+        'examples.desktop_scroll_label' => 'Имя области прокрутки примера рабочего стола',
         'examples.viewport_group' => 'Подпись переключателя ширины',
         'examples.viewport_desktop' => 'Вариант ширины «компьютер»',
         'examples.viewport_tablet' => 'Вариант ширины «планшет»',

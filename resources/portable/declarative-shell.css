@@ -244,6 +244,13 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-figure{margin:0 0 var(--sf-space-1);max-inline-size:100%}
 .docara-example-figure>.docara-example-preview{margin-block-end:0}
 .docara-example-preview__caption{margin-block-start:var(--sf-space-1\/3);font-size:var(--sf-text-size-1\/2);line-height:var(--sf-text-height-1\/2);color:var(--sf-on-surface-variant);overflow-wrap:break-word}
+/* A desktop example (C111): 1280 at full scale, sideways scroll, a fade on a side that still hides content. */
+.docara-example-scroll{position:relative}.docara-example-scroll__body[data-docara-example-scrolling="true"]{overflow-x:auto;overscroll-behavior-x:contain}
+.docara-example-scroll::before,.docara-example-scroll::after{content:"";position:absolute;inset-block:0;inline-size:var(--sf-space-1);pointer-events:none;z-index:1;opacity:0;transition:opacity .15s}
+.docara-example-scroll::before{inset-inline-start:0;background:linear-gradient(to right,color-mix(in srgb,var(--sf-on-surface) 14%,transparent),transparent)}
+.docara-example-scroll::after{inset-inline-end:0;background:linear-gradient(to left,color-mix(in srgb,var(--sf-on-surface) 14%,transparent),transparent)}
+.docara-example-scroll[data-more-start]::before,.docara-example-scroll[data-more-end]::after{opacity:1}
+.docara-example-preview__chip{align-self:center;font-size:var(--sf-text-size-1\/2);line-height:var(--sf-text-height-1\/2);color:var(--sf-on-surface-variant);font-variant-numeric:tabular-nums;white-space:nowrap}.docara-example-preview__chip[hidden]{display:none}
 /* The viewer takes the frame out of its figure: its header shows the caption. */
 .docara-example-preview__title{display:none}
 .docara-example-preview[data-docara-example-viewer-active="true"] .docara-example-preview__title{display:block;grid-column:1/-1;padding:var(--sf-space-1\/3) var(--sf-space-1) 0;font-size:var(--sf-text-size-1\/2);line-height:var(--sf-text-height-1\/2);color:var(--sf-on-surface-variant);overflow-wrap:break-word}

@@ -755,7 +755,7 @@ MD);
 
         // The level step is the icon and the row gap, the same gap as inside
         // a row, so a child's icon stands under its parent's name.
-        $css = (string) file_get_contents(dirname(__DIR__, 2).'/resources/portable/declarative-shell.css');
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
         self::assertStringContainsString('.docara-tree__group{margin-block:0;padding-inline-start:calc(var(--sf-icon-size-3) + var(--sf-space-1\\/2))}', $css);
         self::assertStringContainsString('.docara-tree__row{display:flex;align-items:center;gap:var(--sf-space-1\\/2);', $css);
         self::assertStringContainsString('.docara-tree__icon{flex:none;inline-size:var(--sf-icon-size-3);', $css);
@@ -2327,6 +2327,63 @@ MD);
             'data-docara-example-preview-reason="forced_sandbox"',
             $renderer->render(":::example {theme_switch=true preview=sandbox}\n```markdown\nText\n```\n:::\n"),
         );
+    }
+
+    #[Test]
+    public function a_desktop_example_gets_a_frame_that_scrolls_sideways_under_a_chip(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $markdown = ":::example {viewport=desktop label=\"Site row\"}\n```markdown\nText\n```\n:::\n";
+        $html = $renderer->render($markdown);
+
+        // Owner decision C111: only a frame of its own can be 1280 wide.
+        self::assertStringContainsString('data-docara-example-preview-reason="desktop_viewport"', $html);
+        self::assertSame(
+            [['id' => '', 'mode' => 'inline', 'requested_preview' => 'auto', 'resolved_preview' => 'sandbox', 'reason' => 'desktop_viewport']],
+            $renderer->examplePreviews($markdown),
+        );
+        self::assertMatchesRegularExpression('~<section [^>]* data-docara-example-desktop[ >]~', $html);
+        self::assertMatchesRegularExpression(
+            '~<div data-docara-example-scroll class="docara-example-scroll"><div data-docara-example-scroll-body data-docara-example-scrolling="false" class="docara-example-scroll__body"><iframe [^>]*data-docara-example-frame~',
+            $html,
+        );
+        self::assertStringContainsString('<span data-docara-example-desktop-chip hidden class="docara-example-preview__chip">1280 · 100 % · scroll</span>', $html);
+
+        // A column example has none of it.
+        $column = $renderer->render(":::example {viewport=column}\n```markdown\nText\n```\n:::\n");
+        self::assertStringNotContainsString('data-docara-example-desktop', $column);
+        self::assertStringNotContainsString('data-docara-example-scroll', $column);
+
+        // The shell scrolls the body only from a 512 column, fades the side
+        // that still hides content and sets the frame back in the viewer.
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertStringContainsString('var scrolls=!viewer&&width>=512;', $shell);
+        self::assertStringContainsString("previewFrame.style.inlineSize=exampleViewportWidths.desktop+'px'", $shell);
+        self::assertStringContainsString("desktopBody.parentElement.toggleAttribute('data-more-end',hidden>1&&left<hidden-1);", $shell);
+        self::assertStringContainsString("fitPageFrame();\n      fitDesktopFrame();", $shell);
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('.docara-example-scroll__body[data-docara-example-scrolling="true"]{overflow-x:auto;overscroll-behavior-x:contain}', $css);
+
+        $cases = [
+            ':::example {viewport=desktop preview=inline}' => 'MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED',
+            ':::example {viewport=phone}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+        ];
+        foreach ($cases as $opening => $code) {
+            foreach (['render', 'examplePreviews'] as $method) {
+                try {
+                    $renderer->{$method}("$opening\n```html\n<p>Text</p>\n```\n:::\n");
+                    self::fail("[$opening] was accepted by $method.");
+                } catch (PortableConfigurationException $exception) {
+                    self::assertSame($code, $exception->errorCode, "$opening via $method");
+                }
+            }
+        }
+        try {
+            $renderer->render("::::example {src=\"/demo/\" viewport=desktop}\n### A\n\ntext\n::::\n");
+            self::fail('A page example accepted viewport.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_EXAMPLE_SRC_CONFLICT', $exception->errorCode);
+        }
     }
 
     #[Test]

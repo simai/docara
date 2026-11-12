@@ -2857,9 +2857,11 @@ MD;
             $closure = array_column($plan['generated_assets'], 'sha256');
             $links = $stylesheets['pages'][$page];
             // The stub site's closures hold 44-56 segments; its pages link
-            // 4-12 stylesheets (the Framework contents, pager, search and
-            // settings components add their own since 3.10.0).
-            self::assertLessThanOrEqual(12, count($links), $page);
+            // 4-13 stylesheets (the Framework contents, pager, search and
+            // settings components add their own since 3.10.0; the shell's
+            // example caption, desktop scroll and static tree rules in 3.14.3
+            // tip the getting-started page's bundling to 13).
+            self::assertLessThanOrEqual(13, count($links), $page);
             self::assertLessThan(count($closure), count($links), $page);
             $linked = array_merge(...array_map(
                 static fn (string $filename): array => array_column($stylesheets['bundles'][$filename]['inputs'], 'sha256'),
@@ -2889,9 +2891,12 @@ MD;
         // The target is a weight in the merge, not a ceiling: since 3.10.0 the
         // Framework contents, pager, search and settings components bring
         // segments the cascade keeps apart, and the stub site's pages link 7.6
-        // stylesheets on average (the documentation site 6.6).
+        // stylesheets on average (the documentation site 6.6). The 3.14.3
+        // shell (example caption, desktop scroll, static tree) regroups the
+        // stub site's bundles to 8.25; the documentation site stays at 7.66
+        // links per page, as in 3.14.2.
         self::assertLessThanOrEqual(
-            ShellStylesheetBundler::TARGET_REQUESTS + 2,
+            ShellStylesheetBundler::TARGET_REQUESTS + 2.25,
             array_sum(array_map('count', $pageFiles)) / count($pageFiles),
         );
         self::assertLessThanOrEqual(

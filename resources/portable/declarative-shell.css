@@ -229,11 +229,11 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-preview__header{border-block-end:1px solid var(--sf-outline-variant)}
 .docara-example-inline{display:flow-root;min-inline-size:0}
 .docara-example-preview__tabs{display:inline-flex;inline-size:max-content;max-inline-size:100%;align-items:center;gap:0}
-/* The author's label is a caption under the frame, like one under a picture: small, muted, wrapped whole. The header keeps only the short tabs and the actions on one row. */
+/* An example's label: a caption under its frame, as under a picture. */
 .docara-example-figure{margin:0 0 var(--sf-space-1);max-inline-size:100%}
 .docara-example-figure>.docara-example-preview{margin-block-end:0}
 .docara-example-preview__caption{margin-block-start:var(--sf-space-1\/3);font-size:var(--sf-text-size-1\/2);line-height:var(--sf-text-height-1\/2);color:var(--sf-on-surface-variant);overflow-wrap:break-word}
-/* The full-screen viewer takes the frame out of its figure, so its header shows the caption's text there and only there, as a row above the tabs. */
+/* The viewer takes the frame out of its figure: its header shows the caption. */
 .docara-example-preview__title{display:none}
 .docara-example-preview[data-docara-example-viewer-active="true"] .docara-example-preview__title{display:block;grid-column:1/-1;padding:var(--sf-space-1\/3) var(--sf-space-1) 0;font-size:var(--sf-text-size-1\/2);line-height:var(--sf-text-height-1\/2);color:var(--sf-on-surface-variant);overflow-wrap:break-word}
 .docara-example-preview__tab{display:inline-flex;align-items:center;justify-content:center;min-block-size:var(--sf-ui-1--control-height);margin:0;padding-inline:var(--sf-space-1);border:0;border-radius:0;background:transparent;color:var(--sf-on-surface-variant);font-size:var(--sf-text-size-1);line-height:var(--sf-text-height-1);cursor:pointer;white-space:nowrap;flex-shrink:0}

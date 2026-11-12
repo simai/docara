@@ -2363,6 +2363,8 @@ MD);
         self::assertStringContainsString("fitPageFrame();\n      fitDesktopFrame();", $shell);
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
         self::assertStringContainsString('.docara-example-scroll__body[data-docara-example-scrolling="true"]{overflow-x:auto;overscroll-behavior-x:contain}', $css);
+        // In the viewer the frame is the panel's own child again, sized by the device.
+        self::assertStringContainsString('[data-docara-example-viewer-active="true"] :is(.docara-example-scroll,.docara-example-scroll__body){display:contents}', $css);
 
         $cases = [
             ':::example {viewport=desktop preview=inline}' => 'MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED',

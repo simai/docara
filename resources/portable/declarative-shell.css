@@ -250,6 +250,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-scroll::before{inset-inline-start:0;background:linear-gradient(to right,color-mix(in srgb,var(--sf-on-surface) 14%,transparent),transparent)}
 .docara-example-scroll::after{inset-inline-end:0;background:linear-gradient(to left,color-mix(in srgb,var(--sf-on-surface) 14%,transparent),transparent)}
 .docara-example-scroll[data-more-start]::before,.docara-example-scroll[data-more-end]::after{opacity:1}
+[data-docara-example-viewer-active="true"] :is(.docara-example-scroll,.docara-example-scroll__body){display:contents}
 .docara-example-preview__chip{align-self:center;font-size:var(--sf-text-size-1\/2);line-height:var(--sf-text-height-1\/2);color:var(--sf-on-surface-variant);font-variant-numeric:tabular-nums;white-space:nowrap}.docara-example-preview__chip[hidden]{display:none}
 /* The viewer takes the frame out of its figure: its header shows the caption. */
 .docara-example-preview__title{display:none}

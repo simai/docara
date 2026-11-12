@@ -16,9 +16,36 @@ All notable changes to Docara are recorded here. The format follows
   tab always reads the localized "Example", the tab row no longer scrolls,
   and the full-screen viewer shows the caption in its header. An example
   without a label has no caption.
+- **A static tree is a nested list with type icons.** `:::tree
+  {interactive=false}` drew the Framework tree rows with an empty toggle
+  column and a 24 px step, so a child started 8 px left of its parent's
+  name. It is now a plain nested list with nothing to press: a folder or
+  file icon before each name, and a level steps by the icon and the row gap,
+  so a child's icon stands exactly under its parent's name (owner decisions
+  C102 and C109). The file icon is the Framework's generic one until the
+  Framework ships its file type map.
+
+### Added
+
+- **Desktop examples.** `:::example {viewport=desktop}` marks an example
+  made for a wide screen, such as a site header or a menu row (owner
+  decision C111). It always gets a frame of its own. In a column of 512 px
+  or more the frame is 1280 px wide at full scale and scrolls sideways: the
+  scroll area takes focus and is named, a fade marks a side that still
+  hides content, and the head reads "1280 · 100 % · scroll"
+  (`examples.desktop_scroll`, `examples.desktop_scroll_label`). A narrower
+  column and the device viewer show it at their own width. A page example
+  (`src`) rejects the attribute, since it already draws a desktop.
 
 ### Fixed
 
+- **Examples get more room in the wide and reading formats.** The wide
+  reader format kept the outline rail, so examples did not grow on 1280 and
+  1440 screens; the page contents now move into the menu above the article
+  there, as on a narrower screen (example 834 px instead of 642 at 1280).
+  Reading mode held examples to the text measure (766 px); an example now
+  takes the column up to the Framework container step 3 (1152 px), centred
+  on the text, which stays on the measure.
 - **Inline code wraps as the Framework sets it.** Docara held every piece
   of inline code on one line, which outranked the Framework's own rule, so
   a table with code in its cells grew wider than a phone and the page

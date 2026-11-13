@@ -1182,10 +1182,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/build.md",
-            "source_sha256": "0177e9d5cecbf08bc511dd1f6d4e6ec639a6ff321e200f1b2d0e21b78dca37d0",
+            "source_sha256": "b8caf1d0251d6f26c58bcd62407b263936c6e12e28e2fa787ee3b7979ae664dd",
             "source_structure_sha256": "61661a4ee70de3f33f89b1af61c03702cde9e68038b14a898d03f25051bc4b83",
             "target_path": "content/en/build.md",
-            "target_sha256": "fe2f8f606790c4eb4cc02631a63c202fcc91ad561d481beac06b1aa6cf07b833",
+            "target_sha256": "9114d343d53d03f1c11465d5dc2cdc29dada20bdb351c7774efae4d07e445763",
             "target_structure_sha256": "61661a4ee70de3f33f89b1af61c03702cde9e68038b14a898d03f25051bc4b83"
         },
         {
@@ -1194,10 +1194,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/build/ci.md",
-            "source_sha256": "83b8f759f45975efc93d5bb9ad4d5f2bff20f77de70a845424baea7c8b39da78",
+            "source_sha256": "238d48040e2c2345d73e8dc5acf246eee773eb4665537ce1a011e295bf24a95b",
             "source_structure_sha256": "1498ba908d77651bf8654bbfcf77f7f555486e8829c54b097454585daa7f8c98",
             "target_path": "content/en/build/ci.md",
-            "target_sha256": "b3f1ee709511df014253e1dd6af026622e8c50963721587494c5064472166f13",
+            "target_sha256": "d87a3ae1e059de8c285a89690ef0a6fecd3c4b1272ed487b34570d7ef3554b9c",
             "target_structure_sha256": "1498ba908d77651bf8654bbfcf77f7f555486e8829c54b097454585daa7f8c98"
         },
         {
@@ -1266,11 +1266,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/build/update.md",
-            "source_sha256": "eaf99f4dddaae2b47c80564a93239d66da921c7a91e58475a0e2e33c19151654",
-            "source_structure_sha256": "48d3983bb0222d77e2d4e98fdff213189d12f6c6aaecdd63cff6d3860ee51d3c",
+            "source_sha256": "61cfa7cfaa3896898f601c8c3cfd04b5929e35d6ca71238a37ea8d7c0d0745fb",
+            "source_structure_sha256": "0727012f1f63fb4272242ff0cc5d2b775c93116bc4a4aaa1712d4ebaa2ebf6b3",
             "target_path": "content/en/build/update.md",
-            "target_sha256": "67667e734190683a2d1f2dd4843aab3dd605d9f025d036748874d831f7fc81f0",
-            "target_structure_sha256": "48d3983bb0222d77e2d4e98fdff213189d12f6c6aaecdd63cff6d3860ee51d3c"
+            "target_sha256": "ac1bc7f90d114706bf76c9c3ecc7f24d055033bc0b42c31e341c350378614687",
+            "target_structure_sha256": "0727012f1f63fb4272242ff0cc5d2b775c93116bc4a4aaa1712d4ebaa2ebf6b3"
         },
         {
             "key": "build/verify.md",
@@ -2430,10 +2430,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/layout-and-regions.md",
-            "source_sha256": "9e4421f0d0da5c1baef1692e3f623f07819df7dee1d1c12dfda1129f1f767425",
+            "source_sha256": "44085e8a3a4e207792c44e519fc1c999961ca67a7dd4f6684f7a3c4cd004b303",
             "source_structure_sha256": "84f14e7e0aaa1a8bfe4ebf53594a4d0d520a4dcd992781711678af7d7ddb1887",
             "target_path": "content/en/settings/layout-and-regions.md",
-            "target_sha256": "d16c9a819bff398bfde14474ba61188e27445ee5bc866f020a8ebcd38dc92a40",
+            "target_sha256": "6f5e17c23611d657c9e02e6f70d752ff5272ea8c4695a129b2c00008ec1c7328",
             "target_structure_sha256": "84f14e7e0aaa1a8bfe4ebf53594a4d0d520a4dcd992781711678af7d7ddb1887"
         },
         {
@@ -2538,10 +2538,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/start/first-component.md",
-            "source_sha256": "c388b15bc51b00790f6febacca309aea504139eec68773aaaa0581bb5dba0558",
+            "source_sha256": "56fca70576c9f20675eaeab7944e2da3eac4d79030f2886d65a41ef03dea1b83",
             "source_structure_sha256": "d5ab79bc10d8d721e335437f97fe842f71bd2da97161efa07948263479ccbcb3",
             "target_path": "content/en/start/first-component.md",
-            "target_sha256": "f2b226145e4a669132579eb4a0b457979d4e9e0c1f2fcd7c6d284531be5e6b92",
+            "target_sha256": "c0bf0e09d1ba12b59ea6dd4d19478a08aa000d2410372f31df8219343e3ad03d",
             "target_structure_sha256": "d5ab79bc10d8d721e335437f97fe842f71bd2da97161efa07948263479ccbcb3"
         },
         {
@@ -2574,10 +2574,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/start/quick-start.md",
-            "source_sha256": "31debc5a85ca7f98d4ba3c85cb4af40bebd75030f397d0bac638101249b65be2",
+            "source_sha256": "2c17385581ac0fdc49885403205bee36488916fdf581c2b5f0538c0b78a37759",
             "source_structure_sha256": "2d4c0295a05eb5d1e721b0f6a60c658e6c968eeabc05d3392665fad534e6d078",
             "target_path": "content/en/start/quick-start.md",
-            "target_sha256": "028320e9d0433cd3fe2bac64c959697962d4ff356395bf55b2fef8871744d7b8",
+            "target_sha256": "afdec2a2a242c4967619c5e41fe5122483a03a525f14a0e1609091230b73427a",
             "target_structure_sha256": "2d4c0295a05eb5d1e721b0f6a60c658e6c968eeabc05d3392665fad534e6d078"
         },
         {
@@ -2610,10 +2610,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/troubleshooting.md",
-            "source_sha256": "97e3836be893487a37d7e57416513c0cfbc00fc82f2315fda5515e496c760ab3",
+            "source_sha256": "d4f16ae9f29d9e67692664bdeedafe50418162d34274b19657ead82ff21ea7f3",
             "source_structure_sha256": "fb92fd75436676f48a3dbcf847f92d21c7c8b85eb9cd2914ff93f2cf09d1a161",
             "target_path": "content/en/troubleshooting.md",
-            "target_sha256": "73f7338664e7126df3a07a6e05ee234791bfc15ea17231ffd1f2f9e8ba0ad5a0",
+            "target_sha256": "e8db660788d46fcc3548aa0ea42aecaf86b982c19afd7861182408cdaff747c0",
             "target_structure_sha256": "fb92fd75436676f48a3dbcf847f92d21c7c8b85eb9cd2914ff93f2cf09d1a161"
         }
     ],

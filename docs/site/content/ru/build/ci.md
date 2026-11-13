@@ -42,7 +42,7 @@ php vendor/simai/docara/scripts/verify-page-weight.php build_production
 | `verify-page-weight.php` | Останавливает проверку, если страница или картинка тяжелее порога |
 
 Последние два шага необязательны. Порог качества удобнее записать в
-`docara.json` полем `quality.min_score` — описание на странице
+`docara.authoring.json` полем `quality.min_score` — описание на странице
 [«Качество документации»](/ru/authoring/documentation-quality/). Пороги веса
 задаются файлом `--config=page-weight.json` — см. раздел
 [«Вес страниц»](/ru/build/verify/#вес-страниц).

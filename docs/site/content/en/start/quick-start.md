@@ -105,14 +105,15 @@ against these files. Do not keep dependencies or build results. A
 
 ```text
 /vendor/
-/build_*/
+/build_*
 /.docara-preview/
 /.docara-qa/
 /.docara/upgrades/
 ```
 
 `build_production.docara/` next to the finished site holds the build reports
-for `verify-static`; the `/build_*/` rule excludes it too.
+for `verify-static`; the `/build_*` rule excludes it and the
+`build_*.docara-lock` lock files too.
 
 ## Read next
 

@@ -104,14 +104,15 @@ Server started on http://127.0.0.1:8000
 
 ```text
 /vendor/
-/build_*/
+/build_*
 /.docara-preview/
 /.docara-qa/
 /.docara/upgrades/
 ```
 
 `build_production.docara/` рядом с готовым сайтом содержит отчёты сборки для
-`verify-static`; правило `/build_*/` исключает и его.
+`verify-static`; правило `/build_*` исключает и его, и файлы блокировки
+`build_*.docara-lock`.
 
 ## Что читать дальше
 

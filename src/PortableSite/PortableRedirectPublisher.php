@@ -128,6 +128,17 @@ final readonly class PortableRedirectPublisher
         foreach ($configured as $redirect) {
             $from = (string) $redirect['from'];
             $to = (string) $redirect['to'];
+            // A target may name a section of the page: tree#node lands on the
+            // heading. The page part is checked as before; the fragment is
+            // percent-encoded in the published address, and the static
+            // verifier checks that the page has that anchor.
+            [$to, $fragment] = array_pad(explode('#', $to, 2), 2, null);
+            if ($fragment !== null && ($fragment === '' || preg_match('/\A[^\s#]+\z/u', $fragment) !== 1)) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_REDIRECT_TARGET_NOT_FOUND',
+                    "Redirect [$from] target fragment [$fragment] is not a valid anchor.",
+                );
+            }
             if ($from === $to || isset($fromSet[$to])) {
                 throw new PortableConfigurationException(
                     'PORTABLE_REDIRECT_CHAIN_FORBIDDEN',
@@ -165,9 +176,9 @@ final readonly class PortableRedirectPublisher
 
             $records[] = [
                 'from' => $from,
-                'to' => $to,
+                'to' => $fragment === null ? $to : $to . '#' . $fragment,
                 'url' => $baseUrl . $from . '/',
-                'target_url' => $targetUrl,
+                'target_url' => $fragment === null ? $targetUrl : $targetUrl . '#' . rawurlencode($fragment),
                 'output' => $output,
             ];
         }
@@ -218,6 +229,8 @@ final readonly class PortableRedirectPublisher
         string $direction,
     ): string {
         $target = self::escape($record['target_url']);
+        // The canonical address is the page itself, without the section.
+        $canonical = self::escape(explode('#', $record['target_url'], 2)[0]);
         $lang = self::escape($locale);
         $version = self::escape($documentationVersion);
         $title = (string) ($copy['redirect.title'] ?? 'redirect.title');
@@ -236,7 +249,7 @@ final readonly class PortableRedirectPublisher
             . '<meta name="viewport" content="width=device-width, initial-scale=1">' . "\n"
             . '<meta name="robots" content="noindex,follow">' . "\n"
             . '<meta name="docara:documentation-version" content="' . $version . '">' . "\n"
-            . '<link rel="canonical" href="' . $target . '">' . "\n"
+            . '<link rel="canonical" href="' . $canonical . '">' . "\n"
             . '<style>html{color-scheme:light dark;background:Canvas}body{margin:0;visibility:hidden}'
             . 'html[data-docara-redirect-fallback] body{visibility:visible}'
             . 'main{box-sizing:border-box;max-width:42rem;margin:10vh auto;padding:2rem;font:1rem/1.5 system-ui,sans-serif}'

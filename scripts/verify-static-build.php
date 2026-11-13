@@ -412,17 +412,25 @@ function docaraRedirectOutputs(
             throw new RuntimeException("Redirect receipt record [$index] has an invalid [to].");
         }
         $from = $record['from'];
-        $to = $record['to'];
         $sourceDescriptorRecords[] = [
             'from' => $from,
-            'to' => $to,
+            'to' => $record['to'],
         ];
+        // A target may name a section: the receipt keeps the authored
+        // fragment in [to] and its percent-encoded form in [target_url].
+        [$to, $fragment] = array_pad(explode('#', $record['to'], 2), 2, null);
+        [$targetUrl, $targetFragment] = array_pad(explode('#', $record['target_url'], 2), 2, null);
+        if (($fragment === null) !== ($targetFragment === null)
+            || ($fragment !== null && ($fragment === '' || preg_match('/\A[^\s#]+\z/u', $fragment) !== 1 || $targetFragment !== rawurlencode($fragment)))
+        ) {
+            throw new RuntimeException("Redirect receipt record [$index] contains an unsafe route.");
+        }
         $slugPattern = '/\A[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?(?:\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?)*\z/D';
         $targetSlugPattern = '/\A(?:[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?(?:\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?)*)?\z/D';
         if (preg_match($slugPattern, $from) !== 1
             || preg_match($targetSlugPattern, $to) !== 1
             || ! docaraSearchUrlIsSafe($record['url'], $deploymentBase)
-            || ! docaraSearchUrlIsSafe($record['target_url'], $deploymentBase)
+            || ! docaraSearchUrlIsSafe($targetUrl, $deploymentBase)
         ) {
             throw new RuntimeException("Redirect receipt record [$index] contains an unsafe route.");
         }
@@ -443,9 +451,17 @@ function docaraRedirectOutputs(
             || $record['url'] !== $expectedUrl
             || ! is_string($expectedTargetUrl)
             || $expectedTargetUrl !== $expectedTargetRoute
-            || $record['target_url'] !== $expectedTargetUrl
+            || $targetUrl !== $expectedTargetUrl
         ) {
             throw new RuntimeException("Redirect [$from] does not match exact generated routes.");
+        }
+        if ($fragment !== null) {
+            $targetHtml = docaraSafeRegularFile($root . '/' . $targetOutput) ? file_get_contents($root . '/' . $targetOutput) : false;
+            if (! is_string($targetHtml)
+                || ! str_contains($targetHtml, ' id="' . htmlspecialchars($fragment, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8') . '"')
+            ) {
+                throw new RuntimeException("Redirect [$from] targets section [$fragment], which page [$to] does not have.");
+            }
         }
         if (isset($reservedOutputs[$output]) || isset($outputs[$output])) {
             throw new RuntimeException("Redirect output [$output] collides with another generated HTML output.");

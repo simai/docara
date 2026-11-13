@@ -2083,6 +2083,12 @@ MD;
             'to' => 'components/button',
         ];
         $redirectSource['redirects'][] = ['from' => 'home-old', 'to' => ''];
+        // A merged page's old address lands on its section (ui-doc C127).
+        file_put_contents(
+            $this->tmpPath('content/components/button.md'),
+            (string) file_get_contents($this->tmpPath('content/components/button.md')) . "\n## Узел дерева\n\nText.\n",
+        );
+        $redirectSource['redirects'][] = ['from' => 'components/tree-item', 'to' => 'components/button#узел-дерева'];
         file_put_contents(
             $this->tmpPath('redirects.json'),
             json_encode(
@@ -2164,6 +2170,18 @@ MD;
             'data-docara-documentation-version="2.4.0"',
             $html,
         );
+        $section = collect($receipt['redirects'])->firstWhere('from', 'components/tree-item');
+        self::assertIsArray($section);
+        self::assertSame('components/button#узел-дерева', $section['to']);
+        $encoded = '/project~/docs/components/button/#' . rawurlencode('узел-дерева');
+        self::assertSame($encoded, $section['target_url']);
+        $sectionHtml = (string) file_get_contents($this->tmpPath('build_local/components/tree-item/index.html'));
+        self::assertStringContainsString('<meta http-equiv="refresh" content="0; url=' . $encoded . '">', $sectionHtml);
+        self::assertStringContainsString('window.location.replace("' . $encoded . '")', $sectionHtml);
+        self::assertStringContainsString('<a href="' . $encoded . '">', $sectionHtml);
+        // The canonical address is the page, not its section.
+        self::assertStringContainsString('<link rel="canonical" href="/project~/docs/components/button/">', $sectionHtml);
+        self::assertStringContainsString(' id="узел-дерева"', (string) file_get_contents($this->tmpPath('build_local/components/button/index.html')));
         $home = collect($receipt['redirects'])->firstWhere('from', 'home-old');
         self::assertIsArray($home);
         self::assertSame('', $home['to']);
@@ -2195,6 +2213,20 @@ MD;
         ], dirname(__DIR__));
         $process->run();
         self::assertSame(0, $process->getExitCode(), $process->getErrorOutput() . $process->getOutput());
+
+        // A section the page does not have fails the static verification.
+        foreach ($sourceDocument['redirects'] as &$record) {
+            if ($record['from'] === 'components/tree-item') {
+                $record['to'] = 'components/button#нет-такого';
+            }
+        }
+        unset($record);
+        file_put_contents($this->tmpPath('redirects.json'), json_encode($sourceDocument, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES));
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $missing = new Process([PHP_BINARY, 'scripts/verify-static-build.php', $this->tmpPath('build_local')], dirname(__DIR__));
+        $missing->run();
+        self::assertSame(1, $missing->getExitCode(), $missing->getOutput());
+        self::assertStringContainsString('targets section [нет-такого]', json_encode(json_decode($missing->getOutput(), true), JSON_UNESCAPED_UNICODE) ?: '');
     }
 
     #[Test]

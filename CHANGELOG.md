@@ -36,6 +36,12 @@ All notable changes to Docara are recorded here. The format follows
   (`examples.desktop_scroll`, `examples.desktop_scroll_label`). A narrower
   column and the device viewer show it at their own width. A page example
   (`src`) rejects the attribute, since it already draws a desktop.
+- **A redirect can land on a section.** A `redirects.json` target may end
+  in a section anchor, such as `components/tree#узел-дерева`, so the old
+  address of a page merged into another opens at its section. The anchor
+  may be in any language; the published address percent-encodes it, the
+  canonical link stays the page itself, and `verify-static` fails when the
+  target page has no element with that `id`.
 
 ### Fixed
 

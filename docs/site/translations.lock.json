@@ -1170,11 +1170,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/redirects.md",
-            "source_sha256": "865a9077e84b0be9b4fd8028ceca170f36c03000edb1a0f62b465fd8249130b4",
-            "source_structure_sha256": "5730e318ea250ab1b80118f50902609d1c22140c33cfa200e7d9a820d3a53c1d",
+            "source_sha256": "a27526e2fb40c16c6705d16210bcf03d1ef3a931dde3aee7515d6a1078bc0f38",
+            "source_structure_sha256": "adb465e5500ea8c1c2f55e279b9341c10c71a880ef21143dfabe5c6102951efe",
             "target_path": "content/en/authoring/redirects.md",
-            "target_sha256": "4ad4dbbc6d01d54b28cb148d7aadaa364589b357c1b7eb010015627b742b096b",
-            "target_structure_sha256": "5730e318ea250ab1b80118f50902609d1c22140c33cfa200e7d9a820d3a53c1d"
+            "target_sha256": "dd530a7db084804beb2371a7b47d3e1a3232701fb1327c658586ead1f9cd06d2",
+            "target_structure_sha256": "adb465e5500ea8c1c2f55e279b9341c10c71a880ef21143dfabe5c6102951efe"
         },
         {
             "key": "build.md",

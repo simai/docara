@@ -719,6 +719,7 @@
     var state=exampleFrameState(frame);
     /* A reloaded document has none of the page's styles yet. */
     frame.removeAttribute('data-docara-example-styled');
+    state.drawnLate=false;
     state.sent=Object.create(null);
     state.generation++;
     requestExampleHeight(frame);
@@ -739,15 +740,34 @@
   window.addEventListener('message',function(event){
     if(!event.data||event.data.type!=='docara:example-styled')return;
     var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
-    if(frame)frame.setAttribute('data-docara-example-styled','');
+    if(!frame)return;
+    frame.setAttribute('data-docara-example-styled','');
+    settleExampleHeight(frame);
   });
+  /* A frame measures itself before the page's styles and the Framework scripts reach it, when its content is still unstyled and short. Until it reports that it has drawn, the reserved or previous height stays, and the text below does not jump down, up and down again (R216). The last height waits and applies once the frame has drawn, or after three seconds for a frame that never says so. */
+  function settleExampleHeight(frame){
+    var state=exampleFrameState(frame),pending=state.pendingHeight;
+    if(state.drawnTimer){clearTimeout(state.drawnTimer);state.drawnTimer=null}
+    if(!pending)return;
+    state.pendingHeight=null;
+    applyExampleHeight(frame,pending);
+  }
   window.addEventListener('message',function(event){
     if(!event.data||event.data.type!=='docara:example-height')return;
     var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
-    var height=Number(event.data.height);
-    if(!frame||!Number.isFinite(height))return;
-    var size=Math.max(32,Math.ceil(height)),flow=Number(event.data.flow);
-    var boxes=Array.isArray(event.data.overlays)?event.data.overlays.filter(function(box){return Array.isArray(box)&&box.length===4&&box.every(Number.isFinite)}):[];
+    if(!frame||!Number.isFinite(Number(event.data.height)))return;
+    var state=exampleFrameState(frame);
+    if(!frame.hasAttribute('data-docara-example-styled')&&!state.drawnLate){
+      state.pendingHeight=event.data;
+      if(!state.drawnTimer)state.drawnTimer=setTimeout(function(){state.drawnTimer=null;state.drawnLate=true;settleExampleHeight(frame)},3000);
+      return;
+    }
+    applyExampleHeight(frame,event.data);
+  });
+  function applyExampleHeight(frame,data){
+    var height=Number(data.height);
+    var size=Math.max(32,Math.ceil(height)),flow=Number(data.flow);
+    var boxes=Array.isArray(data.overlays)?data.overlays.filter(function(box){return Array.isArray(box)&&box.length===4&&box.every(Number.isFinite)}):[];
     var extra=Number.isFinite(flow)&&boxes.length?Math.max(0,size-Math.max(32,Math.ceil(flow))):0;
     var preview=frame.closest('.docara-example-preview');
     /* The frame reports a box for each open menu or dialog, whether or not it reaches past the frame's flow. */
@@ -769,7 +789,7 @@
       frame.style.clipPath='';
       if(preview)preview.removeAttribute('data-docara-example-overlay');
     }
-  });
+  }
   /* A press on the page outside a frame that shows an open menu closes the menu, as a press outside a menu does on a page: the press never reaches the frame's document, so the page asks the frame to dismiss it. */
   if(docaraExampleFrames.length){
     document.addEventListener('pointerdown',function(event){

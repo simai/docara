@@ -45,6 +45,13 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **An example frame no longer jumps while it loads.** A frame measured
+  itself before the page's styles and the Framework scripts reached it, so it
+  went from its reserved 192 px down to 32 px and then to its final height,
+  and the text below moved twice (layout shift up to 0.52 inside examples,
+  R216). Until the frame reports that it has drawn, it now keeps its reserved
+  or previous height; its last measured height applies once it has drawn, or after three seconds for
+  a frame that never reports it.
 - **Examples get more room in the wide and reading formats.** The wide
   reader format kept the outline rail, so examples did not grow on 1280 and
   1440 screens; the page contents now move into the menu above the article

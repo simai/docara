@@ -252,7 +252,14 @@
     border-top-width: var(--sf-px);
     width: var(--sf-online-indicator--width);
     height: var(--sf-online-indicator--height);
-    background-color: var(--sf-online-indicator--background-color);
+    background-color: transparent;
+    background-color: var(--sf-surface-place-ground, transparent);
+    background-image: linear-gradient(var(--sf-online-indicator--background-color) 0, var(--sf-online-indicator--background-color) 0);
+    background-image: linear-gradient(var(--sf-online-indicator--background-color) 0 0);
+    --sf-online-indicator--ring-fill: color-mix(in srgb, var(--sf-surface-place-fill) 100%, var(--sf-surface-underlay) 0%);
+    outline: var(--sf-px) solid transparent;
+    outline: var(--sf-px) solid var(--sf-online-indicator--ring-fill, transparent);
+    outline-offset: calc(-1 * var(--sf-px));
     --sf-online-indicator--height: var(--sf-b6);
     --sf-online-indicator--width: var(--sf-b6);
   }
@@ -281,7 +288,12 @@
     --sf-online-indicator--width: var(--sf-b0);
   }
   .sf-online-indicator--offline {
-    --sf-online-indicator--background-color: var(--sf-on-surface-muted);
+    --sf-online-indicator--background-color: var(--sf-avatar-offline-background-color, var(--sf-on-surface-variant));
+    background-image: none, linear-gradient(var(--sf-online-indicator--background-color) 0, var(--sf-online-indicator--background-color) 0);
+    background-image: none, linear-gradient(var(--sf-online-indicator--background-color) 0 0);
+    background-image: none, linear-gradient(var(--sf-online-indicator--background-color) 0, var(--sf-online-indicator--background-color) 0);
+    background-image: var(--sf-avatar-offline-overlay, none), linear-gradient(var(--sf-online-indicator--background-color) 0, var(--sf-online-indicator--background-color) 0);
+    background-image: var(--sf-avatar-offline-overlay, none), linear-gradient(var(--sf-online-indicator--background-color) 0 0);
   }
   .sf-online-indicator--online {
     --sf-online-indicator--background-color: var(--sf-success);
@@ -669,9 +681,6 @@
     width: var(--sf-icon-size-3);
     width: var(--sf-icon--width, var(--sf-icon-size-3));
   }
-  .sf-avatar .sf-online-indicator {
-    background-color: var(--sf-online-indicator--background-color);
-  }
   .sf-avatar .sf-avatar-badge.sf-avatar-badge--company {
     --sf-avatar-badge--border: var(--sf-px) solid;
     --sf-avatar-badge--border-end-end-radius: var(--sf-radius-circle);
@@ -763,7 +772,7 @@
   }
   .sf-avatar--placeholder, .sf-avatar--text {
     --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-surface-container));
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
   }
   /* The hue of initials (owner decision C17, 2026-11-08): sf-hue-<name> gives
      the element a hue's role set (core/scss/_sf_css__hue.scss), and the

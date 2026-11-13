@@ -898,38 +898,90 @@ function installAction(state, element, row, refuse) {
   });
   return true;
 } // --- install ----------------------------------------------------------------
+// Takes the installed table's wrappers and accessors away, and nothing else.
 
 
-function uninstallAliases(element) {
+function detach(element) {
   const store = shared();
   const state = element && store.elements.get(element);
-  if (!state) return false;
+  if (!state) return null;
   store.elements.delete(element);
   state.observer?.disconnect();
   state.controller.abort();
 
   for (const restore of state.restore.reverse()) restore();
 
+  return state;
+} // An install over another one -- a page's table over the one the component
+// installed from its aliases.json -- replaces it while it stands, and its
+// uninstall puts the one under it back, so the element is again as the
+// component made it. Before core.runtime 1.49.0 the component's own old
+// names were gone for good after a page's install and uninstall (lab
+// aliases, uninstall-restores). Installing the same table again replaces it in place.
+// A table under another one whose signal ended, or whose own handle was
+// uninstalled, is not put back.
+
+
+function restoreUnder(element, layer) {
+  for (let under = layer; under; under = under.under) {
+    if (under.removed || under.options.signal?.aborted) continue;
+    install(element, under.table, under.options, under);
+    return;
+  }
+}
+
+function uninstallAliases(element) {
+  const state = detach(element);
+  if (!state) return false;
+  restoreUnder(element, state.layer.under);
   return true;
 }
-function installAliases(element, table, {
-  signal,
-  adapters = {},
-  tag
-} = {}) {
+function installAliases(element, table, options = {}) {
   if (!element || typeof element.dispatchEvent !== 'function') throw new TypeError('[SIMAI Framework] SF.aliases.install needs an element');
-  uninstallAliases(element);
+  return install(element, table, options, null);
+}
+
+function install(element, table, options, layer) {
+  const {
+    signal,
+    adapters = {},
+    tag
+  } = options;
   const read = (0,_alias_table_js__WEBPACK_IMPORTED_MODULE_1__.readAliasTable)(table, {
     tag: tag || element.localName || ''
   });
   const refused = [...read.refused];
-  const handle = {
-    installed: 0,
-    refused,
-    uninstall: () => uninstallAliases(element)
-  };
+
+  if (!layer) {
+    const previous = shared().elements.get(element)?.layer ?? null;
+    const under = previous && previous.table !== table ? previous : previous?.under ?? null;
+    layer = {
+      table,
+      options: {
+        signal,
+        adapters,
+        tag
+      },
+      under,
+      removed: false,
+      handle: null
+    };
+    layer.handle = {
+      installed: 0,
+      refused,
+      uninstall: () => uninstallLayer(element, layer)
+    };
+  } else {
+    layer.handle.installed = 0;
+    layer.handle.refused = refused;
+  }
+
+  const handle = layer.handle; // An install that never starts leaves what the element has.
+
   if (signal?.aborted) return handle;
+  detach(element);
   const state = {
+    layer,
     rows: read.rows,
     adapters,
     byNew: new Map(),
@@ -1027,13 +1079,31 @@ function installAliases(element, table, {
   }
 
   shared().elements.set(element, state);
-  signal?.addEventListener?.('abort', () => uninstallAliases(element), {
+  signal?.addEventListener?.('abort', () => uninstallLayer(element, layer), {
     once: true,
     signal: state.controller.signal
   });
   return handle;
+} // A handle's uninstall takes away its own table: the one standing, which puts
+// the one under it back, or one under another, which is then not put back.
+
+
+function uninstallLayer(element, layer) {
+  const top = shared().elements.get(element)?.layer;
+  if (top === layer) return uninstallAliases(element);
+
+  for (let above = top; above; above = above.under) {
+    if (above.under === layer) {
+      layer.removed = true;
+      above.under = layer.under;
+      return true;
+    }
+  }
+
+  return false;
 } // For code that sends an event by name: through the element's aliases when
 // it has them, a plain dispatch when it has none. Answers false when cancelled.
+
 
 function dispatchAliased(element, name, {
   detail = null,
@@ -1251,6 +1321,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _clipboard_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("e081a020262e");
 /* harmony import */ var _page_language_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("8489d1f5bab4");
+/* harmony import */ var _copy_feedback_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("1446153b1a96");
 // Copy on click for code in running text (owner, 2026-11-07, docs review R024,
 // rule C10). Opt-in, never the default: a container that carries
 // data-sf-code-copy turns each word of code inside it into a copy control,
@@ -1277,27 +1348,19 @@ __webpack_require__.r(__webpack_exports__);
 // under that component's name, so a word a product registers for
 // sf-button-copy (SF.language.register) is said here too. Core cannot import
 // a Smart component's files (core is what the Smart units depend on), so the
-// three words it says are written here as sf-button-copy ships them;
+// words are written once in core, as sf-button-copy ships them
+// (core/js/copy-feedback.js, decision C48);
 // tests/inline-code.contract.test.mjs holds them equal to its language files.
 // A refused copy selects the code and says which keys to press, as
 // sf-button-copy does.
 
 
+
 const ATTRIBUTE = 'data-sf-code-copy';
 const TARGET = 'data-sf-code-copy-target';
-const STATUS_CLASS = 'sf-code-copy-status';
-const WORDS = {
-  en: {
-    copy: 'Copy',
-    copied: 'Copied',
-    selected: 'Selected — press {keys}'
-  },
-  ru: {
-    copy: 'Копировать',
-    copied: 'Скопировано',
-    selected: 'Выделено — нажмите {keys}'
-  }
-}; // The status stays as long as sf-button-copy's does by default.
+const STATUS_CLASS = 'sf-code-copy-status'; // sf-button-copy's words, kept once in core/js/copy-feedback.js (decision C48).
+
+const WORDS = _copy_feedback_js__WEBPACK_IMPORTED_MODULE_2__.WORDS; // The status stays as long as sf-button-copy's does by default.
 
 const SHOWN_MS = 2000; // Where a word of code is part of something else (the base sheet's list).
 
@@ -1321,8 +1384,7 @@ function isCopyable(code) {
   if (!parent || classed(code) || classed(parent)) return false;
   return !parent.closest(NOT_PROSE);
 }
-
-const keys = () => /Mac|iPhone|iPad/u.test(globalThis.navigator?.platform ?? globalThis.navigator?.userAgent ?? '') ? '⌘C' : 'Ctrl+C';
+const keys = _copy_feedback_js__WEBPACK_IMPORTED_MODULE_2__.copyKeys;
 
 function mark(code) {
   code.setAttribute(TARGET, '');
@@ -1508,6 +1570,348 @@ if (typeof globalThis !== 'undefined' && globalThis.document) {
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (install);
+
+/***/ },
+
+/***/ "1446153b1a96"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   DURATION: () => (/* binding */ DURATION),
+/* harmony export */   SOURCE_ERRORS: () => (/* binding */ SOURCE_ERRORS),
+/* harmony export */   WORDS: () => (/* binding */ WORDS),
+/* harmony export */   copyFeedback: () => (/* binding */ copyFeedback),
+/* harmony export */   copyKeys: () => (/* binding */ copyKeys),
+/* harmony export */   copyWord: () => (/* binding */ copyWord),
+/* harmony export */   createCopyFeedback: () => (/* binding */ createCopyFeedback),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   readCopyText: () => (/* binding */ readCopyText),
+/* harmony export */   selectCopySource: () => (/* binding */ selectCopySource)
+/* harmony export */ });
+/* harmony import */ var _clipboard_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("e081a020262e");
+/* harmony import */ var _page_language_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("8489d1f5bab4");
+// What a copy says (owner decision C48, 2026-11-11): one feedback for every
+// control that copies -- sf-button-copy, and any <button>, sf-button or
+// sf-button-icon that carries data-sf-copy or data-sf-copy-target (the
+// clipboard component's attribute route). Beside SF.copyText, which copies,
+// this says how it went:
+//
+// - copied: the phase is success for two seconds (the icon a check), and the
+//   word "Скопировано" is said politely;
+// - refused by the browser (a policy, an embedded frame, a denied permission):
+//   the source is selected -- a field's value, an element's text, or the value
+//   itself in a hidden holder -- and the words say which keys copy it
+//   ("Выделено — нажмите Ctrl+C"), so the copy is never simply lost;
+// - nothing to copy (no source, a missing target, two sources): the phase is
+//   error and the words say it could not copy.
+//
+// The helper keeps the phase, the timer and the words; the control draws them
+// (sf-button-copy in its template, the attribute route in the page's markup).
+// Core cannot import a Smart component's files, so the words are written here
+// as sf-button-copy ships them and are read through the page's language under
+// that component's name (a product that registers words for sf-button-copy is
+// heard here too); tests/inline-code.contract.test.mjs and
+// tests/copy-feedback.contract.test.mjs hold them equal to its language files.
+
+
+const WORDS = {
+  en: {
+    copy: 'Copy',
+    copied: 'Copied',
+    failed: 'Could not copy',
+    selected: 'Selected — press {keys}'
+  },
+  ru: {
+    copy: 'Копировать',
+    copied: 'Скопировано',
+    failed: 'Не удалось скопировать',
+    selected: 'Выделено — нажмите {keys}'
+  }
+};
+/** How long a result stays, in ms, unless the control says otherwise. */
+
+const DURATION = 2000;
+/** The failures that are the source's, not the browser's: nothing is selected for them. */
+
+const SOURCE_ERRORS = new Set(['ambiguous_source', 'empty_source', 'missing_source', 'missing_target']);
+const HOLDER_STYLE = 'position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap';
+
+const isField = (element, View) => Boolean(element) && (View.HTMLInputElement && element instanceof View.HTMLInputElement || View.HTMLTextAreaElement && element instanceof View.HTMLTextAreaElement); // The keys copy what the button would have copied (acceptance L3,
+// 2026-11-11): a selected element gives the browser its drawn text, and a
+// numbered code block draws an empty line as a space, so the keys copied a
+// space where the button copies an empty line. While the selection is the
+// one made here, the copy event is given the text instead. One listener per
+// document, on the document itself, so every bundle's copy of this module
+// shares it.
+
+
+function keepCopyText(doc, range, text) {
+  doc.__sfCopySelection = {
+    range,
+    text
+  };
+  if (doc.__sfCopyListener) return;
+
+  doc.__sfCopyListener = event => {
+    const held = doc.__sfCopySelection;
+    const selection = doc.defaultView?.getSelection?.();
+    if (!held || !selection?.rangeCount) return;
+    const now = selection.getRangeAt(0);
+    const same = now.startContainer === held.range.startContainer && now.startOffset === held.range.startOffset && now.endContainer === held.range.endContainer && now.endOffset === held.range.endOffset;
+
+    if (!same) {
+      doc.__sfCopySelection = null;
+      return;
+    }
+
+    event.clipboardData?.setData('text/plain', held.text);
+    event.preventDefault();
+  };
+
+  doc.addEventListener('copy', doc.__sfCopyListener, true);
+} // One result at a time on the page (acceptance L4): two neighbouring controls
+// that fail within the result's two seconds drew their words on top of each
+// other, both held to the window's edge. A control that shows a result tells
+// the one before it to stop. On the page's SF, so every bundle shares it.
+
+
+function takeResult(owner) {
+  const SF = globalThis.SF = globalThis.SF || {};
+  const before = SF.__copyResult;
+  SF.__copyResult = owner;
+  if (before && before !== owner) before.reset();
+}
+
+function leaveResult(owner) {
+  if (globalThis.SF?.__copyResult === owner) globalThis.SF.__copyResult = null;
+}
+/** The keys that copy a selection on this platform. */
+
+
+function copyKeys() {
+  return /Mac|iPhone|iPad/u.test(globalThis.navigator?.platform ?? globalThis.navigator?.userAgent ?? '') ? '⌘C' : 'Ctrl+C';
+}
+/** A copy word in the language of `node` (sf-button-copy's words). */
+
+function copyWord(key, node, vars) {
+  return (0,_page_language_js__WEBPACK_IMPORTED_MODULE_1__.pageWord)(WORDS, key, node, {
+    component: 'sf-button-copy',
+    source: 'ru',
+    vars
+  });
+}
+/**
+ * The text an element gives to copy, whole: a field's value; a numbered code
+ * block's code, one line per row and none of the numbers (Highlight
+ * data-lines); else the element's text.
+ */
+
+function readCopyText(element) {
+  if (!element) return '';
+  const View = element.ownerDocument?.defaultView ?? globalThis;
+  if (View.HTMLInputElement && element instanceof View.HTMLInputElement || View.HTMLTextAreaElement && element instanceof View.HTMLTextAreaElement) return element.value;
+  const rows = element.querySelectorAll?.(':scope .sf-code-lines > .sf-code-line > .sf-code-line__content'); // An empty line is drawn as a space so its row keeps a height; it copies empty.
+
+  if (rows?.length) return Array.from(rows, row => row.textContent === ' ' ? '' : row.textContent).join('\n');
+  return element.textContent ?? '';
+}
+/**
+ * Selects what was to be copied, so the person can press the keys: the field
+ * (focused and selected), the element's contents, or -- for a value with no
+ * element on the page -- `text` in a hidden holder inside `host`.
+ */
+
+function selectCopySource(element, {
+  text = '',
+  host = null,
+  holderClass = 'sf-copy-holder',
+  document: doc = element?.ownerDocument ?? host?.ownerDocument ?? globalThis.document
+} = {}) {
+  const View = doc?.defaultView ?? globalThis;
+
+  if (isField(element, View)) {
+    element.focus();
+    element.select();
+    return element;
+  }
+
+  const selection = View.getSelection?.();
+  if (!selection || !doc) return null;
+  let node = element;
+
+  if (!node) {
+    if (!host || !text) return null;
+    node = [...host.children].find(child => child.classList?.contains(holderClass));
+
+    if (!node) {
+      node = doc.createElement('span');
+      node.className = holderClass;
+      node.style.cssText = HOLDER_STYLE;
+      host.append(node);
+    }
+
+    node.textContent = text;
+  }
+
+  selection.removeAllRanges();
+  const range = doc.createRange();
+  range.selectNodeContents(node);
+  selection.addRange(range);
+  keepCopyText(doc, range, element ? readCopyText(element) : text);
+  return node;
+}
+/**
+ * One control's feedback. `onPhase(phase, message)` is told every change:
+ * pending, success, error, and idle again after `duration` ms (a number or a
+ * function answering one). `run()` copies and settles with the outcome:
+ * {outcome: 'applied', text, method} or {outcome: 'refused', reason, error},
+ * the reason one of SOURCE_ERRORS, 'denied' or 'busy'.
+ */
+
+function createCopyFeedback({
+  onPhase = () => {},
+  duration = DURATION
+} = {}) {
+  let timer = null;
+  let pending = false;
+  let api = null;
+
+  const lasting = () => {
+    const value = Number(typeof duration === 'function' ? duration() : duration);
+    return Number.isFinite(value) && value >= 0 ? value : DURATION;
+  };
+
+  const set = (phase, message = '') => {
+    clearTimeout(timer);
+    timer = null;
+    if (phase === 'success' || phase === 'error') takeResult(api);else if (phase === 'idle') leaveResult(api);
+    onPhase(phase, message);
+
+    if (phase === 'success' || phase === 'error') {
+      timer = setTimeout(() => {
+        timer = null;
+        leaveResult(api);
+        onPhase('idle', '');
+      }, lasting());
+    }
+  };
+
+  api = {
+    get pending() {
+      return pending;
+    },
+
+    /**
+     * `read()` answers the text (or throws a SOURCE_ERRORS code); `element()`
+     * answers the element to select on a refusal, or null; `host` holds the
+     * hidden holder for a value; `node` is where the language is read;
+     * `words(key, vars)` overrides the words, `messages` the copied and failed
+     * text a control was given.
+     */
+    async run({
+      read,
+      element = () => null,
+      host = null,
+      holderClass,
+      node = host,
+      document: doc,
+      words,
+      messages = {}
+    } = {}) {
+      if (pending) return {
+        outcome: 'refused',
+        reason: 'busy'
+      };
+      pending = true;
+
+      const say = words || ((key, vars) => copyWord(key, node, vars)); // The control the press came from: a refusal selects the source, and a
+      // selection outside the focused control took the focus to the page, so
+      // the next Tab started again at the top (acceptance M2).
+
+
+      const page = doc ?? node?.ownerDocument ?? host?.ownerDocument ?? globalThis.document;
+      const pressed = page?.activeElement && page.activeElement !== page.body ? page.activeElement : null;
+      set('pending', '');
+      let text = '';
+
+      try {
+        text = String(read?.() ?? '');
+        if (!text) throw new Error('empty_source');
+        const method = await (0,_clipboard_js__WEBPACK_IMPORTED_MODULE_0__.copyText)(text, {
+          document: doc ?? node?.ownerDocument ?? globalThis.document
+        });
+        set('success', messages.copied || say('copied'));
+        return {
+          outcome: 'applied',
+          text,
+          method
+        };
+      } catch (error) {
+        if (SOURCE_ERRORS.has(error?.message)) {
+          set('error', messages.failed || say('failed'));
+          return {
+            outcome: 'refused',
+            reason: error.message,
+            error
+          };
+        } // Refused by the browser: the source is selected, so the keys copy it.
+
+
+        const selected = selectCopySource(element?.() ?? null, {
+          text,
+          host,
+          holderClass,
+          document: doc
+        }); // A field takes the focus to be copied from; anything else gives it
+        // back to the control, the selection staying (the keys still copy it).
+
+        const View = page?.defaultView ?? globalThis;
+        if (pressed?.isConnected && !isField(selected, View) && page.activeElement !== pressed) pressed.focus({
+          preventScroll: true
+        });
+        set('error', say('selected', {
+          keys: copyKeys()
+        }));
+        return {
+          outcome: 'refused',
+          reason: 'denied',
+          error
+        };
+      } finally {
+        pending = false;
+      }
+    },
+
+    /** Back to idle now, without waiting for the timer. */
+    reset() {
+      set('idle', '');
+    },
+
+    /** Stops the timer (the control is going away). */
+    cancel() {
+      clearTimeout(timer);
+      timer = null;
+      leaveResult(api);
+    }
+
+  };
+  return api;
+}
+const copyFeedback = {
+  create: createCopyFeedback,
+  readText: readCopyText,
+  select: selectCopySource,
+  words: copyWord
+}; // Core publishes it; a bundle that carries its own copy reuses the published one.
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {};
+  if (!globalThis.SF.copyFeedback) globalThis.SF.copyFeedback = copyFeedback;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (createCopyFeedback);
 
 /***/ },
 
@@ -5213,9 +5617,9 @@ __webpack_require__.r(__webpack_exports__);
 // load, a warm HTTP cache included (pair ui-2d39b617a719, language switch
 // en -> ru). The answer the last page got is kept in localStorage (the
 // manifest the service sends with its stylesheet); the core runtime reads it at
-// boot, before any component renders, writes its face and a font preload into
-// the head, and the font comes out of the HTTP cache by the time the first
-// button draws. The Loader then asks the service as before, and a grown subset
+// boot, before any component renders, writes its stylesheet into the head and
+// fetches its font off the document's load (R078), and the font comes out of
+// the HTTP cache by the time the first button draws. The Loader then asks the service as before, and a grown subset
 // replaces the remembered one only once its own face is loaded.
 //
 // What is reused is checked first: a remembered subset is only used when every
@@ -5371,11 +5775,23 @@ function readRememberedIconSubset(storage, {
     return null;
   }
 } // At boot, before any component renders: the remembered subset's stylesheet
-// and a preload for each of its font files, and the pending mark lifted as
-// soon as its face is loaded. The style is the one the Loader would write for
-// the same manifest (same attributes), marked data-sf-icons-remembered; the
-// Loader adopts it when it restores that manifest, and keeps it as the face
-// the page draws with until a grown subset's own face is loaded.
+// and its faces, and the pending mark lifted as soon as they are loaded. The
+// style is the one the Loader would write for the same manifest (same
+// attributes), marked data-sf-icons-remembered; the Loader adopts it when it
+// restores that manifest, and keeps it as the face the page draws with until a
+// grown subset's own face is loaded.
+//
+// R078: the font files are fetched with fetch() and the faces built from their
+// bytes (FontFace from an ArrayBuffer), not asked for by a <link rel=preload>
+// or an @font-face url during parse. Either of those is a request of the
+// document, and the window's load waited for it: with the icon host held 25 s
+// on a warm profile, load came at 25.9 s, and everything waiting for it waited
+// too (the splash stayed up). A fetch() does not hold load, and it reads the
+// same HTTP cache, so a remembered face still comes from the cache by the time
+// the first button draws. The faces join document.fonts once loaded, ride on
+// the style (sfIconFontFaces, retired with it), and the promise of them on
+// sfIconFacesReady, which the Loader awaits before it adopts the style. A
+// browser without FontFace or fetch keeps the stylesheet's own @font-face.
 
 function applyRememberedIconSubset({
   win = globalThis.window,
@@ -5398,33 +5814,62 @@ function applyRememberedIconSubset({
     family
   } = iconSubsetCssFromManifest(manifest);
   if (!cssText) return null;
-
-  for (const font of manifest.fonts) {
-    const href = new URL(font.url).href;
-    if ([...doc.querySelectorAll('link[rel="preload"][as="font"]')].some(link => link.href === href)) continue;
-    const link = doc.createElement('link');
-    link.rel = 'preload';
-    link.as = 'font';
-    link.type = 'font/woff2';
-    link.crossOrigin = 'anonymous';
-    link.href = href;
-    link.setAttribute('data-sf-icons-remembered', '');
-    doc.head.appendChild(link);
-  }
-
   const style = doc.createElement('style');
   style.setAttribute('data-sf-icons-subset', manifest.icons.join(','));
   style.setAttribute('data-sf-icons-subset-family', type);
   if (manifest.hash) style.setAttribute('data-sf-icons-subset-hash', String(manifest.hash));
   style.setAttribute('data-sf-icons-remembered', '');
-  style.textContent = cssText;
-  doc.head.appendChild(style);
   const root = doc.documentElement;
-  const weight = normalizeIconFontLoadWeight(String(manifest.fonts[0]?.weight || manifest.axes?.wght?.value || 400));
-  doc.fonts?.load?.(`${weight} 24px "${family}"`, manifest.icons.join(' ')).then(faces => {
-    if (faces?.length && root?.getAttribute('data-sf-icons') === 'subset-pending' && style.isConnected) {
+
+  const lift = () => {
+    if (root?.getAttribute('data-sf-icons') === 'subset-pending' && style.isConnected) {
       root.removeAttribute('data-sf-icons');
     }
+  };
+
+  const FontFaceApi = win.FontFace;
+  const fetchApi = win.fetch;
+
+  if (typeof FontFaceApi === 'function' && typeof fetchApi === 'function' && typeof doc.fonts?.add === 'function') {
+    const faces = [];
+    style.sfIconFontFaces = faces;
+    style.textContent = cssText.replace(/@font-face\s*\{[^}]*\}\s*/gu, '').trim();
+    style.sfIconFacesReady = Promise.all(manifest.fonts.map(font => {
+      const weight = String(font.weight || manifest.axes?.wght?.value || 400);
+      return Promise.resolve(fetchApi.call(win, new URL(font.url).href, {
+        mode: 'cors',
+        credentials: 'omit'
+      })).then(response => {
+        if (!response?.ok) throw new Error(`HTTP ${response?.status}`);
+        return response.arrayBuffer();
+      }).then(bytes => new FontFaceApi(family, bytes, {
+        style: 'normal',
+        weight,
+        display: 'block'
+      }).load()).then(face => {
+        // Retired meanwhile (a grown subset or the fallback took over).
+        if (style.sfIconFontFaces !== faces) return face;
+        faces.push(face);
+        doc.fonts.add(face);
+        return face;
+      });
+    }));
+    style.sfIconFacesReady.then(lift).catch(() => {
+      /* The Loader's own request and fallback take over. */
+    });
+    doc.head.appendChild(style);
+    return {
+      manifest,
+      style,
+      type
+    };
+  }
+
+  style.textContent = cssText;
+  doc.head.appendChild(style);
+  const weight = normalizeIconFontLoadWeight(String(manifest.fonts[0]?.weight || manifest.axes?.wght?.value || 400));
+  doc.fonts?.load?.(`${weight} 24px "${family}"`, manifest.icons.join(' ')).then(faces => {
+    if (faces?.length) lift();
   }).catch(() => {
     /* The Loader's own request and fallback take over. */
   });
@@ -5465,16 +5910,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _format_js__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__("5b8371b87515");
 /* harmony import */ var _breakpoints_js__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__("1373e294ec38");
 /* harmony import */ var _clipboard_js__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__("e081a020262e");
-/* harmony import */ var _code_copy_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__("effedf2a2981");
-/* harmony import */ var _reading_position_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__("6978f1cc153b");
-/* harmony import */ var _icon_choices_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__("1b42c5117087");
-/* harmony import */ var _ready_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__("5effd0d9c238");
-/* harmony import */ var _icon_subset_memory_js__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__("de1f3481c667");
-/* harmony import */ var _page_storage_js__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__("cda569e6042b");
-/* harmony import */ var _early_port_js__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__("55bd48f35b65");
-/* harmony import */ var _package_modules_js__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__("2240d10a72cb");
-/* harmony import */ var _pending_tags_js__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__("3c79afd07eeb");
-/* harmony import */ var _preloader__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__("6c7f357fe960");
+/* harmony import */ var _copy_feedback_js__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__("1446153b1a96");
+/* harmony import */ var _code_copy_js__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__("effedf2a2981");
+/* harmony import */ var _reading_position_js__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__("6978f1cc153b");
+/* harmony import */ var _icon_choices_js__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__("1b42c5117087");
+/* harmony import */ var _ready_js__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__("5effd0d9c238");
+/* harmony import */ var _icon_subset_memory_js__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__("de1f3481c667");
+/* harmony import */ var _page_storage_js__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__("cda569e6042b");
+/* harmony import */ var _early_port_js__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__("55bd48f35b65");
+/* harmony import */ var _package_modules_js__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__("2240d10a72cb");
+/* harmony import */ var _pending_tags_js__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__("3c79afd07eeb");
+/* harmony import */ var _preloader__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__("6c7f357fe960");
 
 
 
@@ -5504,6 +5950,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+ // What a copy says, one feedback for sf-button-copy and the attribute route
+// data-sf-copy (owner decision C48, 2026-11-11): SF.copyFeedback.
+
  // Copy on click for code in running text, where a container opts in with
 // data-sf-code-copy (owner, 2026-11-07, R024): SF.codeCopy.
 
@@ -5532,10 +5981,10 @@ if (typeof window !== 'undefined') {
   window.SF = window.SF || {};
   const SF = window.SF; // SF.ready, before the Loader chunk is even asked for (simai/ui-source#16).
 
-  (0,_ready_js__WEBPACK_IMPORTED_MODULE_24__.installReady)(window); // The ports declared on elements (data-sf-port islands): their first calls
+  (0,_ready_js__WEBPACK_IMPORTED_MODULE_25__.installReady)(window); // The ports declared on elements (data-sf-port islands): their first calls
   // leave now, while the components' code is still on its way (stand 27).
 
-  (0,_early_port_js__WEBPACK_IMPORTED_MODULE_27__.installEarlyPort)(window);
+  (0,_early_port_js__WEBPACK_IMPORTED_MODULE_28__.installEarlyPort)(window);
 
   if (!SF.loadRuntime) {
     let loading = null;
@@ -5599,9 +6048,9 @@ if (typeof window !== 'undefined') {
 
     const coreLookup = SF.runtimeModule;
 
-    SF.runtimeModule = (id, abi) => (0,_package_modules_js__WEBPACK_IMPORTED_MODULE_28__.packageModuleId)(id) ? (0,_package_modules_js__WEBPACK_IMPORTED_MODULE_28__.packageModule)(id, abi) : coreLookup(id, abi);
+    SF.runtimeModule = (id, abi) => (0,_package_modules_js__WEBPACK_IMPORTED_MODULE_29__.packageModuleId)(id) ? (0,_package_modules_js__WEBPACK_IMPORTED_MODULE_29__.packageModule)(id, abi) : coreLookup(id, abi);
 
-    (0,_package_modules_js__WEBPACK_IMPORTED_MODULE_28__.installPackageRegistration)(SF.runtimeModule, () => Object.keys(SF.__internal.runtimeModules || {})); // A page that already holds a Smart part (printed by the server, waiting
+    (0,_package_modules_js__WEBPACK_IMPORTED_MODULE_29__.installPackageRegistration)(SF.runtimeModule, () => Object.keys(SF.__internal.runtimeModules || {})); // A page that already holds a Smart part (printed by the server, waiting
     // for its definition) preloads the runtime now, with Core, rather than
     // when the Loader's own chunk arrives and queues the part (stand 25): the
     // bytes are fetched early, the script runs when the Loader asks for it.
@@ -5632,7 +6081,28 @@ if (typeof window !== 'undefined') {
 
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', startEarly, {
       once: true
-    });else startEarly();
+    });else startEarly(); // A Smart bundle the page included itself before core.js found no
+    // SF.runtimeModule and waits for sf-runtime-ready (ui-builder
+    // libs/sharedRuntime.js); the runtime runs when something asks for it.
+    // The Loader asks when it queues a part, and its scan passes a
+    // data-sf-observer="ignore" region by, so a page whose parts all stand in
+    // such regions -- a documentation example, a loader wrap -- had its own
+    // bundles wait for good and its elements never defined (2026-11-11,
+    // acceptance of fix/bare-glyphs-tail N4). The page asked for those
+    // elements by including their code, so once the Loader is ready (the
+    // moment it would have asked, so the first paint is the same) a bundle
+    // still waiting has the runtime started for it. A Smart part with no
+    // bundle on the page is still not loaded from an ignored region.
+
+    const handBundleWaiting = () => [...document.scripts].some(script => /\/smart\/[^/]+\/js\/[^/]+?(?:\.min)?\.js(?:[?#]|$)/u.test(script.src));
+
+    window.addEventListener('sf-loader-ready', () => {
+      if (SF.__internal.runtimeModules || SF.__internal.runtimeLoading) return;
+      if (!handBundleWaiting() || !smartPartWaiting()) return;
+      SF.loadRuntime().catch(error => console.warn('[SIMAI Framework] the shared runtime did not load', error));
+    }, {
+      once: true
+    });
   }
 } // Icons wait for the subset font. The icons stylesheet declares the full
 // Material Symbols font so a page without the runtime still draws its icons,
@@ -5666,10 +6136,10 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 
   if (subsetEnabled && document.head) {
     try {
-      (0,_icon_subset_memory_js__WEBPACK_IMPORTED_MODULE_25__.applyRememberedIconSubset)({
+      (0,_icon_subset_memory_js__WEBPACK_IMPORTED_MODULE_26__.applyRememberedIconSubset)({
         win: window,
         doc: document,
-        storage: (0,_page_storage_js__WEBPACK_IMPORTED_MODULE_26__["default"])()
+        storage: (0,_page_storage_js__WEBPACK_IMPORTED_MODULE_27__["default"])()
       });
     } catch {
       /* Nothing remembered is nothing lost: the Loader asks as before. */
@@ -5779,8 +6249,8 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       return;
     }
 
-    (0,_pending_tags_js__WEBPACK_IMPORTED_MODULE_29__.installPendingTags)(window);
-    (0,_pending_tags_js__WEBPACK_IMPORTED_MODULE_29__.holdUndefinedElements)(window);
+    (0,_pending_tags_js__WEBPACK_IMPORTED_MODULE_30__.installPendingTags)(window);
+    (0,_pending_tags_js__WEBPACK_IMPORTED_MODULE_30__.holdUndefinedElements)(window);
   };
 
   holdUndefinedUntilDefined();
@@ -5788,18 +6258,18 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
   const mountPreloader = () => {
     const cfg = {
       enabled: true,
-      background: (0,_preloader__WEBPACK_IMPORTED_MODULE_30__.getPreloaderBackground)(),
+      background: (0,_preloader__WEBPACK_IMPORTED_MODULE_31__.getPreloaderBackground)(),
       modifier: 'loader-default',
-      tempStyles: 'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-0, #fff));text-align: center;',
-      color: (0,_preloader__WEBPACK_IMPORTED_MODULE_30__.getPreloaderColor)(),
-      width: _preloader__WEBPACK_IMPORTED_MODULE_30__.DEFAULT_PRELOADER.width,
-      height: _preloader__WEBPACK_IMPORTED_MODULE_30__.DEFAULT_PRELOADER.height,
+      tempStyles: 'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-page, #fff));text-align: center;',
+      color: (0,_preloader__WEBPACK_IMPORTED_MODULE_31__.getPreloaderColor)(),
+      width: _preloader__WEBPACK_IMPORTED_MODULE_31__.DEFAULT_PRELOADER.width,
+      height: _preloader__WEBPACK_IMPORTED_MODULE_31__.DEFAULT_PRELOADER.height,
       content: '',
       delay: 300,
       ...(window.SF_BOOT_CONFIG?.preloader || {})
     };
     if (cfg.enabled === false || document.querySelector('.sf-loader')) return;
-    const svgContent = cfg.content || (0,_preloader__WEBPACK_IMPORTED_MODULE_30__.createPreloaderContent)(cfg);
+    const svgContent = cfg.content || (0,_preloader__WEBPACK_IMPORTED_MODULE_31__.createPreloaderContent)(cfg);
     let wrap = null;
     let preloaderWrap = null;
     let preloaderRun = false;
@@ -5813,7 +6283,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 
     const stopAnimation = () => {
       if (preloaderWrap) {
-        (0,_preloader__WEBPACK_IMPORTED_MODULE_30__.stopPreloaderMotion)(preloaderWrap);
+        (0,_preloader__WEBPACK_IMPORTED_MODULE_31__.stopPreloaderMotion)(preloaderWrap);
       }
     };
 
@@ -5822,7 +6292,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
       // preloader over them (§5.4). Read when the preloader would show, after
       // its delay, when the server's markup has been parsed.
 
-      if ((0,_preloader__WEBPACK_IMPORTED_MODULE_30__.pageHasFirstPaint)(document)) return;
+      if ((0,_preloader__WEBPACK_IMPORTED_MODULE_31__.pageHasFirstPaint)(document)) return;
       wrap = document.createElement('div');
       const inner = document.createElement('div');
       wrap.classList.add('sf-loader', cfg.modifier);
@@ -5844,7 +6314,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
         wrap: wrap,
         preloaderActive: true
       };
-      (0,_preloader__WEBPACK_IMPORTED_MODULE_30__.startPreloaderMotion)(preloaderWrap, () => preloaderRun, cfg);
+      (0,_preloader__WEBPACK_IMPORTED_MODULE_31__.startPreloaderMotion)(preloaderWrap, () => preloaderRun, cfg);
     };
 
     const cancelBuild = () => {
@@ -5881,7 +6351,7 @@ if (typeof window !== 'undefined' && typeof document !== 'undefined') {
 
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => {
-        if (!(0,_preloader__WEBPACK_IMPORTED_MODULE_30__.pageHasFirstPaint)(document)) return;
+        if (!(0,_preloader__WEBPACK_IMPORTED_MODULE_31__.pageHasFirstPaint)(document)) return;
         cancelBuild();
         preloaderRun = false;
         stopAnimation();
@@ -6091,9 +6561,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   openLayers: () => (/* binding */ openLayers),
 /* harmony export */   raiseLayer: () => (/* binding */ raiseLayer),
 /* harmony export */   returnLayerFocus: () => (/* binding */ returnLayerFocus),
+/* harmony export */   startClosedLayerContent: () => (/* binding */ startClosedLayerContent),
 /* harmony export */   topLayer: () => (/* binding */ topLayer),
 /* harmony export */   tryFocus: () => (/* binding */ tryFocus),
-/* harmony export */   updateLayer: () => (/* binding */ updateLayer)
+/* harmony export */   updateLayer: () => (/* binding */ updateLayer),
+/* harmony export */   whenClosedLayerOpens: () => (/* binding */ whenClosedLayerOpens)
 /* harmony export */ });
 // The one document layer stack (standard simai.smart-component 1.3.8 §19).
 //
@@ -6521,7 +6993,19 @@ function returnLayerFocus(wasTop, target, ancestors = []) {
   }
 
   const doc = globalThis.document;
-  if (!doc) return;
+  if (!doc) return; // Nothing had focus when the layer opened (the body was active): that is
+  // the element to give it back to, and it is still there (§19.2). The body
+  // takes no focus() call, so the focus left inside the closed layer is let
+  // go and the body is active again. A landmark here took a focus the page
+  // never gave and wrote a temporary tabindex on the page's own <main> -- in
+  // an editor that <main> is the canvas being edited (lab composition-overlay).
+
+  if (target && (target === doc.body || target === doc.documentElement)) {
+    const active = doc.activeElement;
+    if (active && active !== doc.body && active !== doc.documentElement) active.blur?.();
+    return;
+  }
+
   const candidates = new Set([...ancestors, ...doc.querySelectorAll('main, [role="main"]'), doc.body]);
 
   for (const candidate of candidates) {
@@ -6701,6 +7185,182 @@ function carryLayerOrigin(portal, host, {
   for (const [name, value] of kept) portal.style.setProperty(name, value);
 
   if (kept.length) portal.dataset.sfLayerVariables = kept.map(([name]) => name).join(' ');else delete portal.dataset.sfLayerVariables;
+} // A closed layer's content starts while the layer is closed, after the page's
+// first paint, without being shown. The Loader leaves a Smart element inside a
+// closed container for later and fetches its code when the container opens
+// (standard 1.3.8 §7.2.1, simai/ui-source#47); a closed window's or drawer's
+// root is such a container (inert, out of view). So a page that waited for a
+// tag in a closed window before opening it -- customElements.whenDefined
+// ('sf-menu'), then fill the menu, then open() -- waited for ever (ui-control
+// evidence 2026-11-11-modal-followups). The layer asks for those tags itself,
+// as a component asks for an element it draws (SF.Loader.ensure), once the
+// page has loaded and the browser is idle: the first paint fetches nothing
+// more than before, and the content is drawn where it stands, inside the
+// closed root, which shows nothing.
+//
+// The layer's own closed root is the one container this passes over. A closed
+// container inside it (a tab panel, a closed <details>, an unstarted part)
+// keeps its own deferral, and an element inside a Smart parent that has not
+// taken its source yet waits for it (the Loader's rule), so the walk runs
+// again when what it asked for has drawn: a few rounds, each for the tags
+// the previous one uncovered.
+
+const CLOSED_INSIDE = '[hidden], [inert], details:not([open]), dialog:not([open]), [data-sf-start]:not([data-sf-started])';
+const UNSTARTED = '[data-sf-start]:not([data-sf-started])';
+const CONTENT_ROUNDS = 4;
+
+function closedInside(element, root) {
+  if (element.matches(UNSTARTED)) return true;
+
+  for (let node = element.parentElement; node && node !== root; node = node.parentElement) {
+    if (!node.matches(CLOSED_INSIDE)) continue; // A closed <details> still shows its summary.
+
+    if (node.localName === 'details' && element.closest('summary')?.parentElement === node) continue;
+    return true;
+  }
+
+  return false;
+}
+
+function contentTags(root, loader) {
+  const registry = globalThis.customElements;
+  const tags = new Set();
+
+  for (const element of root.querySelectorAll('*')) {
+    const tag = element.localName;
+    if (!tag.includes('-') || tags.has(tag) || registry?.get?.(tag)) continue;
+    if (!loader.getSmartElementRuleName(element)) continue;
+    if (closedInside(element, root) || loader.shouldDeferNestedSmartElement?.(element)) continue;
+    tags.add(tag);
+  }
+
+  return [...tags];
+}
+
+function whenPageIdle(fn) {
+  const view = globalThis.window;
+
+  const idle = () => {
+    // requestIdleCallback is throttled in a hidden tab; a timer still runs.
+    if (typeof view.requestIdleCallback === 'function' && !view.document?.hidden) view.requestIdleCallback(fn, {
+      timeout: 2000
+    });else view.setTimeout(fn, 200);
+  };
+
+  if (view.document?.readyState === 'complete') idle();else view.addEventListener('load', idle, {
+    once: true
+  });
+} //
+// A page may keep the old timing, the content fetched when the layer opens:
+// SF_BOOT_CONFIG.startClosedLayerContent = false. The first-paint snapshots do
+// (scripts/first-paint-lib.mjs): a closed layer's first paint is the layer as
+// it rests before anything in it starts, and a start at idle time made the
+// picture and its sheet list depend on how soon the browser was idle.
+//
+// Content the page puts into the closed layer later (a list filled from its
+// data, a part loaded into it) starts the same way: the layer watches its
+// closed root and walks it again, a few rounds, once the page is idle after
+// an addition (ui-control evidence 2026-11-11-modal-followups-2-accept, L2).
+// An open root is the Loader's, as any part of the page.
+
+
+function startClosedLayerContent(rootOf) {
+  const view = globalThis.window;
+  if (!view?.document || view.SF_BOOT_CONFIG?.startClosedLayerContent === false) return;
+  let round = 0;
+  let walking = false;
+  let again = false;
+  let watched = null;
+  let watcher = null;
+
+  const next = () => {
+    const loader = view.SF?.Loader;
+    const root = rootOf();
+    walking = false;
+    if (!root?.isConnected || !loader?.ensure || !loader.getSmartElementRuleName) return;
+    watch(root);
+    if (!root.matches(CLOSED_LAYER)) return;
+    const tags = contentTags(root, loader);
+
+    if (!tags.length || ++round > CONTENT_ROUNDS) {
+      if (again) walk();
+      return;
+    }
+
+    walking = true;
+    loader.ensure(tags, {
+      timeout: 10000
+    }).then(() => whenPageIdle(next));
+  };
+
+  const walk = () => {
+    again = false;
+
+    if (walking) {
+      again = true;
+      return;
+    }
+
+    round = 0;
+    walking = true;
+    whenPageIdle(next);
+  };
+
+  const watch = root => {
+    if (watched === root || typeof view.MutationObserver !== 'function') return;
+    watcher?.disconnect();
+    watched = root;
+    watcher = new view.MutationObserver(records => {
+      if (!watched.isConnected) {
+        watcher.disconnect();
+        watcher = null;
+        watched = null;
+        return;
+      }
+
+      if (watched.matches(CLOSED_LAYER) && records.some(record => record.addedNodes.length)) walk();
+    });
+    watcher.observe(root, {
+      childList: true,
+      subtree: true
+    });
+  };
+
+  walking = true;
+  whenPageIdle(next);
+} // A closed window's root or drawer's panel: inert while closed (and while a
+// window is minimised).
+
+const CLOSED_LAYER = '.sf-modal[inert], [data-sf-drawer-panel][inert]'; // A component that fetches its own data (sf-include) and stands in a closed
+// window or drawer fetches it once the layer opens, not at page load: the
+// layer starts its content early so the page can reach its code
+// (startClosedLayerContent), but a part, a list's rows or a user's data the
+// page never opens should not cost the server a request (ui-control
+// evidence 2026-11-11-modal-followups-2-accept, M2). Null when the element is
+// not in a closed layer, or when the page keeps the old timing
+// (SF_BOOT_CONFIG.startClosedLayerContent = false: then nothing in a closed
+// layer starts before it opens); otherwise a promise that settles when the
+// layer opens, or never once `signal` aborts.
+
+function whenClosedLayerOpens(element, signal) {
+  const view = globalThis.window;
+  if (!view?.document || view.SF_BOOT_CONFIG?.startClosedLayerContent === false) return null;
+  const layer = element?.closest?.(CLOSED_LAYER);
+  if (!layer || typeof view.MutationObserver !== 'function') return null;
+  return new Promise(resolve => {
+    const watcher = new view.MutationObserver(() => {
+      if (layer.matches(CLOSED_LAYER) && layer.isConnected) return;
+      watcher.disconnect();
+      resolve();
+    });
+    watcher.observe(layer, {
+      attributes: true,
+      attributeFilter: ['inert']
+    });
+    signal?.addEventListener('abort', () => watcher.disconnect(), {
+      once: true
+    });
+  });
 }
 
 /***/ },
@@ -8452,8 +9112,29 @@ function installPendingTags(win = typeof window !== 'undefined' ? window : undef
   const doc = win.document;
   const registry = win.customElements; // tag -> {timer, asked}
 
-  const held = new Map();
+  const held = new Map(); // Tags whose module failed to load: not held again.
+
+  const failed = new Set(); // tag -> {promise, resolve}: settled when the tag is defined or its module
+  // failed to load (settled()).
+
+  const settles = new Map();
   let sheet = null;
+
+  const settleEntry = tag => {
+    if (!settles.has(tag)) {
+      let resolve;
+      const promise = new Promise(done => {
+        resolve = done;
+      });
+      settles.set(tag, {
+        promise,
+        resolve
+      });
+      registry?.whenDefined?.(tag).then(() => resolve('defined'));
+    }
+
+    return settles.get(tag);
+  };
 
   const write = () => {
     if (!doc) return;
@@ -8501,7 +9182,7 @@ function installPendingTags(win = typeof window !== 'undefined' ? window : undef
     timeout = PENDING_TAG_TIMEOUT_MS
   } = {}) => {
     const tag = String(name || '').trim().toLowerCase();
-    if (!TAG_NAME.test(tag) || registry?.get(tag)) return false;
+    if (!TAG_NAME.test(tag) || registry?.get(tag) || failed.has(tag)) return false;
     const entry = held.get(tag);
     if (entry && (!asked || entry.asked)) return true;
     if (entry) clearTimeout(entry.timer);
@@ -8523,14 +9204,35 @@ function installPendingTags(win = typeof window !== 'undefined' ? window : undef
 
   const releaseUnasked = () => {
     [...held].filter(([, entry]) => !entry.asked).forEach(([tag]) => release(tag));
+  }; // The Loader could not load the tag's module (the script failed, its other
+  // form too). Its elements are shown as they are at once, not at the
+  // timeout, and whoever waits for the tag stops waiting: the first icon
+  // request waited for the 8 s cap for a tag that was never coming (D2,
+  // acceptance of ui-a0370c0c99fb).
+
+
+  const fail = name => {
+    const tag = String(name || '').trim().toLowerCase();
+    if (!TAG_NAME.test(tag) || registry?.get(tag)) return false;
+    failed.add(tag);
+    release(tag);
+    settleEntry(tag).resolve('failed');
+    return true;
   };
 
   const api = {
     hold,
     release,
     releaseUnasked,
+    fail,
+    // Resolves when the tag is defined or its module failed to load.
+    settled: name => settleEntry(String(name || '').trim().toLowerCase()).promise,
+    failed: () => [...failed],
     isHeld: tag => held.has(String(tag || '').toLowerCase()),
-    held: () => [...held.keys()]
+    held: () => [...held.keys()],
+    // The tags whose module the Loader asked for and that are not defined yet
+    // (the first icon request waits for them; iconSubsetRuntime.js).
+    asked: () => [...held].filter(([, entry]) => entry.asked).map(([tag]) => tag)
   };
   internal.pendingTags = api;
   return api;
@@ -8632,13 +9334,21 @@ __webpack_require__.r(__webpack_exports__);
 
 function isRtl(element) {
   return getComputedStyle(element).direction === 'rtl';
-}
-/** Resolves a number or CSS length (tokens included) to pixels in context. */
+} // A plain pixel length needs no probe.
 
+
+const PIXELS = /^\s*(-?(?:\d+\.?\d*|\.\d+))(?:px)?\s*$/u;
+/**
+ * Resolves a number or CSS length (tokens included) to pixels in context.
+ * Anything but a number or a plain pixel length is measured by a probe span,
+ * which restyles the document: call it once per anchor, never per frame.
+ */
 
 function resolveLength(value, context = document.body) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
   if (typeof value !== 'string' || value.trim() === '') return 0;
+  const plain = PIXELS.exec(value);
+  if (plain && (value.includes('px') || Number(plain[1]) === 0)) return parseFloat(plain[1]) || 0;
   const probe = document.createElement('span');
   probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;block-size:0;padding:0;border:0';
   probe.style.inlineSize = value;
@@ -8833,6 +9543,9 @@ function anchorReference(element) {
  * Keeps `floating` anchored to `reference`.
  * options: {side, align, offset, alignmentOffset, padding, flip, shift,
  *           matchWidth, fitHeight, autoUpdate, topLayer, onPosition({side, placement, x, y})}
+ * matchWidth: true makes the panel exactly as wide as the reference; "min"
+ * makes it at least as wide (a list at a field, decision C32: it may grow with
+ * its longest option up to its own cap, never narrower than the field).
  * topLayer (default true) lifts the floating element into the top layer while
  * it is anchored (see liftToTopLayer); false keeps it where it stands.
  * Returns {update(): Promise, stop(), side}.
@@ -8862,7 +9575,7 @@ function anchor(reference, floating, options = {}) {
   }; // Inline styles this helper writes are restored on stop(); the author's caps
   // are kept, so viewport fitting may only tighten them.
 
-  const written = ['position', 'left', 'top', 'right', 'bottom', 'margin', 'max-height', 'max-width', ...(settings.matchWidth ? ['width'] : [])];
+  const written = ['position', 'left', 'top', 'right', 'bottom', 'margin', 'max-height', 'max-width', ...(settings.matchWidth === 'min' ? ['min-width'] : settings.matchWidth ? ['width'] : [])];
   const saved = written.map(name => [name, floating.style.getPropertyValue(name), floating.style.getPropertyPriority(name)]);
   const authored = {
     maxHeight: floating.style.getPropertyValue('max-height')
@@ -8890,19 +9603,83 @@ function anchor(reference, floating, options = {}) {
   };
   let running = null;
   let pending = false;
+  let pendingFull = false; // The cost of a position (datepicker audit P1/P2, 2026-11-11). Each
+  // resolveLength of a token inserts a probe span and restyles the whole
+  // document (about 9 ms on a docs page), and resetting max-height to read
+  // the natural height forces another; per scroll event that made 800 px of
+  // scrolling with a panel open cost 1.8-2.3 s of style recalculation. So:
+  // - the lengths (offset, padding, alignmentOffset) are resolved once per
+  //   anchor, and again only when the window's size changed;
+  // - a full fit -- the first, a resize, the panel or its reference changing
+  //   size, or update() from the component -- measures as before: direction,
+  //   viewport width, containing block, natural height;
+  // - a scroll or a layout shift asks for a light fit, at most once per
+  //   frame: it reuses those measurements and only places the panel again.
+  //   Flip, shift and the size caps run exactly as in a full fit; flipping
+  //   compares the natural height measured by the last full fit (the panel's
+  //   content does not change by scrolling; when it does, its size changes
+  //   and that is a full fit), and max-height is not reset to read it.
+  // - Inline styles and data-sf-side are written only when they change.
 
-  const run = async () => {
+  let lengths = null;
+
+  const lengthsNow = () => {
+    const key = `${window.innerWidth}x${window.innerHeight}`;
+
+    if (!lengths || lengths.key !== key) {
+      const context = reference.parentElement;
+      lengths = {
+        key,
+        gap: resolveLength(settings.offset, context),
+        padding: resolveLength(settings.padding, context),
+        alignment: resolveLength(settings.alignmentOffset, context)
+      };
+    }
+
+    return lengths;
+  };
+
+  let measures = null;
+
+  const put = (style, name, value) => {
+    if (style[name] !== value) style[name] = value;
+  };
+
+  const run = async full => {
     // The panel is fixed before it is measured, so it is measured in the box
     // it will be placed in: left absolute by the stylesheet (a tooltip in its
     // anchor), its first position was taken from the anchor and written as
     // the viewport's.
     if (floating.style.position !== 'fixed') floating.style.position = 'fixed';
-    const rtl = isRtl(reference);
-    const gap = resolveLength(settings.offset, reference.parentElement);
-    const padding = resolveLength(settings.padding, reference.parentElement); // Measure the natural size so flipping compares the real panel height.
 
-    if (settings.fitHeight) floating.style.maxHeight = authored.maxHeight || '';
-    const natural = settings.fitHeight ? floating.getBoundingClientRect().height : 0; // alignmentOffset moves a start/end-aligned panel along its edge (mirrored
+    if (full || !measures) {
+      measures = {
+        rtl: isRtl(reference),
+        clientWidth: document.documentElement.clientWidth,
+        container: null,
+        natural: 0
+      }; // Measure the natural size so flipping compares the real panel height.
+
+      if (settings.fitHeight) {
+        put(floating.style, 'maxHeight', authored.maxHeight || '');
+        measures.natural = floating.getBoundingClientRect().height;
+      }
+    }
+
+    const {
+      rtl,
+      clientWidth,
+      natural
+    } = measures;
+    const {
+      gap,
+      padding,
+      alignment
+    } = lengthsNow(); // A light fit starts from the natural height, as a full fit does after
+    // its reset; once the size middleware has written the cap, the panel is
+    // measured as it is (Floating UI's own second pass).
+
+    let naturalPass = !full && settings.fitHeight; // alignmentOffset moves a start/end-aligned panel along its edge (mirrored
     // for end), e.g. so a tail points at the middle of a small trigger.
     // The panel keeps its distance from the viewport's inline edges, but never
     // more than its field keeps. With a flat padding a field closer to the edge
@@ -8912,7 +9689,6 @@ function anchor(reference, floating, options = {}) {
     // edge its own panel may reach too.
 
     const box = referenceRect(reference);
-    const clientWidth = document.documentElement.clientWidth;
     const edges = {
       top: padding,
       bottom: padding,
@@ -8921,7 +9697,7 @@ function anchor(reference, floating, options = {}) {
     };
     const middleware = [(0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.offset)({
       mainAxis: gap,
-      alignmentAxis: resolveLength(settings.alignmentOffset, reference.parentElement)
+      alignmentAxis: alignment
     })];
     if (settings.flip) middleware.push((0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.flip)({
       padding,
@@ -8942,10 +9718,12 @@ function anchor(reference, floating, options = {}) {
         rects,
         elements
       }) {
+        naturalPass = false;
         if (controller.stopped) return;
         const viewportWidth = clientWidth - edges.left - edges.right;
-        if (settings.matchWidth) elements.floating.style.width = `${Math.max(0, Math.min(rects.reference.width, viewportWidth))}px`;
-        elements.floating.style.maxWidth = `${Math.max(0, Math.min(availableWidth, viewportWidth, widthCap))}px`;
+        const fieldWidth = `${Math.max(0, Math.min(rects.reference.width, viewportWidth))}px`;
+        if (settings.matchWidth === 'min') put(elements.floating.style, 'minWidth', fieldWidth);else if (settings.matchWidth) put(elements.floating.style, 'width', fieldWidth);
+        put(elements.floating.style, 'maxWidth', `${Math.max(0, Math.min(availableWidth, viewportWidth, widthCap))}px`);
 
         if (settings.fitHeight) {
           // A panel that misses its room by less than the edge's padding takes
@@ -8956,7 +9734,7 @@ function anchor(reference, floating, options = {}) {
           const room = Math.min(availableHeight, heightCap);
           const whole = Math.ceil(natural);
           const fits = whole > room && whole <= availableHeight + padding && whole <= heightCap;
-          elements.floating.style.maxHeight = `${Math.max(0, fits ? whole : room)}px`;
+          put(elements.floating.style, 'maxHeight', `${Math.max(0, fits ? whole : room)}px`);
         }
       }
 
@@ -8965,7 +9743,13 @@ function anchor(reference, floating, options = {}) {
       strategy: 'fixed',
       // The panel is fixed: its offset parent is the box it is placed in.
       platform: { ..._floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.platform,
-        getOffsetParent: (element, polyfill) => element === floating ? fixedContainingBlock(floating) : _floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.platform.getOffsetParent(element, polyfill)
+        getOffsetParent: (element, polyfill) => element === floating ? measures.container ??= fixedContainingBlock(floating) : _floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.platform.getOffsetParent(element, polyfill),
+        getDimensions: element => {
+          const dimensions = _floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.platform.getDimensions(element);
+          return element === floating && naturalPass ? { ...dimensions,
+            height: natural
+          } : dimensions;
+        }
       },
       placement: (0,_position_placement_js__WEBPACK_IMPORTED_MODULE_1__.physicalPlacement)(settings.side, settings.align, rtl),
       middleware
@@ -8973,16 +9757,19 @@ function anchor(reference, floating, options = {}) {
     if (controller.stopped) return result; // right/bottom are cleared so logical insets from the component stylesheet
     // (for example inset-inline-start in RTL) cannot over-constrain the box.
 
-    Object.assign(floating.style, {
+    const placed = {
       position: 'fixed',
       left: `${result.x}px`,
       top: `${result.y}px`,
       right: 'auto',
       bottom: 'auto',
-      margin: '0'
-    });
+      margin: '0px'
+    };
+
+    for (const [name, value] of Object.entries(placed)) put(floating.style, name, value);
+
     controller.side = (0,_position_placement_js__WEBPACK_IMPORTED_MODULE_1__.logicalSide)(result.placement, rtl);
-    floating.dataset.sfSide = controller.side;
+    if (floating.dataset.sfSide !== controller.side) floating.dataset.sfSide = controller.side;
     settings.onPosition?.({
       side: controller.side,
       placement: result.placement,
@@ -8990,33 +9777,67 @@ function anchor(reference, floating, options = {}) {
       y: result.y
     });
     return result;
-  }; // Coalesce bursts (scroll, resize, observers) into one computation at a time.
+  }; // Coalesce bursts (scroll, resize, observers) into one computation at a
+  // time; a full fit asked for while one runs is not lost to a light one.
 
 
-  controller.update = () => {
+  const request = full => {
     if (controller.stopped) return Promise.resolve(null);
 
     if (running) {
       pending = true;
+      pendingFull ||= full;
       return running;
     }
 
-    running = run().finally(() => {
+    running = run(full).finally(() => {
       running = null;
 
       if (pending && !controller.stopped) {
+        const again = pendingFull;
         pending = false;
-        controller.update();
+        pendingFull = false;
+        request(again);
       }
     });
     return running;
   };
+  /** A full fit: measures again (the component calls it after it changed the panel). */
 
-  const cleanup = settings.autoUpdate ? (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.autoUpdate)(measured, floating, controller.update) : null;
+
+  controller.update = () => request(true); // Scroll and layout shift: a light fit, at most once per frame.
+
+
+  let frame = 0;
+  let armed = false;
+
+  const follow = () => {
+    if (!armed || frame || controller.stopped) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      request(false);
+    });
+  };
+
+  const cleanups = settings.autoUpdate ? [// Resize of the window or an overflow ancestor, and of the panel or its
+  // reference: a full fit (also the first one).
+  (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.autoUpdate)(measured, floating, controller.update, {
+    ancestorScroll: false,
+    layoutShift: false
+  }), // Scroll of any overflow ancestor and a moved reference: a light fit.
+  (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.autoUpdate)(measured, floating, follow, {
+    ancestorResize: false,
+    elementResize: false
+  })] : [];
+  armed = true;
 
   controller.stop = () => {
     controller.stopped = true;
-    cleanup?.();
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0;
+
+    for (const cleanup of cleanups) cleanup();
+
     delete floating.dataset.sfSide;
     lower?.();
 
@@ -9355,7 +10176,7 @@ function getPreloaderColor(root = document.documentElement) {
 }
 function getPreloaderBackground(root = document.documentElement) {
   const fallback = root?.classList?.contains('theme-dark') ? '#0f1115' : '#ffffff';
-  return `var(--sf-color--surface-highest, var(--sf-surface-0, ${fallback}))`;
+  return `var(--sf-color--surface-highest, var(--sf-surface-page, ${fallback}))`;
 }
 function createPreloaderContent(preloader = {}) {
   const config = { ...DEFAULT_PRELOADER,
@@ -10491,7 +11312,7 @@ __webpack_require__.r(__webpack_exports__);
 // core.runtime.json). A set's release says the lowest version it needs, and
 // the index lookup keeps the releases this Core satisfies. Moved by hand with
 // the passport; tests/component-set-loader.contract.test.mjs holds them equal.
-const CORE_RUNTIME = '1.47.0';
+const CORE_RUNTIME = '1.54.2';
 const SET_NAME = /^[a-z][a-z0-9-]*$/u;
 const SET_INDEX_FORMAT = 'simai.framework.set-index';
 const SET_INDEX_URL = 'https://cdn.jsdelivr.net/npm/@simai-studio/sets@1/index.json';
@@ -16645,6 +17466,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   CONTENT_ALERT_APPEARANCES: () => (/* binding */ CONTENT_ALERT_APPEARANCES),
 /* harmony export */   CONTENT_ALERT_STATUSES: () => (/* binding */ CONTENT_ALERT_STATUSES),
 /* harmony export */   CONTENT_FILE_MIME: () => (/* binding */ CONTENT_FILE_MIME),
+/* harmony export */   CONTENT_FOREIGN_SOURCES: () => (/* binding */ CONTENT_FOREIGN_SOURCES),
 /* harmony export */   CONTENT_ITEM_PARENTS: () => (/* binding */ CONTENT_ITEM_PARENTS),
 /* harmony export */   CONTENT_RATIOS: () => (/* binding */ CONTENT_RATIOS),
 /* harmony export */   CONTENT_TABLE_HEADERS: () => (/* binding */ CONTENT_TABLE_HEADERS),
@@ -16683,48 +17505,54 @@ const variantWord = (type, id) => `sf.composition.catalogue.variant.${type.repla
 // Text runs, links of text runs, and since content.heading and
 // content.paragraph 1.1.0 the inline component atoms: one shape per declared
 // name, never inside a link and without marks.
+// Inline model 1.2.0 (2026-11-10): a soft line break {type: 'break', marks?}
+// in every inline field and inside a link, and the mark strike.
+const CONTENT_FOREIGN_SOURCES = Object.freeze(['markdown', 'editorjs', 'html']);
+const inlineMarksSchema = {
+  type: 'array',
+  uniqueItems: true,
+  items: { enum: ['strong', 'em', 'code', 'strike'] },
+};
+const inlineTextSchema = {
+  type: 'object',
+  required: ['type', 'value'],
+  additionalProperties: false,
+  // Extension keys (a newer producer's lang, title, ...): kept by the inline model.
+  patternProperties: { [_inline_model_mjs__WEBPACK_IMPORTED_MODULE_0__.INLINE_EXTENSION_KEY]: {} },
+  properties: {
+    type: { const: 'text' },
+    value: { type: 'string', maxLength: 100000 },
+    marks: inlineMarksSchema,
+  },
+};
+const inlineBreakSchema = {
+  type: 'object',
+  required: ['type'],
+  additionalProperties: false,
+  patternProperties: { [_inline_model_mjs__WEBPACK_IMPORTED_MODULE_0__.INLINE_EXTENSION_KEY]: {} },
+  properties: {
+    type: { const: 'break' },
+    marks: inlineMarksSchema,
+  },
+};
 const inlineContentSchema = {
   type: 'array',
   items: {
     oneOf: [
-      {
-        type: 'object',
-        required: ['type', 'value'],
-        additionalProperties: false,
-        properties: {
-          type: { const: 'text' },
-          value: { type: 'string', maxLength: 100000 },
-          marks: {
-            type: 'array',
-            uniqueItems: true,
-            items: { enum: ['strong', 'em', 'code'] },
-          },
-        },
-      },
+      inlineTextSchema,
+      inlineBreakSchema,
       {
         type: 'object',
         required: ['type', 'href', 'children'],
         additionalProperties: false,
+        patternProperties: { [_inline_model_mjs__WEBPACK_IMPORTED_MODULE_0__.INLINE_EXTENSION_KEY]: {} },
         properties: {
           type: { const: 'link' },
           href: { type: 'string', minLength: 1, maxLength: 2048 },
           children: {
             type: 'array',
             minItems: 1,
-            items: {
-              type: 'object',
-              required: ['type', 'value'],
-              additionalProperties: false,
-              properties: {
-                type: { const: 'text' },
-                value: { type: 'string', maxLength: 100000 },
-                marks: {
-                  type: 'array',
-                  uniqueItems: true,
-                  items: { enum: ['strong', 'em', 'code'] },
-                },
-              },
-            },
+            items: { oneOf: [inlineTextSchema, inlineBreakSchema] },
           },
         },
       },
@@ -16933,7 +17761,8 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     type: 'content.heading',
     // 1.2.0 (2026-11-04, visual parity): alignment and visibility per screen,
     // the SIMAI Framework sets a section takes (text-*, hidden/block).
-    version: '1.2.0',
+    // 1.3.0 (2026-11-10): inline model 1.2.0, the break and the mark strike.
+    version: '1.3.0',
     category: 'content',
     mode: 'leaf',
     profiles: ['ui-layout', 'structured-content'],
@@ -16958,7 +17787,8 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     ...(0,_schema_name_mjs__WEBPACK_IMPORTED_MODULE_2__.schemaFields)('simai.composition.type-manifest', 1),
     type: 'content.paragraph',
     // 1.3.0 (2026-11-04): alignment and visibility per screen, as the heading.
-    version: '1.3.0',
+    // 1.4.0 (2026-11-10): inline model 1.2.0, the break and the mark strike.
+    version: '1.4.0',
     category: 'content',
     mode: 'leaf',
     profiles: ['ui-layout', 'structured-content'],
@@ -17303,7 +18133,9 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     }),
     slots: { items: { min: 1, max: 500, types: ['content.list-item'] } },
   }),
+  // 1.1.0 (2026-11-10): inline model 1.2.0, the break and the mark strike.
   contentManifest('content.list-item', {
+    version: '1.1.0',
     mode: 'composite',
     data_schema: closed({ content: inlineContentSchema }, ['content']),
     // A nested list, or more paragraphs and code under the item's own line.
@@ -17328,7 +18160,11 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     mode: 'leaf',
     assets: ['component/contentDivider'],
   }),
+  // 1.0.1 (2026-11-10): a column's alignment is the text-align utility class on
+  // its cells, not a style attribute; it looks the same. 1.1.0: inline model
+  // 1.2.0 in its caption and cells (the break, the mark strike).
   contentManifest('content.table', {
+    version: '1.1.0',
     mode: 'leaf',
     data_schema: closed({
       caption: inlineContentSchema,
@@ -17346,7 +18182,9 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     assets: ['utility/table-frame'],
     capabilities: ['html', 'rich-text'],
   }),
+  // 1.1.0 (2026-11-10): inline model 1.2.0, the break and the mark strike.
   contentManifest('content.figure', {
+    version: '1.1.0',
     mode: 'leaf',
     data_schema: closed({ ...imageData, caption: inlineContentSchema }, ['src', 'alt']),
     props_schema: closed({
@@ -17356,7 +18194,9 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     assets: ['component/figure'],
     capabilities: ['html', 'rich-text'],
   }),
+  // 1.1.0 (2026-11-10): inline model 1.2.0, the break and the mark strike.
   contentManifest('content.alert', {
+    version: '1.1.0',
     mode: 'composite',
     data_schema: closed({ title: inlineContentSchema }),
     props_schema: closed({
@@ -17367,7 +18207,9 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     assets: ['component/alerts'],
     capabilities: ['html', 'rich-text'],
   }),
+  // 1.1.0 (2026-11-10): inline model 1.2.0, the break and the mark strike.
   contentManifest('content.details', {
+    version: '1.1.0',
     mode: 'composite',
     data_schema: closed({ summary: inlineContentSchema }, ['summary']),
     props_schema: closed({
@@ -17398,7 +18240,9 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     slots: { steps: { min: 1, max: 100, types: ['content.step'] } },
     assets: ['component/procedure'],
   }),
+  // 1.1.0 (2026-11-10): inline model 1.2.0, the break and the mark strike.
   contentManifest('content.step', {
+    version: '1.1.0',
     mode: 'composite',
     data_schema: closed({ title: inlineContentSchema }),
     slots: { default: contentSlot(0, 100) },
@@ -17451,6 +18295,20 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
   contentManifest('content.html', {
     mode: 'leaf',
     data_schema: closed({ markup: sourceText }, ['markup']),
+  }),
+  // A block from another source kept as it came (2026-11-10, F2.2): the source
+  // format and its text, never parsed into markup and never drawn on a public
+  // page; an editor draws an inert placeholder naming the source. hash is
+  // sha256:<hex> of raw as UTF-8: validate checks its form, normalize
+  // recomputes it, and a mismatch keeps the block and draws nothing
+  // (foreign_hash_mismatch). It goes back only to its own source format.
+  contentManifest('content.foreign', {
+    mode: 'leaf',
+    data_schema: closed({
+      source: { enum: [...CONTENT_FOREIGN_SOURCES] },
+      raw: { type: 'string', maxLength: 200000 },
+      hash: { type: 'string', pattern: '^sha256:[0-9a-f]{64}$' },
+    }, ['source', 'raw']),
   }),
   // Diagram and math draw with a runtime the SIMAI Framework does not carry
   // (a diagram engine, a TeX typesetter). They are registered types whose
@@ -17650,7 +18508,7 @@ const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
   {
     ...(0,_schema_name_mjs__WEBPACK_IMPORTED_MODULE_2__.schemaFields)('simai.composition.editor-manifest', 1),
     type: 'content.heading',
-    type_version: '1.2.0',
+    type_version: '1.3.0',
     fields: [
       {
         key: 'level',
@@ -17741,7 +18599,7 @@ const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     contentField('layout.area', 'hidden', 'props', 'toggle', { default: false }),
   ]),
   // The layout and element types of the one block editor (2026-11-04).
-  { ...contentEditor('content.paragraph', (0,_parameter_sets_mjs__WEBPACK_IMPORTED_MODULE_3__.parameterSetFields)({ parameter_sets: TEXT_SETS })), type_version: '1.3.0' },
+  { ...contentEditor('content.paragraph', (0,_parameter_sets_mjs__WEBPACK_IMPORTED_MODULE_3__.parameterSetFields)({ parameter_sets: TEXT_SETS })), type_version: '1.4.0' },
   contentEditor('layout.container', (0,_parameter_sets_mjs__WEBPACK_IMPORTED_MODULE_3__.parameterSetFields)({ parameter_sets: ['width', 'spacing', 'background', 'visibility'], parameter_defaults: CONTAINER_DEFAULTS })),
   { ...contentEditor('layout.grid', (0,_parameter_sets_mjs__WEBPACK_IMPORTED_MODULE_3__.parameterSetFields)({ parameter_sets: ['grid', 'visibility'], parameter_defaults: GRID_DEFAULTS })), type_version: '1.1.0' },
   contentEditor('layout.spacer', [
@@ -17835,26 +18693,26 @@ const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
     contentField('content.code', 'title', 'props', 'text', { constraints: { min_length: 1, max_length: 200 } }),
     contentField('content.code', 'numbers', 'props', 'toggle', { ...advanced, default: false }),
   ]),
-  contentEditor('content.table', [
+  { ...contentEditor('content.table', [
     contentField('content.table', 'header', 'props', 'choice', { choices: ['row', 'column', 'both', 'none'], default: 'row' }),
-  ]),
+  ]), type_version: '1.1.0' },
   // src is the one field the type requires besides alt: a host draws a
   // complete form from the manifest alone (simai/ui-source#64). The address
   // is a text field; validate applies the Document's URL rule on top.
-  contentEditor('content.figure', [
+  { ...contentEditor('content.figure', [
     contentField('content.figure', 'src', 'data', 'text', { constraints: { min_length: 1, max_length: 2048 } }),
     contentField('content.figure', 'alt', 'data', 'text', { constraints: { min_length: 1, max_length: 1000 } }),
     contentField('content.figure', 'ratio', 'props', 'choice', { choices: ['auto', '1/1', '4/3', '3/2', '16/9', '21/9'], default: 'auto' }),
     contentField('content.figure', 'fit', 'props', 'choice', { choices: ['cover', 'contain'], default: 'cover' }),
-  ]),
-  contentEditor('content.alert', [
+  ]), type_version: '1.1.0' },
+  { ...contentEditor('content.alert', [
     contentField('content.alert', 'status', 'props', 'choice', { choices: ['neutral', 'info', 'success', 'warning', 'error'], default: 'neutral' }),
     contentField('content.alert', 'appearance', 'props', 'choice', { choices: ['default', 'outlined', 'flat'], default: 'default' }),
-  ]),
-  contentEditor('content.details', [
+  ]), type_version: '1.1.0' },
+  { ...contentEditor('content.details', [
     contentField('content.details', 'open', 'props', 'toggle', { default: false }),
     contentField('content.details', 'layout', 'props', 'choice', { choices: ['surface', 'lines'], default: 'surface' }),
-  ]),
+  ]), type_version: '1.1.0' },
   contentEditor('content.tabs', [
     contentField('content.tabs', 'label', 'data', 'text', { ...advanced, constraints: { min_length: 1, max_length: 120 } }),
   ]),
@@ -18032,6 +18890,8 @@ const BUILTIN_CATALOGUE = Object.freeze({
   'content.media': 'media',
   'content.file': 'media',
   'content.html': 'media',
+  // Made by converters from another source, never offered (F2.2).
+  'content.foreign': null,
   'content.diagram': 'media',
   'content.details': 'text',
   'content.tabs': 'text',
@@ -20411,7 +21271,9 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
             "waiting",
             "done",
             "stopped",
-            "failed"
+            "failed",
+            "paused",
+            "queued"
           ],
           "type": "string"
         },
@@ -20506,7 +21368,7 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.badge",
-    "version": "1.3.1"
+    "version": "1.4.0"
   },
   "sf-button": {
     "inputs": {
@@ -20538,6 +21400,10 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
         "form": {
           "default": "",
           "type": "string"
+        },
+        "full-width": {
+          "default": false,
+          "type": "boolean"
         },
         "height": {
           "default": "default",
@@ -20700,7 +21566,7 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button",
-    "version": "1.10.0"
+    "version": "1.13.0"
   },
   "sf-button-icon": {
     "inputs": {
@@ -20744,6 +21610,16 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
         "filled": {
           "default": false,
           "type": "boolean"
+        },
+        "height": {
+          "default": "default",
+          "enum": [
+            "low",
+            "default",
+            "high",
+            "highest"
+          ],
+          "type": "string"
         },
         "icon": {
           "default": "add",
@@ -20849,7 +21725,7 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.button-icon",
-    "version": "1.7.1"
+    "version": "1.8.4"
   },
   "sf-checkbox": {
     "inputs": {
@@ -20917,7 +21793,7 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.checkbox",
-    "version": "1.1.6"
+    "version": "1.2.0"
   },
   "sf-divider": {
     "component": "component.content-divider",
@@ -20961,6 +21837,10 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": false,
           "type": "boolean"
         },
+        "error-message": {
+          "default": "",
+          "type": "string"
+        },
         "inherited-text": {
           "default": "",
           "type": "string"
@@ -20968,6 +21848,10 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
         "inherited-value": {
           "default": "",
           "type": "string"
+        },
+        "invalid": {
+          "default": false,
+          "type": "boolean"
         },
         "label": {
           "default": "",
@@ -21040,7 +21924,7 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.dropdown",
-    "version": "1.7.4"
+    "version": "1.9.0"
   },
   "sf-icon": {
     "inputs": {
@@ -21125,7 +22009,7 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.icon",
-    "version": "1.1.6"
+    "version": "1.1.7"
   },
   "sf-input": {
     "inputs": {
@@ -21286,6 +22170,10 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "shortcut": {
+          "default": "",
+          "type": "string"
+        },
         "size": {
           "default": "1",
           "enum": [
@@ -21314,7 +22202,7 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input",
-    "version": "1.6.1"
+    "version": "1.7.2"
   },
   "sf-input-textarea": {
     "inputs": {
@@ -21467,7 +22355,7 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.input-textarea",
-    "version": "1.7.4"
+    "version": "1.7.5"
   },
   "sf-switch": {
     "inputs": {
@@ -21513,6 +22401,10 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
           "default": "",
           "type": "string"
         },
+        "short": {
+          "default": false,
+          "type": "boolean"
+        },
         "size": {
           "default": "1",
           "enum": [
@@ -21531,7 +22423,7 @@ const PRINTED_ELEMENT_TABLE = Object.freeze({
     },
     "kind": "custom-element",
     "manifest": "smart.switch",
-    "version": "1.3.4"
+    "version": "1.5.0"
   }
 });
 
@@ -22926,7 +23818,24 @@ const sameFormat = (a, b) => a.strong === b.strong && a.em === b.em && a.href ==
 // Inline leaves made canonical: adjacent text of one format joined, runs of
 // spaces made one, spaces at the edges and around a line break removed, a link
 // with nothing but spaces made text.
+//
+// The steps run again until a pass changes nothing (2026-11-11 acceptance,
+// M2): dropping a space or an empty run makes new neighbours, so one pass left
+// "<p>a <em><br>n</em></p>" for the next load-and-save to make
+// "<p>a<em><br>n</em></p>". The stored value is the fixed point at once.
 function tidyLeaves(leaves, mode) {
+  let current = leaves;
+  let key = null;
+  for (let pass = 0; pass < 64; pass += 1) {
+    current = tidyLeavesOnce(current, mode);
+    const next = JSON.stringify(current);
+    if (next === key) break;
+    key = next;
+  }
+  return current;
+}
+
+function tidyLeavesOnce(leaves, mode) {
   const out = [];
   for (const item of leaves) {
     if (item.kind === 'text' && !item.value) continue;
@@ -22951,12 +23860,21 @@ function tidyLeaves(leaves, mode) {
   }
   let kept = out.filter((item) => item.kind === 'br' || item.value);
   if (mode === 'value') {
-    while (kept[0]?.kind === 'br') kept.shift();
-    while (kept.at(-1)?.kind === 'br') kept.pop();
-    if (kept[0]?.kind === 'text') kept[0].value = kept[0].value.replace(/^[\s\u00a0]+/u, '');
-    const end = kept.at(-1);
-    if (end?.kind === 'text') end.value = end.value.replace(/[\s\u00a0]+$/u, '');
-    kept = kept.filter((item) => item.kind === 'br' || item.value);
+    // Edge breaks and edge white space go together, until neither is left: a
+    // run of only white space (&nbsp;) at an edge hid the break behind it, so
+    // the first pass kept "<p>&nbsp;<br>a</p>" as "<p><br>a</p>" and only the
+    // next load-and-save gave "<p>a</p>" (2026-11-10 review, Q6). The value is
+    // now what that second pass gave, at once, and cleaning it again keeps it.
+    let length = -1;
+    while (length !== kept.length) {
+      length = kept.length;
+      while (kept[0]?.kind === 'br') kept.shift();
+      while (kept.at(-1)?.kind === 'br') kept.pop();
+      if (kept[0]?.kind === 'text') kept[0].value = kept[0].value.replace(/^[\s\u00a0]+/u, '');
+      const end = kept.at(-1);
+      if (end?.kind === 'text') end.value = end.value.replace(/[\s\u00a0]+$/u, '');
+      kept = kept.filter((item) => item.kind === 'br' || item.value);
+    }
   }
   // A link of nothing but spaces is not a link.
   const groups = new Map();
@@ -23336,7 +24254,7 @@ const BINDING_FIELDS = new Set(['owner', 'ref', 'target', 'revision']);
 const FORBIDDEN_KEYS = new Set([
   'html', 'innerhtml', 'script', 'javascript', 'php', 'eval', 'function',
   'expression', 'query', 'sql', 'graphql', 'class', 'classname', 'rootclass',
-  'cssclass', 'secret', 'password', 'token', 'cookie', 'authorization', 'request',
+  'cssclass', 'style', 'secret', 'password', 'token', 'cookie', 'authorization', 'request',
 ]);
 const SAFE_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
 const DEFAULT_LIMITS = Object.freeze({
@@ -23440,11 +24358,17 @@ function validateJsonSchema(value, schema, path, diagnostics) {
     for (const key of schema.required || []) {
       if (!(key in value)) diagnostics.push(diagnostic('schema_required', `${path}.${key}`, `Required field ${key} is missing`));
     }
+    // patternProperties: a key matching a pattern is declared by it (the
+    // inline model's extension keys, 2026-11-11).
+    const patterns = Object.entries(schema.patternProperties || {}).map(([pattern, childSchema]) => [new RegExp(pattern, 'u'), childSchema]);
     if (schema.additionalProperties === false) {
       const properties = schema.properties || {};
       for (const key of Object.keys(value)) {
-        if (!(key in properties)) diagnostics.push(diagnostic('schema_additional_property', `${path}.${key}`, `Field ${key} is not allowed`));
+        if (!(key in properties) && !patterns.some(([pattern]) => pattern.test(key))) diagnostics.push(diagnostic('schema_additional_property', `${path}.${key}`, `Field ${key} is not allowed`));
       }
+    }
+    for (const [pattern, childSchema] of patterns) {
+      for (const key of Object.keys(value)) if (!(key in (schema.properties || {})) && pattern.test(key)) validateJsonSchema(value[key], childSchema, `${path}.${key}`, diagnostics);
     }
     for (const [key, childSchema] of Object.entries(schema.properties || {})) {
       if (key in value) validateJsonSchema(value[key], childSchema, `${path}.${key}`, diagnostics);
@@ -23676,7 +24600,8 @@ function validate(document, registry = undefined, options = {}) {
   pushUnknownFields(document, DOCUMENT_FIELDS, '$', diagnostics);
   if (!(0,_schema_name_mjs__WEBPACK_IMPORTED_MODULE_5__.isSchema)(document, 'simai.composition.document', 1)) diagnostics.push(diagnostic('schema_unknown', '$.schema', `Expected ${DOCUMENT_SCHEMA}, or simai.composition.document with schema_version 1`));
   if (typeof document.id !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,119}$/u.test(document.id)) diagnostics.push(diagnostic('document_id_invalid', '$.id', 'Document id is invalid'));
-  if (!PROFILES.has(document.profile)) diagnostics.push(diagnostic('profile_unknown', '$.profile', 'Profile is not supported'));
+  const knownProfile = PROFILES.has(document.profile);
+  if (!knownProfile) diagnostics.push(diagnostic('profile_unknown', '$.profile', 'Profile is not supported'));
   if (document.locale !== undefined && (typeof document.locale !== 'string' || !/^[a-zA-Z]{2,8}(?:-[a-zA-Z0-9]{1,8})*$/u.test(document.locale))) diagnostics.push(diagnostic('locale_invalid', '$.locale', 'Locale is invalid'));
   if (document.extensions !== undefined) validateExtensions(document.extensions, '$.extensions', diagnostics, supportedExtensions);
   scanForbiddenKeys(document, '$', diagnostics);
@@ -23706,7 +24631,9 @@ function validate(document, registry = undefined, options = {}) {
       else diagnostics.push(unknown);
       return;
     }
-    if (!manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
+    // An unknown profile is one diagnostic ($.profile): no type lists it, so a
+    // per-node check would repeat it once for every node of the Document.
+    if (knownProfile && !manifest.profiles.includes(document.profile)) diagnostics.push(diagnostic('type_profile_unsupported', `${path}.type`, `${node.type} does not support ${document.profile}`));
     validateJsonSchema(node.data || {}, manifest.data_schema, `${path}.data`, diagnostics);
     // A layout parameter may hold a value per breakpoint (utilities.mjs): each
     // value is checked on its own, the rest of the props as before.
@@ -23724,7 +24651,8 @@ function validate(document, registry = undefined, options = {}) {
       if (depth > _composed_mjs__WEBPACK_IMPORTED_MODULE_17__.MAX_COMPOSED_DEPTH) diagnostics.push(diagnostic('composed_depth_limit', path, 'Site blocks are nested too deeply'));
       else {
         const expanded = validate({ ...document, root: (0,_composed_mjs__WEBPACK_IMPORTED_MODULE_17__.expandComposed)(node, manifest) }, resolvedRegistry, { ...options, composedDepth: depth });
-        diagnostics.push(...expanded.diagnostics.map((entry) => ({ ...entry, path: `${path}.composed${entry.path.replace(/^\$\.root/u, '').replace(/^\$/u, '')}` })));
+        // The Document's own profile diagnostic is already reported once.
+        diagnostics.push(...expanded.diagnostics.filter(({ code }) => code !== 'profile_unknown').map((entry) => ({ ...entry, path: `${path}.composed${entry.path.replace(/^\$\.root/u, '').replace(/^\$/u, '')}` })));
         notices.push(...(expanded.notices || []));
       }
     }
@@ -23814,8 +24742,9 @@ async function normalize(document, registry = undefined, options = {}) {
     Object.values(node.slots || {}).flat().forEach((child) => visit(child, depth));
   };
   visit(normalized.root);
+  const notices = [...(result.notices || []), ...await settleForeignHashes(normalized.root)];
   return {
-    ...(result.notices ? { notices: result.notices } : {}),
+    ...(notices.length ? { notices } : {}),
     document: normalized,
     digest: await sha256((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_4__.stableStringify)(normalized)),
     dependencies: {
@@ -23826,13 +24755,54 @@ async function normalize(document, registry = undefined, options = {}) {
   };
 }
 
+// content.foreign (F2.2): the hash of raw is written where it is missing and
+// checked where it is present. A mismatch keeps the block as it is, is
+// reported, and the block is not drawn.
+async function settleForeignHashes(root) {
+  const notices = [];
+  const visit = async (node, path) => {
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_4__.isPlainObject)(node)) return;
+    if (node.type === 'content.foreign' && (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_4__.isPlainObject)(node.data) && typeof node.data.raw === 'string') {
+      const hash = `sha256:${await sha256(node.data.raw)}`;
+      if (node.data.hash === undefined) node.data.hash = hash;
+      else if (node.data.hash !== hash) notices.push(diagnostic('foreign_hash_mismatch', `${path}.data.hash`, 'The hash does not match raw; the block is kept and not drawn', { id: node.id }));
+    }
+    for (const [name, children] of Object.entries((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_4__.isPlainObject)(node.slots) ? node.slots : {})) {
+      if (Array.isArray(children)) for (const [index, child] of children.entries()) await visit(child, `${path}.slots.${name}[${index}]`);
+    }
+  };
+  await visit(root, '$.root');
+  return notices;
+}
+
+const FOREIGN_SOURCE_NAMES = Object.freeze({ markdown: 'Markdown', editorjs: 'Editor.js', html: 'HTML' });
+// The editor's view of a foreign block: inert, its source and, for an
+// Editor.js block, the tool's name, as escaped text. raw is never markup.
+function foreignPlaceholder(node) {
+  let tool = '';
+  if (node.data.source === 'editorjs') {
+    try {
+      const parsed = JSON.parse(node.data.raw);
+      if (typeof parsed?.type === 'string' && /^[A-Za-z0-9_-]{1,64}$/u.test(parsed.type)) tool = parsed.type;
+    } catch { /* not a block: the source alone */ }
+  }
+  const label = `${FOREIGN_SOURCE_NAMES[node.data.source] || node.data.source}${tool ? ` · ${tool}` : ''}`;
+  return `<div class="sf-composition-unknown" role="note" data-sf-composition-type="content.foreign" data-sf-composition-id="${escapeHtml(node.id)}">${escapeHtml(label)}</div>`;
+}
+
 function escapeHtml(value) {
   return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
 
+const MARK_ELEMENTS = Object.freeze({ strong: 'strong', em: 'em', code: 'code', strike: 's' });
 function renderInline(content) {
   return (content || []).map((inline) => {
     if (inline.type === 'link') return `<a href="${escapeHtml(inline.href)}">${renderInline(inline.children)}</a>`;
+    // A soft line break (inline model 1.2.0) inside the marks it carries.
+    // Its extension keys (inline model) draw nothing.
+    if (inline.type === 'break' && (inline.marks === undefined || Array.isArray(inline.marks))) {
+      return (inline.marks || []).reduce((output, mark) => (MARK_ELEMENTS[mark] ? `<${MARK_ELEMENTS[mark]}>${output}</${MARK_ELEMENTS[mark]}>` : output), '<br>');
+    }
     if (inline.type !== 'text') {
       // An atom draws its own element, its props escaped as text; anything
       // else (validation refuses it) draws nothing rather than "undefined".
@@ -23842,7 +24812,8 @@ function renderInline(content) {
       return `<${view.tag}${attributes}>${escapeHtml(view.text)}</${view.tag}>`;
     }
     let output = escapeHtml(inline.value);
-    for (const mark of inline.marks || []) output = mark === 'strong' ? `<strong>${output}</strong>` : mark === 'em' ? `<em>${output}</em>` : `<code>${output}</code>`;
+    // A mark outside the closed list (validation refuses it) draws no element.
+    for (const mark of inline.marks || []) output = MARK_ELEMENTS[mark] ? `<${MARK_ELEMENTS[mark]}>${output}</${MARK_ELEMENTS[mark]}>` : output;
     return output;
   }).join('');
 }
@@ -23882,9 +24853,10 @@ function renderTable(node) {
   const headColumn = header === 'column' || header === 'both';
   const align = Array.isArray(node.props?.align) ? node.props.align : [];
   // The frame sets every cell to the start; a column set otherwise says so on
-  // its cells, with one of two fixed values.
-  const cellStyle = (index) => (align[index] === 'center' || align[index] === 'end' ? ` style="text-align: ${align[index]}"` : '');
-  const cell = (content, index, tag, scope) => `<${tag}${scope ? ` scope="${scope}"` : ''}${cellStyle(index)}>${renderInline(content)}</${tag}>`;
+  // its cells with the text-align utility class, never a style attribute, so
+  // the rendered HTML stays within a strict CSP (2026-11-10 review, P8).
+  const cellClass = (index) => (align[index] === 'center' || align[index] === 'end' ? ` class="text-${align[index]}"` : '');
+  const cell = (content, index, tag, scope) => `<${tag}${scope ? ` scope="${scope}"` : ''}${cellClass(index)}>${renderInline(content)}</${tag}>`;
   const row = (cells, inHead) => `<tr>${cells.map((content, index) => (inHead
     ? cell(content, index, 'th', 'col')
     : headColumn && index === 0 ? cell(content, index, 'th', 'row') : cell(content, index, 'td', null))).join('')}</tr>`;
@@ -24177,6 +25149,9 @@ const BUILTIN_RENDERERS = {
   // attribute but a safe href survives.
   'content.html': ({ node }) => `<div${id(node)}>${(0,_html_subset_mjs__WEBPACK_IMPORTED_MODULE_2__.sanitizeRichText)(node.data.markup)}</div>`,
   'content.outlet': ({ node, outlet }) => `<div data-sf-outlet=""${id(node)}>${outlet || ''}</div>`,
+  // Nothing on a public page; an editor (unknown: 'placeholder') draws the
+  // inert placeholder.
+  'content.foreign': ({ node, context }) => (context?.options?.unknown === 'placeholder' ? foreignPlaceholder(node) : ''),
 };
 
 // context.resolveSource(src, {node}) → address: a host that keeps pictures
@@ -24193,7 +25168,11 @@ async function render(document, context = {}) {
   const normalized = await normalize(document, registry, { ...(context.options || {}), ...(resolveSource ? { resolveSource } : {}) });
   if (!normalized.document) return { html: '', assets: [], hydration: [], diagnostics: normalized.diagnostics, digest: null };
   const diagnostics = [];
-  const notices = [...(normalized.notices || [])].filter((entry) => !entry.code.startsWith('modifier'));
+  // A foreign block whose hash does not match is kept and not drawn: what
+  // drawing found, so a diagnostic of the render (F2.2).
+  const mismatched = new Set((normalized.notices || []).filter(({ code }) => code === 'foreign_hash_mismatch').map((entry) => entry.id));
+  diagnostics.push(...(normalized.notices || []).filter(({ code }) => code === 'foreign_hash_mismatch').map(({ id: _id, ...entry }) => entry));
+  const notices = [...(normalized.notices || [])].filter((entry) => !entry.code.startsWith('modifier') && entry.code !== 'foreign_hash_mismatch');
   const hydration = [];
   const routes = (0,_routing_mjs__WEBPACK_IMPORTED_MODULE_11__.resolveRoutes)(normalized.document.root, registry, normalizePorts(context.options?.ports), []);
   // The data of the blocks that declare it, resolved before drawing (data.mjs).
@@ -24234,6 +25213,11 @@ async function render(document, context = {}) {
     // Only reached under unknown: 'placeholder' (validate's notice says
     // which node); normalize refused the Document otherwise.
     if (!manifest) return unknownPlaceholder(node);
+    if (node.type === 'content.foreign' && mismatched.has(node.id)) return '';
+    // C75 (owner 2026-11-11): a preserved block is kept, never dropped. An
+    // editor (unknown: 'placeholder') shows its plate; a public page draws
+    // nothing and the build is told, one notice per block.
+    if (node.type === 'content.foreign' && context.options?.unknown !== 'placeholder') notices.push(diagnostic('preserved_not_shown', `node:${node.id}`, `A preserved ${node.data.source} block is kept in the Document and not drawn on the page`, { source: node.data.source }));
     // A site block draws its type's current tree with the instance's values
     // and texts (composed.mjs); the instance stays one node of the Document.
     if ((0,_composed_mjs__WEBPACK_IMPORTED_MODULE_17__.isComposed)(manifest)) {
@@ -24576,16 +25560,23 @@ if (typeof globalThis !== 'undefined') {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   INLINE_COMPONENTS: () => (/* binding */ INLINE_COMPONENTS),
+/* harmony export */   INLINE_EXTENSION_KEY: () => (/* binding */ INLINE_EXTENSION_KEY),
+/* harmony export */   INLINE_FORBIDDEN_KEYS: () => (/* binding */ INLINE_FORBIDDEN_KEYS),
 /* harmony export */   INLINE_LIMITS: () => (/* binding */ INLINE_LIMITS),
 /* harmony export */   INLINE_MARKS: () => (/* binding */ INLINE_MARKS),
+/* harmony export */   INLINE_MODEL_VERSION: () => (/* binding */ INLINE_MODEL_VERSION),
 /* harmony export */   INLINE_OBJECT: () => (/* binding */ INLINE_OBJECT),
+/* harmony export */   INLINE_RESERVED_KEYS: () => (/* binding */ INLINE_RESERVED_KEYS),
+/* harmony export */   breakSegment: () => (/* binding */ breakSegment),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
 /* harmony export */   fromSegments: () => (/* binding */ fromSegments),
 /* harmony export */   inlineComponentSchemas: () => (/* binding */ inlineComponentSchemas),
 /* harmony export */   inlineComponentView: () => (/* binding */ inlineComponentView),
+/* harmony export */   inlineExtensions: () => (/* binding */ inlineExtensions),
 /* harmony export */   inlineLength: () => (/* binding */ inlineLength),
 /* harmony export */   inlineText: () => (/* binding */ inlineText),
 /* harmony export */   isInlineComponent: () => (/* binding */ isInlineComponent),
+/* harmony export */   isInlineExtensionKey: () => (/* binding */ isInlineExtensionKey),
 /* harmony export */   marksIn: () => (/* binding */ marksIn),
 /* harmony export */   normalizeInline: () => (/* binding */ normalizeInline),
 /* harmony export */   objectAt: () => (/* binding */ objectAt),
@@ -24597,18 +25588,67 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   toggleMark: () => (/* binding */ toggleMark)
 /* harmony export */ });
 // Pure operations on the Composition inline content model used by
-// content.heading and content.paragraph: text runs with strong, em and code
-// marks, links whose children are text runs, and inline component atoms
+// content.heading and content.paragraph: text runs with strong, em, code and
+// strike marks, soft line breaks ({type: 'break', marks?}), links whose
+// children are text runs and breaks, and inline component atoms
 // ({type: 'component', name, props}). No DOM access here.
+//
+// Inline model 1.2.0 (2026-11-10): the break and the mark strike. A break is
+// one unit of offset, like a character: it takes marks and stands inside a
+// link, and no operation removes one except a deletion of its own range.
 //
 // Every other entry -- a node from a newer producer, or an atom this model
 // does not know -- is opaque: it holds one caret stop, takes no marks, and
 // comes back out of every operation exactly as it went in. toSegments used
 // to drop such entries, so an edit next to them lost them silently.
+//
+// Extension keys (2026-11-11, owner rule: no silent data loss): a key a
+// newer producer adds to a known entry -- a text run's `lang`, a link's
+// `title`, any other -- rides with that entry through every operation
+// (normalize, typing, marks, links, slice, split, join, copy). Runs merge
+// only when their extension keys are the same. Validation accepts a key as
+// extension data when its name matches INLINE_EXTENSION_KEY (lowercase,
+// not one of the model's own names, not on*, not a forbidden name such as
+// style or class); render never draws one.
 
-const INLINE_MARKS = Object.freeze(['strong', 'em', 'code']);
+const INLINE_MARKS = Object.freeze(['strong', 'em', 'code', 'strike']);
+const INLINE_MODEL_VERSION = '1.2.0';
 const MARK_ORDER = new Map(INLINE_MARKS.map((mark, index) => [mark, index]));
 const SAFE_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+
+// The keys each known entry defines; any other key is extension data.
+const OWN_KEYS = Object.freeze({ text: ['type', 'value', 'marks'], break: ['type', 'marks'], link: ['type', 'href', 'children'], component: ['type', 'name', 'props'] });
+// Names an extension key may not take: the model's own (on any entry), an
+// event handler (on*), and the Document's forbidden names (validation's
+// FORBIDDEN_KEYS: executable, styling or secret data, F1.6).
+const INLINE_RESERVED_KEYS = Object.freeze(['type', 'value', 'marks', 'href', 'children', 'name', 'props']);
+const INLINE_FORBIDDEN_KEYS = Object.freeze([
+  'html', 'innerhtml', 'script', 'javascript', 'php', 'eval', 'function',
+  'expression', 'query', 'sql', 'graphql', 'class', 'classname', 'rootclass',
+  'cssclass', 'style', 'secret', 'password', 'token', 'cookie', 'authorization', 'request',
+]);
+/** The name rule of an extension key, as a JSON Schema pattern (patternProperties). */
+const INLINE_EXTENSION_KEY = `^(?!on)(?!(?:${[...INLINE_RESERVED_KEYS, ...INLINE_FORBIDDEN_KEYS].join('|')})$)[a-z][a-z0-9_.:]{0,63}$`;
+const EXTENSION_PATTERN = new RegExp(INLINE_EXTENSION_KEY, 'u');
+/** Whether a key is accepted as extension data on a known inline entry. */
+const isInlineExtensionKey = (key) => EXTENSION_PATTERN.test(key);
+
+// The extension keys of an entry: every key its type does not define, as it came.
+function extensionsOf(entry, kind) {
+  const own = OWN_KEYS[kind];
+  const out = {};
+  for (const [key, value] of Object.entries(entry)) if (!own.includes(key)) out[key] = clone(value);
+  return Object.keys(out).length ? out : null;
+}
+/** The extension keys of a known entry (text, break, link, component), or null. */
+function inlineExtensions(entry) {
+  return isPlainEntry(entry) && Object.hasOwn(OWN_KEYS, entry.type) ? extensionsOf(entry, entry.type) : null;
+}
+// Extension keys compare by value: key order does not count, at any depth
+// ({lang, title} and {title, lang} are the same keys, so their runs merge).
+const sortedKeys = (value) => (Array.isArray(value) ? value.map(sortedKeys)
+  : value !== null && typeof value === 'object' ? Object.fromEntries(Object.keys(value).sort().map((key) => [key, sortedKeys(value[key])])) : value);
+const sameExtra = (left, right) => JSON.stringify(sortedKeys(left ?? null)) === JSON.stringify(sortedKeys(right ?? null));
 const INLINE_LIMITS = Object.freeze({ maxTextLength: 100000, maxHrefLength: 2048, maxPropLength: 1000 });
 
 // The closed list of inline atoms. Each name draws one element; its props
@@ -24633,6 +25673,7 @@ function inlineComponentSchemas() {
     type: 'object',
     required: ['type', 'name', ...(entry.required.length ? ['props'] : [])],
     additionalProperties: false,
+    patternProperties: { [INLINE_EXTENSION_KEY]: {} },
     properties: {
       type: { const: 'component' },
       name: { const: name },
@@ -24650,7 +25691,7 @@ function inlineComponentSchemas() {
 function isInlineComponent(node) {
   const entry = node?.type === 'component' && Object.hasOwn(INLINE_COMPONENTS, node.name) ? INLINE_COMPONENTS[node.name] : null;
   if (!entry) return false;
-  if (Object.keys(node).some((key) => !['type', 'name', 'props'].includes(key))) return false;
+  if (Object.keys(node).some((key) => !['type', 'name', 'props'].includes(key) && !isInlineExtensionKey(key))) return false;
   const props = node.props ?? {};
   if (!props || typeof props !== 'object' || Array.isArray(props)) return false;
   if (entry.required.some((key) => !(key in props))) return false;
@@ -24674,7 +25715,16 @@ function inlineComponentView(node) {
 }
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
-const isObjectEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry) && entry.type !== 'text' && entry.type !== 'link';
+const isAtom = (entry) => entry?.type === 'component';
+const isObjectEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry) && entry.type !== 'text' && entry.type !== 'link' && !isBreak(entry);
+// A break as the model knows it: type break, marks (if any) a list; any
+// other key is its extension data.
+const isBreak = (entry) => entry?.type === 'break' && (entry.marks === undefined || Array.isArray(entry.marks));
+
+/** The segment of one soft line break: one unit, with the marks and link of its place. */
+function breakSegment(marks = [], href = null, extra = null) {
+  return { text: INLINE_OBJECT, marks: [...marks], href, break: true, ...(extra ? { extra } : {}) };
+}
 
 /** Same link rule as Document validation: relative, fragment or http(s)/mailto/tel. */
 function safeHref(value) {
@@ -24688,69 +25738,101 @@ function safeHref(value) {
   }
 }
 
+// Known marks in their canonical order, then any mark this model does not
+// know (a newer producer's), in the order it came: an edit never drops a mark
+// it cannot draw. Validation still refuses an unknown mark; render draws none.
 function sortMarks(marks) {
-  return [...new Set(marks)].filter((mark) => MARK_ORDER.has(mark)).sort((left, right) => MARK_ORDER.get(left) - MARK_ORDER.get(right));
+  const unique = [...new Set(marks)].filter((mark) => typeof mark === 'string' && mark);
+  const known = unique.filter((mark) => MARK_ORDER.has(mark)).sort((left, right) => MARK_ORDER.get(left) - MARK_ORDER.get(right));
+  return [...known, ...unique.filter((mark) => !MARK_ORDER.has(mark))];
 }
 
 /**
  * Flat segments: {text, marks: string[], href: string|null}. An atom or an
  * opaque node is one segment {text: INLINE_OBJECT, marks: [], href, node}
- * that carries the entry unchanged; inside a link it keeps the link's href.
+ * that carries the entry unchanged. An atom ({type: 'component'}) never
+ * carries a link's href: a link holds no atom, so one that held an atom is
+ * split around it. An opaque node from a newer producer keeps its link.
  */
 function toSegments(content) {
   const segments = [];
-  const push = (run, href) => {
+  const push = (run, href, linkExtra) => {
+    const link = href && linkExtra ? { linkExtra } : {};
+    if (isBreak(run)) {
+      segments.push({ ...breakSegment(sortMarks(run.marks || []), href, extensionsOf(run, 'break')), ...link });
+      return;
+    }
     if (isObjectEntry(run)) {
-      segments.push({ text: INLINE_OBJECT, marks: [], href, node: clone(run) });
+      segments.push({ text: INLINE_OBJECT, marks: [], href: isAtom(run) ? null : href, node: clone(run), ...(isAtom(run) ? {} : link) });
       return;
     }
     if (run?.type !== 'text' || typeof run.value !== 'string' || !run.value) return;
-    segments.push({ text: run.value, marks: sortMarks(Array.isArray(run.marks) ? run.marks : []), href });
+    const extra = extensionsOf(run, 'text');
+    segments.push({ text: run.value, marks: sortMarks(Array.isArray(run.marks) ? run.marks : []), href, ...(extra ? { extra } : {}), ...link });
   };
   for (const entry of Array.isArray(content) ? content : []) {
     if (entry?.type === 'link') {
+      // An unsafe link is dropped by design (its href and its extension keys); its text stays.
       const href = safeHref(entry.href) ? entry.href : null;
-      for (const child of Array.isArray(entry.children) ? entry.children : []) push(child, href);
-    } else push(entry, null);
+      const linkExtra = isPlainEntry(entry) ? extensionsOf(entry, 'link') : null;
+      for (const child of Array.isArray(entry.children) ? entry.children : []) push(child, href, linkExtra);
+    } else push(entry, null, null);
   }
   return segments;
 }
 
-const sameStyle = (left, right) => !left.node && !right.node && left.href === right.href && left.marks.join() === right.marks.join();
+const isPlainEntry = (entry) => entry !== null && typeof entry === 'object' && !Array.isArray(entry);
+const sameStyle = (left, right) => !left.node && !right.node && !left.break && !right.break && left.href === right.href && left.marks.join() === right.marks.join()
+  && sameExtra(left.extra, right.extra) && sameExtra(left.linkExtra, right.linkExtra);
 
 /** Builds normalized content: merged runs, canonical marks, no empty parts. */
 function fromSegments(segments) {
   const merged = [];
   for (const segment of segments) {
+    // A link's extension keys go only where the link goes.
+    const linked = (href) => (href && segment.linkExtra ? { linkExtra: segment.linkExtra } : {});
     if (segment.node) {
-      merged.push({ text: INLINE_OBJECT, marks: [], href: segment.href && safeHref(segment.href) ? segment.href : null, node: segment.node });
+      // An atom is never inside a link: the link stops before it and starts again after.
+      const href = !isAtom(segment.node) && segment.href && safeHref(segment.href) ? segment.href : null;
+      merged.push({ text: INLINE_OBJECT, marks: [], href, node: segment.node, ...linked(href) });
+      continue;
+    }
+    if (segment.break) {
+      const href = segment.href && safeHref(segment.href) ? segment.href : null;
+      merged.push({ ...breakSegment(sortMarks(segment.marks || []), href, segment.extra || null), ...linked(href) });
       continue;
     }
     if (!segment.text) continue;
-    const clean = { text: segment.text, marks: sortMarks(segment.marks || []), href: segment.href && safeHref(segment.href) ? segment.href : null };
+    const cleanHref = segment.href && safeHref(segment.href) ? segment.href : null;
+    const clean = { text: segment.text, marks: sortMarks(segment.marks || []), href: cleanHref, ...(segment.extra ? { extra: segment.extra } : {}), ...linked(cleanHref) };
     const previous = merged.at(-1);
     if (previous && sameStyle(previous, clean)) previous.text += clean.text;
     else merged.push(clean);
   }
   const content = [];
   for (const segment of merged) {
-    const run = segment.node ? clone(segment.node) : { type: 'text', value: segment.text, ...(segment.marks.length ? { marks: segment.marks } : {}) };
+    const extra = segment.extra ? clone(segment.extra) : {};
+    const run = segment.node ? clone(segment.node)
+      : segment.break ? { type: 'break', ...(segment.marks.length ? { marks: segment.marks } : {}), ...extra }
+        : { type: 'text', value: segment.text, ...(segment.marks.length ? { marks: segment.marks } : {}), ...extra };
     const previous = content.at(-1);
     if (segment.href) {
-      if (previous?.type === 'link' && previous.href === segment.href) previous.children.push(run);
-      else content.push({ type: 'link', href: segment.href, children: [run] });
+      if (previous?.type === 'link' && previous.href === segment.href && sameExtra(linkExtraOf(previous), segment.linkExtra)) previous.children.push(run);
+      else content.push({ type: 'link', href: segment.href, ...(segment.linkExtra ? clone(segment.linkExtra) : {}), children: [run] });
     } else content.push(run);
   }
   return content;
 }
 
+const linkExtraOf = (link) => extensionsOf(link, 'link');
+
 function normalizeInline(content) {
   return fromSegments(toSegments(content));
 }
 
-/** The text of the text runs; atoms and opaque nodes add nothing. */
+/** The text of the text runs, a line feed for each break; atoms and opaque nodes add nothing. */
 function inlineText(content) {
-  return toSegments(content).filter(({ node }) => !node).map(({ text }) => text).join('');
+  return toSegments(content).filter(({ node }) => !node).map((segment) => (segment.break ? '\n' : segment.text)).join('');
 }
 
 /** Length in segment offsets: characters, plus one for each atom or opaque node. */
@@ -24842,7 +25924,7 @@ function replaceRange(content, start, end, inserted) {
   return fromSegments([...before, ...inserted, ...after]);
 }
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ INLINE_COMPONENTS, INLINE_MARKS, INLINE_OBJECT, fromSegments, inlineComponentSchemas, inlineComponentView, inlineLength, inlineText, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark });
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ INLINE_EXTENSION_KEY, INLINE_FORBIDDEN_KEYS, INLINE_RESERVED_KEYS, inlineExtensions, isInlineExtensionKey, INLINE_COMPONENTS, INLINE_MARKS, INLINE_MODEL_VERSION, INLINE_OBJECT, breakSegment, fromSegments, inlineComponentSchemas, inlineComponentView, inlineLength, inlineText, isInlineComponent, marksIn, normalizeInline, objectAt, replaceRange, safeHref, setLink, sliceInline, toSegments, toggleMark });
 
 
 /***/ },

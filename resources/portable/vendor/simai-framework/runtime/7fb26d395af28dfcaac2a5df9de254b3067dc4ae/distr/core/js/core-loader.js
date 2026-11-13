@@ -521,9 +521,34 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
     }
 
     return true;
-  };
+  }; // A disclosure swaps its glyph when it opens or closes (the menus' ⌄ / ⌃,
+  // a column's › / ⌄). The glyph it swaps to goes in the same font request
+  // as the one drawn, so the swap never waits for a second font with the
+  // icon blank: each name here brings its partners along, with the same
+  // weight, fill, grade, size and style.
+
+
+  const iconSwapPartners = Object.freeze({
+    keyboard_arrow_down: ["keyboard_arrow_up", "chevron_right"],
+    keyboard_arrow_up: ["keyboard_arrow_down"],
+    chevron_right: ["keyboard_arrow_down"],
+    expand_more: ["expand_less"],
+    expand_less: ["expand_more"],
+    arrow_drop_down: ["arrow_drop_up"],
+    arrow_drop_up: ["arrow_drop_down"]
+  });
 
   SFLoaderPlugin.prototype.trackIconDescriptor = function (icon = "", attrs = {}) {
+    const normalizedIcon = String(icon || "").trim();
+    let added = this.trackIconDescriptorOnly(normalizedIcon, attrs);
+    const partners = Object.hasOwn(iconSwapPartners, normalizedIcon) ? iconSwapPartners[normalizedIcon] : [];
+    partners.forEach(partner => {
+      added += this.trackIconDescriptorOnly(partner, attrs);
+    });
+    return added;
+  };
+
+  SFLoaderPlugin.prototype.trackIconDescriptorOnly = function (icon = "", attrs = {}) {
     if (!this.isIconSubsetEnabled()) return 0;
     if (this.hasConfiguredIconSubset()) return 0;
     const normalizedIcon = String(icon || "").trim();
@@ -957,6 +982,87 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
     } finally {
       this.isSyncingStaticIconState = false;
     }
+  }; // The class-markup glyphs a Smart element drew inside a
+  // data-sf-observer="ignore" region (2026-11-11). The page scan and the
+  // mutation observer pass such a region by, so a bare <i class="sf-icon">
+  // there was never asked for and never marked sf-icon-loaded: it waited at
+  // font-size 0 for good (an accordion's marker, a menu's icons, a badge's
+  // glyph in a documentation example or a loader wrap). The element hands
+  // them over after each drawing (smart-base); they are asked for like any
+  // static icon and marked when their font is in, now or on the next
+  // sf-icons-subset:ready. A glyph of an sf-icon element is its own.
+  // Answers the number of new names asked for.
+
+
+  SFLoaderPlugin.prototype.adoptStaticIcons = function (root = null) {
+    if (!root?.querySelectorAll) return 0;
+    const glyphs = [];
+
+    const take = el => {
+      if (!el || el.nodeType !== Node.ELEMENT_NODE) return;
+      if (el.tagName?.toLowerCase?.() === "sf-icon") return;
+      if (!el.classList?.contains("sf-icon")) return;
+      if (el.closest?.("sf-icon")) return;
+      glyphs.push(el);
+    };
+
+    take(root);
+    root.querySelectorAll(".sf-icon").forEach(take);
+    if (!glyphs.length) return 0;
+
+    if (!this.adoptedIconsPending) {
+      this.adoptedIconsPending = new Set();
+
+      const settle = () => {
+        this.adoptedIconsPending.forEach(el => {
+          if (!el.isConnected) {
+            this.adoptedIconsPending.delete(el);
+            return;
+          }
+
+          const tracked = this.getTrackedStaticIconAttrs(el);
+
+          if (!tracked) {
+            this.adoptedIconsPending.delete(el);
+            return;
+          }
+
+          if (this.isTrackedIconLoaded(tracked)) {
+            el.classList.add("sf-icon-loaded");
+            this.adoptedIconsPending.delete(el);
+          }
+        });
+      };
+
+      window.addEventListener("sf-icons-subset:ready", settle);
+    }
+
+    let added = 0;
+    glyphs.forEach(el => {
+      const tracked = this.getTrackedStaticIconAttrs(el);
+
+      if (!tracked) {
+        el.classList.remove("sf-icon-loaded");
+        this.adoptedIconsPending.delete(el);
+        return;
+      }
+
+      if (this.isIconSubsetEnabled()) {
+        added += this.trackIconDescriptor(tracked.icon, tracked.attrs);
+      }
+
+      if (this.isTrackedIconLoaded(tracked)) {
+        el.classList.add("sf-icon-loaded");
+        this.adoptedIconsPending.delete(el);
+      } else {
+        // A glyph whose new name the font in place does not draw waits
+        // unseen, as holdChangedStaticIcon makes a page icon wait.
+        el.classList.remove("sf-icon-loaded");
+        this.adoptedIconsPending.add(el);
+      }
+    });
+    if (added > 0) this.mutate(() => this.loadFonts());
+    return added;
   };
 
   SFLoaderPlugin.prototype.scanStaticIcons = function (root = null, autoLoad = true) {
@@ -1195,31 +1301,120 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
       family: fallbackFont.family
     });
     return `@font-face {\n` + `  font-family: '${fallbackFont.family}';\n` + `  src: url('${url}') format('${fallbackFont.format}');\n` + `  font-style: normal;\n` + `  font-weight: ${fallbackFont.weight};\n` + `  font-display: block;\n` + `}\n\n` + `${selector} {\n` + `  --sf-icon--font-family: '${fallbackFont.family}';\n` + `  font-family: '${fallbackFont.family}';\n` + `  font-feature-settings: 'liga';\n` + `  font-variation-settings: ` + `'FILL' var(--sf-icon--fill, 0), ` + `'wght' var(--sf-icon--weight, 400), ` + `'GRAD' var(--sf-icon--grade, 0), ` + `'opsz' var(--sf-icon--optical-size, 24);\n` + `}\n`;
+  }; // R074 D-A: the full font is loaded off to the side before its stylesheet
+  // goes in. The fallback rule sets every icon of the family in the full
+  // face; put in while that face was still on its way, it blanked every icon
+  // the subset already drew (font-display: block) until the ~420 KB file
+  // arrived, 2.3 s on a slow network. The face is fetched with the FontFace
+  // API, joins document.fonts once its file is in, and the stylesheet that
+  // follows carries no @font-face of its own. One load per family, shared by
+  // the prefetch (loadIconSubsetFamily) and every fallback; a failed load is
+  // forgotten, so the next fallback tries again (and the CSS face meanwhile).
+
+
+  SFLoaderPlugin.prototype.loadIconFallbackFace = function (type = "") {
+    const normalizedType = this.normalizeIconType(type || this.getDefaultIconType());
+    if (!this.iconFallbackFaceLoads) this.iconFallbackFaceLoads = new Map();
+
+    if (this.iconFallbackFaceLoads.has(normalizedType)) {
+      return this.iconFallbackFaceLoads.get(normalizedType);
+    }
+
+    if (!this.canPreloadIconFontFaces()) return Promise.resolve(null);
+    const cssText = this.buildIconFallbackCss({
+      type: normalizedType
+    });
+    const parsed = this.parseIconFontFaceBlocks(cssText);
+    if (!parsed.length) return Promise.resolve(null);
+    const faces = parsed.map(({
+      family,
+      src,
+      descriptors
+    }) => new window.FontFace(family, src, descriptors));
+    const load = Promise.all(faces.map(face => face.load())).then(() => ({
+      faces,
+      url: this.getIconFallbackFontUrl(normalizedType),
+      cssText: cssText.replace(/@font-face\s*{[^}]*}\s*/gim, "").trim()
+    })).catch(error => {
+      this.iconFallbackFaceLoads?.delete(normalizedType);
+      console.warn("SFLoader icon fallback font failed to load", error);
+      return null;
+    });
+    this.iconFallbackFaceLoads.set(normalizedType, load);
+    return load;
   };
 
-  SFLoaderPlugin.prototype.applyIconFontFallback = function (options = {}) {
+  SFLoaderPlugin.prototype.applyIconFontFallback = async function (options = {}) {
     const icons = Array.isArray(options.icons) ? options.icons : [];
     const type = this.normalizeIconType(options.type || this.getDefaultIconType());
-    const prev = document.querySelector(`style[data-sf-icons-fallback="${type}"]`);
-    const style = document.createElement("style");
-    style.setAttribute("data-sf-icons-fallback", type);
 
-    if (icons.length) {
-      style.setAttribute("data-sf-icons-fallback-icons", icons.join(","));
+    const fallbackStyle = () => document.querySelector(`style[data-sf-icons-fallback="${type}"]`);
+
+    let prev = fallbackStyle();
+    let preloaded = null;
+
+    if (!prev) {
+      preloaded = await this.loadIconFallbackFace(type);
+      prev = fallbackStyle(); // The request that timed out answered while the full font was on its
+      // way: its subset draws every name, the full font is not needed.
+
+      const generation = Number(options.generation) || 0;
+
+      if (!prev && generation && (this.iconSubsetAppliedGenerations?.get(type) || 0) >= generation) {
+        return true;
+      }
     }
-
-    style.textContent = this.buildIconFallbackCss({
-      type
-    });
-
-    if (!style.textContent) {
-      return false;
-    }
-
-    document.head.appendChild(style);
 
     if (prev) {
-      prev.remove();
+      // The full font already draws this family: it stays as it is. Writing
+      // its stylesheet again would make a new face, and every icon it draws
+      // would go blank until that face loaded (R074: each name that turns up
+      // while the service is slow comes here).
+      if (icons.length) {
+        const named = new Set(String(prev.getAttribute("data-sf-icons-fallback-icons") || "").split(",").filter(Boolean));
+        icons.forEach(icon => named.add(icon));
+        prev.setAttribute("data-sf-icons-fallback-icons", [...named].join(","));
+      }
+    } else {
+      const style = document.createElement("style");
+      style.setAttribute("data-sf-icons-fallback", type);
+
+      if (icons.length) {
+        style.setAttribute("data-sf-icons-fallback-icons", icons.join(","));
+      }
+
+      style.setAttribute("data-sf-icons-fallback-url", this.getIconFallbackFontUrl(type));
+      const family = iconFallbackFontFiles[type]?.family;
+
+      if (preloaded) {
+        preloaded.faces.forEach(face => document.fonts.add(face)); // The faces stay in document.fonts when the subset takes over
+        // (the style alone leaves): a later fallback reuses them as they are.
+
+        style.textContent = preloaded.cssText; // The face the browser matches for the family is the loaded one; a
+        // same-URL CSS face (the icons stylesheet declares one) is loaded too,
+        // from the cache, so no icon waits on it after the rule goes in.
+
+        if (family && icons.length) {
+          await Promise.resolve(document.fonts?.load?.(`400 16px "${family}"`, icons.join(" "))).catch(() => {});
+        }
+
+        if (fallbackStyle()) return this.applyIconFontFallback(options);
+      } else {
+        style.textContent = this.buildIconFallbackCss({
+          type
+        });
+      }
+
+      if (!style.textContent) {
+        return false;
+      }
+
+      document.head.appendChild(style); // No FontFace API, or the face failed: the CSS face is asked for at
+      // once (an icon at font-size 0 may not make the browser fetch it).
+
+      if (!preloaded && family && icons.length) {
+        document.fonts?.load?.(`400 16px "${family}"`, icons.join(" "))?.catch?.(() => {});
+      }
     }
 
     const loadedDescriptorKeys = new Set(this.loadedIcons);
@@ -1315,7 +1510,22 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
     let fontVerification;
 
     if (adopted) {
-      fontVerification = verify();
+      // R078: the core runtime fetches a remembered face off the document's
+      // load (icon-subset-memory.js) and hands its promise over on the
+      // style. It is awaited before the check, and, like a subset request,
+      // for no longer than the deadline: a held icon host then draws from the
+      // full font instead of leaving every icon blank until it answers.
+      const ready = adopted.sfIconFacesReady;
+
+      if (ready && typeof ready.then === "function") {
+        const deadlineMs = Math.max(0, Number(this.iconSubsetDeadlineMs) || 0);
+        let timer = 0;
+        fontVerification = Promise.race([ready, new Promise((resolve, reject) => {
+          timer = setTimeout(() => reject(new Error(`remembered icon subset font not loaded after ${deadlineMs} ms`)), deadlineMs);
+        })]).finally(() => clearTimeout(timer)).then(verify);
+      } else {
+        fontVerification = verify();
+      }
     } else if (prev && this.canPreloadIconFontFaces()) {
       // A subset that already drew: load the grown face first, then swap.
       fontVerification = this.preloadIconFontFaces(cssText).then(preloaded => {
@@ -1434,11 +1644,9 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
 
     if (!loadedCount) {
       throw new Error("Icon manifest fonts were not loaded");
-    }
+    } // The face is loaded (document.fonts.load above); document.fonts.ready
+    // would wait for every other font of the page as well (R074).
 
-    if (document.fonts.ready) {
-      await document.fonts.ready;
-    }
 
     return true;
   };
@@ -1559,11 +1767,9 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
 
     if (!loadedCount) {
       throw new Error("Icon subset CSS fonts were not loaded");
-    }
+    } // The face is loaded (document.fonts.load above); document.fonts.ready
+    // would wait for every other font of the page as well (R074).
 
-    if (document.fonts.ready) {
-      await document.fonts.ready;
-    }
 
     return true;
   };
@@ -1780,6 +1986,37 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
       opticalSize: [...config.opticalSize].sort().join(","),
       icons: [...config.icons].sort()
     })).sort((left, right) => left.defaultType.localeCompare(right.defaultType));
+  }; // R074: how long a page waits for the subset service before it draws the
+  // names it asked for from the full font. Every request returns a font built
+  // for its own list, and the service builds the lists it has not seen one
+  // after another: a click that needed a grown subset waited for every list
+  // ahead of it, up to ~30 s, with the icon blank all that time and nothing
+  // giving up (a slow answer is not an error, so the fallback never ran).
+  // After the deadline the full font draws those names and the subset keeps
+  // growing in the background; it takes over when it arrives and holds every
+  // name the page draws. The background request gives up at the cap.
+
+
+  SFLoaderPlugin.prototype.iconSubsetDeadlineMs = 3000;
+  SFLoaderPlugin.prototype.iconSubsetBackgroundCapMs = 60000; // When a subset request still unanswered starts fetching the full font, so
+  // that it is in by the deadline (R074 F1). 0 fetches it with the request.
+
+  SFLoaderPlugin.prototype.iconFallbackPrefetchMs = 1000;
+
+  SFLoaderPlugin.prototype.isIconFallbackActive = function (type = "") {
+    const normalizedType = this.normalizeIconType(type || this.getDefaultIconType());
+    return Boolean(document.querySelector(`style[data-sf-icons-fallback="${normalizedType}"]`));
+  }; // Whether a subset answer holds every name the page draws in that family
+  // now (and the filled form when one is drawn): only then may it take over
+  // from the full font, whose rule it overrides for every icon of the family.
+
+
+  SFLoaderPlugin.prototype.isIconSubsetAnswerComplete = function (type = "", icons = [], fill = false) {
+    const held = new Set(icons);
+    const current = this.getIconSubsetRequestConfigs().find(config => config.defaultType === type);
+    if (!current) return true;
+    if (current.fill && !fill) return false;
+    return current.icons.every(icon => held.has(icon));
   };
 
   SFLoaderPlugin.prototype.loadIconSubsetFamily = async function (requestConfig) {
@@ -1788,6 +2025,69 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
       icons
     } = requestConfig;
     if (!icons.length) return false;
+    if (!this.iconSubsetGenerations) this.iconSubsetGenerations = new Map();
+    if (!this.iconSubsetRequests) this.iconSubsetRequests = new Map();
+    const generation = (this.iconSubsetGenerations.get(type) || 0) + 1;
+    this.iconSubsetGenerations.set(type, generation);
+    const request = {
+      type,
+      generation,
+      timedOut: false,
+      controller: typeof AbortController === "function" ? new AbortController() : null
+    };
+
+    if (!this.iconSubsetRequests.has(type)) {
+      this.iconSubsetRequests.set(type, new Set());
+    }
+
+    this.iconSubsetRequests.get(type).add(request);
+    const work = this.requestIconSubsetFamily(requestConfig, request).finally(() => this.iconSubsetRequests.get(type)?.delete(request)); // With the full font already drawing this family, a new name draws from
+    // it at once; the grown subset follows in the background.
+
+    const deadlineMs = this.isIconFallbackActive(type) ? 0 : Math.max(0, Number(this.iconSubsetDeadlineMs) || 0);
+    const timedOut = Symbol("timed-out");
+    let timer = 0; // R074 F1: the full font is fetched before the deadline, so the fallback
+    // draws at the deadline and not a whole download after it. Not at once:
+    // a healthy service answers well inside the prefetch point, and a page
+    // that never falls back must not pay ~420 KB for the full font.
+
+    const prefetchMs = Math.min(deadlineMs, Math.max(0, Number(this.iconFallbackPrefetchMs) || 0)); // R-1 (re-acceptance of 0c2898a5): the timer stops when the service
+    // answers, not when the answer's own font is in -- a healthy service on
+    // a slow line answers in milliseconds, and its small font then took more
+    // than a second, which fetched the full font for nothing.
+
+    const prefetch = deadlineMs ? setTimeout(() => {
+      if (!request.answered) void this.loadIconFallbackFace(type);
+    }, prefetchMs) : 0;
+
+    request.onAnswered = () => clearTimeout(prefetch);
+
+    const first = await Promise.race([work, new Promise(resolve => {
+      timer = setTimeout(() => resolve(timedOut), deadlineMs);
+    })]);
+    clearTimeout(timer);
+    clearTimeout(prefetch);
+    if (first !== timedOut) return first;
+    request.timedOut = true;
+    const cap = setTimeout(() => request.controller?.abort(), Math.max(deadlineMs, Number(this.iconSubsetBackgroundCapMs) || 0));
+    work.finally(() => clearTimeout(cap));
+    return this.applyIconFontFallback({
+      icons,
+      type,
+      generation,
+      reason: new Error(deadlineMs ? `icon subset request timed out after ${deadlineMs} ms; the full font draws these icons while the subset grows` : "the full font already draws this family; the subset grows in the background")
+    });
+  }; // One subset request: fetch the stylesheet, load its face, swap it in.
+  // Resolves true when the subset draws, false when it was dropped (outrun
+  // by a newer request, or arriving behind the full font without every name
+  // the page draws); an error before the deadline falls back to the full font.
+
+
+  SFLoaderPlugin.prototype.requestIconSubsetFamily = async function (requestConfig, request) {
+    const {
+      defaultType: type,
+      icons
+    } = requestConfig;
     const host = this.getIconSubsetHost();
     const query = new URLSearchParams({
       icon_names: icons.join(","),
@@ -1806,14 +2106,26 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
     }
 
     if (requestConfig.accumulate) query.set("accumulate", "true");
+
+    if (!this.iconSubsetAppliedGenerations) {
+      this.iconSubsetAppliedGenerations = new Map();
+    }
+
+    const outrun = () => (this.iconSubsetAppliedGenerations.get(type) || 0) > request.generation;
+
     let manifest = null;
     let appliedStyle = null;
 
     try {
+      // No cache: "reload": the list is the cache key, and the service marks
+      // the stylesheet max-age=3600, so a list asked for again (the next page
+      // of the origin, a reload) is answered by the browser.
       const response = await fetch(`${host}/ms/css?${query.toString()}`, {
-        cache: "reload"
+        signal: request.controller?.signal
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      request.answered = true;
+      request.onAnswered?.();
       manifest = this.decodeIconManifestHeader(response.headers.get("X-SIMAI-Font-Manifest"));
       const cssText = await response.text();
       const manifestType = manifest ? this.getIconManifestType(manifest) : type;
@@ -1822,17 +2134,36 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
         throw new Error(`Icon subset family mismatch: requested ${type}, received ${manifestType}`);
       }
 
+      const heldIcons = Array.isArray(manifest?.icons) && manifest.icons.length ? manifest.icons : icons;
+
+      const behindFallback = () => this.isIconFallbackActive(type);
+
+      const dropped = () => outrun() || behindFallback() && !this.isIconSubsetAnswerComplete(type, heldIcons, Boolean(requestConfig.fill));
+
+      if (dropped()) return false;
       const previous = document.querySelector(`style[data-sf-icons-subset-family="${type}"]`);
       const style = document.createElement("style");
       style.setAttribute("data-sf-icons-subset", icons.join(","));
-      style.setAttribute("data-sf-icons-subset-family", type); // Growing a subset that already drew: the icons on the page keep their
-      // glyphs while the grown face loads; only the new names wait for it.
+      style.setAttribute("data-sf-icons-subset-family", type); // Growing a subset that already drew, or taking over from the full
+      // font: the icons on the page keep their glyphs while the face loads;
+      // only the new names wait for it.
 
-      const preloaded = previous ? await this.preloadIconFontFaces(cssText) : null;
+      const preloaded = previous || behindFallback() ? await this.preloadIconFontFaces(cssText) : null;
+
+      if (dropped()) {
+        preloaded?.faces?.forEach(face => document.fonts?.delete?.(face));
+        return false;
+      }
+
       style.textContent = preloaded ? preloaded.cssText : cssText;
       if (preloaded) style.sfIconFontFaces = preloaded.faces;
       document.head.appendChild(style);
       appliedStyle = style;
+      this.iconSubsetAppliedGenerations.set(type, request.generation); // Older requests still on their way are outrun now.
+
+      this.iconSubsetRequests?.get(type)?.forEach(other => {
+        if (other.generation < request.generation) other.controller?.abort();
+      });
 
       if (manifest) {
         if (this.isIconSubsetRemembered()) {
@@ -1855,16 +2186,44 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
         await this.verifyIconCssFonts(cssText, {
           icons
         });
-      }
+      } // Not document.fonts.ready: it waits for every font of the page, the
+      // text faces too; the face this request loads is awaited above.
 
-      if (document.fonts?.ready) await document.fonts.ready;
+
       this.liftIconSubsetPending();
       await new Promise(resolve => requestAnimationFrame(resolve));
       await new Promise(resolve => requestAnimationFrame(resolve));
       this.retireIconSubsetStyle(previous);
+
+      if (request.timedOut) {
+        // The subset that grew in the background takes over from the full
+        // font: it holds every name drawn, and its face is loaded.
+        const fallback = document.querySelector(`style[data-sf-icons-fallback="${type}"]`);
+        fallback?.remove();
+        const loadedDescriptorKeys = new Set(this.loadedIcons);
+        heldIcons.forEach(icon => {
+          const iconAttrs = this.uniqueIcons.get(icon);
+          if (!iconAttrs) return;
+          this.getLoadedDescriptorKeysForIconState(icon, iconAttrs).forEach(key => loadedDescriptorKeys.add(key));
+        });
+        this.loadedIcons = loadedDescriptorKeys;
+        window.dispatchEvent(new CustomEvent("sf-icons-subset:ready", {
+          detail: {
+            icons: new Set(heldIcons),
+            loader: this,
+            types: [type],
+            background: true
+          }
+        }));
+        this.syncStaticIconLoadedState();
+      }
+
       return true;
     } catch (error) {
-      this.retireIconSubsetStyle(appliedStyle);
+      this.retireIconSubsetStyle(appliedStyle); // After the deadline the full font already draws these names: a
+      // background request that fails or is outrun changes nothing.
+
+      if (request.timedOut || outrun()) return false;
       this.setIconManifestForType(type, null);
       safeRemoveItem?.(this.getIconManifestStorageKey(type));
       return this.applyIconFontFallback({
@@ -1872,6 +2231,81 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
         reason: error,
         type
       });
+    }
+  }; // Resolves when the page's first icon request may go: after sf-loader-ready,
+  // then a frame after every Smart tag the Loader asked for and still holds is
+  // defined (a tag drawn by one just defined is waited for in the next round).
+  // A page slow to become ready lets it go at budgetMs -- unless a Smart tag
+  // the Loader asked for is still on the way: the elements that draw the
+  // page's other icons are not there yet, and a request sent now holds a few
+  // names and costs a second whole font a moment later (probe tag-icon-glyph
+  // under load: the button's search alone at 2.5 s, the tags' names at 3 s).
+  // Then it waits for those tags, up to capMs.
+
+
+  SFLoaderPlugin.prototype.holdFirstIconRequest = async function (budgetMs = 2500, capMs = 8000) {
+    const started = Date.now();
+
+    const capLeft = () => Math.max(0, started + capMs - Date.now()); // Waits for the promise or what is left of the cap, whichever comes
+    // first, and clears the cap's timer when the promise wins: a pending 8 s
+    // timer left behind by every round showed as a leak in a page's instance
+    // scope (pair-next sweep, progress-run).
+
+
+    const withinCap = promise => {
+      let timer = 0;
+      const cap = new Promise(resolve => {
+        timer = setTimeout(resolve, capLeft());
+      });
+      return Promise.race([promise, cap]).finally(() => clearTimeout(timer));
+    };
+
+    const frame = () => withinCap(new Promise(resolve => typeof requestAnimationFrame === "function" ? requestAnimationFrame(() => setTimeout(resolve, 0)) : setTimeout(resolve, 16)));
+
+    const registry = window.customElements; // Asked for and not defined yet. A store installed by an older bundle has
+    // no asked(); its held() also lists the tags Core held while parsing.
+
+    const onTheWay = () => {
+      const pending = window.SF?.__internal?.pendingTags;
+      const tags = pending?.asked?.() || pending?.held?.() || [];
+      return registry ? tags.filter(tag => !registry.get(tag)) : [];
+    }; // Asked for only after ready (the page's icons met on the frame that
+    // dispatched it), there is no ready to wait for: the frame and the tags on
+    // the way are still waited for below.
+
+
+    if (!this.eventSend) await new Promise(resolve => {
+      let timer = 0;
+
+      const release = () => {
+        window.removeEventListener("sf-loader-ready", release);
+        clearTimeout(timer);
+        resolve();
+      };
+
+      const check = () => {
+        const elapsed = Date.now() - started;
+
+        if (elapsed >= capMs || elapsed >= budgetMs && !onTheWay().length) {
+          release();
+          return;
+        }
+
+        timer = setTimeout(check, Math.max(50, budgetMs - elapsed));
+      };
+
+      window.addEventListener("sf-loader-ready", release);
+      timer = setTimeout(check, budgetMs);
+    });
+
+    for (let round = 0; round < 8 && capLeft() > 0; round += 1) {
+      await frame();
+      const waiting = onTheWay();
+      if (!waiting.length) return; // Defined or failed: a tag whose module failed to load is let go at
+      // once (D2: an aborted sf-tag held the first request for the whole cap).
+
+      const pending = window.SF?.__internal?.pendingTags;
+      await withinCap(Promise.all(waiting.map(tag => pending?.settled?.(tag) || registry.whenDefined(tag))));
     }
   };
 
@@ -1885,22 +2319,25 @@ function installIconSubsetRuntime(SFLoaderPlugin, {
     // before the page showed its icons. A frame after ready, the elements have
     // drawn theirs and one request carries them all. A page that is slow to
     // become ready sends it on the timer.
+    //
+    // Ready is not yet every element drawn: it is dispatched when the Smart
+    // bundles' scripts have run, and a bundle whose element is defined a
+    // moment later (sf-tag after sf-button) draws its sf-icon after the frame
+    // that followed ready. Under load the first request then held the
+    // button's search alone and the tags' names went in a second request,
+    // their glyphs blank until a second font came back (probe tag-icon-glyph,
+    // pair 1110). So the hold also waits for the Smart tags the Loader still
+    // holds -- asked for, not yet defined -- and a frame after they are
+    // (holdFirstIconRequest).
+    // Held whether it is first asked for before ready or after it: the scan
+    // runs at DOMContentLoaded (R078), and a page whose icons are first
+    // flushed on the frame that dispatched ready sent its first request with
+    // sf-tag still on the way, the tag's glyph in a second font (F3).
 
 
-    if (this.eventSend === false && !this.iconFirstRequestReleased) {
+    if (!this.iconFirstRequestReleased) {
       if (!this.iconFirstRequestHeld) {
-        this.iconFirstRequestHeld = new Promise(resolve => {
-          let timer = 0;
-
-          const release = () => {
-            window.removeEventListener("sf-loader-ready", release);
-            clearTimeout(timer);
-            requestAnimationFrame(() => setTimeout(resolve, 0));
-          };
-
-          timer = setTimeout(release, 2500);
-          window.addEventListener("sf-loader-ready", release);
-        }).then(() => {
+        this.iconFirstRequestHeld = this.holdFirstIconRequest().then(() => {
           this.iconFirstRequestReleased = true;
           this.iconFirstRequestHeld = null;
           return this.loadFonts();
@@ -2227,7 +2664,7 @@ function SFLoaderPlugin(params) {
   this.arrowInterval = null;
   this.contentPreloader = '';
   this.backgroundPreloader = params.backgroundPreloader ? params.backgroundPreloader : (0,_preloader__WEBPACK_IMPORTED_MODULE_10__.getPreloaderBackground)();
-  this.tempLoaderStyles = 'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-0, #fff));text-align: center;';
+  this.tempLoaderStyles = 'inset: 0;position: fixed;width: 100%;height: 100vh;opacity: 1;z-index: 1000;background-color: var(--sf-color--surface-highest, var(--sf-surface-page, #fff));text-align: center;';
   this.modifierPreloader = params.modifierPreloader ? params.modifierPreloader : 'loader-default';
   this.isDebug = false; // Minified bundles unless someone is debugging: every bundle ships
   // <name>.min.js and <name>.min.css beside the readable files, at about 40 %
@@ -6404,6 +6841,13 @@ SFLoaderPlugin.prototype.addToMissingFiles = function (pluginName, type, missing
     this.notFoundFiles[name].missingMin = missingMin;
   }
 
+  if (type === 'js') {
+    // The rule's tags will not be defined: nothing waits for them (D2).
+    const pending = globalThis.window?.SF?.__internal?.pendingTags;
+    const tags = this.findPlugins?.[pluginName]?.tags;
+    if (pending?.fail && Array.isArray(tags)) tags.forEach(tag => pending.fail(tag));
+  }
+
   safeSetItem('SF_MISSING_PLUGINS', (0,_cacheCodec__WEBPACK_IMPORTED_MODULE_0__.encodeCacheValue)(JSON.stringify(this.getPersistentMissingFiles())));
 };
 
@@ -6489,12 +6933,51 @@ SFLoaderPlugin.prototype.insertStyle = function (src, pluginURL) {
 
     if (this.pendingStyleLinks.length === 1) {
       Promise.resolve().then(() => {
-        const links = this.pendingStyleLinks.splice(0);
-        head.append(...links);
+        // One by one, so a sheet of this batch is also placed against the
+        // ones before it; the browser still recalculates once, after the task.
+        for (const link of this.pendingStyleLinks.splice(0)) {
+          if (!placeBeforeLaterPoint(head, link)) head.append(link);
+        }
       });
     }
   });
-}; // One insertion per asset URL, shared by every Loader on the page
+}; // A utility's sheets per point, in the order their rules must stand: the base
+// sheet first, then the breakpoints from narrow to wide, then the states.
+// Each pass of the Loader asks for its sheets in this order, but a later pass
+// appended its sheets after an earlier pass's: a base sheet that came second
+// stood after md, so grid-col-1 beat md:grid-col-2 and a wide page drew one
+// column (2026-11-10 review, P9). A sheet now goes before the first sheet of
+// the same utility already in <head> whose point comes after its own.
+
+
+const UTILITY_SHEET_POINTS = ['default', 'sm', 'md', 'lg', 'xl', 'xxl', 'hover', 'focus', 'focus-visible', 'active'];
+const UTILITY_SHEET = /\/utility\/([^/?#]+)\/([^/?#]+)\/css\/\2(?:\.min)?\.css(?:[?#]|$)/u;
+
+function utilitySheetPoint(href) {
+  const match = UTILITY_SHEET.exec(String(href || ''));
+  if (!match) return null;
+  const rank = UTILITY_SHEET_POINTS.indexOf(match[2]);
+  return rank < 0 ? null : {
+    utility: match[1],
+    rank
+  };
+}
+
+function placeBeforeLaterPoint(head, link) {
+  const own = utilitySheetPoint(link.getAttribute?.('href') ?? link.href);
+  if (!own || typeof head.querySelectorAll !== 'function') return false;
+
+  for (const other of head.querySelectorAll('link[rel="stylesheet"]')) {
+    const point = utilitySheetPoint(other.getAttribute('href'));
+
+    if (point && point.utility === own.utility && point.rank > own.rank) {
+      head.insertBefore(link, other);
+      return true;
+    }
+  }
+
+  return false;
+} // One insertion per asset URL, shared by every Loader on the page
 // (simai/ui-source#12 follow-up). A dependency named by several plugins --
 // badges, by sf-avatar, sf-icon, sf-icon-button and sf-badge -- had its script
 // inserted once per plugin, and a runtime with module-scope state then ran
@@ -6647,6 +7130,19 @@ SFLoaderPlugin.prototype.onWindowLoad = function (fn) {
       once: true
     });
   }
+}; // R078: the page is scanned once it is parsed, not at the window's load. A
+// font or image still on its way held load -- 25.9 s with the icon host held
+// on a warm profile -- and the scan, sf-loader-ready and the splash with it.
+
+
+SFLoaderPlugin.prototype.onDomParsed = function (fn) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => fn(), {
+      once: true
+    });
+  } else {
+    fn();
+  }
 };
 
 SFLoaderPlugin.prototype.endSearch = function () {
@@ -6733,12 +7229,12 @@ SFLoaderPlugin.prototype.prepare = function (observer = null) {
     this.logTiming('prepare: preloader run');
   }
 
-  this.onWindowLoad(() => {
+  this.onDomParsed(() => {
     if (observer) {
       observer.disconnect();
     }
 
-    this.logTiming('onWindowLoad search start');
+    this.logTiming('page scan start');
     this.findShortCodes(document.body);
 
     try {
@@ -6771,8 +7267,12 @@ SFLoaderPlugin.prototype.prepare = function (observer = null) {
         this.getLoader(this.module, true);
       }
 
-      this.revalidateMissingPlugins();
-      this.logTiming('onWindowLoad search done');
+      this.revalidateMissingPlugins(); // Changes met during the scan are read now, not at the window's load
+      // (scheduleSearchEnd still ends it there for a page whose scan is
+      // slower than its load).
+
+      this.endSearch();
+      this.logTiming('page scan done');
     })().catch(error => console.warn('SFLoader: the page scan failed', error));
   });
 };
@@ -7073,7 +7573,7 @@ const props = {
   theme: window.SF_BOOT_CONFIG?.theme ?? true,
   smart: window.SF_BOOT_CONFIG?.smart || {},
   findPlugins: SF.RuleLoader,
-  backgroundPreloader: 'var(--sf-color--surface-highest, var(--sf-surface-0, #fff))',
+  backgroundPreloader: 'var(--sf-color--surface-highest, var(--sf-surface-page, #fff))',
   modifierPreloader: 'loader-default',
   contentPreloaderText: 'LOADING'
 };
@@ -7663,8 +8163,39 @@ SF.__internal.litHtml = (tagName, props = {}) => {
   return (0,lit_static_html_js__WEBPACK_IMPORTED_MODULE_11__.html)`<${tag} ...=${props}></${tag}>`;
 };
 
-SF.whenDefine = whenSmartDefined;
-SF.whenDefined = whenSmartDefined;
+SF.whenDefined = whenSmartDefined; // SF.whenDefine is the older name of SF.whenDefined: a dated alias of the same
+// function until the sweep (journal global-sf-when-define). Enumerable, as it
+// was, so a page that lists window.SF still sees it; a read is noted in
+// SF.deprecations. The Framework's own code calls SF.whenDefined.
+
+const WHEN_DEFINE_ALIAS = Object.freeze({
+  since: '2026-11-11',
+  remove_after: '2027-01-01'
+});
+Object.defineProperty(SF, 'whenDefine', {
+  configurable: true,
+  enumerable: true,
+
+  get() {
+    (0,_deprecations_js__WEBPACK_IMPORTED_MODULE_13__.noteDeprecated)({
+      kind: 'global',
+      from: 'SF.whenDefine',
+      to: 'SF.whenDefined',
+      ...WHEN_DEFINE_ALIAS
+    });
+    return whenSmartDefined;
+  },
+
+  set(value) {
+    Object.defineProperty(SF, 'whenDefine', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value
+    });
+  }
+
+});
 
 try {
   window.dispatchEvent(new CustomEvent('sf-loader-init', {
@@ -8249,7 +8780,7 @@ module.exports = /*#__PURE__*/JSON.parse('{"version":1,"aliases":{"column-gap/de
 /***/ "e7acc025fab1"
 (module) {
 
-module.exports = /*#__PURE__*/JSON.parse('{"cl-accordion":["display/default","flex-direction/default","gap/default","position/default"],"cl-alert":["display/default","flex-direction/default","flex-wrap/default","flex/default","place-items/default"],"cl-alert-bar":["sr-only/default"],"cl-avatar":["align-items/default","background-color/default","display/default","element-position/default","flex-direction/default","flex/default","height/default","justify-content/default","overflow/default","place-items/default","position/default","text-overflow/default","transition-property/default","white-space/default","width/default"],"cl-avatar-group":["align-items/default","display/default","flex-direction/default"],"cl-badge":["display/default","flex-direction/default","flex-wrap/default","justify-content/default","place-items/default","sr-only/default"],"cl-breadcrumbs":["align-items/default","display/default"],"cl-button":["align-items/default","display/default","flex/default","pointer-events/default","sr-only/default"],"cl-button-close":["align-items/default","display/default","justify-content/default","place-items/default","pointer-events/default"],"cl-button-icon":["align-items/default","display/default","pointer-events/default","sr-only/default"],"cl-checkbox":["cursor/default","display/default","flex-direction/default","transition-property/default"],"cl-confirm":["display/default"],"cl-confirm-change":["display/default"],"cl-contents":["display/default","position/default","width/default"],"cl-drawer":["display/default","justify-content/default","margin/default","place-items/default","resize/default","visibility/default"],"cl-dropdown":["align-items/default","background-color/default","background-size/default","cursor/default","display/default","flex-direction/default","flex-wrap/default","flex/default","place-items/default","position/default","transition-property/default"],"cl-empty-state":["display/default"],"cl-file-download":["cursor/default","display/default","transition-property/default"],"cl-file-upload":["align-items/default","align-self/default","cursor/default","display/default","flex-direction/default","flex/default","gap/default","grid-template-columns/default","justify-content/default","justify-items/default","width/default"],"cl-gallery":["align-items/default","backdrop-filter-blur/default","background-color/default","border-radius/default","border-width/default","box-shadow/default","display/default","filter-blur/default","flex-direction/default","gap/default","height/default","justify-content/default","margin/default","max-width/default","min-height/default","min-width/default","padding/default","text-color/default","width/default"],"cl-header-page":["align-items/default","display/default","flex-direction/default","flex-grow/default","flex-wrap/default","margin/default","min-width/default","text-overflow/default"],"cl-header-site":["container/default","margin/default","position/default","width/default"],"cl-help-mark":["display/default"],"cl-icon":["font-weight/default"],"cl-input":["align-items/default","display/default","flex-direction/default","text-align/default","transition-property/default"],"cl-input-choice":["align-items/default","display/default","justify-content/default","transition-property/default"],"cl-input-code":["sr-only/default"],"cl-input-color":["display/default"],"cl-input-country":["display/default","flex-direction/default","place-items/default","transition-property/default"],"cl-input-date":["align-content/default","align-items/default","display/default","element-position/default","flex-direction/default","gap/default","grid-template-columns/default","justify-content/default","overflow/default","position/default"],"cl-input-lookup":["align-items/default","display/default","flex-direction/default","flex-wrap/default","flex/default","justify-content/default","overflow/default"],"cl-input-quantity":["display/default","filter-blur/default","flex-direction/default","flex-wrap/default","justify-content/default","place-items/default"],"cl-input-rich":["align-items/default","container/default","display/default","flex-direction/default","flex-wrap/default","font-style/default","font-weight/default"],"cl-input-textarea":["display/default","flex-direction/default","transition-property/default"],"cl-language":["display/default"],"cl-list":["align-items/default","display/default","flex/default","justify-content/default","sr-only/default"],"cl-list-attention":["sr-only/default"],"cl-list-description":["font-family/default","sr-only/default","text-overflow/default"],"cl-list-feed":["display/default","sr-only/default"],"cl-list-item":["align-items/default","background-color/default","background-size/default","cursor/default","display/default","flex-direction/default","flex-wrap/default","flex/default","gap/default","justify-content/default","place-items/default"],"cl-list-timeline":["position/default","sr-only/default"],"cl-menu":["position/default"],"cl-menu-context":["display/default","flex-direction/default","flex/default","position/default","text-decoration/default"],"cl-modal":["align-items/default","backdrop-filter-blur/default","border-radius/default","border-width/default","display/default","element-position/default","filter-blur/default","flex-direction/default","flex-wrap/default","font-size/default","gap/default","height/default","justify-content/default","margin/default","min-width/default","overflow/default","padding/default","place-items/default","position/default","text-color/default","title/default","width/default","z-index/default"],"cl-pager":["sr-only/default"],"cl-pagination":["align-items/default","display/default","flex-direction/default","justify-content/default","position/default"],"cl-popover":["display/default","position/default"],"cl-progress-bar":["align-items/default","display/default","flex-direction/default","transition-property/default"],"cl-progress-ring":["display/default"],"cl-progress-run":["sr-only/default","white-space/default"],"cl-progress-scale":["align-items/default","display/default","flex-direction/default","grid-template-columns/default","overflow/default"],"cl-radio":["align-items/default","display/default","flex-direction/default","justify-content/default","transition-property/default"],"cl-reference-link":["align-items/default","display/default"],"cl-resizer":["display/default","position/default","resize/default","text-max-width/default"],"cl-search":["display/default","sr-only/default"],"cl-segmented":["align-items/default","display/default","pointer-events/default","text-align/default"],"cl-skeleton":["animation/default","display/default","flex/default"],"cl-slider":["background-color/default","border-radius/default","display/default","padding/default","text-color/default"],"cl-slider-range":["flex/default"],"cl-steps":["cursor/default","display/default","flex-direction/default","justify-content/default","place-items/default"],"cl-switch":["align-items/default","display/default","flex-direction/default","justify-content/default","transition-property/default"],"cl-tabs":["container/default","display/default","flex-direction/default","visibility/default"],"cl-tag":["background-size/default","display/default","flex-direction/default","flex-wrap/default","justify-content/default","min-width/default","place-items/default"],"cl-tile-metric":["position/default","sr-only/default"],"cl-toast":["align-items/default","display/default","flex-direction/default","flex/default","justify-content/default","place-items/default"],"cl-tooltip":["display/default","flex-direction/default","position/default"],"cl-tree":["display/default","flex-direction/default"],"cl-tree-item":["align-items/default","display/default","flex-direction/default","position/default"],"cl-wizard":["display/default","sr-only/default"]}');
+module.exports = /*#__PURE__*/JSON.parse('{"cl-accordion":["display/default","flex-direction/default","gap/default","position/default"],"cl-alert":["align-items/default","display/default","flex-direction/default","flex-wrap/default","flex/default","place-items/default"],"cl-alert-bar":["sr-only/default"],"cl-avatar":["align-items/default","background-color/default","display/default","element-position/default","flex-direction/default","flex/default","height/default","justify-content/default","overflow/default","place-items/default","position/default","text-overflow/default","transition-property/default","white-space/default","width/default"],"cl-avatar-group":["align-items/default","display/default","flex-direction/default"],"cl-badge":["display/default","flex-direction/default","flex-wrap/default","justify-content/default","place-items/default","sr-only/default"],"cl-breadcrumbs":["align-items/default","display/default"],"cl-button":["align-items/default","display/default","flex/default","pointer-events/default","sr-only/default"],"cl-button-close":["align-items/default","display/default","justify-content/default","place-items/default","pointer-events/default"],"cl-button-copy":["display/default"],"cl-button-icon":["align-items/default","display/default","pointer-events/default","sr-only/default"],"cl-change":["display/default","sr-only/default"],"cl-checkbox":["cursor/default","display/default","flex-direction/default","transition-property/default"],"cl-confirm":["display/default"],"cl-confirm-change":["display/default"],"cl-contents":["display/default","position/default","width/default"],"cl-drawer":["display/default","justify-content/default","margin/default","place-items/default","resize/default","visibility/default"],"cl-dropdown":["align-items/default","background-color/default","background-size/default","cursor/default","display/default","flex-direction/default","flex-wrap/default","flex/default","place-items/default","position/default","transition-property/default"],"cl-empty-state":["display/default"],"cl-file-download":["cursor/default","display/default","transition-property/default"],"cl-file-upload":["align-items/default","align-self/default","cursor/default","display/default","flex-direction/default","flex/default","gap/default","grid-template-columns/default","justify-content/default","justify-items/default","width/default"],"cl-gallery":["align-items/default","backdrop-filter-blur/default","background-color/default","border-radius/default","border-width/default","box-shadow/default","display/default","filter-blur/default","flex-direction/default","gap/default","height/default","justify-content/default","margin/default","max-width/default","min-height/default","min-width/default","padding/default","text-color/default","width/default"],"cl-header-page":["align-items/default","display/default","flex-direction/default","flex-grow/default","flex-wrap/default","margin/default","min-width/default","text-overflow/default"],"cl-header-site":["container/default","margin/default","position/default","width/default"],"cl-help-mark":["display/default"],"cl-icon":["font-weight/default"],"cl-input":["align-items/default","display/default","flex-direction/default","text-align/default","transition-property/default"],"cl-input-choice":["align-items/default","display/default","justify-content/default","transition-property/default"],"cl-input-code":["sr-only/default"],"cl-input-color":["display/default"],"cl-input-country":["display/default","flex-direction/default","place-items/default","transition-property/default"],"cl-input-date":["align-items/default","display/default","element-position/default","flex-direction/default","gap/default","grid-template-columns/default","justify-content/default","overflow/default","position/default","sr-only/default"],"cl-input-lookup":["align-items/default","display/default","flex-direction/default","flex-wrap/default","flex/default","justify-content/default","overflow/default"],"cl-input-quantity":["display/default","filter-blur/default","flex-direction/default","flex-wrap/default","justify-content/default","place-items/default"],"cl-input-rich":["align-items/default","container/default","display/default","flex-direction/default","flex-wrap/default","font-style/default","font-weight/default"],"cl-input-textarea":["display/default","flex-direction/default","transition-property/default"],"cl-language":["display/default"],"cl-list":["align-items/default","display/default","flex/default","justify-content/default","sr-only/default"],"cl-list-attention":["sr-only/default"],"cl-list-description":["display/default","font-family/default","sr-only/default","text-overflow/default"],"cl-list-feed":["display/default","sr-only/default"],"cl-list-item":["align-items/default","background-color/default","background-size/default","cursor/default","display/default","flex-direction/default","flex-wrap/default","flex/default","gap/default","justify-content/default","place-items/default"],"cl-list-timeline":["display/default","position/default","sr-only/default"],"cl-menu":["display/default","position/default","visibility/default"],"cl-menu-context":["display/default","text-decoration/default"],"cl-modal":["align-items/default","backdrop-filter-blur/default","border-radius/default","border-width/default","display/default","element-position/default","filter-blur/default","flex-direction/default","flex-wrap/default","font-size/default","gap/default","height/default","justify-content/default","margin/default","min-width/default","overflow/default","padding/default","place-items/default","position/default","text-color/default","width/default","z-index/default"],"cl-pager":["sr-only/default"],"cl-pagination":["align-items/default","display/default","flex-direction/default","justify-content/default","position/default"],"cl-popover":["display/default","position/default"],"cl-progress-bar":["align-items/default","display/default","flex-direction/default","transition-property/default"],"cl-progress-ring":["display/default"],"cl-progress-run":["sr-only/default","white-space/default"],"cl-progress-scale":["align-items/default","display/default","flex-direction/default","grid-template-columns/default","overflow/default"],"cl-radio":["align-items/default","display/default","flex-direction/default","justify-content/default","transition-property/default"],"cl-reference-link":["align-items/default","display/default"],"cl-resizer":["display/default","position/default","resize/default","text-max-width/default"],"cl-search":["display/default","sr-only/default"],"cl-segmented":["align-items/default","display/default","pointer-events/default","text-align/default"],"cl-skeleton":["animation/default","display/default","flex/default"],"cl-slider":["background-color/default","border-radius/default","display/default","padding/default","text-color/default"],"cl-slider-range":["flex/default"],"cl-steps":["cursor/default","display/default","flex-direction/default","justify-content/default","place-items/default"],"cl-switch":["align-items/default","display/default","flex-direction/default","justify-content/default","transition-property/default"],"cl-tabs":["container/default","display/default","flex-direction/default","visibility/default"],"cl-tag":["background-size/default","display/default","flex-direction/default","flex-wrap/default","justify-content/default","min-width/default","place-items/default"],"cl-tile-metric":["position/default","sr-only/default"],"cl-time":["display/default","position/default","visibility/default"],"cl-toast":["align-items/default","display/default","flex-direction/default","flex/default","justify-content/default","place-items/default"],"cl-tooltip":["display/default","flex-direction/default","position/default"],"cl-tree":["display/default","flex-direction/default"],"cl-tree-item":["align-items/default","display/default","flex-direction/default","position/default"],"cl-wizard":["display/default","sr-only/default"]}');
 
 /***/ }
 

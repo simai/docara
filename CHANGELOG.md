@@ -8,6 +8,19 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **Docara bundles SIMAI Framework `ui-7fb26d395af2`** (registry bound at
+  `4c012852f`) instead of `ui-b4a77681f0a7`. What sites see: menus and the
+  context menu without late links and with the reviewed popup widths
+  (sf-menu-context 1.14.3, sf-menu 1.6), the dropdown's first paint, the
+  reviewed buttons (sf-button 1.13, sf-button-icon 1.8.4), notices (sf-alert
+  1.2.1), sf-modal 1.7, the tree 1.2 and sf-tree 2.1.2, the outline 1.1,
+  sf-contents 1.4.3, sf-search 1.7.4, sf-language 1.2.4, sf-pager 1.2.3,
+  the code highlighter 1.2.2 and the scrollbar 1.1.1, the icon loading that
+  waits for its Smart tags, and the new `.sf-group-heading`, `sf-time` and
+  `sf-change`. The release removes no tag or class Docara's markup uses.
+  Sites that pin `ui-b4a77681f0a7` (Docara 3.14.0 to 3.14.2) build with the
+  new release: that lock is recorded as superseded. The update page lists the
+  new pair and the range of the old one.
 - **An example's label is a caption under the frame.** The `label` of
   `:::example` was the first tab, and a descriptive label made the tab row
   scroll, so the code tabs slid out of view. The label now sits under the

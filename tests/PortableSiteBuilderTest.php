@@ -1097,7 +1097,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/b4a77681f0a7f1c540566e5abac2a4f9d3082a3d/distr/',
+                '/_docara/vendor/simai-framework/runtime/7fb26d395af28dfcaac2a5df9de254b3067dc4ae/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -1364,9 +1364,9 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => 'ef768d0a3fccfac3f322d96bd683de7582985d7d513ecfe92f979741b0046653',
-            'smart/button/js/button.js' => '476eeb5739db710eafcd2341744e2b753a3dbe1599f7989037f68e4466ab70fd',
-            'smart/icon/js/icon.js' => '9570598e6e97e4b5b2bca7711a9eb7e802d1af9ea78b8d57aa8efcc4b52d05c5',
+            'smart/alert/js/alert.js' => 'b5523e7016c4485b7cc852f0999c26e328faf0cf272d2662edf9a19b3eadb0ed',
+            'smart/button/js/button.js' => 'a75c5cb886b740ef71381693b596f37dbc506a4dda9b9ff07ef5e8f91475bcbd',
+            'smart/icon/js/icon.js' => 'f1d5c66cda2597a136b8bfb28721fe40699f0c994c6876c428d657c88e200bed',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
             self::assertFileExists($published);
@@ -1463,7 +1463,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('ui-b4a77681f0a7', $componentCatalog['framework_pair']);
+        self::assertSame('ui-7fb26d395af2', $componentCatalog['framework_pair']);
         self::assertCount(40, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -2052,7 +2052,7 @@ MD;
             $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.min\.js\?sf_v=ui-b4a77681f0a7-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.min\.js\?sf_v=ui-7fb26d395af2-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));
@@ -2892,8 +2892,9 @@ MD;
             // 4-13 stylesheets (the Framework contents, pager, search and
             // settings components add their own since 3.10.0; the shell's
             // example caption, desktop scroll and static tree rules in 3.14.3
-            // tip the getting-started page's bundling to 13).
-            self::assertLessThanOrEqual(13, count($links), $page);
+            // tip the getting-started page's bundling to 13, and the
+            // ui-7fb26d395af2 sheets to 14).
+            self::assertLessThanOrEqual(14, count($links), $page);
             self::assertLessThan(count($closure), count($links), $page);
             $linked = array_merge(...array_map(
                 static fn (string $filename): array => array_column($stylesheets['bundles'][$filename]['inputs'], 'sha256'),

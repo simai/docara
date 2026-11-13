@@ -487,8 +487,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // files), SIMAI Framework ui-b4a77681f0a7 with its new Smart files (28)
         // and the shell files that follow it and the preloaded sheets: 3288.
         // The desktop example scroll and static tree rules regroup the shell
-        // stylesheets into one more group: 3289.
-        self::assertCount(3289, $firstFiles);
+        // stylesheets into one more group: 3289. SIMAI Framework
+        // ui-7fb26d395af2 (four more runtime files, five more Smart files)
+        // and the shell groups that follow it: 3301.
+        self::assertCount(3301, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

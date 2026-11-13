@@ -1,5 +1,24 @@
 @charset "UTF-8";
 @layer sf.reset, sf.tokens, sf.base, sf.utilities, sf.components, sf.overrides, sf.states;
+/* The box of the Smart menu, which used to be four utilities in its template:
+   the root a row of one (flex), the content a column that takes the rest
+   (flex flex-col flex-1). On a Docara page the Loader linked the utility
+   sheets they need after the first frame -- utility/position for the frame's
+   relative -- so the box is this sheet's now (component.context-menu 1.8.0).
+   In sf.base, below the utilities as the utilities were below the
+   components: a utility a page adds to the root (hidden) and every
+   component rule still win over it, as they did. Class markup keeps writing
+   the utilities; the rules read the Smart frame only. */
+@layer sf.base {
+  .sf-context-menu:has(> .sf-context-menu-frame) {
+    display: flex;
+  }
+  .sf-context-menu-frame > .sf-context-menu-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
+  }
+}
 @layer sf.components {
   .sf-context-menu {
     --sf-context-menu-viewport-space: var(--sf-space-1\/2);
@@ -8,7 +27,28 @@
     --sf-context-menu-tail-half: 0px;
     --sf-context-menu-tail-corner-offset: 0px;
   }
+  /* The frame: .relative in class markup, .sf-context-menu-frame in the Smart
+     menu's (sf-menu-context 1.14.1), which writes no utility for its box. */
   .sf-context-menu > .relative {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    min-inline-size: 0;
+    min-height: 0;
+    min-block-size: 0;
+    max-width: none;
+    max-inline-size: none;
+    max-width: none;
+    max-width: var(--sf-context-menu-available-inline-size, none);
+    max-inline-size: var(--sf-context-menu-available-inline-size, none);
+    max-height: none;
+    max-block-size: none;
+    max-height: none;
+    max-height: var(--sf-context-menu-available-block-size, none);
+    max-block-size: var(--sf-context-menu-available-block-size, none);
+  }
+  .sf-context-menu > .sf-context-menu-frame {
+    position: relative;
     display: flex;
     min-width: 0;
     min-inline-size: 0;
@@ -316,25 +356,31 @@
        that keeps its edge where the shadow does not show. */
     --sf-context-menu-content--background-color: var(--sf-context-menu-background-color, var(--sf-surface-popup));
     --sf-surface-place: var(--sf-context-menu-content--background-color);
+    --sf-surface-place-solid: var(--sf-context-menu-content--background-color);
+    --sf-surface-place-ground: var(--sf-context-menu-content--background-color);
     --sf-on-surface: light-dark(var(--sf-neutral-10), var(--sf-neutral-90));
+    --sf-on-surface-hover: light-dark(var(--sf-neutral-15), var(--sf-neutral-85));
+    --sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-80));
     --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
-    --sf-on-surface-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-85));
+    --sf-on-surface-container-variant: var(--sf-place--popup-container-variant, light-dark(var(--sf-neutral-35), var(--sf-neutral-90)));
     --sf-surface-state-hover: light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4));
     --sf-surface-state-select: light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8));
     --sf-surface-state-active: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
-    --sf-surface-container: light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16));
-    --sf-surface-container-hover: light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20));
-    --sf-surface-container-active: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
-    --sf-outline: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48));
-    --sf-outline-variant: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
+    --sf-surface-container: light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8));
+    --sf-surface-container-hover: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+    --sf-surface-container-active: light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16));
+    --sf-outline: var(--sf-place--popup-outline, light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48)));
     --sf-surface-disabled: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
     --sf-on-surface-disabled: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48));
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
+    --sf-surface-underlay: initial;
     --sf-disable: var(--sf-surface-disabled);
     --sf-on-disable: var(--sf-on-surface-disabled);
     --sf-on-surface-container--variant: var(--sf-on-surface-container-variant);
     --sf-surface-transparent-active: var(--sf-surface-state-active);
     --sf-surface-transparent-hover: var(--sf-surface-state-hover);
     --sf-surface-transparent-select: var(--sf-surface-state-select);
+    --sf-place--container-outline: initial;
     border: var(--sf-px) solid var(--sf-outline-variant);
     border: var(--sf-context-menu-border-width, var(--sf-px)) solid var(--sf-context-menu-border-color, var(--sf-outline-variant));
     /* The inset: a row's highlight stands --sf-space-1/4 from the panel's
@@ -377,6 +423,38 @@
         overscroll-behavior: contain;
     scroll-behavior: auto;
   }
+  :where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, .sf-alert-bar--error .sf-alert-bar-row, .sf-alert-bar--error .sf-alert-bar-strip, .sf-alert-bar--danger .sf-alert-bar-row, .sf-alert-bar--danger .sf-alert-bar-strip, .sf-alert-bar--warning .sf-alert-bar-row, .sf-alert-bar--warning .sf-alert-bar-strip, .sf-alert-bar--info .sf-alert-bar-row, .sf-alert-bar--info .sf-alert-bar-strip, .bg-surface-inverse, .bg-surface-inverse-fixed, .bg-primary-container, .bg-secondary-container, .bg-tertiary-container, .bg-info-container, .bg-success-container, .bg-warning-container, .bg-error-container, .sf-surface-media) .sf-context-menu .sf-context-menu-content {
+    --sf-outline-variant: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
+  }
+  :where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, .sf-alert-bar--error .sf-alert-bar-row, .sf-alert-bar--error .sf-alert-bar-strip, .sf-alert-bar--danger .sf-alert-bar-row, .sf-alert-bar--danger .sf-alert-bar-strip, .sf-alert-bar--warning .sf-alert-bar-row, .sf-alert-bar--warning .sf-alert-bar-strip, .sf-alert-bar--info .sf-alert-bar-row, .sf-alert-bar--info .sf-alert-bar-strip, .bg-surface-inverse, .bg-surface-inverse-fixed) .sf-context-menu .sf-context-menu-content {
+    --sf-primary: var(--sf-place--outer-primary, light-dark(var(--sf-primary-40), var(--sf-primary-80)));
+    --sf-primary-hover: var(--sf-place--outer-primary-hover, light-dark(var(--sf-primary-35), var(--sf-primary-85)));
+    --sf-primary-active: var(--sf-place--outer-primary-active, light-dark(var(--sf-primary-30), var(--sf-primary-90)));
+    --sf-on-primary: var(--sf-place--outer-on-primary, light-dark(var(--sf-white), var(--sf-primary-20)));
+    --sf-primary-container: var(--sf-place--outer-primary-container, light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-50--alfa-24)));
+    --sf-primary-container-hover: var(--sf-place--outer-primary-container-hover, light-dark(var(--sf-primary-50--alfa-16), var(--sf-primary-50--alfa-28)));
+    --sf-primary-container-active: var(--sf-place--outer-primary-container-active, light-dark(var(--sf-primary-50--alfa-20), var(--sf-primary-50--alfa-32)));
+    --sf-on-primary-container: var(--sf-place--outer-on-primary-container, light-dark(var(--sf-primary-10), var(--sf-primary-90)));
+    --sf-place--plate: initial;
+    --sf-place--on-plate: initial;
+    --sf-place--fill-placeholder: initial;
+  }
+  :where(.bg-surface-4) .sf-context-menu .sf-context-menu-content {
+    --sf-primary: var(--sf-place--found-primary);
+    --sf-primary-hover: var(--sf-place--found-primary-hover);
+    --sf-primary-active: var(--sf-place--found-primary-active);
+    --sf-link: var(--sf-place--found-link);
+    --sf-link-hover: var(--sf-place--found-link-hover);
+    --sf-link-active: var(--sf-place--found-link-active);
+  }
+  .sf-context-menu .sf-context-menu-content > * {
+    --sf-surface-popup: var(--sf-surface-popup-nested);
+    --sf-on-surface-popup-variant: var(--sf-on-surface-popup-nested-variant);
+    --sf-place--popup-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-95));
+    --sf-place--popup-outline: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-70));
+    --sf-elevation-3--surface: var(--sf-surface-popup);
+    --sf-on-elevation-3--variant: var(--sf-on-surface-popup-variant);
+  }
   /* A menu opened through openFor() is the platform's popover while open, and
      nothing while closed. The user agent's popover box (centred, bordered,
      padded, painted Canvas) is undone so the menu keeps its own. */
@@ -405,18 +483,21 @@
     gap: var(--sf-context-menu-gap, var(--sf-px));
     /* As wide as its longest line, from a modest floor: a row menu of three
        short actions stood with a third of its width empty when the floor was the
-       profile menu's (owner, 2026-10-12). A menu that wants more sets the
+       profile menu's (owner, 2026-10-12). The clamps are the menu's steps of
+       the popup widths (owner decision C32, 2026-11-09): 10-18rem, 9-16rem in
+       compact density; the ceiling was 24rem at every size, wider than every
+       design system the study found. A menu that wants more sets the
        variable. */
-    min-width: var(--sf-e8);
-    min-inline-size: var(--sf-e8);
-    min-width: var(--sf-e8);
-    min-width: var(--sf-context-menu--min-inline-size, var(--sf-e8));
-    min-inline-size: var(--sf-context-menu--min-inline-size, var(--sf-e8));
-    max-width: min(var(--sf-g2), 100vw);
-    max-inline-size: min(var(--sf-g2), 100vw);
-    max-width: min(var(--sf-g2), 100vw);
-    max-width: min(var(--sf-context-menu--max-inline-size, var(--sf-g2)), var(--sf-context-menu-available-inline-size, 100vw));
-    max-inline-size: min(var(--sf-context-menu--max-inline-size, var(--sf-g2)), var(--sf-context-menu-available-inline-size, 100vw));
+    min-width: var(--sf-popup-menu-min-width);
+    min-inline-size: var(--sf-popup-menu-min-width);
+    min-width: var(--sf-popup-menu-min-width);
+    min-width: var(--sf-context-menu--min-inline-size, var(--sf-popup-menu-min-width));
+    min-inline-size: var(--sf-context-menu--min-inline-size, var(--sf-popup-menu-min-width));
+    max-width: min(var(--sf-popup-menu-max-width), 100vw);
+    max-inline-size: min(var(--sf-popup-menu-max-width), 100vw);
+    max-width: min(var(--sf-popup-menu-max-width), 100vw);
+    max-width: min(var(--sf-context-menu--max-inline-size, var(--sf-popup-menu-max-width)), var(--sf-context-menu-available-inline-size, 100vw));
+    max-inline-size: min(var(--sf-context-menu--max-inline-size, var(--sf-popup-menu-max-width)), var(--sf-context-menu-available-inline-size, 100vw));
     font-size: var(--sf-context-menu--text-size);
     line-height: var(--sf-context-menu--line);
     --sf-icon--font-size: var(--sf-context-menu--line);
@@ -519,9 +600,38 @@
     white-space: nowrap;
     cursor: pointer;
   }
+  /* A row that holds more than one line keeps the space a one-line row has
+     above and below its text, (row step - line) / 2, and grows by whole lines
+     (docs/foundation-composition-geometry.md §4; owner decision C49 on G1-b,
+     2026-11-10): a row with a caption or a value under its name, in any menu;
+     a drilling panel's row and a switch row, which wrap. They kept the base
+     rule's 2px, so a caption row was 40 [2/2] and a wrapped switch row grew by
+     2px insets instead of lines (3 lines 64 at 1440 where 32 + 2 x 20 = 72).
+     One line: the same height, the same place (the row's minimum is the step).
+     :where() keeps these at the base rule's weight, so a tile, a choice option
+     and a list's row keep their own block padding. */
+  .sf-context-menu-item:where(:has(.sf-context-menu-item-caption, .sf-context-menu-item-under)),
+  :where(.sf-context-menu--drill) .sf-context-menu-item,
+  .sf-context-menu-item:where(.sf-context-menu-item--switch),
+  .sf-context-menu-value-row:where(:has(.sf-context-menu-item-caption)) {
+    padding-top: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-bottom: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-block: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-top: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-top: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+    padding-bottom: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-bottom: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+    padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+  }
   .sf-context-menu-item:not(:disabled):hover,
   .sf-context-menu-item[aria-expanded=true] {
-    background-color: var(--sf-surface-container-hover);
+    /* One row hover for every list and menu (C42 (5), owner 2026-11-10): the
+       select state, 8. It was the plate's hover, 20 before C41. A translucent
+       fill, as the current row: a tonal badge keeps its tone and an anchored
+       badge's ring is the row's colour (C43 D4). */
+    background-color: var(--sf-surface-state-select);
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    --sf-surface-place-fill: var(--sf-surface-state-select);
   }
   /* Selected or current is one role in every component (C16): primary-container
        with its ink. */
@@ -529,6 +639,10 @@
     background-color: var(--sf-primary-container);
     color: var(--sf-on-primary-container);
     --sf-icon--color: var(--sf-on-primary-container);
+    /* A translucent fill: a tonal badge on it keeps its own tone (C43), an
+       anchored badge's ring is the row's colour (C43 D3). */
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    --sf-surface-place-fill: var(--sf-primary-container);
   }
   /* The chosen row of a pick-one list -- a language, a drilled choice's option:
      the soft fill of the chosen, the fill family's first step (12 light, 24
@@ -540,13 +654,17 @@
     background-color: var(--sf-primary-container);
     color: var(--sf-on-primary-container);
     --sf-icon--color: var(--sf-on-primary-container);
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    --sf-surface-place-fill: var(--sf-primary-container);
   }
   .sf-context-menu-item--chosen:not(:disabled):hover {
     background-color: var(--sf-primary-container-hover);
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    --sf-surface-place-fill: var(--sf-primary-container-hover);
   }
   .sf-context-menu-item:disabled {
-    color: var(--sf-on-disable);
-    --sf-icon--color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
+    --sf-icon--color: var(--sf-on-surface-disabled);
     cursor: default;
   }
   .sf-context-menu-item--danger:not(:disabled) {
@@ -758,13 +876,15 @@
   .sf-context-menu-item:disabled .sf-context-menu-item-under {
     color: inherit;
   }
-  /* A drilling panel's width is fixed and public: 280px by default (the
-     ladder's f7 + a8), the width the owner reviewed in the prototype
-     (2026-10-30). A fixed width is the point of drilling -- the panel grows
-     neither with a level's longest word nor with a value -- and openFor(anchor,
-     {width}) still overrides it, as it does for a panel with tabs. */
+  /* A drilling panel's width is fixed and public. By default it is the menu's
+     ceiling of the popup widths, 18rem, 16rem in compact density (owner
+     decision C32, addendum 2026-11-09: it follows density); it was 280px at
+     every density (f7 + a8, reviewed in the prototype 2026-10-30). A fixed
+     width is the point of drilling -- the panel grows neither with a level's
+     longest word nor with a value -- and openFor(anchor, {width}) still
+     overrides it, as it does for a panel with tabs. */
   .sf-context-menu.sf-context-menu--drill .sf-context-menu-content {
-    --sf-context-menu-drill--inline-size: var(--sf-context-menu-inline-size, calc(var(--sf-f7) + var(--sf-a8)));
+    --sf-context-menu-drill--inline-size: var(--sf-context-menu-inline-size, var(--sf-popup-menu-max-width));
     width: var(--sf-context-menu-drill--inline-size);
     inline-size: var(--sf-context-menu-drill--inline-size);
     width: var(--sf-context-menu-drill--inline-size);
@@ -968,10 +1088,14 @@
   }
   .sf-context-menu-choice-option.sf-context-menu-item:not(:disabled):hover {
     color: var(--sf-on-surface);
-    background-color: var(--sf-surface-container-hover);
+    background-color: var(--sf-surface-state-select);
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    --sf-surface-place-fill: var(--sf-surface-state-select);
   }
   .sf-context-menu-choice-option[aria-checked=true] {
     background-color: var(--sf-primary-container);
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    --sf-surface-place-fill: var(--sf-primary-container);
     color: var(--sf-on-primary-container);
     font-weight: var(--sf-font-weight-medium);
     --sf-icon--color: var(--sf-on-primary-container);
@@ -1099,7 +1223,7 @@
     padding: calc(var(--sf-context-menu-switch--seat) - var(--sf-px));
     border: var(--sf-px) solid var(--sf-outline);
     border-radius: var(--sf-radius-circle);
-    background-color: var(--sf-surface-0);
+    background-color: var(--sf-surface-page);
     transition: background-color var(--sf-duration-normal) var(--sf-animation), border-color var(--sf-duration-normal) var(--sf-animation);
   }
   .sf-context-menu-item-switch-thumb {
@@ -1128,11 +1252,11 @@
     --sf-context-menu-switch--direction: -1;
   }
   .sf-context-menu-item:disabled > .sf-context-menu-item-switch {
-    border-color: var(--sf-outline-disable);
+    border-color: var(--sf-outline-disabled);
     background-color: transparent;
   }
   .sf-context-menu-item:disabled .sf-context-menu-item-switch-thumb {
-    background-color: var(--sf-on-disable);
+    background-color: var(--sf-on-surface-disabled);
   }
   /* ─── a number in a range: the slider and its number ──────────────────── */
   /* The slider is four lines long -- a length of the one ladder, so it grows
@@ -1152,7 +1276,7 @@
     accent-color: var(--sf-primary);
   }
   .sf-context-menu-range-input:disabled {
-    accent-color: var(--sf-on-disable);
+    accent-color: var(--sf-on-surface-disabled);
   }
   _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-context-menu-range-value{
     text-align: right;
@@ -1236,12 +1360,14 @@
     padding-right: var(--sf-a4);
     padding-inline: var(--sf-a4);
     background-color: var(--sf-surface-container);
-    --sf-on-surface-variant: var(--sf-on-surface-container--variant);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
     color: var(--sf-on-surface-variant);
     white-space: normal;
   }
   .sf-context-menu-tile.sf-context-menu-item:not(:disabled):hover {
     background-color: var(--sf-surface-container-hover);
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    --sf-surface-place-fill: var(--sf-surface-container-hover);
   }
   .sf-context-menu-tile-icon {
     --sf-icon--color: var(--sf-on-surface);
@@ -1262,10 +1388,14 @@
   }
   .sf-context-menu-tile--on.sf-context-menu-item {
     background-color: var(--sf-primary-container);
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    --sf-surface-place-fill: var(--sf-primary-container);
     color: var(--sf-on-primary-container);
   }
   .sf-context-menu-tile--on.sf-context-menu-item:not(:disabled):hover {
     background-color: var(--sf-primary-container-hover);
+    --sf-surface-underlay: var(--sf-surface-place-solid);
+    --sf-surface-place-fill: var(--sf-primary-container-hover);
   }
   .sf-context-menu-tile--on .sf-context-menu-tile-icon,
   .sf-context-menu-tile--on .sf-context-menu-tile-name {
@@ -1274,8 +1404,8 @@
   }
   .sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-icon,
   .sf-context-menu-tile.sf-context-menu-item:disabled .sf-context-menu-tile-name {
-    color: var(--sf-on-disable);
-    --sf-icon--color: var(--sf-on-disable);
+    color: var(--sf-on-surface-disabled);
+    --sf-icon--color: var(--sf-on-surface-disabled);
   }
   .sf-context-menu-note {
     margin: 0;
@@ -1659,9 +1789,12 @@
      width is the panel's own, a step of the ladder or the host's `width`,
      never the width of what a tab holds: ticking a box that changed a button's
      label made the filter grow under the pointer. The scrollbar keeps its room
-     whether or not it is shown, for the same reason. */
+     whether or not it is shown, for the same reason. The step is the panel's
+     of the popup widths (C32): 20rem, 18rem in compact density -- it was eight
+     control heights, 256 in compact, which cut the common row -- or the
+     control that opened it, when that is wider. */
   .sf-context-menu.sf-context-menu--panel .sf-context-menu-content {
-    --sf-context-menu-panel--inline-size: calc(var(--sf-ui-1--control-height) * 8);
+    --sf-context-menu-panel--inline-size: max(var(--sf-context-menu-trigger-inline-size, var(--sf-a0)), var(--sf-popup-panel-width));
     width: var(--sf-context-menu-panel--inline-size);
     inline-size: var(--sf-context-menu-panel--inline-size);
     width: var(--sf-context-menu-panel--inline-size);
@@ -1680,6 +1813,260 @@
     padding-top: 0;
     -webkit-padding-before: 0;
             padding-block-start: 0;
+  }
+  /* How wide a popup is by what it holds (owner decision C32, 2026-11-09; the
+     steps are core's --sf-popup-*-width, which data-sf-density="compact" moves
+     with the text). sf-menu-context writes data-sf-width on its content from
+     its width setting; a page that draws the class markup writes it itself.
+     Without it the menu is a menu: as wide as its longest line between the
+     menu's clamps (above). --sf-context-menu-trigger-inline-size is the width
+     of the control that opened the menu, written by sf-menu-context while it is
+     open. Every kind stays inside the screen less its gutters.
+
+     list: a list of choices at a field -- at least the field, and as wide as
+     its longest line up to the list's step or the field, whichever is wider. */
+  .sf-context-menu .sf-context-menu-content[data-sf-width=list] {
+    --sf-context-menu--screen-inline-size: var(--sf-context-menu-available-inline-size, calc(100vi - var(--sf-space-1)));
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=panel] {
+    --sf-context-menu--screen-inline-size: var(--sf-context-menu-available-inline-size, calc(100vi - var(--sf-space-1)));
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=form] {
+    --sf-context-menu--screen-inline-size: var(--sf-context-menu-available-inline-size, calc(100vi - var(--sf-space-1)));
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=form-wide] {
+    --sf-context-menu--screen-inline-size: var(--sf-context-menu-available-inline-size, calc(100vi - var(--sf-space-1)));
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=list] {
+    min-width: min(var(--sf-popup-menu-min-width), var(--sf-context-menu--screen-inline-size));
+    min-inline-size: min(var(--sf-popup-menu-min-width), var(--sf-context-menu--screen-inline-size));
+    min-width: min(var(--sf-popup-menu-min-width), var(--sf-context-menu--screen-inline-size));
+    min-width: min(var(--sf-context-menu-trigger-inline-size, var(--sf-popup-menu-min-width)), var(--sf-context-menu--screen-inline-size));
+    min-inline-size: min(var(--sf-context-menu-trigger-inline-size, var(--sf-popup-menu-min-width)), var(--sf-context-menu--screen-inline-size));
+    max-width: min(max(var(--sf-a0), var(--sf-popup-list-max-width)), var(--sf-context-menu--screen-inline-size));
+    max-inline-size: min(max(var(--sf-a0), var(--sf-popup-list-max-width)), var(--sf-context-menu--screen-inline-size));
+    max-width: min(max(var(--sf-a0), var(--sf-popup-list-max-width)), var(--sf-context-menu--screen-inline-size));
+    max-width: min(max(var(--sf-context-menu-trigger-inline-size, var(--sf-a0)), var(--sf-popup-list-max-width)), var(--sf-context-menu--screen-inline-size));
+    max-inline-size: min(max(var(--sf-context-menu-trigger-inline-size, var(--sf-a0)), var(--sf-popup-list-max-width)), var(--sf-context-menu--screen-inline-size));
+  }
+  /* A long choice in a list at a field wraps, as sf-dropdown's options do; a
+     command in a menu keeps its one line and ends in an ellipsis (owner
+     decision C32, addendum 2026-11-09). A choice is read whole before it is
+     taken; a command is known by its start. */
+  .sf-context-menu .sf-context-menu-content[data-sf-width=list] .sf-context-menu-item {
+    white-space: normal;
+    /* A choice that wraps keeps the space a one-line row has above and below
+       its text, (row - line) / 2, so the row grows by whole lines. The row's
+       minimum alone held one line on its centre; a second line grew the row
+       from the 2px padding and the text touched the chosen plate's edge
+       (G1-a, 2026-11-10). One line: the same height, the same place. */
+    padding-top: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-bottom: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-block: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-top: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-top: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+    padding-bottom: calc((var(--sf-context-menu--row-height) - var(--sf-context-menu--line)) / 2);
+    padding-bottom: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+    padding-block: calc((var(--sf-context-menu--row-step, var(--sf-context-menu--row-height)) - var(--sf-context-menu--line)) / 2);
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=list] .sf-context-menu-item-label {
+    word-wrap: anywhere;
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=list] .sf-context-menu-item-caption {
+    word-wrap: anywhere;
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=list] .sf-context-menu-item-lead {
+    align-self: center;
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=list] .sf-context-menu-item-check {
+    align-self: center;
+  }
+  /* panel: a panel with a search and actions (a views picker, a profile
+     picker) -- the panel's step, or its trigger when that is wider. Fixed, never
+     its content's: a search that filtered the rows made it jump. */
+  .sf-context-menu .sf-context-menu-content[data-sf-width=panel] {
+    width: max(var(--sf-a0), var(--sf-popup-panel-width));
+    inline-size: max(var(--sf-a0), var(--sf-popup-panel-width));
+    width: max(var(--sf-a0), var(--sf-popup-panel-width));
+    width: max(var(--sf-context-menu-trigger-inline-size, var(--sf-a0)), var(--sf-popup-panel-width));
+    inline-size: max(var(--sf-context-menu-trigger-inline-size, var(--sf-a0)), var(--sf-popup-panel-width));
+    min-width: 0;
+    min-inline-size: 0;
+    max-width: var(--sf-context-menu--screen-inline-size);
+    max-inline-size: var(--sf-context-menu--screen-inline-size);
+  }
+  /* form, form-wide: a form in a popup -- the form's step; the wide one for two
+     columns or long hints. On a phone it is a sheet at the bottom of the
+     screen, the whole width (below). */
+  .sf-context-menu .sf-context-menu-content[data-sf-width=form] {
+    width: var(--sf-popup-form-width);
+    inline-size: var(--sf-popup-form-width);
+    min-width: 0;
+    min-inline-size: 0;
+    max-width: var(--sf-context-menu--screen-inline-size);
+    max-inline-size: var(--sf-context-menu--screen-inline-size);
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=form-wide] {
+    width: var(--sf-popup-form-width);
+    inline-size: var(--sf-popup-form-width);
+    min-width: 0;
+    min-inline-size: 0;
+    max-width: var(--sf-context-menu--screen-inline-size);
+    max-inline-size: var(--sf-context-menu--screen-inline-size);
+  }
+  .sf-context-menu .sf-context-menu-content[data-sf-width=form-wide] {
+    width: var(--sf-popup-form-wide-width);
+    inline-size: var(--sf-popup-form-wide-width);
+  }
+  /* A form on a phone (below the md breakpoint, 44rem): a sheet docked to the
+     bottom edge, the screen's whole width up to 44rem (--sf-h1, owner decision
+     C32, addendum 2026-11-09), centred, over the scrim -- the sheet's place
+     of the shadow system (C20: --sf-shadow-modal, the scrim at black 64).
+     sf-menu-context marks the surface data-sf-sheet and does not anchor it.
+     The content keeps clear of a phone's home indicator (safe area). */
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-context-menu[data-sf-sheet]{
+    border-bottom-right-radius: 0;
+  }
+  @supports not (border-end-end-radius: initial){
+  html:not([dir="rtl"]) .sf-context-menu[data-sf-sheet]{
+    border-bottom-right-radius: 0;
+    }
+  }
+  .sf-context-menu[data-sf-sheet]:where(:dir(ltr)){
+    border-bottom-right-radius: 0;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-context-menu[data-sf-sheet]{
+    border-bottom-left-radius: 0;
+  }
+  @supports not (border-end-end-radius: initial){
+  [dir="rtl"] .sf-context-menu[data-sf-sheet]{
+    border-bottom-left-radius: 0;
+    }
+  }
+  .sf-context-menu[data-sf-sheet]:where(:dir(rtl)){
+    border-bottom-left-radius: 0;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-context-menu[data-sf-sheet]{
+    border-bottom-left-radius: 0;
+  }
+  @supports not (border-end-start-radius: initial){
+  html:not([dir="rtl"]) .sf-context-menu[data-sf-sheet]{
+    border-bottom-left-radius: 0;
+    }
+  }
+  .sf-context-menu[data-sf-sheet]:where(:dir(ltr)){
+    border-bottom-left-radius: 0;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-context-menu[data-sf-sheet]{
+    border-bottom-right-radius: 0;
+  }
+  @supports not (border-end-start-radius: initial){
+  [dir="rtl"] .sf-context-menu[data-sf-sheet]{
+    border-bottom-right-radius: 0;
+    }
+  }
+  .sf-context-menu[data-sf-sheet]:where(:dir(rtl)){
+    border-bottom-right-radius: 0;
+  }
+  .sf-context-menu[data-sf-sheet] {
+    --sf-context-menu--box-shadow: var(--sf-shadow-modal);
+    position: fixed;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: auto 0 0;
+    width: 100%;
+    inline-size: 100%;
+    max-width: var(--sf-h1);
+    max-inline-size: var(--sf-h1);
+    margin-left: auto;
+    margin-right: auto;
+    margin-inline: auto;
+    max-height: calc(100dvh - var(--sf-space-4));
+    max-block-size: calc(100dvh - var(--sf-space-4));
+    border-end-end-radius: 0;
+    border-end-start-radius: 0;
+  }
+  .sf-context-menu[data-sf-sheet]::-webkit-backdrop {
+    background-color: var(--sf-scrim-color);
+    opacity: 1;
+    opacity: var(--sf-scrim-opacity, 1);
+  }
+  .sf-context-menu[data-sf-sheet]::backdrop {
+    background-color: var(--sf-scrim-color);
+    opacity: 1;
+    opacity: var(--sf-scrim-opacity, 1);
+  }
+  .sf-context-menu[data-sf-sheet] > .relative {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-context-menu[data-sf-sheet] > .sf-context-menu-frame {
+    flex: 1 1 auto;
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]{
+    border-bottom-right-radius: 0;
+  }
+  @supports not (border-end-end-radius: initial){
+  html:not([dir="rtl"]) .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]{
+    border-bottom-right-radius: 0;
+    }
+  }
+  .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]:where(:dir(ltr)){
+    border-bottom-right-radius: 0;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]{
+    border-bottom-left-radius: 0;
+  }
+  @supports not (border-end-end-radius: initial){
+  [dir="rtl"] .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]{
+    border-bottom-left-radius: 0;
+    }
+  }
+  .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]:where(:dir(rtl)){
+    border-bottom-left-radius: 0;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]{
+    border-bottom-left-radius: 0;
+  }
+  @supports not (border-end-start-radius: initial){
+  html:not([dir="rtl"]) .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]{
+    border-bottom-left-radius: 0;
+    }
+  }
+  .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]:where(:dir(ltr)){
+    border-bottom-left-radius: 0;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]{
+    border-bottom-right-radius: 0;
+  }
+  @supports not (border-end-start-radius: initial){
+  [dir="rtl"] .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]{
+    border-bottom-right-radius: 0;
+    }
+  }
+  .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width]:where(:dir(rtl)){
+    border-bottom-right-radius: 0;
+  }
+  .sf-context-menu[data-sf-sheet] .sf-context-menu-content[data-sf-width] {
+    width: 100%;
+    inline-size: 100%;
+    max-width: none;
+    max-inline-size: none;
+    max-height: calc(100dvh - var(--sf-space-4));
+    max-block-size: calc(100dvh - var(--sf-space-4));
+    border-end-end-radius: 0;
+    border-end-start-radius: 0;
+    border-bottom-width: 0;
+    border-block-end-width: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-inline-width: 0;
+    padding-bottom: calc(var(--sf-context-menu-content--padding-bottom) + env(safe-area-inset-bottom, var(--sf-a0)));
   }
   /* The head is a row of its own, as tall as a control and a step of space
      above it: it read narrower than the rows under it (owner, 2026-10-16). Its
@@ -2013,6 +2400,13 @@
     .sf-context-menu .sf-context-menu-content > sf-button > .sf-button {
       min-height: var(--sf-d1);
       min-block-size: var(--sf-d1);
+    }
+    /* A row is the touch target's height here, so a row of more than one
+       line -- a wrapped choice in a list (G1-a), a caption row, a drilling
+       or switch row (C49, G1-b) -- keeps the space that row has around its
+       one line. */
+    .sf-context-menu .sf-context-menu-content {
+      --sf-context-menu--row-step: max(var(--sf-context-menu--row-height), var(--sf-d1));
     }
   }
 }

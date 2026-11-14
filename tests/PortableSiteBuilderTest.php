@@ -1013,13 +1013,24 @@ MD);
         self::assertDoesNotMatchRegularExpression('~<sf-button[\s>]~', $landing);
         self::assertStringNotContainsString('<script id="unsafe">', $index);
         self::assertStringNotContainsString('alert(1)', $index);
-        foreach (['docara.smart.brand.css', 'docara.smart.navigation.css', 'docara.smart.navigation.js', 'docara.smart.preferences.css', 'docara.smart.preferences.js'] as $asset) {
+        foreach (['docara.smart.navigation.js', 'docara.smart.preferences.js'] as $asset) {
             self::assertStringContainsString('data-docara-smart-asset="' . $asset . '"', $guide);
         }
-        self::assertMatchesRegularExpression(
-            '#href="/_docara/smart/navigation\.css\?docara_v=[a-f0-9]{64}"#',
-            $guide,
-        );
+        // The Smart stylesheets ride in the page's shared first-frame
+        // stylesheets instead of a link each.
+        preg_match_all('#<link rel="stylesheet" href="(/_docara/docara-shell\.[a-f0-9]{64}\.css)" data-docara-declarative-shell-style>#', $guide, $guideShellLinks);
+        $guideShellCss = implode('', array_map(
+            fn (string $url): string => (string) file_get_contents($this->tmpPath('build_local' . $url)),
+            $guideShellLinks[1],
+        ));
+        foreach (['brand', 'navigation', 'preferences'] as $smartStylesheet) {
+            self::assertStringNotContainsString('data-docara-smart-asset="docara.smart.' . $smartStylesheet . '.css"', $guide);
+            self::assertStringContainsString(
+                '/* docara-shell-source: docara-smart/docara.smart.' . $smartStylesheet . '.css */' . "\n"
+                . (string) file_get_contents(dirname(__DIR__) . '/resources/smart/assets/' . $smartStylesheet . '.css'),
+                $guideShellCss,
+            );
+        }
         self::assertMatchesRegularExpression(
             '#src="/_docara/smart/navigation\.js\?docara_v=[a-f0-9]{64}"#',
             $guide,

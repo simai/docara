@@ -94,6 +94,30 @@ final readonly class FrameworkAssetPlan
         return $urls;
     }
 
+    /**
+     * The Docara Smart stylesheets the first-frame stylesheets carry, by
+     * asset key: the page does not link them on their own.
+     *
+     * @return list<string>
+     */
+    public function shellSmartAssetKeys(): array
+    {
+        $keys = [];
+        foreach ($this->generatedAssets as $asset) {
+            if (($asset['kind'] ?? null) !== 'shell_css') {
+                continue;
+            }
+            foreach (($asset['inputs'] ?? []) as $input) {
+                $source = is_array($input) ? ($input['source'] ?? null) : null;
+                if (is_string($source) && str_starts_with($source, FrameworkAssetPlanner::DOCARA_SMART_CSS_SOURCE)) {
+                    $keys[] = substr($source, strlen(FrameworkAssetPlanner::DOCARA_SMART_CSS_SOURCE));
+                }
+            }
+        }
+
+        return $keys;
+    }
+
     public function withoutGeneratedAssetContent(): self
     {
         return new self(

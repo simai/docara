@@ -142,6 +142,16 @@ All notable changes to Docara are recorded here. The format follows
   19.5. A page downloads the same bytes as before on a first visit; the
   site publishes 5.8 MB of them instead of 4.3 MB, and the next page fetches
   about 575 KB of them again instead of 376 KB (before compression).
+- **The brand, navigation and reading-settings styles ride in the shared
+  stylesheets.** `brand.css`, `navigation.css` and `preferences.css` were
+  three links of their own on every page. A page that draws those elements
+  now carries their rules in its shared first-frame stylesheets, in the same
+  place in the cascade, and links them no more: 13.2 stylesheets per page
+  instead of 16.2 on the documentation site (at most 24 instead of 27), the
+  same bytes. The example frames, which take the page's shared stylesheets,
+  get these rules too; they only style Docara's own elements. A project Smart
+  stylesheet, and one that names other files with `url()` or an import, keeps
+  its own link.
 
 ## [3.14.3] - 2026-11-14
 

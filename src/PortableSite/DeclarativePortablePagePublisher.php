@@ -244,6 +244,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                     ...($readerPreferencesArtifact?->assets ?? []),
                 ])),
                 $assetBase,
+                $assets->shellSmartAssetKeys(),
             ) . $this->contentRuntimeHead($regions['main'], $assetBase),
             $this->preferencesBootstrap($readerPreferences, [
                 'modal_blur' => $configuredModalBlur,
@@ -708,11 +709,17 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         );
     }
 
-    /** @param list<string> $assetKeys */
-    private function smartAssetHead(array $assetKeys, string $assetBase): string
+    /**
+     * @param  list<string>  $assetKeys
+     * @param  list<string>  $shellAssetKeys  stylesheets the first-frame stylesheets already carry
+     */
+    private function smartAssetHead(array $assetKeys, string $assetBase, array $shellAssetKeys = []): string
     {
         $tags = [];
         foreach (array_values(array_unique($assetKeys)) as $key) {
+            if (in_array($key, $shellAssetKeys, true)) {
+                continue;
+            }
             try {
                 $asset = $this->smarts->asset($key);
             } catch (\InvalidArgumentException) {

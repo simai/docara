@@ -6,6 +6,7 @@ namespace Simai\Docara\Framework;
 
 use Simai\Docara\Document\IconNameCatalog;
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class FrameworkAssetPlanner
 {
@@ -14,6 +15,9 @@ final readonly class FrameworkAssetPlanner
     private const INTEGRATION_REVISION = 'simai-framework-asset-plan-v1';
 
     private const SHELL_CSS_SOURCE = 'declarative-shell.css';
+
+    /** Source prefix of a Docara Smart stylesheet carried in the shell. */
+    public const DOCARA_SMART_CSS_SOURCE = 'docara-smart/';
 
     /** Loader rules that match code markup (`<pre><code>`, `language-*`). */
     private const CODE_MARKUP_RULES = ['highlight'];
@@ -1142,6 +1146,8 @@ final readonly class FrameworkAssetPlanner
         if (! is_string($scanHtml)) {
             throw new FrameworkComponentException('FRAMEWORK_ASSET_PLAN_HTML_INVALID');
         }
+        // The Docara Smart elements the page itself draws (not its examples).
+        $docaraSmartCss = $this->docaraSmartCssInputs($scanHtml);
         $scanHtml .= $exampleHtml;
         // Code blocks are left out of the scan below, so that the text of a
         // code sample never selects a component. The Loader's own rules for
@@ -1594,7 +1600,9 @@ final readonly class FrameworkAssetPlanner
             $shellBytes,
             'portable',
         );
-        $generatedAssets = $this->generatedShellCss($cssInputs);
+        // Docara's own stylesheets of those elements come first, where the
+        // page linked them before, and are bundled with the rest.
+        $generatedAssets = $this->generatedShellCss([...$docaraSmartCss, ...$cssInputs]);
         $modules = array_values(array_unique($modules));
         $runtimeTags = array_values(array_unique($runtimeTags));
         sort($runtimeTags, SORT_STRING);
@@ -1720,6 +1728,81 @@ final readonly class FrameworkAssetPlanner
     private static function isLazyRelation(mixed $relation): bool
     {
         return is_array($relation) && ($relation['lazy'] ?? false) === true;
+    }
+
+    /**
+     * The first-frame stylesheets of the Docara Smart elements the page
+     * draws (brand, navigation, reader preferences), as shell inputs. They
+     * were linked one file each; carried in the shell they are bundled with
+     * the Framework segments, and the page links them no more
+     * ({@see FrameworkAssetPlan::shellSmartAssetKeys()}).
+     *
+     * @return list<array{source:string,path:string,sha256:string,content:string,root:string}>
+     */
+    private function docaraSmartCssInputs(string $html): array
+    {
+        $markup = preg_replace('~<(pre|code|script|style)\b[^>]*>.*?</\1\s*>~is', '', $html);
+        if (! is_string($markup)) {
+            throw new FrameworkComponentException('FRAMEWORK_ASSET_PLAN_HTML_INVALID');
+        }
+        $inputs = [];
+        foreach (self::docaraSmartStylesheets() as $smartKey => $stylesheets) {
+            if (! str_contains($markup, 'data-docara-smart="' . $smartKey . '"')) {
+                continue;
+            }
+            foreach ($stylesheets as $assetKey => $content) {
+                $inputs[$assetKey] ??= $this->cssInput(
+                    self::DOCARA_SMART_CSS_SOURCE . $assetKey,
+                    $assetKey,
+                    $content,
+                    'docara-smart',
+                );
+            }
+        }
+
+        return array_values($inputs);
+    }
+
+    /**
+     * Docara's bundled Smart stylesheets that a page links in its head, by
+     * Smart key and asset key. A stylesheet that names other files, by
+     * url() or an import rule, keeps its own link: those resolve from its
+     * directory.
+     *
+     * @return array<string, array<string, string>>
+     */
+    private static function docaraSmartStylesheets(): array
+    {
+        static $stylesheets = null;
+        if (is_array($stylesheets)) {
+            return $stylesheets;
+        }
+        $registry = SmartRegistry::bundled();
+        $resources = dirname(__DIR__, 2) . '/resources';
+        $found = [];
+        foreach ($registry->keys() as $smartKey) {
+            if (! str_starts_with($smartKey, 'docara.')) {
+                continue;
+            }
+            foreach ($registry->definition($smartKey)->assets as $assetKey => $asset) {
+                if (($asset['kind'] ?? null) !== 'css'
+                    || isset($asset['root'])
+                    || ($asset['head'] ?? true) !== true
+                ) {
+                    continue;
+                }
+                $content = @file_get_contents($resources . '/' . $asset['path']);
+                if (! is_string($content) || ! hash_equals((string) $asset['version'], hash('sha256', $content))) {
+                    throw new FrameworkComponentException('FRAMEWORK_SHELL_CSS_INVALID', (string) $assetKey);
+                }
+                if (preg_match('/url\s*\(|@import/i', $content) === 1) {
+                    continue;
+                }
+                $found[$smartKey][(string) $assetKey] = $content;
+            }
+        }
+
+        return $stylesheets = $found;
     }
 
     /** @return array{source:string,path:string,sha256:string,content:string,root:string} */

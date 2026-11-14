@@ -37,6 +37,7 @@ use Simai\Docara\Markdown\DirectiveBlockStartParser;
 use Simai\Docara\Markdown\DirectiveLimitExceeded;
 use Simai\Docara\Markdown\DirectiveOpeningMatcher;
 use Simai\Docara\Markdown\InlineComponentRenderer;
+use Simai\Docara\Markdown\PreservedBlocks;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 
@@ -238,6 +239,8 @@ final class PortableMarkdownRenderer
                 'Portable Markdown must be valid UTF-8.',
             );
         }
+        // A :::preserved block renders nothing (PRESERVED_NOT_SHOWN).
+        $markdown = PreservedBlocks::strip($markdown);
         $this->assertRawHtmlPolicy($markdown, $this->diagnosticSource($sourceRoot, $sourceFile));
 
         return $this->renderCompiled($markdown, $sourceRoot, $sourceFile, $location->line, $exampleSettings, $codeSettings);

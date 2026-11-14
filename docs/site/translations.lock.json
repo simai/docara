@@ -2214,11 +2214,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/content.md",
-            "source_sha256": "39a0578e524115d11545819c3df46df0598c8c8924b7ad829d8305790d377be3",
-            "source_structure_sha256": "11cb32731eb3dbf0c8b1eee6dba17f3147e687e67b0c179d0ab579a58c648a32",
+            "source_sha256": "e7029d218d37d1ba17cccf367890c1744fc433b13ac76b2cb6fa4015c540c226",
+            "source_structure_sha256": "592b1014faef395b299d945ad5b2ac2dde4dc25be2b768e7e0bf065c74337fc7",
             "target_path": "content/en/reference/errors/content.md",
-            "target_sha256": "5c97ef8da2b4a3a1e5169ce4eccf4255ee8fae2d820b1c78928454b7bf017007",
-            "target_structure_sha256": "11cb32731eb3dbf0c8b1eee6dba17f3147e687e67b0c179d0ab579a58c648a32"
+            "target_sha256": "c839ef1ad4a7795a97cd0105192934676423fe6f274bf7bcfa4b67e7ff2d06af",
+            "target_structure_sha256": "592b1014faef395b299d945ad5b2ac2dde4dc25be2b768e7e0bf065c74337fc7"
         },
         {
             "key": "reference/errors/developer.md",

@@ -94,6 +94,16 @@ All notable changes to Docara are recorded here. The format follows
   word between them (`behavior` в `scrollTo`), not a margin: the codes are
   running text that the Framework's `data-sf-code-copy` makes copyable, not
   an action row, so the 8px action-row gap does not apply to them.
+- **A `:::preserved` block is no longer shown on the site.** Docara did not
+  know the block: the page builder stopped on it as an unknown component
+  alias, and Markdown rendered elsewhere (an example preview, a page
+  description) showed its text as a plain paragraph. The block now keeps its
+  text in the source only: the build drops it, attributes included, before
+  the page, its title or its description are made, and keeps the line
+  numbers of the rest of the page. `docara validate page` reports each block
+  with its line as the warning `PRESERVED_NOT_SHOWN`, the build writes one
+  summary line and does not stop, and a block without its closing line fails
+  with `MARKDOWN_BLOCK_UNCLOSED` instead of showing what follows (C75).
 
 ## [3.14.3] - 2026-11-14
 

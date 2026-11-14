@@ -7,6 +7,7 @@ namespace Simai\Docara\Console;
 use Simai\Docara\Application\PageInspectionService;
 use Simai\Docara\Authoring\AuthoringContract;
 use Simai\Docara\Documentation\FrameworkLinkageService;
+use Simai\Docara\Markdown\PreservedBlocks;
 use Simai\Docara\PortableSite\BuildReceipts;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Quality\QualityReportService;
@@ -84,6 +85,22 @@ final class BuildCommand extends Command
                     $deprecated['uses'],
                     count($deprecated['pages']),
                     $deprecated['pages'][0],
+                ));
+            }
+        } catch (Throwable) {
+            // The summary is advice; a project the scan cannot read still built.
+        }
+        try {
+            // One line at most, like the summary above: the build is valid,
+            // and `docara validate page` names each block and its line.
+            $preserved = (new PageInspectionService)->preservedBlocks($this->base);
+            if ($preserved['blocks'] > 0) {
+                $this->console->comment(sprintf(
+                    'Preserved blocks: %d block(s) on %d page(s) are kept in the source and not shown on the site; run "docara validate page %s" for their lines (%s).',
+                    $preserved['blocks'],
+                    count($preserved['pages']),
+                    $preserved['pages'][0],
+                    PreservedBlocks::CODE,
                 ));
             }
         } catch (Throwable) {

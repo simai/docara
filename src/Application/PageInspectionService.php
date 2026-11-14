@@ -20,6 +20,7 @@ use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleUrlProjector;
 use Simai\Docara\Markdown\ParameterDeprecationScanner;
+use Simai\Docara\Markdown\PreservedBlocks;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
 use Simai\Docara\PortableSite\ExamplePreviewPolicy;
@@ -140,6 +141,27 @@ final readonly class PageInspectionService
         return ['uses' => $uses, 'pages' => $pages];
     }
 
+    /**
+     * Pages that keep :::preserved blocks, for the build's one-line summary.
+     *
+     * @return array{blocks:int, pages:list<string>}
+     */
+    public function preservedBlocks(string $root): array
+    {
+        $runtime = ProjectRuntime::load($root);
+        $blocks = 0;
+        $pages = [];
+        foreach ($this->sources($runtime) as $source) {
+            $found = count(PreservedBlocks::scan((string) file_get_contents($runtime->root . '/' . $source->path)));
+            if ($found > 0) {
+                $blocks += $found;
+                $pages[] = $this->publicRoute($runtime, $source);
+            }
+        }
+
+        return ['blocks' => $blocks, 'pages' => $pages];
+    }
+
     /** @return list<array<string, mixed>> */
     public function validateAll(string $root): array
     {
@@ -179,6 +201,7 @@ final readonly class PageInspectionService
                 $routeSet,
             ));
             array_push($diagnostics, ...$this->deprecationDiagnostics($raw));
+            array_push($diagnostics, ...$this->preservedDiagnostics($raw));
             $route = $this->publicRoute($runtime, $source);
             foreach ($diagnostics as $diagnostic) {
                 $checks[] = $diagnostic + ['subject' => $route];
@@ -232,6 +255,7 @@ final readonly class PageInspectionService
             }
             array_push($diagnostics, ...$this->technicalDiagnostics($runtime, $source, $document->markdown, $links, $routeSet));
             array_push($diagnostics, ...$this->deprecationDiagnostics($raw));
+            array_push($diagnostics, ...$this->preservedDiagnostics($raw));
         }
         $profile = $resolution['profile'] === null ? null : (new AuthoringProfileRegistry)->all()[$resolution['profile']];
         $resolved = $resolveSettings ? (new PortableConfigurationLoader($runtime->root))->resolve($source->path) : null;
@@ -528,6 +552,26 @@ final readonly class PageInspectionService
         }
 
         return $diagnostics;
+    }
+
+    /**
+     * Each :::preserved block on the page. The build drops the block, so its
+     * text is not on the site; the warning makes sure that is intended.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function preservedDiagnostics(string $raw): array
+    {
+        return array_map(
+            static fn (int $line): array => [
+                'code' => PreservedBlocks::CODE,
+                'status' => 'review_required',
+                'severity' => 'warning',
+                'line' => $line,
+                'message' => "Block [preserved] at line [$line] is kept in the source and not shown on the built page. Remove the block or move its text out of it to publish the text.",
+            ],
+            PreservedBlocks::scan($raw),
+        );
     }
 
     /**

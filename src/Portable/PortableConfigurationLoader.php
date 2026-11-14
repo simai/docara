@@ -11,6 +11,7 @@ use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleTag;
+use Simai\Docara\Markdown\PreservedBlocks;
 use Simai\Docara\PortableSite\SiteTheme;
 use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
 use Simai\Docara\Smart\SmartRegistry;
@@ -80,7 +81,9 @@ final class PortableConfigurationLoader
 
         return new ResolvedPagePlan(
             $page,
-            $frontMatter->markdown,
+            // A :::preserved block never reaches the page, its title or its
+            // description (PRESERVED_NOT_SHOWN).
+            PreservedBlocks::strip($frontMatter->markdown, $page),
             $configuration,
             $frameworkLock,
             $trace,

@@ -8,6 +8,7 @@ use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Markdown\AuthoringAttributeParser;
 use Simai\Docara\Markdown\DirectiveOpeningMatcher;
+use Simai\Docara\Markdown\PreservedBlocks;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final class MarkdownCompiler
@@ -36,6 +37,10 @@ final class MarkdownCompiler
             $lines = preg_split('/\r\n|\n|\r/u', $markdown);
             if (! is_array($lines) || $source === '' || trim($markdown) === '') {
                 throw new PortableConfigurationException('DOCUMENT_IR_INPUT_INVALID', "Cannot compile [$source].");
+            }
+            if ($this->compileDepth === 1) {
+                // A :::preserved block renders nothing (PRESERVED_NOT_SHOWN).
+                $lines = preg_split('/\r\n|\n|\r/u', PreservedBlocks::strip($markdown, $source)) ?: [];
             }
 
             $nodes = [];

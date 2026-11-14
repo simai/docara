@@ -7,21 +7,20 @@ tags: [reader-panel, reading-settings, theme, font, reading-mode]
 
 The gear button on the right of the header opens the "Settings" menu. It is
 built by the `docara.preferences` product Smart component: the menu itself
-is a SIMAI Framework context menu (`sf-menu-context`) that opens under the
+is the SIMAI Framework settings menu (`sf-settings`) that opens under the
 button over the page.
 
 Out of the box the menu has three rows: "Theme", "Font size" and "Page
-width". The current value is shown on the right of a row. A row opens a
-submenu with the values: next to the menu on a wide screen, under the row on
-a phone. The selected value has a check mark. A change applies at once,
-nothing needs saving. The "Reset settings" item at the bottom returns all
-values to the site's values.
+width". The current value is shown under a row's name. A row opens its
+values in the same menu, with a back arrow to the list of settings. The
+selected value is highlighted. A change applies at once, nothing needs
+saving, and the menu returns to the list of settings with the new value.
 
 From the keyboard the menu opens with the gear button, and focus lands on the
-first row. The up and down arrows move between rows, the right arrow, Enter
-or Space open a submenu, and the left arrow closes it and returns to the row.
-With a mouse a submenu also opens on hover. Escape, Tab, another press on the gear
-or a click outside the menu close it and return focus to the button.
+first row. The up and down arrows move between rows, and Enter or Space open
+a setting's values. Escape on the values level returns to the list of
+settings; on the top level it closes the menu and returns focus to the
+button. Another press on the gear or a click outside the menu also close it.
 
 ## Settings view
 
@@ -29,7 +28,7 @@ or a click outside the menu close it and return focus to the button.
 
 | Value | What it looks like |
 | --- | --- |
-| `menu` | The SIMAI Framework settings panel (`sf-menu-context`) under the gear button: a setting's row shows its current value and opens the options in the same panel · **Default** |
+| `menu` | The SIMAI Framework settings menu (`sf-settings`) under the gear button: a setting's row shows its current value and opens the options in the same menu · **Default** |
 | `side-panel` | A full-height "Settings" side panel on the right, with the page dimmed |
 
 In the side panel each setting is a label and a segmented switch from a
@@ -97,8 +96,8 @@ The author sets the site theme with the `settings.theme` field, which is
 inherited and can be overridden in `section.json` and `<page>.page.json`
 (see
 [Brand and theme](/en/settings/branding-and-theme/#light-and-dark-scheme-blur-and-rounding)).
-The reader's local choice wins. The "Reset settings" button removes all of
-the reader's overrides and applies the current page's values again. For font
+The reader's local choice wins. In the side panel the "Reset settings"
+button removes all of the reader's overrides and applies the current page's values again. For font
 size and width the site value is "Normal".
 
 `modal_blur` and `ui_radius` stay author settings: they apply before the

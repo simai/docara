@@ -7,7 +7,7 @@
     var trigger=document.querySelector('[data-docara-reader-settings-trigger]');
     var store=window.DocaraReaderPreferences;
     if(!component||!modal||!trigger||!store)return;
-    if(modal.localName==='sf-menu-context'){bootMenu(modal,trigger,store);return}
+    if(modal.localName==='sf-settings'){bootMenu(modal,trigger,store);return}
     booted=true;
     component.dataset.docaraPreferencesRuntime='ready';
     var copyNode=document.getElementById('docara-runtime-copy'),messages={};
@@ -241,9 +241,10 @@
     });
     sync();
   }
-  // The menu view is the Framework sf-menu-context settings panel: it draws
-  // the rows and reports each choice; the page keeps the values (the store
-  // the bootstrap applied before first paint) and puts them back on open.
+  // The menu view is the Framework sf-settings menu: it opens from the button
+  // (its for), draws the rows and reports each change; the page keeps the
+  // values (the store the bootstrap applied before first paint) and puts them
+  // back before the menu opens.
   function bootMenu(menu,trigger,store){
     booted=true;
     menu.dataset.docaraPreferencesRuntime='ready';
@@ -254,13 +255,13 @@
       Object.keys(parameters||{}).forEach(function(name){value=value.split('{'+name+'}').join(String(parameters[name]))});
       return value;
     }
-    // The rows are the element's entries: the settings island while the
-    // element has not started, its entries setting once it has read it.
+    // The settings are the element's items: the island while the element has
+    // not started, its items setting once it has read it.
     var island=menu.querySelector('script[data-sf-settings]'),declared=[];
-    try{declared=island?JSON.parse(island.textContent).entries||[]:[]}catch(error){declared=[]}
+    try{declared=island?JSON.parse(island.textContent).items||[]:[]}catch(error){declared=[]}
     function fields(){
-      var entries=Array.isArray(menu.entries)&&menu.entries.length?menu.entries:declared;
-      return entries.filter(function(entry){return entry&&entry.type==='choice'&&entry.id});
+      var items=Array.isArray(menu.items)&&menu.items.length?menu.items:declared;
+      return items.filter(function(item){return item&&item.type==='choice'&&item.id});
     }
     function values(){
       var map={};
@@ -278,13 +279,14 @@
       var option=(field.options||[]).filter(function(option){return option.id===value})[0];
       return option?option.text:value;
     }
-    trigger.addEventListener('click',function(){
-      restore();
-      if(typeof menu.toggleFor==='function')menu.toggleFor(trigger);
-    });
+    // Before sf-settings opens the menu on this press, the rows take the
+    // values the reader has now (another tab may have changed them).
+    trigger.addEventListener('pointerdown',restore);
+    trigger.addEventListener('keydown',function(event){if(event.key==='Enter'||event.key===' ')restore()});
+    customElements.whenDefined('sf-settings').then(restore);
     menu.addEventListener('sf-menu-context-opened',function(){trigger.setAttribute('aria-expanded','true')});
     menu.addEventListener('sf-menu-context-closed',function(){trigger.setAttribute('aria-expanded','false')});
-    menu.addEventListener('sf-menu-context-changed',function(event){
+    menu.addEventListener('sf-settings-changed',function(event){
       var detail=event.detail||{};
       var field=fields().filter(function(field){return field.id===detail.id})[0];
       if(!field)return;
@@ -292,15 +294,6 @@
       if(!result.applied){restore();return}
       announce(result.persisted?message('reader.saved',{setting:field.text,value:textOf(field,String(detail.value))}):message('reader.applied_not_saved'));
       menu.dispatchEvent(new CustomEvent('docara-preference-change',{bubbles:true,detail:{id:field.id,value:String(detail.value),persisted:result.persisted}}));
-    });
-    // The reset row is a command: the page clears its values and the panel
-    // shows the declared ones again.
-    menu.addEventListener('sf-menu-context-select',function(event){
-      if(!event.detail||event.detail.id!=='reset')return;
-      store.reset();
-      restore();
-      announce(message('reader.restored'));
-      menu.dispatchEvent(new CustomEvent('docara-preferences-reset',{bubbles:true}));
     });
     window.addEventListener('storage',function(event){
       if(event.key===store.key){store.syncExternal();restore()}

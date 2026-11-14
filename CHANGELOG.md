@@ -8,6 +8,15 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **The reading settings menu is the Framework `sf-settings`.** The `menu`
+  view of `reader_preferences` (the default) was a hand-made list of
+  `sf-menu-context` rows; it is now the Framework settings menu
+  (`sf-settings look="drill"`, opened by the gear through its `for`), as
+  the Framework settings-menu decision asks. Each setting shows its value
+  under its name and opens its options a level down, the reader's choice is
+  kept as before, and the menu no longer carries its own reset row: the
+  Framework settings menu has none. The `side-panel` view is unchanged and
+  keeps its reset button.
 - **Docara bundles SIMAI Framework `ui-7fb26d395af2`** (registry bound at
   `4c012852f`) instead of `ui-b4a77681f0a7`. What sites see: menus and the
   context menu without late links and with the reviewed popup widths

@@ -2454,10 +2454,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/reader-preferences.md",
-            "source_sha256": "d9f7a2a2fbc68b4eaaa21e603cac3609118739bf2bb7caf2cfb522add1c870fc",
+            "source_sha256": "f27d41ac5908a51d8f7e9b95378a361f9cabe912ab59f7526f8a4168abbecd8d",
             "source_structure_sha256": "613f0dadd63abe5b4139f8728f19c5d71a1cf1124d981a093e03e99e76e364ce",
             "target_path": "content/en/settings/reader-preferences.md",
-            "target_sha256": "9c6cb1b4bf3fe6286e3cb6798bcae58f343e9be974da3382f7fc87cabe1e5995",
+            "target_sha256": "ad435bb3af240ae9f6057143c6019bc1e3d5185dce96ee123a764e51766ce461",
             "target_structure_sha256": "613f0dadd63abe5b4139f8728f19c5d71a1cf1124d981a093e03e99e76e364ce"
         },
         {

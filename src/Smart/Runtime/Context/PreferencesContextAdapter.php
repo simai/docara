@@ -23,7 +23,7 @@ final class PreferencesContextAdapter implements SmartContextAdapter
     public function prepare(SmartInvocation $invocation): object
     {
         $groups = [];
-        $entries = [];
+        $items = [];
         foreach ($invocation->props['groups'] ?? [] as $group) {
             $fields = [];
             foreach ($group['fields'] as $field) {
@@ -36,19 +36,18 @@ final class PreferencesContextAdapter implements SmartContextAdapter
                         'selected' => (string) $option['value'] === (string) $field['configured'],
                     ];
                 }
-                // One row of the Framework sf-menu-context settings panel: a
-                // choice that opens its options in the same panel.
-                $entries[] = [
+                // One setting of the Framework sf-settings menu: a choice whose
+                // options open a level down, its value under the name.
+                $items[] = [
                     'id' => (string) $field['id'],
                     'type' => 'choice',
                     'text' => (string) $field['title'],
                     'icon' => self::ICONS[(string) $field['id']] ?? 'tune',
-                    'view' => 'drill',
-                    'options' => array_map(static fn (array $option): array => array_filter([
+                    'value' => (string) $field['configured'],
+                    'options' => array_map(static fn (array $option): array => [
                         'id' => (string) $option['value'],
                         'text' => (string) $option['title'],
-                        'checked' => (string) $option['value'] === (string) $field['configured'] ? true : null,
-                    ], static fn (mixed $value): bool => $value !== null), $field['options']),
+                    ], $field['options']),
                 ];
                 $fields[] = [
                     'id' => $this->escape((string) $field['id']),
@@ -71,18 +70,13 @@ final class PreferencesContextAdapter implements SmartContextAdapter
             ];
         }
 
-        if ($entries !== []) {
-            $entries[] = ['type' => 'separator'];
-            $entries[] = ['id' => 'reset', 'text' => (string) ($invocation->props['reset_label'] ?? ''), 'icon' => 'restart_alt'];
-        }
-
         return new PreferencesViewModel(
             $this->escape((string) ($invocation->props['position'] ?? '')),
             $groups,
             $this->escape((string) ($invocation->props['title'] ?? '')),
             $this->escape((string) ($invocation->props['close_label'] ?? '')),
             $this->escape((string) ($invocation->props['reset_label'] ?? '')),
-            json_encode(['entries' => $entries], JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+            json_encode(['items' => $items], JSON_HEX_TAG | JSON_HEX_AMP | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
         );
     }
 

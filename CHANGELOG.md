@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.14.3] - 2026-11-14
+
 ### Changed
 
 - **The reading settings menu is the Framework `sf-settings`.** The `menu`

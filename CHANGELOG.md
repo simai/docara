@@ -134,6 +134,14 @@ All notable changes to Docara are recorded here. The format follows
   second time under the other name. It now links two stylesheets fewer
   (19.5 instead of 21.5 on average on the documentation site) and fetches
   5.4 KB less; what is drawn does not change.
+- **Pages link fewer, larger shared stylesheets.** The shared first-frame
+  stylesheets may now take two and a half times the bytes of their distinct
+  parts instead of twice, so the planner groups more of each page's parts
+  into one file. On the documentation site a page links 7.3 of them instead
+  of 10.5 (at most 21 instead of 24), and 16.2 stylesheets in all instead of
+  19.5. A page downloads the same bytes as before on a first visit; the
+  site publishes 5.8 MB of them instead of 4.3 MB, and the next page fetches
+  about 575 KB of them again instead of 376 KB (before compression).
 
 ## [3.14.3] - 2026-11-14
 

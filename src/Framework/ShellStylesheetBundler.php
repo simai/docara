@@ -21,13 +21,15 @@ namespace Simai\Docara\Framework;
  *    pages that make them, outweigh the bytes of the new bundle. Pages above
  *    the request target weigh more.
  * 3. The weight of a request is lowered step by step until the published
- *    bytes fit the budget: at most twice the bytes of the distinct segments.
+ *    bytes fit the budget: at most two and a half times the bytes of the
+ *    distinct segments. A higher budget lets pages link fewer, larger
+ *    stylesheets, at the price of more bytes fetched again on the next page.
  */
 final class ShellStylesheetBundler
 {
     public const TARGET_REQUESTS = 6;
 
-    public const BYTE_BUDGET_FACTOR = 2;
+    public const BYTE_BUDGET_FACTOR = 2.5;
 
     /** Pages above the target count this many times when weighing a merge. */
     private const OVER_TARGET_WEIGHT = 4;
@@ -123,7 +125,7 @@ final class ShellStylesheetBundler
         }
 
         $distinctBytes = array_sum($this->bytes);
-        $budget = self::BYTE_BUDGET_FACTOR * $distinctBytes;
+        $budget = (int) floor(self::BYTE_BUDGET_FACTOR * $distinctBytes);
         // Fewer requests need a higher weight; find the highest weight whose
         // bundles fit the budget (a weight of zero publishes every segment
         // alone, which always fits).

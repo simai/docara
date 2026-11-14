@@ -82,6 +82,18 @@ All notable changes to Docara are recorded here. The format follows
   animates from the browser's look and later state changes animate as before.
   A frame whose page sends no stylesheets releases the hold at once, and one
   that hears from no page, after ten seconds.
+- **The reading toolbar's buttons stand 4px apart (C144).** The focus and
+  outline toggles above the page sat 8px apart (`gap-1/3`); buttons inside
+  one toolbar group are now 4px apart with the Framework's `gap-1/4`
+  (`--sf-space-1/4`). The toggles are one group, so no divider is drawn
+  between them, and the breadcrumbs beside them are the page's location, not
+  a button group, so the toolbar keeps its 16px between the two without a
+  divider.
+- **Inline code copy in running text (C105 H5) needs no change in Docara.**
+  The 18px measured between two copy-on-click codes in one list line is the
+  word between them (`behavior` в `scrollTo`), not a margin: the codes are
+  running text that the Framework's `data-sf-code-copy` makes copyable, not
+  an action row, so the 8px action-row gap does not apply to them.
 
 ## [3.14.3] - 2026-11-14
 

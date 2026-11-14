@@ -58,6 +58,11 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **An effect hero no longer flashes white while its effect loads.** A
+  hero with `effect` showed the page's white surface until the effect script
+  started, then the effect's grey field appeared. It now shows `surface-1`
+  until the effect runs (`data-sf-effect-state="running"`); the running
+  effect looks as before.
 - **An example frame no longer jumps while it loads.** A frame measured
   itself before the page's styles and the Framework scripts reached it, so it
   went from its reserved 192 px down to 32 px and then to its final height,

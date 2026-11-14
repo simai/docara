@@ -128,7 +128,8 @@ Docara 3.0 содержит закреплённый релиз SIMAI Framework 
 `ui-7153f7a9c092` в версиях 3.10.0–3.11.1,
 `ui-c3015f76bcc2` в версиях 3.12.0–3.12.2,
 `ui-2a671352d67b` в версиях 3.13.0–3.13.1,
-`ui-b4a77681f0a7` в более поздних версиях. Для сборки
+`ui-b4a77681f0a7` в версиях 3.14.0–3.14.2,
+`ui-7fb26d395af2` в более поздних версиях. Для сборки
 больше не нужны отдельная копия Framework и переменные окружения:
 `DOCARA_SIMAI_UI_ROOT` и `SIMAI_UI_ROOT` можно убрать из окружения сборки и
 CI. Эти переменные остаются необязательными и нужны только для сборки с другой
@@ -203,9 +204,6 @@ git status --short
 composer require simai/docara:^3.0 -W
 ```
 
-Первая команда добавляет в проект репозиторий Docara на GitHub: версия 3
-ставится оттуда.
-
 `-W` разрешает Composer обновить зависимости Docara вместе с ней.
 
 #### 3. Синхронизируйте engine проекта
@@ -220,7 +218,7 @@ php vendor/bin/docara update --apply
 `--apply` атомарно обновляет package-owned `.docara/engine` по этому плану.
 Контент, `docara.json`, настройки разделов и страниц не меняются. Если проект
 ещё не имеет ownership manifest, запустите dry-run с `--adopt` — см.
-[Обновление Docara](/build/update/).
+[«Старый проект без ownership manifest»](#старый-проект-без-ownership-manifest).
 
 #### 4. Проверьте Framework lock
 
@@ -230,7 +228,8 @@ php vendor/bin/docara update --apply
 php -r 'echo json_decode(file_get_contents("simai-framework.lock.json"), true)["runtime"]["pair_id"], PHP_EOL;'
 ```
 
-Значения `ui-b4a77681f0a7` (текущий релиз), `ui-2a671352d67b` (Docara
+Значения `ui-7fb26d395af2` (текущий релиз), `ui-b4a77681f0a7` (Docara
+3.14.0–3.14.2), `ui-2a671352d67b` (Docara
 3.13.0–3.13.1), `ui-c3015f76bcc2` (Docara 3.12.0–3.12.2), `ui-7153f7a9c092` (Docara 3.10.0–3.11.1), `ui-32c7a64e4575` (Docara 3.6.0–3.9.1), `ui-25beeb814ae8` (Docara 3.1.0–3.5.0), `ui-82fc0ba882ba` (Docara 3.0.0–3.0.5) и
 `ui-4f5e5067afeb-smart-7d932ed51408` (lock Docara 2.18)
 собираются с релизом пакета. При любом другом значении замените lock:

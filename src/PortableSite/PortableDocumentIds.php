@@ -20,6 +20,7 @@ final class PortableDocumentIds
             'docara-search-status',
             'docara-search-results',
             'docara-reader-settings-dialog',
+            'docara-reader-settings-trigger',
             'docara-reader-settings-title',
             'docara-reader-settings-help',
             'docara-reader-settings-status',

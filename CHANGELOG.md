@@ -6,6 +6,150 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.14.3] - 2026-11-14
+
+### Changed
+
+- **The reading settings menu is the Framework `sf-settings`.** The `menu`
+  view of `reader_preferences` (the default) was a hand-made list of
+  `sf-menu-context` rows; it is now the Framework settings menu
+  (`sf-settings look="drill"`, opened by the gear through its `for`), as
+  the Framework settings-menu decision asks. Each setting shows its value
+  under its name and opens its options a level down, the reader's choice is
+  kept as before, and the menu no longer carries its own reset row: the
+  Framework settings menu has none. The `side-panel` view is unchanged and
+  keeps its reset button.
+- **Docara bundles SIMAI Framework `ui-7fb26d395af2`** (registry bound at
+  `4c012852f`) instead of `ui-b4a77681f0a7`. What sites see: menus and the
+  context menu without late links and with the reviewed popup widths
+  (sf-menu-context 1.14.3, sf-menu 1.6), the dropdown's first paint, the
+  reviewed buttons (sf-button 1.13, sf-button-icon 1.8.4), notices (sf-alert
+  1.2.1), sf-modal 1.7, the tree 1.2 and sf-tree 2.1.2, the outline 1.1,
+  sf-contents 1.4.3, sf-search 1.7.4, sf-language 1.2.4, sf-pager 1.2.3,
+  the code highlighter 1.2.2 and the scrollbar 1.1.1, the icon loading that
+  waits for its Smart tags, and the new `.sf-group-heading`, `sf-time` and
+  `sf-change`. The release removes no tag or class Docara's markup uses.
+  Sites that pin `ui-b4a77681f0a7` (Docara 3.14.0 to 3.14.2) build with the
+  new release: that lock is recorded as superseded. The update page lists the
+  new pair and the range of the old one.
+- **An example's label is a caption under the frame.** The `label` of
+  `:::example` was the first tab, and a descriptive label made the tab row
+  scroll, so the code tabs slid out of view. The label now sits under the
+  frame as a small muted caption that wraps, like one under a picture
+  (`figure` and `figcaption`), and names the frame and its tabs. The first
+  tab always reads the localized "Example", the tab row no longer scrolls,
+  and the full-screen viewer shows the caption in its header. An example
+  without a label has no caption.
+- **A static tree is a nested list with type icons.** `:::tree
+  {interactive=false}` drew the Framework tree rows with an empty toggle
+  column and a 24 px step, so a child started 8 px left of its parent's
+  name. It is now a plain nested list with nothing to press: a folder or
+  file icon before each name, and a level steps by the icon and the row gap,
+  so a child's icon stands exactly under its parent's name (owner decisions
+  C102 and C109). The file icon is the Framework's generic one until the
+  Framework ships its file type map.
+
+### Added
+
+- **Desktop examples.** `:::example {viewport=desktop}` marks an example
+  made for a wide screen, such as a site header or a menu row (owner
+  decision C111). It always gets a frame of its own. In a column of 512 px
+  or more the frame is 1280 px wide at full scale and scrolls sideways: the
+  scroll area takes focus and is named, a fade marks a side that still
+  hides content, and the head reads "1280 · 100 % · scroll"
+  (`examples.desktop_scroll`, `examples.desktop_scroll_label`). A narrower
+  column and the device viewer show it at their own width. A page example
+  (`src`) rejects the attribute, since it already draws a desktop.
+- **A redirect can land on a section.** A `redirects.json` target may end
+  in a section anchor, such as `components/tree#узел-дерева`, so the old
+  address of a page merged into another opens at its section. The anchor
+  may be in any language; the published address percent-encodes it, the
+  canonical link stays the page itself, and `verify-static` fails when the
+  target page has no element with that `id`.
+
+### Fixed
+
+- **Search and the example viewer use the Framework's shared scrim.** They
+  darkened the page with Docara's own black at 60 %; they now take
+  `--sf-scrim-color` (black at 64 %), like the Framework's drawer and modal
+  (SR-5).
+- **An effect hero no longer flashes white while its effect loads.** A
+  hero with `effect` showed the page's white surface until the effect script
+  started, then the effect's grey field appeared. It now shows `surface-1`
+  until the effect runs (`data-sf-effect-state="running"`); the running
+  effect looks as before.
+- **An example frame no longer jumps while it loads.** A frame measured
+  itself before the page's styles and the Framework scripts reached it, so it
+  went from its reserved 192 px down to 32 px and then to its final height,
+  and the text below moved twice (layout shift up to 0.52 inside examples,
+  R216). Until the frame reports that it has drawn, it now keeps its reserved
+  or previous height; its last measured height applies once it has drawn, or after three seconds for
+  a frame that never reports it.
+- **Examples get more room in the wide and reading formats.** The wide
+  reader format kept the outline rail, so examples did not grow on 1280 and
+  1440 screens; the page contents now move into the menu above the article
+  there, as on a narrower screen (example 834 px instead of 642 at 1280).
+  Reading mode held examples to the text measure (766 px); an example now
+  takes the column up to the Framework container step 3 (1152 px), centred
+  on the text, which stays on the measure.
+- **Inline code wraps as the Framework sets it.** Docara held every piece
+  of inline code on one line, which outranked the Framework's own rule, so
+  a table with code in its cells grew wider than a phone and the page
+  scrolled sideways (750 px at 390 on one component page). Docara now
+  leaves wrapping to the Framework, which breaks a long piece in a table
+  cell only where it cannot fit a line; Docara still stops hyphens inside
+  a token.
+- **A press on the page closes a menu left open in an example.** A press
+  outside an example frame never reached the frame, so a menu opened in it
+  stayed open while the reader went on with the page. The page now asks a
+  frame with an open menu to close it: popovers that close on an outside
+  press close, and a Framework menu gets Escape, one level at a time, until
+  it is closed. A modal dialog in an example stays open.
+- **The example on the screen starts first.** Every example frame within
+  600 px of the screen started the Framework at once, so the one the reader
+  looks at waited for the others. At most two example frames now start at a
+  time, those on the screen first and then the nearest; a frame's turn ends
+  when it is styled, after four seconds, or when the reader scrolls it far
+  away. A frame that is scrolled far away before its turn waits until it
+  comes back.
+- **Example frames no longer download the Framework scripts again.** A
+  frame shares no browser cache with the page, so each frame fetched every
+  Framework script itself (24 requests on the Smart menu page). The page now
+  reads each script once from its own cache and hands the text to the
+  frames, which run it in the same order; a frame that starts before the
+  page has a script still loads that script by its address. The chunks that
+  Framework Core loads itself (such as core-rules) still come one request
+  per frame.
+- **The Framework decides when an icon has loaded, in examples too.**
+  Docara's icon script set and cleared the Framework's `sf-icon-loaded`
+  class itself, on the page and in example frames, so the two could
+  disagree. Docara now only picks the icon's font face and loads it; the
+  Framework sets the class. An icon font that reaches an example frame as
+  bytes is also added to the frame's `document.fonts`, already loaded, so
+  the Framework sees it there.
+- **Examples draw in Inter.** A frame lays out its markup before the page
+  hands it the Framework styles, and the Framework's Inter faces use
+  `font-display: optional`, so a frame could give up on Inter for good and
+  stay in the fallback, with weight 500 looking regular. In example frames
+  a text face with `optional` now swaps in when it loads (the page keeps
+  `optional`), and a frame counts as styled only once its text face at
+  weight 500 has loaded, or after a second: the full-screen viewer keeps the
+  inline preview until then.
+- **A Framework build that names its Inter files is accepted.** The check
+  on preloaded fonts accepted a Framework core face only as a hashed file
+  (`distr/core/<hash>.woff2`), so a build that ships Inter as
+  `distr/core/fonts/inter/<name>.woff2` was refused. Both forms are now
+  accepted; a name must be a single file name that does not start with a
+  dot, so a path cannot climb out of the font folder.
+- **A shadow at an example's edge is no longer cut.** A frame paints
+  nothing outside itself, so the shadow of a sample at its edge, such as a
+  toast, stopped flat at the frame's edge. The preview's padding above and
+  below now moves into the inline frame: the frame body pads by the same
+  amount, so the spacing on the page is unchanged and the shadow draws in
+  it. The side padding stays outside, so the frame is as wide as the sample
+  and its breakpoints and size steps switch at the same widths as before.
+  The device viewer's frame and a page example keep no extra padding.
+
 ## [3.14.2] - 2026-11-11
 
 ### Fixed

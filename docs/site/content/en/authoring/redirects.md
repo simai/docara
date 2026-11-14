@@ -39,6 +39,21 @@ Create `redirects.json`:
 reserved for the system locale redirect and is not allowed in your file. The
 builder applies `base_url` itself.
 
+### Landing on a section
+
+When an old page has become a section of another page, add the section's
+anchor to `to` after `#`, as it appears in the address:
+
+```json
+{ "from": "components/tree-item", "to": "components/tree#узел-дерева" }
+```
+
+The reader lands right on the "Узел дерева" heading. The anchor may be in any
+language: the build percent-encodes it in the published address
+(`%D1%83…`), and the browser finds the heading by its original text.
+`verify-static` checks that the page has an element with that `id`; without
+one the check fails.
+
 With symmetric language routing a separate publisher creates `/` →
 `/<default_locale>/` and, if `legacy_unprefixed_redirects` is on, a redirect
 for every former page without a language prefix. These records live in
@@ -49,7 +64,7 @@ for every former page without a language prefix. These records live in
 
 The source route gets a static `index.html` with:
 
-- a `canonical` link to the target;
+- a `canonical` link to the target (without the section anchor);
 - `robots: noindex`;
 - a meta refresh;
 - an ordinary visible link to the same target.
@@ -72,8 +87,9 @@ The build stops before it clears the previous output if:
 - the source matches a page, a folder, a file or a service route;
 - the source and the target are the same;
 - the target is the source of another redirect, forming a chain or a cycle;
-- there is an external URL, a query, a fragment, a path traversal or an
-  unsafe encoding;
+- there is an external URL, a query, a path traversal or an unsafe
+  encoding;
+- the section anchor is empty or holds a space or a second `#`;
 - the file crosses a symlink or hardlink boundary or does not match the
   schema.
 

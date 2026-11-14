@@ -65,15 +65,17 @@ final class ArticleLayoutContractTest extends TestCase
     }
 
     #[Test]
-    public function inline_code_stays_on_one_line_unless_the_build_marks_it_long(): void
+    public function inline_code_follows_the_framework_wrapping_and_marked_long_code_breaks_in_prose(): void
     {
         $css = $this->shellCss();
 
         self::assertStringContainsString(
-            '.docara-prose :not(pre)>code:not(:where(.docara-example-inline *)){white-space:nowrap;hyphens:none}',
+            '.docara-prose :not(pre)>code:not(:where(.docara-example-inline *)){hyphens:none}',
             $css,
         );
-        // Only a marked piece wraps, never inside a live example or a table.
+        // Docara never holds inline code on one line: the Framework wraps it, in table cells too.
+        self::assertStringNotContainsString('code:not(:where(.docara-example-inline *)){white-space:nowrap', $css);
+        // A marked long piece also breaks inside the token in running text; a table cell is left to the Framework.
         self::assertStringContainsString(
             '.docara-prose :not(pre)>code[data-docara-code-wrap]:not(:where(.docara-example-inline *,table *)){white-space:normal;overflow-wrap:anywhere}',
             $css,

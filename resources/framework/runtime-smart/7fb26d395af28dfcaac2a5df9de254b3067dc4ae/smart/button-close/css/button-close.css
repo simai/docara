@@ -1,0 +1,5 @@
+/* sf-button-close 1.3.3: the three looks (ghost, plain, media; owner decision
+   C14) are the class component's since component.close 1.2.0
+   (src/component/close/scss/_css__close_looks.scss), loaded with the relation
+   close; the template draws their classes and inherits them (C19). Nothing of
+   its own is left here. */

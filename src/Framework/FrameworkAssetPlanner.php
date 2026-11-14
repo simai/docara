@@ -2237,8 +2237,11 @@ final readonly class FrameworkAssetPlanner
             // whole class list) drops the face class chosen here; the recorded
             // face puts it back without loading the font again.
             . 'function faceClass(icon){return icon.classList.contains("sf-icon-full-font")?"full":icon.classList.contains("sf-icon-complete")?"complete":""}'
-            . 'function ready(icon){var current=iconName(icon);if(icon.classList.contains("sf-icon-loaded")&&icon.getAttribute("data-docara-icon-name")===current){if(icon.getAttribute("data-docara-icon-face")!==faceClass(icon)){family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon))}return}classSet(icon,"sf-icon-loaded",false);icon.setAttribute("data-docara-icon-name",current);var face=family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon));'
-            . 'ensureFace(face).then(function(){var key=face.weight+\' 24px "\'+face.family+\'"\';return loaded[key]||(loaded[key]=document.fonts&&document.fonts.load?document.fonts.load(key,current||undefined):Promise.resolve([true]))}).then(function(faces){if(faces&&faces.length)classSet(icon,"sf-icon-loaded",true)}).catch(function(){})}'
+            // The Framework owns sf-icon-loaded, on the page and in example
+            // frames: it watches document.fonts. This script only chooses the
+            // face and loads it, so the Framework sees the face arrive.
+            . 'function ready(icon){var current=iconName(icon);if(icon.getAttribute("data-docara-icon-name")===current){if(icon.getAttribute("data-docara-icon-face")!==faceClass(icon)){family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon))}return}icon.setAttribute("data-docara-icon-name",current);var face=family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon));'
+            . 'ensureFace(face).then(function(){var key=face.weight+\' 24px "\'+face.family+\'"\';return loaded[key]||(loaded[key]=document.fonts&&document.fonts.load?document.fonts.load(key,current||undefined):Promise.resolve([]))}).catch(function(){})}'
             . 'function mark(root){if(root.nodeType===1&&root.matches(".sf-icon"))ready(root);if(root.querySelectorAll){root.querySelectorAll(".sf-icon").forEach(ready)}}'
             . 'function owner(node){var element=node&&node.nodeType===1?node:node&&node.parentElement;return element&&element.closest?element.closest(".sf-icon"):null}'
             . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark);var icon=owner(record.target);if(icon)ready(icon)})}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["icon","class"]})}'
@@ -2251,6 +2254,20 @@ final readonly class FrameworkAssetPlanner
         return "(function(){function nativeStorage(){var storage,probe='__docara_sf_probe_'+Math.random().toString(36).slice(2);try{storage=window.localStorage;if(!storage)return null;storage.setItem(probe,'1');return storage.getItem(probe)==='1'?storage:null}catch(error){return null}finally{if(storage){try{storage.removeItem(probe)}catch(error){}}}}"
             . "if(nativeStorage())return;var values=Object.create(null),keys=[];var storage={key:function(index){index=Number(index);return Number.isInteger(index)&&index>=0&&index<keys.length?keys[index]:null},getItem:function(key){key=String(key);return Object.prototype.hasOwnProperty.call(values,key)?values[key]:null},setItem:function(key,value){key=String(key);if(!Object.prototype.hasOwnProperty.call(values,key)){keys.push(key)}values[key]=String(value)},removeItem:function(key){key=String(key);if(!Object.prototype.hasOwnProperty.call(values,key))return;delete values[key];keys.splice(keys.indexOf(key),1)},clear:function(){values=Object.create(null);keys=[]}};Object.defineProperty(storage,'length',{enumerable:true,get:function(){return keys.length}});"
             . "try{Object.defineProperty(window,'localStorage',{configurable:true,enumerable:true,value:storage})}catch(error){try{window.localStorage=storage}catch(ignored){}}try{if(window.localStorage===storage){document.documentElement.dataset.docaraFrameworkStorage='memory'}}catch(error){}})();";
+    }
+
+    /**
+     * A preloaded font lives under a commit- or digest-named directory. A
+     * Framework core face is either a hashed file (distr/core/<20 hex>.woff2)
+     * or a named Inter file (distr/core/fonts/inter/<name>.woff2); a name is
+     * one path segment that does not start with a dot, so it cannot climb out.
+     */
+    private static function immutableFontUrl(string $url): bool
+    {
+        return preg_match(
+            '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/(?:simai-framework/typography/[a-f0-9]{20}|simai-framework/runtime/[a-f0-9]{40}/distr/core/(?:[a-f0-9]{20}|fonts/inter/[A-Za-z0-9_-][A-Za-z0-9._-]*)|google/material-symbols/[a-f0-9]{40}/MaterialSymbolsOutlined|docara/icon-subset/[a-f0-9]{40}/material-symbols-outlined\.[a-f0-9]{20})\.woff2$#D',
+            $url,
+        ) === 1;
     }
 
     /** @param list<array<string, mixed>> $assets */
@@ -2286,10 +2303,7 @@ final readonly class FrameworkAssetPlanner
                     && preg_match('/^[a-f0-9]{40}$/', $asset['source_revision']) === 1
                     && is_string($asset['sha256'] ?? null)
                     && preg_match('/^[a-f0-9]{64}$/', $asset['sha256']) === 1
-                    && preg_match(
-                        '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/(?:simai-framework/typography/[a-f0-9]{20}|simai-framework/runtime/[a-f0-9]{40}/distr/core/[a-f0-9]{20}|google/material-symbols/[a-f0-9]{40}/MaterialSymbolsOutlined|docara/icon-subset/[a-f0-9]{40}/material-symbols-outlined\.[a-f0-9]{20})\.woff2$#D',
-                        $url,
-                    ) === 1
+                    && self::immutableFontUrl($url)
                 ) {
                     continue;
                 }

@@ -150,10 +150,10 @@ MD);
         self::assertStringContainsString('data-docara-example-preview-resolved="sandbox"', $isolated);
         self::assertStringContainsString('data-docara-example-preview-reason="javascript"', $isolated);
         self::assertStringContainsString('data-docara-example-frame', $isolated);
-        // The frame body leaves room for a focus ring drawn outside a sample
-        // at its edge, which the frame would otherwise clip.
+        // The frame body leaves room for a focus ring or a shadow drawn
+        // outside a sample at its edge, which the frame would otherwise clip.
         self::assertStringContainsString(
-            'body{padding:calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}',
+            'body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px)) calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}',
             html_entity_decode($isolated),
         );
 
@@ -183,7 +183,10 @@ MD);
 MD);
         self::assertStringContainsString('<iframe title="Save &lt;button&gt;" data-docara-example-frame', $labelled);
         self::assertStringContainsString(htmlspecialchars('<title>Save &lt;button&gt;</title>', ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8'), $labelled);
-        self::assertStringNotContainsString('data-docara-example-default-label', $labelled);
+        // The frame keeps the author's label; only the first tab reads the localized "Example".
+        self::assertStringNotContainsString('<iframe title="Save &lt;button&gt;" data-docara-example-default-label', $labelled);
+        self::assertSame(1, substr_count($labelled, 'data-docara-example-default-label'));
+        self::assertStringContainsString('class="docara-example-preview__caption">Save &lt;button&gt;</figcaption>', $labelled);
         self::assertStringNotContainsString('data-docara-example-icons', $labelled);
 
         $unlabelled = $renderer->render(<<<'MD'
@@ -292,6 +295,46 @@ MD);
     }
 
     #[Test]
+    public function an_example_label_is_a_caption_under_the_frame_and_the_first_tab_stays_short(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        // A descriptive label as long as the longest one on a component site.
+        $label = 'Положения стрелки подсказки относительно элемента на странице и в таблицах';
+        self::assertSame(74, mb_strlen($label));
+        $html = $renderer->render(":::example {label=\"{$label}\"}\n```html\n<p>x</p>\n```\n:::");
+
+        $caption = 'class="docara-example-preview__caption">' . $label . '</figcaption></figure>';
+        self::assertStringStartsWith('<figure data-docara-example-figure class="docara-example-figure"><section data-docara-example="', $html);
+        self::assertStringEndsWith($caption, trim($html));
+        preg_match('/<figcaption id="([^"]+)"/', $html, $id);
+        self::assertNotEmpty($id);
+        // The frame and its tab list are named by the caption; no tab holds the label.
+        self::assertStringContainsString(' aria-labelledby="' . $id[1] . '"><div class="docara-example-preview__header">', $html);
+        self::assertStringContainsString('<div role="tablist" aria-labelledby="' . $id[1] . '" class="docara-example-preview__tabs">', $html);
+        self::assertSame(0, preg_match('~role="tab"[^>]*>[^<]*' . preg_quote($label, '~') . '~u', $html));
+        // The viewer header repeats the text; the preview frame keeps it as its title.
+        self::assertStringContainsString('<span data-docara-example-title class="docara-example-preview__title">' . $label . '</span>', $html);
+        self::assertStringContainsString('title="' . $label . '"', $html);
+
+        $resultOnly = $renderer->render(":::example {label=\"{$label}\" sources=false}\n```html\n<p>x</p>\n```\n:::");
+        self::assertSame(1, substr_count($resultOnly, 'role="tab"'));
+        self::assertStringEndsWith($caption, trim($resultOnly));
+
+        // Without a label the frame has no caption and no figure.
+        $plain = $renderer->render(":::example\n```html\n<p>x</p>\n```\n:::");
+        self::assertStringStartsWith('<section data-docara-example="', trim($plain));
+        self::assertStringNotContainsString('<figcaption', $plain);
+        self::assertStringNotContainsString('data-docara-example-title', $plain);
+        self::assertStringContainsString('<div role="tablist" aria-label="Example" class="docara-example-preview__tabs">', $plain);
+
+        // The caption reads like one under a picture and the tab row never scrolls.
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('.docara-example-preview__caption{margin-block-start:var(--sf-space-1\\/3);font-size:var(--sf-text-size-1\\/2);line-height:var(--sf-text-height-1\\/2);color:var(--sf-on-surface-variant);overflow-wrap:break-word}', $css);
+        self::assertStringContainsString('.docara-example-preview__tabs{display:inline-flex;inline-size:max-content;max-inline-size:100%;align-items:center;gap:0}', $css);
+        self::assertStringContainsString('.docara-example-preview__title{display:none}', $css);
+    }
+
+    #[Test]
     public function it_renders_markdown_and_multifile_examples_as_one_tabbed_surface(): void
     {
         $renderer = new PortableMarkdownRenderer;
@@ -304,13 +347,15 @@ MD);
 MD);
 
         self::assertStringContainsString('data-docara-example=', $markdown);
-        self::assertStringContainsString('class="docara-example-preview__tab">Пример</button>', $markdown);
+        // The first tab is the localized "Example"; the author's label is the caption under the frame.
+        self::assertStringContainsString('data-docara-example-default-label class="docara-example-preview__tab">Example</button>', $markdown);
+        self::assertStringContainsString('class="docara-example-preview__caption">Пример</figcaption></figure>', $markdown);
         self::assertStringContainsString('data-docara-example-tab="markdown"', $markdown);
         self::assertStringContainsString(
             'data-docara-example-panel="markdown" aria-hidden="true" class="docara-example-preview__panel docara-example-preview__panel--source"',
             $markdown,
         );
-        self::assertStringContainsString('data-docara-example-tab="example" class="docara-example-preview__tab"', $markdown);
+        self::assertStringContainsString('data-docara-example-tab="example" data-docara-example-default-label class="docara-example-preview__tab"', $markdown);
         self::assertStringContainsString('data-docara-example-tab="markdown" class="docara-example-preview__tab"', $markdown);
         self::assertStringContainsString('data-docara-example-copy', $markdown);
         self::assertStringContainsString('data-docara-example-fullscreen="true"', $markdown);
@@ -375,6 +420,10 @@ MD);
         // A wide example carries the shell's full-width marker on its root.
         self::assertMatchesRegularExpression('/<section data-docara-example="[^"]+"[^>]* data-docara-width="full" class="docara-example-preview docara-example-preview--wide"/', $wide);
         self::assertStringNotContainsString('data-docara-width', $resultOnly);
+        // With a caption the figure around the frame takes the full-width marker.
+        $wideCaptioned = $renderer->render(":::example {label=Витрина layout=wide sources=false}\n```html\n<p>x</p>\n```\n:::");
+        self::assertStringContainsString('<figure data-docara-example-figure data-docara-width="full" class="docara-example-figure"><section ', $wideCaptioned);
+        self::assertSame(1, substr_count($wideCaptioned, 'data-docara-width="full"'));
         try {
             $renderer->render(":::example {layout=full}\n```html\n<p>x</p>\n```\n:::");
             self::fail('An example accepted an unknown layout.');
@@ -661,7 +710,7 @@ MD);
     }
 
     #[Test]
-    public function trees_render_as_the_framework_tree_and_static_trees_are_left_unbound(): void
+    public function trees_render_as_the_framework_tree_and_static_trees_as_nested_lists_with_type_icons(): void
     {
         $renderer = new PortableMarkdownRenderer;
         $interactive = $renderer->render(<<<'MD'
@@ -684,8 +733,8 @@ MD);
             trim($interactive),
         );
 
-        // A static tree is marked as bound, so the Framework script leaves
-        // it open, and its folder icons are not buttons.
+        // A static tree is a nested list (C102, C109): no toggle column, an
+        // icon before each name, nothing to press.
         $static = $renderer->render(<<<'MD'
 :::tree {interactive=false}
 - content
@@ -693,9 +742,23 @@ MD);
 - docara.json
 :::
 MD);
-        self::assertStringStartsWith('<div data-docara-block="tree" data-interactive="false" class="sf-tree flex flex-col m-bottom-1" data-sf-tree-bound="1">', trim($static));
-        self::assertStringNotContainsString('<button', $static);
-        self::assertStringContainsString('<span class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></span>', $static);
+        $row = static fn (string $icon, string $name): string => '<span class="docara-tree__row"><i class="sf-icon docara-tree__icon" aria-hidden="true">'
+            . $icon . '</i><span class="docara-tree__name">' . $name . '</span></span>';
+        self::assertSame(
+            '<ul data-docara-block="tree" data-interactive="false" class="docara-tree m-bottom-1">'
+            . '<li class="docara-tree__item">' . $row('folder_open', 'content')
+            . '<ul class="docara-tree__group"><li class="docara-tree__item">' . $row('draft', 'index.md') . '</li></ul></li>'
+            . '<li class="docara-tree__item">' . $row('draft', 'docara.json') . '</li></ul>',
+            trim($static),
+        );
+        self::assertStringNotContainsString('sf-tree', $static);
+
+        // The level step is the icon and the row gap, the same gap as inside
+        // a row, so a child's icon stands under its parent's name.
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('.docara-tree__group{margin-block:0;padding-inline-start:calc(var(--sf-icon-size-3) + var(--sf-space-1\\/2))}', $css);
+        self::assertStringContainsString('.docara-tree__row{display:flex;align-items:center;gap:var(--sf-space-1\\/2);', $css);
+        self::assertStringContainsString('.docara-tree__icon{flex:none;inline-size:var(--sf-icon-size-3);', $css);
     }
 
     #[Test]
@@ -2264,6 +2327,65 @@ MD);
             'data-docara-example-preview-reason="forced_sandbox"',
             $renderer->render(":::example {theme_switch=true preview=sandbox}\n```markdown\nText\n```\n:::\n"),
         );
+    }
+
+    #[Test]
+    public function a_desktop_example_gets_a_frame_that_scrolls_sideways_under_a_chip(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $markdown = ":::example {viewport=desktop label=\"Site row\"}\n```markdown\nText\n```\n:::\n";
+        $html = $renderer->render($markdown);
+
+        // Owner decision C111: only a frame of its own can be 1280 wide.
+        self::assertStringContainsString('data-docara-example-preview-reason="desktop_viewport"', $html);
+        self::assertSame(
+            [['id' => '', 'mode' => 'inline', 'requested_preview' => 'auto', 'resolved_preview' => 'sandbox', 'reason' => 'desktop_viewport']],
+            $renderer->examplePreviews($markdown),
+        );
+        self::assertMatchesRegularExpression('~<section [^>]* data-docara-example-desktop[ >]~', $html);
+        self::assertMatchesRegularExpression(
+            '~<div data-docara-example-scroll class="docara-example-scroll"><div data-docara-example-scroll-body data-docara-example-scrolling="false" class="docara-example-scroll__body"><iframe [^>]*data-docara-example-frame~',
+            $html,
+        );
+        self::assertStringContainsString('<span data-docara-example-desktop-chip hidden class="docara-example-preview__chip">1280 · 100 % · scroll</span>', $html);
+
+        // A column example has none of it.
+        $column = $renderer->render(":::example {viewport=column}\n```markdown\nText\n```\n:::\n");
+        self::assertStringNotContainsString('data-docara-example-desktop', $column);
+        self::assertStringNotContainsString('data-docara-example-scroll', $column);
+
+        // The shell scrolls the body only from a 512 column, fades the side
+        // that still hides content and sets the frame back in the viewer.
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertStringContainsString('var scrolls=!viewer&&width>=512;', $shell);
+        self::assertStringContainsString("previewFrame.style.inlineSize=exampleViewportWidths.desktop+'px'", $shell);
+        self::assertStringContainsString("desktopBody.parentElement.toggleAttribute('data-more-end',hidden>1&&left<hidden-1);", $shell);
+        self::assertStringContainsString("fitPageFrame();\n      fitDesktopFrame();", $shell);
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        self::assertStringContainsString('.docara-example-scroll__body[data-docara-example-scrolling="true"]{overflow-x:auto;overscroll-behavior-x:contain}', $css);
+        // In the viewer the frame is the panel's own child again, sized by the device.
+        self::assertStringContainsString('[data-docara-example-viewer-active="true"] :is(.docara-example-scroll,.docara-example-scroll__body){display:contents}', $css);
+
+        $cases = [
+            ':::example {viewport=desktop preview=inline}' => 'MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED',
+            ':::example {viewport=phone}' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+        ];
+        foreach ($cases as $opening => $code) {
+            foreach (['render', 'examplePreviews'] as $method) {
+                try {
+                    $renderer->{$method}("$opening\n```html\n<p>Text</p>\n```\n:::\n");
+                    self::fail("[$opening] was accepted by $method.");
+                } catch (PortableConfigurationException $exception) {
+                    self::assertSame($code, $exception->errorCode, "$opening via $method");
+                }
+            }
+        }
+        try {
+            $renderer->render("::::example {src=\"/demo/\" viewport=desktop}\n### A\n\ntext\n::::\n");
+            self::fail('A page example accepted viewport.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_EXAMPLE_SRC_CONFLICT', $exception->errorCode);
+        }
     }
 
     #[Test]

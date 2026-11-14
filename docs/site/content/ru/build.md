@@ -1,7 +1,9 @@
 # Сборка и публикация
 
-Обычному автору не нужен frontend toolchain. PHP-команда читает Markdown и
-JSON, проверяет Framework lock и создаёт готовый статический каталог.
+Для сборки нужны PHP и Node.js 20 или новее; Vite, npm-пакеты и другие
+инструменты сборки интерфейса не нужны. Команда читает Markdown и JSON,
+проверяет Framework lock и создаёт готовый статический каталог. Node.js
+запускает код композиции страниц SIMAI Framework.
 
 ## Безопасный путь
 
@@ -33,9 +35,6 @@ Preview блокирует терминал до `Ctrl+C`. Не использу
 - [Публикация и откат](/ru/build/publish/)
 - [Сборка для портала](/ru/build/portal/)
 - [Обновление Docara](/ru/build/update/) — в том числе переход с 2.x на 3.0
-
-Vite нужен только maintainer-разработчику исходных ассетов темы. Он не входит в
-portable author/build path.
 
 Успешный local verify не является автоматическим разрешением публичного
 release или production deployment.

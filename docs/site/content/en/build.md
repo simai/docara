@@ -1,8 +1,9 @@
 # Building and publishing
 
-An ordinary author needs no frontend toolchain. A PHP command reads the
-Markdown and the JSON, checks the Framework lock and creates a finished static
-folder.
+A build needs PHP and Node.js 20 or newer; it needs no Vite, npm packages or
+other frontend build tools. The command reads the Markdown and the JSON,
+checks the Framework lock and creates a finished static folder. Node.js runs
+the SIMAI Framework page composition code.
 
 ## The safe path
 
@@ -34,9 +35,6 @@ The preview holds the terminal until `Ctrl+C`. Do not use `file://`.
 - [Publishing and rolling back](/en/build/publish/)
 - [Building for a portal](/en/build/portal/)
 - [Updating Docara](/en/build/update/) — including the move from 2.x to 3.0
-
-Vite is for a maintainer who develops the theme's source assets. It is not
-part of the portable author and build path.
 
 A successful local check is no automatic permission for a public release or a
 production deployment.

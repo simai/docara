@@ -46,7 +46,9 @@ The block is built on the SIMAI Framework tree (`sf-tree`).
 ### Collapsing folders
 
 By default folders can be collapsed. `interactive=false` makes the tree
-static: all folders are always expanded.
+static: a plain nested list where every folder stays open and nothing can
+be pressed. Each row shows a folder or file icon before the name, and a
+nested level starts exactly under its parent's name.
 
 :::example {label="Static tree"}
 ```markdown
@@ -71,6 +73,8 @@ visible without scripts too. A collapsed folder shows a closed icon.
   move between rows, the right arrow expands a folder, the left arrow
   collapses it, Home and End go to the first and last row.
 - You can also collapse a folder by clicking its icon.
+- A static tree is a nested list: it takes no focus, and a screen reader
+  reads its levels as list levels.
 - The tree explains structure. Do not use it as a navigation menu: the side
   menu is there for links across the site.
 

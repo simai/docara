@@ -129,7 +129,8 @@ in versions 3.0.0–3.0.5, `ui-25beeb814ae8` in versions 3.1.0–3.5.0,
 `ui-7153f7a9c092` in versions 3.10.0–3.11.1,
 `ui-c3015f76bcc2` in versions 3.12.0–3.12.2,
 `ui-2a671352d67b` in versions 3.13.0–3.13.1,
-`ui-b4a77681f0a7` in later versions. A build no longer needs
+`ui-b4a77681f0a7` in versions 3.14.0–3.14.2,
+`ui-7fb26d395af2` in later versions. A build no longer needs
 a separate Framework copy or environment variables: you can remove
 `DOCARA_SIMAI_UI_ROOT` and `SIMAI_UI_ROOT` from the build environment and from
 CI. These variables stay optional and are needed only to build with another
@@ -207,9 +208,6 @@ Commit or stash unfinished changes and keep the last checked
 composer require simai/docara:^3.0 -W
 ```
 
-The first command adds the Docara repository on GitHub to the project:
-version 3 is installed from there.
-
 `-W` lets Composer update the dependencies of Docara together with it.
 
 #### 3. Sync the engine of the project
@@ -224,7 +222,7 @@ php vendor/bin/docara update --apply
 `--apply` updates the package-owned `.docara/engine` atomically by that plan.
 The content, `docara.json` and the section and page settings do not change. If
 the project has no ownership manifest yet, run the dry-run with `--adopt` —
-see [Updating Docara](/en/build/update/).
+see [An old project without an ownership manifest](#an-old-project-without-an-ownership-manifest).
 
 #### 4. Check the Framework lock
 
@@ -234,7 +232,8 @@ Look at the `runtime.pair_id` value in `simai-framework.lock.json`:
 php -r 'echo json_decode(file_get_contents("simai-framework.lock.json"), true)["runtime"]["pair_id"], PHP_EOL;'
 ```
 
-The values `ui-b4a77681f0a7` (the current release), `ui-2a671352d67b` (Docara
+The values `ui-7fb26d395af2` (the current release), `ui-b4a77681f0a7` (Docara
+3.14.0–3.14.2), `ui-2a671352d67b` (Docara
 3.13.0–3.13.1), `ui-c3015f76bcc2` (Docara 3.12.0–3.12.2), `ui-7153f7a9c092` (Docara 3.10.0–3.11.1), `ui-32c7a64e4575` (Docara 3.6.0–3.9.1), `ui-25beeb814ae8` (Docara 3.1.0–3.5.0), `ui-82fc0ba882ba` (Docara 3.0.0–3.0.5) and
 `ui-4f5e5067afeb-smart-7d932ed51408` (the Docara 2.18 lock)
 build with the release from the package. With any other value, replace the

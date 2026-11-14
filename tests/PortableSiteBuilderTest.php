@@ -1097,7 +1097,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/b4a77681f0a7f1c540566e5abac2a4f9d3082a3d/distr/',
+                '/_docara/vendor/simai-framework/runtime/7fb26d395af28dfcaac2a5df9de254b3067dc4ae/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -1364,9 +1364,9 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => 'ef768d0a3fccfac3f322d96bd683de7582985d7d513ecfe92f979741b0046653',
-            'smart/button/js/button.js' => '476eeb5739db710eafcd2341744e2b753a3dbe1599f7989037f68e4466ab70fd',
-            'smart/icon/js/icon.js' => '9570598e6e97e4b5b2bca7711a9eb7e802d1af9ea78b8d57aa8efcc4b52d05c5',
+            'smart/alert/js/alert.js' => 'b5523e7016c4485b7cc852f0999c26e328faf0cf272d2662edf9a19b3eadb0ed',
+            'smart/button/js/button.js' => 'a75c5cb886b740ef71381693b596f37dbc506a4dda9b9ff07ef5e8f91475bcbd',
+            'smart/icon/js/icon.js' => 'f1d5c66cda2597a136b8bfb28721fe40699f0c994c6876c428d657c88e200bed',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
             self::assertFileExists($published);
@@ -1463,7 +1463,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('ui-b4a77681f0a7', $componentCatalog['framework_pair']);
+        self::assertSame('ui-7fb26d395af2', $componentCatalog['framework_pair']);
         self::assertCount(40, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -2052,7 +2052,7 @@ MD;
             $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.min\.js\?sf_v=ui-b4a77681f0a7-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.min\.js\?sf_v=ui-7fb26d395af2-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));
@@ -2083,6 +2083,12 @@ MD;
             'to' => 'components/button',
         ];
         $redirectSource['redirects'][] = ['from' => 'home-old', 'to' => ''];
+        // A merged page's old address lands on its section (ui-doc C127).
+        file_put_contents(
+            $this->tmpPath('content/components/button.md'),
+            (string) file_get_contents($this->tmpPath('content/components/button.md')) . "\n## Узел дерева\n\nText.\n",
+        );
+        $redirectSource['redirects'][] = ['from' => 'components/tree-item', 'to' => 'components/button#узел-дерева'];
         file_put_contents(
             $this->tmpPath('redirects.json'),
             json_encode(
@@ -2164,6 +2170,18 @@ MD;
             'data-docara-documentation-version="2.4.0"',
             $html,
         );
+        $section = collect($receipt['redirects'])->firstWhere('from', 'components/tree-item');
+        self::assertIsArray($section);
+        self::assertSame('components/button#узел-дерева', $section['to']);
+        $encoded = '/project~/docs/components/button/#' . rawurlencode('узел-дерева');
+        self::assertSame($encoded, $section['target_url']);
+        $sectionHtml = (string) file_get_contents($this->tmpPath('build_local/components/tree-item/index.html'));
+        self::assertStringContainsString('<meta http-equiv="refresh" content="0; url=' . $encoded . '">', $sectionHtml);
+        self::assertStringContainsString('window.location.replace("' . $encoded . '")', $sectionHtml);
+        self::assertStringContainsString('<a href="' . $encoded . '">', $sectionHtml);
+        // The canonical address is the page, not its section.
+        self::assertStringContainsString('<link rel="canonical" href="/project~/docs/components/button/">', $sectionHtml);
+        self::assertStringContainsString(' id="узел-дерева"', (string) file_get_contents($this->tmpPath('build_local/components/button/index.html')));
         $home = collect($receipt['redirects'])->firstWhere('from', 'home-old');
         self::assertIsArray($home);
         self::assertSame('', $home['to']);
@@ -2195,6 +2213,20 @@ MD;
         ], dirname(__DIR__));
         $process->run();
         self::assertSame(0, $process->getExitCode(), $process->getErrorOutput() . $process->getOutput());
+
+        // A section the page does not have fails the static verification.
+        foreach ($sourceDocument['redirects'] as &$record) {
+            if ($record['from'] === 'components/tree-item') {
+                $record['to'] = 'components/button#нет-такого';
+            }
+        }
+        unset($record);
+        file_put_contents($this->tmpPath('redirects.json'), json_encode($sourceDocument, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES));
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $missing = new Process([PHP_BINARY, 'scripts/verify-static-build.php', $this->tmpPath('build_local')], dirname(__DIR__));
+        $missing->run();
+        self::assertSame(1, $missing->getExitCode(), $missing->getOutput());
+        self::assertStringContainsString('targets section [нет-такого]', json_encode(json_decode($missing->getOutput(), true), JSON_UNESCAPED_UNICODE) ?: '');
     }
 
     #[Test]
@@ -2857,9 +2889,12 @@ MD;
             $closure = array_column($plan['generated_assets'], 'sha256');
             $links = $stylesheets['pages'][$page];
             // The stub site's closures hold 44-56 segments; its pages link
-            // 4-12 stylesheets (the Framework contents, pager, search and
-            // settings components add their own since 3.10.0).
-            self::assertLessThanOrEqual(12, count($links), $page);
+            // 4-13 stylesheets (the Framework contents, pager, search and
+            // settings components add their own since 3.10.0; the shell's
+            // example caption, desktop scroll and static tree rules in 3.14.3
+            // tip the getting-started page's bundling to 13, and the
+            // ui-7fb26d395af2 sheets to 14).
+            self::assertLessThanOrEqual(14, count($links), $page);
             self::assertLessThan(count($closure), count($links), $page);
             $linked = array_merge(...array_map(
                 static fn (string $filename): array => array_column($stylesheets['bundles'][$filename]['inputs'], 'sha256'),
@@ -2889,9 +2924,12 @@ MD;
         // The target is a weight in the merge, not a ceiling: since 3.10.0 the
         // Framework contents, pager, search and settings components bring
         // segments the cascade keeps apart, and the stub site's pages link 7.6
-        // stylesheets on average (the documentation site 6.6).
+        // stylesheets on average (the documentation site 6.6). The 3.14.3
+        // shell (example caption, desktop scroll, static tree) regroups the
+        // stub site's bundles to 8.25; the documentation site stays at 7.66
+        // links per page, as in 3.14.2.
         self::assertLessThanOrEqual(
-            ShellStylesheetBundler::TARGET_REQUESTS + 2,
+            ShellStylesheetBundler::TARGET_REQUESTS + 2.25,
             array_sum(array_map('count', $pageFiles)) / count($pageFiles),
         );
         self::assertLessThanOrEqual(

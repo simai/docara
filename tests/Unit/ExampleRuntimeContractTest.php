@@ -49,6 +49,162 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('script.async=false', $renderer);
     }
 
+    public function test_the_page_shares_framework_script_text_and_boots_visible_frames_first(): void
+    {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+
+        // Script text: read once from the page's cache, sent once per frame document.
+        self::assertStringContainsString('function portableExampleScript(src){', $shell);
+        self::assertStringContainsString("pageScriptArrived(resolved.href).then(function(){return fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'})})", $shell);
+        self::assertStringContainsString('if(resolved.origin!==location.origin)return null;', $shell);
+        self::assertStringContainsString("if(performance.getEntriesByName(href,'resource').length){done();return}", $shell);
+        self::assertStringContainsString("document.addEventListener('DOMContentLoaded',done,{once:true});", $shell);
+        // A frame never waits for script text: what the page does not hold yet goes by URL.
+        self::assertStringContainsString("if(typeof content==='string'&&content!==''&&fresh('script:'+src))environment.scriptTexts[src]=content;", $shell);
+        self::assertStringContainsString("Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]')).forEach(function(script){portableExampleScript(script.src)});", $shell);
+        self::assertStringContainsString('scriptTexts:{},', $shell);
+
+        // Boot queue: at most two example frames boot at once, nearest first; a boot ends on styled or after 4 s.
+        self::assertStringContainsString('var near=[],booting=[],bootLimit=2,bootTimeout=4000;', $shell);
+        self::assertStringContainsString("if(typeof IntersectionObserver!=='function'){deferred.forEach(load);return}", $shell);
+        self::assertStringContainsString('near.sort(function(a,b){return distance(a)-distance(b)});', $shell);
+        self::assertStringContainsString('booting.push({frame:frame,timer:setTimeout(release.bind(null,frame),bootTimeout)});', $shell);
+        self::assertStringContainsString("if(!event.data||event.data.type!=='docara:example-styled')return;\n      var item=booting.find(", $shell);
+        self::assertStringContainsString('if(!entry.isIntersecting){if(index!==-1)near.splice(index,1);free(frame);return}', $shell);
+        self::assertStringContainsString('function release(frame){if(free(frame))pump()}', $shell);
+        self::assertStringContainsString('if(!boots(frame)){observer.unobserve(frame);load(frame);return}', $shell);
+        self::assertStringContainsString("return frame.hasAttribute('data-docara-example-frame')&&!frame.hasAttribute('data-docara-example-page')", $shell);
+        self::assertStringContainsString("},{rootMargin:'600px 0px'});", $shell);
+    }
+
+    public function test_a_frame_swaps_in_an_optional_text_face_and_is_styled_once_its_text_face_loaded(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
+
+        self::assertStringContainsString("return exampleIconFace(rule)?rule:rule.replace(/font-display\\s*:\\s*optional/gi,'font-display:swap');", $shell);
+        self::assertStringContainsString("Promise.all([stylesApplied,scriptsLoaded]).then(textFontLoaded).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});", $renderer);
+        self::assertSame(1, preg_match('/\n  function portableExampleStyle\(content,baseHref,codepoints,faces\)\{\n.*?\n  \}\n/s', $shell, $style));
+        self::assertSame(1, preg_match('/\nfunction textFontLoaded\(\)\{\n.*?\n\}\n/s', $renderer, $font));
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The frame font check runs the functions in Node.js.');
+
+        $script = <<<'JS'
+function exampleIconFace(rule){return /font-family\s*:\s*["']?Material (?:Symbols|Icons)/i.test(rule)}
+function exampleFaceNeeded(){return true}
+function exampleFontAsset(){return Promise.resolve(null)}
+globalThis.location={origin:'https://docs.example'};
+const loads=[];let mode='fast';
+globalThis.document={baseURI:'https://docs.example/',fonts:{load(spec){loads.push(spec);return mode==='fast'?Promise.resolve([1]):new Promise(()=>{})}}};
+const body={};
+globalThis.getComputedStyle=()=>({fontFamily:'"Inter Variable", "Inter Fallback", system-ui'});
+JS;
+        $script .= $style[0] . $font[0] . <<<'JS'
+const css='@font-face{font-family:"Inter Variable";font-display:optional;src:url(https://cdn.example/a.woff2)}@font-face{font-family:"Material Symbols Outlined";font-display:block;src:url(https://cdn.example/b.woff2)}';
+(async()=>{
+  const text=(await portableExampleStyle(css,'https://docs.example/',null,'text')).content;
+  const t0=Date.now();await textFontLoaded();const fast=Date.now()-t0;
+  mode='hang';const t1=Date.now();await textFontLoaded();const capped=Date.now()-t1;
+  process.stdout.write(JSON.stringify({text,loads,fast:fast<200,capped:capped>=900&&capped<2000}));
+})();
+JS;
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame('@font-face{font-family:"Inter Variable";font-display:swap;src:url(https://cdn.example/a.woff2)}', $result['text'], 'In a frame the text face swaps in; the icon face is not sent with the text faces.');
+        self::assertSame(['500 1em "Inter Variable", "Inter Fallback", system-ui', '500 1em "Inter Variable", "Inter Fallback", system-ui'], $result['loads']);
+        self::assertTrue($result['fast'], 'A loaded face lets the frame report styled at once.');
+        self::assertTrue($result['capped'], 'A face that never loads holds the styled report for about a second.');
+    }
+
+    public function test_an_icon_font_sent_as_bytes_is_registered_with_document_fonts(): void
+    {
+        $renderer = (string) file_get_contents(dirname(__DIR__, 2) . '/src/PortableSite/PortableMarkdownRenderer.php');
+        self::assertSame(2, substr_count($renderer, "registerIconFaces(content,font);\ncontent=content.split(font.token).join(blobUrl);"));
+        self::assertSame(1, preg_match('/\nfunction registerIconFaces\(content,font\)\{\n.*?\n\}\n/s', $renderer, $match));
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The font registration check runs the function in Node.js.');
+
+        $script = <<<'JS'
+const added=[];let loads=0;
+globalThis.FontFace=class{constructor(family,source,descriptors){this.family=family;this.source=source;this.descriptors=descriptors}load(){loads++;return Promise.resolve(this)}};
+globalThis.document={fonts:{add(face){added.push(face)}}};
+const registeredIconFaces={};
+JS;
+        $script .= $match[0] . <<<'JS'
+const bytes=new ArrayBuffer(8);
+const css='@font-face{font-family:"Inter";src:url(__TEXT__)}@font-face{font-family:"Material Symbols Outlined";font-style:normal;font-weight:400;font-display:block;src:url(__ICON__) format("woff2")}';
+registerIconFaces(css,{token:'__ICON__',bytes});
+registerIconFaces(css,{token:'__ICON__',bytes});
+registerIconFaces(css,{token:'__TEXT__',bytes});
+/* The icon runtime carries its fallback face as CSS inside a JavaScript string. */
+registerIconFaces('var fallbackCss="@font-face{font-family:\\"Material Symbols Outlined Full\\";font-weight:100 700;src:url(__FULL__)}";',{token:'__FULL__',bytes});
+process.stdout.write(JSON.stringify({added:added.map(face=>({family:face.family,bytes:face.source===bytes,descriptors:face.descriptors})),loads}));
+JS;
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame([
+            ['family' => 'Material Symbols Outlined', 'bytes' => true, 'descriptors' => ['weight' => '400', 'style' => 'normal', 'display' => 'block']],
+            ['family' => 'Material Symbols Outlined Full', 'bytes' => true, 'descriptors' => ['weight' => '100 700']],
+        ], $result['added'], 'Each icon face is added once from its bytes; a text font is left to its rule.');
+        self::assertSame(2, $result['loads']);
+    }
+
+    public function test_a_press_outside_a_frame_with_an_open_menu_dismisses_it(): void
+    {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents(dirname(__DIR__, 2) . '/src/PortableSite/PortableMarkdownRenderer.php');
+
+        self::assertStringContainsString("document.addEventListener('pointerdown',function(event){", $shell);
+        self::assertStringContainsString("if(!frame.contentWindow||event.target===frame||!exampleFrameState(frame).layers)return;\n        frame.contentWindow.postMessage({type:'docara:example-dismiss'},'*');", $shell);
+        self::assertStringContainsString('exampleFrameState(frame).layers=boxes.length;', $shell);
+        self::assertStringContainsString("if(event.source===parent&&event.data&&event.data.type==='docara:example-dismiss'){dismissLayers();return}", $renderer);
+        self::assertSame(1, preg_match('/\nfunction dismissLayers\(\)\{\n.*?\n\}\n/s', $renderer, $match));
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The dismiss check runs the function in Node.js.');
+
+        $script = <<<'JS'
+const hidden=[],closed=[],keys=[];
+function popover(name,kind){return{name,popover:kind,open:true,getAttribute(){return kind},hidePopover(){this.open=false;hidden.push(name)}}}
+function dialog(name,by){return{name,closedBy:by,open:true,getAttribute(){return by},requestClose(){this.open=false;closed.push(name)}}}
+const layers=[popover('auto','auto'),popover('hint','hint'),popover('menu','manual'),popover('toasts','manual')];
+/* A notification area pinned to the frame's bottom edge is no menu: it stays open and gets no Escape. */
+const layerPlaces=new Map([[layers[3],{pinned:true}]]);
+function bottomPinned(){return false}
+const dialogs=[dialog('any','any'),dialog('modal','closerequest')];
+const focused={dispatchEvent(event){keys.push([event.type,event.key,event.bubbles]);/* Escape closes the top level of the menu: two levels are open */if(keys.length===2)layers[2].open=false}};
+globalThis.KeyboardEvent=class{constructor(type,init){this.type=type;Object.assign(this,init)}};
+globalThis.document={
+  documentElement:{},activeElement:focused,
+  querySelectorAll(selector){return selector==='dialog[open]'?dialogs.filter(item=>item.open):layers.filter(item=>item.open)},
+};
+const body={dispatchEvent(){throw new Error('focused element expected')}};
+JS;
+        $script .= $match[0] . <<<'JS'
+dismissLayers();
+const afterManual={hidden:[...hidden],closed:[...closed],keys:[...keys]};
+keys.length=0;
+dismissLayers();
+const keysWhenOnlyAModalIsOpen=keys.length;
+dialogs[1].open=false;
+dismissLayers();
+process.stdout.write(JSON.stringify({afterManual,keysWhenOnlyAModalIsOpen,keysWhenNothingOpen:keys.length}));
+JS;
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame(['auto', 'hint'], $result['afterManual']['hidden'], 'Only light-dismiss popovers are hidden.');
+        self::assertSame(['any'], $result['afterManual']['closed'], 'Only a dialog that closes on any press is closed.');
+        self::assertSame([['keydown', 'Escape', true], ['keydown', 'Escape', true]], $result['afterManual']['keys'], 'A popover left open gets an Escape at the focused element per open level, until it closes.');
+        self::assertSame(0, $result['keysWhenOnlyAModalIsOpen'], 'A press on the page never closes a modal dialog.');
+        self::assertSame(0, $result['keysWhenNothingOpen']);
+    }
+
     public function test_inline_examples_cannot_submit_a_form_through_the_documentation_page(): void
     {
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
@@ -84,7 +240,7 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shell);
         self::assertStringContainsString('codepoints=exampleCodepoints(source)', $shell);
         self::assertStringContainsString('portableExampleStylesheet(item.link,codepoints,item.faces)', $shell);
-        self::assertStringContainsString('||!exampleFaceNeeded(rule,codepoints)?\'\':rule', $shell);
+        self::assertStringContainsString('||!exampleFaceNeeded(rule,codepoints))return \'\';', $shell);
         self::assertStringContainsString('function exampleFaceNeeded(rule,codepoints)', $shell);
         self::assertStringContainsString('missing.some(function(token){return rule.indexOf(token)!==-1})?\'\':rule', $shell);
         self::assertStringContainsString("exampleFontAssets[resolved.href]=exampleFontsSettled.then(function(){return fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'})})", $shell);
@@ -334,8 +490,8 @@ JS;
     public function test_a_frame_asks_for_every_framework_script_at_once_and_keeps_their_order(): void
     {
         $renderer = (string) file_get_contents(dirname(__DIR__, 2) . '/src/PortableSite/PortableMarkdownRenderer.php');
-        self::assertSame(1, preg_match('/\nfunction loadFrameworkScripts\(sources\)\{\n.*?\n\}\n/s', $renderer, $match));
-        self::assertStringContainsString('loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);', $renderer);
+        self::assertSame(1, preg_match('/\nfunction loadFrameworkScripts\(sources,texts\)\{\n.*?\n\}\n/s', $renderer, $match));
+        self::assertStringContainsString("loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[],data.scriptTexts&&typeof data.scriptTexts==='object'?data.scriptTexts:{});", $renderer);
         // Each script used to wait for the one before it to load.
         self::assertStringNotContainsString('scriptQueue', $renderer);
         $node = (new ExecutableFinder)->find('node');
@@ -346,7 +502,7 @@ JS;
         // of them could have loaded.
         $script = <<<'JS'
 const head=[];let loads=0;
-function element(src,existing){return{src,async:true,attributes:{},listeners:{},existing,setAttribute(name,value){this.attributes[name]=value},addEventListener(type,listener){this.listeners[type]=listener}}}
+function element(src,existing){return{src,async:true,attributes:{},listeners:{},existing,setAttribute(name,value){this.attributes[name]=value},getAttribute(name){return name in this.attributes?this.attributes[name]:null},addEventListener(type,listener){this.listeners[type]=listener}}}
 globalThis.document={
   head:{appendChild(node){head.push(node)}},
   createElement(){return element('',false)},
@@ -361,7 +517,9 @@ loadFrameworkScripts(page);
 const first=head.map(node=>({src:node.src,async:node.async,marked:'data-docara-example-framework-script' in node.attributes,listens:typeof node.listeners.load==='function'}));
 /* A later environment sends the same list and one more script: only the new one is added, after the others. */
 loadFrameworkScripts([...page,'https://docs.example/_docara/late.js',42]);
-process.stdout.write(JSON.stringify({first,all:head.map(node=>node.src),loadsBeforeAnyEvent:loads}));
+/* The page sends the text of a script it could read: it runs from a blob URL in its place, and is still known by its own URL. */
+loadFrameworkScripts([...page,'https://docs.example/_docara/late.js','https://docs.example/_docara/shared.js','https://docs.example/_docara/missing.js'],{'https://docs.example/_docara/shared.js':'window.shared=1','https://docs.example/_docara/core.js':'window.again=1'});
+process.stdout.write(JSON.stringify({first,all:head.map(node=>node.src.startsWith('blob:')?'blob':node.src),keys:head.map(node=>node.attributes['data-docara-example-framework-script']),loadsBeforeAnyEvent:loads}));
 JS;
         $process = new Process([$node, '-e', $script]);
         $process->mustRun();
@@ -377,7 +535,17 @@ JS;
             'https://docs.example/_docara/icons.js',
             'https://docs.example/_docara/core.js',
             'https://docs.example/_docara/late.js',
-        ], $result['all']);
+            'blob',
+            'https://docs.example/_docara/missing.js',
+        ], $result['all'], 'A script with text runs from a blob URL in its place; a script already in the frame is not added again.');
+        self::assertSame([
+            'https://docs.example/_docara/smart-base.js',
+            'https://docs.example/_docara/icons.js',
+            'https://docs.example/_docara/core.js',
+            'https://docs.example/_docara/late.js',
+            'https://docs.example/_docara/shared.js',
+            'https://docs.example/_docara/missing.js',
+        ], $result['keys']);
         self::assertSame(0, $result['loadsBeforeAnyEvent']);
     }
 
@@ -468,5 +636,47 @@ JS;
         foreach (['absolute base', 'protocol-relative base', 'no base in the head', 'opaque page origin'] as $unchanged) {
             self::assertSame($cases[$unchanged][1], $result[$unchanged], $unchanged);
         }
+    }
+
+    public function test_an_inline_frame_takes_the_preview_padding_so_a_shadow_at_its_edge_draws(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
+        $css = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
+        self::assertSame(1, preg_match('/\n  function exampleInset\(frame\)\{\n.*?\n  \}\n/s', $shell, $match));
+        self::assertStringContainsString('inset:exampleInset(frame),', $shell);
+        self::assertStringContainsString('if(previewFrame)requestExampleHeight(previewFrame);', $shell);
+        self::assertStringContainsString("root.style.setProperty('--docara-example-inset',data.inset)", $renderer);
+        self::assertStringContainsString('body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px)) calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}', $renderer);
+        self::assertStringContainsString('.docara-example-preview__panel[data-docara-example-inset]{padding-block:0}', $css);
+        // Only the block padding moves in: an inline inset would make the frame wider than the sample and flip its breakpoints early.
+        self::assertStringNotContainsString('[data-docara-example-inset]{padding:0}', $css);
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The inset check runs the function in Node.js.');
+
+        $script = <<<'JS'
+            function el(attrs){return{attrs:{...attrs},hasAttribute(n){return n in this.attrs},getAttribute(n){return n in this.attrs?this.attrs[n]:null},setAttribute(n,v){this.attrs[n]=String(v)},removeAttribute(n){delete this.attrs[n]}}}
+            globalThis.getComputedStyle=()=>({paddingTop:'19.6px'});
+            function frame(attrs,panel,viewer){const f=el(attrs);f.closest=s=>s==='[data-docara-example-panel]'?panel:(viewer?{}:null);return f}
+            const out={};
+            let panel=el({});out.inline=[exampleInset(frame({},panel)),panel.getAttribute('data-docara-example-inset')];
+            out.viewer=[exampleInset(frame({},panel,true)),panel.hasAttribute('data-docara-example-inset')];
+            panel=el({});out.waiting=[exampleInset(frame({'data-docara-srcdoc':''},panel)),panel.hasAttribute('data-docara-example-inset')];
+            out.responsive=exampleInset(frame({'data-docara-example-responsive-frame':''},el({})));
+            out.page=exampleInset(frame({'data-docara-example-page':''},el({})));
+            out.nopanel=exampleInset(frame({},null));
+            process.stdout.write(JSON.stringify(out));
+            JS;
+        $process = new Process([$node, '-e', $match[0] . $script]);
+        $process->mustRun();
+        $result = json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR);
+
+        self::assertSame(['20px', '20px'], $result['inline']);
+        self::assertSame(['0px', false], $result['viewer']);
+        self::assertSame(['0px', false], $result['waiting']);
+        self::assertSame('0px', $result['responsive']);
+        self::assertSame('0px', $result['page']);
+        self::assertSame('0px', $result['nopanel']);
     }
 }

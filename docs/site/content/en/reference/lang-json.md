@@ -162,6 +162,8 @@ If a string is missing from `lang.json`, Docara takes the built-in text: Russian
 | `examples.viewer` — The button that checks an example at different widths | Check responsive preview | Проверить адаптивность |
 | `examples.viewer_exit` — The button that leaves the width check | Exit responsive preview | Выйти из режима просмотра |
 | `examples.viewer_dialog` — The label of the width check window | Responsive example preview | Адаптивный просмотр примера |
+| `examples.desktop_scroll` — The line above a desktop example that scrolls sideways | 1280 · 100 % · scroll | 1280 · 100 % · прокрутка |
+| `examples.desktop_scroll_label` — The name of a desktop example's scroll area | Example 1280 px wide, scrolls sideways | Пример шириной 1280, прокручивается вбок |
 | `examples.viewport_group` — The label of the width switcher | Preview width | Ширина примера |
 | `examples.viewport_desktop` — The "desktop" width option | Desktop | Десктоп |
 | `examples.viewport_tablet` — The "tablet" width option | Tablet | Планшет |

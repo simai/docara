@@ -748,6 +748,10 @@ final class PortableMarkdownRenderer
         // layout=wide lets a showcase example leave the reading column and
         // take the page's full width, as a landing page needs.
         $wide = $this->catalogueChoice(trim($attributes['layout'] ?? 'column'), 'example', 'layout') === 'wide';
+        // viewport=desktop (owner decision C111) marks an example made for a
+        // desktop screen, such as a site header: it draws at 1280 in a frame
+        // of its own and scrolls sideways in the column.
+        $desktop = $this->catalogueChoice(trim($attributes['viewport'] ?? 'column'), 'example', 'viewport') === 'desktop';
         $log = $this->exampleLog($attributes);
         // theme_switch=true gives the example a theme of its own: its frame
         // starts in the page's theme and its own switch changes only itself.
@@ -789,7 +793,7 @@ final class PortableMarkdownRenderer
             );
         }
 
-        $previewDecision = $this->examplePreviewPolicy->resolve($sources, $exampleId !== '', $requestedPreview, $ownTheme);
+        $previewDecision = $this->examplePreviewPolicy->resolve($sources, $exampleId !== '', $requestedPreview, $ownTheme, $desktop);
         $renderId = 'markdown-example-' . substr(hash('sha256', $exampleId !== '' ? $exampleId : $markdown), 0, 12);
         if ($this->projectExamples instanceof ProjectExampleRepository && is_string($sourceFile) && $sourceFile !== '') {
             $hashSources = $sources;
@@ -880,6 +884,7 @@ final class PortableMarkdownRenderer
             responsive: $responsive,
             wide: $wide,
             log: $log,
+            desktop: $desktop,
         );
     }
 
@@ -1012,6 +1017,7 @@ final class PortableMarkdownRenderer
                 $exampleId !== '',
                 trim($attributes['preview'] ?? 'auto'),
                 $ownTheme,
+                $this->catalogueChoice(trim($attributes['viewport'] ?? 'column'), 'example', 'viewport') === 'desktop',
             );
             $previews[] = [
                 'id' => $exampleId,
@@ -1085,8 +1091,9 @@ final class PortableMarkdownRenderer
     {
         // The log listens inside the example's own document; a page example
         // shows a whole built page, which keeps its own console and events,
-        // and follows the reader's theme from the site's storage.
-        foreach (['id', 'preview', 'log', 'log_console', 'log_open', 'theme_switch'] as $conflict) {
+        // and follows the reader's theme from the site's storage. It already
+        // draws a desktop screen, so viewport has nothing to change.
+        foreach (['id', 'preview', 'log', 'log_console', 'log_open', 'theme_switch', 'viewport'] as $conflict) {
             if (array_key_exists($conflict, $attributes)) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_EXAMPLE_SRC_CONFLICT',
@@ -1219,10 +1226,15 @@ final class PortableMarkdownRenderer
             . '<meta name="viewport" content="width=device-width,initial-scale=1">'
             . '<title>' . $this->escapeHtml($label) . '</title>'
             . ($baseHref === null ? '' : '<base href="' . $this->escapeHtml($baseHref) . '">')
-            // The frame clips at its edges, and a focus ring is drawn outside
-            // the element: a sample at the edge loses part of its ring. The
-            // body keeps room for the ring's width and offset.
-            . '<style>body{padding:calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}</style>'
+            // The frame clips at its edges, and a focus ring or a shadow is
+            // drawn outside the element: a sample at the edge loses part of
+            // its ring or shadow. The body keeps room for the ring's width and
+            // offset, and above and below it for the preview's own padding,
+            // which the page moves into the frame (--docara-example-inset) so
+            // shadows draw there. The sides stay with the panel: the frame's
+            // width is the sample's width, so its media queries and the
+            // Framework's size ladder read the width the sample really has.
+            . '<style>body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px)) calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}</style>'
             . (isset($sources['CSS']) ? '<style>' . $sources['CSS'] . '</style>' : '')
             . ($ownTheme ? $this->exampleOwnThemeRuntime() : '')
             // The log runtime comes before the example's markup and script,
@@ -1454,7 +1466,30 @@ if(!/^--sf-[a-z0-9_\\/.-]+$/.test(name)||typeof value!=='string'||value===''||va
 root.style.setProperty(name,value);
 });
 if(typeof data.rootFontSize==='string'&&/^\d+(?:\.\d+)?px$/.test(data.rootFontSize)){root.style.fontSize=data.rootFontSize}
+/* The preview's padding, moved into the frame so a shadow at the sample's edge draws in it; 0 in the viewer, where the frame takes a device width. */
+if(typeof data.inset==='string'&&/^\d+(?:\.\d+)?px$/.test(data.inset)){root.style.setProperty('--docara-example-inset',data.inset)}
 /* The frame takes the page's font families with the other tokens. Its opaque origin cannot fetch site fonts without CORS, so the shell sends the faces the frame's text needs as bytes; a face it cannot send falls back to the family's local faces. */
+}
+/* An icon font comes to the frame as bytes, behind a blob URL in its @font-face rule. The face is also added to document.fonts from the bytes, loaded at once, so the Framework, which marks an icon loaded when its face is in document.fonts, sees it without a fetch. Text fonts stay with their rules. */
+var registeredIconFaces={};
+function registerIconFaces(content,font){
+if(typeof FontFace!=='function'||!document.fonts||typeof document.fonts.add!=='function'||registeredIconFaces[font.token])return;
+var rules=content.match(/@font-face\s*\{[^}]*\}/gi)||[];
+rules.forEach(function(rule){
+if(rule.indexOf(font.token)===-1)return;
+var clean=rule.replace(/\\(["'])/g,'$1'),family=/font-family\s*:\s*["']?([^"';}]+)/i.exec(clean);
+if(!family||!/^Material (?:Symbols|Icons)/i.test(family[1].trim()))return;
+var descriptors={},names={'font-weight':'weight','font-style':'style','font-stretch':'stretch','unicode-range':'unicodeRange','font-display':'display'};
+Object.keys(names).forEach(function(name){var match=new RegExp(name+'\\s*:\\s*([^;}]+)','i').exec(clean);if(match)descriptors[names[name]]=match[1].trim()});
+try{var face=new FontFace(family[1].trim(),font.bytes,descriptors);document.fonts.add(face);registeredIconFaces[font.token]=true;face.load().catch(function(){})}catch(error){}
+});
+}
+/* The frame counts as styled once its text face has loaded too, at most a second later, so the shell keeps the inline preview until the example draws in the page's font (weight 500, as on labels). */
+function textFontLoaded(){
+if(!document.fonts||typeof document.fonts.load!=='function')return Promise.resolve();
+var family='';try{family=getComputedStyle(body).fontFamily}catch(error){}
+var load;try{load=document.fonts.load('500 1em '+(family||'"Inter Variable"'))}catch(error){return Promise.resolve()}
+return Promise.race([Promise.resolve(load).catch(function(){}),new Promise(function(resolve){setTimeout(resolve,1000)})]);
 }
 function applyEnvironment(data){
 var theme=data.theme==='dark'?'dark':'light',direction=data.direction==='rtl'?'rtl':'ltr';
@@ -1476,6 +1511,7 @@ var content=item.content;
 (Array.isArray(item.fonts)?item.fonts:[]).forEach(function(font){
 if(!font||typeof font.token!=='string'||!(font.bytes instanceof ArrayBuffer))return;
 var blobUrl=URL.createObjectURL(new Blob([font.bytes],{type:typeof font.type==='string'?font.type:'font/woff2'}));
+registerIconFaces(content,font);
 content=content.split(font.token).join(blobUrl);
 });
 style.textContent=content;
@@ -1508,6 +1544,7 @@ var content=item.content;
 (Array.isArray(item.fonts)?item.fonts:[]).forEach(function(font){
 if(!font||typeof font.token!=='string'||!(font.bytes instanceof ArrayBuffer))return;
 var blobUrl=URL.createObjectURL(new Blob([font.bytes],{type:typeof font.type==='string'?font.type:'font/woff2'}));
+registerIconFaces(content,font);
 content=content.split(font.token).join(blobUrl);
 });
 script.textContent=content;
@@ -1531,23 +1568,26 @@ currentBoot.push(item.key);
 window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};
 /* The page's boot state turns the Loader's theme off (Docara resolves the page theme itself); an example with its own theme keeps the Loader's theme API, which then works on this frame alone. */
 if(ownTheme&&window.SF_BOOT_CONFIG&&window.SF_BOOT_CONFIG.theme===false){delete window.SF_BOOT_CONFIG.theme}
-var scriptsLoaded=loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[]);
+var scriptsLoaded=loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[],data.scriptTexts&&typeof data.scriptTexts==='object'?data.scriptTexts:{});
 /* Once the page's styles are in and the Framework scripts have run, the frame looks like the page: the shell may then show it in a responsive check instead of the inline preview. */
 if((Array.isArray(data.stylesheets)&&data.stylesheets.length)||(Array.isArray(data.inlineStyles)&&data.inlineStyles.length)){
-Promise.all([stylesApplied,scriptsLoaded]).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});
+Promise.all([stylesApplied,scriptsLoaded]).then(textFontLoaded).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});
 }
 }
-/* The Framework scripts go in all at once. A script inserted with async=false is fetched at once and still runs after every async=false script inserted before it, in this and in later environments, so Core runs after the scripts it needs, as on the page. The frame's opaque origin shares no cache with the page, so waiting for each script before asking for the next cost a round trip per script. */
-function loadFrameworkScripts(sources){
+/* The Framework scripts go in all at once. A script inserted with async=false is fetched at once and still runs after every async=false script inserted before it, in this and in later environments, so Core runs after the scripts it needs, as on the page. The frame's opaque origin shares no cache with the page, so waiting for each script before asking for the next cost a round trip per script. The page sends the text of the scripts it could read: such a script runs from a blob URL made in the frame, which keeps its place in that order and its load event, and gives Core's script loader the src it reads as it starts. Core does not recognise a blob URL as its own and takes its base from sfPath, set by the boot state, so the chunks it loads itself come from the page's Framework files, as before. A script the page could not read loads by its URL. */
+function loadFrameworkScripts(sources,texts){
 var loads=[];
-Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).forEach(function(script){frameworkScriptSources[script.src]=true});
+texts=texts||{};
+Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).forEach(function(script){frameworkScriptSources[script.getAttribute('data-docara-example-framework-script')||script.src]=true});
 sources.forEach(function(src){
 if(typeof src!=='string'||frameworkScriptSources[src])return;
 frameworkScriptSources[src]=true;
-var script=document.createElement('script');
-script.src=src;
+var script=document.createElement('script'),text=Object.prototype.hasOwnProperty.call(texts,src)&&typeof texts[src]==='string'?texts[src]:'',blob='';
+if(text!==''){try{blob=URL.createObjectURL(new Blob([text],{type:'text/javascript'}))}catch(error){blob=''}}
+script.src=blob||src;
 script.async=false;
-script.setAttribute('data-docara-example-framework-script','');
+script.setAttribute('data-docara-example-framework-script',src);
+if(blob){var revoke=function(){URL.revokeObjectURL(blob)};script.addEventListener('load',revoke,{once:true});script.addEventListener('error',revoke,{once:true})}
 script.addEventListener('load',measureSettled,{once:true});
 loads.push(new Promise(function(resolve){script.addEventListener('load',resolve,{once:true});script.addEventListener('error',resolve,{once:true})}));
 document.head.appendChild(script);
@@ -1621,7 +1661,19 @@ addEventListener('load',measureSettled);
 addEventListener('resize',measureSettled);
 /* A popover's toggle does not bubble; the capture phase sees every one. */
 document.addEventListener('toggle',measureSettled,true);
+/* A press on the page outside this frame closes what a press outside would close here: an open auto or hint popover, and a dialog that closes on any press (closedby="any"); a modal dialog without it and a manual popover stay. While a popover is still open, a component that closes on Escape (a Framework menu shows a manual popover) gets an Escape keydown at the focused element, as from the keyboard, once per open level (Escape closes the top one), up to six; a dialog left open alone gets none, so a press on the page never closes a modal, and neither does a notification area pinned to the frame's bottom edge, which is no menu. */
+function dismissLayers(){
+var layers=[];try{layers=Array.from(document.querySelectorAll(':popover-open'))}catch(error){}
+layers.forEach(function(layer){var kind=layer.popover||layer.getAttribute('popover');if(kind===''||kind==='auto'||kind==='hint'){try{layer.hidePopover()}catch(error){}}});
+Array.from(document.querySelectorAll('dialog[open]')).forEach(function(dialog){if((dialog.closedBy||dialog.getAttribute('closedby'))!=='any')return;try{if(typeof dialog.requestClose==='function')dialog.requestClose();else dialog.close()}catch(error){}});
+for(var round=0;round<6;round++){
+var open=[];try{open=Array.from(document.querySelectorAll(':popover-open'))}catch(error){}
+if(!open.some(function(layer){var seen=layerPlaces.get(layer);return !(seen&&seen.pinned)&&!bottomPinned(layer)}))return;
+var target=document.activeElement&&document.activeElement!==document.documentElement?document.activeElement:body;
+target.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',code:'Escape',keyCode:27,which:27,bubbles:true,cancelable:true,composed:true}))}
+}
 addEventListener('message',function(event){
+if(event.source===parent&&event.data&&event.data.type==='docara:example-dismiss'){dismissLayers();return}
 if(event.source===parent&&event.data&&event.data.type==='docara:example-measure'){
 applyEnvironment(event.data);
 lastHeight=-1;
@@ -2175,17 +2227,47 @@ HTML;
         $list = trim((string) $rendered);
         $list = preg_replace('~^<ul>|</ul>$~u', '', $list) ?? $list;
 
-        // The block is the Framework tree: branches open by default, with
-        // the folder toggle the Framework tree script turns into a keyboard
-        // tree. A static tree is marked as already bound, so the script
-        // leaves it alone and every branch stays open.
-        return '<div data-docara-block="tree" data-interactive="' . ($interactive ? 'true' : 'false')
-            . '" class="sf-tree flex flex-col m-bottom-1"' . ($interactive ? '' : ' data-sf-tree-bound="1"') . '>'
-            . $this->treeItems($list, $interactive) . '</div>';
+        if (! $interactive) {
+            // A static tree is a nested list with nothing to press (owner
+            // decisions C102 and C109): no toggle column, a type icon before
+            // each name, and a level steps by that icon and the row gap, so
+            // a child's icon stands under its parent's name.
+            return '<ul data-docara-block="tree" data-interactive="false" class="docara-tree m-bottom-1">'
+                . $this->staticTreeItems($list) . '</ul>';
+        }
+
+        // The interactive block is the Framework tree: branches open by
+        // default, with the folder toggle the Framework tree script turns
+        // into a keyboard tree.
+        return '<div data-docara-block="tree" data-interactive="true" class="sf-tree flex flex-col m-bottom-1">'
+            . $this->treeItems($list) . '</div>';
+    }
+
+    /** Turns the items of one rendered Markdown list into static tree rows. */
+    private function staticTreeItems(string $list): string
+    {
+        $html = '';
+        foreach ($this->topLevelListItems($list) as $item) {
+            $nested = strpos($item, '<ul>');
+            $label = trim($nested === false ? $item : substr($item, 0, $nested));
+            $label = preg_replace('~^<p>(.*)</p>$~su', '$1', $label) ?? $label;
+            // A branch is an open folder; a leaf is the Framework's generic
+            // file icon until the Framework ships its file type map.
+            $html .= '<li class="docara-tree__item"><span class="docara-tree__row">'
+                . '<i class="sf-icon docara-tree__icon" aria-hidden="true">' . ($nested === false ? 'draft' : 'folder_open') . '</i>'
+                . '<span class="docara-tree__name">' . $label . '</span></span>';
+            if ($nested !== false) {
+                $children = substr($item, $nested + 4, (int) strrpos($item, '</ul>') - $nested - 4);
+                $html .= '<ul class="docara-tree__group">' . $this->staticTreeItems($children) . '</ul>';
+            }
+            $html .= '</li>';
+        }
+
+        return $html;
     }
 
     /** Turns the items of one rendered Markdown list into Framework tree items. */
-    private function treeItems(string $list, bool $interactive): string
+    private function treeItems(string $list): string
     {
         $html = '';
         foreach ($this->topLevelListItems($list) as $item) {
@@ -2200,12 +2282,10 @@ HTML;
                 continue;
             }
             $children = substr($item, $nested + 4, (int) strrpos($item, '</ul>') - $nested - 4);
-            $toggle = $interactive
-                ? '<button type="button" class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>'
-                : '<span class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></span>';
+            $toggle = '<button type="button" class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>';
             $html .= '<div class="sf-tree-item open"><div class="sf-tree-item-container flex items-cross-center">'
                 . $toggle . $name . '</div><div class="sf-tree-group">'
-                . $this->treeItems($children, $interactive) . '</div></div>';
+                . $this->treeItems($children) . '</div></div>';
         }
 
         return $html;

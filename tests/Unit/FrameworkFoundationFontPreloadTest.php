@@ -82,6 +82,43 @@ final class FrameworkFoundationFontPreloadTest extends TestCase
         self::assertFalse(FrameworkAssetPlanner::pageUsesCyrillic('<html>'));
     }
 
+    #[Test]
+    public function a_named_inter_face_is_preloaded_like_a_hashed_one_and_nothing_else_passes(): void
+    {
+        $css = ':root{--sf-text--family: "Inter Variable", system-ui}'
+            . '@font-face{font-family:"Inter Variable";src:url(../fonts/inter/InterVariable-latin.v4.1.woff2) format("woff2");unicode-range:U+0000-00FF}'
+            . '@font-face{font-family:"Inter Variable";src:url(../fonts/inter/InterVariable-cyrillic.woff2) format("woff2");unicode-range:U+0400-045F}';
+        self::assertSame(
+            ['latin' => 'core/fonts/inter/InterVariable-latin.v4.1.woff2', 'cyrillic' => 'core/fonts/inter/InterVariable-cyrillic.woff2'],
+            FrameworkAssetPlanner::foundationFontPreloadPaths($css, 'core/css/core.css', true),
+        );
+
+        $check = new \ReflectionMethod(FrameworkAssetPlanner::class, 'immutableFontUrl');
+        $runtime = '/_docara/vendor/simai-framework/runtime/' . str_repeat('a', 40) . '/distr/core/';
+        foreach ([
+            $runtime . '4f2981d82860061bca3e.woff2',
+            $runtime . 'fonts/inter/InterVariable-latin.v4.1.woff2',
+            $runtime . 'fonts/inter/Inter_Variable-Italic.woff2',
+            '/docs/_docara/vendor/simai-framework/runtime/' . str_repeat('b', 40) . '/distr/core/fonts/inter/inter.woff2',
+        ] as $url) {
+            self::assertTrue($check->invoke(null, $url), $url);
+        }
+        foreach ([
+            $runtime . '4f2981d82860061bca3.woff2',
+            $runtime . 'fonts/inter/../../../../secret.woff2',
+            $runtime . 'fonts/inter/..woff2',
+            $runtime . 'fonts/inter/.hidden.woff2',
+            $runtime . 'fonts/inter/sub/inter.woff2',
+            $runtime . 'fonts/inter/inter%2F..woff2',
+            $runtime . 'fonts/inter/inter.woff2?v=1',
+            $runtime . 'fonts/inter/inter.ttf',
+            $runtime . 'fonts/roboto/roboto.woff2',
+            '/_docara/vendor/simai-framework/runtime/main/distr/core/fonts/inter/inter.woff2',
+        ] as $url) {
+            self::assertFalse($check->invoke(null, $url), $url);
+        }
+    }
+
     /** @return array{FrameworkManifestRepository, string} */
     private function bundled(): array
     {

@@ -325,7 +325,7 @@
     var attributes=(/^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$/.test(lang)?' lang="'+lang+'"':'')+(direction?' dir="rtl"':'');
     return attributes?source.replace(/^(<!doctype html><html)/i,'$1'+attributes):source;
   }
-  /* Example and HTML-block frames carry their document in data-docara-srcdoc: a browser loads a srcdoc frame with the page even when it is marked loading="lazy". The document moves to srcdoc when the frame comes within 600px of the screen; a frame in a hidden tab waits until the tab is shown. */
+  /* Example and HTML-block frames carry their document in data-docara-srcdoc: a browser loads a srcdoc frame with the page even when it is marked loading="lazy". The document moves to srcdoc when the frame comes within 600px of the screen; a frame in a hidden tab waits until the tab is shown. An example frame boots the Framework, which costs each frame its own parse and runtime requests, so at most two example frames boot at a time: those on the screen first, then the nearest. A boot ends when the frame reports it is styled (its first height comes as its document parses, before the Framework runs) or after four seconds, or when the frame leaves the 600px band (the reader moved on). A frame that leaves the band before its turn waits until it comes back. */
   (function(){
     var deferred=Array.from(document.querySelectorAll('iframe[data-docara-srcdoc]'));
     /* A project example's document names its folder with a path-only <base href="/…/_docara/examples/<id>/">. Chromium's preload scanner does not apply a path-only base in an about:srcdoc document and fetches every relative image against the page URL first (a 404, blocked by ORB in the sandboxed frame) before the parser applies the base. The page's origin makes the base absolute, which the scanner honours: one request per image. */
@@ -342,16 +342,51 @@
     }
     if(!deferred.length)return;
     if(typeof IntersectionObserver!=='function'){deferred.forEach(load);return}
+    var near=[],booting=[],bootLimit=2,bootTimeout=4000;
+    function boots(frame){return frame.hasAttribute('data-docara-example-frame')&&!frame.hasAttribute('data-docara-example-page')}
+    function distance(frame){
+      var box=frame.getBoundingClientRect();
+      if(box.bottom>=0&&box.top<=innerHeight)return 0;
+      return box.top>innerHeight?box.top-innerHeight:-box.bottom;
+    }
+    function free(frame){
+      var index=booting.findIndex(function(item){return item.frame===frame});
+      if(index===-1)return false;
+      clearTimeout(booting[index].timer);
+      booting.splice(index,1);
+      observer.unobserve(frame);
+      return true;
+    }
+    function release(frame){if(free(frame))pump()}
+    function pump(){
+      /* A frame loaded elsewhere meanwhile (a responsive frame when the viewer opens) leaves the queue. */
+      near=near.filter(function(frame){return frame.hasAttribute('data-docara-srcdoc')});
+      while(booting.length<bootLimit&&near.length){
+        near.sort(function(a,b){return distance(a)-distance(b)});
+        var frame=near.shift();
+        load(frame);
+        booting.push({frame:frame,timer:setTimeout(release.bind(null,frame),bootTimeout)});
+      }
+    }
+    window.addEventListener('message',function(event){
+      if(!event.data||event.data.type!=='docara:example-styled')return;
+      var item=booting.find(function(candidate){return candidate.frame.contentWindow===event.source});
+      if(item)release(item.frame);
+    });
     var observer=new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
-        if(!entry.isIntersecting)return;
-        observer.unobserve(entry.target);
-        load(entry.target);
+        var frame=entry.target,index=near.indexOf(frame);
+        /* A frame that leaves the band waits; one that leaves it while booting gives its turn to the frames the reader now sees. */
+        if(!entry.isIntersecting){if(index!==-1)near.splice(index,1);free(frame);return}
+        /* A frame without the Framework (an HTML block) loads at once, as before. */
+        if(!boots(frame)){observer.unobserve(frame);load(frame);return}
+        if(index===-1)near.push(frame);
       });
+      pump();
     },{rootMargin:'600px 0px'});
     deferred.forEach(function(frame){observer.observe(frame)});
   })();
-  /* An example without its own label is named with the localized "Example": the tab, its tab list, the frame's title attribute and, through the environment, the frame document's title. */
+  /* The first tab of every example reads the localized "Example"; an example without its own label also takes it for its tab list, the frame's title attribute and, through the environment, the frame document's title. */
   (function(){
     var label=message('examples.example');
     if(label==='examples.example')return;
@@ -359,7 +394,8 @@
       if(element.tagName==='IFRAME'){element.setAttribute('title',label);return}
       element.textContent=label;
       var list=element.closest('[role="tablist"]');
-      if(list)list.setAttribute('aria-label',label);
+      /* A captioned example's tab list is named by its caption. */
+      if(list&&!list.hasAttribute('aria-labelledby'))list.setAttribute('aria-label',label);
     });
   })();
   /* An inline example may hold a demo form. Capturing on the example root cancels every submission that starts inside it before any other listener runs, so the form can never navigate or reload the documentation page. */
@@ -412,7 +448,34 @@
     if(text&&text.textContent!==label){text.textContent=label}
     syncSourceWrapIcon(button,active);
   }
-  var exampleFontAssets=Object.create(null),exampleStylesheets=Object.create(null);
+  var exampleFontAssets=Object.create(null),exampleStylesheets=Object.create(null),exampleScripts=Object.create(null);
+  /* A frame's opaque origin shares no HTTP cache with the page, so each frame fetched every Framework script again. The page reads each script once from its own cache and sends the text; the frame runs it from a blob URL in the same order. A script still on its way to the page would be downloaded twice, so it is read once its response has arrived (its resource timing entry) or by DOMContentLoaded, when the page's deferred scripts have all arrived. A frame does not wait for that: a script whose text the page does not hold yet, or cannot read, goes to the frame by its URL, as before. */
+  function pageScriptArrived(href){
+    if(document.readyState!=='loading')return Promise.resolve();
+    return new Promise(function(resolve){
+      var observer=null,done=function(){if(observer)observer.disconnect();resolve()};
+      document.addEventListener('DOMContentLoaded',done,{once:true});
+      try{
+        if(performance.getEntriesByName(href,'resource').length){done();return}
+        observer=new PerformanceObserver(function(list){if(list.getEntriesByName(href).length)done()});
+        observer.observe({type:'resource'});
+      }catch(error){}
+    });
+  }
+  function portableExampleScript(src){
+    var resolved;
+    try{resolved=new URL(src,document.baseURI)}catch(error){return null}
+    if(resolved.origin!==location.origin)return null;
+    var entry=exampleScripts[resolved.href];
+    if(!entry){
+      entry=exampleScripts[resolved.href]={text:null};
+      pageScriptArrived(resolved.href).then(function(){return fetch(resolved.href,{credentials:'same-origin',cache:'force-cache'})}).then(function(response){
+        if(!response.ok)throw new Error('Script request failed');
+        return response.text();
+      }).then(function(text){entry.text=text},function(){});
+    }
+    return entry.text;
+  }
   /* The page loads the same font files itself. Waiting for its own font loads and then reading through the HTTP cache lets the transfer reuse those responses instead of requesting each file again. */
   var exampleFontsSettled=document.fonts&&document.fonts.ready?document.fonts.ready.catch(function(){}):Promise.resolve();
   function exampleIconFace(rule){return /font-family\s*:\s*["']?Material (?:Symbols|Icons)/i.test(rule)}
@@ -452,7 +515,11 @@
   /* faces='text' removes icon faces from a stylesheet and faces='icons' keeps only them, so the large icon fonts travel apart from the stylesheet that declares them. */
   function portableExampleStyle(content,baseHref,codepoints,faces){
     if(faces==='icons'){content=(content.match(/@font-face\s*\{[^}]*\}/gi)||[]).filter(exampleIconFace).join('\n')}
-    content=content.replace(/@font-face\s*\{[^}]*\}/gi,function(rule){return (faces==='text'&&exampleIconFace(rule))||!exampleFaceNeeded(rule,codepoints)?'':rule});
+    /* A frame lays out its markup before these rules arrive, so a text face with font-display: optional (the Framework's Inter) is past its short block period by then and the frame keeps the fallback for good. In a frame such a face swaps in instead; the page keeps optional. Icon faces keep their own display. */
+    content=content.replace(/@font-face\s*\{[^}]*\}/gi,function(rule){
+      if((faces==='text'&&exampleIconFace(rule))||!exampleFaceNeeded(rule,codepoints))return '';
+      return exampleIconFace(rule)?rule:rule.replace(/font-display\s*:\s*optional/gi,'font-display:swap');
+    });
     var matches=[],pattern=/url\(\s*(["']?)([^"')]+)\1\s*\)/g,match;
     while((match=pattern.exec(content))!==null){matches.push({token:match[0],url:match[2]})}
     return Promise.all(matches.map(function(item){return exampleFontAsset(item.url,baseHref)})).then(function(assets){
@@ -543,6 +610,8 @@
     }
     return state;
   }
+  /* The page starts reading the script text as soon as it has example frames, so the frames that boot later find it ready. */
+  if(document.querySelector('iframe[data-docara-example-frame]'))Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]')).forEach(function(script){portableExampleScript(script.src)});
   function exampleEnvironment(frame){
     var state=exampleFrameState(frame),source=frame.getAttribute('srcdoc')||frame.getAttribute('data-docara-srcdoc')||'',codepoints=exampleCodepoints(source);
     var icons=Boolean(state.icons.outlined||state.icons.rounded||state.icons.shape||state.icons.full||state.icons['rounded-full']||state.icons['shape-full']||Object.keys(state.faces).length);
@@ -586,12 +655,14 @@
       stylesheets:[],
       bootScripts:bootScripts.map(function(script){return{key:keyOf(script),content:script.textContent||''}}),
       scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]')).map(function(script){return script.src}),
+      scriptTexts:{},
       inlineScripts:[],
       theme:document.documentElement.classList.contains('theme-dark')?'dark':'light',
       direction:document.documentElement.dir==='rtl'?'rtl':'ltr',
       lang:document.documentElement.lang||'',
       title:frame.getAttribute('title')||'',
       rootFontSize:getComputedStyle(document.documentElement).fontSize,
+      inset:exampleInset(frame),
       designTokens:exampleDesignTokens()
     };
     return Promise.all(inlineStyles.map(function(item){return portableExampleStyle(item.content,document.baseURI,codepoints).then(function(portable){
@@ -603,8 +674,28 @@
         if(!portable){if(item.faces==='text')environment.stylesheets.push(item.link.href);return null}
         if(portable.content.trim()==='')return null;
         return{key:item.key,content:portable.content,fonts:portable.fonts};
-      })})).then(function(linkedStyles){environment.inlineStyles=styles.concat(linkedStyles.filter(Boolean));return environment});
+      })})).then(function(linkedStyles){
+        environment.inlineStyles=styles.concat(linkedStyles.filter(Boolean));
+        /* Script text goes to a frame once per document, like font bytes. */
+        environment.scripts.forEach(function(src){
+          var content=portableExampleScript(src);
+          if(typeof content==='string'&&content!==''&&fresh('script:'+src))environment.scriptTexts[src]=content;
+        });
+        return environment;
+      });
     });
+  }
+  /* A frame paints nothing outside itself, so a shadow at a sample's edge was cut flat at the frame's edge. The preview panel's padding above and below moves into the inline frame (its body pads by the same amount), so the visible spacing stays and a shadow below or above a sample draws in it. The side padding stays on the panel, so the frame is as wide as the sample and its breakpoints read that width. The viewer's frame takes a device width and keeps none; a page example and a frame in no panel keep the panel as it is. */
+  function exampleInset(frame){
+    var panel=frame.closest('[data-docara-example-panel]');
+    /* A frame still waiting for its document keeps the panel's padding until its runtime can take it. */
+    if(!panel||frame.hasAttribute('data-docara-srcdoc')||frame.hasAttribute('data-docara-example-responsive-frame')||frame.hasAttribute('data-docara-example-page'))return '0px';
+    if(frame.closest('[data-docara-example-viewer-active="true"]')){panel.removeAttribute('data-docara-example-inset');return '0px'}
+    if(!panel.hasAttribute('data-docara-example-inset')){
+      var padding=parseFloat(getComputedStyle(panel).paddingTop)||0;
+      panel.setAttribute('data-docara-example-inset',Math.max(0,Math.round(padding))+'px');
+    }
+    return panel.getAttribute('data-docara-example-inset');
   }
   function requestExampleHeight(frame){
     /* A page example shows a built page of the site: it keeps the frame height the stylesheet gives it. */
@@ -628,6 +719,7 @@
     var state=exampleFrameState(frame);
     /* A reloaded document has none of the page's styles yet. */
     frame.removeAttribute('data-docara-example-styled');
+    state.drawnLate=false;
     state.sent=Object.create(null);
     state.generation++;
     requestExampleHeight(frame);
@@ -648,17 +740,38 @@
   window.addEventListener('message',function(event){
     if(!event.data||event.data.type!=='docara:example-styled')return;
     var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
-    if(frame)frame.setAttribute('data-docara-example-styled','');
+    if(!frame)return;
+    frame.setAttribute('data-docara-example-styled','');
+    settleExampleHeight(frame);
   });
+  /* A frame measures itself before the page's styles and the Framework scripts reach it, when its content is still unstyled and short. Until it reports that it has drawn, the reserved or previous height stays, and the text below does not jump down, up and down again (R216). The last height waits and applies once the frame has drawn, or after three seconds for a frame that never says so. */
+  function settleExampleHeight(frame){
+    var state=exampleFrameState(frame),pending=state.pendingHeight;
+    if(state.drawnTimer){clearTimeout(state.drawnTimer);state.drawnTimer=null}
+    if(!pending)return;
+    state.pendingHeight=null;
+    applyExampleHeight(frame,pending);
+  }
   window.addEventListener('message',function(event){
     if(!event.data||event.data.type!=='docara:example-height')return;
     var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
-    var height=Number(event.data.height);
-    if(!frame||!Number.isFinite(height))return;
-    var size=Math.max(32,Math.ceil(height)),flow=Number(event.data.flow);
-    var boxes=Array.isArray(event.data.overlays)?event.data.overlays.filter(function(box){return Array.isArray(box)&&box.length===4&&box.every(Number.isFinite)}):[];
+    if(!frame||!Number.isFinite(Number(event.data.height)))return;
+    var state=exampleFrameState(frame);
+    if(!frame.hasAttribute('data-docara-example-styled')&&!state.drawnLate){
+      state.pendingHeight=event.data;
+      if(!state.drawnTimer)state.drawnTimer=setTimeout(function(){state.drawnTimer=null;state.drawnLate=true;settleExampleHeight(frame)},3000);
+      return;
+    }
+    applyExampleHeight(frame,event.data);
+  });
+  function applyExampleHeight(frame,data){
+    var height=Number(data.height);
+    var size=Math.max(32,Math.ceil(height)),flow=Number(data.flow);
+    var boxes=Array.isArray(data.overlays)?data.overlays.filter(function(box){return Array.isArray(box)&&box.length===4&&box.every(Number.isFinite)}):[];
     var extra=Number.isFinite(flow)&&boxes.length?Math.max(0,size-Math.max(32,Math.ceil(flow))):0;
     var preview=frame.closest('.docara-example-preview');
+    /* The frame reports a box for each open menu or dialog, whether or not it reaches past the frame's flow. */
+    exampleFrameState(frame).layers=boxes.length;
     frame.style.blockSize=size+'px';
     /* An open menu's room hangs below the frame's flow height over what follows, as a menu does on a page: the page keeps its place, and only the frame's flow box and the menus stay visible and clickable. */
     if(extra>0){
@@ -676,7 +789,17 @@
       frame.style.clipPath='';
       if(preview)preview.removeAttribute('data-docara-example-overlay');
     }
-  });
+  }
+  /* A press on the page outside a frame that shows an open menu closes the menu, as a press outside a menu does on a page: the press never reaches the frame's document, so the page asks the frame to dismiss it. */
+  if(docaraExampleFrames.length){
+    document.addEventListener('pointerdown',function(event){
+      /* Only a frame that reported an open layer is asked: a menu that hangs over the page (its preview is marked data-docara-example-overlay) or one that fits in the frame. */
+      docaraExampleFrames.forEach(function(frame){
+        if(!frame.contentWindow||event.target===frame||!exampleFrameState(frame).layers)return;
+        frame.contentWindow.postMessage({type:'docara:example-dismiss'},'*');
+      });
+    },true);
+  }
   docaraExampleFrames.forEach(function(frame){
     frame.addEventListener('load',function(){requestExampleHeight(frame)});
     requestAnimationFrame(function(){requestExampleHeight(frame)});
@@ -786,6 +909,35 @@
       panel.style.blockSize=Math.round(800*scale)+'px';
     }
     if(pageFrame&&typeof ResizeObserver==='function'){new ResizeObserver(fitPageFrame).observe(pageFrame.parentElement)}
+    /* A desktop example (viewport=desktop, owner decision C111) draws at 1280 at full scale in a column of 512 or more: the body under the frame scrolls sideways and takes focus, a fade marks a side that still hides content, and the head chip says so. A narrower column and the viewer show it at their own width. */
+    var desktopBody=example.hasAttribute('data-docara-example-desktop')&&previewFrame?previewFrame.closest('[data-docara-example-scroll-body]'):null;
+    var desktopChip=owned('[data-docara-example-desktop-chip]')[0]||null;
+    function desktopEdges(){
+      if(!desktopBody)return;
+      var hidden=desktopBody.scrollWidth-desktopBody.clientWidth,left=Math.abs(desktopBody.scrollLeft);
+      desktopBody.parentElement.toggleAttribute('data-more-start',hidden>1&&left>1);
+      desktopBody.parentElement.toggleAttribute('data-more-end',hidden>1&&left<hidden-1);
+    }
+    function fitDesktopFrame(){
+      if(!desktopBody)return;
+      var viewer=isViewerOpen(),width=desktopBody.clientWidth;
+      if(!width&&!viewer)return;
+      var scrolls=!viewer&&width>=512;
+      if(!viewer){
+        if(scrolls){previewFrame.style.inlineSize=exampleViewportWidths.desktop+'px';previewFrame.style.maxInlineSize='none'}
+        else{previewFrame.style.removeProperty('inline-size');previewFrame.style.removeProperty('max-inline-size')}
+      }
+      desktopBody.dataset.docaraExampleScrolling=scrolls?'true':'false';
+      if(scrolls){desktopBody.tabIndex=0;desktopBody.setAttribute('role','region');desktopBody.setAttribute('aria-label',message('examples.desktop_scroll_label'))}
+      else{desktopBody.removeAttribute('tabindex');desktopBody.removeAttribute('role');desktopBody.removeAttribute('aria-label');desktopBody.scrollLeft=0}
+      if(desktopChip){var chip=message('examples.desktop_scroll');if(chip!=='examples.desktop_scroll')desktopChip.textContent=chip;desktopChip.hidden=!scrolls}
+      desktopEdges();
+      requestExampleHeight(previewFrame);
+    }
+    if(desktopBody){
+      desktopBody.addEventListener('scroll',desktopEdges,{passive:true});
+      if(typeof ResizeObserver==='function'){new ResizeObserver(fitDesktopFrame).observe(desktopBody)}
+    }
     function syncViewer(){
       if(!viewerButton)return;
       var active=isViewerOpen();
@@ -799,6 +951,9 @@
       }
       if(active){setViewport(activeViewport,false)}else{resetViewport()}
       fitPageFrame();
+      fitDesktopFrame();
+      /* The inline frame keeps the panel's padding inside, the viewer's frame none. */
+      if(previewFrame)requestExampleHeight(previewFrame);
       var icon=viewerButton.querySelector('sf-icon');
       if(icon){icon.setAttribute('icon',active
         ?(viewerButton.dataset.viewerExitIcon||'close')
@@ -819,7 +974,8 @@
       document.body.appendChild(viewerDialog);
       viewerDialog.appendChild(example);
       example.dataset.docaraExampleViewerActive='true';
-      viewerDialog.setAttribute('aria-label',message('examples.viewer_dialog'));
+      var viewerTitle=example.querySelector('[data-docara-example-title]');
+      viewerDialog.setAttribute('aria-label',viewerTitle?viewerTitle.textContent:message('examples.viewer_dialog'));
       try{viewerDialog.showModal()}catch(error){restoreViewer();return}
       loadResponsiveFrame();
       syncViewer();

@@ -42,7 +42,7 @@ php vendor/simai/docara/scripts/verify-page-weight.php build_production
 | `verify-page-weight.php` | Stops the check if a page or an image is heavier than the threshold |
 
 The last two steps are optional. The quality threshold is easier to keep in
-`docara.json` in the `quality.min_score` field — described on the
+`docara.authoring.json` in the `quality.min_score` field — described on the
 [Documentation quality](/en/authoring/documentation-quality/) page. The weight
 thresholds are set by the `--config=page-weight.json` file — see the section
 [Page weight](/en/build/verify/#page-weight).

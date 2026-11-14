@@ -92,6 +92,8 @@
         "viewer": "Проверить адаптивность",
         "viewer_exit": "Выйти из режима просмотра",
         "viewer_dialog": "Адаптивный просмотр примера",
+        "desktop_scroll": "1280 · 100 % · прокрутка",
+        "desktop_scroll_label": "Пример шириной 1280, прокручивается вбок",
         "viewport_group": "Ширина примера",
         "viewport_desktop": "Десктоп",
         "viewport_tablet": "Планшет",

@@ -38,7 +38,8 @@ the service files `.git/`, `.gitignore`, `.gitattributes` and `.DS_Store`.
 Create the project in a new folder or move the other files away.
 
 `Detected an existing Docara project` means that the project already exists.
-To update its service files, use [`docara update`](/build/update/).
+To update its service files, use `docara update`; to move to a new Docara
+version, use `docara upgrade` (see [Updating Docara](/build/update/)).
 
 ## The build cannot find Node.js
 

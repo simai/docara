@@ -8,7 +8,7 @@ final readonly class PreferencesViewModel
 {
     /**
      * @param  list<array<string, mixed>>  $groups
-     * @param  string  $settingsJson  The Framework sf-menu-context entries, safe inside a script element.
+     * @param  string  $settingsJson  The Framework sf-settings items, safe inside a script element.
      */
     public function __construct(
         public string $position,
@@ -16,6 +16,6 @@ final readonly class PreferencesViewModel
         public string $title,
         public string $closeLabel,
         public string $resetLabel,
-        public string $settingsJson = '{"entries":[]}',
+        public string $settingsJson = '{"items":[]}',
     ) {}
 }

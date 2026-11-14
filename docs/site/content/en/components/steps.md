@@ -4,8 +4,14 @@ description: "How to write the steps of an instruction: a numbered list or a tim
 
 # Steps
 
-Steps show a short sequence of actions. The timeline marks completed,
-current and future steps; a plain list suits an instruction without state.
+Steps show a short sequence of actions to take in order. The timeline can
+mark completed, current and future steps; a plain list suits an instruction
+without state.
+
+Use steps only for a real process. Write a list of section pages or of tasks
+in any order as a plain list or a
+[definition list](/en/authoring/markdown/#checklists-and-definitions): the
+link on the term line, the description under it.
 
 ## Example
 
@@ -59,7 +65,8 @@ current and future steps; a plain list suits an instruction without state.
 
 `current` is the number of the current step, starting from `1`. The steps
 before it are marked with a check mark as completed, the steps after it as
-future.
+future. Set it only when the reader is really inside the process. Without
+`current` no step is highlighted: each one just shows its number.
 
 :::example {label="The third step is current"}
 ```markdown
@@ -88,7 +95,7 @@ future.
 | Parameter | Values | Default | Sets |
 | --- | --- | --- | --- |
 | `layout` | `timeline`, `list` | `timeline` | `timeline` shows steps on a line with a state mark, `list` is a plain numbered list. The old name `view` is accepted with a warning. |
-| `current` | integer | `1` | The number of the current step: the previous ones are marked completed. |
+| `current` | integer | — | The number of the current step: the previous ones are marked completed. Without it no step is highlighted. |
 
 <!-- docara:component-parameters:end -->
 

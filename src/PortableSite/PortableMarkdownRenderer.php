@@ -597,9 +597,9 @@ final class PortableMarkdownRenderer
     {
         $this->assertAttributes($attributes, 'steps');
         $view = $this->catalogueChoice($attributes['layout'] ?? 'timeline', 'steps', 'layout');
-        $current = max(1, (int) ($attributes['current'] ?? '1'));
-        // Only a current step the author named is announced as such.
-        $announceCurrent = isset($attributes['current']);
+        // Without a named current step the list is passive: no step is marked
+        // complete or current, each marker is its plain number (C101, C137).
+        $current = isset($attributes['current']) ? max(1, (int) $attributes['current']) : null;
         $root = $rendered->getDocument()->firstChild();
         if (! $root instanceof ListBlock
             || $root->getListData()->type !== ListBlock::TYPE_ORDERED
@@ -613,12 +613,12 @@ final class PortableMarkdownRenderer
         $content = (string) $rendered;
         if ($view === 'timeline') {
             $index = 0;
-            $content = preg_replace_callback('/<li>(?<content>.*?)<\/li>/su', static function (array $match) use (&$index, $current, $announceCurrent): string {
+            $content = preg_replace_callback('/<li>(?<content>.*?)<\/li>/su', static function (array $match) use (&$index, $current): string {
                 $index++;
-                $state = $index < $current ? 'complete' : ($index === $current ? 'current' : 'pending');
-                $marker = $index < $current ? '&#10003;' : (string) $index;
+                $state = $current === null ? null : ($index < $current ? 'complete' : ($index === $current ? 'current' : 'pending'));
+                $marker = $state === 'complete' ? '&#10003;' : (string) $index;
 
-                return '<li data-step-state="' . $state . '"' . ($announceCurrent && $state === 'current' ? ' aria-current="step"' : '') . ' class="docara-step grid items-cross-start gap-1 list-none">'
+                return '<li' . ($state === null ? '' : ' data-step-state="' . $state . '"') . ($state === 'current' ? ' aria-current="step"' : '') . ' class="docara-step grid items-cross-start gap-1 list-none">'
                     . '<span aria-hidden="true" class="docara-step-marker inline-flex items-cross-center content-main-center">'
                     . '<span class="docara-step-marker-text">' . $marker . '</span></span>'
                     . '<div class="docara-step-content">'

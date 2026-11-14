@@ -129,6 +129,8 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-sep{display:inline-block;margin-inline:.15em;font-size:.8em;position:relative;top:-.05em;color:var(--sf-on-surface-variant)}
 .docara-prose dd{margin-inline-start:var(--sf-space-2)}
 .docara-prose dl>dt:not(:first-child){margin-block-start:var(--sf-space-1)}
+/* A list of links (C137): a description list whose terms are links puts each description under its title without the inset, in the caption colour at body size. */
+.docara-prose dl:has(>dt>a) dd{margin-inline-start:0;color:var(--sf-on-surface-variant)}
 .docara-code-block.bg-surface-container{background:var(--sf-surface-0)}
 .docara-code-block>.sf--highlight-head{margin:0;border-bottom:1px solid var(--sf-outline-variant)}
 .docara-code-header,.docara-code-block>.sf--highlight-head,.docara-example-preview__header,.docara-example-log__head{position:relative;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;align-content:center;gap:var(--sf-space-1);min-block-size:calc(var(--sf-ui-1--control-height) + 2 * var(--sf-space-1\/3));padding:var(--sf-space-1\/3) var(--sf-space-1);background:var(--sf-surface-0)}
@@ -339,13 +341,15 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 /* At tablet and phone widths the device column stays on surface-0 and the area around it is surface-1, so the contrast marks the simulated width. */
 .docara-example-preview[data-docara-example-viewer-active="true"]:is([data-docara-example-viewport="tablet"],[data-docara-example-viewport="mobile"]) [data-docara-example-panel="example"].is-active{background:var(--sf-surface-1)}
 .docara-example-preview[data-docara-example-viewer-active="true"] iframe[data-docara-example-frame]{flex:0 0 auto;min-block-size:100%;max-inline-size:none;background:var(--sf-surface-0)}
-.docara-step{position:relative;grid-template-columns:var(--sf-d0) minmax(0,1fr);column-gap:var(--sf-space-1);min-block-size:var(--sf-d0);padding-block-end:var(--sf-space-2)}
+/* Steps in the quiet look (C101, C137): the marker is one text line (24, 20 with the smaller text rung below lg), centred on the first line, with a regular number a rung smaller in the caption colour; marker to text 12, 8 with the smaller rung (C105 H2); the 1px line keeps the same 4 gap at both markers. A list without a named current step has no state; done is filled with a check, current filled with a ring through a gap. */
+.docara-step{position:relative;grid-template-columns:var(--sf-text-height-1) minmax(0,1fr);column-gap:var(--sf-space-1\/2);padding-block-end:var(--sf-space-1)}
 .docara-step:last-child{padding-block-end:0}
-.docara-step:not(:last-child)::after{content:"";position:absolute;inset-block-start:var(--sf-d0);inset-block-end:0;inset-inline-start:calc(var(--sf-c0) - var(--sf-px) / 2);inline-size:1px;background:var(--sf-outline-variant)}
-.docara-step-marker{position:relative;z-index:1;box-sizing:border-box;inline-size:var(--sf-d0);block-size:var(--sf-d0);align-self:start;border:1px solid var(--sf-outline);border-radius:50%;background:var(--sf-surface-0);color:var(--sf-on-surface);font-weight:700}
+.docara-step:not(:last-child)::after{content:"";position:absolute;inset-block-start:calc(var(--sf-text-height-1) + var(--sf-space-1\/4));inset-block-end:var(--sf-space-1\/4);inset-inline-start:calc((var(--sf-text-height-1) - var(--sf-px)) / 2);inline-size:var(--sf-px);background:var(--sf-outline-variant)}
+.docara-step-marker{position:relative;z-index:1;box-sizing:border-box;inline-size:var(--sf-text-height-1);block-size:var(--sf-text-height-1);align-self:start;border:var(--sf-px) solid var(--sf-outline);border-radius:var(--sf-radius-circle);background:var(--sf-surface-0);color:var(--sf-on-surface-variant);font-size:var(--sf-text-size-1\/2);line-height:1;font-weight:var(--sf-font-weight-regular);font-variant-numeric:tabular-nums}
 .docara-step[data-step-state="complete"] .docara-step-marker{border-color:var(--sf-primary);background:var(--sf-primary);color:var(--sf-on-primary)}
-.docara-step[data-step-state="current"] .docara-step-marker{border:var(--sf-a2) solid var(--sf-primary);background:var(--sf-primary-container);color:var(--sf-on-primary-container)}
-.docara-step-content{min-inline-size:0;padding-block-start:var(--sf-space-1\/3)}
+.docara-step[data-step-state="current"] .docara-step-marker{border-color:var(--sf-primary);background:var(--sf-primary);color:var(--sf-on-primary);outline:var(--sf-px) solid var(--sf-primary);outline-offset:calc(var(--sf-px) * 2)}
+@media not all and (min-width:60rem){.docara-step{column-gap:var(--sf-space-1\/3)}}
+.docara-step-content{min-inline-size:0}
 .docara-step-content>p{margin:0;color:var(--sf-on-surface-variant)}
 .docara-step-content strong{color:var(--sf-on-surface);font-weight:700}
 .docara-skip-link:focus-visible,[data-docara-component-details-summary]:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}

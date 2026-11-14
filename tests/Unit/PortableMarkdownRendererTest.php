@@ -1069,6 +1069,10 @@ MD);
         self::assertSame(1, substr_count($named, 'aria-current="step"'));
         self::assertStringContainsString('<li data-step-state="current" aria-current="step"', $named);
         self::assertStringNotContainsString('aria-current', $plain);
+        // A passive list marks no step: no state, no check mark, plain numbers (C137).
+        self::assertStringNotContainsString('data-step-state', $plain);
+        self::assertStringContainsString('<span class="docara-step-marker-text">1</span>', $plain);
+        self::assertStringContainsString('<li data-step-state="complete" class="docara-step', $named);
     }
 
     #[Test]

@@ -200,6 +200,15 @@ A definition is written like this: the term on its own line, and the next
 line starting with a colon and a space. Any number of terms may follow one
 another, and one term may have several definitions.
 
+When the term is a link, you get a list of links: the title as a link on its
+own line, the description under it in a muted colour. The
+[Get started](/en/start/) section index is built this way.
+
+```markdown
+[Quick start](/en/start/quick-start/)
+: Four steps from an empty folder to a site open over HTTP.
+```
+
 ## Links and images
 
 Links lead the reader to the next useful step, and images support the text

@@ -58,6 +58,18 @@ All notable changes to Docara are recorded here. The format follows
   stylesheet already sits in the page shell (the search button's shortcut
   uses it), and the asset planner links it for any page with a key. The
   Markdown syntax does not change.
+- **Steps take the quiet look, and a passive list marks no step (C101,
+  C137).** The `:::steps` timeline marker is now one text line (24, 20 with
+  the smaller text rung below `lg`) instead of 40, centred on the first
+  line, with a regular number a rung smaller in the caption colour; marker
+  to text is 12 (8 below `lg`), the gap between steps 16, and the line
+  keeps a 4 gap at both markers. Without `current` no step is shown as
+  current any more: every marker is its plain number and the items carry no
+  `data-step-state` (the catalogue drops the `current` default of `1`). A
+  named current step is filled with a ring through a gap. The docs "Get
+  started" index is now a list of links (a definition list whose terms are
+  links: title on its own line, description under it in the caption
+  colour), and steps stay for real ordered processes.
 
 ### Fixed
 

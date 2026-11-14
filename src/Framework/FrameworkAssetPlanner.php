@@ -1471,6 +1471,20 @@ final readonly class FrameworkAssetPlanner
                 }
                 $runtimeTags[] = $tag;
                 $preloadedTags[] = $tag;
+                // The rule's other tags name the same element (sf-close for
+                // sf-button-close, sf-icon-button for sf-button-icon): the
+                // Loader loads the rule once, and the shell already holds its
+                // stylesheet. Linking that stylesheet again under the alias
+                // made every page fetch the same bytes twice.
+                foreach (($rule['tags'] ?? []) as $aliasTag) {
+                    $alias = is_string($aliasTag) ? ($runtime['components'][$aliasTag] ?? null) : null;
+                    if (is_array($alias)
+                        && ($alias['css'] ?? null) === ($component['css'] ?? null)
+                        && ($alias['javascript'] ?? null) === ($component['javascript'] ?? null)
+                    ) {
+                        $preloadedTags[] = $aliasTag;
+                    }
+                }
                 if (is_string($component['css'] ?? null) && $component['css'] !== '') {
                     $smartPath = (string) $component['css'];
                     if (! str_starts_with($smartPath, 'smart/')) {

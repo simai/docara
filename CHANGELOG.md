@@ -127,6 +127,13 @@ All notable changes to Docara are recorded here. The format follows
   content, up to the height of the reader's screen; the menu then opens
   below its field at full size and hangs over the text that follows, as on a
   phone.
+- **Pages no longer link two Framework stylesheets twice.** `sf-close` and
+  `sf-icon-button` are other names of `sf-button-close` and
+  `sf-button-icon`: the Loader loads each pair once, and the page's shared
+  stylesheets already hold their rules. Every page still linked both files a
+  second time under the other name. It now links two stylesheets fewer
+  (19.5 instead of 21.5 on average on the documentation site) and fetches
+  5.4 KB less; what is drawn does not change.
 
 ## [3.14.3] - 2026-11-14
 

@@ -707,7 +707,7 @@
       return exampleEnvironment(frame).then(function(environment){
         /* An environment prepared for an earlier frame document is dropped; the newer one carries the same entries. */
         if(state.generation!==generation)return;
-        if(frame.contentWindow){frame.contentWindow.postMessage(Object.assign({type:'docara:example-measure'},environment),'*')}
+        if(frame.contentWindow){frame.contentWindow.postMessage(Object.assign({type:'docara:example-measure',pageHeight:window.innerHeight},environment),'*')}
       });
     }).catch(function(){});
   }

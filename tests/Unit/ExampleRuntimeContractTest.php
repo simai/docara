@@ -427,7 +427,15 @@ JS;
         self::assertStringContainsString("frame.style.clipPath=\"path('\"+path+\"')\"", $shell);
         self::assertStringContainsString('.docara-example-preview[data-docara-example-overlay]{overflow:visible}', (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css'));
         self::assertStringContainsString("parent.postMessage({type:'docara:example-height',height:height,flow:flow,overlays:overlays},'*')", $renderer);
-        self::assertStringContainsString('var reach=layerRect.bottom+12;', $renderer);
+        self::assertStringContainsString('var drawn=layerRect.bottom+12,reach=drawn,open=false;', $renderer);
+        // A menu its positioner squeezed (or flipped above its field) at any
+        // width asks for its natural size below the flow, capped at the page's
+        // screen height, while the page shows only its drawn box.
+        self::assertStringContainsString("layer.style.removeProperty('max-height');size=layer.getBoundingClientRect().height;layer.style.setProperty('max-height',value,priority);", $renderer);
+        self::assertStringContainsString('if(natural>layerRect.height+1){var room=Math.max(layerRect.height,Math.min(natural,pageHeight>0?pageHeight:(screen&&screen.availHeight)||layerRect.height));reach=Math.max(reach,flowBottom+room+12)}', $renderer);
+        self::assertStringContainsString('Math.ceil(drawn-contentTop)])', $renderer);
+        self::assertStringContainsString('if(Number.isFinite(event.data.pageHeight)&&event.data.pageHeight>0)pageHeight=event.data.pageHeight;', $renderer);
+        self::assertStringContainsString("Object.assign({type:'docara:example-measure',pageHeight:window.innerHeight},environment)", $shell);
         self::assertStringContainsString("try{open=child.matches(':popover-open,dialog[open]')}catch(error){}if(open)return;", $renderer);
         self::assertStringNotContainsString('Math.min(4096', $shell);
     }

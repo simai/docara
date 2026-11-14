@@ -1425,7 +1425,7 @@ JS;
     {
         return <<<'HTML'
 <script data-docara-example-resize>(function(){
-var body=document.body,lastHeight=0,scheduled=false,frameworkScriptSources={};
+var body=document.body,lastHeight=0,scheduled=false,frameworkScriptSources={},pageHeight=0;
 /* The frame document has a <base href> to its example folder, so a link to #part would load that folder in the frame and blank the example. A same-document link stays in the example: it scrolls to its target, if the example has one. An example that handles the click itself keeps it. */
 document.addEventListener('click',function(event){
 if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
@@ -1629,6 +1629,8 @@ var layerPlaces=typeof WeakMap==='function'?new WeakMap():{get:function(){},set:
 /* Typed OM tells a layer whose top is auto and bottom is set; elsewhere a layer that moves by exactly the frame's growth is taken as pinned. */
 /* A notification area is capped at the frame's height and squeezes its messages in a short frame; without the cap it shows the height it needs. The cap comes back before anything paints, and the observer drops the change. */
 function naturalBlockSize(layer){var value=layer.style.getPropertyValue('max-block-size'),priority=layer.style.getPropertyPriority('max-block-size'),size;layer.style.setProperty('max-block-size','none','important');size=Math.max(layer.getBoundingClientRect().height,layer.scrollHeight);if(value)layer.style.setProperty('max-block-size',value,priority);else layer.style.removeProperty('max-block-size');if(bodyObserver)bodyObserver.takeRecords();return size}
+/* A positioned menu is fitted to the room the frame has: its positioner writes a max-height, and with too little room below its field it flips above it, squeezed. Its natural size is its height without that inline cap, under its stylesheet's own caps. */
+function naturalMenuSize(layer){var value=layer.style.getPropertyValue('max-height'),priority=layer.style.getPropertyPriority('max-height'),size;if(value==='')return layer.getBoundingClientRect().height;layer.style.removeProperty('max-height');size=layer.getBoundingClientRect().height;layer.style.setProperty('max-height',value,priority);if(bodyObserver)bodyObserver.takeRecords();return size}
 function bottomPinned(layer){try{var map=layer.computedStyleMap();return map.get('position').toString()==='fixed'&&map.get('top').toString()==='auto'&&map.get('bottom').toString()!=='auto'}catch(error){return false}}
 function measureNow(){
 var style=getComputedStyle(body),rect=body.getBoundingClientRect();
@@ -1646,8 +1648,9 @@ contentBottom=Math.max(contentBottom,childRect.bottom+(parseFloat(childStyle.mar
 contentBottom=Math.max(contentBottom,contentTop+pinnedExtent);
 /* An open menu or dialog sits in the top layer, which a frame clips at its own height, and a positioned menu shrinks to the room it has. The frame grows to the layer's full height, so the menu gets its natural size: the part a scrolling list hides counts too. */
 var layers=[],flowBottom=contentBottom,overlays=[];try{layers=Array.from(document.querySelectorAll(':popover-open,dialog[open]'))}catch(error){}
+/* A squeezed menu (smaller than its natural size) asks for room for that size below the frame's flow, as much as the page's screen would give it there: in that room it opens below its field at full size, and the next measure keeps just the room it takes. The page shows only the menu's drawn box over what follows, so the room it asked for and does not fill takes no presses. A menu on a narrow screen and one on a desktop width are measured the same way. */
 /* A layer pinned to the frame's bottom edge, such as a notification area, moves down as far as the frame grows: it needs its own height and its gap to that edge, not room below its bottom, or the frame would chase it. */
-layers.forEach(function(layer){var layerRect=layer.getBoundingClientRect();var seen=layerPlaces.get(layer),viewport=innerHeight;if(!seen){seen={pinned:bottomPinned(layer)};layerPlaces.set(layer,seen)}else if(seen.viewport!==viewport&&Math.abs((layerRect.top-seen.top)-(viewport-seen.viewport))<1)seen.pinned=true;seen.viewport=viewport;seen.top=layerRect.top;if(seen.pinned){contentBottom=Math.max(contentBottom,contentTop+Math.max(0,viewport-layerRect.bottom)+naturalBlockSize(layer)+12);return}var reach=layerRect.bottom+12;if(reach>contentBottom)contentBottom=reach;overlays.push([Math.floor(layerRect.left-12),Math.floor(layerRect.top-contentTop-12),Math.ceil(layerRect.right+12),Math.ceil(reach-contentTop)])});
+layers.forEach(function(layer){var layerRect=layer.getBoundingClientRect();var seen=layerPlaces.get(layer),viewport=innerHeight;if(!seen){seen={pinned:bottomPinned(layer)};layerPlaces.set(layer,seen)}else if(seen.viewport!==viewport&&Math.abs((layerRect.top-seen.top)-(viewport-seen.viewport))<1)seen.pinned=true;seen.viewport=viewport;seen.top=layerRect.top;if(seen.pinned){contentBottom=Math.max(contentBottom,contentTop+Math.max(0,viewport-layerRect.bottom)+naturalBlockSize(layer)+12);return}var drawn=layerRect.bottom+12,reach=drawn,open=false;try{open=layer.matches(':popover-open')}catch(error){}var natural=open?naturalMenuSize(layer):layerRect.height;if(natural>layerRect.height+1){var room=Math.max(layerRect.height,Math.min(natural,pageHeight>0?pageHeight:(screen&&screen.availHeight)||layerRect.height));reach=Math.max(reach,flowBottom+room+12)}if(reach>contentBottom)contentBottom=reach;overlays.push([Math.floor(layerRect.left-12),Math.floor(layerRect.top-contentTop-12),Math.ceil(layerRect.right+12),Math.ceil(drawn-contentTop)])});
 var height=Math.ceil(Math.max(0,contentBottom-contentTop)),flow=Math.ceil(Math.max(0,flowBottom-contentTop)),report=height+'/'+flow+'/'+overlays.join(';');
 if(report===lastHeight)return;
 lastHeight=report;
@@ -1698,6 +1701,7 @@ addEventListener('message',function(event){
 if(event.source===parent&&event.data&&event.data.type==='docara:example-dismiss'){dismissLayers();return}
 if(event.source===parent&&event.data&&event.data.type==='docara:example-measure'){
 applyEnvironment(event.data);
+if(Number.isFinite(event.data.pageHeight)&&event.data.pageHeight>0)pageHeight=event.data.pageHeight;
 lastHeight=-1;
 measureSettled();
 scheduleIconReport();

@@ -104,6 +104,17 @@ All notable changes to Docara are recorded here. The format follows
   with its line as the warning `PRESERVED_NOT_SHOWN`, the build writes one
   summary line and does not stop, and a block without its closing line fails
   with `MARKDOWN_BLOCK_UNCLOSED` instead of showing what follows (C75).
+- **An open menu in an example gets its full height at desktop widths
+  too.** A menu that opened near the bottom of a short frame had too little
+  room below its field, so the Framework turned it above the field and
+  shrank it to the room there; the frame saw a menu that fit and did not
+  grow, so the list was cut (18 px of the second dropdown example at 1440).
+  Only at phone widths, where the menu stayed below its field, did the frame
+  make room for it. A frame now compares an open menu with its natural size
+  and, when the menu is squeezed, makes room for that size below its
+  content, up to the height of the reader's screen; the menu then opens
+  below its field at full size and hangs over the text that follows, as on a
+  phone.
 
 ## [3.14.3] - 2026-11-14
 

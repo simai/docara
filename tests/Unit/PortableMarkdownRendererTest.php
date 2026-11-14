@@ -502,9 +502,11 @@ MD);
         self::assertStringContainsString('function measureSettled()', $web);
         // An open menu sits in the top layer, which the frame clips; the frame
         // reaches the menu's drawn box. Rows the list scrolls stay out, or a
-        // list capped to the viewport would grow the frame without end.
+        // list capped to the viewport would grow the frame without end; a
+        // squeezed menu asks for its natural size, capped at the page's height.
         self::assertStringContainsString('querySelectorAll(&apos;:popover-open,dialog[open]&apos;)', $web);
-        self::assertStringContainsString('var reach=layerRect.bottom+12;', $web);
+        self::assertStringContainsString('var drawn=layerRect.bottom+12,reach=drawn,open=false;', $web);
+        self::assertStringContainsString('Math.min(natural,pageHeight&gt;0?pageHeight:', $web);
         self::assertStringNotContainsString('part.scrollHeight-part.clientHeight', $web);
         self::assertStringContainsString('document.addEventListener(&apos;toggle&apos;,measureSettled,true)', $web);
         self::assertStringContainsString('setTimeout(measureNow,100)', $web);

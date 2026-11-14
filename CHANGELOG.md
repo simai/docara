@@ -58,6 +58,10 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **Search and the example viewer use the Framework's shared scrim.** They
+  darkened the page with Docara's own black at 60 %; they now take
+  `--sf-scrim-color` (black at 64 %), like the Framework's drawer and modal
+  (SR-5).
 - **An effect hero no longer flashes white while its effect loads.** A
   hero with `effect` showed the page's white surface until the effect script
   started, then the effect's grey field appeared. It now shows `surface-1`

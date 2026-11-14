@@ -320,8 +320,8 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 /* The width switcher is three Framework link icon buttons; the pressed one carries the Framework .active state (surface-container-active), visible in both themes. */
 .docara-example-preview__viewports{display:inline-flex;align-items:center;gap:var(--sf-space-1\/3)}
 .docara-example-viewer-dialog{box-sizing:border-box;inline-size:100vw;max-inline-size:none;block-size:100dvh;max-block-size:none;margin:0;padding:0;border:0;background:var(--sf-surface-0);color:var(--sf-on-surface)}
-/* A window's scrim darkens the page in both themes, like the Framework modal's: a fixed black, not a theme colour that turns light in the dark theme. */
-:root{--docara-scrim:color-mix(in srgb,var(--sf-black) 60%,transparent)}
+/* A window's scrim is the Framework's shared one (black at 64 % in both themes), so search, the example viewer, the drawer and the modal darken the page alike. */
+:root{--docara-scrim:var(--sf-scrim-color)}
 .docara-example-viewer-dialog::backdrop{background:var(--docara-scrim)}
 /* sf-search carries its host's --sf-search-* values into the window it draws at the end of the body. */
 [data-docara-search-dialog]{--sf-search-scrim-color:var(--docara-scrim)}

@@ -6,6 +6,14 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **`branding.logo_icon`: an icon-only mark for a narrow header.** A site in
+  the `logo` mode can name a logo without lettering (Docara's own site uses
+  its square mark); below 456 px, where the logo and every header tool do
+  not fit together, the header shows it in place of the logo in both
+  themes.
+
 ### Changed
 
 - **Docara bundles SIMAI Framework `ui-141822273efe`** (registry bound at
@@ -51,14 +59,6 @@ All notable changes to Docara are recorded here. The format follows
   uses it), and the asset planner links it for any page with a key. The
   Markdown syntax does not change.
 
-### Added
-
-- **`branding.logo_icon`: an icon-only mark for a narrow header.** A site in
-  the `logo` mode can name a logo without lettering (Docara's own site uses
-  its square mark); below 456 px, where the logo and every header tool do
-  not fit together, the header shows it in place of the logo in both
-  themes.
-
 ### Fixed
 
 - **The phone header fits the sf-language button (C142).** From sf-language
@@ -70,6 +70,18 @@ All notable changes to Docara are recorded here. The format follows
   `branding.logo_icon`; below 360 px the repository link leaves the bar.
   Checked at 320, 360, 390, 430, 768 and 1440 px in both themes: no control
   overlaps another and the page does not scroll sideways.
+- **Buttons in an example frame no longer fade in from the browser's grey
+  (FW-B-9).** An example frame draws its content before the Framework
+  stylesheets reach it, so a control's own transition (the 100 ms background
+  of a Framework button) ran from the browser's default look: readers saw a
+  grey flash as a frame scrolled in, and a frame off the screen, which draws
+  nothing, kept the grey start value, which contrast audits then read. The
+  frame document now holds transitions off
+  (`<style data-docara-example-transition-hold>`) until it reports that it is
+  styled; it then reads its style once and removes the hold, so nothing
+  animates from the browser's look and later state changes animate as before.
+  A frame whose page sends no stylesheets releases the hold at once, and one
+  that hears from no page, after ten seconds.
 
 ## [3.14.3] - 2026-11-14
 

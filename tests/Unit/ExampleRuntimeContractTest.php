@@ -84,7 +84,7 @@ final class ExampleRuntimeContractTest extends TestCase
         $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
 
         self::assertStringContainsString("return exampleIconFace(rule)?rule:rule.replace(/font-display\\s*:\\s*optional/gi,'font-display:swap');", $shell);
-        self::assertStringContainsString("Promise.all([stylesApplied,scriptsLoaded]).then(textFontLoaded).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});", $renderer);
+        self::assertStringContainsString("Promise.all([stylesApplied,scriptsLoaded]).then(textFontLoaded).then(function(){setTimeout(function(){releaseTransitionHold();parent.postMessage({type:'docara:example-styled'},'*')},50)});", $renderer);
         self::assertSame(1, preg_match('/\n  function portableExampleStyle\(content,baseHref,codepoints,faces\)\{\n.*?\n  \}\n/s', $shell, $style));
         self::assertSame(1, preg_match('/\nfunction textFontLoaded\(\)\{\n.*?\n\}\n/s', $renderer, $font));
         $node = (new ExecutableFinder)->find('node');
@@ -547,6 +547,49 @@ JS;
             'https://docs.example/_docara/missing.js',
         ], $result['keys']);
         self::assertSame(0, $result['loadsBeforeAnyEvent']);
+    }
+
+    public function test_a_frame_holds_transitions_off_until_it_reports_it_is_styled(): void
+    {
+        // FW-B-9: the frame draws its content before the Framework sheets
+        // arrive, so a button's own transition ran from the browser's look.
+        $html = (new PortableMarkdownRenderer)->render(
+            ":::example\n```html\n<button type=\"button\" class=\"sf-button\">Go</button>\n```\n:::\n",
+        );
+        self::assertSame(1, preg_match('~data-docara-srcdoc="([^"]*)"~', $html, $frame));
+        $document = html_entity_decode($frame[1], ENT_QUOTES | ENT_HTML5);
+        $hold = '<style data-docara-example-transition-hold>*,*::before,*::after{transition:none!important}</style>';
+        self::assertSame(1, substr_count($document, $hold));
+        self::assertLessThan(strpos($document, '</head><body>'), strpos($document, $hold), 'The hold is in the head, before the content draws.');
+        self::assertLessThan(strpos($document, '<button type="button" class="sf-button">Go</button>'), strpos($document, $hold));
+
+        // The styled report releases the hold first; an environment without
+        // styles releases it at once; a frame that hears none, after 10 s.
+        self::assertStringContainsString("setTimeout(function(){releaseTransitionHold();parent.postMessage({type:'docara:example-styled'},'*')},50)", $document);
+        self::assertStringContainsString('}else if(!environmentStyled){releaseTransitionHold()}', $document);
+        self::assertStringContainsString('setTimeout(function(){if(!environmentStyled)releaseTransitionHold()},10000);', $document);
+        self::assertSame(1, preg_match('/\nfunction releaseTransitionHold\(\)\{\n.*?\n\}\n/s', $document, $release));
+
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The hold check runs the runtime function in Node.js.');
+        $script = <<<'JS'
+const steps=[];let present=true;
+const hold={remove(){steps.push('remove');present=false}};
+const body={get offsetHeight(){steps.push('layout');return 10}};
+globalThis.document={querySelector(selector){steps.push('find '+selector);return present?hold:null}};
+globalThis.getComputedStyle=(element)=>({get color(){steps.push(element===body?'style body':'style other');return 'rgb(0, 0, 0)'}});
+JS;
+        $script .= $release[0] . 'releaseTransitionHold();releaseTransitionHold();process.stdout.write(JSON.stringify(steps));';
+        $process = new Process([$node, '-e', $script]);
+        $process->mustRun();
+
+        self::assertSame([
+            'find style[data-docara-example-transition-hold]',
+            'style body',
+            'layout',
+            'remove',
+            'find style[data-docara-example-transition-hold]',
+        ], json_decode($process->getOutput(), true, flags: JSON_THROW_ON_ERROR), 'The style is read with the hold in place, then the hold goes, once.');
     }
 
     public function test_a_framed_example_log_posts_events_own_lines_and_console_rows_to_the_page(): void

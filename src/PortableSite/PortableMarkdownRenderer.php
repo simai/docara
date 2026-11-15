@@ -1235,6 +1235,15 @@ final class PortableMarkdownRenderer
             // width is the sample's width, so its media queries and the
             // Framework's size ladder read the width the sample really has.
             . '<style>body{padding:calc(var(--docara-example-inset,0px) + var(--sf-focus--width,2px) + var(--sf-focus--offset,1px)) calc(var(--sf-focus--width,2px) + var(--sf-focus--offset,1px))}</style>'
+            // The Framework sheets reach the frame after its content has
+            // drawn in the browser's own look, and a control's transition
+            // (a button's 100 ms background) would then run from that look:
+            // a grey flash as a frame scrolls in, and a frame off the screen,
+            // which draws nothing, keeps the start value. Transitions stay off
+            // until the frame reports it is styled; the runtime then reads the
+            // style once and removes this hold, so nothing animates from the
+            // browser's look and later changes animate as before.
+            . '<style data-docara-example-transition-hold>*,*::before,*::after{transition:none!important}</style>'
             . (isset($sources['CSS']) ? '<style>' . $sources['CSS'] . '</style>' : '')
             . ($ownTheme ? $this->exampleOwnThemeRuntime() : '')
             // The log runtime comes before the example's markup and script,
@@ -1571,9 +1580,19 @@ if(ownTheme&&window.SF_BOOT_CONFIG&&window.SF_BOOT_CONFIG.theme===false){delete 
 var scriptsLoaded=loadFrameworkScripts(Array.isArray(data.scripts)?data.scripts:[],data.scriptTexts&&typeof data.scriptTexts==='object'?data.scriptTexts:{});
 /* Once the page's styles are in and the Framework scripts have run, the frame looks like the page: the shell may then show it in a responsive check instead of the inline preview. */
 if((Array.isArray(data.stylesheets)&&data.stylesheets.length)||(Array.isArray(data.inlineStyles)&&data.inlineStyles.length)){
-Promise.all([stylesApplied,scriptsLoaded]).then(textFontLoaded).then(function(){setTimeout(function(){parent.postMessage({type:'docara:example-styled'},'*')},50)});
+environmentStyled=true;
+Promise.all([stylesApplied,scriptsLoaded]).then(textFontLoaded).then(function(){setTimeout(function(){releaseTransitionHold();parent.postMessage({type:'docara:example-styled'},'*')},50)});
+}else if(!environmentStyled){releaseTransitionHold()}
 }
+/* The frame's transitions are held off until its styles are in (data-docara-example-transition-hold), so a control does not animate from the browser's look it drew before the sheets came. Reading the style with the hold still in place makes the styled values the start of any later change; removing the hold then changes only transition, so nothing animates. An environment without styles releases the hold at once, and a frame that hears no environment releases it after ten seconds. */
+var environmentStyled=false;
+function releaseTransitionHold(){
+var hold=document.querySelector('style[data-docara-example-transition-hold]');
+if(!hold)return;
+try{getComputedStyle(body).color;body.offsetHeight}catch(error){}
+hold.remove();
 }
+setTimeout(function(){if(!environmentStyled)releaseTransitionHold()},10000);
 /* The Framework scripts go in all at once. A script inserted with async=false is fetched at once and still runs after every async=false script inserted before it, in this and in later environments, so Core runs after the scripts it needs, as on the page. The frame's opaque origin shares no cache with the page, so waiting for each script before asking for the next cost a round trip per script. The page sends the text of the scripts it could read: such a script runs from a blob URL made in the frame, which keeps its place in that order and its load event, and gives Core's script loader the src it reads as it starts. Core does not recognise a blob URL as its own and takes its base from sfPath, set by the boot state, so the chunks it loads itself come from the page's Framework files, as before. A script the page could not read loads by its URL. */
 function loadFrameworkScripts(sources,texts){
 var loads=[];

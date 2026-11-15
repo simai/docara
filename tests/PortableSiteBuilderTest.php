@@ -1097,7 +1097,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/994f9db407fa5523feeafd1b8cb859fad34fa9c3/distr/',
+                '/_docara/vendor/simai-framework/runtime/141822273efead4cca7b1244fb547218aa6bdd81/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -1364,9 +1364,9 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => 'aa5e8fcb82eb7b26675e0771c2b5c26579dedc59af923af42a4aa9ae7672e084',
-            'smart/button/js/button.js' => '58f9f26176512891f2e604186b306d353805c58946587a0aaab031f4c3e8c40f',
-            'smart/icon/js/icon.js' => 'b9b9203c68c3fedeff6c65c4373d15d82e05ad7cbc5661f31d02107198dc6543',
+            'smart/alert/js/alert.js' => '447e06e15272617d919555cb6bccf712754b1bc0754172eea12d87c32dadf85e',
+            'smart/button/js/button.js' => '6e3e35ce4162e0fbbf9f1dee25efb1485ba2a739e008951229427e18cfd7e091',
+            'smart/icon/js/icon.js' => 'f4820b27a6c53b4c8a65b5720fe271a80ef5f3dddbea87472b6bedf93bd64a8a',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
             self::assertFileExists($published);
@@ -1463,7 +1463,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('ui-994f9db407fa', $componentCatalog['framework_pair']);
+        self::assertSame('ui-141822273efe', $componentCatalog['framework_pair']);
         self::assertCount(40, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -2052,7 +2052,7 @@ MD;
             $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.min\.js\?sf_v=ui-994f9db407fa-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.min\.js\?sf_v=ui-141822273efe-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));
@@ -2892,9 +2892,14 @@ MD;
             // 4-13 stylesheets (the Framework contents, pager, search and
             // settings components add their own since 3.10.0; the shell's
             // example caption, desktop scroll and static tree rules in 3.14.3
-            // tip the getting-started page's bundling to 13, and the
-            // ui-7fb26d395af2 sheets to 14).
-            self::assertLessThanOrEqual(14, count($links), $page);
+            // tip the getting-started page's bundling to 13, the
+            // ui-7fb26d395af2 sheets to 14). ui-141822273efe orders the
+            // closures differently (sf-button requires its split menu, and
+            // tooltip, list and header-site sheets join the order), so the
+            // shared bundles split finer: 56 bundles instead of 46, the
+            // project demo page links 20 of its 69 segments, getting-started
+            // 15.
+            self::assertLessThanOrEqual(20, count($links), $page);
             self::assertLessThan(count($closure), count($links), $page);
             $linked = array_merge(...array_map(
                 static fn (string $filename): array => array_column($stylesheets['bundles'][$filename]['inputs'], 'sha256'),
@@ -2927,9 +2932,14 @@ MD;
         // stylesheets on average (the documentation site 6.6). The 3.14.3
         // shell (example caption, desktop scroll, static tree) regroups the
         // stub site's bundles to 8.25; the documentation site stays at 7.66
-        // links per page, as in 3.14.2.
+        // links per page, as in 3.14.2. With ui-141822273efe the sr-only
+        // utility comes before the layout utilities on some pages and after
+        // them on others (the components that need it differ), and the menu
+        // and scrollbar sheets likewise, so fewer runs are shared: 10.375
+        // (56 bundles instead of 46). The documentation site's pages link
+        // within four sheets of the published 3.14.3 site, some fewer.
         self::assertLessThanOrEqual(
-            ShellStylesheetBundler::TARGET_REQUESTS + 2.25,
+            ShellStylesheetBundler::TARGET_REQUESTS + 4.5,
             array_sum(array_map('count', $pageFiles)) / count($pageFiles),
         );
         self::assertLessThanOrEqual(

@@ -180,7 +180,7 @@ function docaraVerifySiteTheme(string $root, mixed $receipt, string $deploymentB
         || preg_match('/\A[a-f0-9]{64}\z/D', $stylesheet['sha256']) !== 1
         || ($stylesheet['filename'] ?? null) !== 'docara-theme.' . $stylesheet['sha256'] . '.css'
         || ! is_int($stylesheet['variables'] ?? null)
-        || $stylesheet['variables'] < 128
+        || $stylesheet['variables'] < 64
         || $stylesheet['variables'] > 1024
     ) {
         throw new RuntimeException('Site theme receipt is invalid.');
@@ -191,21 +191,27 @@ function docaraVerifySiteTheme(string $root, mixed $receipt, string $deploymentB
         throw new RuntimeException('Site theme stylesheet is missing, unsafe or does not hold the receipt\'s bytes.');
     }
     $palettes = '(?:primary|secondary|tertiary|neutral|error|warning|success|info)';
-    // The 128 tones, then (release ui-1cb0739a8423 and later) the translucent
-    // steps of those tones, as many as the receipt counts.
+    // The tones, then (release ui-1cb0739a8423 and later) the translucent
+    // steps of those tones, as many as the receipt counts: 128 tones of eight
+    // palettes, or (release ui-994f9db407fa and later, whose status colours
+    // are fixed hues) 64 tones of the four tonal palettes.
     // Checked line by line: one pattern repeated 226 times is too large for PCRE.
     $tone = '--sf-' . $palettes . '-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98)';
     $lines = explode("\n", $content);
+    $variables = array_slice($lines, 2, $stylesheet['variables']);
+    $tones = 0;
+    while ($tones < count($variables) && preg_match('/\A  ' . $tone . ': #[0-9a-f]{6};\z/D', $variables[$tones]) === 1) {
+        $tones++;
+    }
     $themeShapeValid = count($lines) === $stylesheet['variables'] + 4
+        && in_array($tones, [64, 128], true)
         && preg_match('/\A\/\* docara-theme: [^*]*\*\/\z/D', $lines[0]) === 1
         && $lines[1] === ':root {'
         && $lines[count($lines) - 2] === '}'
         && $lines[count($lines) - 1] === '';
-    foreach (array_slice($lines, 2, $stylesheet['variables']) as $index => $line) {
-        $pattern = $index < 128
-            ? '/\A  ' . $tone . ': #[0-9a-f]{6};\z/D'
-            : '/\A  ' . $tone . '--alfa-[1-9][0-9]?: #[0-9a-f]{8};\z/D';
-        $themeShapeValid = $themeShapeValid && preg_match($pattern, $line) === 1;
+    foreach (array_slice($variables, $tones) as $line) {
+        $themeShapeValid = $themeShapeValid
+            && preg_match('/\A  ' . $tone . '--alfa-[1-9][0-9]?: #[0-9a-f]{8};\z/D', $line) === 1;
     }
     if (! $themeShapeValid) {
         throw new RuntimeException('Site theme stylesheet holds more than the Framework theme variables.');

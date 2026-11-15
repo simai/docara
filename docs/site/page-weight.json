@@ -1,5 +1,5 @@
 {
-  "$comment": "Page-weight budgets for the documentation site, checked in CI by scripts/verify-page-weight.php. Recalibrated on 2026-11-05 for SIMAI Framework ui-c3015f76bcc2, whose core.js grew from 727 KB to 1.12 MB: 167 pages, median 4.28 MB, heaviest ordinary pages 5.39 MB (ru/components/surface/) and 5.24 MB (ru/project-demos/, ru/development/composition/). First calibrated on 2026-10-20 (main 57686108). Static estimate; headless Chrome loads 0.5-0.9 MB more per page (Framework chunks a script loads, icon weights picked at run time). On 2026-11-05 the English pages got their own budgets beside the Russian ones (259 pages).",
+  "$comment": "Page-weight budgets for the documentation site, checked in CI by scripts/verify-page-weight.php. Recalibrated on 2026-11-05 for SIMAI Framework ui-c3015f76bcc2, whose core.js grew from 727 KB to 1.12 MB: 167 pages, median 4.28 MB, heaviest ordinary pages 5.39 MB (ru/components/surface/) and 5.24 MB (ru/project-demos/, ru/development/composition/). First calibrated on 2026-10-20 (main 57686108). Static estimate; headless Chrome loads 0.5-0.9 MB more per page (Framework chunks a script loads, icon weights picked at run time). On 2026-11-05 the English pages got their own budgets beside the Russian ones (259 pages). Recalibrated on 2026-11-15 for SIMAI Framework ui-141822273efe, whose role tokens and core styles 1.13 grew the shared sheets (core.css 308 KB to 332 KB, core.min.js 522 KB to 536 KB, and the role variables in each Smart sheet): median 4.38 MB; the surface, composition and example-gallery pages crossed their budgets by 0.03-0.13 MB.",
   "max_page_bytes": 5500000,
   "max_image_bytes": 1300000,
   "image_oversize_ratio": 2.5,
@@ -16,13 +16,17 @@
       "max_page_bytes": 6500000,
       "reason": "6.16 MB: the English copy of the icon page, which draws every family, weight and fill."
     },
+    "/en/components/surface/": {
+      "max_page_bytes": 5800000,
+      "reason": "5.53 MB: the surface page shows every surface and its parts, so it links more Framework sheets than an ordinary page; over the default from ui-141822273efe."
+    },
     "/en/development/composition/": {
-      "max_page_bytes": 5900000,
-      "reason": "5.54 MB: the composition guide, measured over the default after the English pages were added."
+      "max_page_bytes": 6300000,
+      "reason": "5.95 MB: the composition guide, measured over the default after the English pages were added and remeasured for ui-141822273efe."
     },
     "/en/examples/extensions/": {
-      "max_page_bytes": 6500000,
-      "reason": "6.19 MB: the English copy of the example gallery, with the same components."
+      "max_page_bytes": 6900000,
+      "reason": "6.63 MB: the English copy of the example gallery, with the same components; remeasured for ui-141822273efe."
     },
     "/ru/components/diagram-gallery/": {
       "max_page_bytes": 8700000,
@@ -36,13 +40,17 @@
       "max_page_bytes": 6500000,
       "reason": "6.08 MB: the icon page draws every family, weight and fill, so it loads catalogue faces the other pages do not, and lists all 3926 icon names."
     },
+    "/ru/components/surface/": {
+      "max_page_bytes": 5800000,
+      "reason": "5.54 MB: the surface page shows every surface and its parts, so it links more Framework sheets than an ordinary page; over the default from ui-141822273efe."
+    },
     "/ru/development/composition/": {
-      "max_page_bytes": 5900000,
-      "reason": "5.61 MB: the composition guide, measured over the default after the English pages were added."
+      "max_page_bytes": 6300000,
+      "reason": "6.02 MB: the composition guide, measured over the default after the English pages were added and remeasured for ui-141822273efe."
     },
     "/ru/examples/extensions/": {
-      "max_page_bytes": 6500000,
-      "reason": "6.17 MB: the heaviest example gallery; the Framework search, contents, pager and settings components (sf-search, sf-contents, sf-pager, sf-menu-context) every page loads took it past the default."
+      "max_page_bytes": 6900000,
+      "reason": "6.62 MB: the heaviest example gallery; the Framework search, contents, pager and settings components (sf-search, sf-contents, sf-pager, sf-menu-context) every page loads took it past the default; remeasured for ui-141822273efe."
     }
   }
 }

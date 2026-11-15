@@ -40,7 +40,9 @@ final class SiteThemeBuildTest extends TestCase
         self::assertSame('_docara/docara-theme.' . hash('sha256', $css) . '.css', $themeFiles[0]);
         self::assertStringContainsString("\n:root {\n", $css);
         self::assertStringContainsString('  --sf-primary-40: #006d44;', $css);
-        self::assertSame(128, preg_match_all('/^  --sf-[a-z]+-[0-9]+: #[0-9a-f]{6};$/m', $css));
+        // Four tonal palettes of 16 tones: from ui-994f9db407fa the status
+        // colours are fixed hues of the Framework, not written by the theme.
+        self::assertSame(64, preg_match_all('/^  --sf-[a-z]+-[0-9]+: #[0-9a-f]{6};$/m', $css));
 
         // The themed site is the plain site plus the stylesheet and one link
         // per page, after the page's first-frame stylesheets.

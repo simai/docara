@@ -1,0 +1,1269 @@
+@charset "UTF-8";
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+/*
+* _var__component_name.scss
+* 
+* SCSS file containing variables for component styling.
+* 
+* Used to define default parameters (color, size, etc.)
+* that can be overridden in other parts of the project.
+* 
+* Example usage:
+* --sf-icon--fill: 0; // Fill for icon
+*/
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+/* The status words are the shared vocabulary: neutral, info, success, warning,
+   error. The component renders the canonical class, and the two words this
+   component used before — clear and danger — are matched beside it so existing
+   markup and project CSS keep working. See contracts/public-api-axes.json. */
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/2) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+/* The notice's geometry, the toast's numbers (owner decision C35, remarks
+   R066 and R079; DEV acceptance D3: C35 covers every notice), in tokens, so a
+   compact region (data-sf-density) moves every step itself:
+   - one inline inset on both sides, --sf-space-1 (16; compact and phone
+     12) with the 1 px border inside it (owner decision C105 H4/H6, as the
+     fields' C77 inset: the padding is the step less the border, so the icon
+     and the letters stand 16 from the outer edge, not 17); the block padding and the icon gap --sf-space-1/2 (12; compact and
+     phone 8);
+   - the first line stands in the box of a low size-1 control (the line +
+     2 x --sf-ui-1--space-y-tightness-low: 32; compact and phone 28), the
+     status icon, the title's first line and the close centred in it;
+   - the title and its text are one block, no gap; the actions follow at
+     --sf-space-1/2, --sf-space-1/3 apart: low size-1 buttons (32, compact
+     and phone 28) whose label is the notice's text size;
+   - the close is a size-1 low icon button on the same inline padding: its
+     plate hangs out by its spare room, so the cross stands where the
+     status icon stands on the other side.
+   A one-line alert is 56 (compact and phone 44) and its border. */
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  border-bottom-right-radius: var(--sf-radius--surface);
+  border-bottom-right-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-right-radius, var(--sf-radius--surface)));
+}
+@supports not (border-end-end-radius: initial){
+html:not([dir="rtl"]) .sf-alert{
+  border-bottom-right-radius: var(--sf-radius--surface);
+  border-bottom-right-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-right-radius, var(--sf-radius--surface)));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  border-bottom-right-radius: var(--sf-radius--surface);
+  border-bottom-right-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-right-radius, var(--sf-radius--surface)));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  border-bottom-left-radius: var(--sf-radius--surface);
+  border-bottom-left-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-right-radius, var(--sf-radius--surface)));
+}
+@supports not (border-end-end-radius: initial){
+[dir="rtl"] .sf-alert{
+  border-bottom-left-radius: var(--sf-radius--surface);
+  border-bottom-left-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-right-radius, var(--sf-radius--surface)));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  border-bottom-left-radius: var(--sf-radius--surface);
+  border-bottom-left-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-right-radius, var(--sf-radius--surface)));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  border-bottom-left-radius: var(--sf-radius--surface);
+  border-bottom-left-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-left-radius, var(--sf-radius--surface)));
+}
+@supports not (border-end-start-radius: initial){
+html:not([dir="rtl"]) .sf-alert{
+  border-bottom-left-radius: var(--sf-radius--surface);
+  border-bottom-left-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-left-radius, var(--sf-radius--surface)));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  border-bottom-left-radius: var(--sf-radius--surface);
+  border-bottom-left-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-left-radius, var(--sf-radius--surface)));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  border-bottom-right-radius: var(--sf-radius--surface);
+  border-bottom-right-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-left-radius, var(--sf-radius--surface)));
+}
+@supports not (border-end-start-radius: initial){
+[dir="rtl"] .sf-alert{
+  border-bottom-right-radius: var(--sf-radius--surface);
+  border-bottom-right-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-left-radius, var(--sf-radius--surface)));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  border-bottom-right-radius: var(--sf-radius--surface);
+  border-bottom-right-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-left-radius, var(--sf-radius--surface)));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  border-right-width: var(--sf-px);
+  border-right-width: var(--sf-alert-border-width, var(--sf-alert--border-right-width, var(--sf-px)));
+}
+@supports not (border-inline-end-width: initial){
+html:not([dir="rtl"]) .sf-alert{
+  border-right-width: var(--sf-px);
+  border-right-width: var(--sf-alert-border-width, var(--sf-alert--border-right-width, var(--sf-px)));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  border-right-width: var(--sf-px);
+  border-right-width: var(--sf-alert-border-width, var(--sf-alert--border-right-width, var(--sf-px)));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  border-left-width: var(--sf-px);
+  border-left-width: var(--sf-alert-border-width, var(--sf-alert--border-right-width, var(--sf-px)));
+}
+@supports not (border-inline-end-width: initial){
+[dir="rtl"] .sf-alert{
+  border-left-width: var(--sf-px);
+  border-left-width: var(--sf-alert-border-width, var(--sf-alert--border-right-width, var(--sf-px)));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  border-left-width: var(--sf-px);
+  border-left-width: var(--sf-alert-border-width, var(--sf-alert--border-right-width, var(--sf-px)));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  border-left-width: var(--sf-px);
+  border-left-width: var(--sf-alert-border-width, var(--sf-alert--border-left-width, var(--sf-px)));
+}
+@supports not (border-inline-start-width: initial){
+html:not([dir="rtl"]) .sf-alert{
+  border-left-width: var(--sf-px);
+  border-left-width: var(--sf-alert-border-width, var(--sf-alert--border-left-width, var(--sf-px)));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  border-left-width: var(--sf-px);
+  border-left-width: var(--sf-alert-border-width, var(--sf-alert--border-left-width, var(--sf-px)));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  border-right-width: var(--sf-px);
+  border-right-width: var(--sf-alert-border-width, var(--sf-alert--border-left-width, var(--sf-px)));
+}
+@supports not (border-inline-start-width: initial){
+[dir="rtl"] .sf-alert{
+  border-right-width: var(--sf-px);
+  border-right-width: var(--sf-alert-border-width, var(--sf-alert--border-left-width, var(--sf-px)));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  border-right-width: var(--sf-px);
+  border-right-width: var(--sf-alert-border-width, var(--sf-alert--border-left-width, var(--sf-px)));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  border-top-right-radius: var(--sf-radius--surface);
+  border-top-right-radius: var(--sf-alert-radius, var(--sf-alert--border-top-right-radius, var(--sf-radius--surface)));
+}
+@supports not (border-start-end-radius: initial){
+html:not([dir="rtl"]) .sf-alert{
+  border-top-right-radius: var(--sf-radius--surface);
+  border-top-right-radius: var(--sf-alert-radius, var(--sf-alert--border-top-right-radius, var(--sf-radius--surface)));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  border-top-right-radius: var(--sf-radius--surface);
+  border-top-right-radius: var(--sf-alert-radius, var(--sf-alert--border-top-right-radius, var(--sf-radius--surface)));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  border-top-left-radius: var(--sf-radius--surface);
+  border-top-left-radius: var(--sf-alert-radius, var(--sf-alert--border-top-right-radius, var(--sf-radius--surface)));
+}
+@supports not (border-start-end-radius: initial){
+[dir="rtl"] .sf-alert{
+  border-top-left-radius: var(--sf-radius--surface);
+  border-top-left-radius: var(--sf-alert-radius, var(--sf-alert--border-top-right-radius, var(--sf-radius--surface)));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  border-top-left-radius: var(--sf-radius--surface);
+  border-top-left-radius: var(--sf-alert-radius, var(--sf-alert--border-top-right-radius, var(--sf-radius--surface)));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  border-top-left-radius: var(--sf-radius--surface);
+  border-top-left-radius: var(--sf-alert-radius, var(--sf-alert--border-top-left-radius, var(--sf-radius--surface)));
+}
+@supports not (border-start-start-radius: initial){
+html:not([dir="rtl"]) .sf-alert{
+  border-top-left-radius: var(--sf-radius--surface);
+  border-top-left-radius: var(--sf-alert-radius, var(--sf-alert--border-top-left-radius, var(--sf-radius--surface)));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  border-top-left-radius: var(--sf-radius--surface);
+  border-top-left-radius: var(--sf-alert-radius, var(--sf-alert--border-top-left-radius, var(--sf-radius--surface)));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  border-top-right-radius: var(--sf-radius--surface);
+  border-top-right-radius: var(--sf-alert-radius, var(--sf-alert--border-top-left-radius, var(--sf-radius--surface)));
+}
+@supports not (border-start-start-radius: initial){
+[dir="rtl"] .sf-alert{
+  border-top-right-radius: var(--sf-radius--surface);
+  border-top-right-radius: var(--sf-alert-radius, var(--sf-alert--border-top-left-radius, var(--sf-radius--surface)));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  border-top-right-radius: var(--sf-radius--surface);
+  border-top-right-radius: var(--sf-alert-radius, var(--sf-alert--border-top-left-radius, var(--sf-radius--surface)));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+  padding-right: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+}
+@supports not (padding-inline-end: initial){
+html:not([dir="rtl"]) .sf-alert{
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+  padding-right: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+  padding-right: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+  padding-left: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+}
+@supports not (padding-inline-end: initial){
+[dir="rtl"] .sf-alert{
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+  padding-left: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+  padding-left: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+  padding-left: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+}
+@supports not (padding-inline-start: initial){
+html:not([dir="rtl"]) .sf-alert{
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+  padding-left: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+  padding-left: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+  padding-right: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+}
+@supports not (padding-inline-start: initial){
+[dir="rtl"] .sf-alert{
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+  padding-right: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+  padding-right: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+}
+@supports not (padding-inline-end: initial){
+html:not([dir="rtl"]) .sf-alert{
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+}
+@supports not (padding-inline-end: initial){
+[dir="rtl"] .sf-alert{
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert{
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+}
+@supports not (padding-inline-start: initial){
+html:not([dir="rtl"]) .sf-alert{
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+  }
+}
+.sf-alert:where(:dir(ltr)){
+  padding-left: calc(var(--sf-space-1) - var(--sf-px));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert{
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+}
+@supports not (padding-inline-start: initial){
+[dir="rtl"] .sf-alert{
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+  }
+}
+.sf-alert:where(:dir(rtl)){
+  padding-right: calc(var(--sf-space-1) - var(--sf-px));
+}
+.sf-alert {
+  --sf-alert--lead: var(--sf-ui-1--space-y-tightness-low);
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-surface));
+  border-bottom-width: var(--sf-px);
+  border-bottom-width: var(--sf-alert-border-width, var(--sf-alert--border-bottom-width, var(--sf-px)));
+  border-end-end-radius: var(--sf-radius--surface);
+  border-end-end-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-right-radius, var(--sf-radius--surface)));
+  border-end-start-radius: var(--sf-radius--surface);
+  border-end-start-radius: var(--sf-alert-radius, var(--sf-alert--border-bottom-left-radius, var(--sf-radius--surface)));
+  border-inline-end-width: var(--sf-px);
+  border-inline-end-width: var(--sf-alert-border-width, var(--sf-alert--border-right-width, var(--sf-px)));
+  border-inline-start-width: var(--sf-px);
+  border-inline-start-width: var(--sf-alert-border-width, var(--sf-alert--border-left-width, var(--sf-px)));
+  border-start-end-radius: var(--sf-radius--surface);
+  border-start-end-radius: var(--sf-alert-radius, var(--sf-alert--border-top-right-radius, var(--sf-radius--surface)));
+  border-start-start-radius: var(--sf-radius--surface);
+  border-start-start-radius: var(--sf-alert-radius, var(--sf-alert--border-top-left-radius, var(--sf-radius--surface)));
+  border-style: solid;
+  border-style: var(--sf-alert--border-style, solid);
+  border-top-width: var(--sf-px);
+  border-top-width: var(--sf-alert-border-width, var(--sf-alert--border-top-width, var(--sf-px)));
+  border-width: var(--sf-px);
+  border-width: var(--sf-alert-border-width, var(--sf-alert--border-width, var(--sf-px)));
+  gap: var(--sf-space-1\/2);
+  gap: var(--sf-alert-gap, var(--sf-alert--gap, var(--sf-space-1\/2)));
+  padding-bottom: var(--sf-space-1\/2);
+  padding-bottom: var(--sf-alert-padding-block, var(--sf-alert--padding-bottom, var(--sf-space-1\/2)));
+  -webkit-padding-end: calc(var(--sf-space-1) - var(--sf-px));
+          padding-inline-end: calc(var(--sf-space-1) - var(--sf-px));
+  -webkit-padding-end: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+          padding-inline-end: var(--sf-alert-padding-inline, var(--sf-alert--padding-right, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+  -webkit-padding-start: calc(var(--sf-space-1) - var(--sf-px));
+          padding-inline-start: calc(var(--sf-space-1) - var(--sf-px));
+  -webkit-padding-start: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+          padding-inline-start: var(--sf-alert-padding-inline, var(--sf-alert--padding-left, calc(var(--sf-space-1) - var(--sf-alert-border-width, var(--sf-px)))));
+  padding-top: var(--sf-space-1\/2);
+  padding-top: var(--sf-alert-padding-block, var(--sf-alert--padding-top, var(--sf-space-1\/2)));
+  background-color: var(--sf-alert--background-color);
+  border-color: transparent;
+  border-color: var(--sf-alert--border-color, transparent);
+  color: var(--sf-alert--color);
+  opacity: 1;
+  opacity: var(--sf-alert--opacity, 1);
+  transition: opacity var(--sf-duration-normal) var(--sf-ease-enter);
+}
+
+.sf-alert.closing {
+  transition-timing-function: var(--sf-ease-exit);
+  --sf-alert--opacity: 0;
+  pointer-events: none;
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-wrap--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-alert .sf-alert-wrap {
+  --sf-alert-wrap--background-color: transparent;
+  /* The text to the actions (C35). */
+  --sf-alert-wrap--gap: var(--sf-space-1\/2);
+  background-color: var(--sf-alert-wrap--background-color);
+  gap: var(--sf-alert-wrap--gap);
+  min-width: var(--sf-0);
+  min-inline-size: var(--sf-0);
+  /* The text's first and last lines in the low control's box; the actions
+     end the column on their own edge. */
+  padding-top: var(--sf-alert--lead);
+  padding-bottom: var(--sf-alert--lead);
+  padding-block: var(--sf-alert--lead);
+}
+
+/* Even bottom (owner decision C114 (5), NS-9): with the actions under the
+   text, the space under the last button is what the eye sees above the first
+   line -- the lead and the room above the capitals inside the line,
+   (line - 1cap) / 2. 1cap is the font's own cap height, so it follows the
+   density by itself; the wrap takes the text's font so 1cap is the text's. */
+.sf-alert .sf-alert-wrap:has(> .sf-alert-buttons) {
+  font-family: var(--sf-text--family);
+  font-size: var(--sf-text-size-1);
+  padding-bottom: calc(var(--sf-alert--lead) + (var(--sf-text-height-1) - 1cap) / 2);
+  -webkit-padding-after: calc(var(--sf-alert--lead) + (var(--sf-text-height-1) - 1cap) / 2);
+          padding-block-end: calc(var(--sf-alert--lead) + (var(--sf-text-height-1) - 1cap) / 2);
+}
+
+/* Where the actions stand (owner decision C115, layout L3a; R194, AA-6,
+   AA-8): in the row with the text while the notice is wide enough -- one
+   action from 36rem of the notice's own width, two from 48rem -- and under the
+   text from its start when it is narrower. The notice with actions is the
+   query container. A container query reads the content box and cannot read a
+   variable, so each step is written in rem less the notice's frame, its two
+   inline insets (--sf-space-1, 16, the border inside them): the step is
+   the notice's whole width, as the owner's sheet measured it. In the row the actions are centred on the text block,
+   their plate overhanging the line by the low button's block padding, as the
+   close does (C35): with a one-line text the label stands on the title line,
+   with the icon and the close. The row has no even-bottom inset: the last line
+   is the text's.
+   The author's switch (owner 2026-11-13, #q-layout-override): the modifier
+   .sf-alert--actions-under (sf-alert actions-layout="under") keeps the
+   actions under the text at every width, with the same gap and the even
+   bottom -- a long text in the row is taller than under it (174 against 146
+   at 800), and the sheet cannot count the text's lines. */
+.sf-alert:has(.sf-alert-buttons) {
+  container: sf-alert/inline-size;
+}
+
+@container sf-alert (min-width: 34rem) {
+  .sf-alert:not(.sf-alert--actions-under):not(:has(.sf-alert-buttons > :nth-child(2))) .sf-alert-wrap:has(> .sf-alert-buttons) {
+    flex-direction: row;
+    align-items: center;
+    -webkit-column-gap: var(--sf-gap--groups);
+       -moz-column-gap: var(--sf-gap--groups);
+            column-gap: var(--sf-gap--groups);
+    padding-bottom: 0;
+    -webkit-padding-after: 0;
+            padding-block-end: 0;
+  }
+  .sf-alert:not(.sf-alert--actions-under):not(:has(.sf-alert-buttons > :nth-child(2))) .sf-alert-content {
+    flex: 1 1 0;
+    min-width: var(--sf-0);
+    min-inline-size: var(--sf-0);
+  }
+  .sf-alert:not(.sf-alert--actions-under):not(:has(.sf-alert-buttons > :nth-child(2))) .sf-alert-buttons {
+    flex: none;
+    flex-wrap: nowrap;
+    margin-top: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+    margin-bottom: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+    margin-block: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+  }
+}
+@container sf-alert (min-width: 46rem) {
+  .sf-alert:not(.sf-alert--actions-under) .sf-alert-wrap:has(> .sf-alert-buttons) {
+    flex-direction: row;
+    align-items: center;
+    -webkit-column-gap: var(--sf-gap--groups);
+       -moz-column-gap: var(--sf-gap--groups);
+            column-gap: var(--sf-gap--groups);
+    padding-bottom: 0;
+    -webkit-padding-after: 0;
+            padding-block-end: 0;
+  }
+  .sf-alert:not(.sf-alert--actions-under) .sf-alert-content {
+    flex: 1 1 0;
+    min-width: var(--sf-0);
+    min-inline-size: var(--sf-0);
+  }
+  .sf-alert:not(.sf-alert--actions-under) .sf-alert-buttons {
+    flex: none;
+    flex-wrap: nowrap;
+    margin-top: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+    margin-bottom: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+    margin-block: calc(-1 * var(--sf-ui-1--space-y-tightness-low));
+  }
+}
+/* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-buttons--gap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+.sf-alert .sf-alert-buttons {
+  --sf-alert-buttons--background-color: transparent;
+  --sf-alert-buttons--gap: var(--sf-gap--actions);
+  background-color: var(--sf-alert-buttons--background-color);
+  gap: var(--sf-alert-buttons--gap);
+}
+
+/* The primary action is tonal surface on a notice of any level (owner
+   decision C110 as amended 2026-11-12, variant E; replaces C46): the theme's
+   neutral tonal plate, --sf-surface-container and its states, the same on
+   every level; the second action ghost on-surface (C35). A status notice is
+   a soft coloured place (below), which re-declares the surface container as
+   the level's container -- a plate in the status tone, the cancelled variant
+   D -- so the action takes the theme's neutral container back on itself. A
+   strong place's tonal step is not read here (an alert inside a bg-<c>
+   region). */
+.sf-alert .sf-alert-buttons .sf-button.sf-button--tonal.sf-button--on-surface {
+  --sf-surface-container: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+  --sf-surface-container-hover: light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16));
+  --sf-surface-container-active: light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20));
+  --sf-place--control-hover: initial;
+  --sf-place--control-active: initial;
+}
+
+/* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-alert-content--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+.sf-alert .sf-alert-content {
+  --sf-alert-content--background-color: transparent;
+  /* The title and its text are one block (C35). */
+  --sf-alert-content--gap: var(--sf-0);
+  background-color: var(--sf-alert-content--background-color);
+  gap: var(--sf-alert-content--gap);
+}
+
+.sf-alert .sf-alert-supporting-text {
+  --sf-alert-supporting-text--color: var(--sf-alert--color);
+  --sf-alert-supporting-text--font-family: var(--sf-text--family);
+  --sf-alert-supporting-text--font-size: var(--sf-text-size-1);
+  --sf-alert-supporting-text--font-weight: var(--sf-font-weight-regular);
+  --sf-alert-supporting-text--line-height: var(--sf-text-height-1);
+  color: var(--sf-alert-supporting-text--color);
+  font-family: var(--sf-alert-supporting-text--font-family);
+  font-size: var(--sf-alert-supporting-text--font-size);
+  font-weight: var(--sf-alert-supporting-text--font-weight);
+  line-height: var(--sf-alert-supporting-text--line-height);
+}
+
+.sf-alert .sf-alert-text {
+  --sf-alert-text--color: var(--sf-alert--color);
+  --sf-alert-text--font-family: var(--sf-text--family);
+  --sf-alert-text--font-size: var(--sf-text-size-1);
+  --sf-alert-text--font-weight: var(--sf-font-weight-medium);
+  --sf-alert-text--line-height: var(--sf-text-height-1);
+  color: var(--sf-alert-text--color);
+  font-family: var(--sf-alert-text--font-family);
+  font-size: var(--sf-alert-text--font-size);
+  font-weight: var(--sf-alert-text--font-weight);
+  line-height: var(--sf-alert-text--line-height);
+}
+
+.sf-alert .sf-close-icon {
+  background-color: var(--sf-close-icon--background-color);
+  border-color: transparent;
+  border-color: var(--sf-close-icon--border-color, transparent);
+}
+
+/* The size, like the status colour below, is the notice's own icon only
+   (review R-N1): it reached every icon in the notice, so an icon button
+   inside drew its glyph at the line's size instead of its own. */
+.sf-alert > .sf-icon,
+.sf-alert > sf-icon > .sf-icon {
+  --sf-icon--font-size: var(--sf-text-height-1);
+  --sf-icon--height: var(--sf-text-height-1);
+  --sf-icon--width: var(--sf-text-height-1);
+  font-size: var(--sf-icon--font-size);
+  height: var(--sf-icon--height);
+  width: var(--sf-icon--width);
+}
+
+/* The status colour is the notice's own icon only (C35 acceptance A-F1): an
+   icon inside an action button keeps the button's own icon role. */
+.sf-alert > .sf-icon,
+.sf-alert > sf-icon > .sf-icon {
+  color: var(--sf-on-surface-variant);
+  color: var(--sf-icon--color, var(--sf-on-surface-variant));
+}
+
+/* Centred on the first line: the line's lead in the low control's box. The
+   Smart alert draws its icon through sf-icon, whose host is display:
+   contents, so the drawn glyph is the flex item. */
+.sf-alert > .sf-icon,
+.sf-alert > sf-icon > .sf-icon {
+  flex: none;
+  margin-top: var(--sf-alert--lead);
+  -webkit-margin-before: var(--sf-alert--lead);
+          margin-block-start: var(--sf-alert--lead);
+}
+
+/* The close on the inline padding: the plate hangs out by the room between
+   it and the cross (the lead and the room around the cross in its line). The
+   Smart alert's close is an sf-button-icon, whose host is display: contents. */
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert > sf-button-icon > .sf-icon-button{
+  margin-right: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+@supports not (margin-inline-end: initial){
+html:not([dir="rtl"]) .sf-alert > sf-button-icon > .sf-icon-button{
+  margin-right: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+  }
+}
+.sf-alert > sf-button-icon > .sf-icon-button:where(:dir(ltr)){
+  margin-right: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert > sf-button-icon > .sf-icon-button{
+  margin-left: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+@supports not (margin-inline-end: initial){
+[dir="rtl"] .sf-alert > sf-button-icon > .sf-icon-button{
+  margin-left: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+  }
+}
+.sf-alert > sf-button-icon > .sf-icon-button:where(:dir(rtl)){
+  margin-left: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+.sf-alert > sf-button-icon > .sf-icon-button {
+  flex: none;
+  -webkit-margin-end: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+          margin-inline-end: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert > sf-icon-button > .sf-icon-button{
+  margin-right: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+@supports not (margin-inline-end: initial){
+html:not([dir="rtl"]) .sf-alert > sf-icon-button > .sf-icon-button{
+  margin-right: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+  }
+}
+.sf-alert > sf-icon-button > .sf-icon-button:where(:dir(ltr)){
+  margin-right: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert > sf-icon-button > .sf-icon-button{
+  margin-left: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+@supports not (margin-inline-end: initial){
+[dir="rtl"] .sf-alert > sf-icon-button > .sf-icon-button{
+  margin-left: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+  }
+}
+.sf-alert > sf-icon-button > .sf-icon-button:where(:dir(rtl)){
+  margin-left: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+.sf-alert > sf-icon-button > .sf-icon-button {
+  flex: none;
+  -webkit-margin-end: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+          margin-inline-end: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+_:-ms-input-placeholder, html:not([dir="rtl"]) .sf-alert > .sf-icon-button{
+  margin-right: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+@supports not (margin-inline-end: initial){
+html:not([dir="rtl"]) .sf-alert > .sf-icon-button{
+  margin-right: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+  }
+}
+.sf-alert > .sf-icon-button:where(:dir(ltr)){
+  margin-right: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+_:-ms-input-placeholder, [dir="rtl"] .sf-alert > .sf-icon-button{
+  margin-left: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+@supports not (margin-inline-end: initial){
+[dir="rtl"] .sf-alert > .sf-icon-button{
+  margin-left: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+  }
+}
+.sf-alert > .sf-icon-button:where(:dir(rtl)){
+  margin-left: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+.sf-alert > .sf-icon-button {
+  flex: none;
+  -webkit-margin-end: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+          margin-inline-end: calc(-1 * (var(--sf-alert--lead) + (var(--sf-text-height-1) - var(--sf-text-size-1)) / 2));
+}
+
+.sf-alert.sf-alert--neutral.sf-alert--default {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-surface-container));
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline));
+}
+
+.sf-alert.sf-alert--clear.sf-alert--default {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-surface-container));
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline));
+}
+
+.sf-alert.sf-alert--info.sf-alert--default {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-info-container));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-info-outline));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-info-container));
+}
+
+.sf-alert.sf-alert--info > .sf-icon,
+.sf-alert.sf-alert--info > sf-icon > .sf-icon {
+  --sf-icon--color: var(--sf-info);
+}
+
+.sf-alert.sf-alert--error.sf-alert--default {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-error-container));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-error-outline));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-error-container));
+}
+
+.sf-alert.sf-alert--danger.sf-alert--default {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-error-container));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-error-outline));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-error-container));
+}
+
+.sf-alert.sf-alert--error > .sf-icon {
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-alert.sf-alert--danger > .sf-icon {
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-alert.sf-alert--error > sf-icon > .sf-icon {
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-alert.sf-alert--danger > sf-icon > .sf-icon {
+  --sf-icon--color: var(--sf-error);
+}
+
+.sf-alert.sf-alert--warning.sf-alert--default {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-warning-container));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-warning-outline));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-warning-container));
+}
+
+.sf-alert.sf-alert--warning > .sf-icon,
+.sf-alert.sf-alert--warning > sf-icon > .sf-icon {
+  --sf-icon--color: var(--sf-warning);
+}
+
+.sf-alert.sf-alert--success.sf-alert--default {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-success-container));
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-success-outline));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-success-container));
+}
+
+.sf-alert.sf-alert--success > .sf-icon,
+.sf-alert.sf-alert--success > sf-icon > .sf-icon {
+  --sf-icon--color: var(--sf-success);
+}
+
+/* A status notice on its container (default and flat) is a soft coloured
+   place (R190 AA-3, C16, C19): it declares sf-place-soft(<status>), as
+   bg-<c>-container and the alert bar's soft levels do, so what stands on it
+   takes the status's own outline, states and fills -- a neutral outline
+   button's edge is the status outline (3.76-3.94 light), not the theme's grey
+   (2.76-2.90), and its hover the status state layer, not a grey one. An
+   outlined notice stands on the page and stays the page's place. */
+.sf-alert.sf-alert--info.sf-alert--default {
+  --sf-surface-place: var(--sf-info-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-info-container);
+  --sf-surface-container-hover: var(--sf-info-container-hover);
+  --sf-surface-container-active: var(--sf-info-container-active);
+  --sf-surface-state-hover: var(--sf-info-state-hover);
+  --sf-surface-state-select: var(--sf-info-state-select);
+  --sf-surface-state-active: var(--sf-info-state-active);
+  --sf-outline: var(--sf-info-outline);
+  --sf-outline-variant: var(--sf-info-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+.sf-alert.sf-alert--info.sf-alert--flat {
+  --sf-surface-place: var(--sf-info-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-info-container);
+  --sf-surface-container-hover: var(--sf-info-container-hover);
+  --sf-surface-container-active: var(--sf-info-container-active);
+  --sf-surface-state-hover: var(--sf-info-state-hover);
+  --sf-surface-state-select: var(--sf-info-state-select);
+  --sf-surface-state-active: var(--sf-info-state-active);
+  --sf-outline: var(--sf-info-outline);
+  --sf-outline-variant: var(--sf-info-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--info.sf-alert--default {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--info.sf-alert--flat {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+
+.sf-alert.sf-alert--error.sf-alert--default {
+  --sf-surface-place: var(--sf-error-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-error-container);
+  --sf-surface-container-hover: var(--sf-error-container-hover);
+  --sf-surface-container-active: var(--sf-error-container-active);
+  --sf-surface-state-hover: var(--sf-error-state-hover);
+  --sf-surface-state-select: var(--sf-error-state-select);
+  --sf-surface-state-active: var(--sf-error-state-active);
+  --sf-outline: var(--sf-error-outline);
+  --sf-outline-variant: var(--sf-error-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+
+.sf-alert.sf-alert--error.sf-alert--flat {
+  --sf-surface-place: var(--sf-error-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-error-container);
+  --sf-surface-container-hover: var(--sf-error-container-hover);
+  --sf-surface-container-active: var(--sf-error-container-active);
+  --sf-surface-state-hover: var(--sf-error-state-hover);
+  --sf-surface-state-select: var(--sf-error-state-select);
+  --sf-surface-state-active: var(--sf-error-state-active);
+  --sf-outline: var(--sf-error-outline);
+  --sf-outline-variant: var(--sf-error-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+
+.sf-alert.sf-alert--danger.sf-alert--default {
+  --sf-surface-place: var(--sf-error-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-error-container);
+  --sf-surface-container-hover: var(--sf-error-container-hover);
+  --sf-surface-container-active: var(--sf-error-container-active);
+  --sf-surface-state-hover: var(--sf-error-state-hover);
+  --sf-surface-state-select: var(--sf-error-state-select);
+  --sf-surface-state-active: var(--sf-error-state-active);
+  --sf-outline: var(--sf-error-outline);
+  --sf-outline-variant: var(--sf-error-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+
+.sf-alert.sf-alert--danger.sf-alert--flat {
+  --sf-surface-place: var(--sf-error-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-error-container);
+  --sf-surface-container-hover: var(--sf-error-container-hover);
+  --sf-surface-container-active: var(--sf-error-container-active);
+  --sf-surface-state-hover: var(--sf-error-state-hover);
+  --sf-surface-state-select: var(--sf-error-state-select);
+  --sf-surface-state-active: var(--sf-error-state-active);
+  --sf-outline: var(--sf-error-outline);
+  --sf-outline-variant: var(--sf-error-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--error.sf-alert--default {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--error.sf-alert--flat {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--danger.sf-alert--default {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--danger.sf-alert--flat {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+
+.sf-alert.sf-alert--warning.sf-alert--default {
+  --sf-surface-place: var(--sf-warning-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-warning-container);
+  --sf-surface-container-hover: var(--sf-warning-container-hover);
+  --sf-surface-container-active: var(--sf-warning-container-active);
+  --sf-surface-state-hover: var(--sf-warning-state-hover);
+  --sf-surface-state-select: var(--sf-warning-state-select);
+  --sf-surface-state-active: var(--sf-warning-state-active);
+  --sf-outline: var(--sf-warning-outline);
+  --sf-outline-variant: var(--sf-warning-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+
+.sf-alert.sf-alert--warning.sf-alert--flat {
+  --sf-surface-place: var(--sf-warning-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-warning-container);
+  --sf-surface-container-hover: var(--sf-warning-container-hover);
+  --sf-surface-container-active: var(--sf-warning-container-active);
+  --sf-surface-state-hover: var(--sf-warning-state-hover);
+  --sf-surface-state-select: var(--sf-warning-state-select);
+  --sf-surface-state-active: var(--sf-warning-state-active);
+  --sf-outline: var(--sf-warning-outline);
+  --sf-outline-variant: var(--sf-warning-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--warning.sf-alert--default {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--warning.sf-alert--flat {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+
+.sf-alert.sf-alert--success.sf-alert--default {
+  --sf-surface-place: var(--sf-success-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-success-container);
+  --sf-surface-container-hover: var(--sf-success-container-hover);
+  --sf-surface-container-active: var(--sf-success-container-active);
+  --sf-surface-state-hover: var(--sf-success-state-hover);
+  --sf-surface-state-select: var(--sf-success-state-select);
+  --sf-surface-state-active: var(--sf-success-state-active);
+  --sf-outline: var(--sf-success-outline);
+  --sf-outline-variant: var(--sf-success-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+
+.sf-alert.sf-alert--success.sf-alert--flat {
+  --sf-surface-place: var(--sf-success-container);
+  --sf-surface-place-solid: initial;
+  --sf-surface-underlay: initial;
+  --sf-surface-place-fill: initial;
+  --sf-surface-container: var(--sf-success-container);
+  --sf-surface-container-hover: var(--sf-success-container-hover);
+  --sf-surface-container-active: var(--sf-success-container-active);
+  --sf-surface-state-hover: var(--sf-success-state-hover);
+  --sf-surface-state-select: var(--sf-success-state-select);
+  --sf-surface-state-active: var(--sf-success-state-active);
+  --sf-outline: var(--sf-success-outline);
+  --sf-outline-variant: var(--sf-success-container-strong);
+  --sf-place--container-outline: var(--sf-outline);
+  --sf-surface-transparent-active: var(--sf-surface-state-active);
+  --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+  --sf-surface-transparent-select: var(--sf-surface-state-select);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--success.sf-alert--default {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+:where(.bg-surface-4) .sf-alert.sf-alert--success.sf-alert--flat {
+  --sf-primary: var(--sf-place--found-primary);
+  --sf-primary-hover: var(--sf-place--found-primary-hover);
+  --sf-primary-active: var(--sf-place--found-primary-active);
+  --sf-link: var(--sf-place--found-link);
+  --sf-link-hover: var(--sf-place--found-link-hover);
+  --sf-link-active: var(--sf-place--found-link-active);
+}
+
+.sf-alert.sf-alert--neutral.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline));
+}
+
+.sf-alert.sf-alert--clear.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-outline));
+}
+
+.sf-alert.sf-alert--info.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-info-outline));
+}
+
+.sf-alert.sf-alert--error.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-error-outline));
+}
+
+.sf-alert.sf-alert--danger.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-error-outline));
+}
+
+.sf-alert.sf-alert--warning.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-warning-outline));
+}
+
+.sf-alert.sf-alert--success.sf-alert--outlined {
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-success-outline));
+}
+
+.sf-alert.sf-alert--neutral.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-surface-container));
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+}
+
+.sf-alert.sf-alert--clear.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-surface-container));
+  --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+}
+
+.sf-alert.sf-alert--info.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-info-container));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-info-container));
+}
+
+.sf-alert.sf-alert--error.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-error-container));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-error-container));
+}
+
+.sf-alert.sf-alert--danger.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-error-container));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-error-container));
+}
+
+.sf-alert.sf-alert--warning.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-warning-container));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-warning-container));
+}
+
+.sf-alert.sf-alert--success.sf-alert--flat {
+  --sf-alert--background-color: var(--sf-alert-background-color, var(--sf-success-container));
+  --sf-alert--color: var(--sf-alert-color, var(--sf-on-success-container));
+}
+
+.sf-alert--outlined {
+  --sf-alert--background-color: var(--sf-alert-background-color, transparent);
+}
+
+/* The three looks of a notice (owner decision C110 as amended 2026-11-12):
+   (а) outlined -- the border only, no shadow; (б) default -- the border and
+   the role's fill, no shadow; (в) flat -- the role's fill without a border,
+   lifted by the raised place's shadow, the card's (--sf-shadow-raised, one of
+   the four shadow places: a soft key and ambient shade in the light theme,
+   the key shade alone in the dark). Only (в) casts a shadow. */
+.sf-alert--flat {
+  --sf-alert--border-color: var(--sf-alert-border-color, var(--sf-transparent));
+  box-shadow: var(--sf-shadow-raised);
+}
+
+/* The cross is a service glyph of the notice (owner decision C112, R198,
+   AA-12; it refines C107 (1) for service glyphs on coloured places): the
+   on-surface ink at 64, the middle step of the alpha scale's ink family
+   (48/64/80), black in the light theme and white in the dark -- translucent,
+   so it reads as one tone on every look and status, the neutral container,
+   a status container and the page under an outlined alert alike. Step 64 holds
+   3:1 against every notice fill in both themes; 48 does not on the strong
+   alert bar, the sibling that shares this rule. Before it was the place's
+   --sf-on-surface-variant (C107 (1)), a solid grey; before that the text ink.
+   The glyph stays the size-1 close (16 in the 24 box of the status icon, C103
+   and C112 (1)). Under a pointer it catches the text ink (C107 (4), as the
+   quiet icon button does, C15). The Smart alert's close stands inside an
+   sf-button-icon host (display: contents), so the cross is reached through
+   any close host, not only a class .sf-icon-button child; the appearance and
+   .sf-close keep the rule above the icon button's own cross colour. */
+.sf-alert.sf-alert--default > .sf-icon-button .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--default > sf-button-icon:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--default > sf-icon-button:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--default > sf-button-close:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--default > sf-close:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--flat > .sf-icon-button .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--flat > sf-button-icon:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--flat > sf-icon-button:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--flat > sf-button-close:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--flat > sf-close:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--outlined > .sf-icon-button .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--outlined > sf-button-icon:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--outlined > sf-icon-button:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--outlined > sf-button-close:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+.sf-alert.sf-alert--outlined > sf-close:not(.does-not-exist) .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: light-dark(var(--sf-black--alfa-64), var(--sf-white--alfa-64));
+}
+
+.sf-alert.sf-alert--default > .sf-icon-button:not(:disabled):hover .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--default > .sf-icon-button:not(:disabled):active .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--flat > .sf-icon-button:not(:disabled):hover .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--flat > .sf-icon-button:not(:disabled):active .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--outlined > .sf-icon-button:not(:disabled):hover .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--outlined > .sf-icon-button:not(:disabled):active .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--default > sf-button-icon > .sf-icon-button:not(:disabled):hover .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--default > sf-button-icon > .sf-icon-button:not(:disabled):active .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--default > sf-icon-button > .sf-icon-button:not(:disabled):hover .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--default > sf-icon-button > .sf-icon-button:not(:disabled):active .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--flat > sf-button-icon > .sf-icon-button:not(:disabled):hover .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--flat > sf-button-icon > .sf-icon-button:not(:disabled):active .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--flat > sf-icon-button > .sf-icon-button:not(:disabled):hover .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--flat > sf-icon-button > .sf-icon-button:not(:disabled):active .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--outlined > sf-button-icon > .sf-icon-button:not(:disabled):hover .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--outlined > sf-button-icon > .sf-icon-button:not(:disabled):active .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--outlined > sf-icon-button > .sf-icon-button:not(:disabled):hover .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+.sf-alert.sf-alert--outlined > sf-icon-button > .sf-icon-button:not(:disabled):active .sf-close > .sf-close-icon {
+  --sf-close-icon--background-color: var(--sf-alert--color);
+}
+
+/* A link in the alert's text is help only, in the text's ink, underlined
+   (owner decision C126; core mix/_mix__notice-link.scss). The actions are
+   buttons. */
+.sf-alert .sf-alert-content a[href] {
+  color: inherit;
+  -webkit-text-decoration-line: underline;
+          text-decoration-line: underline;
+  -webkit-text-decoration-color: currentColor;
+          text-decoration-color: currentColor;
+  text-decoration-thickness: var(--sf-link--underline-weight);
+  text-underline-offset: var(--sf-a3);
+}
+
+.sf-alert .sf-alert-content a[href]:hover {
+  color: inherit;
+  -webkit-text-decoration-color: currentColor;
+          text-decoration-color: currentColor;
+}
+
+.sf-alert .sf-alert-content a[href]:active {
+  color: inherit;
+  -webkit-text-decoration-color: currentColor;
+          text-decoration-color: currentColor;
+}
+
+.sf-alert .sf-alert-content a[href]:visited {
+  color: inherit;
+  -webkit-text-decoration-color: currentColor;
+          text-decoration-color: currentColor;
+}
+
+.sf-alert .sf-alert-content a[href]:hover {
+  text-decoration-thickness: calc(2 * var(--sf-link--underline-weight));
+}
+
+.sf-alert .sf-alert-content a[href]:active {
+  text-decoration-thickness: calc(2 * var(--sf-link--underline-weight));
+}
+
+.sf-alert .sf-alert-content a[href].focus-visible {
+  outline-color: currentColor;
+}
+
+.sf-alert .sf-alert-content a[href]:focus-visible {
+  outline-color: currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-alert {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .sf-alert {
+    border-color: CanvasText;
+  }
+}

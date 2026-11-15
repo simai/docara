@@ -1,0 +1,3509 @@
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "e6d86f2cd058"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FIELD_LADDER: () => (/* binding */ FIELD_LADDER),
+/* harmony export */   FIELD_SIZES: () => (/* binding */ FIELD_SIZES),
+/* harmony export */   INPUT_SIZES: () => (/* binding */ INPUT_SIZES),
+/* harmony export */   RETIRED_FIELD_SIZES: () => (/* binding */ RETIRED_FIELD_SIZES),
+/* harmony export */   fieldSize: () => (/* binding */ fieldSize),
+/* harmony export */   inputSize: () => (/* binding */ inputSize),
+/* harmony export */   ladderSize: () => (/* binding */ ladderSize),
+/* harmony export */   nearestFieldSize: () => (/* binding */ nearestFieldSize),
+/* harmony export */   retireFieldSizeClass: () => (/* binding */ retireFieldSizeClass)
+/* harmony export */ });
+/* harmony import */ var _core_js_deprecations_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("06e8cd089f28");
+// Form fields come in three sizes. 1/3 and 3 were retired: no consumer used
+// them, and they could not hold a field's own pictures, tags and targets. A
+// page written for a retired size keeps rendering at the nearest kept size, and
+// says so once in the console so the markup can be updated.
+//
+// The fields of the field ladder below are the exception: they stand on all
+// five steps, as sf-input does.
+
+const FIELD_SIZES = Object.freeze(['1/2', '1', '2']);
+const RETIRED_FIELD_SIZES = Object.freeze({
+  '1/3': '1/2',
+  '3': '2'
+});
+const warned = new Set(); // A control placed inside something with the whole scale (a list item, say)
+// takes the nearest form size, quietly: the list is not wrong to be 1/3.
+
+function nearestFieldSize(value) {
+  const size = String(value ?? '').trim().toLowerCase();
+  if (FIELD_SIZES.includes(size)) return size;
+  return Object.hasOwn(RETIRED_FIELD_SIZES, size) ? RETIRED_FIELD_SIZES[size] : '1';
+}
+function fieldSize(value, component = 'field', fallback = '1') {
+  const size = String(value ?? '').trim().toLowerCase();
+  if (FIELD_SIZES.includes(size)) return size;
+
+  if (Object.hasOwn(RETIRED_FIELD_SIZES, size)) {
+    const kept = RETIRED_FIELD_SIZES[size];
+    (0,_core_js_deprecations_js__WEBPACK_IMPORTED_MODULE_0__.noteDeprecated)({
+      component,
+      kind: 'value',
+      attribute: 'size',
+      from: size,
+      to: kept
+    });
+    const key = `${component}:${size}`;
+
+    if (!warned.has(key) && typeof console !== 'undefined') {
+      warned.add(key);
+      console.warn(`[SIMAI Framework] ${component}: size ${size} is retired for form fields; rendering size ${kept}.`);
+    }
+
+    return kept;
+  }
+
+  return fallback;
+} // The field ladder (fields ladder, 2026-11-14): one height per step for every
+// field that stands on it, the control ladder sf-button and sf-button-icon
+// stand on (--sf-ui-<size>--control-height: 28 / 32 / 40 / 48 / 56 on a
+// desktop). A text field kept the outer steps first (actions block item 4,
+// 2026-11-08: a toolbar search or a hero search stands beside buttons of 1/3
+// and 3); sf-input-lookup, -quantity, -date, -code, -color and -country drew
+// 32 / 48 or 40 at 1/3 and 3 beside it, so they take the same five steps and
+// the stylesheets size their parts from the same steps
+// (component/inputs/scss/_field-ladder.scss). The other fields (textarea,
+// dropdown, file upload, image, rich text) keep the three sizes for now.
+
+const FIELD_LADDER = Object.freeze(['1/3', ...FIELD_SIZES, '3']);
+const INPUT_SIZES = FIELD_LADDER;
+/** A size on the field ladder: one of the five steps, else the fallback. */
+
+function ladderSize(value, fallback = '1') {
+  const size = String(value ?? '').trim().toLowerCase();
+  return FIELD_LADDER.includes(size) ? size : fallback;
+}
+function inputSize(value, fallback = '1') {
+  return ladderSize(value, fallback);
+} // Markup written by hand carries its size as a class, so the binder moves a
+// retired size class to the kept one before anything measures the field.
+
+function retireFieldSizeClass(root, block) {
+  if (!root?.classList) return;
+
+  for (const [retired, kept] of Object.entries(RETIRED_FIELD_SIZES)) {
+    const name = `${block}--size-${retired}`;
+    if (!root.classList.contains(name)) continue;
+    root.classList.replace(name, `${block}--size-${fieldSize(retired, block)}`);
+  }
+}
+
+/***/ },
+
+/***/ "c43efa1014a6"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ITEM_STATES: () => (/* binding */ ITEM_STATES),
+/* harmony export */   bindFileUpload: () => (/* binding */ bindFileUpload),
+/* harmony export */   clearFileUpload: () => (/* binding */ clearFileUpload),
+/* harmony export */   describeUploadItem: () => (/* binding */ describeUploadItem),
+/* harmony export */   formatAcceptWords: () => (/* binding */ formatAcceptWords),
+/* harmony export */   getFileUploadItems: () => (/* binding */ getFileUploadItems),
+/* harmony export */   initExistingFileUploads: () => (/* binding */ initExistingFileUploads),
+/* harmony export */   normalizeItemState: () => (/* binding */ normalizeItemState),
+/* harmony export */   retryFileUploadItem: () => (/* binding */ retryFileUploadItem),
+/* harmony export */   setFileUploadItems: () => (/* binding */ setFileUploadItems),
+/* harmony export */   takeFiles: () => (/* binding */ takeFiles),
+/* harmony export */   unbindFileUpload: () => (/* binding */ unbindFileUpload)
+/* harmony export */ });
+/* harmony import */ var _core_js_ComponentObserver__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("d7f974466839");
+/* harmony import */ var _register_helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("58661bec99a6");
+/* harmony import */ var _field_size__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("e6d86f2cd058");
+/* harmony import */ var _core_js_page_language__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("8489d1f5bab4");
+/* harmony import */ var _core_js_format_file_size_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("c016c43b1452");
+/* harmony import */ var _core_js_composition_file_size_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("fb0bdf7719f0");
+/* harmony import */ var _intake_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("ab7ec7cd175d");
+
+
+
+
+
+
+ // Every word this part says. A product adds a language with
+// SF.language.register('sf-file-upload', code, words); a ternary on «ru» allowed two
+// and no more.
+
+const FILE_UPLOAD_ITEM_TEXT = {
+  en: {
+    remove: 'Remove',
+    uploading: 'Uploading',
+    retry: 'Try again',
+    linkText: 'Click to upload',
+    text: 'or drag and drop',
+    // The words of a file that was not added (FU-6, FU-7), keyed as the Smart
+    // lang/<locale>.json runtime keys them, so one SF.language.register
+    // reaches both.
+    'not-added': 'Not added: {n}',
+    'reject-type': '“{name}” is not accepted: allowed {formats}',
+    'reject-one': '“{name}” was not added: this field takes one file',
+    'reject-duplicate': '“{name}” is already in the list',
+    'reject-empty': '“{name}” is empty',
+    'reject-size': '“{name}” is {size}; the limit is {max}',
+    'reject-min-size': '“{name}” is {size}; it must be at least {min}',
+    'reject-count': {
+      one: '“{name}” was not added: up to {n} file',
+      other: '“{name}” was not added: up to {n} files'
+    },
+    'reject-total': '“{name}” was not added: all files together up to {max}',
+    'formats-image': 'images',
+    'formats-video': 'video',
+    'formats-audio': 'audio',
+    done: 'Uploaded',
+    'done-line': '{size} · uploaded',
+    error: 'Not uploaded',
+    'error-line': 'Not uploaded: {message}'
+  },
+  ru: {
+    remove: 'Удалить',
+    uploading: 'Загрузка',
+    retry: 'Повторить',
+    linkText: 'Выберите файл',
+    text: 'или перетащите его сюда',
+    'not-added': 'Не добавлено {n}:',
+    'reject-type': '«{name}» не подходит: можно {formats}',
+    'reject-one': '«{name}» не добавлен: сюда можно только один файл',
+    'reject-duplicate': '«{name}» уже добавлен',
+    'reject-empty': '«{name}» пустой — в нём нет данных',
+    'reject-size': '«{name}» — {size}, а можно до {max}',
+    'reject-min-size': '«{name}» — {size}, а нужно от {min}',
+    'reject-count': {
+      one: '«{name}» не добавлен: можно не больше {n} файла',
+      few: '«{name}» не добавлен: можно не больше {n} файлов',
+      many: '«{name}» не добавлен: можно не больше {n} файлов',
+      other: '«{name}» не добавлен: можно не больше {n} файла'
+    },
+    'reject-total': '«{name}» не добавлен: все файлы вместе — до {max}',
+    'formats-image': 'изображения',
+    'formats-video': 'видео',
+    'formats-audio': 'аудио',
+    done: 'Загружен',
+    'done-line': '{size} · загружен',
+    error: 'Не загрузился',
+    'error-line': 'Не загрузился: {message}'
+  }
+};
+const FILE_UPLOAD_SELECTOR = '.sf-file-upload';
+const FILE_UPLOAD_BOUND_FLAG = 'sfFileUploadBound';
+
+function toBoolean(value, fallback = false) {
+  if (value === undefined || value === null || value === '') return fallback;
+  if (typeof value === 'boolean') return value;
+  return ['1', 'true', 'yes', 'on', 'disabled', 'multiple'].includes(String(value).toLowerCase());
+}
+
+function normalizeSize(value) {
+  return (0,_field_size__WEBPACK_IMPORTED_MODULE_2__.fieldSize)(value, 'sf-file-upload');
+} // An entry's state: ready (chosen, not sent), process (being sent), done,
+// error. A chosen file was process at 0 % at once and looked like an upload
+// that had stuck (FU-3); it is ready until the host or the uploader sends it.
+
+
+const ITEM_STATES = Object.freeze(['ready', 'process', 'done', 'error']);
+
+function normalizeItemState(item, fallback = 'process') {
+  const state = String(item?.state || item?.status || fallback).toLowerCase();
+  return ITEM_STATES.includes(state) ? state : 'process';
+}
+
+function getItemEventKey(item, index) {
+  if (item?.id) return String(item.id);
+
+  if (item?.file && item.file.name) {
+    return `${item.file.name}-${item.file.size}-${item.file.lastModified}`;
+  }
+
+  if (item?.name || item?.fileName) {
+    return `${item.name || item.fileName}-${index}`;
+  }
+
+  return `item-${index}`;
+}
+
+function isDisabledRoot(root) {
+  if (!root) return false;
+  return root.classList.contains('disabled') || root.hasAttribute('disabled');
+}
+
+function getInput(root) {
+  return root?.querySelector?.('input[type="file"].sf-file-upload-input') || null;
+}
+
+function getFilesContainer(root) {
+  if (!root) return null;
+  const targetSelector = root.dataset.target || root.getAttribute('data-target') || '';
+
+  if (targetSelector) {
+    try {
+      const external = document.querySelector(targetSelector);
+      if (external) return external;
+    } catch {// Ignore invalid selectors and fallback to structural lookup.
+    }
+  }
+
+  let next = root.nextElementSibling;
+  if (next?.classList?.contains('sf-file-upload-message')) next = next.nextElementSibling;
+
+  if (next?.classList?.contains('sf-file-upload-files')) {
+    return next;
+  }
+
+  return root.querySelector('.sf-file-upload-files') || null;
+}
+
+function isManagedRenderRoot(root) {
+  if (!root) return false;
+  return root.dataset.renderManaged === '1' || root.hasAttribute('data-render-managed');
+}
+
+function getMultiple(root) {
+  return root.hasAttribute('multiple') || toBoolean(root.dataset.multiple ?? root.getAttribute('multiple'), false);
+}
+
+function getAccept(root) {
+  return root.dataset.accept || root.getAttribute('accept') || '';
+} // A limit in bytes or files, from data-<name> or <name>: a positive number, or
+// none (FU-8). Each page wrote its own check (sf-chat-composer in ui-pro too).
+
+
+function getLimit(root, name) {
+  const key = name.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase());
+  return (0,_intake_mjs__WEBPACK_IMPORTED_MODULE_6__.positiveLimit)(root.dataset[key] ?? root.getAttribute(name));
+}
+
+function itemBytes(item) {
+  const bytes = Number(item?.file?.size ?? item?.size);
+  return Number.isFinite(bytes) && bytes > 0 ? bytes : 0;
+} // function getTriggerLink(root) {
+//   return root?.querySelector?.('.sf-file-upload-link') || null;
+// }
+
+
+function ensureInput(root) {
+  let input = getInput(root);
+  if (input) return input;
+  input = document.createElement('input');
+  input.type = 'file';
+  input.classList.add('sf-file-upload-input');
+  input.hidden = true;
+  input.tabIndex = -1;
+  input.setAttribute('aria-hidden', 'true');
+  root.append(input);
+  return input;
+}
+
+function syncInputConfig(root, input) {
+  if (!root || !input) return;
+  input.multiple = getMultiple(root);
+  const accept = getAccept(root);
+  if (accept) input.setAttribute('accept', accept);else input.removeAttribute('accept');
+  input.disabled = isDisabledRoot(root);
+}
+
+function syncFileUploadInteraction(root) {
+  const state = root.__sfFileUploadInteractionState ||= {
+    tabIndex: root.getAttribute('tabindex') ?? '0',
+    disabled: false,
+    buttons: new WeakMap()
+  };
+  const disabled = isDisabledRoot(root);
+  if (!state.disabled) state.tabIndex = root.getAttribute('tabindex') ?? '0';
+  const tabIndex = disabled ? '-1' : state.tabIndex;
+  if (root.getAttribute('tabindex') !== tabIndex) root.setAttribute('tabindex', tabIndex);
+  if (root.getAttribute('aria-disabled') !== String(disabled)) root.setAttribute('aria-disabled', String(disabled));
+  state.disabled = disabled;
+  syncInputConfig(root, getInput(root));
+  if (disabled && root.classList.contains('dragover')) root.classList.remove('dragover');
+  const files = getFilesContainer(root);
+  files?.querySelectorAll('button[data-action="remove"], button[data-action="retry"]').forEach(button => {
+    let previous = state.buttons.get(button);
+
+    if (!previous) {
+      previous = {
+        disabled: button.disabled,
+        managedDisabled: false,
+        label: null
+      };
+      state.buttons.set(button, previous);
+    }
+
+    if (!previous.managedDisabled) previous.disabled = button.disabled;
+    const nextDisabled = disabled || previous.disabled;
+    if (button.disabled !== nextDisabled) button.disabled = nextDisabled;
+    previous.managedDisabled = disabled; // Remove and Retry are named with their file: three rows said «Удалить»
+    // three times, and the retry button said only its word (FU-10).
+
+    const currentLabel = button.getAttribute('aria-label');
+
+    if (!button.hasAttribute('aria-labelledby') && (!currentLabel || currentLabel === previous.label)) {
+      const name = button.closest('.sf-upload-progress')?.querySelector('.sf-upload-progress-name')?.textContent?.trim() || '';
+      const word = button.dataset.action === 'retry' ? button.textContent.trim() || (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_3__.pageText)(FILE_UPLOAD_ITEM_TEXT, 'retry', root, 'sf-file-upload') : (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_3__.pageText)(FILE_UPLOAD_ITEM_TEXT, 'remove', root, 'sf-file-upload');
+      const label = `${word} ${name}`.trim();
+      if (currentLabel !== label) button.setAttribute('aria-label', label);
+      previous.label = label;
+    }
+
+    button.querySelectorAll('.sf-icon').forEach(icon => {
+      if (icon.getAttribute('aria-hidden') !== 'true') icon.setAttribute('aria-hidden', 'true');
+    });
+  }); // Each file's progress bar is a progressbar, and a progressbar without a name
+  // is announced as a bare percentage: with three files uploading, the reader
+  // hears three numbers and no way to tell them apart. It takes the file's name
+  // the way the remove button does, unless the author named it.
+
+  files?.querySelectorAll('.sf-upload-progress').forEach(item => {
+    const name = item.querySelector('.sf-upload-progress-name')?.textContent?.trim() || '';
+    const label = `${(0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_3__.pageText)(FILE_UPLOAD_ITEM_TEXT, 'uploading', root, 'sf-file-upload')} ${name}`.trim();
+    const host = item.querySelector('sf-progress-bar');
+
+    if (host) {
+      const managed = host.dataset.sfUploadLabel;
+
+      if (!host.hasAttribute('label') || host.getAttribute('label') === managed) {
+        if (host.getAttribute('label') !== label) host.setAttribute('label', label);
+        host.dataset.sfUploadLabel = label;
+      }
+
+      return;
+    }
+
+    const bar = item.querySelector('.sf-progress-bar');
+    if (!bar || bar.hasAttribute('aria-labelledby')) return;
+    const current = bar.getAttribute('aria-label');
+
+    if (!current || current === bar.dataset.sfUploadLabel) {
+      if (current !== label) bar.setAttribute('aria-label', label);
+      bar.dataset.label = label;
+      bar.dataset.sfUploadLabel = label;
+    }
+  });
+} // What a row says, from its item: the same for the class row and the Smart
+// template, so the two draw one row.
+//   ready    name, size; Remove                      (FU-3)
+//   process  name, size; Remove; the bar
+//   done     name, «size · загружен», the check; Remove   (FU-4: it had no
+//            way out and kept its 100 % bar)
+//   error    name, «Не загрузился: <message>»; Remove; «Повторить»   (FU-5:
+//            the message was the retry button's label, so the reason was the
+//            thing a person pressed to send the same file again)
+// `progress: null` is a transfer whose share is not known yet: the bar runs
+// without a number. A missing progress reads 100 on done and 0 otherwise.
+
+
+function describeUploadItem(item, owner = null, fallbackState = 'process') {
+  const state = normalizeItemState(item, fallbackState);
+  const name = String(item?.name || item?.fileName || 'File');
+  const size = String(item?.fileSize || item?.sizeText || '');
+  const raw = item?.progress;
+  const progress = raw === null ? null : Math.max(0, Math.min(100, Number(raw ?? (state === 'done' ? 100 : 0)) || 0));
+  const message = String(item?.errorMessage || item?.error || '');
+  let line = size;
+  if (state === 'done') line = size ? fileUploadWord(owner, 'done-line', {
+    vars: {
+      size
+    }
+  }) : fileUploadWord(owner, 'done');else if (state === 'error') line = message ? fileUploadWord(owner, 'error-line', {
+    vars: {
+      message
+    }
+  }) : fileUploadWord(owner, 'error');
+  return {
+    state,
+    name,
+    size,
+    line,
+    message,
+    progress,
+    icon: uploadItemIcon(item, state),
+    retryText: String(item?.retryText || fileUploadWord(owner, 'retry'))
+  };
+} // A row's glyph says what the file is (C81: a type icon where there is no
+// thumbnail): the core file icons by media type, the type guessed from the
+// extension when the item has none, a plain file otherwise; an error row
+// shows the error glyph. It was cloud_upload in every state, in the primary
+// colour, outside the three icon roles (FU-12).
+
+
+const EXTENSION_TYPES = Object.freeze({
+  pdf: 'application/pdf',
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  gif: 'image/gif',
+  webp: 'image/webp',
+  svg: 'image/svg+xml',
+  heic: 'image/heic',
+  avif: 'image/avif',
+  mp4: 'video/mp4',
+  mov: 'video/quicktime',
+  webm: 'video/webm',
+  mkv: 'video/x-matroska',
+  mp3: 'audio/mpeg',
+  wav: 'audio/wav',
+  ogg: 'audio/ogg',
+  m4a: 'audio/mp4',
+  zip: 'application/zip',
+  rar: 'application/vnd.rar',
+  '7z': 'application/x-7z-compressed',
+  gz: 'application/gzip',
+  tar: 'application/x-tar',
+  csv: 'text/csv',
+  xls: 'application/vnd.ms-excel',
+  xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ods: 'application/vnd.oasis.opendocument.spreadsheet',
+  ppt: 'application/vnd.ms-powerpoint',
+  pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  odp: 'application/vnd.oasis.opendocument.presentation',
+  doc: 'application/msword',
+  docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  odt: 'application/vnd.oasis.opendocument.text',
+  rtf: 'application/rtf',
+  txt: 'text/plain',
+  md: 'text/markdown'
+});
+
+function uploadItemIcon(item, state) {
+  if (item?.icon) return String(item.icon);
+  if (state === 'error') return 'error';
+  const name = String(item?.name || item?.fileName || item?.file?.name || '');
+  const extension = name.includes('.') ? name.split('.').pop().toLowerCase() : '';
+  const type = String(item?.file?.type || item?.mime || EXTENSION_TYPES[extension] || '');
+  const icon = (0,_core_js_composition_file_size_mjs__WEBPACK_IMPORTED_MODULE_5__.fileIcon)(type);
+  return icon === 'download' ? 'draft' : icon;
+}
+
+function createUploadProgressItem(item, size = '1', owner = null) {
+  const normalizedSize = normalizeSize(size);
+  const row = describeUploadItem(item, owner, 'done');
+  const {
+    state,
+    progress
+  } = row;
+  const root = document.createElement('div');
+  root.className = ['sf-upload-progress', `sf-upload-progress--size-${normalizedSize}`, `sf-upload-progress--${state}`, 'flex', 'items-main-start', 'items-cross-start'].join(' ');
+  const leftIcon = document.createElement('i');
+  leftIcon.classList.add('sf-icon'); // The glyphs are pictures: their ligature names («cloud_upload», «check_circle»,
+  // «delete») were read as text (docs pre-check 2026-11-10 FU-03).
+
+  leftIcon.setAttribute('aria-hidden', 'true');
+  leftIcon.textContent = row.icon;
+  const content = document.createElement('div');
+  content.className = 'sf-upload-progress-content flex flex-col flex-1';
+  const top = document.createElement('div');
+  top.className = 'sf-upload-progress-top flex content-main-between';
+  const left = document.createElement('div');
+  left.className = 'sf-upload-progress-left flex flex-col';
+  const nameNode = document.createElement('div');
+  nameNode.className = 'sf-upload-progress-name';
+  nameNode.textContent = row.name;
+  const textNode = document.createElement('div');
+  textNode.className = 'sf-upload-progress-text';
+  textNode.textContent = row.line;
+  left.append(nameNode, textNode);
+  top.append(left);
+
+  if (state === 'done') {
+    const doneIcon = document.createElement('i');
+    doneIcon.className = 'sf-icon sf-icon-solid sf-upload-progress-mark';
+    doneIcon.setAttribute('aria-hidden', 'true');
+    doneIcon.textContent = 'check_circle';
+    top.append(doneIcon);
+  } // Every state can be taken out of the list.
+
+
+  const removeButton = document.createElement('button');
+  removeButton.type = 'button';
+  removeButton.className = `sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-${normalizedSize} flex items-cross-center content-main-center self-cross-start`;
+  removeButton.dataset.action = 'remove';
+  const removeIcon = document.createElement('i');
+  removeIcon.className = 'sf-icon';
+  removeIcon.setAttribute('aria-hidden', 'true');
+  removeIcon.textContent = 'delete';
+  removeButton.append(removeIcon);
+  top.append(removeButton);
+  content.append(top);
+
+  if (state === 'error') {
+    const retry = document.createElement('button');
+    retry.type = 'button';
+    retry.className = 'sf-upload-progress-repeat self-cross-start';
+    retry.dataset.action = 'retry';
+    retry.textContent = row.retryText;
+    content.append(retry);
+  } // A chosen file that is not being sent, and a sent one, have no bar: there
+  // is no transfer to show (FU-3, FU-4).
+
+
+  if (state === 'process') {
+    const progressBar = document.createElement('div');
+    progressBar.className = `sf-progress-bar sf-progress-bar--size-${normalizedSize} flex flex-row items-cross-center`;
+    if (progress === null) progressBar.dataset.indeterminate = 'true';else progressBar.dataset.value = String(progress);
+    progressBar.dataset.textPosition = 'inline-end';
+    const progressMain = document.createElement('div');
+    progressMain.className = 'sf-progress-bar-main';
+    const progressValue = document.createElement('div');
+    progressValue.className = 'sf-progress-bar-progress transition';
+    if (progress !== null) progressValue.style.width = `${progress}%`;
+    const progressText = document.createElement('div');
+    progressText.className = 'sf-progress-bar-text';
+    progressText.textContent = progress === null ? '' : `${progress}%`;
+    progressMain.append(progressValue);
+    progressBar.append(progressMain, progressText);
+    content.append(progressBar);
+  }
+
+  root.append(leftIcon, content);
+  return root;
+}
+
+function renderFileUploadItems(root, items = []) {
+  root?.classList?.toggle?.('has-files', items.length > 0);
+  const container = getFilesContainer(root);
+
+  if (!container || isManagedRenderRoot(root)) {
+    if (root) syncFileUploadInteraction(root);
+    return;
+  }
+
+  container.innerHTML = '';
+  const size = normalizeSize(Array.from(root.classList).find(cls => cls.startsWith('sf-file-upload--size-'))?.replace('sf-file-upload--size-', '') || '1');
+  items.forEach((item, index) => {
+    const node = createUploadProgressItem(item, size, root);
+    node.dataset.index = String(index);
+    container.append(node);
+  });
+  syncFileUploadInteraction(root);
+}
+
+function emitFileUploadItemAdd(root, item, index, items, source = 'input') {
+  root.dispatchEvent(new CustomEvent('sf-file-upload:file-add', {
+    bubbles: true,
+    detail: {
+      item,
+      index,
+      items,
+      source,
+      multiple: getMultiple(root)
+    }
+  }));
+}
+
+function emitFileUploadItemError(root, item, index, items) {
+  root.dispatchEvent(new CustomEvent('sf-file-upload:file-error', {
+    bubbles: true,
+    detail: {
+      item,
+      index,
+      items
+    }
+  }));
+}
+
+function emitFileUploadItemComplete(root, item, index, items) {
+  root.dispatchEvent(new CustomEvent('sf-file-upload:file-complete', {
+    bubbles: true,
+    detail: {
+      item,
+      index,
+      items
+    }
+  }));
+}
+
+function emitFileUploadComplete(root, items) {
+  root.dispatchEvent(new CustomEvent('sf-file-upload:complete', {
+    bubbles: true,
+    detail: {
+      items
+    }
+  }));
+}
+
+function syncFileUploadStateEvents(root, nextItems = [], previousItems = []) {
+  const previousMap = new Map(previousItems.map((item, index) => [getItemEventKey(item, index), normalizeItemState(item)]));
+  nextItems.forEach((item, index) => {
+    const key = getItemEventKey(item, index);
+    const nextState = normalizeItemState(item);
+    const prevState = previousMap.get(key);
+
+    if (nextState === 'error' && prevState !== 'error') {
+      emitFileUploadItemError(root, item, index, nextItems);
+    }
+
+    if (nextState === 'done' && prevState !== 'done') {
+      emitFileUploadItemComplete(root, item, index, nextItems);
+    }
+  });
+  const hasItems = nextItems.length > 0;
+  const isAllDone = hasItems && nextItems.every(item => normalizeItemState(item) === 'done');
+  const wasAllDone = previousItems.length > 0 && previousItems.every(item => normalizeItemState(item) === 'done');
+
+  if (isAllDone && !wasAllDone) {
+    emitFileUploadComplete(root, nextItems);
+  }
+} // A chosen file's size is written by the core formatter in the page's
+// language: «342 КБ» on a Russian page, «342 KB» on an English one (C25,
+// docs pre-check 2026-11-10 FU-01). The part's own formatter wrote «342KB»
+// in English units with no space on every page.
+
+
+function normalizeFileItems(files = [], root = null) {
+  return Array.from(files).map(file => ({
+    id: `${file.name}-${file.size}-${file.lastModified}`,
+    name: file.name,
+    fileSize: (0,_core_js_format_file_size_js__WEBPACK_IMPORTED_MODULE_4__.formatFileSize)(file.size, {
+      node: root
+    }),
+    state: 'ready',
+    file
+  }));
+}
+
+function removeFileUploadItem(root, index) {
+  if (!root) return false;
+  const currentItems = Array.from(root.__sfFileUploadItems || []);
+  if (!currentItems.length) return false;
+  const normalizedIndex = Number(index);
+
+  if (!Number.isInteger(normalizedIndex) || normalizedIndex < 0 || normalizedIndex >= currentItems.length) {
+    return false;
+  }
+
+  const [removed] = currentItems.splice(normalizedIndex, 1);
+  root.__sfFileUploadItems = currentItems;
+  renderFileUploadItems(root, currentItems);
+  root.dispatchEvent(new CustomEvent('sf-file-upload:remove', {
+    bubbles: true,
+    detail: {
+      item: removed || null,
+      index: normalizedIndex,
+      items: currentItems
+    }
+  }));
+  return true;
+}
+
+function retryFileUploadItem(root, index) {
+  if (!root) return false;
+  const currentItems = Array.from(root.__sfFileUploadItems || []);
+  if (!currentItems.length) return false;
+  const normalizedIndex = Number(index);
+
+  if (!Number.isInteger(normalizedIndex) || normalizedIndex < 0 || normalizedIndex >= currentItems.length) {
+    return false;
+  }
+
+  const nextItems = currentItems.map(item => ({ ...item
+  }));
+  const currentItem = nextItems[normalizedIndex]; // Back in process with its share not known yet: the bar runs without a
+  // number until the transfer reports one. It went to 0 % and stood there,
+  // which read as a second failure when nothing sent the file again (FU-11);
+  // sf-file-upload's uploader sends it, an ordinary area's page answers
+  // retry.
+
+  currentItem.state = 'process';
+  currentItem.progress = null;
+  delete currentItem.errorMessage;
+  delete currentItem.error;
+  delete currentItem.reason;
+  const previousItems = Array.from(root.__sfFileUploadItems || []);
+  root.__sfFileUploadItems = nextItems;
+  renderFileUploadItems(root, nextItems);
+  syncFileUploadStateEvents(root, nextItems, previousItems);
+  root.dispatchEvent(new CustomEvent('sf-file-upload:retry', {
+    bubbles: true,
+    detail: {
+      item: currentItem,
+      index: normalizedIndex,
+      items: nextItems
+    }
+  }));
+  return true;
+}
+
+function emitSelect(root, files, source = 'input') {
+  root.dispatchEvent(new CustomEvent('sf-file-upload:select', {
+    bubbles: true,
+    detail: {
+      files,
+      source,
+      multiple: getMultiple(root)
+    }
+  }));
+} // A choice adds to the list on a multiple area, so files can be added in
+// portions; a file already listed (same name, size and time) is not listed
+// twice. A single area keeps one file: a new choice replaces it, and the
+// replaced entry leaves with remove {reason: 'replaced'}. The choice assigned
+// the new files over the list, so a second pick wiped the first (study
+// 2026-11-11 FU-1). Returns the entries that entered the list.
+
+
+function applySelectedFiles(root, files = [], source = 'input') {
+  const chosen = normalizeFileItems(files, root);
+  const previousItems = Array.from(root.__sfFileUploadItems || []);
+  const multiple = getMultiple(root);
+  const listed = new Set(previousItems.map((item, index) => getItemEventKey(item, index)));
+  const added = multiple ? chosen.filter((item, index) => !listed.has(item.id) && chosen.findIndex(other => other.id === item.id) === index) : chosen.slice(0, 1);
+  if (!added.length) return [];
+  const replaced = multiple ? [] : previousItems;
+  const nextFiles = multiple ? [...previousItems, ...added] : added;
+  root.__sfFileUploadItems = nextFiles;
+  renderFileUploadItems(root, nextFiles);
+  syncFileUploadStateEvents(root, nextFiles, previousItems);
+  replaced.forEach((item, index) => {
+    root.dispatchEvent(new CustomEvent('sf-file-upload:remove', {
+      bubbles: true,
+      detail: {
+        item,
+        index,
+        items: nextFiles,
+        reason: 'replaced'
+      }
+    }));
+  });
+  added.forEach(item => {
+    emitFileUploadItemAdd(root, item, nextFiles.indexOf(item), nextFiles, source);
+  });
+  emitSelect(root, added, source);
+  return added;
+}
+
+function fileUploadWord(root, key, options = {}) {
+  return (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_3__.pageWord)(FILE_UPLOAD_ITEM_TEXT, key, root, {
+    component: 'sf-file-upload',
+    ...options
+  });
+} // The formats an accept list names, as people read them: «PDF, DOCX»,
+// «изображения». `type/*` is the kind's word; it wrote «*» before.
+// The names are the core's (intake.mjs): image/jpeg reads «JPG», image/svg+xml
+// «SVG».
+
+
+function formatAcceptWords(accept, root = null) {
+  return (0,_intake_mjs__WEBPACK_IMPORTED_MODULE_6__.acceptFormats)(accept, kind => fileUploadWord(root, `formats-${kind}`));
+} // Where a file that was not added is said: the line under the area (C81: the
+// message under the field, not a row in the list), a polite status a screen
+// reader announces. The Smart template draws it; an ordinary area gets one
+// after it on the first rejection.
+
+
+function getMessage(root, create = false) {
+  if (!root) return null;
+  const next = root.nextElementSibling;
+  if (next?.classList?.contains('sf-file-upload-message')) return next;
+  if (!create || isManagedRenderRoot(root) || typeof document === 'undefined' || typeof root.after !== 'function') return null;
+  const message = document.createElement('div');
+  message.className = 'sf-file-upload-message';
+  message.setAttribute('role', 'status');
+  message.hidden = true;
+  root.after(message);
+  return message;
+}
+
+function showFileUploadRejections(root, rejected = []) {
+  const message = getMessage(root, rejected.length > 0);
+  root.__sfFileUploadRejected = rejected;
+  if (!message) return;
+  message.replaceChildren();
+  message.hidden = !rejected.length;
+  if (!rejected.length) return;
+
+  if (rejected.length === 1) {
+    message.textContent = rejected[0].message;
+    return;
+  }
+
+  const head = document.createElement('span');
+  head.textContent = fileUploadWord(root, 'not-added', {
+    count: rejected.length
+  });
+  const list = document.createElement('ul');
+  rejected.forEach(entry => {
+    const line = document.createElement('li');
+    line.textContent = entry.message;
+    list.append(line);
+  });
+  message.append(head, list);
+} // What a choice or a drop leaves out, and why: a type the accept list does
+// not name (on a pick too: the dialog's «All files» skipped the filter), a
+// second file on a single area, a file already listed. The drop took the
+// first file and said nothing of the rest (FU-6); a wrong type sent
+// rejected and showed nothing (FU-7). Each one is said under the area and in
+// reject {files, rejected: [{file, name, reason, message}], accept, source}.
+
+
+function takeFiles(root, files = [], source = 'input') {
+  const accept = getAccept(root);
+  const multiple = getMultiple(root);
+  const kept = multiple ? Array.from(root.__sfFileUploadItems || []) : [];
+  const listed = new Set(kept.map((item, index) => getItemEventKey(item, index)));
+  const maxSize = getLimit(root, 'max-size');
+  const minSize = getLimit(root, 'min-size');
+  const maxFiles = multiple ? getLimit(root, 'max-files') : 0;
+  const maxTotal = getLimit(root, 'max-total-size');
+
+  const size = bytes => (0,_core_js_format_file_size_js__WEBPACK_IMPORTED_MODULE_4__.formatFileSize)(bytes, {
+    node: root
+  });
+
+  let count = kept.length;
+  let total = kept.reduce((sum, item) => sum + itemBytes(item), 0);
+  const accepted = [];
+  const rejected = [];
+  Array.from(files).forEach(file => {
+    const name = String(file?.name || '');
+    const key = `${file?.name}-${file?.size}-${file?.lastModified}`;
+    const bytes = Number(file?.size) || 0;
+    let reason = '';
+    let vars = {
+      name
+    };
+    let words = {};
+    const own = (0,_intake_mjs__WEBPACK_IMPORTED_MODULE_6__.fileRejection)(file, {
+      accept,
+      maxSize,
+      minSize
+    });
+    if (!multiple && accepted.length) reason = 'one';else if (listed.has(key)) reason = 'duplicate';else if (own === 'type') {
+      reason = 'type';
+      vars = {
+        name,
+        formats: formatAcceptWords(accept, root)
+      };
+    } else if (own === 'empty') reason = 'empty';else if (own === 'size') {
+      reason = 'size';
+      vars = {
+        name,
+        size: size(bytes),
+        max: size(maxSize)
+      };
+    } else if (own === 'min-size') {
+      reason = 'min-size';
+      vars = {
+        name,
+        size: size(bytes),
+        min: size(minSize)
+      };
+    } else if (maxFiles && count >= maxFiles) {
+      reason = 'count';
+      words = {
+        count: maxFiles
+      };
+    } else if (maxTotal && total + bytes > maxTotal) {
+      reason = 'total';
+      vars = {
+        name,
+        max: size(maxTotal)
+      };
+    }
+
+    if (reason) {
+      rejected.push({
+        file,
+        name,
+        reason: reason === 'one' ? 'count' : reason,
+        message: fileUploadWord(root, `reject-${reason}`, {
+          vars,
+          ...words
+        })
+      });
+      return;
+    }
+
+    listed.add(key);
+    count += 1;
+    total += bytes;
+    accepted.push(file);
+  });
+  showFileUploadRejections(root, rejected);
+
+  if (rejected.length) {
+    root.dispatchEvent(new CustomEvent('sf-file-upload:reject', {
+      bubbles: true,
+      detail: {
+        files: rejected.map(entry => entry.file),
+        rejected,
+        accept,
+        source
+      }
+    }));
+  }
+
+  return accepted.length ? applySelectedFiles(root, accepted, source) : [];
+}
+
+function bindFileUpload(root) {
+  (0,_field_size__WEBPACK_IMPORTED_MODULE_2__.retireFieldSizeClass)(root, 'sf-file-upload');
+  if (!root) return;
+  const input = ensureInput(root);
+  const filesContainer = getFilesContainer(root); // DOM markers survive cloneNode; listeners and selected File objects do not.
+
+  if (typeof root.__sfFileUploadOnClick === 'function') {
+    if (root.__sfFileUploadBoundInput === input && root.__sfFileUploadBoundFiles === filesContainer) return;
+    unbindFileUpload(root);
+  } else if (root.dataset[FILE_UPLOAD_BOUND_FLAG] === '1' && !root.__sfFileUploadItems && !isManagedRenderRoot(root)) {
+    root.__sfFileUploadItems = [];
+
+    if (root.classList.contains('has-files') && !root.hasAttribute('data-target')) {
+      renderFileUploadItems(root, []);
+    }
+
+    root.classList.remove('has-files', 'dragover');
+  }
+
+  syncFileUploadInteraction(root);
+
+  if (!root.hasAttribute('role')) {
+    root.setAttribute('role', 'button');
+  }
+
+  const openInput = () => {
+    if (isDisabledRoot(root)) return;
+    syncInputConfig(root, input);
+    input.click();
+  };
+
+  const onRootClick = event => {
+    if (isDisabledRoot(root)) {
+      event.preventDefault();
+      return;
+    }
+
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest('.sf-upload-progress-repeat')) return;
+    if (target.closest('input[type="file"]')) return;
+    if (target.closest('[data-action="remove"]')) return;
+    openInput();
+  };
+
+  const onKeydown = event => {
+    if (event.target !== root || event.repeat || root.matches('button, input, a[href]')) return;
+    if (isDisabledRoot(root)) return;
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    openInput();
+  };
+
+  const onInputChange = event => {
+    if (isDisabledRoot(root)) return;
+    const files = Array.from(event.target?.files || []);
+    if (!files.length) return;
+    takeFiles(root, files, 'input');
+    event.target.value = '';
+  };
+
+  const onDragOver = event => {
+    if (!Array.from(event.dataTransfer?.types || []).includes('Files')) return;
+    event.preventDefault();
+
+    if (isDisabledRoot(root)) {
+      event.dataTransfer.dropEffect = 'none';
+      return;
+    }
+
+    event.dataTransfer.dropEffect = 'copy';
+    root.classList.add('dragover');
+  };
+
+  const onDragLeave = event => {
+    if (!root.contains(event.relatedTarget)) {
+      root.classList.remove('dragover');
+    }
+  };
+
+  const onDrop = event => {
+    root.classList.remove('dragover');
+    const files = Array.from(event.dataTransfer?.files || []);
+    if (!files.length && !Array.from(event.dataTransfer?.types || []).includes('Files')) return;
+    event.preventDefault();
+    if (isDisabledRoot(root) || !files.length) return;
+    const added = takeFiles(root, files, 'drop');
+    if (!added.length) return; // A pick sends change from the native input; a drop sent none, so a form
+    // listening for change never heard of a dropped file.
+
+    root.dispatchEvent(new CustomEvent('change', {
+      bubbles: true,
+      detail: {
+        files: added.map(item => item.file),
+        source: 'drop'
+      }
+    }));
+  };
+
+  const onFilesClick = event => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const removeButton = target.closest('[data-action="remove"]');
+    const retryButton = target.closest('[data-action="retry"]');
+    if (!removeButton && !retryButton) return;
+
+    if (isDisabledRoot(root) || (removeButton || retryButton).disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    const itemNode = (removeButton || retryButton).closest('.sf-upload-progress');
+    if (!itemNode) return;
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (removeButton) {
+      removeFileUploadItem(root, itemNode.dataset.index);
+      return;
+    }
+
+    retryFileUploadItem(root, itemNode.dataset.index);
+  };
+
+  root.addEventListener('click', onRootClick);
+  root.addEventListener('keydown', onKeydown);
+  root.addEventListener('dragover', onDragOver);
+  root.addEventListener('dragleave', onDragLeave);
+  root.addEventListener('drop', onDrop);
+  input.addEventListener('change', onInputChange);
+  filesContainer?.addEventListener('click', onFilesClick);
+  root.__sfFileUploadOnClick = onRootClick;
+  root.__sfFileUploadOnKeydown = onKeydown;
+  root.__sfFileUploadOnDragOver = onDragOver;
+  root.__sfFileUploadOnDragLeave = onDragLeave;
+  root.__sfFileUploadOnDrop = onDrop;
+  root.__sfFileUploadOnChange = onInputChange;
+  root.__sfFileUploadOnFilesClick = onFilesClick;
+  root.__sfFileUploadBoundInput = input;
+  root.__sfFileUploadBoundFiles = filesContainer;
+  const interactionObserver = new MutationObserver(() => syncFileUploadInteraction(root));
+  interactionObserver.observe(root, {
+    attributes: true,
+    attributeFilter: ['disabled', 'class', 'accept', 'multiple', 'data-accept', 'data-multiple']
+  });
+  if (filesContainer) interactionObserver.observe(filesContainer, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+  root.__sfFileUploadInteractionObserver = interactionObserver;
+  root.dataset[FILE_UPLOAD_BOUND_FLAG] = '1';
+}
+
+function unbindFileUpload(root) {
+  if (!root) return;
+  const input = root.__sfFileUploadBoundInput || getInput(root);
+  root.__sfFileUploadInteractionObserver?.disconnect();
+  delete root.__sfFileUploadInteractionObserver;
+
+  if (root.__sfFileUploadOnClick) {
+    root.removeEventListener('click', root.__sfFileUploadOnClick);
+  }
+
+  if (root.__sfFileUploadOnKeydown) {
+    root.removeEventListener('keydown', root.__sfFileUploadOnKeydown);
+  }
+
+  if (root.__sfFileUploadOnDragOver) {
+    root.removeEventListener('dragover', root.__sfFileUploadOnDragOver);
+  }
+
+  if (root.__sfFileUploadOnDragLeave) {
+    root.removeEventListener('dragleave', root.__sfFileUploadOnDragLeave);
+  }
+
+  if (root.__sfFileUploadOnDrop) {
+    root.removeEventListener('drop', root.__sfFileUploadOnDrop);
+  }
+
+  if (input && root.__sfFileUploadOnChange) {
+    input.removeEventListener('change', root.__sfFileUploadOnChange);
+  }
+
+  const filesContainer = root.__sfFileUploadBoundFiles || getFilesContainer(root);
+
+  if (filesContainer && root.__sfFileUploadOnFilesClick) {
+    filesContainer.removeEventListener('click', root.__sfFileUploadOnFilesClick);
+  }
+
+  delete root.__sfFileUploadOnClick;
+  delete root.__sfFileUploadOnKeydown;
+  delete root.__sfFileUploadOnDragOver;
+  delete root.__sfFileUploadOnDragLeave;
+  delete root.__sfFileUploadOnDrop;
+  delete root.__sfFileUploadOnChange;
+  delete root.__sfFileUploadOnFilesClick;
+  delete root.__sfFileUploadBoundInput;
+  delete root.__sfFileUploadBoundFiles;
+  delete root.dataset[FILE_UPLOAD_BOUND_FLAG];
+}
+
+function initExistingFileUploads(target = document) {
+  target.querySelectorAll(FILE_UPLOAD_SELECTOR).forEach(bindOrdinaryFileUpload);
+}
+
+function bindOrdinaryFileUpload(root) {
+  // Smart owns its render timing and teardown, even when both bundles load.
+  if (root.isConnected && !root.closest('sf-file-upload')) bindFileUpload(root);
+}
+
+function getFileUploadItems(target) {
+  const root = target instanceof HTMLElement ? target.closest(FILE_UPLOAD_SELECTOR) || target : null;
+  if (!root) return [];
+  return Array.from(root.__sfFileUploadItems || []);
+}
+
+function setFileUploadItems(target, items = []) {
+  const root = target instanceof HTMLElement ? target.closest(FILE_UPLOAD_SELECTOR) || target : null;
+  if (!root) return false;
+  const previousItems = Array.from(root.__sfFileUploadItems || []);
+  root.__sfFileUploadItems = Array.isArray(items) ? items : [];
+  renderFileUploadItems(root, root.__sfFileUploadItems);
+  syncFileUploadStateEvents(root, root.__sfFileUploadItems, previousItems);
+  return true;
+}
+
+function clearFileUpload(target) {
+  const root = target instanceof HTMLElement ? target.closest(FILE_UPLOAD_SELECTOR) || target : null;
+  if (root) showFileUploadRejections(root, []);
+  return setFileUploadItems(target, []);
+} // The class built nothing: template stayed null and render() returned null. It
+// builds the drop area and its list now, the markup the Smart template draws.
+
+
+class FileUpload extends _core_js_ComponentObserver__WEBPACK_IMPORTED_MODULE_0__.ComponentObserver {
+  static componentName = 'FileUpload';
+
+  constructor(props) {
+    super(props);
+    const {
+      size = '1',
+      accept = '',
+      multiple = false,
+      disabled = false,
+      icon = 'cloud_upload',
+      linkText,
+      text,
+      supportingText = '',
+      label = ''
+    } = this.params || {};
+    const step = normalizeSize(size);
+    const wrapper = document.createElement('div'); // The list keeps its distance from the area itself (FU-12), the same
+    // inside this wrapper and under a Smart host.
+
+    wrapper.className = 'sf-file-upload-wrap flex flex-col';
+    const root = document.createElement('div');
+    if (this.id) root.id = this.id;
+    root.className = `sf-file-upload sf-file-upload--size-${step} flex flex-col items-cross-center cursor-pointer`;
+    const className = this.attrs.class || this.attrs.className;
+    if (className) root.classList.add(...String(className).split(' ').filter(Boolean));
+    if (accept) root.dataset.accept = accept;
+    root.dataset.multiple = toBoolean(multiple) ? 'true' : 'false';
+    if (toBoolean(multiple)) root.setAttribute('multiple', '');
+    if (toBoolean(disabled)) root.setAttribute('disabled', '');
+    if (label) root.setAttribute('aria-label', label);
+    root.tabIndex = 0;
+    const featured = document.createElement('div');
+    featured.className = `sf-featured-icon sf-featured-icon--size-${step} sf-featured-icon--soft sf-featured-icon--circle sf-featured-icon--neutral`;
+    const glyph = document.createElement('i');
+    glyph.className = 'sf-icon';
+    glyph.setAttribute('aria-hidden', 'true');
+    glyph.textContent = icon;
+    featured.append(glyph);
+    const bottom = document.createElement('div');
+    bottom.className = 'sf-file-upload-bottom flex flex-col items-cross-center';
+    const block = document.createElement('div');
+    block.className = 'sf-file-upload-block flex';
+    const blockText = document.createElement('div');
+    blockText.className = 'sf-file-upload-block-text';
+    const link = document.createElement('span');
+    link.className = 'sf-file-upload-link';
+    link.textContent = linkText ?? (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_3__.pageText)(FILE_UPLOAD_ITEM_TEXT, 'linkText', root, 'sf-file-upload');
+    blockText.append(link, ` ${text ?? (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_3__.pageText)(FILE_UPLOAD_ITEM_TEXT, 'text', root, 'sf-file-upload')}`);
+    block.append(blockText);
+    bottom.append(block);
+
+    if (supportingText) {
+      const support = document.createElement('span');
+      support.className = 'sf-file-upload-text';
+      support.textContent = supportingText;
+      bottom.append(support);
+    }
+
+    root.append(featured, bottom);
+    const message = document.createElement('div');
+    message.className = 'sf-file-upload-message';
+    message.setAttribute('role', 'status');
+    message.hidden = true;
+    const files = document.createElement('div');
+    files.className = 'sf-file-upload-files grid grid-col-1 gap-1 w-full';
+    wrapper.append(root, message, files);
+    this.root = root;
+    this.template = wrapper;
+  }
+
+  init() {
+    bindFileUpload(this.root);
+  }
+
+  destroyInternal() {
+    unbindFileUpload(this.root);
+  }
+
+}
+
+(0,_register_helper__WEBPACK_IMPORTED_MODULE_1__["default"])('FileUpload', FileUpload);
+
+if (typeof window !== 'undefined') {
+  window.SF = window.SF || {};
+  window.SF.FileUpload = window.SF.FileUpload || {};
+  window.SF.FileUpload.getItems = getFileUploadItems;
+  window.SF.FileUpload.setItems = setFileUploadItems;
+  window.SF.FileUpload.clear = clearFileUpload;
+  window.SF.FileUpload.removeItem = removeFileUploadItem;
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => initExistingFileUploads(), {
+    once: true
+  });
+} else {
+  initExistingFileUploads();
+}
+
+const fileUploadObserver = new MutationObserver(mutations => {
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      if (!(node instanceof Element)) return;
+
+      if (node.matches?.(FILE_UPLOAD_SELECTOR)) {
+        bindOrdinaryFileUpload(node);
+      }
+
+      initExistingFileUploads(node);
+    });
+    mutation.removedNodes.forEach(node => {
+      if (!(node instanceof Element) || node.isConnected) return;
+      const roots = [...node.querySelectorAll(FILE_UPLOAD_SELECTOR)];
+      if (node.matches(FILE_UPLOAD_SELECTOR)) roots.push(node);
+      roots.forEach(root => {
+        if (!root.isConnected && !root.closest('sf-file-upload')) unbindFileUpload(root);
+      });
+    });
+  });
+});
+fileUploadObserver.observe(document.documentElement, {
+  childList: true,
+  subtree: true
+});
+
+
+/***/ },
+
+/***/ "0c39c584acf3"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _file_upload__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("c43efa1014a6");
+/*
+* Main JS file for including JS for component.
+*
+* Imports:
+* - Base function component (_component_name.js)
+*/
+
+
+/***/ },
+
+/***/ "58661bec99a6"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   registerComponent: () => (/* binding */ registerComponent)
+/* harmony export */ });
+// Simple helper to register a component in one call.
+// Usage inside component bundle:
+//   import register from './register-helper';
+//   register('Buttons', Buttons);
+function registerComponent(name, cls) {
+  if (!name || !cls) return;
+
+  if (typeof window !== 'undefined' && typeof window.registerSfComponent === 'function') {
+    window.registerSfComponent(name, cls);
+    return;
+  }
+
+  if (typeof window !== 'undefined' && window.SF?.Loader?.registerComponent) {
+    window.SF.Loader.registerComponent(name, cls);
+    return;
+  }
+
+  if (typeof window !== 'undefined') {
+    const pending = window.SF_PENDING_COMPONENTS = window.SF_PENDING_COMPONENTS || [];
+    pending.push([name, cls]);
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (registerComponent);
+
+/***/ },
+
+/***/ "d7f974466839"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ComponentObserver: () => (/* binding */ ComponentObserver)
+/* harmony export */ });
+class ComponentObserver {
+  // Components name themselves with a static field (static componentName =
+  // 'Modal'), and the Loader writes the name on the prototype only when it
+  // registers the class; the lifecycle events read the instance, so an
+  // instance made before that announced itself as `undefined:render`. Not a
+  // getter: the Loader assigns the prototype property, and an accessor
+  // without a setter made that assignment throw.
+  lifecycleName() {
+    return this.componentName ?? this.constructor.componentName;
+  }
+
+  constructor(props) {
+    this.props = props;
+    this.id = props?.id;
+    this.params = props?.param;
+    this.attrs = props?.attrs || {};
+    this.template = null;
+    window.dispatchEvent(new CustomEvent(`${this.lifecycleName()}:beforeRender`, {
+      detail: this
+    }));
+  }
+
+  getUtilityMap() {
+    return this.constructor.utilityMap || null;
+  }
+
+  extractUtilityClasses(values) {
+    if (!Array.isArray(values)) {
+      return [];
+    }
+
+    const classes = new Set();
+    values.forEach(value => {
+      if (typeof value !== 'string') {
+        return;
+      }
+
+      const matches = value.match(/\(([^)]+)\)/g);
+
+      if (!matches) {
+        return;
+      }
+
+      matches.forEach(match => {
+        const raw = match.slice(1, -1);
+        raw.split(/\s+/).filter(Boolean).forEach(cls => {
+          // Only explicit (.class) annotations are classes; the
+          // parentheses in var(--token) are CSS values, not markup.
+          if (cls.startsWith('.') && cls.length > 1) classes.add(cls.slice(1));
+        });
+      });
+    });
+    return Array.from(classes);
+  }
+
+  applyLayoutUtilities(target, selector) {
+    if (!target || !selector) {
+      return;
+    }
+
+    const map = this.getUtilityMap();
+
+    if (!map || !map[selector]) {
+      return;
+    }
+
+    const classes = this.extractUtilityClasses(map[selector]);
+    classes.forEach(cls => target.classList.add(cls));
+  }
+
+  render() {
+    this.html = this.template;
+
+    if (typeof this.init === 'function') {
+      this.init();
+    }
+
+    if (this.html) {
+      window.dispatchEvent(new CustomEvent(`${this.lifecycleName()}:render`, {
+        detail: this
+      }));
+    }
+
+    return this.html;
+  }
+
+  destroy() {
+    this.destroyInternal?.();
+    this.props = null;
+    this.id = null;
+    this.params = null;
+    this.template = null;
+
+    if (this.html) {
+      this.html.remove();
+      this.html = null;
+    }
+
+    window.dispatchEvent(new CustomEvent(`${this.lifecycleName()}:destroy`, {
+      detail: this
+    }));
+  }
+
+  destroyInternal() {}
+
+}
+
+/***/ },
+
+/***/ "f49a716b86bd"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ALIAS_KINDS: () => (/* binding */ ALIAS_KINDS),
+/* harmony export */   ALIAS_MODES: () => (/* binding */ ALIAS_MODES),
+/* harmony export */   TAG_ALIAS_KIND: () => (/* binding */ TAG_ALIAS_KIND),
+/* harmony export */   aliasExpired: () => (/* binding */ aliasExpired),
+/* harmony export */   propertyOf: () => (/* binding */ propertyOf),
+/* harmony export */   readAliasTable: () => (/* binding */ readAliasTable),
+/* harmony export */   readTagAliases: () => (/* binding */ readTagAliases)
+/* harmony export */ });
+// The dated alias table of one component (standard simai.smart-component
+// 1.3.8 §16.20, vocabulary 1.1.5 §9): what the migration converter writes as
+// <component>/aliases.json, read and checked here before core/js/aliases.js
+// installs it on an element. Pure data, no DOM, so a build, a lint and the
+// runtime share one reading of it.
+//
+// A table is a list of rows, or {tag, aliases: [rows]}. A row:
+//
+//   {from, to, kind, since, remove_after, mode?, when?, setting?, tag?}
+//
+//   kind      event | setting | attribute | action | value
+//   since     the first day the new name exists, YYYY-MM-DD
+//   remove_after
+//             the last day the old name is promised, YYYY-MM-DD
+//   mode      events only: same-detail (default) | detail-adds | split
+//   when      events only, optional: {<detail field>: <value>}; the old name
+//             is sent only for a new event whose detail matches (two old
+//             names folded into one new name, as modal:after-hide and
+//             modal:after-show into change)
+//   setting   values only: the attribute the value belongs to
+//
+// A row that does not hold is refused with a reason, never thrown: the rest of
+// the table still installs, and the refusals are reported.
+//
+// A `tag` row renames the element itself ({from: 'sf-close', to:
+// 'sf-button-close', kind: 'tag', since, remove_after}). It is not installed on
+// an element: the Smart base defines the old tag as a subclass when it defines
+// the new one (core/js/tag-aliases.js), so readAliasTable leaves it out and
+// readTagAliases reads it.
+const ALIAS_KINDS = Object.freeze(['event', 'setting', 'attribute', 'action', 'value']);
+const ALIAS_MODES = Object.freeze(['same-detail', 'detail-adds', 'split']);
+const DAY = 86400000;
+const DATE = /^\d{4}-\d{2}-\d{2}$/u;
+const ATTRIBUTE = /^[a-z][a-z0-9-]*$/u;
+const MEMBER = /^[A-Za-z_$][\w$]*$/u;
+
+function dateOf(text) {
+  if (typeof text !== 'string' || !DATE.test(text)) return NaN;
+  const time = Date.parse(`${text}T00:00:00Z`); // 2026-02-30 parses in some engines; it must print back as itself.
+
+  return Number.isNaN(time) || new Date(time).toISOString().slice(0, 10) !== text ? NaN : time;
+} // `remove_after` is the last promised day, whole, in UTC: the old name is
+// open until the end of it and expired from the next midnight.
+
+
+function aliasExpired(row, now = Date.now()) {
+  const last = dateOf(row?.remove_after);
+  return Number.isFinite(last) && now >= last + DAY;
+} // kebab-case attribute -> camelCase property: backdrop-blur -> backdropBlur.
+
+function propertyOf(attribute) {
+  return String(attribute).replace(/-([a-z0-9])/gu, (_, letter) => letter.toUpperCase());
+}
+const TAG_ALIAS_KIND = 'tag'; // A custom element name of the Framework or of a package: lower case, a hyphen.
+
+const ELEMENT = /^[a-z][a-z0-9]*-[a-z0-9-]+$/u;
+
+function primitive(value) {
+  return value === null || ['string', 'number', 'boolean'].includes(typeof value);
+}
+
+function checkRow(row) {
+  if (!row || typeof row !== 'object' || Array.isArray(row)) return 'not-an-object';
+  const {
+    from,
+    to,
+    kind,
+    since,
+    mode = 'same-detail',
+    when,
+    setting
+  } = row;
+  if (!ALIAS_KINDS.includes(kind)) return 'unknown-kind';
+  if (typeof from !== 'string' || !from) return 'no-from';
+  if (to === null || to === undefined || to === '') return 'no-new-name';
+  if (typeof to !== 'string') return 'no-to';
+  if (from === to) return 'same-name';
+  const start = dateOf(since);
+  const end = dateOf(row.remove_after);
+  if (Number.isNaN(start)) return 'bad-since';
+  if (Number.isNaN(end)) return 'bad-remove-after';
+  if (end < start) return 'remove-after-before-since';
+  if (!ALIAS_MODES.includes(mode)) return 'unknown-mode';
+  if (kind !== 'event' && mode !== 'same-detail') return 'mode-on-non-event';
+
+  if (when !== undefined) {
+    if (kind !== 'event') return 'when-on-non-event';
+    if (!when || typeof when !== 'object' || Array.isArray(when) || !Object.values(when).every(primitive)) return 'bad-when';
+  }
+
+  if (kind === 'setting' || kind === 'attribute') {
+    if (!ATTRIBUTE.test(from) || !ATTRIBUTE.test(to)) return 'bad-attribute-name';
+  }
+
+  if (kind === 'action' && (!MEMBER.test(from) || !MEMBER.test(to))) return 'bad-member-name';
+
+  if (kind === 'value') {
+    if (typeof setting !== 'string' || !ATTRIBUTE.test(setting)) return 'value-needs-setting';
+  } else if (setting !== undefined) {
+    return 'setting-on-non-value';
+  }
+
+  return null;
+}
+
+function normal(row, tag) {
+  const out = {
+    kind: row.kind,
+    from: row.from,
+    to: row.to,
+    since: row.since,
+    remove_after: row.remove_after,
+    tag: typeof row.tag === 'string' && row.tag ? row.tag : tag
+  };
+
+  if (row.kind === 'event') {
+    out.mode = row.mode || 'same-detail';
+    if (row.when) out.when = { ...row.when
+    };
+  }
+
+  if (row.kind === 'value') out.setting = row.setting;
+  return Object.freeze(out);
+} // -> {tag, rows: [frozen rows], refused: [{index, from, to, kind, reason}]}
+
+
+function readAliasTable(table, {
+  tag = ''
+} = {}) {
+  const list = Array.isArray(table) ? table : table?.aliases;
+  const owner = !Array.isArray(table) && typeof table?.tag === 'string' && table.tag || tag || '';
+  const rows = [];
+  const refused = [];
+
+  if (!Array.isArray(list)) {
+    refused.push({
+      index: -1,
+      from: null,
+      to: null,
+      kind: null,
+      reason: 'not-a-table'
+    });
+    return {
+      tag: owner,
+      rows,
+      refused
+    };
+  }
+
+  const refuse = (index, row, reason) => refused.push({
+    index,
+    from: row?.from ?? null,
+    to: row?.to ?? null,
+    kind: row?.kind ?? null,
+    reason
+  });
+
+  const seen = new Map();
+  list.forEach((row, index) => {
+    if (row?.kind === TAG_ALIAS_KIND) return;
+    const reason = checkRow(row);
+    if (reason) return refuse(index, row, reason);
+    const one = normal(row, owner); // An attribute, a property or a method has one new name; an event's old
+    // name may be sent beside several new ones (split, folded names).
+
+    const identity = one.kind === 'event' ? `event|${one.from}|${one.to}|${JSON.stringify(one.when ?? null)}` : one.kind === 'value' ? `value|${one.setting}|${one.from}` : `${one.kind === 'action' ? 'action' : 'name'}|${one.from}`;
+    const before = seen.get(identity);
+    if (before) return refuse(index, row, before.to === one.to ? 'duplicate' : 'conflict');
+    seen.set(identity, one);
+    rows.push({
+      index,
+      row: one
+    });
+  }); // Two old names folded into one new name by their detail: without `when`
+  // each would be sent on every new event, the wrong one among them.
+
+  const folded = new Map();
+
+  for (const entry of rows) {
+    const {
+      row
+    } = entry;
+    if (row.kind !== 'event' || row.mode === 'same-detail' || row.when) continue;
+    folded.set(row.to, [...(folded.get(row.to) ?? []), entry]);
+  }
+
+  const ambiguous = new Set();
+
+  for (const group of folded.values()) if (group.length > 1) for (const entry of group) ambiguous.add(entry);
+
+  const kept = [];
+
+  for (const entry of rows) {
+    if (ambiguous.has(entry)) refuse(entry.index, entry.row, 'needs-when');else kept.push(entry.row);
+  }
+
+  refused.sort((a, b) => a.index - b.index);
+  return {
+    tag: owner,
+    rows: kept,
+    refused
+  };
+} // The `tag` rows of a table: -> {tag, rows: [{from, to, since, remove_after}],
+// refused: [{index, from, to, reason}]}. A row renames the table's own tag:
+// its `to` is that tag when the table names one.
+
+function readTagAliases(table, {
+  tag = ''
+} = {}) {
+  const list = Array.isArray(table) ? table : table?.aliases;
+  const owner = !Array.isArray(table) && typeof table?.component === 'string' && table.component || !Array.isArray(table) && typeof table?.tag === 'string' && table.tag || tag || '';
+  const rows = [];
+  const refused = [];
+  if (!Array.isArray(list)) return {
+    tag: owner,
+    rows,
+    refused
+  };
+  const seen = new Set();
+  list.forEach((row, index) => {
+    if (row?.kind !== TAG_ALIAS_KIND) return;
+
+    const refuse = reason => refused.push({
+      index,
+      from: row.from ?? null,
+      to: row.to ?? null,
+      reason
+    });
+
+    if (typeof row.from !== 'string' || !ELEMENT.test(row.from)) return refuse('bad-old-tag');
+    if (typeof row.to !== 'string' || !ELEMENT.test(row.to)) return refuse('bad-new-tag');
+    if (row.from === row.to) return refuse('same-name');
+    if (owner && row.to !== owner) return refuse('not-this-tag');
+    const start = dateOf(row.since);
+    const end = dateOf(row.remove_after);
+    if (Number.isNaN(start)) return refuse('bad-since');
+    if (Number.isNaN(end)) return refuse('bad-remove-after');
+    if (end < start) return refuse('remove-after-before-since');
+    if (seen.has(row.from)) return refuse('duplicate');
+    seen.add(row.from);
+    rows.push(Object.freeze({
+      from: row.from,
+      to: row.to,
+      since: row.since,
+      remove_after: row.remove_after
+    }));
+  });
+  return {
+    tag: owner,
+    rows,
+    refused
+  };
+}
+
+/***/ },
+
+/***/ "06e8cd089f28"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clearDeprecations: () => (/* binding */ clearDeprecations),
+/* harmony export */   listDeprecations: () => (/* binding */ listDeprecations),
+/* harmony export */   noteDeprecated: () => (/* binding */ noteDeprecated)
+/* harmony export */ });
+// What a page still uses that the Framework keeps only for compatibility. Every
+// legacy attribute, value or name a component resolves is noted here once, so a
+// person, a probe or an AI upgrading a product can read the list off a running
+// page (SF.deprecations.list()) instead of searching the source for it. The
+// records behind the names are in contracts/changes/journal.json.
+//
+// Nothing is printed by default: a page opts in to console warnings with
+// <html data-sf-deprecations="warn"> or SF.deprecations.warn = true. A dated
+// alias (core/js/aliases.js, standard simai.smart-component §16.20) also
+// records `tag`, `since` and `remove_after`; once its date has passed the
+// record turns `expired` and that is printed once whatever the page opted
+// into, because the name can leave with the next sweep.
+//
+// Every bundle carries its own copy of this module, so a Map of its own made one
+// list per bundle, and SF.deprecations.list() answered with whichever bundle set
+// it last -- [] on a page printing seven warnings from others. The notes live on
+// one shared global instead, whichever copy writes or reads them.
+function sharedNotes() {
+  const root = globalThis.SF = globalThis.SF || {};
+
+  if (!(root.__deprecationNotes instanceof Map)) {
+    Object.defineProperty(root, '__deprecationNotes', {
+      value: new Map(),
+      configurable: true
+    });
+  }
+
+  return root.__deprecationNotes;
+}
+
+function warnEnabled() {
+  const root = globalThis.document?.documentElement;
+  return root?.dataset?.sfDeprecations === 'warn' || globalThis.SF?.deprecations?.warn === true;
+}
+
+function noteDeprecated({
+  component = '',
+  kind = 'attribute',
+  attribute = '',
+  from,
+  to = null,
+  tag,
+  since,
+  remove_after: removeAfter,
+  expired
+} = {}) {
+  if (!from) return;
+  const key = [component, kind, attribute, from].join('|');
+  const notes = sharedNotes();
+  let note = notes.get(key);
+  const firstExpiry = expired === true && note?.expired !== true;
+
+  if (note) {
+    note.count += 1;
+  } else {
+    note = {
+      component,
+      kind,
+      attribute,
+      from,
+      to,
+      count: 1
+    };
+    notes.set(key, note);
+  } // The dated fields are kept only when a caller knows them, so the records of
+  // the Framework's undated aliases keep their shape.
+
+
+  if (tag !== undefined) note.tag = tag;
+  if (since !== undefined) note.since = since;
+  if (removeAfter !== undefined) note.remove_after = removeAfter;
+  if (expired === true) note.expired = true;
+
+  if (firstExpiry) {
+    globalThis.console?.warn?.(`[SIMAI Framework] ${describe(note)} was due to leave after ${note.remove_after || 'its date'}${to ? `; write ${to}` : ''}. See contracts/changes/journal.json.`);
+  } else if (note.count === 1 && warnEnabled()) {
+    globalThis.console?.warn?.(`[SIMAI Framework] ${describe(note)} is a legacy name${note.remove_after ? ` until ${note.remove_after}` : ''}${to ? `; write ${to}` : ''}. See contracts/changes/journal.json.`);
+  }
+}
+
+function describe({
+  component,
+  kind,
+  attribute,
+  from
+}) {
+  const where = component ? `${component}: ` : '';
+  const what = kind === 'value' ? `${attribute}="${from}"` : `${kind} ${from}`;
+  return `${where}${what}`;
+}
+
+function listDeprecations() {
+  return [...sharedNotes().values()].map(note => ({ ...note
+  }));
+}
+function clearDeprecations() {
+  sharedNotes().clear();
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {};
+  const api = globalThis.SF.deprecations || {};
+  api.list = listDeprecations;
+  api.clear = clearDeprecations;
+  api.note = noteDeprecated;
+  globalThis.SF.deprecations = api;
+}
+
+/***/ },
+
+/***/ "e577837dd70a"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   calendarDayOffset: () => (/* binding */ calendarDayOffset),
+/* harmony export */   formatDate: () => (/* binding */ formatDate),
+/* harmony export */   msUntilNextDay: () => (/* binding */ msUntilNextDay),
+/* harmony export */   toDate: () => (/* reexport safe */ _format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)
+/* harmony export */ });
+/* harmony import */ var _format_intl_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("15b4e93ff6ed");
+// Dates in the page's language: formatDate, the calendar day offset and the
+// next midnight, with no top-level side effects (format-intl.js). The same
+// functions as core/js/format.js and SF.format; relative days and times are
+// format-relative.js, so a bundle that writes a date does not carry them.
+
+
+const DAY_MS = 86400000;
+
+function hasDateStyle(style) {
+  return style === 'short' || style === 'medium' || style === 'long' || style === 'full';
+}
+/**
+ * A date, a time or both in the locale.
+ *
+ *   formatDate(at)                          3 нояб. 2026 г.  /  Nov 3, 2026
+ *   formatDate(at, {date: 'short'})         03.11.2026       /  11/3/26
+ *   formatDate(at, {date: 'long'})          3 ноября 2026 г. /  November 3, 2026
+ *   formatDate(at, {time: 'short'})         3 нояб. 2026 г., 14:05
+ *   formatDate(at, {date: null, time: 'short'})   14:05   /  2:05 PM
+ *
+ * `date` and `time` are Intl styles (short, medium, long, full); `intl` gives
+ * Intl.DateTimeFormat options outright, for a form the styles do not name (a
+ * chart's tick, «14:05» with two-digit hours). Anything that is not a date is
+ * `gap`, '' by default.
+ */
+
+
+function formatDate(value, {
+  date = 'medium',
+  time = null,
+  intl = null,
+  gap = '',
+  ...where
+} = {}) {
+  const moment = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)(value);
+  if (!moment) return gap;
+  let options = intl;
+
+  if (!options) {
+    options = {};
+    if (hasDateStyle(date)) options.dateStyle = date;
+    if (hasDateStyle(time)) options.timeStyle = time;
+    if (!options.dateStyle && !options.timeStyle) options.dateStyle = 'medium';
+  }
+
+  return (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.intlFormatter)('DateTimeFormat', (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.formatLocale)(where), options).format(moment);
+}
+/**
+ * Calendar days from `now` to the value in the reader's time zone: 0 today,
+ * -1 yesterday, 1 tomorrow; NaN when the value is no date. Counted on
+ * calendar dates, not 24-hour spans, so 23:59 yesterday is -1 at 00:01 and a
+ * day of a clock change is still one day.
+ */
+
+function calendarDayOffset(value, {
+  now = new Date()
+} = {}) {
+  const moment = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)(value);
+  const today = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)(now);
+  if (!moment || !today) return Number.NaN;
+  const day = Date.UTC(moment.getFullYear(), moment.getMonth(), moment.getDate());
+  const base = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+  return Math.round((day - base) / DAY_MS);
+}
+/**
+ * Milliseconds from `now` to the reader's next midnight, when every relative
+ * day on the screen moves by one. A component that shows them sets a timer
+ * for this long (plus a second's margin, so it wakes in the new day) and
+ * draws them again; «сегодня» said yesterday is wrong by morning.
+ */
+
+function msUntilNextDay(now = new Date()) {
+  const today = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)(now) ?? new Date();
+  const next = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+  return next.getTime() - today.getTime();
+}
+
+/***/ },
+
+/***/ "c016c43b1452"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FILE_SIZE_UNITS: () => (/* binding */ FILE_SIZE_UNITS),
+/* harmony export */   fileSizeUnits: () => (/* binding */ fileSizeUnits),
+/* harmony export */   formatFileSize: () => (/* binding */ formatFileSize)
+/* harmony export */ });
+/* harmony import */ var _format_intl_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("15b4e93ff6ed");
+// File sizes in the page's language («1,4 МБ»), with no top-level side
+// effects (format-intl.js). The same functions as core/js/format.js,
+// composition/file-size.mjs and SF.format.fileSize.
+ // The four words of a size, in the languages the SIMAI Framework ships; any
+// other language reads the English words with its own digits. A component
+// with words of its own passes them as `units`.
+
+const FILE_SIZE_UNITS = /* @__PURE__ */Object.freeze({
+  en: /* @__PURE__ */Object.freeze(['B', 'KB', 'MB', 'GB']),
+  ru: /* @__PURE__ */Object.freeze(['Б', 'КБ', 'МБ', 'ГБ'])
+});
+/** The unit words for a locale: its language's, else English. */
+
+function fileSizeUnits(locale = 'en') {
+  const language = String(locale || 'en').toLowerCase().split('-')[0];
+  return Object.hasOwn(FILE_SIZE_UNITS, language) ? FILE_SIZE_UNITS[language] : FILE_SIZE_UNITS.en;
+}
+/**
+ * A size as people read it: «512 Б», «2 КБ», «1,4 МБ», «12 GB». Binary steps
+ * of 1024; one digit after the point under ten of a unit, none above it or in
+ * bytes. Text a host already formatted is returned as it came; anything that
+ * is not a size is ''.
+ *
+ *   formatFileSize(size, {node, units?, locale?})
+ *   formatFileSize(size, units, locale)   -- the form composition/file-size.mjs
+ *                                            and sf-image-field 1.x published
+ */
+
+function formatFileSize(size, options = {}, legacyLocale) {
+  const where = Array.isArray(options) ? {
+    units: options,
+    locale: legacyLocale ?? 'en'
+  } : options ?? {};
+  if (typeof size === 'string') return size;
+  const bytes = Number(size);
+  if (size === null || size === undefined || !Number.isFinite(bytes) || bytes < 0) return '';
+  const locale = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.formatLocale)(where);
+  const units = where.units?.length ? where.units : fileSizeUnits(locale);
+  let amount = bytes;
+  let index = 0;
+
+  while (amount >= 1024 && index < units.length - 1) {
+    amount /= 1024;
+    index += 1;
+  }
+
+  const digits = index === 0 || amount >= 10 ? 0 : 1;
+  return `${(0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.intlFormatter)('NumberFormat', locale, {
+    maximumFractionDigits: digits
+  }).format(amount)} ${units[index]}`;
+}
+
+/***/ },
+
+/***/ "15b4e93ff6ed"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   formatLocale: () => (/* binding */ formatLocale),
+/* harmony export */   intlFormatter: () => (/* binding */ intlFormatter),
+/* harmony export */   toDate: () => (/* binding */ toDate)
+/* harmony export */ });
+/* harmony import */ var _page_language_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("8489d1f5bab4");
+// The part every format module shares (core/js/format.js says what the
+// helpers are): the locale a call formats in, a Date from what a host gives,
+// and the Intl formatters, kept on a global every copy of these modules shares
+// (bundles each carry their own module copy; page-language.js says why).
+//
+// No top-level side effects, here or in format-number.js, format-date.js,
+// format-relative.js and format-file-size.js (ui-chart, 2026-11-05): a bundle
+// that imports one function carries that function and what it calls, nothing
+// else. The global is made on the first format, not on load, and SF.format is
+// published by core's entry (index.js, publishFormat in format.js).
+
+/** The locale a call formats in: the one it names, else its node's page language. */
+
+function formatLocale({
+  locale,
+  node
+} = {}) {
+  return String(locale || '').trim() || (0,_page_language_js__WEBPACK_IMPORTED_MODULE_0__.pageLocale)(node);
+}
+/** A Date from a Date, a time in milliseconds or a date string; null when it is none. */
+
+function toDate(value) {
+  if (value === null || value === undefined || value === '') return null;
+  const date = value instanceof Date ? new Date(value.getTime()) : new Date(typeof value === 'string' && /^\d+$/u.test(value) ? Number(value) : value);
+  return Number.isNaN(date.getTime()) ? null : date;
+} // The formatters every copy shares, made on the first call.
+
+function formatterCache() {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  if (!root.__sfFormat) root.__sfFormat = {
+    formatters: new Map()
+  };
+  return root.__sfFormat.formatters;
+} // One formatter per kind, locale and options. An unknown locale falls back to
+// the browser's, and options the platform refuses (an unknown unit or
+// currency) to a plain number, so a typo in a page never throws at a reader.
+
+
+function intlFormatter(kind, locale, options) {
+  const key = `${kind}|${locale}|${JSON.stringify(options)}`;
+  const cache = formatterCache();
+  if (cache.has(key)) return cache.get(key);
+  const Make = Intl[kind];
+  let made;
+
+  try {
+    made = new Make(locale || undefined, options);
+  } catch {
+    try {
+      made = new Make(undefined, options);
+    } catch {
+      made = new Make(locale || undefined, kind === 'NumberFormat' ? {
+        maximumFractionDigits: 2
+      } : {});
+    }
+  } // A page that formats in many locales does not grow the cache for ever.
+
+
+  if (cache.size >= 256) cache.delete(cache.keys().next().value);
+  cache.set(key, made);
+  return made;
+}
+
+/***/ },
+
+/***/ "c9ce0852ac73"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   formatNumber: () => (/* binding */ formatNumber),
+/* harmony export */   numberOptions: () => (/* binding */ numberOptions)
+/* harmony export */ });
+/* harmony import */ var _format_intl_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("15b4e93ff6ed");
+// Numbers in the page's language by a format word: formatNumber and
+// numberOptions alone, with no top-level side effects (format-intl.js). The
+// same functions as core/js/format.js and SF.format.number; a bundle that
+// formats numbers only imports them from here.
+
+/**
+ * The Intl options of a number format word (ui-chart's words, kept so a page
+ * writes a format as an attribute):
+ *
+ *   number (default)  1 234,5   as many digits as `step` needs, at most 6; 2 without one
+ *   integer           1 235
+ *   decimal-<n>       n digits after the point, always (0 to 20)
+ *   percent           a share 0..1 as 12 %
+ *   compact           1,2 тыс.  /  1.2K
+ *   currency-<CODE>   1 234,50 ₽ (an ISO 4217 code)
+ *   unit-<unit>       45,3 ГБ (an Intl unit: gigabyte, megabit-per-second)
+ *
+ * Anything else reads as number. Words join with a space: a kind (currency-,
+ * unit-, percent) and a precision (integer, decimal-<n>, compact), so
+ * «currency-RUB integer» is 1 235 ₽, «currency-RUB decimal-2» 1 234,50 ₽ and
+ * «currency-RUB compact» 1,1 млн ₽. The precision wins whatever the order.
+ */
+
+function numberOptions(format = 'number', step = 0) {
+  const words = String(format || 'number').trim().split(/\s+/u).filter(Boolean);
+
+  if (words.length > 1) {
+    const PRECISION = /^(?:integer|compact|decimal-\d{1,2})$/u;
+    const kinds = words.filter(one => !PRECISION.test(one));
+    const precision = words.filter(one => PRECISION.test(one));
+    return [...kinds, ...precision].reduce((options, one) => ({ ...options,
+      ...numberOptions(one, step)
+    }), {});
+  }
+
+  const word = words[0] ?? 'number';
+  if (word === 'integer') return {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  };
+  if (word === 'percent') return {
+    style: 'percent',
+    maximumFractionDigits: 1
+  };
+  if (word === 'compact') return {
+    notation: 'compact',
+    maximumFractionDigits: 1
+  };
+  const decimal = /^decimal-(\d{1,2})$/u.exec(word);
+
+  if (decimal) {
+    const digits = Math.min(20, Number(decimal[1]));
+    return {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits
+    };
+  }
+
+  const unit = /^unit-([a-z]+(?:-per-[a-z]+)?)$/u.exec(word);
+  if (unit) return {
+    style: 'unit',
+    unit: unit[1],
+    unitDisplay: 'short',
+    maximumFractionDigits: 1
+  };
+  const currency = /^currency-([A-Z]{3})$/u.exec(word);
+  if (currency) return {
+    style: 'currency',
+    currency: currency[1]
+  };
+  const digits = step > 0 && step < 1 ? Math.min(6, Math.ceil(-Math.log10(step) - 1e-9)) : 2;
+  return {
+    maximumFractionDigits: digits
+  };
+}
+/**
+ * A number in the locale by a format word (numberOptions). `grouping: false`
+ * writes it without thousands marks («2026»), `step` sets the digits of
+ * `number`, and a value that is not a finite number is `gap`, '' by default
+ * (a chart passes '—').
+ */
+
+function formatNumber(value, format = 'number', {
+  step = 0,
+  gap = '',
+  grouping = true,
+  ...where
+} = {}) {
+  const number = typeof value === 'string' && value.trim() !== '' ? Number(value) : value;
+  if (typeof number !== 'number' || !Number.isFinite(number)) return gap;
+  const options = numberOptions(format, step);
+  if (grouping === false) options.useGrouping = false;
+  return (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.intlFormatter)('NumberFormat', (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.formatLocale)(where), options).format(number);
+}
+
+/***/ },
+
+/***/ "ee5c3aad2640"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   formatRelativeDay: () => (/* binding */ formatRelativeDay),
+/* harmony export */   formatRelativeTime: () => (/* binding */ formatRelativeTime)
+/* harmony export */ });
+/* harmony import */ var _format_intl_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("15b4e93ff6ed");
+/* harmony import */ var _format_date_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("e577837dd70a");
+// Relative days and times in the page's language («вчера», «5 минут назад»),
+// with no top-level side effects (format-intl.js). The same functions as
+// core/js/format.js and SF.format.relativeDay / relativeTime.
+
+ // The first letter in capitals, by the locale's rule («вчера» → «Вчера»).
+
+function capitalise(text, locale) {
+  const first = Array.from(text)[0] ?? '';
+  return first ? first.toLocaleUpperCase(locale || undefined) + text.slice(first.length) : text;
+}
+/**
+ * The day a moment fell on, as a list says it: «сегодня», «вчера», «завтра»,
+ * the weekday within the last week («понедельник»), else the date («3 ноября»,
+ * with the year when it is not this one). The words are the platform's for
+ * the locale (Intl.RelativeTimeFormat, numeric auto); a component that ships
+ * its own passes them (`today`, `yesterday`, `tomorrow`) and they win.
+ * `weekday: false` goes from yesterday straight to the date; `capital: true`
+ * starts the word with a capital, as a heading or a divider does.
+ *
+ * The answer changes at the reader's midnight: msUntilNextDay (format-date.js)
+ * says when.
+ */
+
+
+function formatRelativeDay(value, {
+  now = new Date(),
+  today,
+  yesterday,
+  tomorrow,
+  weekday = true,
+  capital = false,
+  gap = '',
+  ...where
+} = {}) {
+  const moment = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)(value);
+  if (!moment) return gap;
+  const locale = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.formatLocale)(where);
+  const offset = (0,_format_date_js__WEBPACK_IMPORTED_MODULE_1__.calendarDayOffset)(moment, {
+    now
+  });
+  const own = {
+    0: today,
+    [-1]: yesterday,
+    1: tomorrow
+  }[offset];
+  let text;
+
+  if (own) {
+    text = String(own);
+  } else if (offset >= -1 && offset <= 1) {
+    text = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.intlFormatter)('RelativeTimeFormat', locale, {
+      numeric: 'auto'
+    }).format(offset, 'day');
+  } else if (weekday && offset < -1 && offset > -7) {
+    text = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.intlFormatter)('DateTimeFormat', locale, {
+      weekday: 'long'
+    }).format(moment);
+  } else {
+    const year = moment.getFullYear() === (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)(now).getFullYear() ? {} : {
+      year: 'numeric'
+    };
+    text = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.intlFormatter)('DateTimeFormat', locale, {
+      day: 'numeric',
+      month: 'long',
+      ...year
+    }).format(moment);
+  }
+
+  return capital ? capitalise(text, locale) : text;
+} // The largest unit a span reaches is the one it is said in (mail-letters'
+// steps, 2026-10): 90 seconds is «2 минуты назад», 40 days «в прошлом месяце».
+
+const RELATIVE_STEPS = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]];
+/** «5 минут назад», «через 2 часа»: a moment from `now`, in the locale. */
+
+function formatRelativeTime(value, {
+  now = new Date(),
+  gap = '',
+  ...where
+} = {}) {
+  const moment = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)(value);
+  const base = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)(now);
+  if (!moment || !base) return gap;
+  const seconds = Math.round((moment.getTime() - base.getTime()) / 1000);
+  const format = (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.intlFormatter)('RelativeTimeFormat', (0,_format_intl_js__WEBPACK_IMPORTED_MODULE_0__.formatLocale)(where), {
+    numeric: 'auto'
+  });
+
+  for (const [unit, size] of RELATIVE_STEPS) {
+    if (Math.abs(seconds) >= size) return format.format(Math.round(seconds / size), unit);
+  }
+
+  return format.format(seconds, 'second');
+}
+
+/***/ },
+
+/***/ "5b8371b87515"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FILE_SIZE_UNITS: () => (/* reexport safe */ _format_file_size_js__WEBPACK_IMPORTED_MODULE_4__.FILE_SIZE_UNITS),
+/* harmony export */   calendarDayOffset: () => (/* reexport safe */ _format_date_js__WEBPACK_IMPORTED_MODULE_1__.calendarDayOffset),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   fileSizeUnits: () => (/* reexport safe */ _format_file_size_js__WEBPACK_IMPORTED_MODULE_4__.fileSizeUnits),
+/* harmony export */   formatDate: () => (/* reexport safe */ _format_date_js__WEBPACK_IMPORTED_MODULE_1__.formatDate),
+/* harmony export */   formatFileSize: () => (/* reexport safe */ _format_file_size_js__WEBPACK_IMPORTED_MODULE_4__.formatFileSize),
+/* harmony export */   formatLocale: () => (/* reexport safe */ _format_intl_js__WEBPACK_IMPORTED_MODULE_0__.formatLocale),
+/* harmony export */   formatNumber: () => (/* reexport safe */ _format_number_js__WEBPACK_IMPORTED_MODULE_3__.formatNumber),
+/* harmony export */   formatRelativeDay: () => (/* reexport safe */ _format_relative_js__WEBPACK_IMPORTED_MODULE_2__.formatRelativeDay),
+/* harmony export */   formatRelativeTime: () => (/* reexport safe */ _format_relative_js__WEBPACK_IMPORTED_MODULE_2__.formatRelativeTime),
+/* harmony export */   msUntilNextDay: () => (/* reexport safe */ _format_date_js__WEBPACK_IMPORTED_MODULE_1__.msUntilNextDay),
+/* harmony export */   numberOptions: () => (/* reexport safe */ _format_number_js__WEBPACK_IMPORTED_MODULE_3__.numberOptions),
+/* harmony export */   publishFormat: () => (/* binding */ publishFormat),
+/* harmony export */   toDate: () => (/* reexport safe */ _format_intl_js__WEBPACK_IMPORTED_MODULE_0__.toDate)
+/* harmony export */ });
+/* harmony import */ var _format_intl_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("15b4e93ff6ed");
+/* harmony import */ var _format_date_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("e577837dd70a");
+/* harmony import */ var _format_relative_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("ee5c3aad2640");
+/* harmony import */ var _format_number_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("c9ce0852ac73");
+/* harmony import */ var _format_file_size_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("c016c43b1452");
+// Dates, days, numbers and file sizes as people read them, in the page's
+// language (reuse audit 2026-11-02, finding 7). About fourteen components
+// wrote these themselves -- three relative-day rules (thread-list, chat-window
+// with its own midnight refresh, mail-letters), file sizes in four places,
+// numbers in the chart and the quantity -- and they disagreed: «Вчера» in one
+// list, «вчера» in the next, «1.4MB» beside «1,4 МБ». One rule now, through
+// Intl only; the most complete copy was ui-chart's chart-core/format.js, whose
+// number words are kept as they were.
+//
+// The locale is the page's (page-language.js pageLocale): an explicit
+// `locale`, else the language of `node` -- the nearest [lang] above it, the
+// page's choice, <html lang>, English. Never a fixed ru-RU.
+//
+// This module gathers the helpers and the SF.format object; the helpers live
+// in modules of their own with no top-level side effects (core.runtime 1.28.0;
+// ui-chart, 2026-11-05), and a bundle imports what it calls from those:
+//
+//   format-number.js     formatNumber, numberOptions
+//   format-date.js       formatDate, calendarDayOffset, msUntilNextDay, toDate
+//   format-relative.js   formatRelativeDay, formatRelativeTime
+//   format-file-size.js  formatFileSize, fileSizeUnits, FILE_SIZE_UNITS
+//   format-intl.js       formatLocale, toDate (and the shared Intl formatters)
+//
+// Until 1.28.0 this module published SF.format on load, from whichever bundle
+// ran it first; that kept every helper in every bundle that imported one (each
+// chart bundle grew by 1.3-1.4 KB gzip). Core's entry publishes it now
+// (index.js calls publishFormat), and importing this module changes nothing on
+// the page. Its exports are as they were.
+
+
+
+
+
+
+const Format = /* @__PURE__ */Object.freeze({
+  locale: _format_intl_js__WEBPACK_IMPORTED_MODULE_0__.formatLocale,
+  date: _format_date_js__WEBPACK_IMPORTED_MODULE_1__.formatDate,
+  relativeDay: _format_relative_js__WEBPACK_IMPORTED_MODULE_2__.formatRelativeDay,
+  relativeTime: _format_relative_js__WEBPACK_IMPORTED_MODULE_2__.formatRelativeTime,
+  dayOffset: _format_date_js__WEBPACK_IMPORTED_MODULE_1__.calendarDayOffset,
+  msUntilNextDay: _format_date_js__WEBPACK_IMPORTED_MODULE_1__.msUntilNextDay,
+  number: _format_number_js__WEBPACK_IMPORTED_MODULE_3__.formatNumber,
+  numberOptions: _format_number_js__WEBPACK_IMPORTED_MODULE_3__.numberOptions,
+  fileSize: _format_file_size_js__WEBPACK_IMPORTED_MODULE_4__.formatFileSize
+});
+/**
+ * Publishes SF.format on `root` (the page's global), unless something is there
+ * already: core's entry calls it once; a component bundle never does.
+ */
+
+function publishFormat(root = typeof globalThis !== 'undefined' ? globalThis : undefined) {
+  if (!root) return undefined;
+  root.SF = root.SF || {};
+  if (!root.SF.format) root.SF.format = Format;
+  return root.SF.format;
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Format);
+
+/***/ },
+
+/***/ "8489d1f5bab4"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   followLanguage: () => (/* binding */ followLanguage),
+/* harmony export */   isRussianPage: () => (/* binding */ isRussianPage),
+/* harmony export */   language: () => (/* binding */ language),
+/* harmony export */   localeText: () => (/* binding */ localeText),
+/* harmony export */   pageLanguage: () => (/* binding */ pageLanguage),
+/* harmony export */   pageLocale: () => (/* binding */ pageLocale),
+/* harmony export */   pageText: () => (/* binding */ pageText),
+/* harmony export */   pageWord: () => (/* binding */ pageWord)
+/* harmony export */ });
+/* harmony import */ var _tag_aliases_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("4a85acfb05c1");
+// What language a component speaks, and how a product adds one.
+//
+// The Framework speaks English by default and whatever the page says otherwise:
+// the language is the nearest [lang] above the node, else the document's, else
+// English. One rule for every component, so a page never mixes two because two
+// components looked in different places.
+//
+// Until 2026-10-10 that was the whole of it, and every component carried a
+// dictionary of exactly two languages written into its source. Adding a third
+// meant editing sixteen files, and a product that needed one could not add it
+// at all. There will be many more than two (owner, 2026-10-11), so the
+// dictionaries a component ships are now a FLOOR rather than the whole set:
+// anything can be registered beside them, for any language, including one the
+// Framework has never heard of.
+//
+// Where a word comes from, in order:
+//
+//   1. the component's own attribute — a consumer who names a word has named
+//      it, and no language changes it;
+//   2. a word registered for the resolved language;
+//   3. the word the component ships for that language;
+//   4. the same two again for the language without its region (`pt-BR` → `pt`);
+//   5. the same two again for English;
+//   6. the key itself, which is a visible defect rather than a blank.
+//
+// Registering is additive and reversible, and it does not require the
+// Framework to know the language exists.
+// The state is shared between every copy of this module, which there are
+// several of: core, each smart component and each composite are separate
+// bundles, and each one carries its own copy of this file. With the registry
+// in module scope the page had as many registries as bundles -- `SF.language`
+// was published from core's copy, the table read its own, and registering a
+// language changed nothing on screen. Only a browser shows that, and it did
+// (2026-10-11).
+
+
+const STORE = (() => {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  const key = '__sfPageLanguage';
+
+  if (!root[key]) {
+    root[key] = {
+      listeners: new Set(),
+      registered: new Map(),
+      chosen: null
+    };
+  }
+
+  return root[key];
+})();
+
+const LISTENERS = STORE.listeners;
+const REGISTERED = STORE.registered; // Words are kept under a component's current tag: a product that registered
+// them for a renamed tag (sf-datepicker, now sf-input-date) keeps its words
+// while the old tag is a dated alias, whichever name the element was written
+// with (core/js/tag-aliases.js).
+
+const wordsOf = component => REGISTERED.get((0,_tag_aliases_js__WEBPACK_IMPORTED_MODULE_0__.canonicalTag)(component));
+
+const normalise = value => String(value ?? '').trim().toLowerCase().replace('_', '-');
+/** The languages to try, most specific first, English last. */
+
+
+const chain = language => {
+  const wanted = normalise(language);
+  const base = wanted.split('-')[0];
+  const order = [];
+
+  for (const candidate of [wanted, base, 'en']) {
+    if (candidate && !order.includes(candidate)) order.push(candidate);
+  }
+
+  return order;
+};
+/** Which component a node belongs to, for words registered against one. */
+
+
+const componentOf = node => {
+  const tag = node?.tagName;
+  return typeof tag === 'string' ? tag.toLowerCase() : null;
+}; // A layer drawn in a portal carries a copy of its host's language, stamped by
+// carryLayerOrigin (§19.1). When that copy came from the page itself, it has
+// to follow the page before the listeners draw: a word read inside a drawer
+// during SF.language.use() answered the language the page had just left, and
+// the portal was carried again only later, with nothing to draw it again
+// (simai/ui-source#55, found by ui-mail). A portal whose host sits in a
+// section with a language of its own is not touched: that section means it.
+
+
+const carryPageLanguage = () => {
+  const doc = globalThis.document;
+  if (!doc?.querySelectorAll) return;
+  const lang = doc.documentElement?.getAttribute('lang') || '';
+
+  for (const portal of doc.querySelectorAll('[data-sf-layer-lang="page"]')) {
+    if (lang) portal.setAttribute('lang', lang);else portal.removeAttribute('lang');
+  }
+};
+
+const announce = () => {
+  carryPageLanguage();
+
+  for (const listener of [...LISTENERS]) {
+    try {
+      listener();
+    } catch {// A listener that throws is not allowed to stop the others: a page that
+      // half-changed language would be worse than one that did not change.
+    }
+  }
+}; // The nearest element that says its language, looking past shadow roots: a
+// pagination drawn inside a data view's shadow root found no [lang] there,
+// fell back to <html lang> and spoke English inside a Russian admin whose
+// language was set on the shell around it.
+
+
+function langOwner(node) {
+  let current = node;
+
+  while (current) {
+    const owner = typeof current.closest === 'function' ? current.closest('[lang]') : null;
+    if (owner) return owner;
+    const root = typeof current.getRootNode === 'function' ? current.getRootNode() : null;
+    current = root && root !== current && root.host ? root.host : null;
+  }
+
+  return null;
+} // The language of a part of the page wins over the language chosen for the
+// whole page (owner, 2026-10-26; standard simai.smart-component 1.3.8 §11.1):
+//   1. a word given on the element itself (the component's own attribute);
+//   2. the nearest [lang] below <html>;
+//   3. the page's choice, SF.language.use(), which also sets <html lang>;
+//   4. <html lang>;
+//   5. English.
+// Until 2026-10-27 the choice won over a section's [lang], so an English
+// section inside a Russian page that had called use('ru') spoke Russian.
+
+
+function languageSource(node) {
+  const owner = langOwner(node);
+  const root = globalThis.document?.documentElement ?? null;
+  if (owner && owner !== root) return owner.getAttribute('lang');
+  if (STORE.chosen) return STORE.chosen;
+  return owner?.getAttribute('lang') || root?.lang || 'en';
+}
+/**
+ * The page's language for this node: the nearest [lang] below <html>, else
+ * the language the page chose, else <html lang>, else English.
+ */
+
+
+function pageLanguage(node) {
+  // The language without its region, whichever way it was set: a page that
+  // chose 'pt-BR' is a Portuguese page, as a page whose markup says
+  // lang="pt-BR" is. The chosen value kept its region and answered 'pt-br',
+  // which matched no dictionary keyed by language and made isRussianPage false
+  // on a page that chose 'ru-RU'. The region stays in pageLocale.
+  return normalise(languageSource(node)).split('-')[0] || 'en';
+}
+/** The page's language with its region kept, which is what formatting wants. */
+
+function pageLocale(node) {
+  return normalise(languageSource(node)) || 'en';
+}
+/**
+ * Follows `lang` in the document (§11.1 «changes are followed»): one observer
+ * for the page, whichever bundle starts it, and the elements under a changed
+ * [lang] draw again. `element.requestComponentUpdate('language')` is what a
+ * Smart element does; anything else passes its own `redraw`. Returns the way
+ * to stop following.
+ */
+
+function followLanguage(element, redraw = () => element.requestComponentUpdate?.('language')) {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  const doc = element?.ownerDocument ?? root.document;
+  const Observer = doc?.defaultView?.MutationObserver ?? root.MutationObserver;
+  if (!doc?.documentElement || typeof Observer !== 'function') return () => {};
+
+  if (!root.__sfLanguageWatch || root.__sfLanguageWatch.document !== doc) {
+    const watch = {
+      document: doc,
+      elements: new Map(),
+      observer: null
+    };
+    watch.observer = new Observer(records => {
+      const changed = [...new Set(records.map(record => record.target))];
+
+      for (const [one, again] of [...watch.elements]) {
+        if (changed.some(target => within(target, one))) {
+          try {
+            again();
+          } catch {// One element that fails to draw does not keep the others in the
+            // old language.
+          }
+        }
+      }
+    });
+    watch.observer.observe(doc.documentElement, {
+      attributes: true,
+      attributeFilter: ['lang'],
+      subtree: true
+    });
+    root.__sfLanguageWatch = watch;
+  }
+
+  const watch = root.__sfLanguageWatch;
+  watch.elements.set(element, redraw);
+  return () => watch.elements.delete(element);
+} // Whether `node` is `target` or below it, across shadow roots.
+
+function within(target, node) {
+  for (let current = node; current;) {
+    if (current === target) return true;
+    current = current.parentNode || current.host || null;
+  }
+
+  return false;
+}
+
+function isRussianPage(node) {
+  return pageLanguage(node) === 'ru';
+}
+/**
+ * Text for `key` in the page's language.
+ *
+ * `dictionary` is what the component ships; `component` names it for the
+ * registry and defaults to the node's own tag, so a component calling with
+ * `this` identifies itself without saying so twice.
+ */
+
+function pageText(dictionary, key, node, component) {
+  return localeText(dictionary, key, pageLocale(node), component ?? componentOf(node));
+}
+/**
+ * Text for `key` in a named language, with no node to read it from: a server
+ * fallback or a form drawn before it is placed. The same order as pageText --
+ * words registered for `component`, then the shipped ones, for the language,
+ * the language without its region and English -- and the key last.
+ */
+
+function localeText(dictionary, key, locale, component) {
+  for (const candidate of chain(locale || 'en')) {
+    const added = component ? wordsOf(component)?.get(candidate)?.[key] : undefined;
+    if (added !== undefined) return added;
+    const shipped = dictionary?.[candidate]?.[key];
+    if (shipped !== undefined) return shipped;
+  }
+
+  return key;
+} // Missing words are said once per component, word and language: a page that
+// draws a hundred rows must not print a hundred warnings. The marks are kept on
+// the shared global, because every bundle carries this module.
+
+function warnWord(owner, key, locale, said) {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  if (!(root.__sfWordWarnings instanceof Set)) root.__sfWordWarnings = new Set();
+  const mark = `${owner}|${key}|${locale}|${said}`;
+  if (root.__sfWordWarnings.has(mark)) return;
+
+  root.__sfWordWarnings.add(mark);
+
+  globalThis.console?.warn?.(`[SIMAI Framework] ${owner || 'component'}: no word "${key}" for ${locale}${said === 'key' ? '; the key is shown' : `; said in ${said}`}`);
+}
+
+function fill(text, locale, count, vars) {
+  return String(text).replace(/\{([a-z][\w-]*)\}/giu, (whole, name) => {
+    if (name === 'n' && count !== undefined) {
+      try {
+        return new Intl.NumberFormat(locale).format(count);
+      } catch {
+        return String(count);
+      }
+    }
+
+    return vars && Object.prototype.hasOwnProperty.call(vars, name) ? String(vars[name]) : whole;
+  });
+}
+/**
+ * A component's own word (standard simai.smart-component 1.3.8 §11, §11.1).
+ *
+ * `dictionary` is `{<locale>: {<key>: word}}` from the component's language
+ * files. A word given on the element itself is the caller's to prefer; this
+ * resolves the rest: words registered for the element's language, then the
+ * shipped ones, the language without its region, English, the component's
+ * source language and, last, the key. The last two warn once. A word that
+ * takes a number is an object of plural forms chosen by Intl.PluralRules of
+ * the language the word was found in; `{n}` is the number in that language's
+ * format and `{name}` takes `vars.name`.
+ *
+ * `former` names the key the same word had before a rename (one key or a
+ * list): a product that registered its words under the old key keeps them
+ * until the alias's day. For each language the word registered under the new
+ * key wins, then one registered under an old key, then the shipped one; a
+ * word taken by an old key is reported to `onFormer(oldKey)`, which notes the
+ * deprecation.
+ */
+
+
+function pageWord(dictionary, key, node, {
+  component,
+  source = '',
+  count,
+  vars,
+  former,
+  onFormer
+} = {}) {
+  const owner = component ?? componentOf(node);
+  const locale = pageLocale(node);
+  const order = chain(locale);
+  const sourceLanguage = normalise(source);
+  if (sourceLanguage && !order.includes(sourceLanguage)) order.push(sourceLanguage);
+  const formerKeys = former === undefined || former === null ? [] : [].concat(former);
+
+  for (const candidate of order) {
+    const registered = owner ? wordsOf(owner)?.get(candidate) : undefined;
+    let added = registered?.[key];
+
+    if (added === undefined && registered) {
+      const old = formerKeys.find(name => registered[name] !== undefined && registered[name] !== null);
+
+      if (old !== undefined) {
+        added = registered[old];
+        onFormer?.(old);
+      }
+    }
+
+    const word = added !== undefined ? added : dictionary?.[candidate]?.[key];
+    if (word === undefined || word === null) continue;
+    if (candidate === sourceLanguage && !chain(locale).includes(candidate)) warnWord(owner, key, locale, candidate);
+
+    if (typeof word === 'object') {
+      let form = 'other';
+
+      if (count !== undefined) {
+        try {
+          form = new Intl.PluralRules(candidate).select(Number(count));
+        } catch {
+          form = 'other';
+        }
+      }
+
+      const picked = word[form] ?? word.other;
+      if (picked === undefined) continue;
+      return fill(picked, candidate, count, vars);
+    }
+
+    return fill(word, candidate, count, vars);
+  }
+
+  warnWord(owner, key, locale, 'key');
+  return key;
+}
+const language = {
+  /** What the page resolves to for this node, region and all. */
+  current(node = globalThis.document?.documentElement ?? null) {
+    return pageLocale(node);
+  },
+
+  /**
+   * Choose a language for the whole page, whatever its markup says. `null`
+   * returns to following the document, which is the default and what a
+   * server-rendered page wants.
+   */
+  use(value) {
+    const next = value === null || value === undefined ? null : normalise(value);
+    if (next === STORE.chosen) return STORE.chosen;
+    STORE.chosen = next; // The choice is the page's language: <html lang> says it too (§11.1), so
+    // the browser, a screen reader and CSS :lang() agree with the words.
+    // use(null) gives the markup's own language back.
+
+    const root = globalThis.document?.documentElement;
+
+    if (root) {
+      const holder = globalThis;
+
+      if (next) {
+        if (holder.__sfMarkupLanguage === undefined) holder.__sfMarkupLanguage = root.getAttribute('lang');
+        if (root.getAttribute('lang') !== next) root.setAttribute('lang', next);
+      } else if (holder.__sfMarkupLanguage !== undefined) {
+        if (holder.__sfMarkupLanguage === null) root.removeAttribute('lang');else root.setAttribute('lang', holder.__sfMarkupLanguage);
+        holder.__sfMarkupLanguage = undefined;
+      }
+    }
+
+    announce();
+    return STORE.chosen;
+  },
+
+  /**
+   * Add or replace one component's words for one language.
+   *
+   * The words are merged, so a product can correct a single label without
+   * restating the rest, and `null` removes what it added.
+   */
+  register(component, value, words) {
+    const name = (0,_tag_aliases_js__WEBPACK_IMPORTED_MODULE_0__.canonicalTag)(component ?? '');
+    const code = normalise(value);
+    if (!name || !code) throw new TypeError('a component and a language are required');
+    if (!REGISTERED.has(name)) REGISTERED.set(name, new Map());
+    const byLanguage = REGISTERED.get(name);
+    if (words === null) byLanguage.delete(code);else byLanguage.set(code, { ...(byLanguage.get(code) ?? {}),
+      ...words
+    });
+    announce();
+    return this;
+  },
+
+  /** One language across many components: `{ 'sf-input-date': {...}, ... }`. */
+  registerAll(value, byComponent = {}) {
+    for (const [component, words] of Object.entries(byComponent)) {
+      this.register(component, value, words);
+    }
+
+    return this;
+  },
+
+  /** The languages something has registered words for. */
+  known(component) {
+    return [...(wordsOf(component ?? '')?.keys() ?? [])];
+  },
+
+  /** Every component something has been registered for. */
+  components() {
+    return [...REGISTERED.keys()];
+  },
+
+  /**
+   * Called whenever the chosen language or the registered words change, so a
+   * component can draw itself again. Returns the way to stop listening.
+   */
+  onChange(listener) {
+    if (typeof listener !== 'function') return () => {};
+    LISTENERS.add(listener);
+    return () => LISTENERS.delete(listener);
+  },
+
+  /** Everything registered is forgotten. For tests, and for a product reset. */
+  forget() {
+    REGISTERED.clear();
+    STORE.chosen = null;
+    announce();
+    return this;
+  }
+
+}; // Reachable by a consumer, which it was not: `sf-admin-menu` had written its
+// own reading of the rule because the shared one was an internal module, and
+// the two then disagreed about a region that names its own language. A product
+// composing its own elements gets the same rule here.
+
+if (typeof window !== 'undefined') {
+  window.SF = window.SF || {};
+  window.SF.language = language;
+  window.SF.pageLanguage = pageLanguage;
+  window.SF.pageText = pageText;
+}
+
+/***/ },
+
+/***/ "f28a9d913ce0"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Generated from the `tag` rows of src/smart/*/aliases.json and the element_aliases of
+// src/core/contracts/packages/*.package.json by scripts/tag-alias-table.mjs; do not edit.
+// The dated tag aliases of the Framework and of its component packages, read by core/js/tag-aliases.js.
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Object.freeze([Object.freeze({
+  from: 'sf-avatars',
+  to: 'sf-avatar-group',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-button-group',
+  to: 'sf-segmented',
+  since: '2026-11-08',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-change-confirm',
+  to: 'sf-confirm-change',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-close',
+  to: 'sf-button-close',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-code-input',
+  to: 'sf-input-code',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-color',
+  to: 'sf-input-color',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-composition-overlay',
+  to: 'sf-editor-overlay',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-content-editor',
+  to: 'sf-editor-content',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-context-menu',
+  to: 'sf-menu-context',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-copy-button',
+  to: 'sf-button-copy',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-country-code',
+  to: 'sf-input-country',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-data-view',
+  to: 'sf-view',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-datepicker',
+  to: 'sf-input-date',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-download-file',
+  to: 'sf-file-download',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-icon-button',
+  to: 'sf-button-icon',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-image-field',
+  to: 'sf-input-image',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-inline-editor',
+  to: 'sf-editor-inline',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-lookup',
+  to: 'sf-input-lookup',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-page-header',
+  to: 'sf-header-page',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-property-view',
+  to: 'sf-view-properties',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-quantity',
+  to: 'sf-input-quantity',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-range-slider',
+  to: 'sf-slider-range',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-rich-text',
+  to: 'sf-input-rich',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-site-header',
+  to: 'sf-header-site',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-table',
+  to: 'sf-view-table',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-textarea',
+  to: 'sf-input-textarea',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-thread-list',
+  to: 'sf-chat-threads',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+})]));
+
+/***/ },
+
+/***/ "4a85acfb05c1"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   canonicalTag: () => (/* binding */ canonicalTag),
+/* harmony export */   defineTagAliases: () => (/* binding */ defineTagAliases),
+/* harmony export */   isTag: () => (/* binding */ isTag),
+/* harmony export */   listTagAliases: () => (/* binding */ listTagAliases),
+/* harmony export */   noteTagAlias: () => (/* binding */ noteTagAlias),
+/* harmony export */   registerTagAliasRows: () => (/* binding */ registerTagAliasRows),
+/* harmony export */   registerTagAliases: () => (/* binding */ registerTagAliases),
+/* harmony export */   tagNames: () => (/* binding */ tagNames),
+/* harmony export */   tagSelector: () => (/* binding */ tagSelector)
+/* harmony export */ });
+/* harmony import */ var _deprecations_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("06e8cd089f28");
+/* harmony import */ var _alias_table_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("f49a716b86bd");
+/* harmony import */ var _tag_aliases_generated_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("f28a9d913ce0");
+// Dated tag aliases (rename plan R0, ui-control RENAME-PLAN-2026-11-03; change
+// lifecycle: contracts/changes/journal.json, kind "tag"). When a Smart
+// component takes a new tag, the old tag keeps working until its
+// `remove_after` day:
+//
+// - Definition. defineTagAliases(Class, tag) defines each old tag as a trivial
+//   subclass of the class that defines the new one (the Smart base calls it
+//   from define()). The Loader's rule lists the old tag beside the new one, so
+//   markup with the old tag alone loads the bundle.
+// - Note. The first old-tag element a page connects is noted in
+//   SF.deprecations (kind "tag") and named once on the console with the new tag
+//   and the date, whatever the page opted into: an element name is the most
+//   visible thing a page writes, and the old one is going.
+// - Script. Code that finds a renamed element by name asks for both names
+//   through one helper instead of a literal:
+//
+//     import {tagSelector, isTag} from '../../core/js/smart-base';
+//     host.querySelector(`.sf-tag > ${tagSelector('sf-button-close')}`);
+//     if (isTag(node, 'sf-button-close')) ...
+//
+// - Sheets. A selector that names the new tag names the old one beside it in
+//   source, `:is(sf-button-close, sf-close)`, for as long as the alias lives
+//   (scripts/rename-smart-tag.mjs writes it, --sweep takes it out; the
+//   contract test tests/tag-aliases.contract.test.mjs holds both).
+//
+// The aliases are a static table (tag-aliases.generated.js, written by
+// scripts/tag-alias-table.mjs from every component's aliases.json and from the
+// element_aliases of the component package references,
+// contracts/packages/*.package.json), so a lookup finds an old tag before the
+// renamed component's bundle has run, a package's (sf-table, rename plan R2)
+// as well as the Framework's. A package's component adds its rows again when it
+// is defined, which matters only for a package the pair does not reference. Every copy of this
+// module shares one state on the page (a global symbol); the Smart bundles
+// reach it through the shared runtime (smart-base re-exports it).
+
+
+
+const STATE = Symbol.for('simai.sf.tag-aliases');
+
+function state() {
+  if (!globalThis[STATE]) {
+    const shared = {
+      byOld: new Map(),
+      byNew: new Map(),
+      noted: new Set()
+    };
+    Object.defineProperty(globalThis, STATE, {
+      value: shared,
+      configurable: true
+    });
+
+    for (const row of _tag_aliases_generated_js__WEBPACK_IMPORTED_MODULE_2__["default"]) addRow(shared, row);
+  }
+
+  return globalThis[STATE];
+}
+
+function addRow(shared, row) {
+  if (shared.byOld.has(row.from)) return;
+  shared.byOld.set(row.from, row);
+  shared.byNew.set(row.to, [...(shared.byNew.get(row.to) ?? []), row.from]);
+} // Rows from a component's aliases.json (its `tag` rows); the Framework's are
+// already known, a package's are added here.
+
+
+function registerTagAliases(table, tag) {
+  const {
+    rows
+  } = (0,_alias_table_js__WEBPACK_IMPORTED_MODULE_1__.readTagAliases)(table, {
+    tag
+  });
+  const shared = state();
+
+  for (const row of rows) addRow(shared, row);
+
+  return rows;
+} // Rows a component set gives at runtime (SF.RuleLoader.registerPackage(name,
+// {aliases})): {from, to, since, remove_after}, the set's own former tags, so
+// SIMAI Framework needs no table row for a set it does not know. Answers the
+// rows taken; a row whose old tag is already known keeps the first.
+
+function registerTagAliasRows(rows) {
+  const shared = state();
+  const taken = [];
+
+  for (const row of Array.isArray(rows) ? rows : []) {
+    if (!row || typeof row.from !== 'string' || typeof row.to !== 'string') continue;
+    if (shared.byOld.has(row.from)) continue;
+    const clean = Object.freeze({
+      from: row.from,
+      to: row.to,
+      since: String(row.since ?? ''),
+      remove_after: String(row.remove_after ?? '')
+    });
+    addRow(shared, clean);
+    taken.push(clean);
+  }
+
+  return taken;
+} // The open old names of a tag, its own first: ['sf-button-close', 'sf-close'].
+
+function tagNames(tag) {
+  const name = String(tag || '').toLowerCase();
+  return [name, ...(state().byNew.get(name) ?? [])];
+} // A selector for the tag that matches its old names too:
+// ':is(sf-button-close, sf-close)', or the tag itself when it has none.
+
+function tagSelector(tag) {
+  const names = tagNames(tag);
+  return names.length > 1 ? `:is(${names.join(', ')})` : names[0];
+} // Whether an element is the tag, under its own or an old name.
+
+function isTag(element, tag) {
+  const name = element?.localName;
+  return Boolean(name) && tagNames(tag).includes(name);
+} // The current name of a tag: 'sf-button-close' for 'sf-close'. An old tag the
+// page still has as an element of its own stays itself: a component package
+// built before its rename (rules naming sf-table alone) beside a pair whose
+// table already knows the new name, where the new tag would never upgrade.
+
+function canonicalTag(tag) {
+  const name = String(tag || '').toLowerCase();
+  const row = state().byOld.get(name);
+  if (!row) return name;
+  const own = globalThis.customElements?.get?.(name);
+  if (own && !own.sfTagAliasOf) return name;
+  let rules = null;
+
+  try {
+    rules = globalThis.SF?.Loader?.getCustomElementRules?.() ?? null;
+  } catch {
+    rules = null;
+  }
+
+  if (rules && rules[name] && !rules[row.to]) return name;
+  return row.to;
+} // Every open row: [{from, to, since, remove_after}].
+
+function listTagAliases() {
+  return [...state().byOld.values()].map(row => ({ ...row
+  }));
+} // The page met an element under an old name: once per old tag.
+
+function noteTagAlias(row) {
+  const shared = state();
+  const expired = (0,_alias_table_js__WEBPACK_IMPORTED_MODULE_1__.aliasExpired)(row);
+  (0,_deprecations_js__WEBPACK_IMPORTED_MODULE_0__.noteDeprecated)({
+    component: row.to,
+    kind: 'tag',
+    from: row.from,
+    to: row.to,
+    tag: row.to,
+    since: row.since,
+    remove_after: row.remove_after,
+    expired
+  });
+  if (shared.noted.has(row.from)) return;
+  shared.noted.add(row.from); // deprecations.js prints an expired name itself, and every name when the
+  // page opted in; the note here is for the rest.
+
+  const optedIn = globalThis.document?.documentElement?.dataset?.sfDeprecations === 'warn' || globalThis.SF?.deprecations?.warn === true;
+  if (expired || optedIn) return;
+  globalThis.console?.warn?.(`[SIMAI Framework] <${row.from}> is now <${row.to}>; the old tag works until ${row.remove_after}. Write <${row.to}>. See contracts/changes/journal.json.`);
+} // Defines each old tag of `tag` as a subclass of `Base` (the class that
+// defines `tag`), through `define(name, Class)`: the Smart base passes its
+// definition queue, so both names are defined in the same batch. Returns the
+// rows defined.
+
+function defineTagAliases(Base, tag, {
+  table = Base?.aliases,
+  define
+} = {}) {
+  if (table) registerTagAliases(table, tag);
+  const rows = (state().byNew.get(tag) ?? []).map(from => state().byOld.get(from));
+  const registry = globalThis.customElements;
+  const defined = [];
+
+  for (const row of rows) {
+    if (!registry || registry.get(row.from)) continue;
+
+    class TagAlias extends Base {
+      connectedCallback() {
+        noteTagAlias(row);
+        super.connectedCallback?.();
+      }
+
+    }
+
+    Object.defineProperty(TagAlias, 'sfTagAliasOf', {
+      value: row.to
+    });
+    (define ?? ((name, Class) => registry.define(name, Class)))(row.from, TagAlias);
+    defined.push(row);
+  }
+
+  return defined;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {}; // For scripts that are not Smart bundles (class components, a page):
+  // SF.tags.selector('sf-button-close').
+
+  if (!globalThis.SF.tags) {
+    globalThis.SF.tags = Object.freeze({
+      names: tagNames,
+      selector: tagSelector,
+      is: isTag,
+      canonical: canonicalTag,
+      list: listTagAliases
+    });
+  }
+}
+
+/***/ },
+
+/***/ "1b5cf325ddb6"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ },
+
+/***/ "ab7ec7cd175d"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FORMAT_NAMES: () => (/* binding */ FORMAT_NAMES),
+/* harmony export */   acceptFormats: () => (/* binding */ acceptFormats),
+/* harmony export */   acceptsFile: () => (/* binding */ acceptsFile),
+/* harmony export */   fileRejection: () => (/* binding */ fileRejection),
+/* harmony export */   positiveLimit: () => (/* binding */ positiveLimit)
+/* harmony export */ });
+// The upload core's checks (C81: one core, five views), as pure functions:
+// which files an accept list names, why one file is refused before any count
+// is taken, and how the formats read in a message. sf-file-upload's intake
+// (_file_upload.js takeFiles) and sf-input-image (src/smart/input-image) both
+// read them from here, so a file is refused for the same reasons and in the
+// same words in a list and in an image field. This module binds nothing and
+// reads no page: _file_upload.js binds every .sf-file-upload as it loads,
+// which a page with only an image field has no use for, so the field imports
+// these and not that.
+
+// Whether a file is one the accept list names: `.ext`, `type/*` or `type/sub`,
+// as the platform dialog reads it. The dialog filters what a person may pick;
+// a drop (or a paste, or the dialog's «All files») goes past it.
+function acceptsFile(accept, file) {
+  const tokens = String(accept || '').split(',').map((token) => token.trim().toLowerCase()).filter(Boolean);
+  if (!tokens.length) return true;
+  const name = String(file?.name || '').toLowerCase();
+  const type = String(file?.type || '').toLowerCase();
+  return tokens.some((token) => {
+    if (token.startsWith('.')) return name.endsWith(token);
+    if (token.endsWith('/*')) return type.startsWith(token.slice(0, -1));
+    return type === token;
+  });
+}
+
+// A limit in bytes, pixels or files: a positive number, else none (0).
+function positiveLimit(value) {
+  const number = Number(value ?? '');
+  return Number.isFinite(number) && number > 0 ? number : 0;
+}
+
+// Why one file is refused on its own, before the list's counts: '' when it
+// passes; else 'type' (accept does not name it), 'empty' (no bytes), 'size'
+// (past maxSize) or 'min-size' (under minSize). The order is the order a
+// person fixes them in: the kind of file first, then its size.
+function fileRejection(file, {accept = '', maxSize = 0, minSize = 0} = {}) {
+  if (!acceptsFile(accept, file)) return 'type';
+  const bytes = Number(file?.size) || 0;
+  if (bytes === 0) return 'empty';
+  if (maxSize && bytes > maxSize) return 'size';
+  if (minSize && bytes < minSize) return 'min-size';
+  return '';
+}
+
+// The names people know a format by, where its media subtype is not one:
+// image/jpeg is a JPG, image/svg+xml an SVG.
+const FORMAT_NAMES = Object.freeze({
+  jpeg: 'JPG',
+  pjpeg: 'JPG',
+  'svg+xml': 'SVG',
+  webp: 'WebP',
+  'x-icon': 'ICO',
+  'vnd.microsoft.icon': 'ICO',
+});
+
+// The formats an accept list names, as people read them: «PDF, DOCX»,
+// «JPG, PNG», «изображения». `kindWord(kind)` gives the word of a whole kind
+// (`image/*`, `video/*`, `audio/*`) in the page's language.
+function acceptFormats(accept, kindWord = (kind) => kind) {
+  const parts = String(accept || '')
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const wild = /^(image|video|audio)\/\*$/iu.exec(part);
+      if (wild) return kindWord(wild[1].toLowerCase());
+      const bare = part.replace(/^\./u, '');
+      const sub = (bare.includes('/') ? bare.split('/').pop() || bare : bare).toLowerCase();
+      return FORMAT_NAMES[sub] ?? sub.toUpperCase();
+    });
+  return [...new Set(parts)].join(', ');
+}
+
+
+/***/ },
+
+/***/ "fb0bdf7719f0"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FILE_ICONS: () => (/* binding */ FILE_ICONS),
+/* harmony export */   FILE_SIZE_UNITS: () => (/* reexport safe */ _format_js__WEBPACK_IMPORTED_MODULE_0__.FILE_SIZE_UNITS),
+/* harmony export */   fileIcon: () => (/* binding */ fileIcon),
+/* harmony export */   fileNameFromAddress: () => (/* binding */ fileNameFromAddress),
+/* harmony export */   fileSizeUnits: () => (/* reexport safe */ _format_js__WEBPACK_IMPORTED_MODULE_0__.fileSizeUnits),
+/* harmony export */   formatFileSize: () => (/* reexport safe */ _format_js__WEBPACK_IMPORTED_MODULE_0__.formatFileSize)
+/* harmony export */ });
+/* harmony import */ var _format_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("5b8371b87515");
+// How a stored file reads to people: its size in the page's language and its
+// name when nobody gave it one. sf-image-field wrote these first (its
+// value.mjs re-exports them); the Composition renderer draws content.file with
+// the same rule, so a size reads the same in a field and on a page. No DOM.
+
+// The size rule is core's number format (core/js/format.js, reuse audit
+// 2026-11-02 finding 7), re-exported under the names this module published:
+// formatFileSize(size, units, locale) still reads as it did. Imported through
+// format.js on purpose: the builder ships a source module's relative imports
+// beside it, and this import is what lays core/js/format.js and its parts
+// (format-*.js) in the distribution for products that import them. None of
+// them has a top-level side effect, so a bundle keeps only what it calls.
+
+
+// The last part of an address, decoded, without its query and fragment: the
+// name a file is shown under when it has no label. A data: or blob: address
+// has no name in it -- the last «/» of `data:image/svg+xml,<svg …>` falls
+// inside the content, and the name read «>» (image field study IF-14) -- so it
+// gives none, and the caller says what the file is instead.
+function fileNameFromAddress(href) {
+  if (/^\s*(?:data|blob):/iu.test(String(href ?? ''))) return '';
+  const tail = String(href).split(/[?#]/u)[0].split('/').pop() || '';
+  try {
+    return decodeURIComponent(tail);
+  } catch {
+    return tail;
+  }
+}
+
+// The icon of a file's kind, by its media type: sf-download-file's own glyph
+// (download) when the type says nothing a reader would recognise. The
+// Composition renderer draws content.file with it; an editor that draws the
+// same row (sf-content-editor) imports it from here rather than keeping a copy.
+// Each entry is [pattern, icon]; the first pattern that matches wins.
+const FILE_ICONS = Object.freeze([
+  [/^application\/pdf$/u, 'picture_as_pdf'],
+  [/^image\//u, 'image'],
+  [/^video\//u, 'movie'],
+  [/^audio\//u, 'audio_file'],
+  [/^application\/(?:zip|x-zip-compressed|x-7z-compressed|x-rar-compressed|vnd\.rar|x-tar|gzip|x-gzip)$/u, 'folder_zip'],
+  [/^(?:text\/csv|application\/vnd\.ms-excel|application\/vnd\.openxmlformats-officedocument\.spreadsheetml\.[a-z.]+|application\/vnd\.oasis\.opendocument\.spreadsheet)$/u, 'table_chart'],
+  [/^(?:application\/vnd\.ms-powerpoint|application\/vnd\.openxmlformats-officedocument\.presentationml\.[a-z.]+|application\/vnd\.oasis\.opendocument\.presentation)$/u, 'slideshow'],
+  [/^(?:text\/|application\/msword$|application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.[a-z.]+$|application\/vnd\.oasis\.opendocument\.text$|application\/rtf$)/u, 'description'],
+].map((entry) => Object.freeze(entry)));
+
+// The icon name for a media type; download when there is none or nothing matches.
+function fileIcon(mime) {
+  if (typeof mime !== 'string' || !mime) return 'download';
+  return FILE_ICONS.find(([pattern]) => pattern.test(mime))?.[1] ?? 'download';
+}
+
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	const __webpack_module_cache__ = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		const cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		const module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			const e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter/value functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			if(Array.isArray(definition)) {
+/******/ 				var i = 0;
+/******/ 				while(i < definition.length) {
+/******/ 					var key = definition[i++];
+/******/ 					var binding = definition[i++];
+/******/ 					if(!__webpack_require__.o(exports, key)) {
+/******/ 						if(binding === 0) {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
+/******/ 						} else {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, get: binding });
+/******/ 						}
+/******/ 					} else if(binding === 0) { i++; }
+/******/ 				}
+/******/ 			} else {
+/******/ 				for(var key in definition) {
+/******/ 					if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 					}
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/
+/************************************************************************/
+let __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _scss_index_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("1b5cf325ddb6");
+/* harmony import */ var _js_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("0c39c584acf3");
+/**
+ * SIMAI Framework
+ * Copyright 2008-2026 SIMAI Ltd
+ * http://simai.studio
+ * Read the license: http://framework.simai.studio/license/
+ * Documentation: http://framework.simai.studio/
+ * Support: http://simai.studio/support/
+ *
+ * INPUTS
+ *
+ * Entry point for importing components from this directory.
+ * Simplifies the import process in other parts of the project.
+ * Instead of importing individual files, all component can be imported through this file.
+ */
+
+
+})();
+
+/******/ })()
+;

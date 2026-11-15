@@ -12,6 +12,8 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final class InlineComponentRenderer
 {
+    private const KEY_COMPONENT = 'docara.kbd';
+
     public function __construct(
         private readonly AuthoringAttributeParser $attributes = new AuthoringAttributeParser,
         private readonly ComponentAliasRegistry $aliases = new ComponentAliasRegistry,
@@ -56,8 +58,10 @@ final class InlineComponentRenderer
             return $line;
         }
 
-        for ($index = count($matches) - 1; $index >= 0; $index--) {
-            $match = $matches[$index];
+        // Each component outside inline code, rendered in source order; keys
+        // joined by `+` (`:kbd[⌘] + :kbd[K]`) then become one combination.
+        $rendered = [];
+        foreach ($matches as $match) {
             $offset = $match[0][1];
             if ($this->insideInlineCode($line, $offset)) {
                 continue;
@@ -68,24 +72,65 @@ final class InlineComponentRenderer
                 ? $match['attributes'][0]
                 : '';
             $attributes = $this->attributes->parse($attributeSource, $name);
+            $location = new SourceLocation($source, $lineNumber, $offset + 1, $lineNumber);
+            $rendered[] = [
+                'offset' => $offset,
+                'length' => strlen($match[0][0]),
+                'key' => $this->aliases->resolve($name, $location) === self::KEY_COMPONENT,
+                'seed' => $name . "\0" . $label . "\0" . $attributeSource,
+                'html' => $this->render($name, $label, $attributes, $location, $match[0][0]),
+            ];
+        }
+
+        $runs = [];
+        foreach ($rendered as $component) {
+            $last = $runs === [] ? null : $runs[array_key_last($runs)];
+            $previous = $last === null ? null : $last[array_key_last($last)];
+            if ($previous !== null && $previous['key'] && $component['key']) {
+                $between = substr($line, $previous['offset'] + $previous['length'], $component['offset'] - $previous['offset'] - $previous['length']);
+                if (preg_match('/\A[ \t]*\+[ \t]*\z/D', $between) === 1) {
+                    $runs[array_key_last($runs)][] = $component;
+
+                    continue;
+                }
+            }
+            $runs[] = [$component];
+        }
+
+        for ($index = count($runs) - 1; $index >= 0; $index--) {
+            $run = $runs[$index];
+            $first = $run[0];
+            $end = $run[count($run) - 1]['offset'] + $run[count($run) - 1]['length'];
+            $html = count($run) === 1
+                ? $first['html']
+                : self::keyCombination(array_column($run, 'html'));
             $placeholder = 'DOCARA_INLINE_' . strtoupper(substr(hash(
                 'sha256',
-                $name . "\0" . $label . "\0" . $attributeSource . "\0" . $offset . "\0" . count($replacements),
+                implode("\0", array_column($run, 'seed')) . "\0" . $first['offset'] . "\0" . count($replacements),
             ), 0, 24));
             while (str_contains($markdown, $placeholder) || isset($replacements[$placeholder])) {
                 $placeholder .= 'X';
             }
-            $replacements[$placeholder] = $this->render(
-                $name,
-                $label,
-                $attributes,
-                new SourceLocation($source, $lineNumber, $offset + 1, $lineNumber),
-                $match[0][0],
-            );
-            $line = substr_replace($line, $placeholder, $offset, strlen($match[0][0]));
+            $replacements[$placeholder] = $html;
+            $line = substr_replace($line, $placeholder, $first['offset'], $end - $first['offset']);
         }
 
         return $line;
+    }
+
+    /**
+     * A combination in the SIMAI Framework key markup (component.kbd 1.3):
+     * the keys inside one `<kbd class="sf-kbd--group">`, with the author's
+     * `+` kept as `.sf-kbd-join`, which the Framework shows only where keys
+     * are drawn without a frame.
+     *
+     * @param  list<string>  $keys
+     */
+    private static function keyCombination(array $keys): string
+    {
+        return '<kbd class="sf-kbd--group">'
+            . implode('<span class="sf-kbd-join">+</span>', $keys)
+            . '</kbd>';
     }
 
     private function insideInlineCode(string $line, int $offset): bool

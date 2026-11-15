@@ -31,6 +31,9 @@ Press :kbd[Esc] to close the window.
 ### Combinations
 
 Write each key separately and put a `+` sign between them as plain text.
+Keys joined by `+` become one SIMAI Framework combination: the keys stand side
+by side, without the `+` sign between them. Keys with words between them
+("then", "after that") stay separate: they are pressed one after another.
 
 :::example {label="Key combination"}
 ```markdown
@@ -40,8 +43,11 @@ Open search with :kbd[⌘] + :kbd[K], then press :kbd[Enter].
 
 ## Accessibility
 
-- The key is output as a `<kbd>` element: screen readers recognise it as
-  keyboard input.
+- The key is output as a `<kbd class="sf-kbd">` element of the SIMAI
+  Framework key component, a key of one sign (`⌘`, `K`) as a square. A
+  combination is output as an outer `<kbd class="sf-kbd--group">` with the
+  keys inside, and the `+` sign stays in the markup as a `.sf-kbd-join`
+  element. Screen readers recognise them as keyboard input.
 - Write the label as a word or a symbol, as on the keyboard: `Esc`, `Enter`,
   `⌘`.
 - For a menu command, a file name or code choose plain text or backticks,

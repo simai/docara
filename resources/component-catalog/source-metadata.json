@@ -174,7 +174,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/kbd.md",
-            "source_sha256": "b810ce6dcf919c3a18c94dd2e5d33d110d95650c9a8973407747f0618d14fe67",
+            "source_sha256": "5da513fcfd65e405a8df4b71abbd16cc5a33d469c1b2985dbcbfc2028e46bc23",
             "release": "3.14.3",
             "source_url": "https://github.com/simai/docara/blob/v3.14.3/docs/site/content/ru/components/kbd.md",
             "history_url": "https://github.com/simai/docara/commits/v3.14.3/docs/site/content/ru/components/kbd.md",
@@ -573,5 +573,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "480bbcbe813a153f3fdc7c199a59be93f9bc9c53f2fe64d719b02cac26e1519d"
+    "content_sha256": "79a0bc21a06bdec8174fa4dd870cab08d50699d58646c5c1274dc66d297492df"
 }

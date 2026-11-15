@@ -765,7 +765,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.badge' => '<span class="sf-badge ',
             'docara.button' => '<a class="sf-button ',
             'docara.icon' => '<i class="sf-icon ',
-            'docara.kbd' => '<kbd class="inline-flex ',
+            'docara.kbd' => '<kbd class="sf-kbd',
         ];
         $supported = array_values(array_filter(
             $catalog['entries'],

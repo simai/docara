@@ -695,7 +695,7 @@ MD);
 MD);
 
         self::assertStringContainsString('sf-badge--main sf-badge--success sf-badge--size-1/2', $html);
-        self::assertStringContainsString('<kbd class="inline-flex items-center', $html);
+        self::assertStringContainsString('<kbd class="sf-kbd">Esc</kbd>', $html);
         self::assertStringContainsString('sf-icon-rounded sf-icon-filled', $html);
         self::assertStringContainsString('role="img" aria-label="Поиск"', $html);
         self::assertStringContainsString(
@@ -707,6 +707,33 @@ MD);
         self::assertStringContainsString('href="/start/"', $html);
         self::assertStringContainsString('<code>:badge[Не компонент]{type=main}</code>', $html);
         self::assertStringContainsString(':icon[also_not_a_component]', $html);
+    }
+
+    #[Test]
+    public function keys_are_the_framework_key_and_keys_joined_by_plus_one_combination(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+Нажмите :kbd[Esc], откройте поиск :kbd[⌘] + :kbd[K] или :kbd[Ctrl]+:kbd[Shift] + :kbd[P].
+
+Сначала :kbd[G], затем :kbd[I]; `:kbd[A] + :kbd[B]` остаётся кодом.
+MD);
+
+        // component.kbd 1.3: one key is <kbd class="sf-kbd">, a key of one
+        // sign is square, and keys joined by + are one .sf-kbd--group whose
+        // + is the Framework's .sf-kbd-join.
+        self::assertStringContainsString('<kbd class="sf-kbd">Esc</kbd>', $html);
+        self::assertStringContainsString(
+            '<kbd class="sf-kbd--group"><kbd class="sf-kbd sf-kbd--square">⌘</kbd><span class="sf-kbd-join">+</span><kbd class="sf-kbd sf-kbd--square">K</kbd></kbd>',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<kbd class="sf-kbd--group"><kbd class="sf-kbd">Ctrl</kbd><span class="sf-kbd-join">+</span><kbd class="sf-kbd">Shift</kbd><span class="sf-kbd-join">+</span><kbd class="sf-kbd sf-kbd--square">P</kbd></kbd>',
+            $html,
+        );
+        // A sequence is two keys with words between them, not a combination.
+        self::assertStringContainsString('<kbd class="sf-kbd sf-kbd--square">G</kbd>, затем <kbd class="sf-kbd sf-kbd--square">I</kbd>', $html);
+        self::assertStringContainsString('<code>:kbd[A] + :kbd[B]</code>', $html);
+        self::assertSame(2, substr_count($html, 'sf-kbd--group'));
     }
 
     #[Test]

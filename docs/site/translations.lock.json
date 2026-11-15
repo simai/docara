@@ -1554,10 +1554,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/kbd.md",
-            "source_sha256": "4fe0fd5ef78e03f36458914f8388e8c877c5679f0516aa6990cf43921089f476",
+            "source_sha256": "3bd96341531aec62c7af33604b2da8d060caa811985ff353ba4fcea6b7a54674",
             "source_structure_sha256": "f1022132f59c789c7e51568635ea8b3f60b058f6c965d738b0c6881b3d68bd48",
             "target_path": "content/en/components/kbd.md",
-            "target_sha256": "12fa736971cfea7b6830f191aab650a7e4d82b9dddc40f1272ace7c47e5530b3",
+            "target_sha256": "cc4a6055a7b104e5a156e3001069a4cb6888cc4ccac2ba698fa9f5dc7678370f",
             "target_structure_sha256": "f1022132f59c789c7e51568635ea8b3f60b058f6c965d738b0c6881b3d68bd48"
         },
         {

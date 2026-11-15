@@ -34,6 +34,17 @@ All notable changes to Docara are recorded here. The format follows
   `ui-7fb26d395af2` (Docara 3.14.3) build with the new release: that lock is
   recorded as superseded. The update page lists the new pair and the version
   of the old one.
+- **A key is the Framework key.** `:kbd[...]` drew its key with its own
+  utilities (a framed inline box); it now prints the SIMAI Framework key
+  markup of component.kbd 1.3: `<kbd class="sf-kbd">`, square
+  (`sf-kbd--square`) for a key of one sign such as `⌘` or `K`, and keys
+  joined by `+` (`:kbd[⌘] + :kbd[K]`) as one combination,
+  `<kbd class="sf-kbd--group">` with the `+` kept as `.sf-kbd-join`, which
+  the Framework shows only where keys have no frame. The key takes its size
+  and look from where it stands, as the Framework defines; the Framework kbd
+  stylesheet already sits in the page shell (the search button's shortcut
+  uses it), and the asset planner links it for any page with a key. The
+  Markdown syntax does not change.
 
 ## [3.14.3] - 2026-11-14
 

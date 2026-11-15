@@ -227,7 +227,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString('designTokens:exampleDesignTokens()', $shellJs);
         self::assertStringContainsString('rootFontSize:getComputedStyle(document.documentElement).fontSize', $shellJs);
         self::assertStringContainsString("addEventListener('resize',function()", $shellJs);
-        self::assertStringContainsString("Object.assign({type:'docara:example-measure'},environment)", $shellJs);
+        self::assertStringContainsString("Object.assign({type:'docara:example-measure',pageHeight:window.innerHeight},environment)", $shellJs);
         self::assertStringContainsString('link[data-docara-declarative-shell-style][rel="stylesheet"]', $shellJs);
         // The header menu is printed twice: in the sf-header-site first-paint
         // picture and as the slotted original the element places.
@@ -494,7 +494,11 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // as sf-settings, change the components the pages use and the shell
         // files that follow them: 3299. SIMAI Framework ui-141822273efe (its
         // Smart and runtime files) and the shell groups that follow it: 3309.
-        self::assertCount(3309, $firstFiles);
+        // Docara 3.15.0 over that pair (shell stylesheets of two and a half
+        // times their distinct bytes that carry the brand, navigation and
+        // preferences styles, the quiet steps and the Start links) regroups
+        // the shell stylesheets: 3310.
+        self::assertCount(3310, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

@@ -2985,15 +2985,22 @@ MD;
         // segments the cascade keeps apart, and the stub site's pages link 7.6
         // stylesheets on average (the documentation site 6.6). The 3.14.3
         // shell (example caption, desktop scroll, static tree) regroups the
-        // stub site's bundles to 8.25; the documentation site stays at 7.66
-        // links per page, as in 3.14.2. With ui-141822273efe the sr-only
+        // stub site's bundles to 8.25 (the documentation site's pages then
+        // linked about 10.5 shell stylesheets; an older count of 7.66 stood
+        // here). With ui-141822273efe the sr-only
         // utility comes before the layout utilities on some pages and after
         // them on others (the components that need it differ), and the menu
         // and scrollbar sheets likewise, so fewer runs are shared: 10.375
         // (56 bundles instead of 46). The documentation site's pages link
-        // within four sheets of the published 3.14.3 site, some fewer.
+        // within four sheets of the published 3.14.3 site, some fewer: 12.3
+        // shell stylesheets on average, at most 22. In 3.15.0 the shell
+        // stylesheets take two and a half times their distinct bytes and
+        // carry the brand, navigation and preferences styles: 8 on the stub
+        // site (53 bundles); the documentation site's pages link 10.9 shell
+        // stylesheets (at most 23) and 12.0 stylesheets in all instead of
+        // 18.4 (at most 25 instead of 29).
         self::assertLessThanOrEqual(
-            ShellStylesheetBundler::TARGET_REQUESTS + 4.5,
+            ShellStylesheetBundler::TARGET_REQUESTS + 2.25,
             array_sum(array_map('count', $pageFiles)) / count($pageFiles),
         );
         self::assertLessThanOrEqual(

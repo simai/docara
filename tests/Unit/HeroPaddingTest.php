@@ -105,8 +105,10 @@ final class HeroPaddingTest extends TestCase
 
         // The narrow-screen landing step tightens section and lg/xl hero
         // padding, but never a 2xl hero: its clamp already starts at 3rem on
-        // a phone, and the step used to cut it to --sf-space-2.
-        $narrow = $this->mediaBlock($css, '@media not all and (min-width:60rem){');
+        // a phone, and the step used to cut it to --sf-space-2. The shell has
+        // more than one narrow-screen block (the steps' own gap comes first),
+        // so the test opens the one that holds the landing step.
+        $narrow = $this->mediaBlock($css, '@media not all and (min-width:60rem){', '.docara-landing [data-docara-container]:not(.docara-padding-2xl){padding-block:');
         self::assertStringContainsString(
             '.docara-landing [data-docara-container]:not(.docara-padding-2xl){padding-block:var(--sf-space-2)}',
             $narrow,
@@ -169,9 +171,11 @@ final class HeroPaddingTest extends TestCase
         self::assertSame(['lg', 'xl', '2xl'], $padding[0]['values']);
     }
 
-    private function mediaBlock(string $css, string $opening): string
+    private function mediaBlock(string $css, string $opening, ?string $containing = null): string
     {
-        $start = strpos($css, $opening);
+        $start = $containing === null
+            ? strpos($css, $opening)
+            : strrpos(substr($css, 0, (int) strpos($css, $containing)), $opening);
         self::assertNotFalse($start, $opening);
         $depth = 0;
         for ($index = $start; $index < strlen($css); $index++) {

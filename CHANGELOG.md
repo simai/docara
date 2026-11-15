@@ -132,22 +132,26 @@ All notable changes to Docara are recorded here. The format follows
   `sf-button-icon`: the Loader loads each pair once, and the page's shared
   stylesheets already hold their rules. Every page still linked both files a
   second time under the other name. It now links two stylesheets fewer
-  (19.5 instead of 21.5 on average on the documentation site) and fetches
-  5.4 KB less; what is drawn does not change.
+  (16.3 instead of 18.3 on average on the documentation site) and fetches
+  5.7 KB less; what is drawn does not change.
 - **Pages link fewer, larger shared stylesheets.** The shared first-frame
   stylesheets may now take two and a half times the bytes of their distinct
   parts instead of twice, so the planner groups more of each page's parts
-  into one file. On the documentation site a page links 7.3 of them instead
-  of 10.5 (at most 21 instead of 24), and 16.2 stylesheets in all instead of
-  19.5. A page downloads the same bytes as before on a first visit; the
-  site publishes 5.8 MB of them instead of 4.3 MB, and the next page fetches
-  about 575 KB of them again instead of 376 KB (before compression).
+  into one file. On the documentation site a page links 10.9 of them
+  instead of 12.3 (at most 23 instead of 22: the SIMAI Framework pair this
+  release bundles orders the sr-only, menu and scrollbar sheets differently
+  from page to page, so fewer runs can be shared), and 15.0 stylesheets in
+  all instead of 16.3. An ordinary page downloads the same bytes as before
+  on a first visit; a page whose example frame shows a whole demonstrator
+  page shares fewer of the larger sheets with that frame and downloads
+  about 0.2 MB more. The site publishes 6.2 MB of these sheets instead of
+  5.7 MB (before compression).
 - **The brand, navigation and reading-settings styles ride in the shared
   stylesheets.** `brand.css`, `navigation.css` and `preferences.css` were
   three links of their own on every page. A page that draws those elements
   now carries their rules in its shared first-frame stylesheets, in the same
-  place in the cascade, and links them no more: 13.2 stylesheets per page
-  instead of 16.2 on the documentation site (at most 24 instead of 27), the
+  place in the cascade, and links them no more: 12.0 stylesheets per page
+  instead of 15.0 on the documentation site (at most 25 instead of 28), the
   same bytes. The example frames, which take the page's shared stylesheets,
   get these rules too; they only style Docara's own elements. A project Smart
   stylesheet, and one that names other files with `url()` or an import, keeps

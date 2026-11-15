@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.15.0] - 2026-11-15
+
 ### Added
 
 - **`branding.logo_icon`: an icon-only mark for a narrow header.** A site in

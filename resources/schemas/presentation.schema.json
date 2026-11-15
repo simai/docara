@@ -26,6 +26,10 @@
                     "type": "string",
                     "format": "docara-relative-path"
                 },
+                "logo_icon": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
                 "favicon": {
                     "type": "string",
                     "format": "docara-relative-path"

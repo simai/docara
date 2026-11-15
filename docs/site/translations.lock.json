@@ -2418,10 +2418,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/branding-and-theme.md",
-            "source_sha256": "c5e054a0b9bccd74c2c3f8b6572e301df319775e1168807f7acd88b48ab5ad61",
+            "source_sha256": "dddf90b9ebe874512e204c31fd77bfa53d105c380d08567ffdca54ca0644ab65",
             "source_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7",
             "target_path": "content/en/settings/branding-and-theme.md",
-            "target_sha256": "22e792de9ae39608ec648548faa6f227dd0e8dedd7542f769c7d8a8e37878d75",
+            "target_sha256": "f9f3d43f34b87a756682d3fab0a68f373336c175cad5f41834163fe2ff806c41",
             "target_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7"
         },
         {

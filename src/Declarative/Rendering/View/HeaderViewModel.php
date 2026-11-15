@@ -13,5 +13,7 @@ final readonly class HeaderViewModel
         public string $homeUrl,
         public ?string $logo,
         public ?string $logoDark,
+        /** The icon-only mark a narrow header shows in place of the logo. */
+        public ?string $logoIcon = null,
     ) {}
 }

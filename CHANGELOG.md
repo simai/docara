@@ -51,6 +51,26 @@ All notable changes to Docara are recorded here. The format follows
   uses it), and the asset planner links it for any page with a key. The
   Markdown syntax does not change.
 
+### Added
+
+- **`branding.logo_icon`: an icon-only mark for a narrow header.** A site in
+  the `logo` mode can name a logo without lettering (Docara's own site uses
+  its square mark); below 456 px, where the logo and every header tool do
+  not fit together, the header shows it in place of the logo in both
+  themes.
+
+### Fixed
+
+- **The phone header fits the sf-language button (C142).** From sf-language
+  1.4 the language picker is a button with the code and a chevron (100 px
+  on a phone, 120 px from 60rem), where it was a 40 px icon, and on a phone
+  the search button covered the logo. The place the header holds for the
+  picker before it draws now has its real width; the logo scales down
+  inside the brand place sf-header-site lets shrink, or gives way to
+  `branding.logo_icon`; below 360 px the repository link leaves the bar.
+  Checked at 320, 360, 390, 430, 768 and 1440 px in both themes: no control
+  overlaps another and the page does not scroll sideways.
+
 ## [3.14.3] - 2026-11-14
 
 ### Changed

@@ -8,13 +8,21 @@ body[data-docara-shell]{opacity:1!important}
 .docara-outline-mobile{display:none}
 /* The header is the Framework sf-header-site (PortableSiteHeader): the navigation fills the bar between the brand and the tools. */
 .docara-header-content{flex:1 1 auto}
-/* Until sf-language has drawn its trigger (it then sets data-look), it holds the place of one size-1 icon button, so the tools do not shift while its script loads. */
-.docara-header-tools>sf-language[data-docara-language]:not([data-look]){display:inline-block;inline-size:2.5rem;block-size:2.5rem}
+/* Until sf-language has drawn its trigger (it then sets data-look), it holds the place of that trigger, so the tools do not shift while its script loads. From sf-language 1.4 (owner decision C142) the trigger is a size-1 button with the language icon, the two-letter code and a chevron: 120 px from the Framework lg breakpoint (60rem), 100 px below it, where the size-1 control is smaller. */
+.docara-header-tools>sf-language[data-docara-language]:not([data-look]){display:inline-block;inline-size:7.5rem;block-size:2.5rem}
+@media(max-width:59.99rem){.docara-header-tools>sf-language[data-docara-language]:not([data-look]){inline-size:6.25rem}}
 /* The language menu is positioned for its popup, so it would paint over the open panel and its scrim that come before it; they are lifted over the bar's own controls. */
 .docara-header .sf-site-header--open .sf-site-header-scrim,.docara-header .sf-site-header--open .sf-site-header-panel{z-index:1}
 /* The search field follows the Framework size-1 control height, which is smaller on phones, like the icon buttons beside it. */
 .docara-header{--docara-header-control-size:calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-default))}
 .docara-header .docara-brand--logo{--docara-brand-mark-size:var(--sf-c6)}
+/* A phone bar is narrower than the brand and the tools together: sf-header-site lets the brand slot shrink (C142), so the logo scales down inside it rather than running under the tools. */
+.docara-header .docara-brand--logo .docara-brand-mark{display:flex;flex:0 1 auto;min-inline-size:0}
+.docara-header .docara-brand--logo .docara-brand-mark>img{min-inline-size:0;max-inline-size:100%;object-fit:contain;object-position:0 50%}
+/* Below the width where the logo and every tool fit (the menu button, search, language, settings and repository need 333 px beside a 123 px logo, so 456 px), a brand with branding.logo_icon shows that icon-only mark instead. */
+@media(max-width:28.5rem){.docara-header .docara-brand--with-icon .docara-brand-logo{display:none}.docara-header .docara-brand--with-icon .docara-brand-icon{display:block}}
+/* Below 360 px the tools alone are wider than the bar leaves them: the repository link, the one tool a reader does not need on the spot, leaves the bar. */
+@media(max-width:22.49rem){.docara-header [data-docara-repository-link]{display:none}}
 .docara-search-trigger{--sf-button--border-color:var(--sf-outline-variant)}
 /* The header row, docs layout, landing content and footer are all Framework containers: they take its side padding steps, so the logo, sidebar, content and footer start on one line at every width. */
 .docara-docs-layout{display:grid;grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}

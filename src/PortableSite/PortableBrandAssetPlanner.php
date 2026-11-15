@@ -42,6 +42,7 @@ final readonly class PortableBrandAssetPlanner
                 'size' => is_string($branding['size'] ?? null) ? $branding['size'] : ConfigurationDefaults::value('branding.size'),
                 'logo' => null,
                 'logo_dark' => null,
+                'logo_icon' => null,
                 'favicon' => null,
                 'favicon_type' => null,
             ];
@@ -60,7 +61,7 @@ final readonly class PortableBrandAssetPlanner
                     );
                 }
             }
-            foreach (['logo', 'logo_dark', 'favicon', 'share_image'] as $field) {
+            foreach (['logo', 'logo_dark', 'logo_icon', 'favicon', 'share_image'] as $field) {
                 if (! is_string($branding[$field] ?? null)) {
                     continue;
                 }

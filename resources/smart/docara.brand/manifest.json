@@ -16,7 +16,8 @@
           "size": {"type": "string", "enum": ["small", "medium", "large"]},
           "home_url": {"type": "string", "minLength": 1, "maxLength": 500, "pattern": "^/(?!/)"},
           "logo": {"type": ["string", "null"], "minLength": 1, "maxLength": 500},
-          "logo_dark": {"type": ["string", "null"], "minLength": 1, "maxLength": 500}
+          "logo_dark": {"type": ["string", "null"], "minLength": 1, "maxLength": 500},
+          "logo_icon": {"type": ["string", "null"], "minLength": 1, "maxLength": 500}
         },
         "required": ["title", "label", "mode", "size", "home_url", "logo", "logo_dark"],
         "additionalProperties": false

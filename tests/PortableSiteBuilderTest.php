@@ -2616,6 +2616,49 @@ MD;
     }
 
     #[Test]
+    public function a_logo_brand_with_an_icon_mark_prints_the_icon_a_narrow_header_shows(): void
+    {
+        // C142: below the width where the logo and the header tools fit, the
+        // header shows branding.logo_icon in place of the logo.
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        file_put_contents(
+            $this->tmpPath('assets/docara-icon.svg'),
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="4" fill="#e81123"/></svg>',
+        );
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['branding']['mode'] = 'logo';
+        $site['branding']['logo_icon'] = 'assets/docara-icon.svg';
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        $output = $this->tmpPath('build_local');
+        $this->builder()->build($this->tmp, $output);
+
+        $iconUrl = '/_docara/brand/' . hash_file('sha256', $this->tmpPath('assets/docara-icon.svg')) . '.svg';
+        self::assertFileExists($output . $iconUrl);
+        $html = (string) file_get_contents($output . '/ru/index.html');
+        self::assertStringContainsString('docara-brand docara-brand--logo docara-brand--with-icon', $html);
+        // The header holds the brand in its first-paint markup and in the
+        // slot it draws from: each copy carries the icon.
+        $brands = substr_count($html, 'docara-brand--with-icon');
+        self::assertGreaterThanOrEqual(1, $brands);
+        self::assertSame($brands, substr_count($html, '<img src="' . $iconUrl . '" class="docara-brand-icon" alt="">'));
+
+        unset($site['branding']['logo_icon']);
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $this->builder()->build($this->tmp, $output);
+        $html = (string) file_get_contents($output . '/ru/index.html');
+        self::assertStringContainsString('docara-brand docara-brand--logo', $html);
+        self::assertStringNotContainsString('docara-brand--with-icon', $html);
+        self::assertStringNotContainsString('docara-brand-icon', $html);
+    }
+
+    #[Test]
     public function symbolic_link_brand_assets_fail_before_existing_output_is_cleaned(): void
     {
         $this->copyPortableFixture($this->tmp);

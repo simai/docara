@@ -28,6 +28,7 @@ final class BrandingContextAdapter implements SmartContextAdapter
             $this->escape((string) $branding['home_url']),
             $branding['logo'] === null ? null : $this->escape((string) $branding['logo']),
             $branding['logo_dark'] === null ? null : $this->escape((string) $branding['logo_dark']),
+            ($branding['logo_icon'] ?? null) === null ? null : $this->escape((string) $branding['logo_icon']),
         );
     }
 

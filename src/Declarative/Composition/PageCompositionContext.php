@@ -9,7 +9,7 @@ use Simai\Docara\Portable\PortableConfigurationException;
 final readonly class PageCompositionContext
 {
     /**
-     * @param  array{title:string,label:string|null,mode:string,size:string,logo:string|null,logo_dark:string|null,home_url:string}  $branding
+     * @param  array{title:string,label:string|null,mode:string,size:string,logo:string|null,logo_dark:string|null,logo_icon:string|null,home_url:string}  $branding
      * @param  list<array<string, mixed>>  $navigation
      * @param  list<array<string, mixed>>  $headerNavigation
      * @param  list<array{id:string,level:int,text:string}>  $outline
@@ -64,6 +64,7 @@ final readonly class PageCompositionContext
                 'size' => is_string($branding['size'] ?? null) ? $branding['size'] : 'medium',
                 'logo' => is_string($branding['logo'] ?? null) ? $branding['logo'] : null,
                 'logo_dark' => is_string($branding['logo_dark'] ?? null) ? $branding['logo_dark'] : null,
+                'logo_icon' => is_string($branding['logo_icon'] ?? null) ? $branding['logo_icon'] : null,
                 'home_url' => $homeUrl,
             ],
             self::normalizeNavigation($navigation),
@@ -116,6 +117,7 @@ final readonly class PageCompositionContext
             || ($this->branding['logo'] !== null && ! self::safeUrl($this->branding['logo']))
             || ($this->branding['logo_dark'] !== null && ! self::safeUrl($this->branding['logo_dark']))
             || ($this->branding['logo_dark'] !== null && $this->branding['logo'] === null)
+            || ($this->branding['logo_icon'] !== null && ! self::safeUrl($this->branding['logo_icon']))
             || ($this->branding['mode'] === 'logo' && $this->branding['logo'] === null)
         ) {
             throw new PortableConfigurationException(

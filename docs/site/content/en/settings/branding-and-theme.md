@@ -71,6 +71,14 @@ The `logo` mode shows only the logo in the header, without a text name;
 `title` stays the accessible name of the home link. The logo is drawn with
 `<img>`, so for the dark theme set a separate file in `logo_dark`.
 
+A wide logo with lettering does not fit into a phone header beside search,
+the language picker and the settings. For the `logo` mode set an icon
+without lettering in `branding.logo_icon`, for example the brand's square
+mark: on a screen narrower than 456 px the header shows it instead of the
+logo in both themes. Without `logo_icon` the logo shrinks on a narrow screen
+and does not run under the buttons. Below 360 px the repository link leaves
+the header so that the other buttons fit.
+
 `branding.label` is a short second line, for example "Documentation" or
 "API". It is shown only in `full` and `text`; do not add it just to fill
 space. `branding.size` takes `small`, `medium` or `large` and changes the

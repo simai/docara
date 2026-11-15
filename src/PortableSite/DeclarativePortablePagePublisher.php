@@ -801,8 +801,75 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         foreach ($tags as [$attribute, $name, $content]) {
             $html .= '    <meta ' . $attribute . '="' . $this->escape($name) . '" content="' . $this->escape($content) . '">' . "\n";
         }
+        if (is_string($page['markdown_copy_url'] ?? null)) {
+            $html .= '    <link rel="alternate" type="text/markdown" href="' . $this->escape($page['markdown_copy_url']) . '">' . "\n";
+        }
 
-        return $html;
+        return $html . $this->structuredData($page, $title, $description, $brandTitle, $image, $isHome);
+    }
+
+    /**
+     * schema.org structured data (JSON-LD) for a site with site_url: the
+     * website, the page (a TechArticle, or a WebPage for a locale home) with
+     * its language, last Git change and share image, and the breadcrumb
+     * trail when the page shows one.
+     *
+     * @param  array<string, mixed>  $page
+     */
+    private function structuredData(array $page, string $title, string $description, string $brandTitle, ?string $image, bool $isHome): string
+    {
+        $origin = (string) $page['site_origin'];
+        $url = (string) $page['canonical_url'];
+        $siteUrl = is_string($page['site_url'] ?? null) ? $page['site_url'] : $origin . '/';
+        $absolute = static fn (string $path): string => str_starts_with($path, '/') ? $origin . $path : $path;
+        $website = [
+            '@type' => 'WebSite',
+            '@id' => $siteUrl . '#website',
+            'name' => $brandTitle,
+            'url' => $siteUrl,
+        ];
+        $article = [
+            '@type' => $isHome ? 'WebPage' : 'TechArticle',
+            '@id' => $url . '#page',
+            'url' => $url,
+            ($isHome ? 'name' : 'headline') => $title,
+            'inLanguage' => (string) $page['locale'],
+            'isPartOf' => ['@id' => $siteUrl . '#website'],
+        ];
+        if ($description !== '') {
+            $article['description'] = $description;
+        }
+        if (is_string($page['updated_at'] ?? null) && $page['updated_at'] !== '') {
+            $article['dateModified'] = $page['updated_at'];
+        }
+        if ($image !== null) {
+            $article['image'] = $image;
+        }
+        $graph = [$website, $article];
+        $trail = [];
+        foreach (is_array($page['breadcrumbs'] ?? null) ? $page['breadcrumbs'] : [] as $crumb) {
+            if (is_array($crumb) && is_string($crumb['url'] ?? null) && trim((string) ($crumb['title'] ?? '')) !== '') {
+                $trail[] = ['title' => trim((string) $crumb['title']), 'url' => $absolute($crumb['url'])];
+            }
+        }
+        if ($trail !== [] && ! $isHome) {
+            if (end($trail)['url'] !== $url) {
+                $trail[] = ['title' => $title, 'url' => $url];
+            }
+            $items = [];
+            foreach ($trail as $position => $crumb) {
+                $items[] = ['@type' => 'ListItem', 'position' => $position + 1, 'name' => $crumb['title'], 'item' => $crumb['url']];
+            }
+            $article['breadcrumb'] = ['@id' => $url . '#breadcrumb'];
+            $graph[1] = $article;
+            $graph[] = ['@type' => 'BreadcrumbList', '@id' => $url . '#breadcrumb', 'itemListElement' => $items];
+        }
+        $json = json_encode(
+            ['@context' => 'https://schema.org', '@graph' => $graph],
+            JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP,
+        );
+
+        return '    <script type="application/ld+json">' . $json . '</script>' . "\n";
     }
 
     private function escape(string $value): string

@@ -1,5 +1,5 @@
 ---
-description: Блоки лендинга features, showcase, promo, columns и cta — карточки преимуществ, показ результата, финальный призыв, колонки и кнопка действия — с живыми примерами и правилами разметки.
+description: "Блоки лендинга features, showcase, promo, columns и cta: преимущества, показ результата, призыв к действию и колонки — с живыми примерами."
 tags: [лендинг, landing, features, showcase, promo, columns, cta]
 ---
 

@@ -1,5 +1,5 @@
 ---
-description: The interface labels of a locale live in content/<locale>/lang.json — search, contents, copying, page links and accessibility labels. The full list of strings and their defaults.
+description: "Interface labels in content/<locale>/lang.json: search, contents, copying, page links and accessibility. Every string and its default value."
 tags: [lang-json, labels, translation, interface, i18n]
 ---
 

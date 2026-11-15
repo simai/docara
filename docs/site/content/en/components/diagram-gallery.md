@@ -1,5 +1,5 @@
 ---
-description: The Mermaid diagram gallery — all 22 diagram types Docara draws, with a live result, the source and examples from real documentation work, from a publishing process to a release plan.
+description: "The Mermaid diagram gallery: all 22 diagram types Docara draws, with a live result, the source and examples from real documentation work."
 tags: [mermaid, diagrams, charts, flowchart, gantt]
 ---
 

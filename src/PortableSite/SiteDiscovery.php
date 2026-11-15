@@ -28,6 +28,16 @@ final readonly class SiteDiscovery
 
     public const LLMS = 'llms.txt';
 
+    /** Every indexable page of the default language as Markdown, in one file. */
+    public const LLMS_FULL = 'llms-full.txt';
+
+    /** Crawlers that gather text for AI models and answers, named in robots.txt when discovery.ai_crawlers is "deny". */
+    public const AI_CRAWLERS = [
+        'GPTBot', 'OAI-SearchBot', 'ChatGPT-User', 'ClaudeBot', 'Claude-SearchBot', 'Claude-User', 'anthropic-ai',
+        'Google-Extended', 'Applebot-Extended', 'PerplexityBot', 'Perplexity-User', 'CCBot', 'Bytespider',
+        'meta-externalagent', 'Amazonbot', 'cohere-ai', 'YandexAdditional',
+    ];
+
     public const FILES = [self::SITEMAP, self::ROBOTS, self::LLMS];
 
     /**
@@ -40,6 +50,7 @@ final readonly class SiteDiscovery
         public ?string $description,
         public array $llmsLinks,
         public bool $portal = false,
+        public bool $aiCrawlersAllowed = true,
     ) {}
 
     /**
@@ -93,6 +104,11 @@ final readonly class SiteDiscovery
             ];
         }
 
+        $aiCrawlers = $discovery['ai_crawlers'] ?? 'allow';
+        if ($aiCrawlers !== 'allow' && $aiCrawlers !== 'deny') {
+            throw new PortableConfigurationException('DISCOVERY_AI_CRAWLERS_INVALID', 'discovery.ai_crawlers must be "allow" or "deny".');
+        }
+
         // A portal build (docara.json `portal`) leaves sitemap.xml and
         // robots.txt to the portal and keeps llms.txt.
         return new self(
@@ -102,6 +118,7 @@ final readonly class SiteDiscovery
             $description === '' ? null : $description,
             $links,
             ($site['portal'] ?? null) !== null,
+            $aiCrawlers === 'allow',
         );
     }
 
@@ -145,27 +162,116 @@ final readonly class SiteDiscovery
     /**
      * The three files, keyed by their path under the deployment root.
      *
-     * @param  list<array<string, mixed>>  $pages  url, locale, title, description, translation_key, noindex, translation_fallback
+     * @param  list<array<string, mixed>>  $pages  url, locale, title, description, translation_key, noindex, translation_fallback, updated_at
      * @param  list<array{title:string,url:string}>  $sections  the default locale's top-level navigation
      * @param  list<array{label:string,url:string,locale:string}>  $languages  each locale's home, default first
+     * @param  list<string>|null  $fullText  the Markdown copies of the default language's indexable pages in sitemap order, or null when they are not all known (an incremental build keeps the earlier llms-full.txt)
      * @return array<string, string>
      */
-    public function files(array $pages, array $sections, string $siteTitle, ?string $homeDescription, array $languages): array
+    public function files(array $pages, array $sections, string $siteTitle, ?string $homeDescription, array $languages, ?array $fullText = null): array
     {
-        if ($this->portal) {
-            return [self::LLMS => $this->llms($pages, $sections, $siteTitle, $homeDescription, $languages)];
-        }
-
-        return [
+        $files = $this->portal ? [] : [
             self::SITEMAP => $this->sitemap($pages),
             self::ROBOTS => $this->robots(),
-            self::LLMS => $this->llms($pages, $sections, $siteTitle, $homeDescription, $languages),
         ];
+        $files[self::LLMS] = $this->llms($pages, $sections, $siteTitle, $homeDescription, $languages, $fullText !== null && $fullText !== []);
+        if ($fullText !== null && $fullText !== []) {
+            $files[self::LLMS_FULL] = $this->llmsFull($fullText, $siteTitle, $homeDescription);
+        }
+
+        return $files;
     }
 
     public function robots(): string
     {
-        return "User-agent: *\nAllow: /\n\nSitemap: " . $this->siteUrl . self::SITEMAP . "\n";
+        $text = "User-agent: *\nAllow: /\n";
+        if (! $this->aiCrawlersAllowed) {
+            $text .= "\n# discovery.ai_crawlers: deny\n";
+            foreach (self::AI_CRAWLERS as $agent) {
+                $text .= 'User-agent: ' . $agent . "\n";
+            }
+            $text .= "Disallow: /\n";
+        }
+
+        return $text . "\nSitemap: " . $this->siteUrl . self::SITEMAP . "\n";
+    }
+
+    /**
+     * A page as plain Markdown for language models: its title, description
+     * and address, then the text as written, without front matter or
+     * `:::preserved` blocks.
+     */
+    public static function markdownCopy(string $title, string $description, string $url, string $markdown, string $origin = ''): string
+    {
+        $text = '# ' . self::line($title) . "\n\n";
+        $description = self::line($description);
+        if ($description !== '') {
+            $text .= '> ' . $description . "\n\n";
+        }
+        $text .= 'Source: <' . $url . ">\n\n";
+        $body = trim(str_replace("\r\n", "\n", $markdown));
+        // The page's own first-level title is already the copy's heading.
+        $body = (string) preg_replace('/\A#\s+[^\n]*\n+/', '', $body);
+        if ($origin !== '') {
+            // Links to the site's own pages become absolute, so the copy reads
+            // the same wherever a model meets it; code stays as written.
+            $body = self::outsideFences($body, static fn (string $line): string => (string) preg_replace(
+                '#\]\((/(?!/)[^)\s]*)\)#',
+                '](' . $origin . '$1)',
+                $line,
+            ));
+        }
+
+        return $text . $body . "\n";
+    }
+
+    /** @param list<string> $copies */
+    private function llmsFull(array $copies, string $siteTitle, ?string $homeDescription): string
+    {
+        $text = '# ' . self::line($siteTitle) . "\n";
+        $summary = $this->description ?? ($homeDescription === null ? null : self::line($homeDescription));
+        if ($summary !== null && $summary !== '') {
+            $text .= "\n> " . $summary . "\n";
+        }
+        foreach ($copies as $copy) {
+            // Each page's heading is one level down, under the site title.
+            $text .= "\n---\n\n" . self::demoteHeadings($copy);
+        }
+
+        return $text;
+    }
+
+    /** Markdown headings one level down; lines inside code fences stay as they are. */
+    private static function demoteHeadings(string $markdown): string
+    {
+        return self::outsideFences(
+            $markdown,
+            static fn (string $line): string => preg_match('/\A#{1,5} /', $line) === 1 ? '#' . $line : $line,
+        );
+    }
+
+    /** @param callable(string): string $change applied to every line outside code fences */
+    private static function outsideFences(string $markdown, callable $change): string
+    {
+        $fence = null;
+        $lines = explode("\n", $markdown);
+        foreach ($lines as &$line) {
+            if (preg_match('/\A\s{0,3}(`{3,}|~{3,})/', $line, $match) === 1) {
+                if ($fence === null) {
+                    $fence = $match[1];
+                } elseif (str_starts_with(ltrim($line), $fence)) {
+                    $fence = null;
+                }
+
+                continue;
+            }
+            if ($fence === null) {
+                $line = $change($line);
+            }
+        }
+        unset($line);
+
+        return implode("\n", $lines);
     }
 
     /** @param list<array<string, mixed>> $pages */
@@ -191,6 +297,9 @@ final readonly class SiteDiscovery
         $body = '';
         foreach ($indexable as $url => $page) {
             $body .= "  <url>\n    <loc>" . $this->xml($this->absolute($url)) . "</loc>\n";
+            if (is_string($page['updated_at'] ?? null) && $page['updated_at'] !== '') {
+                $body .= '    <lastmod>' . $this->xml($page['updated_at']) . "</lastmod>\n";
+            }
             $group = $groups[(string) ($page['translation_key'] ?? $url)] ?? [];
             if (count($group) > 1) {
                 $alternatesUsed = true;
@@ -216,7 +325,7 @@ final readonly class SiteDiscovery
      * @param  list<array{title:string,url:string}>  $sections
      * @param  list<array{label:string,url:string,locale:string}>  $languages
      */
-    public function llms(array $pages, array $sections, string $siteTitle, ?string $homeDescription, array $languages): string
+    public function llms(array $pages, array $sections, string $siteTitle, ?string $homeDescription, array $languages, bool $fullText = false): string
     {
         $descriptions = [];
         foreach ($pages as $page) {
@@ -248,6 +357,9 @@ final readonly class SiteDiscovery
         $text .= "\n## Machine-readable\n\n";
         foreach ($this->llmsLinks as $link) {
             $text .= $this->item($link['title'], $this->siteUrl . $link['path'], $link['description']);
+        }
+        if ($fullText) {
+            $text .= $this->item('Full text', $this->siteUrl . self::LLMS_FULL, 'every page of the default language as Markdown in one file; each page also has a Markdown copy next to it (index.md)');
         }
         if (! $this->portal) {
             $text .= $this->item('Sitemap', $this->siteUrl . self::SITEMAP, null);

@@ -36,9 +36,14 @@ the build stops with `SITE_URL_BASE_MISMATCH`.
 
 When `site_url` is set, the build also:
 
-- writes `sitemap.xml`, `robots.txt` and `llms.txt` to the site root (under
-  `base_url`);
-- makes `canonical` and `hreflang` of every page absolute;
+- writes `sitemap.xml`, `robots.txt`, `llms.txt` and `llms-full.txt` to the
+  site root (under `base_url`);
+- puts a text copy, `index.md`, next to each indexable page;
+- makes `canonical` and `hreflang` of every page absolute, and the canonical
+  address of redirect pages too;
+- adds schema.org structured data (JSON-LD): `WebSite`, `TechArticle` (a
+  `WebPage` for a language's home page) with `inLanguage`, `dateModified` and
+  the picture, and `BreadcrumbList` when the page shows breadcrumbs;
 - adds Open Graph and Twitter card tags: `og:title`, `og:description`,
   `og:url`, `og:type` (`website` for a locale's home page, `article` for the
   rest), `og:locale` and `og:locale:alternate` for translations,
@@ -46,13 +51,18 @@ When `site_url` is set, the build also:
   `og:image` and `twitter:image`.
 
 **`sitemap.xml`** lists every published indexable page by its absolute
-address. Translated pages have `xhtml:link hreflang` to all translations. The
+address with the date of its last change, `lastmod` — the time of the last
+Git commit with the page's source file (no Git, no date). Translated pages
+have `xhtml:link hreflang` to all translations. The
 map leaves out drafts (`draft: true`), pages with `noindex: true` in the
 front matter, redirect pages, the `404.html` page, other error pages (the
 last route segment is a 4xx or 5xx code, for example `404/`) and pages that
 show the source text instead of a translation in `publish-current` mode.
 
 **`robots.txt`** allows crawling the whole site and names `sitemap.xml`.
+With `discovery.ai_crawlers: "deny"` it also closes the site to crawlers that
+gather text for AI (GPTBot, ClaudeBot, Google-Extended, PerplexityBot, CCBot
+and others); regular search engines still see the site.
 Search robots read `robots.txt` only at the domain root: for a site in a
 subfolder, for example on a project's GitHub Pages, the file helps only if
 the domain root serves it too or links to the sitemap.
@@ -67,13 +77,22 @@ path in `llms_links` starts from `base_url`; the file may appear after the
 build too (for example `ai.json` written by a separate script), but it must
 exist by the time `verify-static` runs.
 
+**`llms-full.txt`** is the text of every indexable page of the main language
+in one file: each page starts with its title, description and address, and
+links to the site's pages in it are absolute. **`index.md`** next to each
+page is the same text copy of one page; the page links to it with
+`<link rel="alternate" type="text/markdown">`. Copies are made only for pages
+written in Markdown, without front matter and `:::preserved` blocks. Why this
+helps and how to write pages for AI is in
+[SEO and GEO](/en/settings/seo-and-geo/).
+
 `branding.share_image` is a PNG, JPEG or WebP file in the project; it can be
 overridden for a section or a page in `section.json` and `*.page.json`.
 Without `site_url` the image is not published.
 
 Without `site_url` the build output stays as before: these files and tags
 are not created. If the content already publishes its own `robots.txt`,
-`sitemap.xml` or `llms.txt` at the root, a build with `site_url` stops with
+`sitemap.xml`, `llms.txt` or `llms-full.txt` at the root, a build with `site_url` stops with
 `DISCOVERY_FILE_COLLISION`.
 
 With `site_url` set, `verify-static` checks that all three files exist and

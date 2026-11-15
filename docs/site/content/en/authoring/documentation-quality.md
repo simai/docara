@@ -1,5 +1,5 @@
 ---
-description: A documentation quality score from 0 to 100 — what docara qa report checks, how the score is computed, the strict mode for CI and the meaning review package for a person or AI.
+description: "A documentation quality score from 0 to 100: what docara qa report checks, how the score is computed, strict mode for CI and the meaning review."
 tags: [quality, score, check, report, ci, ai]
 profile: reference
 ---
@@ -78,7 +78,7 @@ stumble. The "advice" level means the page is worth a look.
 
 | Group | What is checked |
 | --- | --- |
-| Completeness | The page has the parts its profile requires. It has a `description` of 40 to 200 characters. The page has at least 80 words. No hint text from the `scaffold page` template is left. There are no links to drafts. |
+| Completeness | The page has the parts its profile requires. It has a `description` of 40 to 160 characters. The page has at least 80 words. No hint text from the `scaffold page` template is left. There are no links to drafts. |
 | Freshness | The tracked sources of the page have not changed since the last review. The group works only when [documentation tracking](/en/authoring/documentation-tracking/) is on. |
 | Findability | The page is in the menu and in search. Other pages link to it. It links to other pages itself or has a "See also" section. It has tags, or a word from the title repeats in the description or the first paragraph. |
 | Readability | Sentences average no more than 20 words, and none is longer than 40 words. The page is no longer than 2500 words. A page over 600 words has `##` sections. There are no level 5 and 6 headings. In a language with a non-Latin script, no more than 25% of the words are in Latin script. English terms are explained in the site glossary. |

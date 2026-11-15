@@ -1,5 +1,5 @@
 ---
-description: How to insert a fragment of a project file by line numbers, by a named region or between marker lines, so that the code on the page does not drift from the source.
+description: Insert a fragment of a project file by line numbers, a named region or marker lines, so the code on the page does not drift from the source.
 ---
 
 # Code from a file

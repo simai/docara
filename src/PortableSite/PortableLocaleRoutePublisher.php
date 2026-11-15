@@ -27,6 +27,7 @@ final readonly class PortableLocaleRoutePublisher
         LocaleUrlProjector $urls,
         string $documentationVersion,
         array $copy,
+        ?string $origin = null,
     ): array {
         $policy = $urls->policy;
         $default = $locales->default();
@@ -114,6 +115,7 @@ final readonly class PortableLocaleRoutePublisher
                         $documentationVersion,
                         $copy,
                         $default->direction,
+                        $origin,
                     ),
                 ],
                 $records,

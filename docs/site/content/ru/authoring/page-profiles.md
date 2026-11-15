@@ -1,5 +1,5 @@
 ---
-description: Профили страниц в docara.authoring.json — какой тип у страницы, что проверяет docara validate page, как Docara угадывает тип, новая страница по типу и AGENTS.md для ИИ-помощников.
+description: "Профили страниц в docara.authoring.json: тип страницы, проверка docara validate page, угадывание типа, новая страница по типу и AGENTS.md."
 ---
 
 # Профили страниц

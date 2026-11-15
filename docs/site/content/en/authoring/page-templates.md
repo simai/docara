@@ -1,5 +1,5 @@
 ---
-description: Page templates in docara.authoring.json — the exact list of sections for pages of one kind, the docara validate page check, a new page from a template and generated sections.
+description: "Page templates in docara.authoring.json: the exact sections for pages of one kind, the validate check, a new page from a template and generated sections."
 ---
 
 # Page templates

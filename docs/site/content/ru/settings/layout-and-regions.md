@@ -1,5 +1,5 @@
 ---
-description: Вид страницы docs или landing, ширина контейнера и отступы, полосы прокрутки и пять областей макета — header, sidebar, main, outline и footer — с их включением и наполнением.
+description: "Вид страницы docs или landing, ширина и отступы, полосы прокрутки и пять областей макета: header, sidebar, main, outline и footer."
 tags: [макет, layout, области, регионы, preset, лендинг, ширина]
 ---
 

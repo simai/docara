@@ -1,5 +1,5 @@
 ---
-description: The docs or landing page view, container width and spacing, scrollbars and the five layout regions — header, sidebar, main, outline and footer — with turning them on and filling them.
+description: "The docs or landing page view, width and spacing, scrollbars and the five layout regions: header, sidebar, main, outline and footer."
 tags: [layout, regions, preset, landing, width]
 ---
 

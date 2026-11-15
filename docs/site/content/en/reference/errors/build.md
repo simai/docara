@@ -1,5 +1,5 @@
 ---
-description: Build error codes — the project root and paths, settings layers, rebuilding one page, files and addresses in the result, writing and replacing the build folder — with the cause and the fix.
+description: "Build error codes: the project root and paths, settings layers, one-page builds, output files and the build folder — with the cause and the fix."
 tags: [error, build, page, path, build-folder]
 ---
 

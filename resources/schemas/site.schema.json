@@ -57,10 +57,14 @@
             "additionalProperties": false
         },
         "discovery": {
-            "description": "What llms.txt says about the site. Used only when site_url is set.",
+            "description": "What llms.txt says about the site and whether AI crawlers may read it. Used only when site_url is set.",
             "type": "object",
             "properties": {
                 "description": {"type": "string", "minLength": 1},
+                "ai_crawlers": {
+                    "description": "allow (default) lets crawlers that gather text for AI models and answers read the site; deny names them in robots.txt with Disallow: /.",
+                    "enum": ["allow", "deny"]
+                },
                 "llms_links": {
                     "type": "array",
                     "maxItems": 32,

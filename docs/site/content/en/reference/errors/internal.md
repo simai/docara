@@ -1,5 +1,5 @@
 ---
-description: Docara's internal checks that an author does not trigger by editing pages and settings, what to do if they fire, and the marks of passed checks in command output.
+description: Docara internal checks that page and settings edits do not trigger, what to do if one fires, and the marks of passed checks in command output.
 tags: [error, internal-error, report-a-bug, validate, doctor]
 ---
 

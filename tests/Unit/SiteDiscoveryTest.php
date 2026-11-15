@@ -50,6 +50,68 @@ final class SiteDiscoveryTest extends TestCase
     }
 
     #[Test]
+    public function the_sitemap_gives_each_page_its_last_change(): void
+    {
+        $discovery = SiteDiscovery::fromSite(['site_url' => 'https://example.com/']);
+        self::assertInstanceOf(SiteDiscovery::class, $discovery);
+        $sitemap = $discovery->sitemap([
+            ['url' => '/a/', 'locale' => 'en', 'updated_at' => '2026-11-05T18:08:08+03:00'],
+            ['url' => '/b/', 'locale' => 'en', 'updated_at' => null],
+        ]);
+
+        self::assertStringContainsString("<loc>https://example.com/a/</loc>\n    <lastmod>2026-11-05T18:08:08+03:00</lastmod>\n", $sitemap);
+        self::assertStringContainsString("<loc>https://example.com/b/</loc>\n  </url>", $sitemap);
+    }
+
+    #[Test]
+    public function robots_can_close_the_site_to_ai_crawlers_only(): void
+    {
+        $open = SiteDiscovery::fromSite(['site_url' => 'https://example.com/']);
+        $closed = SiteDiscovery::fromSite(['site_url' => 'https://example.com/', 'discovery' => ['ai_crawlers' => 'deny']]);
+        self::assertInstanceOf(SiteDiscovery::class, $open);
+        self::assertInstanceOf(SiteDiscovery::class, $closed);
+
+        self::assertSame("User-agent: *\nAllow: /\n\nSitemap: https://example.com/sitemap.xml\n", $open->robots());
+        $robots = $closed->robots();
+        self::assertStringStartsWith("User-agent: *\nAllow: /\n", $robots);
+        foreach (['GPTBot', 'ClaudeBot', 'Google-Extended', 'PerplexityBot', 'CCBot'] as $agent) {
+            self::assertStringContainsString("User-agent: $agent\n", $robots);
+        }
+        self::assertStringContainsString("Disallow: /\n\nSitemap: https://example.com/sitemap.xml\n", $robots);
+
+        try {
+            SiteDiscovery::fromSite(['site_url' => 'https://example.com/', 'discovery' => ['ai_crawlers' => 'maybe']]);
+            self::fail('An unknown ai_crawlers value was accepted.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('DISCOVERY_AI_CRAWLERS_INVALID', $exception->errorCode);
+        }
+    }
+
+    #[Test]
+    public function a_markdown_copy_has_absolute_links_and_llms_full_nests_the_pages(): void
+    {
+        $markdown = "# Search\n\nSee [settings](/en/settings/) and [the web](https://example.org/).\n\n## Turn it on\n\n```bash\n# a comment\n[x](/not/a/link/)\n```\n";
+        $copy = SiteDiscovery::markdownCopy('Search', 'Find  pages.', 'https://example.com/en/search/', $markdown, 'https://example.com');
+
+        self::assertSame(
+            "# Search\n\n> Find pages.\n\nSource: <https://example.com/en/search/>\n\n"
+            . "See [settings](https://example.com/en/settings/) and [the web](https://example.org/).\n\n## Turn it on\n\n```bash\n# a comment\n[x](/not/a/link/)\n```\n",
+            $copy,
+        );
+
+        $discovery = SiteDiscovery::fromSite(['site_url' => 'https://example.com/']);
+        self::assertInstanceOf(SiteDiscovery::class, $discovery);
+        $files = $discovery->files([['url' => '/en/', 'locale' => 'en', 'description' => 'Docs.']], [], 'Example', 'Docs.', [], [$copy]);
+        self::assertSame(
+            "# Example\n\n> Docs.\n\n---\n\n## Search\n\n> Find pages.\n\nSource: <https://example.com/en/search/>\n\n"
+            . "See [settings](https://example.com/en/settings/) and [the web](https://example.org/).\n\n### Turn it on\n\n```bash\n# a comment\n[x](/not/a/link/)\n```\n",
+            $files[SiteDiscovery::LLMS_FULL],
+        );
+        self::assertStringContainsString('- [Full text](https://example.com/llms-full.txt)', $files[SiteDiscovery::LLMS]);
+        self::assertArrayNotHasKey(SiteDiscovery::LLMS_FULL, $discovery->files([], [], 'Example', null, [], null));
+    }
+
+    #[Test]
     public function the_sitemap_lists_only_indexable_pages_with_their_translations(): void
     {
         $discovery = SiteDiscovery::fromSite(['base_url' => '/docs/', 'site_url' => 'https://example.com/docs/']);

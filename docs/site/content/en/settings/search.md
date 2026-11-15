@@ -1,5 +1,5 @@
 ---
-description: Site search in the browser — turning it on, excluding pages, what goes into the index, synonyms through page tags, a link that opens search, and what to do if search does not work.
+description: "Site search in the browser: turning it on, excluding pages, what the index holds, synonyms through tags, a search link and fixing problems."
 tags: [search, index, synonyms, tags]
 ---
 

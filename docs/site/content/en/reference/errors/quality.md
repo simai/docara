@@ -1,5 +1,5 @@
 ---
-description: Codes of the docara qa report on documentation quality — completeness, freshness, findability, readability, accessibility and links — with the cause and the fix.
+description: "Codes of the docara qa report: completeness, freshness, findability, readability, accessibility and links — with the cause and the fix."
 tags: [quality, score, errors]
 ---
 
@@ -19,7 +19,7 @@ page's group.
 | `QUALITY_PROFILE_PART_MISSING` | warning | The page lacks a part that its profile requires, for example numbered steps. If the profile was guessed, the level is advice. **What to do:** Add the part or set a suitable profile. `docara validate page <address>` shows the details. |
 | `QUALITY_TEMPLATE_MISMATCH` | warning | The page does not follow its template from `docara.authoring.json`: a required section is missing, there is an extra section or the order is wrong, there is no live example, or a generated section was edited by hand. **What to do:** Bring the sections in line with the template, list a deliberately skipped section in `template_omit`, or run the program that writes the section again. `docara validate page <address>` shows the details; see [Page templates](/en/authoring/page-templates/). |
 | `QUALITY_DESCRIPTION_MISSING` | warning | There is no `description` in the front matter or in the `<page>.page.json` file. A description that the build takes from the first paragraph does not count. **What to do:** Write one sentence about what the reader gets on the page. |
-| `QUALITY_DESCRIPTION_LENGTH` | advice | The description is shorter than 40 or longer than 200 characters. **What to do:** Fit the description into one sentence of the right length. |
+| `QUALITY_DESCRIPTION_LENGTH` | advice | The description is shorter than 40 or longer than 160 characters. **What to do:** Fit the description into one sentence of the right length. |
 | `QUALITY_PAGE_STUB` | warning | The page has fewer than 80 words outside code blocks. **What to do:** Finish the page, merge it with a neighbour or mark it `draft: true`. |
 | `QUALITY_PLACEHOLDER_LEFT` | warning | Hint text from the `docara scaffold page` template is left on the page. Text inside code blocks does not count. **What to do:** Replace the hint with real text. |
 | `QUALITY_DRAFT_LINKED` | warning | The page links to a draft with `draft: true` that is not on the site. **What to do:** Publish the draft or remove the link. |

@@ -1,5 +1,5 @@
 ---
-description: Site settings error codes — redirects, languages and translations, lang.json strings, search, background effects, the 404 page, the site address, the theme, the brand and the portal — with the cause and the fix.
+description: "Site settings error codes: redirects, languages, lang.json, search, effects, the 404 page, the address, theme, brand and portal — with the fix."
 ---
 
 # Site settings errors
@@ -185,6 +185,7 @@ Docara creates `404.html` in the site root if `not_found.enabled` is not
 | `SITE_URL_INVALID` | `site_url` is not a full `http(s)://` address, or contains `?`, `#`, a login or `..`. **What to do:** Give an address like `https://example.com/docs/`. |
 | `SITE_URL_BASE_MISMATCH` | The path in `site_url` does not match `base_url`. **What to do:** Set both values from one publication address. |
 | `DISCOVERY_FILE_COLLISION` | The content already publishes `sitemap.xml`, `robots.txt` or `llms.txt`. **What to do:** Remove your file or remove `site_url`. |
+| `DISCOVERY_AI_CRAWLERS_INVALID` | `discovery.ai_crawlers` is neither `allow` nor `deny`. **What to do:** Set `allow` to let crawlers that gather text for AI in, or `deny` to close the site to them. |
 | `DISCOVERY_LINK_INVALID` | A path in `discovery.llms_links` is unsafe. **What to do:** Give a path relative to `base_url` without `..`. |
 | `DISCOVERY_URL_OUTSIDE_BASE` | An address in `llms.txt` came out outside `base_url`. **What to do:** Check `base_url`, `site_url` and the link paths. |
 

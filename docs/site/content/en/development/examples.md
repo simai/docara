@@ -1,5 +1,5 @@
 ---
-description: Live examples of Docara pages by task — header, menu, page regions, section settings, page types and components — with the finished result and real files to copy.
+description: Live examples of Docara pages by task — header, menu, regions, sections, page types and components — with the result and real files to copy.
 ---
 
 # Examples for developers

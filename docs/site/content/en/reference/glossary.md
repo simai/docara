@@ -1,5 +1,5 @@
 ---
-description: A glossary of Docara terms — lock, manifest, preset, Smart component, build receipt, value provenance and other words found in the documentation and in error messages.
+description: "A glossary of Docara terms: lock, manifest, preset, Smart component, build receipt and other words from the documentation and error messages."
 tags: [glossary, terms, lock, manifest, preset]
 ---
 

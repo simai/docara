@@ -1,5 +1,5 @@
 ---
-description: How to install the Docara skill for an AI agent, what it can do and how to work with it: a new site, moving documentation, edits, checks and preparing to publish.
+description: "How to install the Docara skill for an AI agent and work with it: a new site, moving documentation, edits, checks and preparing to publish."
 tags: [ai, agent, skill, claude, codex]
 ---
 

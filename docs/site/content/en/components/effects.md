@@ -1,5 +1,5 @@
 ---
-description: "Background effects for the hero: the effect catalogue in docara.json, choosing an effect, theme and settings, the pause button, reduced motion, Content-Security-Policy requirements and build errors."
+description: "Background effects for the hero: the catalogue in docara.json, choosing an effect, theme, the pause button, reduced motion, CSP and build errors."
 tags: [animation, animations, effect, effects, background]
 ---
 

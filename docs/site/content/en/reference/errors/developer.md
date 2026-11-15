@@ -1,5 +1,5 @@
 ---
-description: Error codes of the commands for developers and AI agents — scaffold starters, preview, qa visual checks, documentation tracking, the local MCP — with the cause and the fix.
+description: "Error codes of developer and AI agent commands: scaffold, preview, qa visual checks, documentation tracking and MCP — with the cause and the fix."
 tags: [error, scaffold, preview, qa, documentation, mcp, sdk]
 ---
 

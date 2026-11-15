@@ -1,5 +1,5 @@
 ---
-description: The features, showcase, promo, columns and cta landing blocks — feature cards, a result showcase, a final call to action, columns and an action button — with live examples and markup rules.
+description: "The features, showcase, promo, columns and cta landing blocks: benefits, a result showcase, a call to action and columns — with live examples."
 tags: [landing, landing-page, features, showcase, promo, columns, cta]
 ---
 

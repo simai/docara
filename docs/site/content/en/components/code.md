@@ -1,5 +1,5 @@
 ---
-description: "The code block in Docara: the language and file name in the header, syntax highlighting, line numbers and highlighted lines, changes, focus, a terminal, copying and line wrapping."
+description: "The code block: language and file name in the header, highlighting, line numbers and marked lines, changes, focus, a terminal, copying and wrapping."
 ---
 
 # Code

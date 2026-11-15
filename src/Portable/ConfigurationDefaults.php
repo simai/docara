@@ -63,6 +63,7 @@ final class ConfigurationDefaults
         'locales.*.fallbacks' => [],
         'reader_preferences.hidden_fields' => [],
         'discovery.llms_links' => [],
+        'discovery.ai_crawlers' => 'allow',
         'page_transforms' => [],
     ];
 

@@ -110,6 +110,19 @@ final class DiscoveryAndStrictTranslationBuildTest extends TestCase
         self::assertStringContainsString('<meta property="og:type" content="website">', $current);
         self::assertMatchesRegularExpression('#<meta property="og:image" content="https://example\.org/docs/_docara/brand/[a-f0-9]{64}\.png">#', $current);
         self::assertStringContainsString('<meta name="twitter:card" content="summary_large_image">', $current);
+        self::assertStringContainsString('<link rel="alternate" type="text/markdown" href="/docs/en/index.md">', $current);
+        self::assertSame(1, preg_match('#<script type="application/ld\+json">(.+?)</script>#', $current, $jsonLd));
+        $structured = json_decode($jsonLd[1], true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('https://schema.org', $structured['@context']);
+        self::assertSame(['WebSite', 'WebPage'], array_column($structured['@graph'], '@type'));
+        self::assertSame('https://example.org/docs/', $structured['@graph'][0]['url']);
+        self::assertSame('https://example.org/docs/en/', $structured['@graph'][1]['url']);
+        self::assertSame('en', $structured['@graph'][1]['inLanguage']);
+        self::assertStringStartsWith('# ', (string) file_get_contents($build . '/en/index.md'));
+        self::assertStringContainsString("Source: <https://example.org/docs/en/>\n", (string) file_get_contents($build . '/en/index.md'));
+        self::assertFileDoesNotExist($build . '/en/writing/index.md');
+        self::assertFileDoesNotExist($build . '/ru/internal/index.md');
+        self::assertStringContainsString('<link rel="canonical" href="https://example.org/docs/', (string) file_get_contents($build . '/index.html'));
 
         $ruHome = (string) file_get_contents($build . '/ru/index.html');
         self::assertStringContainsString('<title>Моя документация</title>', $ruHome);
@@ -141,6 +154,8 @@ final class DiscoveryAndStrictTranslationBuildTest extends TestCase
         self::assertStringContainsString('(https://example.org/docs/ru/writing/)', $llms);
         self::assertStringContainsString('- [English](https://example.org/docs/en/)', $llms);
         self::assertStringContainsString('- [AI manifest](https://example.org/docs/ai.json)', $llms);
+        self::assertStringContainsString('- [Full text](https://example.org/docs/llms-full.txt)', $llms);
+        self::assertStringStartsWith("# Моя документация\n", (string) file_get_contents($build . '/llms-full.txt'));
 
         // A consumer writes ai.json after the build, then verifies.
         file_put_contents($build . '/ai.json', "{}\n");

@@ -6,6 +6,44 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Search and AI discovery (SEO and GEO) for a site with `site_url`.**
+  - `sitemap.xml` gives each page `lastmod`: the time of the last Git commit
+    of its source file. One `git log` pass now feeds the sitemap, the page's
+    structured data and `_docara/page-metadata.json`, so a page never reports
+    two dates.
+  - Every page carries schema.org JSON-LD: `WebSite`, a `TechArticle` (a
+    `WebPage` for a language home) with `inLanguage`, `dateModified` and the
+    share image, and a `BreadcrumbList` when the page shows breadcrumbs.
+  - Every indexable Markdown page gets a text copy for language models,
+    `index.md` next to `index.html`, linked with
+    `<link rel="alternate" type="text/markdown">`; links to the site's pages
+    in it are absolute, and front matter and `:::preserved` blocks are left
+    out. `llms-full.txt` joins the default language's copies in one file and
+    `llms.txt` links to it.
+  - `discovery.ai_crawlers` (`allow` by default, or `deny`) closes the site
+    to crawlers that gather text for AI in `robots.txt`, while search engines
+    keep their access.
+  - A redirect page (the site root and `redirects.json` entries) names an
+    absolute canonical address.
+- **Documentation: SEO and GEO**, a new page under Site settings, and hosting
+  rules for a 301 from the site root and for serving `.md` as text.
+
+### Changed
+
+- `QUALITY_DESCRIPTION_LENGTH` advises from 160 characters instead of 200:
+  search results show about that much. The documentation's 43 longer
+  descriptions are shortened.
+- The documentation site's Pages and server workflows check out the full Git
+  history, so `lastmod` is each page's own date.
+
+### Fixed
+
+- Menu rows get their indent again: the zero border width under the row
+  padding was a unitless `0`, which voided the padding of every row. The
+  submenu toggle draws a 20 px icon, the size of the row's other icons.
+
 ## [3.15.0] - 2026-11-15
 
 ### Added

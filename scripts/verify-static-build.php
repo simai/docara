@@ -20,6 +20,7 @@ use Simai\Docara\PortableSite\PortablePerformanceReceipt;
 use Simai\Docara\PortableSite\PortableRedirectPublisher;
 use Simai\Docara\PortableSite\PortableShellStylesheets;
 use Simai\Docara\PortableSite\PortableVendorAssetSelection;
+use Simai\Docara\PortableSite\SiteDiscovery;
 use Simai\Docara\PortableSite\SiteDiscoveryVerifier;
 use Simai\Docara\Smart\SmartRegistry;
 
@@ -342,6 +343,9 @@ function docaraRedirectOutputs(
     ?string $expectedSource,
 ): array {
     $receiptPath = docaraReceiptDirectory($root) . '/redirects.json';
+    // With site_url a redirect page names an absolute canonical address.
+    $siteConfiguration = $pageRecords[0]['resolved_page_plan']['configuration'] ?? null;
+    $siteOrigin = is_array($siteConfiguration) ? SiteDiscovery::fromSite($siteConfiguration)?->origin : null;
     if (! file_exists($receiptPath) && ! is_link($receiptPath)) {
         if ($expectedSource !== null) {
             throw new RuntimeException('Configured redirects require a safe redirect receipt.');
@@ -482,6 +486,7 @@ function docaraRedirectOutputs(
             $documentationVersion,
             is_array($receipt['copy'] ?? null) ? $receipt['copy'] : [],
             is_string($receipt['direction'] ?? null) ? $receipt['direction'] : 'ltr',
+            $siteOrigin,
         );
         if (! is_string($actualBytes) || ! hash_equals($expectedBytes, $actualBytes)) {
             throw new RuntimeException("Redirect output [$output] does not match its deterministic receipt.");
@@ -573,7 +578,8 @@ function docaraLocaleRouteOutputs(
             throw new RuntimeException("Locale route output [$output] is missing or unsafe.");
         }
         $html = (string) file_get_contents($root . '/' . $output);
-        if (! str_contains($html, '<link rel="canonical" href="' . $record['target_url'] . '">')
+        // With site_url the canonical address is absolute: origin + target.
+        if (preg_match('#<link rel="canonical" href="(?:https?://[^/"]+)?' . preg_quote($record['target_url'], '#') . '">#', $html) !== 1
             || ! str_contains($html, 'url=' . $record['target_url'])
         ) {
             throw new RuntimeException("Locale route output [$output] does not match its exact target.");

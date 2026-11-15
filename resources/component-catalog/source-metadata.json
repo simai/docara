@@ -182,7 +182,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/landing-blocks.md",
-            "source_sha256": "52c0abb1155e17ccb1e388f8710d69f6052aec64e6bc61e0c2daf13df03b39ff",
+            "source_sha256": "395e1ec42478888ea1583041d5c42eb62e386fe3946d93217c6925eb99c95b70",
             "release": "3.15.0",
             "source_url": "https://github.com/simai/docara/blob/v3.15.0/docs/site/content/ru/components/landing-blocks.md",
             "history_url": "https://github.com/simai/docara/commits/v3.15.0/docs/site/content/ru/components/landing-blocks.md",
@@ -214,7 +214,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/smart-ui.md",
-            "source_sha256": "45e699ec4f7358e1eac9a081f1ab4264ef31fdb028c42fbc17dd34eb9f2e2370",
+            "source_sha256": "6e283f6a21ecd0a784c0e00d26c12d233ce04c8044768ae466ac4fae394fd165",
             "release": "3.15.0",
             "source_url": "https://github.com/simai/docara/blob/v3.15.0/docs/site/content/ru/components/smart-ui.md",
             "history_url": "https://github.com/simai/docara/commits/v3.15.0/docs/site/content/ru/components/smart-ui.md",
@@ -573,5 +573,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "b9fb0a240ce2b5c753537624e19f75f5ca54d8be5373bab6b6040852f8c7608d"
+    "content_sha256": "6b581e2ae5ea43140acf33485a0224dc92ff99b4bdfe6ff3864a46c246133bd1"
 }

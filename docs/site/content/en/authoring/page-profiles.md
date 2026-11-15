@@ -1,5 +1,5 @@
 ---
-description: Page profiles in docara.authoring.json — the type of a page, what docara validate page checks, how Docara guesses the type, a new page of a type and AGENTS.md for AI assistants.
+description: "Page profiles in docara.authoring.json: the page type, the docara validate page check, type guessing, a new page of a type and AGENTS.md."
 ---
 
 # Page profiles

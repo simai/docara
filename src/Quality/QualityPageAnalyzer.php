@@ -13,7 +13,7 @@ final class QualityPageAnalyzer
 {
     public const DESCRIPTION_MIN = 40;
 
-    public const DESCRIPTION_MAX = 200;
+    public const DESCRIPTION_MAX = 160;
 
     public const STUB_WORDS = 80;
 

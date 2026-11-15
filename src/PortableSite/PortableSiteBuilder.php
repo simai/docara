@@ -42,6 +42,7 @@ use Simai\Docara\I18n\TranslationPublicationGate;
 use Simai\Docara\I18n\TranslationStatusService;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\I18n\UiCopy;
+use Simai\Docara\Markdown\PreservedBlocks;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\ConfigurationDefaults;
 use Simai\Docara\Portable\FilesystemPath;
@@ -188,6 +189,7 @@ final readonly class PortableSiteBuilder
             );
         }
         $siteDiscovery = SiteDiscovery::fromSite($site);
+        $pageRevisions = new PageRevisions($root);
         $portal = PortalProfile::fromSite($site, $localeRegistry, $localeRouting, $siteDiscovery);
         $effectsCatalogue = EffectsCatalogue::fromSite($site);
         $translator = new Translator(
@@ -634,8 +636,24 @@ final readonly class PortableSiteBuilder
             }
             if ($siteDiscovery !== null) {
                 // With site_url, canonical and hreflang name absolute
-                // addresses, and the page gets Open Graph tags.
+                // addresses, and the page gets Open Graph tags, structured
+                // data and its last Git change for sitemap.xml lastmod.
                 $page['site_origin'] = $siteDiscovery->origin;
+                $page['site_url'] = $siteDiscovery->siteUrl;
+                $page['updated_at'] = $pageRevisions->of((string) ($page['page_path'] ?? ''))['updated_at'] ?? null;
+                // An indexable written page gets a Markdown copy next to it
+                // for language models (index.md beside index.html).
+                if (($page['page_source_kind'] ?? null) === 'authored_markdown'
+                    && ($page['not_found'] ?? false) !== true
+                    && ! isset($page['robots'])
+                    && ($page['translation_fallback'] ?? null) === null
+                    && preg_match('/\.html\z/', (string) $page['output']) === 1
+                ) {
+                    $page['markdown_copy_output'] = (string) preg_replace('/\.html\z/', '.md', (string) $page['output']);
+                    $page['markdown_copy_url'] = str_ends_with((string) $page['url'], '/')
+                        ? (string) $page['url'] . basename($page['markdown_copy_output'])
+                        : (string) preg_replace('/\.html\z/', '.md', (string) $page['url']);
+                }
                 $page['canonical_url'] = $siteDiscovery->absolute((string) $page['canonical_url']);
                 foreach ($page['alternates'] as &$alternate) {
                     $alternate['url'] = $siteDiscovery->absolute((string) $alternate['url']);
@@ -933,6 +951,7 @@ final readonly class PortableSiteBuilder
             $localeUrls,
             $documentationVersion,
             $uiCopy->forLocale($buildLocale),
+            $siteDiscovery?->origin,
         );
         $siteTitle = (string) ($site['title'] ?? ConfigurationDefaults::value('title'));
         // docara.json branding.credit: the "Made with Docara" line under the
@@ -1121,7 +1140,7 @@ final readonly class PortableSiteBuilder
                 $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
                 $this->files->put(
                     $docaraOutputDirectory . '/page-metadata.json',
-                    $this->prettyCanonicalJson($this->pageMetadata(self::withoutNotFound($pages), $root, $documentationVersion)),
+                    $this->prettyCanonicalJson($this->pageMetadata(self::withoutNotFound($pages), $pageRevisions, $documentationVersion)),
                 );
             }
             // Shared assets are published once, under the deployment base.
@@ -1725,38 +1744,22 @@ final readonly class PortableSiteBuilder
      * @param  list<array<string, mixed>>  $pages
      * @return array<string, mixed>
      */
-    private function pageMetadata(array $pages, string $root, string $documentationVersion): array
+    private function pageMetadata(array $pages, PageRevisions $revisions, string $documentationVersion): array
     {
         $records = [];
         foreach ($pages as $page) {
             $source = (string) ($page['page_path'] ?? '');
-            $record = [
+            $revision = $revisions->of($source);
+            $records[] = [
                 'url' => (string) ($page['url'] ?? '/'),
                 'title' => (string) ($page['title'] ?? ''),
                 'locale' => (string) ($page['locale'] ?? ''),
                 'source' => $source,
                 'documentation_version' => $documentationVersion,
-                'updated_at' => null,
-                'revision' => null,
-                'author' => null,
+                'updated_at' => $revision['updated_at'] ?? null,
+                'revision' => $revision['revision'] ?? null,
+                'author' => $revision['author'] ?? null,
             ];
-            $sourcePath = $source !== '' && ! str_starts_with($source, '@') ? $root . '/' . ltrim($source, '/') : null;
-            if ($sourcePath !== null && is_file($sourcePath)) {
-                try {
-                    $process = new Process(['git', '-C', $root, 'log', '-1', '--format=%cI%x00%h%x00%an', '--', $source]);
-                    $process->setTimeout(5);
-                    $process->run();
-                    if ($process->isSuccessful()) {
-                        $parts = explode("\0", trim($process->getOutput()), 3);
-                        if (count($parts) === 3) {
-                            [$record['updated_at'], $record['revision'], $record['author']] = $parts;
-                        }
-                    }
-                } catch (\Throwable) {
-                    // A portable source tree may intentionally be outside Git.
-                }
-            }
-            $records[] = $record;
         }
         usort($records, static fn (array $left, array $right): int => strcmp($left['url'], $right['url']));
 
@@ -1832,6 +1835,7 @@ final readonly class PortableSiteBuilder
                 'translation_key' => (string) ($page['translation_key'] ?? $page['url']),
                 'noindex' => ($page['robots'] ?? null) === 'noindex' && ($page['translation_fallback'] ?? null) === null,
                 'translation_fallback' => $page['translation_fallback'] ?? null,
+                'updated_at' => $page['updated_at'] ?? null,
             ];
             $records[] = $record;
             if (SiteDiscovery::indexable($record)) {
@@ -1858,14 +1862,46 @@ final readonly class PortableSiteBuilder
             $languages[$locale] = ['label' => $locales->get((string) $locale)->label, 'url' => $home, 'locale' => (string) $locale];
         }
         $homeDescription = $published[$urls->home($defaultTag)]['description'] ?? null;
+        $copies = [];
+        $fullText = [];
+        $fullTextComplete = true;
+        foreach ($pages as $page) {
+            if (! is_string($page['markdown_copy_output'] ?? null)) {
+                continue;
+            }
+            $plan = $page['plan'] ?? null;
+            if (! $plan instanceof ResolvedPagePlan) {
+                // An incremental build knows only the pages it renders; the
+                // other copies and llms-full.txt stay from the full build.
+                $fullTextComplete = $fullTextComplete && (string) $page['locale'] !== $defaultTag;
 
-        return $discovery->files(
-            $records,
-            $sections,
-            $siteTitle,
-            is_string($homeDescription) && trim($homeDescription) !== '' ? $homeDescription : null,
-            array_values($languages),
-        );
+                continue;
+            }
+            $copy = SiteDiscovery::markdownCopy(
+                (string) ($page['title'] ?? ''),
+                (string) ($page['description'] ?? ''),
+                $discovery->absolute((string) $page['url']),
+                PreservedBlocks::strip($plan->markdown),
+                $discovery->origin,
+            );
+            $copies[$page['markdown_copy_output']] = $copy;
+            if ((string) $page['locale'] === $defaultTag) {
+                $fullText[(string) $page['url']] = $copy;
+            }
+        }
+        ksort($fullText, SORT_STRING);
+
+        return [
+            ...$discovery->files(
+                $records,
+                $sections,
+                $siteTitle,
+                is_string($homeDescription) && trim($homeDescription) !== '' ? $homeDescription : null,
+                array_values($languages),
+                $fullTextComplete ? array_values($fullText) : null,
+            ),
+            ...$copies,
+        ];
     }
 
     /** @param array<string, mixed> $node */

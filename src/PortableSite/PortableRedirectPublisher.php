@@ -205,13 +205,14 @@ final readonly class PortableRedirectPublisher
             'redirects' => $records,
         ];
         (new SchemaRepository)->assertValid($receipt, 'redirect-receipt.schema.json');
+        $origin = SiteDiscovery::fromSite($site)?->origin;
 
         return [
             'receipt' => $receipt,
             'pages' => array_map(
                 static fn (array $record): array => [
                     'output' => $record['output'],
-                    'bytes' => self::renderPage($record, $locale, $documentationVersion, $copy, $direction),
+                    'bytes' => self::renderPage($record, $locale, $documentationVersion, $copy, $direction, $origin),
                 ],
                 $records,
             ),
@@ -227,10 +228,16 @@ final readonly class PortableRedirectPublisher
         string $documentationVersion,
         array $copy,
         string $direction,
+        ?string $origin = null,
     ): string {
         $target = self::escape($record['target_url']);
-        // The canonical address is the page itself, without the section.
-        $canonical = self::escape(explode('#', $record['target_url'], 2)[0]);
+        // The canonical address is the page itself, without the section;
+        // with site_url it is absolute, like every page's canonical.
+        $canonicalUrl = explode('#', $record['target_url'], 2)[0];
+        if ($origin !== null && str_starts_with($canonicalUrl, '/') && ! str_starts_with($canonicalUrl, '//')) {
+            $canonicalUrl = $origin . $canonicalUrl;
+        }
+        $canonical = self::escape($canonicalUrl);
         $lang = self::escape($locale);
         $version = self::escape($documentationVersion);
         $title = (string) ($copy['redirect.title'] ?? 'redirect.title');

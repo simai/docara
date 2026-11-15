@@ -1086,10 +1086,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/documentation-quality.md",
-            "source_sha256": "3fa79ea37d923eae191f2fb277a0d1d7f4319e21be70966d9b47b87e21004f31",
+            "source_sha256": "589a0c2112a1a07c04f129cb6b2e4ada16ff1cd1ba11963b514667f165489f41",
             "source_structure_sha256": "58e5c2530f470a02d0715b50bd9689cadc5f6a963f0e3fb52aa6632e7fb8a04f",
             "target_path": "content/en/authoring/documentation-quality.md",
-            "target_sha256": "ec87514878ee0d97ce0227e6fc80b780102c95b8d04ece1a7eef02751c8b7ebd",
+            "target_sha256": "c8c1587ced9d1c2681260136d90749eecab1f565f94d31ab9cf94f254355ebd7",
             "target_structure_sha256": "58e5c2530f470a02d0715b50bd9689cadc5f6a963f0e3fb52aa6632e7fb8a04f"
         },
         {
@@ -1125,7 +1125,7 @@
             "source_sha256": "efecc7e5c044b509788d219fef3ebe2d02f50b983069f54fd5f3b12e459e4b3a",
             "source_structure_sha256": "99c173de87164faae684eb9fdfdf81af02ed2c2560444f853440675365eb32b2",
             "target_path": "content/en/authoring/multilingual-site.md",
-            "target_sha256": "092222793bf97f415996249a88a575e1197286f5674d61ef5480a51b4fe4362d",
+            "target_sha256": "da0680d2e187c05d895d2fa3b4f06e0d595a354efffcea8fc8edd15147b27cb5",
             "target_structure_sha256": "99c173de87164faae684eb9fdfdf81af02ed2c2560444f853440675365eb32b2"
         },
         {
@@ -1146,10 +1146,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/page-profiles.md",
-            "source_sha256": "e5ae335c19ba24923ba6bd8fe8a9bec7a0ce3129e7d9b0420821a2c1e55fb2d4",
+            "source_sha256": "752228b6944b94bf354c5be0e1dbe0b728c061f5b496dd3a62f1d2c366f0cec4",
             "source_structure_sha256": "7fc2c2fa46f82cf436f38343b6e5add1180f8af74b176bd3142045c38036c5b7",
             "target_path": "content/en/authoring/page-profiles.md",
-            "target_sha256": "d094a08733256368331bfdb1b23096c35376336b0e879ab9f9499da6e6e87f06",
+            "target_sha256": "221b9eaba26b2c91a499ff0de5d3475fb371d657308adf9b15d10b73d9c556cd",
             "target_structure_sha256": "7fc2c2fa46f82cf436f38343b6e5add1180f8af74b176bd3142045c38036c5b7"
         },
         {
@@ -1158,10 +1158,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/authoring/page-templates.md",
-            "source_sha256": "74bde88396575c4aff17ecffa8277f2dc571de3a648a6f84cc3bb1c89760ec18",
+            "source_sha256": "ed106fad6717e4fe90c8f1f0f9e8a954b9e1e8cac259c0ba1e0228f796b146d4",
             "source_structure_sha256": "65290f04c2bf21b99fbf61350d18e6f2281fa31b0ed9cdef965bcacb79b47259",
             "target_path": "content/en/authoring/page-templates.md",
-            "target_sha256": "535dd261f3476da8ed00bbbd3dc18e0d978de87a1860e18e970d0a23db71c5af",
+            "target_sha256": "95aff32fa6ec641c7501c4a7a769a60b0ca25359324d28d64b07675be3f8a086",
             "target_structure_sha256": "65290f04c2bf21b99fbf61350d18e6f2281fa31b0ed9cdef965bcacb79b47259"
         },
         {
@@ -1206,11 +1206,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/build/hosting.md",
-            "source_sha256": "3a59c7c52d9c60f0d06bfbd974b2e5d0c9e9a746759c4bb0fdff3354fb0a7a8c",
-            "source_structure_sha256": "8a94611b5e65c8b85f3231e1cfd0e4703cbc256f78e9417616d8f1df180ba6fb",
+            "source_sha256": "a7884aadce061f5fd96ac71065b4eb607060baf8bb94deefec6a035041481a5e",
+            "source_structure_sha256": "b2cc54d4c6aa3a0c90f0e6823986b7c559911f065dad9e9a3b8efd6867961c4e",
             "target_path": "content/en/build/hosting.md",
-            "target_sha256": "198713cab48866902d3d91dc89e6e48c7c81a0783fd961bc3b517f396f934c9c",
-            "target_structure_sha256": "8a94611b5e65c8b85f3231e1cfd0e4703cbc256f78e9417616d8f1df180ba6fb"
+            "target_sha256": "06a1db39dd833f2d35bd9b44a95be9bfaf5ab693022cb0d1d74146f5a43fc34f",
+            "target_structure_sha256": "b2cc54d4c6aa3a0c90f0e6823986b7c559911f065dad9e9a3b8efd6867961c4e"
         },
         {
             "key": "build/local-preview.md",
@@ -1230,10 +1230,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/build/php-only.md",
-            "source_sha256": "a725ab7524e8c9bb037b0b9414e1c0a3db9268b519244ed16b70331914abbc74",
+            "source_sha256": "62137bb637e68b8c1e58c94bd8788cc4844a1aeaf3799bf8a62a7eb696d96aa8",
             "source_structure_sha256": "f9aea7b3668c54d1d11a1d3a09f6cb27040f49a7069077d846693cbae3da47f9",
             "target_path": "content/en/build/php-only.md",
-            "target_sha256": "7542ec94cf5573e4b3f4278464a29a7ec1d05a536ff37a2f1a8e76e3c28ed511",
+            "target_sha256": "6f9c1bbc755ac0fdb7c621b1dce50cfb4b68a6d2d7668ea25a6cd8d617f19d40",
             "target_structure_sha256": "f9aea7b3668c54d1d11a1d3a09f6cb27040f49a7069077d846693cbae3da47f9"
         },
         {
@@ -1375,10 +1375,10 @@
             "review": "ai_verified",
             "source_path": "content/ru/components/code-from-file.md",
             "source_sha256": "48f4e0782baa59cf311507607a421173bf2ba5a7112953bc84aa2151fa401a20",
-            "source_structure_sha256": "e3bf9cc229566ba7031fdc01c54652d13ef5518dfef486205c176791f8580e0b",
+            "source_structure_sha256": "afc763b75575c39a44764be3a7629a52b039218d121aacca04b3fc16623dddfb",
             "target_path": "content/en/components/code-from-file.md",
-            "target_sha256": "565a0d3dc5f7e74fdd97fe59e5657095bac38e91043fa198817e8c02e8dc2bc6",
-            "target_structure_sha256": "e3bf9cc229566ba7031fdc01c54652d13ef5518dfef486205c176791f8580e0b"
+            "target_sha256": "3d975c858eb2b3078474ea8f81d69ec7c2b61b832e3ae29d586cea24fc674909",
+            "target_structure_sha256": "afc763b75575c39a44764be3a7629a52b039218d121aacca04b3fc16623dddfb"
         },
         {
             "key": "components/code.md",
@@ -1389,7 +1389,7 @@
             "source_sha256": "d2532bff76a0cedbe7325e86a513e763d6a4d08994b81e3b1ee038cd211a8334",
             "source_structure_sha256": "4ed4732f6a463b1abf68c1d5149545abbff3d06ccb93cf062706a07c44d6a8f4",
             "target_path": "content/en/components/code.md",
-            "target_sha256": "7dfbff7cefb5dbe73b374527173caa17c76b6ca1f11ad294b8336d30301b71b4",
+            "target_sha256": "1c1e240e5bcbcd772f435940b12245e4daa09667d5027c00a0c2d1c5125ecf05",
             "target_structure_sha256": "4ed4732f6a463b1abf68c1d5149545abbff3d06ccb93cf062706a07c44d6a8f4"
         },
         {
@@ -1401,7 +1401,7 @@
             "source_sha256": "f75406a524b16595b68c5af16caacc0b02e3ecc0c150f073ee59b9ebff0c2d8a",
             "source_structure_sha256": "6d20d5a54ca1ffb813e3e24a99effd80b8dfdb7c64cc65d8ca5f5b29ef1a54c7",
             "target_path": "content/en/components/component-reference.md",
-            "target_sha256": "37b2b0a7c0ae97738ce2bbe8efc54192ff9c9154ae321ef6b74bedb95b8e25c4",
+            "target_sha256": "233bd086de27805df090d2370bef5b1dc5cea27537588e7414842fd25901babc",
             "target_structure_sha256": "6d20d5a54ca1ffb813e3e24a99effd80b8dfdb7c64cc65d8ca5f5b29ef1a54c7"
         },
         {
@@ -1422,10 +1422,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/diagram-gallery.md",
-            "source_sha256": "a1f2a7d62360162e9af8efb92d85dace03c19c5f6f8aa94a3ff9ea5041db7886",
+            "source_sha256": "eb8acda552812741b846545c247e60d1a5f69dfe4db3dafbfac80ce54025d9b1",
             "source_structure_sha256": "e7d08928884c821efac67b1fda4e3dd69f892accefcc2ab690b27b87b33465cc",
             "target_path": "content/en/components/diagram-gallery.md",
-            "target_sha256": "8799748015d601cda077a2fad3546723c06fde9fe4602444d03bc55fef894458",
+            "target_sha256": "489734875c10a61589f2ba22d63474b3108acd9a14520480bb32b92a99965e49",
             "target_structure_sha256": "e7d08928884c821efac67b1fda4e3dd69f892accefcc2ab690b27b87b33465cc"
         },
         {
@@ -1458,10 +1458,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/effects.md",
-            "source_sha256": "776ff6de8973aca20dcefda220acb35e1e8edd519635ca8c50161bc945f7d955",
+            "source_sha256": "937b5e2bdc10f6e21e6c665c3b37ff38e27026d4fe8c4aeeea89884caf45c073",
             "source_structure_sha256": "7e6ce6591ede4f2aff25b791cd4b1e55ea8e55ffc722fce31bd7832cb82c4e2e",
             "target_path": "content/en/components/effects.md",
-            "target_sha256": "881428d6c0ede712569f9a7c7a5ac247e4d2faefb101bfad265f0e227e5fef84",
+            "target_sha256": "ea7755f541c04543fda34df724c4f223cc9da87e872dc4da0c77f305e84f439b",
             "target_structure_sha256": "7e6ce6591ede4f2aff25b791cd4b1e55ea8e55ffc722fce31bd7832cb82c4e2e"
         },
         {
@@ -1566,10 +1566,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/landing-blocks.md",
-            "source_sha256": "c03f75e1438882aa663fe2b99a00f89aaf2f4955b80bda476f42f29a4ecf5ed7",
+            "source_sha256": "99a41bf2abd5de40fd9930a79a9bc305d6c4000f95c1db42d0dfa3b2bb8efd36",
             "source_structure_sha256": "b722598117fd64de064e9e135fd5e61406af39452b2b839b005e2abbe64f17c6",
             "target_path": "content/en/components/landing-blocks.md",
-            "target_sha256": "7434e436cdd2bfb4e7d49473340ca655263af2ae6cc1ae17e8c172555fd692c9",
+            "target_sha256": "7d3307d2104a5384addd35f69f528350f2b7bf53a8dd3083d3060daddbf67635",
             "target_structure_sha256": "b722598117fd64de064e9e135fd5e61406af39452b2b839b005e2abbe64f17c6"
         },
         {
@@ -1614,10 +1614,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/smart-ui.md",
-            "source_sha256": "cd9148eb34ee448b0f931c9ed88e6d7ea6e6bb4f4cbedc0c1a4231b2f1d7ce55",
+            "source_sha256": "0cef5c47ae099114393ae0ba31f446e7e28038b9d96c434de1c0dfc19e3f441d",
             "source_structure_sha256": "48f461c60fb1a56c7d3e791c144c7b37a020b63d4c9d9649552bb29605ba94d4",
             "target_path": "content/en/components/smart-ui.md",
-            "target_sha256": "ed9b76fb9d0c05dd4d496a48a20dd871cc2b069ccf0ea62eab01d967b73eb231",
+            "target_sha256": "99a79d5eac9a7d62d05f3a3eeb09459a8d728140a7d9ce364ecd8bf065ba73d5",
             "target_structure_sha256": "48f461c60fb1a56c7d3e791c144c7b37a020b63d4c9d9649552bb29605ba94d4"
         },
         {
@@ -1890,11 +1890,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/development/examples.md",
-            "source_sha256": "a1d829b3db897e359a84fb1658d9123a7aac2c65fcf9a5692f6eae66000f6736",
-            "source_structure_sha256": "1d27e6f2404c61baa466764e5df81c5906d1305c5a1118ebca88216014852da9",
+            "source_sha256": "e2a1556e9bbf79c9c7e36a889440165fd086bf514594c4925c4f7f2402c98d11",
+            "source_structure_sha256": "d1f8d0c60bf4a5b424ac76c23eaa3386ea5969136e1d1d7bbb2a9dde46b6bc44",
             "target_path": "content/en/development/examples.md",
-            "target_sha256": "f3357dff6908cbd5a478e87f3a9f3853d18ab8ef2b56de5e3f6dd66d00fdf4a4",
-            "target_structure_sha256": "1d27e6f2404c61baa466764e5df81c5906d1305c5a1118ebca88216014852da9"
+            "target_sha256": "41a5c65099170921feec468cc59b625784cfb6aedeea1f7b828b9a1a8fba72a4",
+            "target_structure_sha256": "d1f8d0c60bf4a5b424ac76c23eaa3386ea5969136e1d1d7bbb2a9dde46b6bc44"
         },
         {
             "key": "development/getting-started.md",
@@ -2202,10 +2202,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/build.md",
-            "source_sha256": "10db02c7da871e9199a333168041e4ca78be43571d5efe7c908d58177013cfe1",
+            "source_sha256": "cf07fe2f82face88bce0bb994f5f9a30cca25f3369cba90636c695d0ba0b35df",
             "source_structure_sha256": "b39e00fc44cd2e36ddc410ff1e0abf4a65625fd04c34c03f666671bd67ddcd04",
             "target_path": "content/en/reference/errors/build.md",
-            "target_sha256": "edac2dff557e32f223c31c369252e35bdac119902e927fbae2be48290814404c",
+            "target_sha256": "27f9543b35415dd3741be5167922e385450b723579aed1fc93cee2df3d4a00fa",
             "target_structure_sha256": "b39e00fc44cd2e36ddc410ff1e0abf4a65625fd04c34c03f666671bd67ddcd04"
         },
         {
@@ -2226,10 +2226,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/developer.md",
-            "source_sha256": "09e43c86d126f7f36789f0d3f4f83fda510d740697dc7be490ce29c5e0b449b7",
+            "source_sha256": "7a1961d4f03962379006ca642cd672842498254d43724790e59e7fec8c55c6b2",
             "source_structure_sha256": "e57a78060c73eb9885b67569cce402603522a9964eb1850d0f5ca252f80e00d6",
             "target_path": "content/en/reference/errors/developer.md",
-            "target_sha256": "559f9d0afbc75bb260895cb3b52bda4c70183d290394269b3b870bd563de73b7",
+            "target_sha256": "841a9a20d19f6500799f802b0271d9049d8baa1ec7d49049d6e1696cc3bc55f8",
             "target_structure_sha256": "e57a78060c73eb9885b67569cce402603522a9964eb1850d0f5ca252f80e00d6"
         },
         {
@@ -2263,10 +2263,10 @@
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/internal.md",
             "source_sha256": "24e737b1540af2bab823f64d51e067c805e9b37f6186f9ae3c42064dcc910560",
-            "source_structure_sha256": "0c015957f80d64fae08cb17055bef83e3a422b43e82b208c1e1440e04f114f50",
+            "source_structure_sha256": "c9e5186a08c7c44c65f2883258500cb4f8d33cf3a41ce07d34e7d39e08ed7371",
             "target_path": "content/en/reference/errors/internal.md",
-            "target_sha256": "e4fabfec88c1995f61784d2818851647539171d4599aca8644e3edbbf237cc74",
-            "target_structure_sha256": "0c015957f80d64fae08cb17055bef83e3a422b43e82b208c1e1440e04f114f50"
+            "target_sha256": "a8501099d5ea53d1ea8e39e7d6c2b5599fdf9f5ee20ffc48626f83922a0de4b8",
+            "target_structure_sha256": "c9e5186a08c7c44c65f2883258500cb4f8d33cf3a41ce07d34e7d39e08ed7371"
         },
         {
             "key": "reference/errors/quality.md",
@@ -2274,10 +2274,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/quality.md",
-            "source_sha256": "ee3f0976f360705b0bb0bf0507f7397b8e85d5d959d5e8ba240b75b6477fb5ae",
+            "source_sha256": "f302791c2df11a0af1f2de4a298ac982b9f79a6f6d84fbfd0a3584c85bc7a7f3",
             "source_structure_sha256": "d1ff805e4794dd0da214db9ede912394633329a47f1df2d5a657263ce2c3256c",
             "target_path": "content/en/reference/errors/quality.md",
-            "target_sha256": "87ad47797027ab6563782aad10c9ba2417ca466fd1237e1b33e3aa1148c2ebea",
+            "target_sha256": "5c8399b0e557c8f65b40ae705a4f11bf3d74c2b1df43e5f6461c9c04701b5232",
             "target_structure_sha256": "d1ff805e4794dd0da214db9ede912394633329a47f1df2d5a657263ce2c3256c"
         },
         {
@@ -2286,11 +2286,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/site.md",
-            "source_sha256": "4fa0dcc3137d804609a161e32120cd6bd675dc4e478634db4ecb68fc3520cad0",
-            "source_structure_sha256": "cbdda888a77e57df2f7a61ddf368519e73eb30c199c716d535330f76e7e19636",
+            "source_sha256": "22a6425d38418b275d063d1f6a48e79d343b121893a25ed9c9854857a5658834",
+            "source_structure_sha256": "74653d2e7569b02a94581c94745c34fbf4d2bbb6acd8757ebb16dce50f852072",
             "target_path": "content/en/reference/errors/site.md",
-            "target_sha256": "cfde25f02745f865ea3b938651d51c7bab0f7668dcfc1c8d5f537051a5e77197",
-            "target_structure_sha256": "cbdda888a77e57df2f7a61ddf368519e73eb30c199c716d535330f76e7e19636"
+            "target_sha256": "7a8f206ee253be7afd758722b1010125ea73d692f1480cbbc3a02589138fed45",
+            "target_structure_sha256": "74653d2e7569b02a94581c94745c34fbf4d2bbb6acd8757ebb16dce50f852072"
         },
         {
             "key": "reference/errors/upgrade.md",
@@ -2334,10 +2334,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/glossary.md",
-            "source_sha256": "a4a1e3b6d3671773ff39eba68df7e75f329489868586c5d9703bdd1ffbb0bbc7",
+            "source_sha256": "eac7b7cfce2f9114b232d75cbfff62f3b71abc53b71a338801f6b33d6e082093",
             "source_structure_sha256": "b3ddab599730baac9745550550444dc6dde776130a974142eff51ad8db14802a",
             "target_path": "content/en/reference/glossary.md",
-            "target_sha256": "a22c2ab5f5cabb6d7acac89c0897e0984df35000e353b4a8710034499f262a86",
+            "target_sha256": "a037c881b786210a2ce5057ee0bf7686e0c10ef1093b2aa8eb424b1756027b92",
             "target_structure_sha256": "b3ddab599730baac9745550550444dc6dde776130a974142eff51ad8db14802a"
         },
         {
@@ -2346,10 +2346,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/lang-json.md",
-            "source_sha256": "364cb89ad16649fca7155393ab416278efe933f559c3117d6228f467314ad216",
+            "source_sha256": "ba950a7348adb8ab47fda21bb86c63192084442de1ca622d52c88bd1f206033f",
             "source_structure_sha256": "fd103c31c4d8babe1a0dd828ab2fa09ed411f115b1f274eafe1bc955ecbf7be1",
             "target_path": "content/en/reference/lang-json.md",
-            "target_sha256": "5cbe2ea07010cee40d90b5e0b7e1355bc76a16d7a7452dc2f0c7cf6741f5426d",
+            "target_sha256": "1f04a2ed6811285453c2fe677864a31b429057a50e8c3437836fafcb23410548",
             "target_structure_sha256": "fd103c31c4d8babe1a0dd828ab2fa09ed411f115b1f274eafe1bc955ecbf7be1"
         },
         {
@@ -2397,7 +2397,7 @@
             "source_sha256": "f7cdf08a40253d1a77f071d6eea225089274c3827f9b6c1b0c4f93fad930c889",
             "source_structure_sha256": "ec9db305948c8a0281566e667965e4e60d9312e5201579220cfc2100455e12c0",
             "target_path": "content/en/reference/versions.md",
-            "target_sha256": "ffae3b09282cf4076e32f3247f0ac1b582300c946156e11ff6c10ac2dc923f0b",
+            "target_sha256": "5df8d1461c8aa4aa95cad0c9d8fffd341769eb9246e716a2a4a8c6322772f9e9",
             "target_structure_sha256": "ec9db305948c8a0281566e667965e4e60d9312e5201579220cfc2100455e12c0"
         },
         {
@@ -2406,11 +2406,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings.md",
-            "source_sha256": "7b016f5e6677f6d138701334264a44e2b225046cd7382e21444612755b469f7b",
-            "source_structure_sha256": "01e8124c8d4f593f58ff35d3694805b0eac1fd7d2c29b5ea60af96d4c20c5aae",
+            "source_sha256": "31fe682ec123f7be7f8fb1c0767ae02c10baeea2af99c2cf313a163f3b6ab4fb",
+            "source_structure_sha256": "f14ccd44bfd9a777567c55e2f2dd829e2be17e1d922529b4e260b18a2a37178f",
             "target_path": "content/en/settings.md",
-            "target_sha256": "11e4a88dfe90ab7b706a6569e82cb791a1d80a3d82f7e9b48ab152777a39034d",
-            "target_structure_sha256": "01e8124c8d4f593f58ff35d3694805b0eac1fd7d2c29b5ea60af96d4c20c5aae"
+            "target_sha256": "5f26e5904dfb80acadcaef39117f04f64e7c8e0603db6617b0494fb2685f3d3a",
+            "target_structure_sha256": "f14ccd44bfd9a777567c55e2f2dd829e2be17e1d922529b4e260b18a2a37178f"
         },
         {
             "key": "settings/branding-and-theme.md",
@@ -2430,10 +2430,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/layout-and-regions.md",
-            "source_sha256": "44085e8a3a4e207792c44e519fc1c999961ca67a7dd4f6684f7a3c4cd004b303",
+            "source_sha256": "6fee90ab7d8854dc4ab29791861f458d363ca687430b7e04aab376a3203b07df",
             "source_structure_sha256": "84f14e7e0aaa1a8bfe4ebf53594a4d0d520a4dcd992781711678af7d7ddb1887",
             "target_path": "content/en/settings/layout-and-regions.md",
-            "target_sha256": "6f5e17c23611d657c9e02e6f70d752ff5272ea8c4695a129b2c00008ec1c7328",
+            "target_sha256": "f77bc4f70e5f66f1ec0513964e653695aecbe4b15ffdcd4e14e1badf2809d3b5",
             "target_structure_sha256": "84f14e7e0aaa1a8bfe4ebf53594a4d0d520a4dcd992781711678af7d7ddb1887"
         },
         {
@@ -2454,7 +2454,7 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/reader-preferences.md",
-            "source_sha256": "f27d41ac5908a51d8f7e9b95378a361f9cabe912ab59f7526f8a4168abbecd8d",
+            "source_sha256": "9fd34432c73b06acae36a7b4beff8328685942a6afcbe013f51ed92c11d12588",
             "source_structure_sha256": "613f0dadd63abe5b4139f8728f19c5d71a1cf1124d981a093e03e99e76e364ce",
             "target_path": "content/en/settings/reader-preferences.md",
             "target_sha256": "ad435bb3af240ae9f6057143c6019bc1e3d5185dce96ee123a764e51766ce461",
@@ -2478,11 +2478,23 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/search.md",
-            "source_sha256": "8ef89cea2b879c42536e66a25ad66f886875e55f4fa440656592a6cf84fa649f",
+            "source_sha256": "f2c3dc35606e8eca090761e8e8d447dbbb627445fe0ee7f27788bb5888a9db2a",
             "source_structure_sha256": "4b5aa11a51529d516c7bd789d01f1b40eeb5cb894aac9da4dcb946a72408dd42",
             "target_path": "content/en/settings/search.md",
-            "target_sha256": "6b97be0b3052d4e7f2d3edd83895aa4526cc3073eabcd8e78927601bb607c275",
+            "target_sha256": "f54c4505fd34d3917d6076adcaffd149b38138e4026270dd79808d58cb2de5c7",
             "target_structure_sha256": "4b5aa11a51529d516c7bd789d01f1b40eeb5cb894aac9da4dcb946a72408dd42"
+        },
+        {
+            "key": "settings/seo-and-geo.md",
+            "kind": "page",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/settings/seo-and-geo.md",
+            "source_sha256": "495ac8bea28752c44eaca79c3893fda40fa0a0a537e7bc743e09fe2fd4787afe",
+            "source_structure_sha256": "bb5ab5b1ff5ea3f9bf412b67b1b8762267f617aaf1d92642b00beabf05e82ec5",
+            "target_path": "content/en/settings/seo-and-geo.md",
+            "target_sha256": "1c1f4ca983280fefc7b0a264d7cc74da1e46ddd57139c34e4d1c873a911fdba8",
+            "target_structure_sha256": "bb5ab5b1ff5ea3f9bf412b67b1b8762267f617aaf1d92642b00beabf05e82ec5"
         },
         {
             "key": "settings/site-address.md",
@@ -2490,11 +2502,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/site-address.md",
-            "source_sha256": "1e857ee0bdae25c6c4856a0d67ad1fdef6d149d47f34a6f77f07b0182c81e090",
-            "source_structure_sha256": "97cd06484d401d76ca509168a99d24f1feee2bde9e2817c2d632b38652b6f6d4",
+            "source_sha256": "8ad946e8f2b5f0f5ccf1515c7c7c611ee81e26f95fc1e96880f75d3e4a8a05a1",
+            "source_structure_sha256": "4daac64c421fda82b6bf39ff113b91f0b87517290a8bbd6bafc1264b37f60b2c",
             "target_path": "content/en/settings/site-address.md",
-            "target_sha256": "8ae79fc81d7dbd429b449dd96eb1d570f6105ac727726c04db24525dc7bf4b72",
-            "target_structure_sha256": "97cd06484d401d76ca509168a99d24f1feee2bde9e2817c2d632b38652b6f6d4"
+            "target_sha256": "648cecd0b9bc135ac3a61a72a8d834bc6d53ec00eba5cc6925fa9d97208577d5",
+            "target_structure_sha256": "4daac64c421fda82b6bf39ff113b91f0b87517290a8bbd6bafc1264b37f60b2c"
         },
         {
             "key": "start.md",
@@ -2515,10 +2527,10 @@
             "review": "ai_verified",
             "source_path": "content/ru/start/ai-agent.md",
             "source_sha256": "158626e98efd382bd9eca5647194f73fbe62cadca7fb694dbe9d1d9430372748",
-            "source_structure_sha256": "3c8da52348772b1a8439e2180adccab346e774489f269cf69dab008aeaa33811",
+            "source_structure_sha256": "a9530b71f31d9db7dac18e8c93f62fd3edd49c15b5d6a461b75a639e20c2eb32",
             "target_path": "content/en/start/ai-agent.md",
-            "target_sha256": "85f8ebc067f29671740c2c984d415c1ce085e4ee2a2b6a27df8bb75871a9d504",
-            "target_structure_sha256": "3c8da52348772b1a8439e2180adccab346e774489f269cf69dab008aeaa33811"
+            "target_sha256": "6a83f6ee74c58b31212925578b70cad3139ff05fc451c96b630ffdd3d4b0b55a",
+            "target_structure_sha256": "a9530b71f31d9db7dac18e8c93f62fd3edd49c15b5d6a461b75a639e20c2eb32"
         },
         {
             "key": "start/component-model.md",

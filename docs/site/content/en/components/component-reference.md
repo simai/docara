@@ -1,5 +1,5 @@
 ---
-description: A component reference is built from the component's manifests at build time — attributes, events, methods, CSS variables and accessibility — and translated with the locale's dictionary.
+description: A component reference built from its manifests at build time — attributes, events, methods, CSS variables and accessibility — in the page language.
 ---
 
 # Component reference

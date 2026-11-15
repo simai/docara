@@ -36,6 +36,8 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           ref: ${{ env.DEPLOY_SHA }}
+          # Full history: sitemap.xml lastmod and dateModified come from Git.
+          fetch-depth: 0
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
         with:
           php-version: "8.3"

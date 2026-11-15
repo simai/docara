@@ -1,5 +1,5 @@
 ---
-description: How Docara versions are numbered, what changes in a major, minor and patch, where to read the changelog, how Docara warns about deprecated names and how to update.
+description: How Docara versions are numbered, what a major, minor and patch change, where to read the changelog, deprecated names and how to update.
 tags: [versions, changelog, update, deprecated]
 ---
 

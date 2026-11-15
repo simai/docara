@@ -91,6 +91,52 @@ the server. If the host can answer with HTTP 301, such rules can be added
 separately, but the static redirect pages stay in the folder. The file format
 is described in [Redirects](/en/authoring/redirects/).
 
+## Redirect from the site root
+
+Docara builds the site root (`/` under `base_url`) as a page that redirects
+to the default language, for example to `/en/`. It has a full canonical
+address and `noindex`, so search engines understand it. A server redirect
+with code 301 is more reliable: the crawler gets the new address at once. If
+the host supports it, add one rule.
+
+- **nginx:**
+
+  ```nginx
+  location = / {
+      return 301 /en/;
+  }
+  ```
+
+- **Apache** (`.htaccess` in the site root):
+
+  ```apache
+  RedirectMatch 301 ^/$ /en/
+  ```
+
+- **Netlify and Cloudflare Pages** (a `_redirects` file in the build root):
+
+  ```text
+  /  /en/  301
+  ```
+
+The redirect page stays in the build: hosts without server rules and the
+local preview need it.
+
+## Text copies of pages
+
+With `site_url` set, each page has a text copy for AI assistants next to it:
+`index.md` next to `index.html`. The server should send such files as text,
+not as a download. nginx has no type for `.md` by default, so add it:
+
+```nginx
+types {
+    text/markdown md;
+}
+```
+
+More about the copies and the files for AI is in
+[SEO and GEO](/en/settings/seo-and-geo/).
+
 ## The 404 page
 
 The build puts a `404.html` file into the site root (under `base_url`): a

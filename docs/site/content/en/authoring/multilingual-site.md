@@ -1,5 +1,5 @@
 ---
-description: A site in several languages — any number of locales by BCP 47 tags, each with its own address and writing direction, translations, their freshness and interface labels.
+description: "A site in several languages: any number of locales by BCP 47 tags, each with its own address and direction, translations and interface labels."
 tags: [i18n, l10n, translation, translations, localization, multilingual, language, languages]
 ---
 

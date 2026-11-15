@@ -1,5 +1,5 @@
 ---
-description: How to build the static site, what lies in the finished folder and next to it, how styles and scripts are attached, processing of the finished pages and reproducibility of the build.
+description: "How to build the static site: what lies in the finished folder, how styles and scripts are attached, processing finished pages and reproducibility."
 tags: [build, static-site, reproducibility, caching]
 ---
 

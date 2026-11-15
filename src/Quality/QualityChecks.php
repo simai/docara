@@ -41,8 +41,8 @@ final class QualityChecks
         ],
         'QUALITY_DESCRIPTION_LENGTH' => [
             'group' => 'completeness', 'severity' => self::ADVICE,
-            'checks' => 'The description is shorter than 40 or longer than 200 characters.',
-            'hint' => 'Write one sentence of 40 to 200 characters.',
+            'checks' => 'The description is shorter than 40 or longer than 160 characters.',
+            'hint' => 'Write one sentence of 40 to 160 characters: search results show about that much.',
         ],
         'QUALITY_PAGE_STUB' => [
             'group' => 'completeness', 'severity' => self::WARNING,

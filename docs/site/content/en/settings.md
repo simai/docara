@@ -1,5 +1,5 @@
 ---
-description: Docara site settings — setting levels, the site address, brand and theme, layout regions, search, reading context and the reader panel. Where to start and how to check the result.
+description: "Docara site settings: setting levels, the address, SEO and GEO, brand and theme, layout, search, reading and the reader panel. Where to start."
 tags: [settings, configuration, docara-json]
 ---
 
@@ -16,6 +16,8 @@ resulting page plan.
   set on each level, inheritance and reset, where a value came from.
 - [Site address and search engines](/en/settings/site-address/) —
   `base_url`, `site_url`, `sitemap.xml`, `robots.txt` and `llms.txt`.
+- [SEO and GEO](/en/settings/seo-and-geo/) — how search engines and AI
+  assistants find the site, what to set and what to check before publishing.
 - [Brand and theme](/en/settings/branding-and-theme/) — logo, name, favicon,
   colours and the light or dark scheme.
 - [Layout regions](/en/settings/layout-and-regions/) — the page view, width,

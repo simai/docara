@@ -828,8 +828,18 @@ final readonly class FrameworkAssetPlanner
     private function orderedRuntimeTags(array $tags, array $runtime): array
     {
         // Shared with the Smart sync script, which derives the eager asset
-        // projection from the same closure this planner checks.
-        return FrameworkRuntimeClosure::orderedTags($runtime, $tags);
+        // projection from the same closure this planner checks; both skip the
+        // dependencies the Loader's rule registry reaches only lazily.
+        try {
+            $rules = json_decode($this->repository->bundledRuntimeAsset('rule/rule.json'), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            throw new FrameworkComponentException('FRAMEWORK_RULE_REGISTRY_INVALID');
+        }
+        if (! is_array($rules) || ! array_is_list($rules)) {
+            throw new FrameworkComponentException('FRAMEWORK_RULE_REGISTRY_INVALID');
+        }
+
+        return FrameworkRuntimeClosure::orderedTags($runtime, $tags, FrameworkRuntimeClosure::lazyTags($rules));
     }
 
     private const BREAKPOINT_RANK = ['default' => 0, 'sm' => 1, 'md' => 2, 'lg' => 3, 'xl' => 4, 'xxl' => 5];

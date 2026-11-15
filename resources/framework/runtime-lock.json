@@ -121,6 +121,12 @@
                 "runtime_projection_packet_sha256": "34c6a682f0ceffe236b76c1c6acad62122eaaf2c68fc94303b7064aebe8a2699",
                 "runtime_projection_files": 2246,
                 "runtime_projection_manifest_sha256": "5d48449affe885a771134f3739dd16283ddbd88c693ab44118e94efc0aeff00b"
+            },
+            {
+                "runtime_sha256": "1c18c8213d5fab86cd372f9a925219f90bb51c956698496834d0122181bf245b",
+                "runtime_projection_packet_sha256": "5ecc20e0a75ef5e72446eb5934273c852230828351197cc8f648f4d5d3197644",
+                "runtime_projection_files": 2250,
+                "runtime_projection_manifest_sha256": "797e680d601433cf5e3a6af8a763b411f5864060fa50f4f33bcb9d312f0b0bc0"
             }
         ],
         "superseded_typography_projections": [
@@ -135,44 +141,44 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "ui-7fb26d395af2",
-    "bundle_id": "ui-7fb26d395af2-registry-fda6a30b-verified-commit-candidate-v1",
+    "pair_id": "ui-994f9db407fa",
+    "bundle_id": "ui-994f9db407fa-registry-109f612d-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
     "tag": null,
     "ui": {
         "tag": null,
-        "commit": "7fb26d395af28dfcaac2a5df9de254b3067dc4ae",
+        "commit": "994f9db407fa5523feeafd1b8cb859fad34fa9c3",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "882d8d448c3a3570a50e46170116c7dc60d12fb997cf3189323c2a5a89031864",
-        "files": 12903
+        "sha256": "4db32c85f92702bbfee0da046e5a8cc8905f8513cd7e3c886029b379c28bc6be",
+        "files": 13069
     },
     "ui_smart": {
         "tag": null,
-        "commit": "7fb26d395af28dfcaac2a5df9de254b3067dc4ae",
+        "commit": "994f9db407fa5523feeafd1b8cb859fad34fa9c3",
         "tree": "distr/smart",
         "mount": "ui",
-        "sha256": "25b6b91849844f93b2e3f0a5f8279ddc1dd890899088c84283d86eb951d13373",
-        "files": 3603
+        "sha256": "b9df2aff250a961bfdab88d9edfb7d3f829a012a213da181125e4ab36c5819a2",
+        "files": 3759
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "ui-7fb26d395af2",
+        "compatibility_id": "ui-994f9db407fa",
         "profile": "plain-assets-v1",
         "relative_path": "contracts/generated/framework-contract-registry.json",
-        "file_sha256": "fda6a30b69b7efd9a783ec30d5e666525497999de805280f2b9c8b4bcb982325",
+        "file_sha256": "109f612d606e3fe27fe7214bca15ca523c98d7b2da6fbf445a3b5d9726c73b72",
         "source": {
-            "commit": "4c012852f8d85530442ec813e4319905c3af1afe",
+            "commit": "698b188d654d074ab60abe81d888ab8501ff827f",
             "tree": "contracts/generated",
-            "tree_oid": "a37c626ad0ce032dba909397ae2f3ca96387589b",
+            "tree_oid": "ed5ce16e78cfd4e6b15af53d5952e14d984443a4",
             "mount": "contract",
-            "sha256": "8fb8165f4be3105059ea752060e1fb2506701ea4c1a4fe5a1e3454bea9f8e24c",
+            "sha256": "a59aaec28d62ea57f75122bd44e21a54f4b8288b20a9d41808176c5aac4ffc78",
             "files": 2
         },
         "documentation_source": {
             "schema": "docara.documentation_source.v1",
             "relative_path": "contracts/generated/documentation-source.json",
-            "file_sha256": "15cc2aa46736366e77a547493a5d63fbdafe673bfc07219f5be9500ea7a4219b"
+            "file_sha256": "8092d4c68a3fba1e47d6a2cd31b32addb0a3259c0428dda4e7cf7178891b0601"
         }
     },
     "boot": {
@@ -237,6 +243,7 @@
             "attributes": [
                 "action",
                 "action-text",
+                "actions-layout",
                 "appearance",
                 "aria-label",
                 "closable",
@@ -269,7 +276,6 @@
                 "template"
             ],
             "requires": [
-                "sf-badge",
                 "sf-button",
                 "sf-button-icon",
                 "sf-icon",
@@ -290,8 +296,10 @@
                 "card-variant",
                 "description",
                 "disabled",
+                "expressive",
                 "heading",
                 "hue",
+                "icon",
                 "image-alt",
                 "image-url",
                 "line",
@@ -307,6 +315,9 @@
                 "text",
                 "title",
                 "tone"
+            ],
+            "requires": [
+                "sf-icon"
             ]
         },
         "sf-avatar-group": {
@@ -334,13 +345,19 @@
                 "round-size",
                 "source",
                 "template"
+            ],
+            "requires": [
+                "sf-icon"
             ]
         },
         "sf-avatars": {
             "source": "smart/avatar-group",
             "javascript": "smart/smart/avatar-group/js/avatar-group.js",
             "css": null,
-            "attributes": []
+            "attributes": [],
+            "requires": [
+                "sf-icon"
+            ]
         },
         "sf-badge": {
             "source": "smart/badge",
@@ -355,6 +372,7 @@
                 "icon",
                 "icon-end",
                 "icon-left",
+                "icon-only",
                 "icon-position",
                 "icon-right",
                 "icon-start",
@@ -377,6 +395,7 @@
             "attributes": [
                 "aria-label",
                 "container-class",
+                "current",
                 "current-class",
                 "expand-label",
                 "expand-on-ellipsis",
@@ -390,10 +409,13 @@
                 "root-style",
                 "separator-class",
                 "separator-icon",
+                "siblings",
                 "template"
             ],
             "requires": [
-                "sf-icon"
+                "sf-context-menu",
+                "sf-icon",
+                "sf-menu-context"
             ]
         },
         "sf-button": {
@@ -428,6 +450,7 @@
                 "icon-right",
                 "icon-start",
                 "loading",
+                "menu",
                 "name",
                 "native-type",
                 "pressed",
@@ -441,6 +464,7 @@
                 "shortcut-listen",
                 "size",
                 "spacing",
+                "split",
                 "status",
                 "target",
                 "template",
@@ -453,7 +477,11 @@
                 "value"
             ],
             "requires": [
-                "sf-icon"
+                "sf-button-icon",
+                "sf-context-menu",
+                "sf-icon",
+                "sf-icon-button",
+                "sf-menu-context"
             ]
         },
         "sf-button-close": {
@@ -526,8 +554,10 @@
                 "button-attributes",
                 "cycle",
                 "disabled",
+                "download",
                 "filled",
                 "height",
+                "href",
                 "icon",
                 "kind",
                 "label-pressed",
@@ -535,6 +565,7 @@
                 "native-type",
                 "pressed",
                 "radius",
+                "rel",
                 "root-class",
                 "root-style",
                 "scheme",
@@ -542,6 +573,7 @@
                 "size",
                 "spacing",
                 "status",
+                "target",
                 "template",
                 "theme-cycle",
                 "tightness",
@@ -631,8 +663,11 @@
             "css": "smart/smart/input-color/css/input-color.css",
             "attributes": [],
             "requires": [
+                "sf-button-group",
                 "sf-button-icon",
-                "sf-icon-button"
+                "sf-icon",
+                "sf-icon-button",
+                "sf-segmented"
             ]
         },
         "sf-composition-overlay": {
@@ -705,11 +740,15 @@
             "css": "smart/smart/contents/css/contents.css",
             "attributes": [
                 "collapse",
+                "expand",
                 "hash",
+                "heading-level",
                 "items",
                 "label",
                 "layout",
                 "levels",
+                "line",
+                "overflow",
                 "root-class",
                 "root-style",
                 "size",
@@ -718,8 +757,11 @@
                 "template"
             ],
             "requires": [
+                "sf-badge",
                 "sf-button",
-                "sf-icon"
+                "sf-context-menu",
+                "sf-icon",
+                "sf-menu-context"
             ]
         },
         "sf-context-menu": {
@@ -730,6 +772,7 @@
             "requires": [
                 "sf-button",
                 "sf-button-icon",
+                "sf-icon",
                 "sf-icon-button",
                 "sf-tabs"
             ]
@@ -760,6 +803,7 @@
             "requires": [
                 "sf-button",
                 "sf-button-icon",
+                "sf-drawer",
                 "sf-icon",
                 "sf-icon-button",
                 "sf-input"
@@ -771,8 +815,10 @@
             "css": null,
             "attributes": [],
             "requires": [
-                "sf-alert",
-                "sf-icon"
+                "sf-button",
+                "sf-button-icon",
+                "sf-icon",
+                "sf-icon-button"
             ]
         },
         "sf-drawer": {
@@ -897,6 +943,7 @@
             "css": "smart/smart/empty-state/css/empty-state.css",
             "attributes": [
                 "actions",
+                "expressive",
                 "heading",
                 "heading-level",
                 "icon",
@@ -908,11 +955,14 @@
                 "size",
                 "template",
                 "text",
-                "title"
+                "title",
+                "value"
             ],
             "requires": [
                 "sf-button",
-                "sf-icon"
+                "sf-icon",
+                "sf-progress-ring",
+                "sf-spinner"
             ]
         },
         "sf-file-download": {
@@ -921,12 +971,14 @@
             "css": null,
             "attributes": [
                 "aria-label",
+                "cancelable",
                 "disabled",
                 "download",
                 "error-text",
                 "file-name",
                 "file-size",
                 "file-type",
+                "full-width",
                 "href",
                 "icon",
                 "root-class",
@@ -934,11 +986,14 @@
                 "size",
                 "state",
                 "target",
-                "template"
+                "template",
+                "value"
             ],
             "requires": [
-                "sf-alert",
-                "sf-icon"
+                "sf-button",
+                "sf-button-icon",
+                "sf-icon",
+                "sf-icon-button"
             ]
         },
         "sf-file-preview": {
@@ -953,6 +1008,7 @@
                 "download",
                 "download-action",
                 "download-label",
+                "error-text",
                 "file-name",
                 "file-size",
                 "href",
@@ -966,10 +1022,16 @@
                 "root-class",
                 "root-style",
                 "size",
+                "state",
                 "surface",
                 "target",
                 "template",
-                "type"
+                "type",
+                "value"
+            ],
+            "requires": [
+                "sf-button",
+                "sf-progress-bar"
             ]
         },
         "sf-file-upload": {
@@ -984,13 +1046,21 @@
                 "icon",
                 "items",
                 "link-text",
+                "max-files",
+                "max-size",
+                "max-total-size",
+                "min-size",
                 "multiple",
+                "name",
+                "required",
                 "root-class",
                 "root-style",
                 "size",
                 "supporting-text",
                 "template",
-                "text"
+                "text",
+                "uploader",
+                "value"
             ],
             "requires": [
                 "sf-progress-bar"
@@ -1033,6 +1103,7 @@
                 "panel-class",
                 "position",
                 "preserve-scroll-gap",
+                "ratio",
                 "root-class",
                 "root-style",
                 "show-close",
@@ -1061,6 +1132,7 @@
             "css": "smart/smart/header-page/css/header-page.css",
             "attributes": [
                 "count",
+                "expressive",
                 "heading",
                 "level",
                 "root-class",
@@ -1084,6 +1156,7 @@
                 "collapse",
                 "label",
                 "menu-label",
+                "menu-placement",
                 "navigation-align",
                 "root-class",
                 "root-style",
@@ -1170,7 +1243,15 @@
             "attributes": [],
             "requires": [
                 "sf-button",
-                "sf-icon"
+                "sf-button-icon",
+                "sf-context-menu",
+                "sf-icon",
+                "sf-icon-button",
+                "sf-input",
+                "sf-menu-context",
+                "sf-modal",
+                "sf-progress-ring",
+                "sf-switch"
             ]
         },
         "sf-include": {
@@ -1205,6 +1286,7 @@
                 "appearance",
                 "aria-label",
                 "autocomplete",
+                "clearable",
                 "default-value",
                 "disabled",
                 "error",
@@ -1283,10 +1365,12 @@
             "attributes": [
                 "appearance",
                 "aria-label",
+                "charset",
                 "default-value",
                 "disabled",
                 "error",
                 "error-message",
+                "groups",
                 "hint",
                 "invalid",
                 "label",
@@ -1300,6 +1384,7 @@
                 "root-style",
                 "size",
                 "template",
+                "uppercase",
                 "value"
             ]
         },
@@ -1308,27 +1393,37 @@
             "javascript": "smart/smart/input-color/js/input-color.js",
             "css": "smart/smart/input-color/css/input-color.css",
             "attributes": [
+                "alpha",
                 "appearance",
                 "choose-label",
                 "clear-label",
                 "clearable",
+                "custom",
                 "disabled",
+                "error-message",
+                "hint",
                 "inherited-text",
                 "inherited-value",
+                "invalid",
                 "label",
                 "name",
+                "palette",
                 "reset-label",
                 "root-class",
                 "root-style",
                 "size",
                 "swatches",
+                "target",
                 "template",
                 "value",
                 "variant"
             ],
             "requires": [
+                "sf-button-group",
                 "sf-button-icon",
-                "sf-icon-button"
+                "sf-icon",
+                "sf-icon-button",
+                "sf-segmented"
             ]
         },
         "sf-input-country": {
@@ -1340,11 +1435,13 @@
                 "dial-code",
                 "disabled",
                 "eager-flags",
+                "error-message",
                 "fixed-country",
                 "fixed-mask",
                 "flag-base",
                 "hide-code",
                 "hint",
+                "invalid",
                 "iso2",
                 "label",
                 "lazy-flags",
@@ -1357,6 +1454,7 @@
                 "name",
                 "open",
                 "placeholder",
+                "preferred",
                 "required",
                 "root-class",
                 "root-style",
@@ -1422,11 +1520,13 @@
                 "template",
                 "value",
                 "week-start",
+                "weekend",
                 "year"
             ],
             "requires": [
                 "sf-button",
                 "sf-button-icon",
+                "sf-drawer",
                 "sf-icon",
                 "sf-icon-button",
                 "sf-input"
@@ -1438,27 +1538,47 @@
             "css": "smart/smart/input-image/css/input-image.css",
             "attributes": [
                 "accept",
+                "alt",
                 "aria-label",
+                "aspect",
                 "disabled",
+                "edit",
                 "empty-text",
                 "error",
                 "error-message",
+                "fit",
                 "hint",
                 "invalid",
                 "label",
+                "layout",
+                "library-label",
+                "max-size",
                 "meta",
+                "min-height",
+                "min-width",
                 "name",
                 "readonly",
                 "required",
                 "root-class",
                 "root-style",
+                "shape",
                 "size",
+                "sources",
                 "template",
+                "uploader",
                 "value"
             ],
             "requires": [
                 "sf-button",
-                "sf-icon"
+                "sf-button-icon",
+                "sf-context-menu",
+                "sf-icon",
+                "sf-icon-button",
+                "sf-input",
+                "sf-menu-context",
+                "sf-modal",
+                "sf-progress-ring",
+                "sf-switch"
             ]
         },
         "sf-input-lookup": {
@@ -1468,6 +1588,8 @@
             "attributes": [
                 "appearance",
                 "aria-label",
+                "chips",
+                "create",
                 "debounce",
                 "disabled",
                 "error-message",
@@ -1489,13 +1611,15 @@
                 "root-class",
                 "root-style",
                 "size",
+                "suggest",
                 "template",
                 "value"
             ],
             "requires": [
                 "sf-button",
-                "sf-button-close",
-                "sf-close",
+                "sf-button-icon",
+                "sf-icon",
+                "sf-icon-button",
                 "sf-spinner",
                 "sf-tag"
             ]
@@ -1526,6 +1650,8 @@
                 "placeholder",
                 "precision",
                 "readonly",
+                "removable",
+                "remove-label",
                 "required",
                 "reset-label",
                 "root-class",
@@ -1545,12 +1671,14 @@
             "attributes": [
                 "appearance",
                 "aria-label",
+                "counter",
                 "disabled",
                 "error-message",
                 "hint",
                 "invalid",
                 "label",
                 "max-rows",
+                "maxlength",
                 "name",
                 "placeholder",
                 "readonly",
@@ -1578,6 +1706,7 @@
                 "aria-labelledby",
                 "auto-grow",
                 "autocomplete",
+                "counter",
                 "disabled",
                 "error",
                 "error-message",
@@ -1599,6 +1728,7 @@
                 "readonly",
                 "required",
                 "reset-label",
+                "resize",
                 "root-class",
                 "root-style",
                 "rows",
@@ -1606,6 +1736,7 @@
                 "spell-check",
                 "spellcheck",
                 "template",
+                "text",
                 "type",
                 "value",
                 "wrap"
@@ -1617,13 +1748,15 @@
             "css": null,
             "attributes": [
                 "apply",
-                "compact",
                 "disabled",
+                "home",
                 "href",
                 "inline-max",
                 "items",
                 "label",
+                "labels",
                 "languages",
+                "missing",
                 "mode",
                 "name",
                 "remember",
@@ -1635,11 +1768,11 @@
                 "value"
             ],
             "requires": [
+                "sf-button",
                 "sf-button-group",
-                "sf-button-icon",
                 "sf-context-menu",
+                "sf-dropdown",
                 "sf-icon",
-                "sf-icon-button",
                 "sf-menu-context",
                 "sf-segmented"
             ]
@@ -1826,8 +1959,9 @@
             "attributes": [],
             "requires": [
                 "sf-button",
-                "sf-button-close",
-                "sf-close",
+                "sf-button-icon",
+                "sf-icon",
+                "sf-icon-button",
                 "sf-spinner",
                 "sf-tag"
             ]
@@ -1890,6 +2024,7 @@
             "requires": [
                 "sf-button",
                 "sf-button-icon",
+                "sf-icon",
                 "sf-icon-button",
                 "sf-tabs"
             ]
@@ -1986,9 +2121,11 @@
                 "complete",
                 "current",
                 "done-label",
+                "has-next",
                 "items",
                 "keys",
                 "label",
+                "list-href",
                 "next-href",
                 "next-label",
                 "next-title",
@@ -1998,7 +2135,8 @@
                 "root-class",
                 "root-style",
                 "size",
-                "template"
+                "template",
+                "total"
             ],
             "requires": [
                 "sf-button",
@@ -2020,6 +2158,7 @@
                 "actions",
                 "actions-label",
                 "actions-region-label",
+                "appearance",
                 "aria-label",
                 "bottom",
                 "bottom-class",
@@ -2031,12 +2170,15 @@
                 "current",
                 "first-label",
                 "has-next",
+                "href",
                 "last-label",
                 "main-class",
                 "middle",
                 "next-label",
                 "page-field-label",
+                "page-in-title",
                 "page-label",
+                "page-param",
                 "page-size",
                 "page-size-label",
                 "page-sizes",
@@ -2064,10 +2206,14 @@
                 "sf-button",
                 "sf-button-icon",
                 "sf-checkbox",
+                "sf-context-menu",
                 "sf-dropdown",
+                "sf-icon",
                 "sf-icon-button",
                 "sf-input",
                 "sf-list-item",
+                "sf-menu-context",
+                "sf-progress-bar",
                 "sf-spinner"
             ]
         },
@@ -2076,6 +2222,7 @@
             "javascript": "smart/smart/popover/js/popover.js",
             "css": "smart/smart/popover/css/popover.css",
             "attributes": [
+                "arrow",
                 "dismissible",
                 "label",
                 "offset",
@@ -2120,6 +2267,7 @@
                 "error-at",
                 "indeterminate",
                 "label",
+                "meter",
                 "paused",
                 "root-class",
                 "root-style",
@@ -2139,6 +2287,7 @@
             "css": null,
             "attributes": [
                 "aria-label",
+                "error-at",
                 "indeterminate",
                 "label",
                 "meter",
@@ -2149,7 +2298,8 @@
                 "status",
                 "template",
                 "value",
-                "value-text"
+                "value-text",
+                "warning-at"
             ]
         },
         "sf-progress-run": {
@@ -2205,8 +2355,10 @@
             "css": null,
             "attributes": [
                 "aria-label",
+                "error-at",
                 "label",
                 "line",
+                "meter",
                 "root-class",
                 "root-style",
                 "show-text",
@@ -2215,7 +2367,8 @@
                 "template",
                 "tone",
                 "value",
-                "value-text"
+                "value-text",
+                "warning-at"
             ]
         },
         "sf-quantity": {
@@ -2227,7 +2380,7 @@
         "sf-radio": {
             "source": "smart/radio",
             "javascript": "smart/smart/radio/js/radio.js",
-            "css": null,
+            "css": "smart/smart/radio/css/radio.css",
             "attributes": [
                 "checked",
                 "description",
@@ -2370,8 +2523,9 @@
         "sf-settings": {
             "source": "smart/settings",
             "javascript": "smart/smart/settings/js/settings.js",
-            "css": null,
+            "css": "smart/smart/settings/css/settings.css",
             "attributes": [
+                "apply",
                 "for",
                 "items",
                 "label",
@@ -2379,12 +2533,20 @@
                 "remember",
                 "root-class",
                 "root-style",
+                "search",
                 "size",
                 "template"
             ],
             "requires": [
+                "sf-button",
+                "sf-button-icon",
+                "sf-color",
                 "sf-context-menu",
-                "sf-menu-context"
+                "sf-icon-button",
+                "sf-input-color",
+                "sf-menu-context",
+                "sf-switch",
+                "sf-tabs"
             ]
         },
         "sf-site-header": {
@@ -2422,6 +2584,7 @@
             "javascript": "smart/smart/slider/js/slider.js",
             "css": null,
             "attributes": [
+                "aria-label",
                 "arrows",
                 "button-size",
                 "button-type",
@@ -2429,6 +2592,7 @@
                 "dots-size",
                 "dots-type",
                 "loop",
+                "ratio",
                 "root-class",
                 "root-style",
                 "slide-class",
@@ -2453,27 +2617,38 @@
                 "connect",
                 "decimals",
                 "disabled",
+                "field",
+                "grouping",
                 "keyboard",
                 "label",
                 "label-position",
+                "locale",
                 "lower-label",
                 "margin",
+                "marks",
                 "max",
                 "min",
                 "multiple",
                 "name",
+                "page-step",
+                "precision",
                 "prefix",
                 "prefix-text",
+                "readonly",
                 "root-class",
                 "root-style",
+                "scale",
+                "size",
                 "start",
                 "step",
                 "suffix",
                 "template",
                 "text-position",
+                "ticks",
                 "tooltip-position",
                 "upper-label",
-                "value"
+                "value",
+                "value-display"
             ]
         },
         "sf-sortable": {
@@ -2504,12 +2679,14 @@
             "css": null,
             "attributes": [
                 "announce",
+                "delay",
                 "direction",
                 "dots",
                 "filled",
                 "infinite",
                 "kind",
                 "label",
+                "label-hidden",
                 "root-class",
                 "root-style",
                 "size",
@@ -2522,12 +2699,18 @@
             "javascript": "smart/smart/steps/js/steps.js",
             "css": null,
             "attributes": [
+                "ahead-label",
                 "aria-label",
                 "completed-label",
+                "count-label",
                 "current",
+                "current-label",
                 "error-label",
                 "error-step",
                 "items",
+                "layout",
+                "marker",
+                "navigation",
                 "root-class",
                 "root-style",
                 "running-label",
@@ -2535,6 +2718,10 @@
                 "size",
                 "skipped-label",
                 "template"
+            ],
+            "requires": [
+                "sf-progress-bar",
+                "sf-spinner"
             ]
         },
         "sf-switch": {
@@ -2571,7 +2758,10 @@
                 "active-index",
                 "aria-label",
                 "configurable",
+                "fit",
+                "hash",
                 "items",
+                "lazy",
                 "overflow",
                 "panel-class",
                 "root-class",
@@ -2580,6 +2770,7 @@
                 "selected",
                 "settings",
                 "size",
+                "sticky",
                 "template",
                 "top-class",
                 "top-position",
@@ -2591,6 +2782,7 @@
                 "sf-button-icon",
                 "sf-checkbox",
                 "sf-context-menu",
+                "sf-icon",
                 "sf-icon-button",
                 "sf-menu-context",
                 "sf-sortable"
@@ -2612,6 +2804,7 @@
                 "color-class",
                 "count",
                 "disabled",
+                "height",
                 "icon",
                 "inline",
                 "interactive",
@@ -2722,7 +2915,9 @@
             "css": null,
             "attributes": [
                 "action",
+                "action-href",
                 "action-text",
+                "actions-layout",
                 "closable",
                 "close-label",
                 "duration",
@@ -2731,6 +2926,8 @@
                 "role",
                 "root-class",
                 "root-style",
+                "secondary-action",
+                "secondary-action-text",
                 "status",
                 "supporting-text",
                 "template",
@@ -2768,12 +2965,17 @@
                 "accept-files",
                 "accept-records",
                 "aria-label",
+                "file-types",
+                "icons",
                 "items",
+                "reorder",
                 "root-class",
                 "root-style",
                 "selected",
                 "selected-ids",
                 "selection",
+                "size",
+                "static",
                 "template"
             ],
             "requires": [
@@ -2792,6 +2994,7 @@
                 "closed-icon",
                 "container-class",
                 "disabled",
+                "has-children",
                 "href",
                 "icon",
                 "item-class",

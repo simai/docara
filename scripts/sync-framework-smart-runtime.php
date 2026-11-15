@@ -327,9 +327,10 @@ foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $pr
 
     // The eager projection is exactly what the admission preflight's closure
     // reaches: the shell tags and each admitted manifest's tag, expanded
-    // through `requires`. It is derived with the planner's own function, and a
-    // list already present in the lock is ignored, so a hand-kept list can no
-    // longer drift from the closure the planner checks.
+    // through `requires` except what the Loader reaches lazily. It is
+    // derived with the planner's own function, and a list already present in
+    // the lock is ignored, so a hand-kept list can no longer drift from the
+    // closure the planner checks.
     $manifestTags = [];
     foreach (array_keys($projectLock['manifests'] ?? []) as $manifestKey) {
         $manifestPath = $root . '/resources/framework/'
@@ -341,7 +342,20 @@ foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $pr
         }
         $manifestTags[] = $manifestTag;
     }
-    $eagerPaths = FrameworkRuntimeClosure::eagerSmartFiles($projectLock['runtime'], $manifestTags);
+    // The Loader's rule registry of the same release, projected by
+    // sync-framework-rule-registry.php: a dependency it reaches only lazily
+    // stays with the Loader.
+    $rulePath = $root . '/resources/portable/vendor/simai-framework/runtime/'
+        . ($projectLock['runtime_projection']['source']['revision'] ?? '') . '/distr/rule/rule.json';
+    $rules = json_decode((string) @file_get_contents($rulePath), true, 512, JSON_THROW_ON_ERROR);
+    if (! is_array($rules) || ! array_is_list($rules)) {
+        throw new RuntimeException('FRAMEWORK_RULE_REGISTRY_INVALID: ' . $rulePath);
+    }
+    $eagerPaths = FrameworkRuntimeClosure::eagerSmartFiles(
+        $projectLock['runtime'],
+        $manifestTags,
+        FrameworkRuntimeClosure::lazyTags($rules),
+    );
     foreach ($eagerPaths as $relativePath) {
         if (! isset($files[$relativePath])) {
             throw new RuntimeException('FRAMEWORK_STATIC_SMART_ASSET_MISSING: ' . $relativePath);

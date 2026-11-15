@@ -2,7 +2,8 @@
 //
 // Reads one JSON request on stdin:
 //   {"source": "<bytes of smart/theme-generator/js/theme-generator.js>",
-//    "filename": "...", "color": "#rrggbb", "hue": int|null, "chroma": int|null}
+//    "filename": "...", "modules": {"<id>": "<bytes of a shared module>"},
+//    "color": "#rrggbb", "hue": int|null, "chroma": int|null}
 // and writes one JSON result on stdout:
 //   {"source": {"hex", "hue", "chroma"}, "variables": {...}, "css": "..."}
 //
@@ -11,6 +12,14 @@
 // the browser runtime (lit, smart-base). Docara runs those exact, hash-checked
 // bytes in an isolated context with no browser: the element never defines
 // itself, and nothing but the palette is used. No file is read or written.
+//
+// From ui-994f9db407fa the palette imports the Framework's shared
+// `deprecations` module, which a page answers through SF.runtimeModule once
+// its runtime is ready. Here the request carries that module's own bytes
+// (core/js/deprecations.js of the release), and SF.runtimeModule answers it
+// with them; every other shared module (lit, smart-base, the element
+// manifest) stays pending, as on a page whose runtime never arrives, so the
+// element still never defines itself.
 import vm from 'node:vm';
 
 const chunks = [];
@@ -29,10 +38,22 @@ if (typeof request?.source !== 'string' || typeof request?.color !== 'string') {
 // The bundle reaches the page only through `window`, `globalThis` and
 // `addEventListener` (the runtime-ready event it waits for, which never comes
 // here).
+const shared = {};
+for (const [id, source] of Object.entries(request.modules ?? {})) {
+  if (typeof source !== 'string') fail('THEME_PALETTE_REQUEST_INVALID', `the shared module ${id} is not text`);
+  shared[id] = await import(`data:text/javascript;base64,${Buffer.from(source, 'utf8').toString('base64')}`);
+}
+const never = new Promise(() => {});
 const sandbox = {addEventListener() {}, removeEventListener() {}};
 sandbox.window = sandbox;
+sandbox.SF = {runtimeModule: (id) => (Object.hasOwn(shared, id) ? Promise.resolve(shared[id]) : never)};
 vm.createContext(sandbox, {codeGeneration: {strings: false, wasm: false}});
 vm.runInContext(request.source, sandbox, {filename: request.filename || 'theme-generator.js', timeout: 10000});
+// The palette publishes itself once its shared module has resolved, a few
+// turns of the event loop after the bundle ran.
+for (let turn = 0; turn < 100 && !sandbox.SF?.ThemePalette; turn++) {
+  await new Promise((resolve) => setImmediate(resolve));
+}
 
 const palette = sandbox.SF?.ThemePalette;
 for (const name of ['colorToHct', 'themeFromHct', 'themeFromColor', 'themeVariables', 'themeToCss']) {

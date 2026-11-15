@@ -1266,10 +1266,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/build/update.md",
-            "source_sha256": "61cfa7cfaa3896898f601c8c3cfd04b5929e35d6ca71238a37ea8d7c0d0745fb",
+            "source_sha256": "cac92eb118178d01bcf6aaed705b8bdefb383dfee5201cb30dcd9a64f6752ca9",
             "source_structure_sha256": "0727012f1f63fb4272242ff0cc5d2b775c93116bc4a4aaa1712d4ebaa2ebf6b3",
             "target_path": "content/en/build/update.md",
-            "target_sha256": "ac1bc7f90d114706bf76c9c3ecc7f24d055033bc0b42c31e341c350378614687",
+            "target_sha256": "c859c7130c0653769c2cb3ef7ddcdbb46bfa00125f6437f6e720a5779fd4827b",
             "target_structure_sha256": "0727012f1f63fb4272242ff0cc5d2b775c93116bc4a4aaa1712d4ebaa2ebf6b3"
         },
         {
@@ -2418,10 +2418,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/branding-and-theme.md",
-            "source_sha256": "f93b46b42d2532e63b244e8631dc13e1464e0bff8c2e7b8a43dede336a71edd7",
+            "source_sha256": "c5e054a0b9bccd74c2c3f8b6572e301df319775e1168807f7acd88b48ab5ad61",
             "source_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7",
             "target_path": "content/en/settings/branding-and-theme.md",
-            "target_sha256": "f20f224ad9617e6047fd8574cf887c97515e385a9270a87d65d799f992bb8b76",
+            "target_sha256": "22e792de9ae39608ec648548faa6f227dd0e8dedd7542f769c7d8a8e37878d75",
             "target_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7"
         },
         {

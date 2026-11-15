@@ -189,11 +189,12 @@ derives the other colours from it:
 
 At build time Docara passes the colour to the SIMAI Framework theme
 generator (`SF.ThemePalette`, the same calculation as the
-`sf-theme-generator` component). The generator builds eight tonal palettes:
-primary, secondary, tertiary, neutral, error, warning, success and info, 16
-tones each — 128 `--sf-<palette>-<tone>` variables — and 160 of their
-translucent shades `--sf-<palette>-<tone>--alfa-<n>`, 288 variables in all.
-The Framework takes all semantic colours from them (`--sf-primary`,
+`sf-theme-generator` component). The generator builds four tonal palettes:
+primary, secondary, tertiary and neutral, 16 tones each — 64
+`--sf-<palette>-<tone>` variables — and 80 of their translucent shades
+`--sf-<palette>-<tone>--alfa-<n>`, 144 variables in all. The theme does not
+change the error, warning, success and info colours: they are fixed hues of
+the Framework. The Framework takes all semantic colours from the theme's palettes (`--sf-primary`,
 `--sf-surface`, `--sf-outline` and others), so buttons, links, background and
 borders change in the light and dark schemes at once. Examples in frames get
 the same colours together with the other page tokens.

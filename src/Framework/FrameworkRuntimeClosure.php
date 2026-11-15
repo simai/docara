@@ -27,20 +27,69 @@ final class FrameworkRuntimeClosure
      * are all reached, in depth-first order from the sorted roots, and the
      * back edge is not followed again.
      *
+     * A dependency the Loader's rule registry reaches only lazily from the
+     * tag (see {@see lazyTags()}) is not followed: the Loader fetches it when
+     * the element first needs it.
+     *
      * @param  array<string, mixed>  $runtime
      * @param  list<string>  $tags
+     * @param  array<string, array<string, true>>  $lazy
      * @return list<string>
      */
-    public static function orderedTags(array $runtime, array $tags): array
+    public static function orderedTags(array $runtime, array $tags, array $lazy = []): array
     {
         $ordered = [];
         $visiting = [];
         $visited = [];
         foreach ($tags as $tag) {
-            self::visit($tag, $runtime, $ordered, $visiting, $visited);
+            self::visit($tag, $runtime, $lazy, $ordered, $visiting, $visited);
         }
 
         return $ordered;
+    }
+
+    /**
+     * The Smart tags each tag reaches only lazily, read from the Loader's
+     * rule registry (rule/rule.json of the release): a `relation` marked
+     * `lazy` from a Smart rule to another Smart rule. From ui-994f9db407fa
+     * sf-button `requires` sf-menu-context and sf-button-icon for its split
+     * menu, while its rule loads them lazily; following them eagerly put the
+     * context menu, tabs, checkbox, help mark and sortable list on every
+     * page and left the shell tags without their preload.
+     *
+     * @param  list<mixed>  $rules
+     * @return array<string, array<string, true>>
+     */
+    public static function lazyTags(array $rules): array
+    {
+        $tagsByRule = [];
+        foreach ($rules as $rule) {
+            if (is_array($rule) && ($rule['type'] ?? null) === 'smart' && is_string($rule['name'] ?? null)) {
+                $tagsByRule[$rule['name']] = array_values(array_filter(
+                    is_array($rule['tags'] ?? null) ? $rule['tags'] : [],
+                    'is_string',
+                ));
+            }
+        }
+        $lazy = [];
+        foreach ($rules as $rule) {
+            if (! is_array($rule) || ! isset($tagsByRule[$rule['name'] ?? ''])) {
+                continue;
+            }
+            foreach (is_array($rule['relation'] ?? null) ? $rule['relation'] : [] as $relation) {
+                $target = is_array($relation) && ($relation['lazy'] ?? false) === true ? ($relation['name'] ?? null) : null;
+                if (! is_string($target) || ! isset($tagsByRule[$target])) {
+                    continue;
+                }
+                foreach ($tagsByRule[$rule['name']] as $tag) {
+                    foreach ($tagsByRule[$target] as $lazyTag) {
+                        $lazy[$tag][$lazyTag] = true;
+                    }
+                }
+            }
+        }
+
+        return $lazy;
     }
 
     /**
@@ -69,12 +118,13 @@ final class FrameworkRuntimeClosure
      *
      * @param  array<string, mixed>  $runtime
      * @param  list<string>  $manifestTags
+     * @param  array<string, array<string, true>>  $lazy
      * @return list<string>
      */
-    public static function eagerSmartFiles(array $runtime, array $manifestTags): array
+    public static function eagerSmartFiles(array $runtime, array $manifestTags, array $lazy = []): array
     {
         $files = [];
-        foreach (self::orderedTags($runtime, self::admissionRootTags($manifestTags)) as $tag) {
+        foreach (self::orderedTags($runtime, self::admissionRootTags($manifestTags), $lazy) as $tag) {
             $component = $runtime['components'][$tag];
             foreach (['css', 'javascript'] as $kind) {
                 $path = $component[$kind] ?? null;
@@ -95,6 +145,7 @@ final class FrameworkRuntimeClosure
 
     /**
      * @param  array<string, mixed>  $runtime
+     * @param  array<string, array<string, true>>  $lazy
      * @param  list<string>  $ordered
      * @param  array<string, true>  $visiting
      * @param  array<string, true>  $visited
@@ -102,6 +153,7 @@ final class FrameworkRuntimeClosure
     private static function visit(
         string $tag,
         array $runtime,
+        array $lazy,
         array &$ordered,
         array &$visiting,
         array &$visited,
@@ -126,12 +178,15 @@ final class FrameworkRuntimeClosure
                 throw new FrameworkComponentException('FRAMEWORK_RUNTIME_DEPENDENCY_INVALID', $tag);
             }
         }
-        $requires = array_values(array_unique($requires));
+        $requires = array_values(array_unique(array_filter(
+            $requires,
+            static fn (string $dependency): bool => ! isset($lazy[$tag][$dependency]),
+        )));
         sort($requires, SORT_STRING);
 
         $visiting[$tag] = true;
         foreach ($requires as $dependency) {
-            self::visit($dependency, $runtime, $ordered, $visiting, $visited);
+            self::visit($dependency, $runtime, $lazy, $ordered, $visiting, $visited);
         }
         unset($visiting[$tag]);
         $visited[$tag] = true;

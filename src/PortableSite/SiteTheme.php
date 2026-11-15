@@ -14,7 +14,7 @@ use Simai\Docara\Portable\PortableConfigurationException;
  *
  * The colour is what a site owner knows (a brand colour). The SIMAI Framework
  * reads it as the hue and chroma of its own theme generator and makes the
- * eight tonal palettes every semantic token reads (see
+ * four tonal palettes every semantic token reads (see
  * {@see FrameworkThemePalette}). `hue` (0-360) and
  * `chroma` (0-150) are optional: set, they override how the colour is read,
  * exactly as sf-theme-generator's fine-tuning fields do, so a host that keeps

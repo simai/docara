@@ -189,13 +189,13 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('ui-7fb26d395af2', $lock['runtime']['pair_id']);
-        $this->assertSame('7fb26d395af28dfcaac2a5df9de254b3067dc4ae', $lock['runtime']['ui']['commit']);
-        $this->assertSame('7fb26d395af28dfcaac2a5df9de254b3067dc4ae', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('4c012852f8d85530442ec813e4319905c3af1afe', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('ui-994f9db407fa', $lock['runtime']['pair_id']);
+        $this->assertSame('994f9db407fa5523feeafd1b8cb859fad34fa9c3', $lock['runtime']['ui']['commit']);
+        $this->assertSame('994f9db407fa5523feeafd1b8cb859fad34fa9c3', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('698b188d654d074ab60abe81d888ab8501ff827f', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('9542b6fb2e1249200a1f30f611b7f401d87502dfedc0091d7384663d8e44e4f1', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('f120f69131b5c309861e1931fbba9863df5c5001b163e4ed37d866a1fe137e3b', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('6444d8a10ac1a4cf5270fdc177f5f3b198521aab85485ccbcd067207931869e2', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('76698032d681edd38d6132fa18970dc4b1e4cd443798acb142cab504c9d88cb6', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui', $lock['asset_projection']['source']['provider']);
@@ -204,22 +204,22 @@ class PortableInitCommandTest extends TestCase
             $lock['asset_projection']['source']['revision'],
         );
         $this->assertSame([
-            'smart/alert/js/alert.js' => 'b5523e7016c4485b7cc852f0999c26e328faf0cf272d2662edf9a19b3eadb0ed',
-            'smart/alert/js/alert.min.js' => 'd6e198de41302d3ec4185db15933c64289441c4e8bde44bd2f23edb46648f635',
+            'smart/alert/js/alert.js' => 'aa5e8fcb82eb7b26675e0771c2b5c26579dedc59af923af42a4aa9ae7672e084',
+            'smart/alert/js/alert.min.js' => '445a20dc1cc1e81f4aec2d41f2b3d221b9b80c797193bbaa1cdf5ecf1723539b',
             'smart/button-close/css/button-close.css' => '3bf84ff663eb381ed5da16bd496d628b9b709c0315d6c589059b424990a2296e',
             'smart/button-close/css/button-close.min.css' => '01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b',
-            'smart/button-close/js/button-close.js' => '5fa0ef1cb6ffb5c4271293424a34c4a740ccfd5ed4eaf7718004ee607d3d51b4',
-            'smart/button-close/js/button-close.min.js' => 'fc0654130fb74d0a61b32586473798047544c165d096ba66fb1751d8b5dec2ba',
+            'smart/button-close/js/button-close.js' => '62e025a13dbe8d168c4226b83489bb65388a28483f89a098e6f93cbfb1b37142',
+            'smart/button-close/js/button-close.min.js' => '42b62ab87275d5286284b37e43eb0ab9e94caa3f1b853c92df0b9a2d69f61d74',
             'smart/button-icon/css/button-icon.css' => '067e14feb6735e064f5ab969af9bc6709656a55f8880625354cf117e0e312771',
             'smart/button-icon/css/button-icon.min.css' => '60316696fdccd172fc0e6a4f77ed3e5fc0fc19056e8979259ed8e8db5fcb23b9',
-            'smart/button-icon/js/button-icon.js' => '1fc463e334afcef9bf87f66b3fcac4bb60e0a07836d994a0a529e53c16119c0d',
-            'smart/button-icon/js/button-icon.min.js' => '346f5ab98575a3dba2c9f12d6b8e207a9ad4ac30970c2e6ff50d710cb866ff32',
-            'smart/button/js/button.js' => 'a75c5cb886b740ef71381693b596f37dbc506a4dda9b9ff07ef5e8f91475bcbd',
-            'smart/button/js/button.min.js' => 'a9581dd4d5e04a0bfabdd61f8e33082d0f8283c085fdc190a027242f56ce4cfb',
-            'smart/icon/js/icon.js' => 'f1d5c66cda2597a136b8bfb28721fe40699f0c994c6876c428d657c88e200bed',
-            'smart/icon/js/icon.min.js' => '3ed400b94e3e6860b48ce4679dc70e9471ce22d747973b6129477a83c3054663',
-            'smart/modal/js/modal.js' => 'fb365a72fa642397bea90e5fdd4fce88e45bf0cd968280ec26036b4d12af1b54',
-            'smart/modal/js/modal.min.js' => '55d7fd6536a19227cd13133554fd08d28bbe960ef5ac732619cec0b785050eda',
+            'smart/button-icon/js/button-icon.js' => 'e3cb41a730b9081b3c12bed9bfdb49920063366bf0526fb323b4dedffdf71aae',
+            'smart/button-icon/js/button-icon.min.js' => '6032bf1baf47d2f4f7e0bb0777e0e7c9e1ccfcb3f4d89a3bba735035d822d9c4',
+            'smart/button/js/button.js' => '58f9f26176512891f2e604186b306d353805c58946587a0aaab031f4c3e8c40f',
+            'smart/button/js/button.min.js' => 'd7583b5f40a81c64ae5adda6823a12cb0e5ba318b3e5e188a2037e4745342162',
+            'smart/icon/js/icon.js' => 'b9b9203c68c3fedeff6c65c4373d15d82e05ad7cbc5661f31d02107198dc6543',
+            'smart/icon/js/icon.min.js' => 'a6ec88a30419a097931f08cc0601b5a76a6141adc68a4839d43e34d5feece8c4',
+            'smart/modal/js/modal.js' => 'f98a527ec6feb5cc1de845afa73da0de579d5981a08e1a52e0a7282228f56462',
+            'smart/modal/js/modal.min.js' => '5bbe5bc548f334d5408c3b9b0603488b177caaa2a9b7a77db4727e679fe5fef4',
         ], array_map(
             static fn (array $record): string => $record['sha256'],
             $lock['asset_projection']['files'],
@@ -227,9 +227,9 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame('docara.framework_dynamic_asset_projection.v1', $lock['dynamic_asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['dynamic_asset_projection']['mount']);
         $this->assertSame($lock['runtime']['ui_smart']['commit'], $lock['dynamic_asset_projection']['source']['revision']);
-        $this->assertCount(319, $lock['dynamic_asset_projection']['files']);
+        $this->assertCount(323, $lock['dynamic_asset_projection']['files']);
         $this->assertSame(
-            '8594027ccd12062b28e886fdb3c42cf791ce5f52b96f266571ca104f5d2984b5',
+            '94945b75e3f5f67a6ec805f1035a19ca46a1a9cb64fba7d8b20dd9988d50c393',
             $lock['dynamic_asset_projection']['files']['smart/input/js/input.js']['sha256'],
         );
         $this->assertSame('docara.framework_icon_projection.v1', $lock['icon_projection']['schema']);

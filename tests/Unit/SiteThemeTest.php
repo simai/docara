@@ -95,27 +95,29 @@ final class SiteThemeTest extends TestCase
         $result = $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0a7d4f']));
         [$comment, $css] = explode("\n", $result['content'], 2);
 
-        // SF.ThemePalette.themeToCss(themeFromColor('#0a7d4f')): the 128 tones
-        // and the translucent steps (98 of them, 160 from ui-b4a77681f0a7). It
-        // was 2b532b92... (ui-source 481b50fe9, run outside Docara) up to
-        // ui-2a671352d67b; ui-b4a77681f0a7 changed the palette (C17 static
-        // palette and hues), and this digest is the bundled release's own
-        // output through Docara's runner.
-        self::assertSame('3cb8a206b415f7ec5be94188cc4843eb336ced7bbc21ba0fde44129cb56e4e0c', hash('sha256', $css));
+        // SF.ThemePalette.themeToCss(themeFromColor('#0a7d4f')): the tones and
+        // their translucent steps. It was 2b532b92... (ui-source 481b50fe9, run
+        // outside Docara) up to ui-2a671352d67b; ui-b4a77681f0a7 changed the
+        // palette (C17 static palette and hues), 3cb8a206... up to
+        // ui-7fb26d395af2 with 128 tones and 160 steps; from ui-994f9db407fa
+        // the theme writes the four dynamic palettes only (TG-01: the statuses
+        // are core's static hues), 64 tones and 80 steps. This digest is the
+        // bundled release's own output through Docara's runner.
+        self::assertSame('79b0cb2b9c15780c7834cffc1d987268a19955ce000df97fb1a5d8f6fd07f944', hash('sha256', $css));
         self::assertStringContainsString('  --sf-primary-50--alfa-12: #0088561f;', $css);
         self::assertStringContainsString('  --sf-neutral-90--alfa-8: #e0e3de14;', $css);
         self::assertStringContainsString('  --sf-primary-40: #006d44;', $css);
         self::assertStringContainsString('  --sf-primary-80: #00e292;', $css);
         self::assertStringContainsString('  --sf-tertiary-40: #00677d;', $css);
         self::assertStringContainsString('  --sf-neutral-98: #f7faf5;', $css);
-        self::assertStringContainsString('  --sf-error-40: #bb1919;', $css);
-        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-7fb26d395af2 SF.ThemePalette.themeToCss */', $comment);
+        self::assertStringNotContainsString('--sf-error-', $css, 'No theme moves the status hues.');
+        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-994f9db407fa SF.ThemePalette.themeToCss */', $comment);
 
         $receipt = $result['receipt'];
         self::assertSame('docara.site_theme.v1', $receipt['schema']);
         self::assertSame(['hue' => 161, 'chroma' => 85], $receipt['palette']);
-        self::assertSame('ui-7fb26d395af2', $receipt['framework']['pair_id']);
-        self::assertSame(288, $receipt['stylesheet']['variables']);
+        self::assertSame('ui-994f9db407fa', $receipt['framework']['pair_id']);
+        self::assertSame(144, $receipt['stylesheet']['variables']);
         self::assertSame('docara-theme.' . hash('sha256', $result['content']) . '.css', $receipt['stylesheet']['filename']);
 
         self::assertSame($result, $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0A7D4F'])), 'The same colour gives the same bytes.');
@@ -139,7 +141,7 @@ final class SiteThemeTest extends TestCase
         $core = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($this->lock()))->bundledRuntimeAsset('core/css/core.css');
 
         preg_match_all('/^  (--sf-[a-z]+-[0-9]+): (#[0-9a-f]{6});$/m', $result['content'], $theme, PREG_SET_ORDER);
-        self::assertCount(128, $theme, 'The 128 tones; translucent steps are checked by the palette.');
+        self::assertCount(64, $theme, 'The 64 tones; translucent steps are checked by the palette.');
         foreach ($theme as [, $name, $value]) {
             // From ui-b4a77681f0a7 (C17) the status palettes (error, warning,
             // success, info) are aliases of the static hues: --sf-error-5 is
@@ -159,7 +161,7 @@ final class SiteThemeTest extends TestCase
     public function translucent_steps_are_accepted_only_as_their_tone_at_their_opacity(): void
     {
         // Releases from ui-1cb0739a8423 also write --sf-<palette>-<tone>--alfa-<n>
-        // after the 128 tones.
+        // after the tones.
         $variables = [];
         foreach (FrameworkThemePalette::PALETTES as $palette) {
             foreach (FrameworkThemePalette::TONES as $tone) {
@@ -169,7 +171,7 @@ final class SiteThemeTest extends TestCase
         self::assertSame($variables, FrameworkThemePalette::checkedVariables($variables));
         $variables['--sf-primary-50--alfa-12'] = '#006d441f';
         $variables['--sf-neutral-90--alfa-4'] = '#006d440a';
-        self::assertCount(130, FrameworkThemePalette::checkedVariables($variables));
+        self::assertCount(66, FrameworkThemePalette::checkedVariables($variables));
 
         foreach ([
             ['--sf-primary-50--alfa-12', '#006d4420'],

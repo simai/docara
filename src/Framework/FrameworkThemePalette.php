@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Framework;
 
 use JsonException;
+use Simai\Docara\Declarative\Composition\Recipe\FileRecipeCompiler;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\SiteTheme;
 use Symfony\Component\Process\Process;
@@ -13,15 +14,18 @@ use Symfony\Component\Process\Process;
  * A site theme computed by the pinned SIMAI Framework's theme palette.
  *
  * The Framework makes a theme from one colour (SF.ThemePalette,
- * core/js/theme-palette.js, on Google's HCT): eight tonal palettes of sixteen
- * tones, the 128 `--sf-<palette>-<tone>` primitives every semantic token reads
- * through light-dark(). Docara does not reimplement it. It runs the release's
+ * core/js/theme-palette.js, on Google's HCT): four tonal palettes (primary,
+ * secondary, tertiary, neutral) of sixteen tones, the 64
+ * `--sf-<palette>-<tone>` primitives every semantic token reads through
+ * light-dark(). From ui-994f9db407fa the four status palettes are the static
+ * hues core declares and no theme moves (TG-01); releases up to
+ * ui-7fb26d395af2 wrote them too, eight palettes in all. Docara does not reimplement it. It runs the release's
  * own bytes -- the sf-theme-generator entrypoint of the bundled Smart
  * projection, checked against the lock's SHA-256 -- with the Node.js binary
  * that already runs the Composition Recipe runtime, and takes `themeToCss`'s
  * rule as the site's stylesheet.
  *
- * The result is checked before it is used: exactly the eight palettes and
+ * The result is checked before it is used: exactly the four palettes and
  * sixteen tones, each a #rrggbb value, and the CSS byte-equal to the rule
  * those variables make. So the stylesheet can hold nothing but the theme.
  */
@@ -29,7 +33,7 @@ final class FrameworkThemePalette
 {
     public const RUNTIME_PATH = 'smart/theme-generator/js/theme-generator.js';
 
-    public const PALETTES = ['primary', 'secondary', 'tertiary', 'neutral', 'error', 'warning', 'success', 'info'];
+    public const PALETTES = ['primary', 'secondary', 'tertiary', 'neutral'];
 
     public const TONES = [5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 70, 80, 85, 90, 95, 98];
 
@@ -61,7 +65,7 @@ final class FrameworkThemePalette
                 $exception,
             );
         }
-        $result = $this->run($source, $theme);
+        $result = $this->run($source, self::sharedModules(), $theme);
         $variables = self::checkedVariables($result['variables'] ?? null);
         $css = $result['css'] ?? null;
         if (! is_string($css) || $css !== self::rule($variables)) {
@@ -122,8 +126,41 @@ final class FrameworkThemePalette
         return ":root {\n" . implode("\n", $lines) . "\n}\n";
     }
 
-    /** @return array<string, mixed> */
-    private function run(string $source, SiteTheme $theme): array
+    /**
+     * The Framework's shared modules the palette imports through
+     * SF.runtimeModule, by id: from ui-994f9db407fa, `deprecations`
+     * (core/js/deprecations.js of the release). Docara bundles those bytes in
+     * the Composition Recipe runtime projection of the same release, and they
+     * are read only when its manifest's SHA-256 matches.
+     *
+     * @return array<string, string>
+     */
+    private static function sharedModules(): array
+    {
+        $root = FileRecipeCompiler::bundledFrameworkRoot();
+        $manifest = $root === null ? null : json_decode((string) @file_get_contents($root . '/runtime-manifest.json'), true);
+        $modules = [];
+        foreach (['deprecations' => 'distr/core/js/deprecations.js'] as $id => $relativePath) {
+            $expected = is_array($manifest) ? ($manifest['files'][$relativePath]['sha256'] ?? null) : null;
+            $path = $root . '/' . $relativePath;
+            $bytes = is_string($expected) && is_file($path) && ! is_link($path) ? @file_get_contents($path) : false;
+            if (! is_string($bytes) || ! hash_equals($expected, hash('sha256', $bytes))) {
+                throw new PortableConfigurationException(
+                    'THEME_PALETTE_RUNTIME_UNAVAILABLE',
+                    "The SIMAI Framework module [$relativePath] the theme palette needs is missing from the bundled release.",
+                );
+            }
+            $modules[$id] = $bytes;
+        }
+
+        return $modules;
+    }
+
+    /**
+     * @param  array<string, string>  $modules
+     * @return array<string, mixed>
+     */
+    private function run(string $source, array $modules, SiteTheme $theme): array
     {
         if (! is_file($this->adapter) || is_link($this->adapter)) {
             throw new PortableConfigurationException('THEME_PALETTE_RUNTIME_UNAVAILABLE', 'The theme palette adapter is missing.');
@@ -131,7 +168,7 @@ final class FrameworkThemePalette
         $process = new Process([$this->nodeBinary, $this->adapter]);
         $process->setTimeout(60);
         $process->setInput(json_encode(
-            ['source' => $source, 'filename' => self::RUNTIME_PATH, ...$theme->input()],
+            ['source' => $source, 'filename' => self::RUNTIME_PATH, 'modules' => $modules, ...$theme->input()],
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
         ));
         $process->run();
@@ -158,7 +195,7 @@ final class FrameworkThemePalette
     }
 
     /**
-     * The palette's variables, checked: first the 128 tones
+     * The palette's variables, checked: first the 64 tones
      * `--sf-<palette>-<tone>` in the Framework's order, each #rrggbb; then,
      * from release ui-1cb0739a8423, the translucent steps
      * `--sf-<palette>-<tone>--alfa-<n>`, each exactly its tone's colour with
@@ -178,19 +215,20 @@ final class FrameworkThemePalette
             'THEME_PALETTE_RESULT_INVALID',
             'The SIMAI Framework theme palette returned ' . $why . '.',
         );
-        if (! is_array($variables) || array_slice(array_keys($variables), 0, 128) !== $expected) {
-            throw $invalid('no 128 --sf-<palette>-<tone> primitives');
+        $tones = count($expected);
+        if (! is_array($variables) || array_slice(array_keys($variables), 0, $tones) !== $expected) {
+            throw $invalid('no ' . $tones . ' --sf-<palette>-<tone> primitives');
         }
-        foreach (array_slice($variables, 0, 128, true) as $value) {
+        foreach (array_slice($variables, 0, $tones, true) as $value) {
             if (! is_string($value) || preg_match('/\A#[0-9a-f]{6}\z/D', $value) !== 1) {
                 throw $invalid('a tone that is not a #rrggbb colour');
             }
         }
         $palettes = implode('|', self::PALETTES);
-        $tones = implode('|', self::TONES);
-        foreach (array_slice($variables, 128, null, true) as $name => $value) {
+        $toneNames = implode('|', self::TONES);
+        foreach (array_slice($variables, $tones, null, true) as $name => $value) {
             if (! is_string($name)
-                || preg_match('/\A--sf-(' . $palettes . ')-(' . $tones . ')--alfa-([1-9][0-9]?)\z/D', $name, $match) !== 1
+                || preg_match('/\A--sf-(' . $palettes . ')-(' . $toneNames . ')--alfa-([1-9][0-9]?)\z/D', $name, $match) !== 1
                 || ! is_string($value)
             ) {
                 throw $invalid('a variable that is neither a tone nor a translucent step');

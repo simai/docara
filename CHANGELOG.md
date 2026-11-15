@@ -6,6 +6,35 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Docara bundles SIMAI Framework `ui-994f9db407fa`** (registry bound at
+  `698b188d6`, npm `@simai-studio/ui` 5.20261114.1835) instead of
+  `ui-7fb26d395af2`. What sites see: menus and the context menu
+  (sf-menu-context 1.19, sf-menu 1.9, menu 1.8.1, context menu 1.11), the
+  reviewed buttons (sf-button 1.15, sf-button-icon 1.10, buttons 1.12),
+  notices (sf-alert 1.4.1, alerts 1.3.1), sf-modal 1.7.2, the tree 1.3.3 and
+  sf-tree 2.3.1, sf-contents 1.7.1, sf-search 1.7.5, sf-language 1.4,
+  sf-pager 1.3.2, sf-tabs 1.3.1 and tabs 1.2.2, the badges 1.8, the
+  breadcrumbs 1.1.4, the code highlighter 1.3.1, the scrollbar 1.2, the
+  keyboard key 1.3.3, sf-settings 1.2.1, Core 1.55 and its styles 1.12, the
+  reviewed colour, size and typography tokens, and the new gradient utility.
+  The Recipe contract stays at edition 1.1.0. The release removes no unit,
+  so no tag or class Docara's markup uses goes away. Two Docara adaptations
+  follow the release: sf-button now `requires` sf-menu-context and
+  sf-button-icon for its split menu, which its Loader rule loads lazily, so
+  Docara's eager Smart closure skips the dependencies the rule registry marks
+  lazy (the eager set stays at 16 files and the header keeps its preloaded
+  sf-button, sf-icon and sf-modal instead of falling back to dynamic
+  loading); and the theme palette now answers the shared `deprecations`
+  module its bundle imports, with the release's own `core/js/deprecations.js`,
+  and checks the four palettes the theme writes (primary, secondary,
+  tertiary, neutral: 64 tones and 80 translucent steps), since the status
+  colours are now fixed hues of the Framework. Sites that pin
+  `ui-7fb26d395af2` (Docara 3.14.3) build with the new release: that lock is
+  recorded as superseded. The update page lists the new pair and the version
+  of the old one.
+
 ## [3.14.3] - 2026-11-14
 
 ### Changed

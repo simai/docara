@@ -63,6 +63,33 @@ final class FrameworkRuntimeClosureTest extends TestCase
     }
 
     #[Test]
+    public function a_dependency_the_loader_reaches_lazily_is_not_eager(): void
+    {
+        // From ui-994f9db407fa sf-button requires sf-menu-context for its
+        // split menu, and its rule loads the menu lazily.
+        $runtime = ['components' => [
+            'sf-button' => ['javascript' => 'smart/smart/button/js/button.js', 'css' => null, 'requires' => ['sf-icon', 'sf-menu-context']],
+            'sf-icon' => ['javascript' => 'smart/smart/icon/js/icon.js', 'css' => null],
+            'sf-menu-context' => ['javascript' => 'smart/smart/menu-context/js/menu-context.js', 'css' => null, 'requires' => ['sf-button']],
+        ]];
+        $rules = [
+            ['name' => 'buttons', 'type' => 'component'],
+            ['name' => 'cl-button', 'type' => 'smart', 'tags' => ['sf-button'], 'relation' => [
+                ['name' => 'buttons'],
+                ['name' => 'cl-icon'],
+                ['name' => 'cl-menu-context', 'lazy' => true],
+            ]],
+            ['name' => 'cl-icon', 'type' => 'smart', 'tags' => ['sf-icon']],
+            ['name' => 'cl-menu-context', 'type' => 'smart', 'tags' => ['sf-menu-context', 'sf-context-menu'], 'relation' => [['name' => 'cl-button']]],
+        ];
+        $lazy = FrameworkRuntimeClosure::lazyTags($rules);
+
+        self::assertSame(['sf-button' => ['sf-menu-context' => true, 'sf-context-menu' => true]], $lazy);
+        self::assertSame(['sf-icon', 'sf-button'], FrameworkRuntimeClosure::orderedTags($runtime, ['sf-button'], $lazy));
+        self::assertSame(['sf-icon', 'sf-menu-context', 'sf-button'], FrameworkRuntimeClosure::orderedTags($runtime, ['sf-button']));
+    }
+
+    #[Test]
     public function the_bundled_eager_projection_is_exactly_what_the_preflight_closure_reaches(): void
     {
         $lock = json_decode(
@@ -83,7 +110,16 @@ final class FrameworkRuntimeClosureTest extends TestCase
             );
             $manifestTags[] = $manifest['frontend']['tag'];
         }
-        $derived = FrameworkRuntimeClosure::eagerSmartFiles($lock['runtime'], $manifestTags);
+        $rules = json_decode(
+            (string) file_get_contents(
+                dirname(__DIR__, 2) . '/resources/portable/vendor/simai-framework/runtime/'
+                    . $lock['runtime_projection']['source']['revision'] . '/distr/rule/rule.json',
+            ),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $derived = FrameworkRuntimeClosure::eagerSmartFiles($lock['runtime'], $manifestTags, FrameworkRuntimeClosure::lazyTags($rules));
         // The lock carries each eager file with its minified twin (and the
         // twin's licence file); without them it is exactly the closure.
         $locked = array_keys($lock['asset_projection']['files']);

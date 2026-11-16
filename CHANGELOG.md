@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.16.0] - 2026-11-16
+
 ### Added
 
 - **Search and AI discovery (SEO and GEO) for a site with `site_url`.**

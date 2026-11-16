@@ -45,6 +45,9 @@ final class FrameworkDocaraSmartShellStylesheetTest extends TestCase
         $bytes = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/smart/assets/navigation.css');
         self::assertSame(hash('sha256', $bytes), $first['inputs'][0]['sha256']);
         self::assertStringContainsString($bytes, (string) $first['content']);
+        // The current row keeps the Framework's current-page ink.
+        self::assertStringContainsString('.docara-navigation-link:not([aria-current]),.docara-navigation-label{color:var(--sf-on-surface)}', $bytes);
+        self::assertStringNotContainsString('.docara-navigation-link,.docara-navigation-label{min-width:0;color', $bytes);
 
         $plain = $planner->planForHtml('<!doctype html><html><head></head><body><p>Text</p></body></html>', []);
         self::assertSame([], $plain->shellSmartAssetKeys());

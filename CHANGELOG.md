@@ -20,6 +20,10 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- The current row of the documentation tree takes the SIMAI Framework
+  current-page text colour again; the tree's own text colour now applies only
+  to rows that are not current.
+
 - Link previews: pages state the share image's type, width, height and alt
   text (`og:image:type`, `og:image:width`, `og:image:height`,
   `og:image:alt`), so messengers and social networks draw the card at once.

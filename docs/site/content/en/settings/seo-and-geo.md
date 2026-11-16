@@ -48,11 +48,14 @@ as it was.
    matter. One sentence about what the reader gets from the page, up to 160
    characters. Without the field Docara takes the first paragraph, but a
    written description is almost always better.
-3. **A share picture** — `branding.share_image`: a 1200×630 PNG or JPEG.
+3. **A share picture** — `branding.share_image`. It is optional: by default
+   Docara draws one picture per language with the site title, description
+   and address. For a picture of your own, set a 1200×630 PNG or JPEG file.
    Docara also accepts WebP, but some social networks and messengers do not
-   show such a picture. A section or a page can replace it in `section.json` or
-   `<page>.page.json`. Each language has its own content folder, so the
-   picture can easily be in the page's language.
+   show such a picture. `false` removes the picture. A section or a page can
+   replace the value in `section.json` or `<page>.page.json`. Each language
+   has its own content folder, so the picture can easily be in the page's
+   language.
 4. **A site description for AI** — `discovery.description`: one or two
    sentences about the product. Without it `llms.txt` takes the home page
    description.

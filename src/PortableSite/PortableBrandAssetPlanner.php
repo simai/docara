@@ -19,12 +19,14 @@ final readonly class PortableBrandAssetPlanner
 
     /**
      * @param  list<array<string, mixed>>  $pages
+     * @param  array<string, string|null>  $shareDescriptions  the description each locale's generated share picture shows
      * @return array{pages: array<int, array<string, string|null>>, assets: array<string, string>}
      */
-    public function plan(string $root, array $pages, string $baseUrl, string $siteTitle, bool $shareImages = false): array
+    public function plan(string $root, array $pages, string $baseUrl, string $siteTitle, bool $shareImages = false, array $shareDescriptions = [], ?string $shareAddress = null): array
     {
         $resolvedPages = [];
         $assets = [];
+        $generated = [];
 
         foreach ($pages as $index => $page) {
             $configuration = $page['plan']->configuration;
@@ -52,8 +54,12 @@ final readonly class PortableBrandAssetPlanner
 
             // A share image is published only for a site with site_url, where
             // pages carry Open Graph tags that name it by absolute address.
-            if (! $shareImages) {
-                unset($branding['share_image']);
+            // Without a file of its own, the site gets one generated picture
+            // per language ("auto", the default); false turns the picture off.
+            $shareSetting = $branding['share_image'] ?? 'auto';
+            unset($branding['share_image']);
+            if ($shareImages && is_string($shareSetting) && $shareSetting !== 'auto') {
+                $branding['share_image'] = $shareSetting;
             }
             if (is_string($branding['share_image'] ?? null)) {
                 $extension = strtolower((string) pathinfo($branding['share_image'], PATHINFO_EXTENSION));
@@ -84,6 +90,22 @@ final readonly class PortableBrandAssetPlanner
                     }
                 }
                 $assets[$asset['output']] = $asset['bytes'];
+            }
+            if ($shareImages && $shareSetting === 'auto' && ShareCardRenderer::available()) {
+                $locale = (string) ($page['locale'] ?? '');
+                $key = $locale . "\0" . $resolved['title'];
+                $generated[$key] ??= ShareCardRenderer::render(
+                    $resolved['title'],
+                    $shareDescriptions[$locale] ?? null,
+                    $shareAddress,
+                );
+                $output = '_docara/brand/' . hash('sha256', $generated[$key]) . '.png';
+                $base = trim($baseUrl, '/');
+                $resolved['share_image'] = '/' . ($base === '' ? '' : $base . '/') . $output;
+                $resolved['share_image_type'] = 'image/png';
+                $resolved['share_image_width'] = (string) ShareCardRenderer::WIDTH;
+                $resolved['share_image_height'] = (string) ShareCardRenderer::HEIGHT;
+                $assets[$output] = $generated[$key];
             }
 
             $resolvedPages[$index] = $resolved;

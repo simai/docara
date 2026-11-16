@@ -957,6 +957,17 @@ final readonly class PortableSiteBuilder
         // docara.json branding.credit: the "Made with Docara" line under the
         // sidebar navigation, on unless the site turns it off.
         $sidebarCredit = ($site['branding']['credit'] ?? ConfigurationDefaults::value('branding.credit')) !== false;
+        // A generated share picture shows the description of its language's
+        // home page; the default language prefers discovery.description.
+        $shareDescriptions = [];
+        foreach ($pages as $page) {
+            if (($page['url'] ?? null) === ($page['home_url'] ?? false) && trim((string) $page['description']) !== '') {
+                $shareDescriptions[(string) $page['locale']] ??= trim((string) $page['description']);
+            }
+        }
+        if ($siteDiscovery?->description !== null) {
+            $shareDescriptions[$buildLocale] = $siteDiscovery->description;
+        }
         $brandPublisher = new PortableBrandAssetPlanner($this->files);
         $brandPlan = $brandPublisher->plan(
             $root,
@@ -964,6 +975,8 @@ final readonly class PortableSiteBuilder
             (string) ($site['base_url'] ?? '/'),
             $siteTitle,
             $siteDiscovery !== null,
+            $shareDescriptions,
+            $siteDiscovery === null ? null : rtrim((string) preg_replace('#^https?://#', '', $siteDiscovery->siteUrl), '/'),
         );
         $initialFrameworkPlans = [];
         foreach ($pages as &$page) {

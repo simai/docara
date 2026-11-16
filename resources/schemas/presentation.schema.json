@@ -35,9 +35,11 @@
                     "format": "docara-relative-path"
                 },
                 "share_image": {
-                    "description": "The picture shown when a page is shared (og:image, twitter:image): a PNG, JPEG or WebP file in the project. Used only when site_url is set.",
-                    "type": "string",
-                    "format": "docara-relative-path"
+                    "description": "The picture shown when a page is shared (og:image, twitter:image): a PNG, JPEG or WebP file in the project, \"auto\" (the default) for one picture per language drawn by Docara, or false for none. Used only when site_url is set.",
+                    "oneOf": [
+                        {"const": false},
+                        {"type": "string", "format": "docara-relative-path"}
+                    ]
                 },
                 "mode": {
                     "type": "string",

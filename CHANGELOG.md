@@ -6,6 +6,18 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- Generated share pictures: a site with `site_url` and no picture of its own
+  gets one 1200×630 PNG per language, drawn by Docara with the site title,
+  the language's home page description (`discovery.description` for the
+  default language) and the site address, in Docara's style: a red bar and
+  the left half of a pale ring. Long titles shrink and wrap, then end with an
+  ellipsis. `branding.share_image` now takes
+  a file, `"auto"` (the default) or `false`. Drawing needs PHP GD with
+  FreeType; the bundled Inter font (SIL OFL 1.1) covers Latin, Cyrillic and
+  Greek, and text in other scripts is left off the picture.
+
 ### Fixed
 
 - Link previews: pages state the share image's type, width, height and alt

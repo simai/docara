@@ -47,8 +47,7 @@ When `site_url` is set, the build also:
 - adds Open Graph and Twitter card tags: `og:title`, `og:description`,
   `og:url`, `og:type` (`website` for a locale's home page, `article` for the
   rest), `og:locale` and `og:locale:alternate` for translations,
-  `og:site_name`, `twitter:card`, and with `branding.share_image` set,
-  `og:image` and `twitter:image`.
+  `og:site_name`, `twitter:card`, `og:image` and `twitter:image`.
 
 **`sitemap.xml`** lists every published indexable page by its absolute
 address with the date of its last change, `lastmod` — the time of the last
@@ -86,10 +85,16 @@ written in Markdown, without front matter and `:::preserved` blocks. Why this
 helps and how to write pages for AI is in
 [SEO and GEO](/en/settings/seo-and-geo/).
 
-`branding.share_image` is a PNG or JPEG file in the project (not every
-social network shows WebP); it can be
-overridden for a section or a page in `section.json` and `*.page.json`.
-Without `site_url` the image is not published.
+`branding.share_image` is the share picture: a PNG or JPEG file in the
+project (not every social network shows WebP), `"auto"` or `false`. By
+default (`"auto"`) Docara draws one 1200×630 picture per language: the site
+title, the description of the language's home page (`discovery.description`
+for the default language) and the site address. It needs PHP with the GD extension and FreeType; without them there is no
+picture. The text can be in
+Latin, Cyrillic and Greek; text in other scripts is left off the picture.
+`false` removes the picture. A section or a page can override the value in
+`section.json` and `*.page.json`. Without `site_url` the picture is not
+published.
 
 Without `site_url` the build output stays as before: these files and tags
 are not created. If the content already publishes its own `robots.txt`,

@@ -18,7 +18,7 @@
     "presentation.schema.json#/$defs/branding/properties/logo_dark": "Логотип для тёмной темы. Нужен основной `logo`.",
     "presentation.schema.json#/$defs/branding/properties/logo_icon": "Значок логотипа без надписи: его показывает шапка, когда на узком экране логотип не помещается рядом с кнопками.",
     "presentation.schema.json#/$defs/branding/properties/mode": "Что показать: `full` — логотип, название и подпись; `compact` — логотип и название; `logo` — только логотип; `text` — только текст.",
-    "presentation.schema.json#/$defs/branding/properties/share_image": "Картинка для превью ссылки в соцсетях: PNG, JPEG или WebP. Работает только с `site_url`.",
+    "presentation.schema.json#/$defs/branding/properties/share_image": "Картинка для превью ссылки в соцсетях: файл PNG, JPEG или WebP, `auto` (по умолчанию) — Docara рисует по картинке на язык, или `false` — без картинки. Работает только с `site_url`.",
     "presentation.schema.json#/$defs/branding/properties/size": "Размер логотипа и названия: `small`, `medium` или `large`.",
     "presentation.schema.json#/$defs/branding/properties/title": "Название бренда в шапке. Добавляется к заголовку вкладки браузера.",
     "presentation.schema.json#/$defs/code": "Настройки обычных блоков кода.",

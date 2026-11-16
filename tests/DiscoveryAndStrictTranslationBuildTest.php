@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
+use Simai\Docara\PortableSite\ShareCardRenderer;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
@@ -178,6 +179,57 @@ final class DiscoveryAndStrictTranslationBuildTest extends TestCase
     }
 
     /** @param list<string> $selection */
+    #[Test]
+    public function a_site_without_a_share_image_gets_one_generated_picture_per_language(): void
+    {
+        if (! ShareCardRenderer::available()) {
+            self::markTestSkipped('PHP GD with FreeType is not available.');
+        }
+        $site = $this->tmpPath('site');
+        $this->filesystem->ensureDirectoryExists($site);
+        $this->docara(['init', '--template=minimal', '--lang=ru'], $site);
+        $configuration = $this->readJson($site . '/docara.json');
+        $configuration['site_url'] = 'https://example.org/';
+        unset($configuration['branding']['share_image']);
+        $configuration['locales']['ru']['public_prefix'] = 'ru';
+        $configuration['locales']['en'] = [
+            'label' => 'English',
+            'direction' => 'ltr',
+            'content_root' => 'content/en',
+            'public_prefix' => 'en',
+            'fallbacks' => ['ru'],
+        ];
+        $configuration['locale_routing'] = ['strategy' => 'prefixed', 'root' => 'redirect', 'detect_browser_language' => false, 'legacy_unprefixed_redirects' => true];
+        $this->writeJson($site . '/docara.json', $configuration);
+        $en = $site . '/content/en';
+        $this->filesystem->ensureDirectoryExists($en);
+        foreach (['index.md', 'lang.json', 'section.json'] as $file) {
+            copy($site . '/content/ru/' . $file, $en . '/' . $file);
+        }
+        file_put_contents($en . '/index.md', "---\ndescription: English home of the example site.\n---\n# Home\n\nWelcome.\n");
+        file_put_contents($en . '/plain.md', "# Plain\n\nNo picture here.\n");
+        $this->writeJson($en . '/plain.page.json', ['schema' => 'docara.page.v1', 'branding' => ['share_image' => false]]);
+
+        $this->docara(['build', 'production'], $site);
+        $build = $site . '/build_production';
+
+        $images = [];
+        foreach (['ru', 'en'] as $locale) {
+            $html = (string) file_get_contents($build . '/' . $locale . '/index.html');
+            self::assertSame(1, preg_match('#<meta property="og:image" content="https://example\.org/(_docara/brand/[a-f0-9]{64}\.png)">#', $html, $match), $locale);
+            self::assertStringContainsString('<meta property="og:image:width" content="1200">', $html);
+            self::assertStringContainsString('<meta property="og:image:height" content="630">', $html);
+            $size = getimagesize($build . '/' . $match[1]);
+            self::assertSame([1200, 630, IMAGETYPE_PNG], [$size[0] ?? null, $size[1] ?? null, $size[2] ?? null]);
+            $images[$locale] = $match[1];
+        }
+        // One picture per language, each with its own description.
+        self::assertNotSame($images['ru'], $images['en']);
+        self::assertCount(2, glob($build . '/_docara/brand/*.png') ?: []);
+        // false turns the picture off for a page.
+        self::assertStringNotContainsString('og:image', (string) file_get_contents($build . '/en/plain/index.html'));
+    }
+
     private function accept(string $site, array $selection): void
     {
         $plan = json_decode(

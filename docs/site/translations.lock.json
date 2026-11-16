@@ -2346,11 +2346,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/lang-json.md",
-            "source_sha256": "ba950a7348adb8ab47fda21bb86c63192084442de1ca622d52c88bd1f206033f",
-            "source_structure_sha256": "fd103c31c4d8babe1a0dd828ab2fa09ed411f115b1f274eafe1bc955ecbf7be1",
+            "source_sha256": "a9e22de04845004e8e9b4ba5f743b3c6a1158348d465051f7eccbd198c2439ed",
+            "source_structure_sha256": "fe09eefbc2a2e9bcbe8dbed052c33ce864e51c3538eb717ccbf0f049a72e8061",
             "target_path": "content/en/reference/lang-json.md",
-            "target_sha256": "1f04a2ed6811285453c2fe677864a31b429057a50e8c3437836fafcb23410548",
-            "target_structure_sha256": "fd103c31c4d8babe1a0dd828ab2fa09ed411f115b1f274eafe1bc955ecbf7be1"
+            "target_sha256": "e16e9baec9c852e0ca2cd2c74e8193c3d49583c8f5cfd6894ef5bca0cf08d7c1",
+            "target_structure_sha256": "fe09eefbc2a2e9bcbe8dbed052c33ce864e51c3538eb717ccbf0f049a72e8061"
         },
         {
             "key": "reference/schemas.md",

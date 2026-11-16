@@ -40,9 +40,15 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
-- Menu rows get their indent again: the zero border width under the row
-  padding was a unitless `0`, which voided the padding of every row. The
-  submenu toggle draws a 20 px icon, the size of the row's other icons.
+- The left menu takes its rows from Framework's `sf-menu--documentation-tree`
+  preset: 40 px rows, a 16 px step per level, the current page in the primary
+  container colour and a 24 px submenu toggle inside the row. Docara's own
+  overrides of the menu rows are gone, and with them the unitless `0` border
+  width that voided the padding of every row.
+- A page with only one heading gets no contents column, no mobile contents
+  and no contents button: the contents need at least two entries.
+- The contents button says what it does next ("Hide page contents" or "Show
+  page contents") instead of a pressed state.
 
 ## [3.15.0] - 2026-11-15
 

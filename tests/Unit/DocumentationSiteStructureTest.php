@@ -152,7 +152,7 @@ final class DocumentationSiteStructureTest extends TestCase
     {
         $content = dirname(__DIR__, 2) . '/docs/site/content/ru';
         $routes = [
-            'levels-and-inheritance', 'site-address', 'branding-and-theme', 'layout-and-regions',
+            'levels-and-inheritance', 'site-address', 'seo-and-geo', 'branding-and-theme', 'layout-and-regions',
             'search', 'reading', 'reader-preferences',
         ];
         $root = (string) file_get_contents($content . '/settings.md');

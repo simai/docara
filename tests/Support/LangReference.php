@@ -92,6 +92,7 @@ final class LangReference
         'reader.content_width_normal' => 'Вариант обычной ширины',
         'reader.content_width_wide' => 'Вариант широкой страницы',
         'reader.outline_hide' => 'Кнопка, скрывающая оглавление страницы',
+        'reader.outline_show' => 'Кнопка, возвращающая скрытое оглавление страницы',
         'reader.focus_mode' => 'Кнопка режима чтения',
         'reader.focus_mode_exit' => 'Кнопка выхода из режима чтения',
         'reader.saved' => 'Сообщение о сохранённой настройке; `{setting}` — настройка, `{value}` — значение',

@@ -186,6 +186,7 @@ If a string is missing from `lang.json`, Docara takes the built-in text: Russian
 | `reader.content_width_normal` — The normal width option | Normal | Обычная |
 | `reader.content_width_wide` — The wide page option | Wide | Широкая |
 | `reader.outline_hide` — The button that hides the page outline | Hide page contents | Скрыть содержание страницы |
+| `reader.outline_show` — The button that brings back a hidden page outline | Show page contents | Показать содержание страницы |
 | `reader.focus_mode` — The reading mode button | Reading mode | Режим чтения |
 | `reader.focus_mode_exit` — The button that leaves reading mode | Exit reading mode (Esc) | Выйти из режима чтения (Esc) |
 | `reader.reset_all` — The button that resets all reader settings | Reset settings | Сбросить настройки |

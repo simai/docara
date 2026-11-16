@@ -69,7 +69,9 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 "Page [{$page['url']}] has no complete declarative region projection.",
             );
         }
-        if (($page['outline'] ?? []) === []) {
+        // Contents need two headings: sf-contents draws nothing below two
+        // entries, so a one-heading page gets no rail, column or toggle.
+        if (count(is_array($page['outline'] ?? null) ? $page['outline'] : []) < 2) {
             $regions['outline'] = '';
         }
         $contentLanguage = $this->contentLanguageAttributes($page);
@@ -506,7 +508,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
     private function mobileTocState(array $page): string
     {
         $outline = is_array($page['outline'] ?? null) ? $page['outline'] : [];
-        if ($outline === []) {
+        if (count($outline) < 2) {
             return 'unavailable';
         }
         $mode = in_array($page['reading_mobile_toc'] ?? null, ['auto', 'always', 'never'], true)

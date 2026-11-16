@@ -1187,18 +1187,16 @@ MD);
         self::assertStringContainsString('<sf-icon icon="keyboard_arrow_down" aria-hidden="true"></sf-icon>', $fourthLevel);
         self::assertStringContainsString('trailing-icon="keyboard_arrow_down"', $fourthLevel);
         self::assertStringContainsString("event.key==='Enter'||event.key===' '", $smartSurface);
-        self::assertStringContainsString('--sf-menu-element--padding-inline-start:var(--sf-space-7)', $smartSurface);
-        self::assertStringContainsString('min-block-size:var(--sf-d2)', $smartSurface);
+        // Row height, level steps, borders and the current page fill come from
+        // Framework's sf-menu--documentation-tree preset, not from Docara.
+        self::assertStringContainsString('<ul class="sf-menu sf-menu--documentation-tree flex flex-col"', $guide);
+        self::assertStringNotContainsString('--sf-menu-element--padding-inline-start', $smartSurface);
+        self::assertStringNotContainsString('--sf-menu-element--border-top-width', $smartSurface);
+        self::assertStringNotContainsString('--sf-menu-element--background-color', $smartSurface);
         self::assertStringContainsString(
             '.docara-header-navigation .docara-header-navigation-link{box-sizing:border-box;min-block-size:var(--sf-d0)',
             $smartSurface,
         );
-        self::assertStringContainsString('border-block-width:var(--sf-0)', $smartSurface);
-        self::assertStringContainsString('border-inline-width:var(--sf-0)', $smartSurface);
-        self::assertStringContainsString('--sf-menu-element--border-top-width:var(--sf-0)', $smartSurface);
-        self::assertStringContainsString('--sf-menu-element--border-right-width:var(--sf-0)', $smartSurface);
-        self::assertStringContainsString('--sf-menu-element--border-bottom-width:var(--sf-0)', $smartSurface);
-        self::assertStringContainsString('--sf-menu-element--border-left-width:var(--sf-0)', $smartSurface);
         self::assertStringContainsString(
             '.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible'
             . '{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight)'
@@ -1212,7 +1210,6 @@ MD);
         self::assertStringNotContainsString('min-inline-size:44px', $smartSurface);
         self::assertStringNotContainsString('min-block-size:44px', $smartSurface);
         self::assertStringNotContainsString('margin-inline:-10px', $smartSurface);
-        self::assertStringContainsString('--sf-menu-element--background-color:var(--sf-surface-container-active)', $smartSurface);
         self::assertStringNotContainsString('--sf-menu-element--background-color:var(--sf-primary-container)', $smartSurface);
         self::assertStringContainsString('href="/guides/platform/configuration/layout/" aria-current="page"', $fourthLevel);
         self::assertGreaterThanOrEqual(3, substr_count($fourthLevel, ' expanded aria-expanded="true"'));
@@ -1570,7 +1567,7 @@ MD);
         // Font size and wide format are restored before paint from the same document.
         self::assertStringContainsString("'docara.font_size':applyFontSize,'docara.content_width':applyContentWidth", $html);
         // The reading toolbar sits next to the breadcrumbs and its state is restored before paint.
-        self::assertMatchesRegularExpression('~<button type="button" data-docara-outline-toggle aria-pressed="false" aria-controls="docara-outline"~', $html);
+        self::assertMatchesRegularExpression('~<button type="button" data-docara-outline-toggle data-docara-label-hide="[^"]+" data-docara-label-show="[^"]+" aria-controls="docara-outline"~', $html);
         self::assertMatchesRegularExpression('~<button type="button" data-docara-focus-toggle aria-pressed="false"~', $html);
         // Reading mode exits through a round Framework icon button.
         self::assertMatchesRegularExpression('~<button type="button" data-docara-focus-exit [^>]*class="docara-focus-exit sf-icon-button [^"]*\\bradius-rounded\\b~', $html);
@@ -1827,6 +1824,25 @@ MD);
         self::assertStringContainsString('<sf-header-site class="docara-header" collapse="none" sticky', $html);
         self::assertStringNotContainsString('data-docara-outline-mobile', $html);
         self::assertStringContainsString('data-docara-region="main"', $html);
+    }
+
+    #[Test]
+    public function a_page_with_one_heading_gets_no_contents_column(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        file_put_contents(
+            $this->tmpPath('content/guides/getting-started.md'),
+            "---\ntitle: Getting started\n---\n\n# Getting started\n\nIntro.\n\n## Only section\n\nBody.\n",
+        );
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
+
+        // sf-contents draws nothing below two entries, so the page has no
+        // contents column, no mobile contents and no outline toggle.
+        self::assertStringContainsString('data-outline="false" data-mobile-toc="unavailable"', $html);
+        self::assertStringNotContainsString('data-docara-outline-mobile', $html);
+        self::assertStringNotContainsString('data-docara-outline-toggle', $html);
     }
 
     #[Test]

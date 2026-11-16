@@ -1326,7 +1326,9 @@
     }
     function sync(){
       var current=state();
-      if(outlineButton)outlineButton.setAttribute('aria-pressed',current.outline==='hidden'?'true':'false');
+      // The label names what a click does: show the contents when they are
+      // hidden, hide them when they are shown.
+      if(outlineButton){var outlineLabel=outlineButton.getAttribute(current.outline==='hidden'?'data-docara-label-show':'data-docara-label-hide');if(outlineLabel){outlineButton.setAttribute('aria-label',outlineLabel);outlineButton.title=outlineLabel}}
       if(focusButton)focusButton.setAttribute('aria-pressed',current.focus?'true':'false');
     }
     if(outlineButton){

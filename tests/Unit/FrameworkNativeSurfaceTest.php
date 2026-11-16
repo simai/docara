@@ -208,7 +208,8 @@ final class FrameworkNativeSurfaceTest extends TestCase
 
         self::assertIsString($css);
         self::assertIsString($template);
-        self::assertStringContainsString('sf-icon-button--size-1/3', $template);
+        // The documentation-tree row takes a 24 px toggle icon (C151 size 1).
+        self::assertStringContainsString('sf-icon-button--size-1"', $template);
         self::assertStringContainsString('nextIcon=icon.cloneNode(false)', file_get_contents($root . '/resources/smart/assets/navigation.js'));
         self::assertStringContainsString('icon.replaceWith(nextIcon)', file_get_contents($root . '/resources/smart/assets/navigation.js'));
 
@@ -230,14 +231,10 @@ final class FrameworkNativeSurfaceTest extends TestCase
         $css = file_get_contents($root . '/resources/smart/assets/navigation.css');
 
         self::assertIsString($css);
-        self::assertStringContainsString(
-            '.sf-menu-element:not(.disabled):hover{--sf-menu-element--background-color:var(--sf-surface-container-hover)',
-            $css,
-        );
-        self::assertStringContainsString(
-            ':hover [data-docara-disclosure] .sf-icon{--sf-icon--color:var(--sf-on-surface)}',
-            $css,
-        );
+        // Row hover and the current-page fill belong to Framework's
+        // sf-menu--documentation-tree preset; Docara does not repaint them.
+        self::assertStringNotContainsString(':hover{--sf-menu-element--background-color', $css);
+        self::assertStringNotContainsString('--sf-menu-element--background-color', $css);
         self::assertStringContainsString(
             '[data-docara-disclosure]:focus{box-shadow:none}',
             $css,
@@ -258,11 +255,10 @@ final class FrameworkNativeSurfaceTest extends TestCase
         $css = file_get_contents(dirname(__DIR__, 2) . '/resources/smart/assets/navigation.css');
 
         self::assertIsString($css);
-        // The Framework item gap sits between a row and its submenu; it must
-        // follow the sibling gap so a parent and its first child are spaced
-        // like any two siblings.
-        self::assertStringContainsString('.docara-navigation .sf-menu{gap:var(--sf-a1)}', $css);
-        self::assertStringContainsString('.docara-navigation .sf-menu-item{--sf-menu-item--gap:var(--sf-a1)}', $css);
+        // The documentation-tree preset sets both the sibling gap and the gap
+        // between a row and its submenu, so Docara sets neither.
+        self::assertStringNotContainsString('.docara-navigation .sf-menu{gap:', $css);
+        self::assertStringNotContainsString('--sf-menu-item--gap', $css);
     }
 
     #[Test]

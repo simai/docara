@@ -184,6 +184,7 @@ Docara нет.
 | `reader.content_width_normal` — Вариант обычной ширины | Normal | Обычная |
 | `reader.content_width_wide` — Вариант широкой страницы | Wide | Широкая |
 | `reader.outline_hide` — Кнопка, скрывающая оглавление страницы | Hide page contents | Скрыть содержание страницы |
+| `reader.outline_show` — Кнопка, возвращающая скрытое оглавление страницы | Show page contents | Показать содержание страницы |
 | `reader.focus_mode` — Кнопка режима чтения | Reading mode | Режим чтения |
 | `reader.focus_mode_exit` — Кнопка выхода из режима чтения | Exit reading mode (Esc) | Выйти из режима чтения (Esc) |
 | `reader.reset_all` — Кнопка сброса всех настроек читателя | Reset settings | Сбросить настройки |

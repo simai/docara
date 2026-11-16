@@ -109,6 +109,11 @@ final class DiscoveryAndStrictTranslationBuildTest extends TestCase
         self::assertStringContainsString('<meta property="og:locale:alternate" content="ru">', $current);
         self::assertStringContainsString('<meta property="og:type" content="website">', $current);
         self::assertMatchesRegularExpression('#<meta property="og:image" content="https://example\.org/docs/_docara/brand/[a-f0-9]{64}\.png">#', $current);
+        // Link previews need the image type and size to draw the card at once.
+        self::assertStringContainsString('<meta property="og:image:type" content="image/png">', $current);
+        self::assertStringContainsString('<meta property="og:image:width" content="4">', $current);
+        self::assertStringContainsString('<meta property="og:image:height" content="2">', $current);
+        self::assertStringContainsString('<meta property="og:image:alt" content=', $current);
         self::assertStringContainsString('<meta name="twitter:card" content="summary_large_image">', $current);
         self::assertStringContainsString('<link rel="alternate" type="text/markdown" href="/docs/en/index.md">', $current);
         self::assertSame(1, preg_match('#<script type="application/ld\+json">(.+?)</script>#', $current, $jsonLd));

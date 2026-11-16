@@ -2490,10 +2490,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/seo-and-geo.md",
-            "source_sha256": "495ac8bea28752c44eaca79c3893fda40fa0a0a537e7bc743e09fe2fd4787afe",
+            "source_sha256": "a1ee72e6c7b162b82060961d01b13eab7c6e57b29faf32084109e4bbaf457581",
             "source_structure_sha256": "bb5ab5b1ff5ea3f9bf412b67b1b8762267f617aaf1d92642b00beabf05e82ec5",
             "target_path": "content/en/settings/seo-and-geo.md",
-            "target_sha256": "1c1f4ca983280fefc7b0a264d7cc74da1e46ddd57139c34e4d1c873a911fdba8",
+            "target_sha256": "a54f322f9cefd779ef5b7baf737addbad77e7241b74c29ebf27dcec2ded03868",
             "target_structure_sha256": "bb5ab5b1ff5ea3f9bf412b67b1b8762267f617aaf1d92642b00beabf05e82ec5"
         },
         {
@@ -2502,10 +2502,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/site-address.md",
-            "source_sha256": "8ad946e8f2b5f0f5ccf1515c7c7c611ee81e26f95fc1e96880f75d3e4a8a05a1",
+            "source_sha256": "c91347447126f939c96f745e5e1dbe0b738ce66b3ff38cf84b9bf2791785bccb",
             "source_structure_sha256": "4daac64c421fda82b6bf39ff113b91f0b87517290a8bbd6bafc1264b37f60b2c",
             "target_path": "content/en/settings/site-address.md",
-            "target_sha256": "648cecd0b9bc135ac3a61a72a8d834bc6d53ec00eba5cc6925fa9d97208577d5",
+            "target_sha256": "e612508f042053be814abe964ed58dfbcd62d0cd382f79bc9743e8be2102fe51",
             "target_structure_sha256": "4daac64c421fda82b6bf39ff113b91f0b87517290a8bbd6bafc1264b37f60b2c"
         },
         {

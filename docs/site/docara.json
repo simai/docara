@@ -48,7 +48,7 @@
     "logo_dark": "assets/docara-logo-dark.svg",
     "logo_icon": "assets/docara-icon.svg",
     "favicon": "assets/docara-icon.svg",
-    "share_image": "assets/share-en.webp"
+    "share_image": "assets/share-en.png"
   },
   "layout": {
     "key": "docara.docs",

@@ -45,6 +45,9 @@ final readonly class PortableBrandAssetPlanner
                 'logo_icon' => null,
                 'favicon' => null,
                 'favicon_type' => null,
+                'share_image_type' => null,
+                'share_image_width' => null,
+                'share_image_height' => null,
             ];
 
             // A share image is published only for a site with site_url, where
@@ -69,6 +72,16 @@ final readonly class PortableBrandAssetPlanner
                 $resolved[$field] = $asset['url'];
                 if ($field === 'favicon') {
                     $resolved['favicon_type'] = $asset['mime'];
+                }
+                if ($field === 'share_image') {
+                    // Link previews draw the card before the image arrives
+                    // only when the page states its type and size.
+                    $resolved['share_image_type'] = $asset['mime'];
+                    $dimensions = @getimagesizefromstring($asset['bytes']);
+                    if (is_array($dimensions) && $dimensions[0] > 0 && $dimensions[1] > 0) {
+                        $resolved['share_image_width'] = (string) $dimensions[0];
+                        $resolved['share_image_height'] = (string) $dimensions[1];
+                    }
                 }
                 $assets[$asset['output']] = $asset['bytes'];
             }

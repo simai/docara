@@ -86,7 +86,8 @@ written in Markdown, without front matter and `:::preserved` blocks. Why this
 helps and how to write pages for AI is in
 [SEO and GEO](/en/settings/seo-and-geo/).
 
-`branding.share_image` is a PNG, JPEG or WebP file in the project; it can be
+`branding.share_image` is a PNG or JPEG file in the project (not every
+social network shows WebP); it can be
 overridden for a section or a page in `section.json` and `*.page.json`.
 Without `site_url` the image is not published.
 

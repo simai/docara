@@ -87,7 +87,8 @@ description главной страницы основной локали), ра
 Зачем это нужно и как писать страницы для ИИ — в разделе
 [«SEO и GEO»](/ru/settings/seo-and-geo/).
 
-`branding.share_image` — PNG, JPEG или WebP в проекте; его можно
+`branding.share_image` — PNG или JPEG в проекте (WebP показывают не все
+соцсети); его можно
 переопределить для раздела или страницы в `section.json` и `*.page.json`.
 Без `site_url` картинка не публикуется.
 

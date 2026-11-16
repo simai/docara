@@ -48,8 +48,9 @@ as it was.
    matter. One sentence about what the reader gets from the page, up to 160
    characters. Without the field Docara takes the first paragraph, but a
    written description is almost always better.
-3. **A share picture** — `branding.share_image`: a 1200×630 PNG, JPEG or
-   WebP. A section or a page can replace it in `section.json` or
+3. **A share picture** — `branding.share_image`: a 1200×630 PNG or JPEG.
+   Docara also accepts WebP, but some social networks and messengers do not
+   show such a picture. A section or a page can replace it in `section.json` or
    `<page>.page.json`. Each language has its own content folder, so the
    picture can easily be in the page's language.
 4. **A site description for AI** — `discovery.description`: one or two

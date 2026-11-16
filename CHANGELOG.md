@@ -6,6 +6,14 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Fixed
+
+- Link previews: pages state the share image's type, width, height and alt
+  text (`og:image:type`, `og:image:width`, `og:image:height`,
+  `og:image:alt`), so messengers and social networks draw the card at once.
+  The docs recommend PNG or JPEG for `branding.share_image`, since some
+  services do not show WebP, and the documentation site uses PNG.
+
 ## [3.16.0] - 2026-11-16
 
 ### Added

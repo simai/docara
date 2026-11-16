@@ -790,6 +790,12 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             : null;
         if ($image !== null) {
             $tags[] = ['property', 'og:image', $image];
+            foreach (['type', 'width', 'height'] as $key) {
+                if (is_string($branding['share_image_' . $key] ?? null)) {
+                    $tags[] = ['property', 'og:image:' . $key, $branding['share_image_' . $key]];
+                }
+            }
+            $tags[] = ['property', 'og:image:alt', $title];
         }
         $tags[] = ['name', 'twitter:card', $image === null ? 'summary' : 'summary_large_image'];
         $tags[] = ['name', 'twitter:title', $title];

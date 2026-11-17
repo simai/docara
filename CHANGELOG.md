@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.17.0] - 2026-11-17
+
 ### Added
 
 - Generated share pictures: a site with `site_url` and no picture of its own

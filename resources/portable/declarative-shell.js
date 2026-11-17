@@ -1416,7 +1416,7 @@
         if(paused||narrow){entry.handle.pause()}else{entry.handle.resume()}
       }
     }
-    /* Below md the stylesheet does not show the effect of a hero with effect_narrow=hide (the default), since the text spans the block there; the effect is paused too, so it draws no frames nobody sees. */
+    /* Below md the stylesheet does not show a hero's effect, since the text spans the block there; the effect is paused too, so it draws no frames nobody sees. */
     function hiddenNarrow(entry){
       return Boolean(entry.wide&&!entry.wide.matches);
     }
@@ -1438,7 +1438,7 @@
       button.className='docara-effect-toggle sf-icon-button sf-icon-button--icon sf-icon-button--surface sf-icon-button--on-surface sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0';
       button.innerHTML='<span aria-hidden="true" class="sf-icon sf-icon-regular">pause</span>';
       hero.appendChild(button);
-      var wide=hero.getAttribute('data-docara-effect-narrow')!=='show'&&window.matchMedia?window.matchMedia('(min-width: 44rem)'):null;
+      var wide=window.matchMedia?window.matchMedia('(min-width: 44rem)'):null;
       var entry={hero:hero,button:button,icon:button.firstChild,handle:null,placing:null,wide:wide};
       entries.push(entry);
       if(wide){

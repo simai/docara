@@ -200,7 +200,6 @@ motion is turned on in the system, the effect shows a still frame.
 | `effect` | string | — | The name of a SIMAI Framework background effect. |
 | `effect_theme` | `auto`, `dark`, `light` | `auto` | The effect theme: follows the page theme, always dark or always light. |
 | `effect_settings` | string | — | The effect settings as JSON. |
-| `effect_narrow` | `hide`, `show` | `hide` | The effect below 704 px: hidden, since the text spans the Hero there, or shown. |
 
 <!-- docara:component-parameters:end -->
 

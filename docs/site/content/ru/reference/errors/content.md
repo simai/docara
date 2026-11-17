@@ -174,7 +174,7 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_HERO_SIDE_IMAGE_CASE_MISMATCH`, `MARKDOWN_HERO_BACKGROUND_CASE_MISMATCH` | Регистр букв в пути не совпадает с именем файла. **Что сделать:** Исправьте путь. |
 | `MARKDOWN_HERO_SIDE_IMAGE_CONTEXT_INVALID`, `MARKDOWN_HERO_BACKGROUND_CONTEXT_INVALID` | Картинку из `/assets/` использует файл вне `content/<язык>/`. **Что сделать:** Используйте hero на страницах в каталоге языка. |
 | `MARKDOWN_HERO_EFFECT_INVALID` | `effect` — не имя эффекта из каталога и не адрес `https://.../effect.json`. **Что сделать:** Укажите имя эффекта, например `aurora-curtain`. |
-| `MARKDOWN_HERO_EFFECT_REQUIRED` | `effect_theme`, `effect_settings` или `effect_narrow` указаны без `effect`. **Что сделать:** Добавьте `effect` или уберите эти атрибуты. |
+| `MARKDOWN_HERO_EFFECT_REQUIRED` | `effect_theme` или `effect_settings` указаны без `effect`. **Что сделать:** Добавьте `effect` или уберите эти атрибуты. |
 | `MARKDOWN_HERO_EFFECT_SETTINGS_INVALID` | `effect_settings` не является объектом JSON. **Что сделать:** Запишите настройки как `{"speed": 0.5}`. |
 | `MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT` | Одновременно фоновый эффект и фоновая картинка. **Что сделать:** Оставьте что-то одно. |
 

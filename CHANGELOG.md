@@ -17,12 +17,7 @@ All notable changes to Docara are recorded here. The format follows
   a file, `"auto"` (the default) or `false`. Drawing needs PHP GD with
   FreeType; the bundled Inter font (SIL OFL 1.1) covers Latin, Cyrillic and
   Greek, and text in other scripts is left off the picture.
-- Hero `effect_narrow` (`hide` by default, or `show`): below 704 px (the
-  Framework's md), where the hero is one column and its text spans the block,
-  a background effect is no longer drawn under the heading, the text and the
-  buttons. The hero keeps the surface it has before an effect runs, the pause
-  button is not shown and the effect is paused; from md it runs again.
-  `effect_narrow=show` keeps the effect at every width.
+
 
 ### Fixed
 
@@ -36,6 +31,11 @@ All notable changes to Docara are recorded here. The format follows
   `<base href>` already did; before, they resolved against the page address
   and returned 404. Text and paths to files the example does not have stay as
   written.
+- A hero background effect is no longer drawn under the heading, the text and
+  the buttons on phones: below 704 px (the Framework's md), where the hero is
+  one column and its text spans the block, the hero keeps the surface it has
+  before an effect runs, the pause button is not shown and the effect is
+  paused; from md it runs again.
 - Full-width landing blocks (the home hero) no longer sit half a scrollbar to
   the left with a classic vertical scrollbar: 100vw counts the scrollbar, so
   the shell measures it into `--docara-scrollbar-inline-size` and the block

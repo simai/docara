@@ -91,7 +91,6 @@
     "docara.hero.effect": "Имя фонового эффекта SIMAI Framework.",
     "docara.hero.effect_theme": "Тема эффекта: по теме страницы, всегда тёмная или всегда светлая.",
     "docara.hero.effect_settings": "Настройки эффекта в виде JSON.",
-    "docara.hero.effect_narrow": "Эффект на экране уже 704 px: скрыт, потому что текст идёт во всю ширину Hero, или показан.",
     "docara.internal_preview.size": "Высота окна предпросмотра.",
     "docara.internal_preview.title": "Название предпросмотра.",
     "docara.logos.tone": "`muted` приглушает логотипы, чтобы они не спорили с основным содержимым.",

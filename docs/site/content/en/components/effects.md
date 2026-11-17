@@ -74,7 +74,6 @@ or `media=background`.
 | `effect` | An effect identifier from the catalogue, 2 to 41 characters, or the `https` address of its `effect.json` file inside the catalogue. |
 | `effect_theme` | The light or dark version of the effect: `auto` follows the page (the default), `dark` or `light`. |
 | `effect_settings` | The effect settings — a JSON object in single quotes, for example `'{"speed": 80}'`. effects.simai.io shows which settings an effect has. |
-| `effect_narrow` | The effect on a narrow screen, below 704 px: `hide` does not show it (the default), `show` shows it. |
 
 ```markdown
 :::hero {layout=centered effect=aurora-curtain effect_theme=dark effect_settings='{"speed": 80}'}
@@ -137,23 +136,6 @@ Elevation lines, as on a topographic map.
 All the catalogue's effects and their settings are shown on
 [effects.simai.io](https://effects.simai.io/).
 
-## Narrow screens
-
-Below 704 px the Hero is one column, and its text spans the whole width. The
-effect would be drawn under the heading, the text and the buttons, so by
-default it is not shown there: the Hero keeps the background it has before
-the effect starts, the pause button does not appear, and the effect itself
-is paused. From 704 px the effect is visible again.
-
-To show the effect at every width, for example a calm background under a
-short heading, set `effect_narrow=show`:
-
-```markdown
-:::hero {layout=centered effect=aurora-curtain effect_narrow=show}
-# Documentation that is easy to read
-:::
-```
-
 ## Pause and reduced motion
 
 While the effect moves, the bottom right corner of the Hero (the left one in
@@ -174,6 +156,14 @@ The button labels come from the `effects.pause` and `effects.play` strings
 of the `lang.json` file. They are built in for English and Russian; for
 another language set them as described in the
 [lang.json interface labels](/en/reference/lang-json/) reference.
+
+## Narrow screens
+
+Below 704 px the Hero is one column, and its text spans the whole width. The
+effect would be drawn under the heading, the text and the buttons, so it is
+not shown there: the Hero keeps the background it has before the effect
+starts, the pause button does not appear, and the effect itself is paused.
+From 704 px the effect is visible again.
 
 ## Where the effect will not be drawn
 
@@ -217,10 +207,10 @@ each error are in the reference:
 | Code | When it occurs |
 | --- | --- |
 | `MARKDOWN_HERO_EFFECT_INVALID` | `effect` is neither an effect identifier nor an `effect.json` address. |
-| `MARKDOWN_HERO_EFFECT_REQUIRED` | `effect_theme`, `effect_settings` or `effect_narrow` are set without `effect`. |
+| `MARKDOWN_HERO_EFFECT_REQUIRED` | `effect_theme` or `effect_settings` are set without `effect`. |
 | `MARKDOWN_HERO_EFFECT_SETTINGS_INVALID` | `effect_settings` is not a JSON object. |
 | `MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT` | One Hero has both an effect and a background image. |
-| `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID` | `effect_theme` has a value other than `auto`, `dark` or `light`, or `effect_narrow` other than `hide` or `show`. |
+| `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID` | `effect_theme` has a value other than `auto`, `dark` or `light`. |
 | `EFFECTS_CATALOGUE_REQUIRED` | A page uses an effect, but `docara.json` has no `effects.catalogue`. |
 | `EFFECTS_OUTSIDE_CATALOGUE` | The effect is given by an address outside the connected catalogue. Docara builds only the catalogue's effects. |
 | `EFFECTS_CATALOGUE_INVALID` | The catalogue address is not `https://`, does not end with `/` or contains invalid characters. |

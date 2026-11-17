@@ -23,8 +23,7 @@
       {"name": "overlay_strength", "type": "enum", "required": false, "default": "medium", "values": ["soft", "medium", "strong"], "available_when": {"media": "background"}},
       {"name": "effect", "type": "string", "required": false},
       {"name": "effect_theme", "type": "enum", "required": false, "default": "auto", "values": ["auto", "dark", "light"]},
-      {"name": "effect_settings", "type": "string", "required": false},
-      {"name": "effect_narrow", "type": "enum", "required": false, "default": "hide", "values": ["hide", "show"]}
+      {"name": "effect_settings", "type": "string", "required": false}
     ]
     },
     "states": [

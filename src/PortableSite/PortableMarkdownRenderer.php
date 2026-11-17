@@ -3192,20 +3192,17 @@ HTML;
      * effect.json, `effect_theme` the placement's theme mode and
      * `effect_settings` a JSON object of stored settings. The Framework
      * Loader mounts the effect and gives the hero the theme it draws, so the
-     * hero text follows that theme. `effect_narrow` says whether the effect
-     * is drawn below md, where the hero is one column and its text spans the
-     * block: `hide` (the default, no attribute) or `show`. Returns the
-     * escaped attributes, or ''.
+     * hero text follows that theme. Returns the escaped attributes, or ''.
      *
      * @param  array<string,string>  $attributes
      */
     private function heroEffect(array $attributes): string
     {
         if (! isset($attributes['effect'])) {
-            if (isset($attributes['effect_theme']) || isset($attributes['effect_settings']) || isset($attributes['effect_narrow'])) {
+            if (isset($attributes['effect_theme']) || isset($attributes['effect_settings'])) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_HERO_EFFECT_REQUIRED',
-                    'Hero effect_theme, effect_settings and effect_narrow require effect.',
+                    'Hero effect_theme and effect_settings require effect.',
                 );
             }
 
@@ -3247,11 +3244,6 @@ HTML;
                 ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
                 'UTF-8',
             ) . '"';
-        }
-        if (isset($attributes['effect_narrow'])
-            && $this->catalogueChoice($attributes['effect_narrow'], 'hero', 'effect_narrow') === 'show'
-        ) {
-            $html .= ' data-docara-effect-narrow="show"';
         }
 
         return $html;

@@ -205,10 +205,6 @@
             "components": ["hero"],
             "reason": "JSON settings passed to the background effect."
         },
-        "effect_narrow": {
-            "components": ["hero"],
-            "reason": "Whether the background effect is drawn below md, where the hero text spans the block."
-        },
         "display": {
             "components": ["math"],
             "reason": "Inline or block formula, the TeX term for the same choice."

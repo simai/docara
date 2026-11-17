@@ -52,29 +52,24 @@ final class HeroEffectTest extends TestCase
     }
 
     #[Test]
-    public function a_hero_effect_is_not_shown_under_the_text_on_a_narrow_screen_unless_asked(): void
+    public function a_hero_effect_is_not_shown_under_the_text_on_a_narrow_screen(): void
     {
-        // hide is the default and adds no attribute; show marks the hero.
+        // There is no setting for it: the markup carries no narrow-screen mark.
         self::assertStringNotContainsString('data-docara-effect-narrow', $this->render(":::hero {media=none effect=assembly}\n# Hero\n\nDescription.\n:::"));
-        self::assertStringNotContainsString('data-docara-effect-narrow', $this->render(":::hero {media=none effect=assembly effect_narrow=hide}\n# Hero\n\nDescription.\n:::"));
-        self::assertStringStartsWith(
-            '<section data-docara-block="hero" data-sf-effect="assembly" data-docara-effect-narrow="show" data-variant="split"',
-            $this->render(":::hero {media=none effect=assembly effect_narrow=show}\n# Hero\n\nDescription.\n:::"),
-        );
 
         // Below md (44rem) the layer and its pause button are not shown and
         // the hero keeps its surface from before the effect runs; the shell
         // pauses the effect there and takes it up again from md.
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
         self::assertStringContainsString(
-            '@media not all and (min-width:44rem){[data-docara-block="hero"][data-sf-effect]:not([data-docara-effect-narrow="show"])>[data-sf-effect-layer],'
-            . '[data-docara-block="hero"][data-sf-effect]:not([data-docara-effect-narrow="show"])>.docara-effect-toggle{display:none}'
-            . '[data-docara-block="hero"][data-sf-effect]:not([data-docara-effect-narrow="show"]){background-color:var(--sf-surface-1)}}',
+            '@media not all and (min-width:44rem){[data-docara-block="hero"][data-sf-effect]>[data-sf-effect-layer],'
+            . '[data-docara-block="hero"][data-sf-effect]>.docara-effect-toggle{display:none}'
+            . '[data-docara-block="hero"][data-sf-effect]{background-color:var(--sf-surface-1)}}',
             $css,
         );
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
         foreach ([
-            "hero.getAttribute('data-docara-effect-narrow')!=='show'&&window.matchMedia?window.matchMedia('(min-width: 44rem)'):null",
+            "var wide=window.matchMedia?window.matchMedia('(min-width: 44rem)'):null;",
             'if(paused||narrow){entry.handle.pause()}else{entry.handle.resume()}',
             'entry.button.hidden=!running||reduced||narrow||',
         ] as $needle) {
@@ -150,8 +145,6 @@ final class HeroEffectTest extends TestCase
             "effect=aurora-curtain effect_settings='{speed: 80}'" => 'MARKDOWN_HERO_EFFECT_SETTINGS_INVALID',
             "effect=aurora-curtain effect_settings='\"text\"'" => 'MARKDOWN_HERO_EFFECT_SETTINGS_INVALID',
             'effect_theme=dark' => 'MARKDOWN_HERO_EFFECT_REQUIRED',
-            'effect_narrow=show' => 'MARKDOWN_HERO_EFFECT_REQUIRED',
-            'effect=aurora-curtain effect_narrow=always' => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
             'effect=aurora-curtain media=background' => 'MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT',
         ] as $attributes => $code) {
             try {

@@ -760,6 +760,7 @@ final class PortableMarkdownRenderer
         // starts in the page's theme and its own switch changes only itself.
         $ownTheme = $this->exampleOwnTheme($attributes);
         $baseHref = null;
+        $exampleAssets = [];
         if (array_key_exists('src', $attributes)) {
             return $this->renderPageExample($markdown, $attributes, $label, $defaultLabel, $fullscreen, $wrap, $sourceRoot, $sourceFile, $showSources, $wide);
         }
@@ -779,6 +780,7 @@ final class PortableMarkdownRenderer
             $external = $this->projectExamples->load($exampleId, $sourceFile);
             $sources = $external['sources'];
             $baseHref = $external['base_href'];
+            $exampleAssets = $external['assets'];
         } else {
             $sources = $this->exampleSources($markdown);
         }
@@ -846,9 +848,14 @@ final class PortableMarkdownRenderer
                 ), 1);
             }
         } else {
+            // The page has no <base> to the example folder, as the frame
+            // has, so the example's own assets/ paths point there directly.
+            $inlineHtml = $baseHref === null
+                ? $compiledPreview
+                : (new InlineExampleAssetRebaser)->rebase($compiledPreview, $exampleAssets, $baseHref);
             $preview = '<div data-docara-example-inline-preview="html"'
                 . ($exampleId === '' ? '' : ' data-docara-example-source="' . $this->escapeHtml($exampleId) . '"')
-                . ' class="docara-example-inline">' . $this->nestInlineHeadings($compiledPreview) . '</div>';
+                . ' class="docara-example-inline">' . $this->nestInlineHeadings($inlineHtml) . '</div>';
             // An admitted HTML example opens in the same full-screen viewer
             // with device widths: the hidden frame holds the same sources and
             // loads only when the reader opens the viewer.

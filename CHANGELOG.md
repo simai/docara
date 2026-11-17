@@ -8,11 +8,26 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- Inline examples: a shared example admitted inline into the page now loads
+  its own files. Paths to the example's `assets/` in attribute values (a
+  plain URL, a `srcset` list, `url()` in a style, a path inside a JSON
+  attribute) are rewritten to the example's published folder, as the frame's
+  `<base href>` already did; before, they resolved against the page address
+  and returned 404. Text and paths to files the example does not have stay as
+  written.
 - Link previews: pages state the share image's type, width, height and alt
   text (`og:image:type`, `og:image:width`, `og:image:height`,
   `og:image:alt`), so messengers and social networks draw the card at once.
   The docs recommend PNG or JPEG for `branding.share_image`, since some
   services do not show WebP, and the documentation site uses PNG.
+
+### Documentation
+
+- The example component page describes how inline examples reach their
+  `assets/`, and the documentation illustration rule (SIMAI rule D22): flat
+  SVG from the pinned SIMAI Framework palette, five sets of eight and a
+  colour study, six shapes, names, alt text, and the `generate.mjs sync`
+  workflow.
 
 ## [3.16.0] - 2026-11-16
 

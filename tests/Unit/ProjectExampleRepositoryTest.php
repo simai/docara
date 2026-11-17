@@ -94,6 +94,45 @@ final class ProjectExampleRepositoryTest extends TestCase
     }
 
     #[Test]
+    public function an_inline_project_example_points_its_own_assets_at_the_published_folder(): void
+    {
+        $this->createSource([
+            'content/ru/page.md' => '# Page',
+            'examples/components/card/index.html' => '<div data-picture="assets/place-01-4x3.svg" class="grid">'
+                . '<span data-value=\'{"label":"cover","href":"assets/cover 02.svg"}\'>assets/place-01-4x3.svg</span>'
+                . '<span data-other="assets/missing.svg" data-parent="../assets/place-01-4x3.svg" data-dot="./assets/place-01-4x3.svg"></span></div>',
+            'examples/components/card/assets/place-01-4x3.svg' => '<svg xmlns="http://www.w3.org/2000/svg"/>',
+            'examples/components/card/assets/cover 02.svg' => '<svg xmlns="http://www.w3.org/2000/svg"/>',
+        ]);
+        $repository = new ProjectExampleRepository($this->tmp, '/docs/');
+        $renderer = new PortableMarkdownRenderer(projectExamples: $repository);
+        $html = $renderer->render(
+            ":::example {id=\"components/card\" label=\"Result\"}\n:::\n",
+            $this->tmp,
+            $this->tmpPath('content/ru/page.md'),
+        );
+
+        self::assertStringContainsString(
+            '<div data-docara-example-inline-preview="html" data-docara-example-source="components/card" class="docara-example-inline">'
+            . '<div data-picture="/docs/_docara/examples/components/card/assets/place-01-4x3.svg" class="grid">'
+            // A path inside a JSON attribute moves too; text content stays.
+            . '<span data-value=\'{"label":"cover","href":"/docs/_docara/examples/components/card/assets/cover 02.svg"}\'>assets/place-01-4x3.svg</span>'
+            // An unknown file and a path outside the example stay as written;
+            // "./assets/..." is the same file.
+            . '<span data-other="assets/missing.svg" data-parent="../assets/place-01-4x3.svg" data-dot="/docs/_docara/examples/components/card/assets/place-01-4x3.svg"></span></div>',
+            $html,
+        );
+        // The source tab shows what the author wrote, and the hidden
+        // full-screen frame keeps its <base href> to the same folder.
+        self::assertStringContainsString('<code class="language-html">&lt;div data-picture=&quot;assets/place-01-4x3.svg&quot;', $html);
+        self::assertStringContainsString('&lt;base href=&quot;/docs/_docara/examples/components/card/&quot;&gt;', $html);
+        self::assertSame(['inline', 'admitted_html'], [
+            $repository->receipt()['previews'][0]['resolved_preview'],
+            $repository->receipt()['previews'][0]['reason'],
+        ]);
+    }
+
+    #[Test]
     public function it_rejects_inline_body_with_id_and_unsafe_project_files(): void
     {
         $this->createSource(['examples/demo/index.html' => '<p>Demo</p>']);

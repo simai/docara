@@ -209,6 +209,45 @@ Docara shows only the tabs that exist and publishes the needed files with
 build: a targeted build stops so that it does not leave other pages with
 the old version.
 
+Give files from `assets/` as a relative path: `assets/photo.svg`. In a frame
+such a path leads to the example's published folder. In an inline example
+Docara rewrites the paths to its files in attributes, including inside the
+JSON value of a Smart attribute, to the address of that folder, so
+`preview=sandbox` is not needed for pictures. Text and paths to files that
+are not in the example's `assets/` stay as written.
+
+### Pictures in examples
+
+This is a SIMAI documentation rule (D22). Docara does not check it and does
+not draw the pictures, but it works as a model for other sites too. Pictures
+in examples and on SIMAI documentation pages are flat SVG drawn by one
+script from the static palette of the pinned SIMAI Framework pair
+(`--sf-<hue>-<tone>` from `distr/core/css/core.css`). Photos, stock images,
+external image services and hand-picked colours are not used. One file
+serves both the light and the dark theme.
+
+- **Sets.** Five sets of eight pictures: places, products, people without
+  facial features, documents and screens, covers. Separately, one colour
+  study for examples with filters, blur and glass.
+- **Shapes.** 1:1, 4:3, 3:4, 3:2, 2:3 and 16:9; the subject sits in the
+  middle third of the frame; the long side is 1200 px.
+- **Names.** `<set>-<nn>-<shape>.svg`, for example `place-03-16x9.svg`. A
+  variant with the number and shape in the corner (`place-03-16x9-label.svg`)
+  is used only where the example shows order, shape or cropping: a gallery,
+  a slider, an image field.
+- **Alt text.** `alt` is a short sentence from the manifest in the page
+  language. Decorative covers have an empty `alt`; an avatar's `alt` is the
+  person's name.
+
+On SIMAI documentation sites the script, the pictures and `manifest.json`
+live in the site's `assets/illustrations/`. Docara publishes only the
+example's own folder, so `node assets/illustrations/generate.mjs sync`
+copies the needed pictures into each example's `assets/`, and
+`sync --check` is part of the site checks: it fails if a copy differs, is
+no longer used, or an example has a raster picture. After every update of
+the pinned Framework pair the pictures are redrawn: `generate.mjs` with no
+arguments.
+
 ### Whole-page example
 
 The header, menu, layout regions and section settings are visible only on a

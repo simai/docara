@@ -40,7 +40,7 @@ final class ProjectExampleRepository
         private readonly string $baseUrl = '/',
     ) {}
 
-    /** @return array{sources:array<string,string>,base_href:string} */
+    /** @return array{sources:array<string,string>,base_href:string,assets:list<string>} */
     public function load(string $id, ?string $consumer = null): array
     {
         $id = $this->assertId($id);
@@ -57,6 +57,9 @@ final class ProjectExampleRepository
         return [
             'sources' => $record['source_contents'],
             'base_href' => $this->publicBase($id),
+            // Paths relative to the example folder ("assets/photo.svg"); an
+            // inline preview rebases them to base_href.
+            'assets' => array_values(array_map(static fn (array $asset): string => $asset['path'], $record['assets'])),
         ];
     }
 

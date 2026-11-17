@@ -1482,11 +1482,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/example.md",
-            "source_sha256": "9d132280127bf94fed986dc1b171d14f1ed360f8305a1d6bdb679532d0f2c38a",
-            "source_structure_sha256": "84d116e60ef816754d5e36528f9507bf82b594ae321ac3ba2f9347f675b04502",
+            "source_sha256": "18a510accd02e0a2653d54e4db0adf279e038ca10c9c4f0edc980d8747919c93",
+            "source_structure_sha256": "7b0e5774a000b27502eef95452f1c8574ed76718e9dda56bde000df5e1bf1382",
             "target_path": "content/en/components/example.md",
-            "target_sha256": "461204fdf468d9942d71128ea2cbc41d86cfd0c27c8e92058a1ad0c593414fe9",
-            "target_structure_sha256": "84d116e60ef816754d5e36528f9507bf82b594ae321ac3ba2f9347f675b04502"
+            "target_sha256": "51e83683c52aed1a56e94efe29c445332189ca45572d6ab16d059491412c8942",
+            "target_structure_sha256": "7b0e5774a000b27502eef95452f1c8574ed76718e9dda56bde000df5e1bf1382"
         },
         {
             "key": "components/figure.md",

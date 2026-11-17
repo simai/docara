@@ -175,7 +175,7 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 | `MARKDOWN_HERO_SIDE_IMAGE_CASE_MISMATCH`, `MARKDOWN_HERO_BACKGROUND_CASE_MISMATCH` | The letter case in the path does not match the file name. **What to do:** Fix the path. |
 | `MARKDOWN_HERO_SIDE_IMAGE_CONTEXT_INVALID`, `MARKDOWN_HERO_BACKGROUND_CONTEXT_INVALID` | An image from `/assets/` is used by a file outside `content/<language>/`. **What to do:** Use the hero on pages in a language folder. |
 | `MARKDOWN_HERO_EFFECT_INVALID` | `effect` is neither an effect name from the catalogue nor an `https://.../effect.json` address. **What to do:** Give an effect name, for example `aurora-curtain`. |
-| `MARKDOWN_HERO_EFFECT_REQUIRED` | `effect_theme` or `effect_settings` is given without `effect`. **What to do:** Add `effect` or remove these attributes. |
+| `MARKDOWN_HERO_EFFECT_REQUIRED` | `effect_theme`, `effect_settings` or `effect_narrow` is given without `effect`. **What to do:** Add `effect` or remove these attributes. |
 | `MARKDOWN_HERO_EFFECT_SETTINGS_INVALID` | `effect_settings` is not a JSON object. **What to do:** Write the settings as `{"speed": 0.5}`. |
 | `MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT` | A background effect and a background image at once. **What to do:** Keep one of them. |
 

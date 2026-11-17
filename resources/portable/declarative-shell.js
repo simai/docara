@@ -28,6 +28,18 @@
     if(typeof MutationObserver==='function'){new MutationObserver(measure).observe(host,{childList:true})}
     if(!resize){window.addEventListener('resize',measure)}
   })();
+  /* A landing's full-width block takes the window width, and 100vw counts a classic vertical scrollbar the main region does not have. The shell measures the scrollbar into --docara-scrollbar-inline-size, which the stylesheet leaves out of the block, and measures again when the scrollbar comes or goes or the window changes. Overlay scrollbars measure 0. */
+  (function(){
+    if(!document.querySelector('.docara-landing'))return;
+    var root=document.documentElement,current=null;
+    function measure(){
+      var size=Math.max(0,window.innerWidth-root.clientWidth)+'px';
+      if(size!==current){current=size;root.style.setProperty('--docara-scrollbar-inline-size',size)}
+    }
+    measure();
+    if(typeof ResizeObserver==='function'){new ResizeObserver(measure).observe(root)}
+    window.addEventListener('resize',measure);
+  })();
   var copyNode=document.getElementById('docara-runtime-copy'),messages={};
   try{messages=JSON.parse(copyNode?copyNode.textContent:'{}')}catch(error){messages={}}
   function message(id,parameters){
@@ -1393,15 +1405,20 @@
     function sync(entry){
       var running=entry.hero.getAttribute('data-sf-effect-state')==='running';
       var reduced=Boolean(reducedMotion&&reducedMotion.matches);
-      entry.button.hidden=!running||reduced||!(entry.handle||effects());
+      var narrow=hiddenNarrow(entry);
+      entry.button.hidden=!running||reduced||narrow||!(entry.handle||effects());
       var label=message(paused?'effects.play':'effects.pause');
       if(entry.button.getAttribute('aria-label')!==label){entry.button.setAttribute('aria-label',label)}
       if(entry.button.title!==label){entry.button.title=label}
       var name=paused?'play_arrow':'pause';
       if(entry.icon.textContent!==name){entry.icon.textContent=name}
       if(entry.handle){
-        if(paused){entry.handle.pause()}else{entry.handle.resume()}
+        if(paused||narrow){entry.handle.pause()}else{entry.handle.resume()}
       }
+    }
+    /* Below md the stylesheet does not show the effect of a hero with effect_narrow=hide (the default), since the text spans the block there; the effect is paused too, so it draws no frames nobody sees. */
+    function hiddenNarrow(entry){
+      return Boolean(entry.wide&&!entry.wide.matches);
     }
     function place(entry){
       var api=effects();
@@ -1421,8 +1438,16 @@
       button.className='docara-effect-toggle sf-icon-button sf-icon-button--icon sf-icon-button--surface sf-icon-button--on-surface sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0';
       button.innerHTML='<span aria-hidden="true" class="sf-icon sf-icon-regular">pause</span>';
       hero.appendChild(button);
-      var entry={hero:hero,button:button,icon:button.firstChild,handle:null,placing:null};
+      var wide=hero.getAttribute('data-docara-effect-narrow')!=='show'&&window.matchMedia?window.matchMedia('(min-width: 44rem)'):null;
+      var entry={hero:hero,button:button,icon:button.firstChild,handle:null,placing:null,wide:wide};
       entries.push(entry);
+      if(wide){
+        var onWidth=function(){
+          if(!entry.handle&&hiddenNarrow(entry))place(entry);
+          sync(entry);
+        };
+        if(wide.addEventListener){wide.addEventListener('change',onWidth)}else if(wide.addListener){wide.addListener(onWidth)}
+      }
       button.addEventListener('click',function(){
         paused=!paused;
         try{localStorage.setItem(storageKey,paused?'true':'false')}catch(error){}
@@ -1437,7 +1462,7 @@
     });
     function start(){
       entries.forEach(function(entry){
-        if(!entry.hero.hasAttribute('data-sf-effect-state')||paused)place(entry);
+        if(!entry.hero.hasAttribute('data-sf-effect-state')||paused||hiddenNarrow(entry))place(entry);
         sync(entry);
       });
     }

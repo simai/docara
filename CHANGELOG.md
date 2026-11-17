@@ -17,6 +17,12 @@ All notable changes to Docara are recorded here. The format follows
   a file, `"auto"` (the default) or `false`. Drawing needs PHP GD with
   FreeType; the bundled Inter font (SIL OFL 1.1) covers Latin, Cyrillic and
   Greek, and text in other scripts is left off the picture.
+- Hero `effect_narrow` (`hide` by default, or `show`): below 704 px (the
+  Framework's md), where the hero is one column and its text spans the block,
+  a background effect is no longer drawn under the heading, the text and the
+  buttons. The hero keeps the surface it has before an effect runs, the pause
+  button is not shown and the effect is paused; from md it runs again.
+  `effect_narrow=show` keeps the effect at every width.
 
 ### Fixed
 
@@ -30,6 +36,18 @@ All notable changes to Docara are recorded here. The format follows
   `<base href>` already did; before, they resolved against the page address
   and returned 404. Text and paths to files the example does not have stay as
   written.
+- Full-width landing blocks (the home hero) no longer sit half a scrollbar to
+  the left with a classic vertical scrollbar: 100vw counts the scrollbar, so
+  the shell measures it into `--docara-scrollbar-inline-size` and the block
+  leaves it out. The hero heading now starts at the page gutter (12 px at
+  390 px, 48 px at 1440 px; it was 5 and 41).
+- With SIMAI Framework `sf-header-site` 1.11, a collapsed header kept only the
+  menu button and the logo on a page with a language picker (the home page):
+  the bar moves the slotted tools element that holds the language picker into
+  its panel, and the search and reader settings were in that same element.
+  The language picker is now a tools element of its own, so search and
+  reader settings stay in the narrow header as on documentation pages, and
+  only the language moves to the panel.
 - Link previews: pages state the share image's type, width, height and alt
   text (`og:image:type`, `og:image:width`, `og:image:height`,
   `og:image:alt`), so messengers and social networks draw the card at once.

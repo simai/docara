@@ -198,6 +198,7 @@ Content-Security-Policy, описано на странице
 | `effect` | строка | — | Имя фонового эффекта SIMAI Framework. |
 | `effect_theme` | `auto`, `dark`, `light` | `auto` | Тема эффекта: по теме страницы, всегда тёмная или всегда светлая. |
 | `effect_settings` | строка | — | Настройки эффекта в виде JSON. |
+| `effect_narrow` | `hide`, `show` | `hide` | Эффект на экране уже 704 px: скрыт, потому что текст идёт во всю ширину Hero, или показан. |
 
 <!-- docara:component-parameters:end -->
 

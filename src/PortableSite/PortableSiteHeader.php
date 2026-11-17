@@ -31,7 +31,7 @@ final readonly class PortableSiteHeader
     /**
      * @param  string  $headerRegion  the rendered header region: the docara.header section and any section the site adds
      * @param  array{url:string,label:string}|null  $portalHome  escaped
-     * @param  string  $tools  the search, language, reader settings and repository controls in one element
+     * @param  string  $tools  the search, language, reader settings and repository controls in one element; the language picker is split out of it (splitTools)
      * @param  string  $sheet  the navigation sheet content, or ''
      * @param  array<string, string>  $copy  escaped UI copy
      * @param  string  $collapse  the Framework breakpoint below which the bar collapses: xl, lg or none
@@ -53,7 +53,7 @@ final readonly class PortableSiteHeader
         $brand = trim($brand) === '' ? '' : '<div class="docara-header-brand flex items-cross-center gap-1">' . $brand . '</div>';
         $content = trim($content) === '' ? '' : '<div class="docara-header-content flex items-cross-center gap-2 min-w-0">' . $content . '</div>';
         $actions = trim($actions) === '' ? '' : '<div class="docara-header-extra flex items-cross-center gap-1">' . $actions . '</div>';
-        $tools = trim($tools);
+        $tools = $this->splitTools(trim($tools));
         $sheet = trim($sheet);
 
         $picture = '<header class="sf-site-header sf-site-header--collapse-' . $collapse . ' sf-site-header--size-1 sf-site-header--sticky" data-sf-static>'
@@ -67,7 +67,7 @@ final readonly class PortableSiteHeader
             . ($content === '' ? '' : '<div class="sf-site-header-nav">' . $this->copyOf($content) . '</div>')
             . ($actions === '' ? '' : '<div class="sf-site-header-actions">' . $this->copyOf($actions) . '</div>')
             . '</div>'
-            . ($tools === '' ? '' : '<div class="sf-site-header-tools">' . $this->copyOf($tools) . '</div>')
+            . ($tools === [] ? '' : '<div class="sf-site-header-tools">' . $this->copyOf(implode('', $tools)) . '</div>')
             . '</div></header>';
 
         return '<sf-header-site class="docara-header" collapse="' . $collapse . '" sticky label="' . $copy['navigation.mobile_title'] . '" menu-label="' . $copy['navigation.open'] . '" close-label="' . $copy['navigation.close'] . '" data-docara-region="header"' . $attributes . ' style="display: contents;">'
@@ -75,7 +75,7 @@ final readonly class PortableSiteHeader
             . $this->held($brand, 'brand')
             . $this->held($content, null)
             . $this->held($actions, 'actions')
-            . $this->held($tools, 'tools')
+            . implode('', array_map(fn (string $part): string => $this->held($part, 'tools'), $tools))
             . $this->held($sheet, 'sheet')
             . '</sf-header-site>';
     }
@@ -103,6 +103,38 @@ final readonly class PortableSiteHeader
         $added = substr($region, 0, $section[0][1]) . substr($region, $section[0][1] + strlen($section[0][0]));
 
         return [$brand, trim($inner), trim($added)];
+    }
+
+    /**
+     * The tools as the bar's tools slot takes them. Collapsed, sf-header-site
+     * moves a setting among the tools (the language picker) into its panel,
+     * and moves the whole slotted element that holds it: one element with
+     * the search, the language and the reader settings would leave the
+     * collapsed bar with no tools at all. So the language picker is a tools
+     * element of its own, between the tools before it and the tools after
+     * it, each kept in Docara's tools row; wide, the bar shows them in that
+     * order as before.
+     *
+     * @return list<string>
+     */
+    private function splitTools(string $tools): array
+    {
+        if ($tools === '') {
+            return [];
+        }
+        if (preg_match('~\A(<div class="docara-header-tools[^"]*">)(.*?)(<sf-language\b.*?</sf-language>)(.*)</div>\z~s', $tools, $match) !== 1) {
+            return [$tools];
+        }
+        [, $open, $before, $language, $after] = $match;
+
+        return array_values(array_filter(
+            [
+                trim($before) === '' ? '' : $open . $before . '</div>',
+                $language,
+                trim($after) === '' ? '' : $open . $after . '</div>',
+            ],
+            fn (string $part): bool => $part !== '',
+        ));
     }
 
     /** A slotted original, held out of view while the picture stands. */

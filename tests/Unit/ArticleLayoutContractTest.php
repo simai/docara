@@ -23,6 +23,14 @@ final class ArticleLayoutContractTest extends TestCase
         return $css;
     }
 
+    private function shellRuntime(): string
+    {
+        $js = file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertIsString($js);
+
+        return $js;
+    }
+
     #[Test]
     public function no_element_around_the_article_is_a_size_container(): void
     {
@@ -52,11 +60,15 @@ final class ArticleLayoutContractTest extends TestCase
         $css = $this->shellCss();
 
         self::assertStringContainsString(
-            '.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100vw;margin-inline:calc(50% - 50vw)}',
+            '.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:calc(100vw - var(--docara-scrollbar-inline-size,0px));margin-inline:calc(50% - 50vw + var(--docara-scrollbar-inline-size,0px)/2)}',
             $css,
         );
-        // A classic scrollbar makes 100vw wider than the page: the landing
-        // clips the excess instead of scrolling sideways.
+        // The shell measures a classic scrollbar, which 100vw counts, so the
+        // block content lines up with the page gutter.
+        self::assertStringContainsString("root.style.setProperty('--docara-scrollbar-inline-size',size)", $this->shellRuntime());
+        self::assertStringContainsString('Math.max(0,window.innerWidth-root.clientWidth)', $this->shellRuntime());
+        // Before the shell measures it, 100vw is wider than the page: the
+        // landing clips the excess instead of scrolling sideways.
         self::assertStringContainsString('.docara-landing{display:block;min-height:auto;overflow-x:clip}', $css);
         self::assertStringContainsString(
             '.docara-docs-layout [data-docara-region="main"]>.docara-prose>[data-docara-width="full"],.docara-docs-layout [data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100%;margin-inline:0}',

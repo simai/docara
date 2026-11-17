@@ -74,6 +74,7 @@ Hero, но не с фоновой картинкой: укажите либо `e
 | `effect` | Идентификатор эффекта из каталога, от 2 до 41 символа, или `https`-адрес его файла `effect.json` внутри каталога. |
 | `effect_theme` | Светлая или тёмная версия эффекта: `auto` — как у страницы (по умолчанию), `dark` или `light`. |
 | `effect_settings` | Настройки эффекта — объект JSON в одинарных кавычках, например `'{"speed": 80}'`. Какие настройки есть у эффекта, показано на effects.simai.io. |
+| `effect_narrow` | Эффект на узком экране, уже 704 px: `hide` — не показывать (по умолчанию), `show` — показывать. |
 
 ```markdown
 :::hero {layout=centered effect=aurora-curtain effect_theme=dark effect_settings='{"speed": 80}'}
@@ -134,6 +135,23 @@ Hero, но не с фоновой картинкой: укажите либо `e
 Все эффекты каталога и их настройки показаны на
 [effects.simai.io](https://effects.simai.io/).
 
+## Узкий экран
+
+На экране уже 704 px Hero занимает одну колонку, и текст идёт во всю его
+ширину. Эффект оказался бы под заголовком, текстом и кнопками, поэтому там он
+по умолчанию не показывается: Hero остаётся с фоном, который у него до запуска
+эффекта, кнопки паузы нет, а сам эффект стоит на паузе. Шире 704 px эффект
+снова виден.
+
+Чтобы эффект был виден на любой ширине, например спокойный фон под коротким
+заголовком, задайте `effect_narrow=show`:
+
+```markdown
+:::hero {layout=centered effect=aurora-curtain effect_narrow=show}
+# Документация, которую легко читать
+:::
+```
+
 ## Пауза и уменьшение движения
 
 Пока эффект движется, в правом нижнем углу Hero (на языках с письмом справа
@@ -192,10 +210,10 @@ Docara не задаёт заголовок Content-Security-Policy. Если в
 | Код | Когда возникает |
 | --- | --- |
 | `MARKDOWN_HERO_EFFECT_INVALID` | `effect` — не идентификатор эффекта и не адрес `effect.json`. |
-| `MARKDOWN_HERO_EFFECT_REQUIRED` | `effect_theme` или `effect_settings` указаны без `effect`. |
+| `MARKDOWN_HERO_EFFECT_REQUIRED` | `effect_theme`, `effect_settings` или `effect_narrow` указаны без `effect`. |
 | `MARKDOWN_HERO_EFFECT_SETTINGS_INVALID` | `effect_settings` — не объект JSON. |
 | `MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT` | В одном Hero и эффект, и фоновая картинка. |
-| `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID` | У `effect_theme` значение не `auto`, `dark` или `light`. |
+| `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID` | У `effect_theme` значение не `auto`, `dark` или `light`, или у `effect_narrow` — не `hide` или `show`. |
 | `EFFECTS_CATALOGUE_REQUIRED` | Страница использует эффект, а в `docara.json` нет `effects.catalogue`. |
 | `EFFECTS_OUTSIDE_CATALOGUE` | Эффект указан адресом вне подключённого каталога. Docara собирает только эффекты каталога. |
 | `EFFECTS_CATALOGUE_INVALID` | Адрес каталога не `https://`, не заканчивается на `/` или содержит недопустимые символы. |

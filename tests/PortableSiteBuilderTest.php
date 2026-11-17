@@ -506,7 +506,8 @@ MD);
         self::assertStringContainsString('position="right"', $russian);
         self::assertStringContainsString('<html lang="ar" dir="rtl"', $arabic);
         self::assertStringContainsString('position="left"', $arabic);
-        self::assertStringContainsString('<sf-language data-docara-language mode="menu" size="1" value="ar" label="اللغة"', $arabic);
+        // The language picker is a tools element of its own in the header (PortableSiteHeader::splitTools).
+        self::assertStringContainsString('<sf-language slot="tools" data-sf-held data-docara-language mode="menu" size="1" value="ar" label="اللغة"', $arabic);
         self::assertStringContainsString('>إعدادات القراءة</h2>', $arabic);
         self::assertStringContainsString('data-docara-smart="docara.navigation"', $arabic);
         self::assertStringContainsString('aria-label="الأقسام"', $arabic);
@@ -525,7 +526,7 @@ MD);
         ] as $alternate) {
             self::assertStringContainsString($alternate, $arabic);
         }
-        self::assertStringContainsString('<sf-language data-docara-language mode="menu" size="1" value="ar"', $arabic);
+        self::assertStringContainsString('<sf-language slot="tools" data-sf-held data-docara-language mode="menu" size="1" value="ar"', $arabic);
         self::assertStringContainsString('{"code":"ar","label":"العربية","href":"/ar/"}', $arabic);
 
         $search = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
@@ -885,7 +886,7 @@ MD);
             'The declarative main-region wrapper must not inset full-width landing blocks.',
         );
         self::assertStringContainsString(
-            '.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100vw;margin-inline:calc(50% - 50vw)}',
+            '.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:calc(100vw - var(--docara-scrollbar-inline-size,0px));margin-inline:calc(50% - 50vw + var(--docara-scrollbar-inline-size,0px)/2)}',
             $shellCss,
             'Direct and Section-wrapped full-width landing surfaces must reach the window edges.',
         );

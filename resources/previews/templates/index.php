@@ -18,7 +18,7 @@
             <div class="flex flex-wrap gap-1">
                 <span class="surface-container border border-outline-variant radius-1 p-1"><?= $view->copy['rendered'] ?>: <?= $view->renderedCount ?></span>
                 <span class="surface-container border border-outline-variant radius-1 p-1"><?= $view->copy['skipped'] ?>: <?= $view->skippedCount ?></span>
-                <a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 radius-default decoration-none" href="<?= $view->receiptUrl ?>"><?= $view->copy['receipt'] ?></a>
+                <a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 decoration-none" href="<?= $view->receiptUrl ?>"><?= $view->copy['receipt'] ?></a>
             </div>
         </header>
         <section class="surface-0 border border-outline-variant radius-surface overflow-hidden" aria-labelledby="preview-pages-title">
@@ -34,7 +34,7 @@
 <?php } ?>
                     </div>
 <?php if ($item->previewUrl !== null) { ?>
-                    <a class="sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none" href="<?= $item->previewUrl ?>"><span class="sf-button-text-container"><?= $view->copy['open_preview'] ?></span></a>
+                    <a class="sf-button sf-button--default sf-button--primary sf-button--size-1 inline-flex items-center content-main-center decoration-none" href="<?= $item->previewUrl ?>"><span class="sf-button-text-container"><?= $view->copy['open_preview'] ?></span></a>
 <?php } else { ?>
                     <span class="surface-container border border-outline-variant radius-1 p-1"><?= $view->copy['legacy_only'] ?></span>
 <?php } ?>

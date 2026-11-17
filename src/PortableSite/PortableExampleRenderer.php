@@ -53,7 +53,7 @@ final class PortableExampleRenderer
                 . '" aria-controls="' . $previewPanelId
                 . '" aria-selected="true" tabindex="0" data-docara-example-tab="example"'
                 . ' data-docara-example-default-label'
-                . ' class="docara-example-preview__tab">Example</button>',
+                . ' class="docara-example-preview__tab sf-button sf-button--default sf-button--primary sf-button--size-1 selected"><span class="sf-button-text-container">Example</span></button>',
         ];
         $panels = [
             '<div role="tabpanel" id="' . $previewPanelId . '" aria-labelledby="'
@@ -78,8 +78,8 @@ final class PortableExampleRenderer
             $tabs[] = '<button type="button" role="tab" id="' . $tabId
                 . '" aria-controls="' . $panelId
                 . '" aria-selected="false" tabindex="-1" data-docara-example-tab="' . $this->escape($key) . '"'
-                . ' class="docara-example-preview__tab">'
-                . $this->escape($language) . '</button>';
+                . ' class="docara-example-preview__tab sf-button sf-button--default sf-button--primary sf-button--size-1">'
+                . '<span class="sf-button-text-container">' . $this->escape($language) . '</span></button>';
             $panels[] = '<div role="tabpanel" id="' . $panelId . '" aria-labelledby="'
                 . $tabId . '" data-docara-example-panel="' . $this->escape($key)
                 . '" aria-hidden="true" class="docara-example-preview__panel docara-example-preview__panel--source">'
@@ -100,13 +100,19 @@ final class PortableExampleRenderer
             . ($wide ? ($caption === null ? ' data-docara-width="full"' : '') . ' class="docara-example-preview docara-example-preview--wide"' : ' class="docara-example-preview"')
             . ($legacyComponentId === '' ? '' : ' data-docara-component-example="' . $this->escape($legacyComponentId) . '"')
             . ($caption === null ? '' : ' aria-labelledby="' . $captionId . '"')
-            . '><div class="docara-example-preview__header">'
+            // The head is the Framework's underline tabs of size 1 (decision
+            // C98: one line of 41 on every width): the tab row, the
+            // caption shown only in the viewer, and the frame's buttons on
+            // the same line. Docara switches the panels; the Framework tabs
+            // draw the tabs and their line.
+            . '><div class="docara-example-preview__header sf-tabs sf-tabs--underline sf-tabs--size-1">'
             // The full-screen viewer takes the frame out of its figure, so
             // the header carries the caption's text, shown only there.
             . ($caption === null ? '' : '<span data-docara-example-title class="docara-example-preview__title">' . $this->escape($caption) . '</span>')
-            . '<div role="tablist" '
+            . '<div class="sf-tabs-top-container flex items-cross-center content-main-between gap-1 p-x-1">'
+            . '<nav role="tablist" '
             . ($caption === null ? 'aria-label="' . $this->escape($exampleLabel) . '"' : 'aria-labelledby="' . $captionId . '"')
-            . ' class="docara-example-preview__tabs">' . implode('', $tabs) . '</div>'
+            . ' class="sf-tabs-top docara-example-preview__tabs flex">' . implode('', $tabs) . '</nav>'
             . '<div class="docara-example-preview__actions">'
             . ($desktop ? '<span data-docara-example-desktop-chip hidden class="docara-example-preview__chip">1280 · 100 % · scroll</span>' : '')
             // The width switcher is three Framework icon buttons like the
@@ -131,7 +137,7 @@ final class PortableExampleRenderer
             . '" data-copy-icon="content_copy" data-copied-icon="check"'
             . ' class="docara-example-preview__copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
             . '<sf-icon icon="content_copy" aria-hidden="true"></sf-icon>'
-            . '</button></div><span class="docara-example-preview__indicator" aria-hidden="true"></span></div>'
+            . '</button></div></div></div>'
             . '<div class="docara-example-preview__panels">' . implode('', $panels) . '</div>'
             . ($log === null ? '' : $this->log($safeId, $log, $caption))
             . '</section>';
@@ -173,9 +179,10 @@ final class PortableExampleRenderer
             $selected = $index === 0;
             $buttons .= '<button type="button" role="tab" id="' . $tabId . '" aria-controls="' . $panelId
                 . '" aria-selected="' . ($selected ? 'true' : 'false') . '" tabindex="' . ($selected ? '0' : '-1')
-                . '" data-docara-example-log-tab="' . $key . '" class="docara-example-preview__tab docara-example-log__tab">'
-                . '<span data-docara-example-log-label>' . $tabs[$key] . '</span>'
-                . '<span data-docara-example-log-count class="docara-example-log__count">0</span></button>';
+                . '" data-docara-example-log-tab="' . $key . '"'
+                . ' class="docara-example-log__tab sf-button sf-button--default sf-button--primary sf-button--size-1' . ($selected ? ' selected' : '') . '">'
+                . '<span data-docara-example-log-label class="sf-button-text-container">' . $tabs[$key] . '</span>'
+                . '<span data-docara-example-log-count class="sf-tabs-count">0</span></button>';
             $panels .= '<div role="tabpanel" id="' . $panelId . '" aria-labelledby="' . $tabId . '" tabindex="0"'
                 . ' data-docara-example-log-panel="' . $key . '"' . ($selected ? '' : ' hidden')
                 . ' class="docara-example-log__panel">'
@@ -192,8 +199,9 @@ final class PortableExampleRenderer
             // the caption with the log's name.
             . ($caption === null ? '' : ' aria-describedby="' . $id . '-caption"')
             . ' class="docara-example-log">'
-            . '<div class="docara-example-log__head">'
-            . '<div role="tablist" aria-label="Example log" class="docara-example-preview__tabs docara-example-log__tabs">' . $buttons . '</div>'
+            . '<div class="docara-example-log__head sf-tabs sf-tabs--underline sf-tabs--size-1">'
+            . '<div class="sf-tabs-top-container flex items-cross-center content-main-between gap-1 p-x-1">'
+            . '<nav role="tablist" aria-label="Example log" class="sf-tabs-top docara-example-log__tabs flex">' . $buttons . '</nav>'
             . '<div class="docara-example-log__actions">'
             . '<button type="button" data-docara-example-log-clear aria-label="Clear the log" title="Clear the log"' . $button . '>'
             . '<sf-icon icon="delete" aria-hidden="true"></sf-icon></button>'
@@ -202,7 +210,7 @@ final class PortableExampleRenderer
             . '" title="' . ($log->collapsed ? 'Expand the log' : 'Collapse the log') . '"'
             . ' data-collapse-icon="expand_less" data-expand-icon="expand_more"' . $button . '>'
             . '<sf-icon icon="' . ($log->collapsed ? 'expand_more' : 'expand_less') . '" aria-hidden="true"></sf-icon></button>'
-            . '</div><span class="docara-example-log__indicator" aria-hidden="true"></span></div>'
+            . '</div></div></div>'
             . '<div id="' . $panelsId . '"' . ($log->collapsed ? ' hidden' : '') . ' class="docara-example-log__panels">' . $panels . '</div>'
             . '</section>';
     }

@@ -37,9 +37,9 @@ body[data-docara-shell]{opacity:1!important}
 .docara-sidebar-panel>.docara-sidebar-credit{position:relative}
 .docara-sidebar-panel>.docara-sidebar-credit::before{content:"";position:absolute;inset-block-start:-1px;inset-inline-end:100%;inline-size:100vw;border-block-start:1px solid var(--sf-outline-variant);pointer-events:none}
 /* The logo is sized from the text: its lowercase letters (250 of the 600-unit height) match the text's x-height (about 0.55em), and its baseline (175 units above the bottom) sits on the text's baseline. */
-.docara-sidebar-credit-link{--docara-credit-logo-size:1.25rem;--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:#505050;--docara-credit-ring:#F7F7F7;color:var(--sf-on-surface-variant);text-decoration:none}
-/* One logo, two colour variables: the letters and the accented "o". Hover and focus only swap their values, from the two grays to the theme text colour and the Docara red. */
-.docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}
+.docara-sidebar-credit-link{--docara-credit-logo-size:1.25rem;--docara-credit-wordmark:var(--sf-on-surface-variant);--docara-credit-mark:var(--sf-on-surface-variant);--docara-credit-ring:var(--sf-surface-0);color:var(--sf-on-surface-variant);text-decoration:none}
+/* One logo, three colour variables, all Framework roles (C18, C19): the letters and the mark in the caption colour, the ring in the page colour. Hover and focus only swap them, to the text colour and the red of the Framework palette. */
+.docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:var(--sf-red-50)}
 .docara-sidebar-credit-link:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
 .docara-sidebar-credit-logo{display:inline-block;block-size:var(--docara-credit-logo-size);inline-size:auto;vertical-align:calc(var(--docara-credit-logo-size) * -0.2917);fill:var(--docara-credit-wordmark)}
 .docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}.docara-sidebar-credit-ring{fill:var(--docara-credit-ring)}
@@ -117,12 +117,6 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-prose dt{font-weight:var(--sf-weight--medium)}
 /* Inline code wraps as the Framework sets it: a table cell breaks a long run only where it cannot fit a line, so a table no longer grows past a phone. Docara only stops hyphens inside a token such as on-surface-variant. */
 .docara-prose :not(pre)>code:not(:where(.docara-example-inline *)){hyphens:none}
-/* Static tree (C109): a child's icon under its parent's name. */
-.docara-tree,.docara-tree__group{list-style:none;padding:0;margin-inline:0}.docara-tree__group{margin-block:0;padding-inline-start:calc(var(--sf-icon-size-3) + var(--sf-space-1\/2))}
-.docara-tree .docara-tree__item{margin:0;max-width:none}.docara-tree__item::marker{content:none}
-.docara-tree__row{display:flex;align-items:center;gap:var(--sf-space-1\/2);min-block-size:var(--sf-text-height-1)}
-.docara-tree__icon{flex:none;inline-size:var(--sf-icon-size-3);font-size:var(--sf-icon-size-3);color:var(--sf-on-surface-variant)}
-.docara-tree__name{min-width:0;overflow-wrap:anywhere;font-family:var(--sf-code--font-family,ui-monospace,monospace);font-size:var(--sf-text-size-1\/2)}
 /* A long piece the build marks with data-docara-code-wrap (a path, a URN or a class name longer than 32 characters, 16 in a heading) would make the page wider than a phone on one line: it wraps where a line allows and, where a part is still too long, inside the token. In a table cell the Framework breaks it where it cannot fit. */
 .docara-prose :not(pre)>code[data-docara-code-wrap]:not(:where(.docara-example-inline *,table *)){white-space:normal;overflow-wrap:anywhere}
 /* A bullet between spaces in prose separates parts of a meta line: smaller, in the caption colour, centred on the line. The spaces around it stay, so the margin only tops them up to the gap the prototype drew. */
@@ -131,22 +125,12 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 .docara-prose dl>dt:not(:first-child){margin-block-start:var(--sf-space-1)}
 /* A list of links (C137): a description list whose terms are links puts each description under its title without the inset, in the caption colour at body size. */
 .docara-prose dl:has(>dt>a) dd{margin-inline-start:0;color:var(--sf-on-surface-variant)}
-.docara-code-block.bg-surface-container{background:var(--sf-surface-0)}
-.docara-code-block>.sf--highlight-head{margin:0;border-bottom:1px solid var(--sf-outline-variant)}
-.docara-code-header,.docara-code-block>.sf--highlight-head,.docara-example-preview__header,.docara-example-log__head{position:relative;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;align-content:center;gap:var(--sf-space-1);min-block-size:calc(var(--sf-ui-1--control-height) + 2 * var(--sf-space-1\/3));padding:var(--sf-space-1\/3) var(--sf-space-1);background:var(--sf-surface-0)}
-.docara-code-header>span,.docara-code-block>.sf--highlight-head>span{display:inline-flex;align-self:center;inline-size:max-content;max-inline-size:100%;min-block-size:var(--sf-ui-1--control-height);align-items:center;padding-inline:var(--sf-space-1);color:var(--sf-on-surface);font-size:var(--sf-text-size-1);line-height:var(--sf-text-height-1)}
-.docara-code-header>[data-docara-code-actions],.docara-code-block>.sf--highlight-head>[data-docara-code-actions],.docara-example-preview__actions,.docara-example-log__actions{display:flex;align-self:center;align-items:center;justify-self:end;gap:var(--sf-space-1\/3)}
-.docara-code-header>[data-docara-code-actions],.docara-code-block>.sf--highlight-head>[data-docara-code-actions]{margin:0}
-.docara-code-header>[data-docara-code-actions]>button,.docara-code-block>.sf--highlight-head>[data-docara-code-actions]>button{margin:0;color:var(--sf-on-surface-variant)}
-.docara-code-header>[data-docara-code-actions]>button .sf-button-text-container,.docara-code-block>.sf--highlight-head>[data-docara-code-actions]>button .sf-button-text-container{display:none}
-.docara-code-header>[data-docara-code-actions]>button:hover,.docara-code-header>[data-docara-code-actions]>button:focus-visible,.docara-code-block>.sf--highlight-head>[data-docara-code-actions]>button:hover,.docara-code-block>.sf--highlight-head>[data-docara-code-actions]>button:focus-visible{color:var(--sf-on-surface)}
-.docara-code-header>[data-docara-code-actions]>button:focus:not(:focus-visible),.docara-code-block>.sf--highlight-head>[data-docara-code-actions]>button:focus:not(:focus-visible){--sf-icon-button--box-shadow:none;outline:0;box-shadow:none}
-.docara-code-fallback-action{display:block;inline-size:var(--sf-ui-1--control-height);block-size:var(--sf-ui-1--control-height);margin:0}
-.docara-code-block>[data-docara-code-fallback]{border-bottom:1px solid var(--sf-outline-variant)}
-.docara-code-block:not([data-sf-highlight-chrome="static"]):has(>.sf--highlight-head)>[data-docara-code-fallback]{display:none}
+/* A code block is the Framework highlighter's (sf-highlight, sf-code-surface, sf-highlight__head, sf-code-line): Docara sets only its fill, through the highlighter's public variable, and what the Framework does not have yet. */
+.docara-code-block{--sf-highlight-background-color:var(--sf-surface-0)}
+/* The head's label carries sf-text-1/2, and that utility gives its next sibling a text margin (.sf-text-1\/2 + *), which pushed the shown wrap button down and made the head 48 tall instead of the control height. The head's parts sit on one line, so none of them takes a block margin. Framework defect, reported. */
+.docara-code-block>.sf-highlight__head>*{margin-block:0}
 .docara-code-block+*{margin-block-start:var(--sf-space-4)}
-.docara-code-scroll{max-width:100%;background:var(--sf-surface-0);border:0;border-radius:0;box-shadow:none;overscroll-behavior-inline:contain}
-.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}
+.docara-code-scroll{overscroll-behavior-inline:contain}
 .docara-code-scroll .hljs-ln{inline-size:max-content;margin:0;border:0;border-spacing:0;border-collapse:collapse;background:transparent}
 .docara-code-scroll .hljs-ln td{margin:0;padding:0;border:0;background:transparent}
 .docara-code-scroll .hljs-ln-numbers{display:none}
@@ -157,33 +141,31 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 [data-docara-code-wrap-active="true"] .docara-code-scroll .hljs-ln-code{white-space:pre-wrap;overflow-wrap:anywhere}
 /* Code reads left to right on a right-to-left page too. */
 .docara-code-scroll,.docara-code-scroll code{direction:ltr;unicode-bidi:isolate;text-align:left}
-/* Build-time code lines (CodeLinePresenter): numbers, diff signs and prompts are generated content, so they are neither copied with a selection nor read aloud; a changed line's word is read from its hidden status text. */
-.docara-code-scroll--lines{padding-block:var(--sf-space-2)}
+/* Build-time code lines (CodeLinePresenter) are the Framework's lines and numbers; a line's band runs edge to edge, so the scroll's inline padding moves onto the lines. Diff signs and prompts are generated content, neither copied with a selection nor read aloud; a changed line's word is read from its hidden status text. Signs, prompts, highlighted, focused and changed lines are Docara's until the Framework has them (C254-C258). */
+.docara-code-scroll--lines{padding-inline:0}
 .docara-code-scroll--lines code{color:var(--sf-on-surface)}
-.docara-code-line{display:flex;padding-inline:var(--sf-space-2)}
-.docara-code-line__content{flex:1 1 auto;min-inline-size:0;white-space:pre}
-.docara-code-line__content:empty::before{content:"\200b"}
-.docara-code-line__number,.docara-code-line__sign,.docara-code-line__prompt{flex:none;-webkit-user-select:none;user-select:none}
-.docara-code-line__number{min-inline-size:2ch;padding-inline-end:var(--sf-space-1);color:var(--sf-on-surface-variant);text-align:right}
-.docara-code-line__number::before{content:attr(data-line-number)}
-[data-docara-code-digits="3"] .docara-code-line__number{min-inline-size:3ch}
-[data-docara-code-digits="4"] .docara-code-line__number{min-inline-size:4ch}
-[data-docara-code-digits="5"] .docara-code-line__number{min-inline-size:5ch}
-[data-docara-code-digits="6"] .docara-code-line__number{min-inline-size:6ch}
+.docara-code-block .sf-code-line{padding-inline:var(--sf-space-1)}
+.docara-code-block .sf-code-line__content:empty::before{content:"\200b"}
+[data-docara-code-digits="4"]{--sf-code-line--number-size:4ch}
+[data-docara-code-digits="5"]{--sf-code-line--number-size:5ch}
+[data-docara-code-digits="6"]{--sf-code-line--number-size:6ch}
+.docara-code-line__sign,.docara-code-line__prompt{flex:none;-webkit-user-select:none;user-select:none}
 .docara-code-line__sign{inline-size:2ch}
-.docara-code-line[data-line-diff="add"] .docara-code-line__sign::before{content:"+";color:var(--sf-success)}
-.docara-code-line[data-line-diff="remove"] .docara-code-line__sign::before{content:"\2212";color:var(--sf-error)}
+.sf-code-line[data-line-diff="add"] .docara-code-line__sign::before{content:"+";color:var(--sf-success)}
+.sf-code-line[data-line-diff="remove"] .docara-code-line__sign::before{content:"\2212";color:var(--sf-error)}
 .docara-code-line__status{-webkit-user-select:none;user-select:none}
-.docara-code-line[data-line-highlight]{background:color-mix(in srgb,var(--sf-primary) 12%,transparent);box-shadow:inset 3px 0 0 var(--sf-primary)}
-.docara-code-line[data-line-diff="add"]{background:color-mix(in srgb,var(--sf-success) 16%,transparent)}
-.docara-code-line[data-line-diff="remove"]{background:color-mix(in srgb,var(--sf-error) 16%,transparent)}
-[data-docara-code-focus] .docara-code-line:not([data-line-focus]){opacity:.45;filter:blur(.05em);transition:opacity .2s ease,filter .2s ease}
-[data-docara-code-focus]:hover .docara-code-line:not([data-line-focus]),[data-docara-code-focus]:focus-within .docara-code-line:not([data-line-focus]){opacity:1;filter:none}
-@media (prefers-reduced-motion:reduce){[data-docara-code-focus] .docara-code-line:not([data-line-focus]){transition:none}}
+.docara-code-block .sf-code-line[data-line-highlight]{background:color-mix(in srgb,var(--sf-primary) 12%,transparent);box-shadow:inset 3px 0 0 var(--sf-primary)}
+.docara-code-block .sf-code-line[data-line-diff="add"]{background:color-mix(in srgb,var(--sf-success) 16%,transparent)}
+.docara-code-block .sf-code-line[data-line-diff="remove"]{background:color-mix(in srgb,var(--sf-error) 16%,transparent)}
+[data-docara-code-focus] .sf-code-line:not([data-line-focus]){opacity:.45;filter:blur(.05em);transition:opacity .2s ease,filter .2s ease}
+[data-docara-code-focus]:hover .sf-code-line:not([data-line-focus]),[data-docara-code-focus]:focus-within .sf-code-line:not([data-line-focus]){opacity:1;filter:none}
+@media (prefers-reduced-motion:reduce){[data-docara-code-focus] .sf-code-line:not([data-line-focus]){transition:none}}
 .docara-code-line__prompt::before{content:"$";padding-inline-end:1ch;color:var(--sf-primary);font-weight:600}
-.docara-code-block--terminal .docara-code-line[data-line-output]{color:var(--sf-on-surface-variant)}
-.docara-code-block--terminal .docara-code-header>span::before{content:"";flex:none;inline-size:2.9em;block-size:.75em;margin-inline-end:var(--sf-space-1);background:radial-gradient(circle at .375em 50%,var(--sf-error) .36em,transparent .4em),radial-gradient(circle at 1.45em 50%,var(--sf-warning) .36em,transparent .4em),radial-gradient(circle at 2.525em 50%,var(--sf-success) .36em,transparent .4em)}
-[data-docara-code-wrap-active="true"] .docara-code-line__content{white-space:pre-wrap;overflow-wrap:anywhere}
+.docara-code-block--terminal .sf-code-line[data-line-output]{color:var(--sf-on-surface-variant)}
+.docara-code-block--terminal .sf-highlight__language::before{content:"";display:inline-block;vertical-align:middle;inline-size:2.9em;block-size:.75em;margin-inline-end:var(--sf-space-1);background:radial-gradient(circle at .375em 50%,var(--sf-error) .36em,transparent .4em),radial-gradient(circle at 1.45em 50%,var(--sf-warning) .36em,transparent .4em),radial-gradient(circle at 2.525em 50%,var(--sf-success) .36em,transparent .4em)}
+[data-docara-code-wrap-active="true"] .sf-code-line__content{white-space:pre-wrap;overflow-wrap:anywhere}
+/* The example frame's buttons beside its tabs. */
+.docara-example-preview__actions,.docara-example-log__actions{display:flex;align-items:center;gap:var(--sf-space-1\/3)}
 body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:block}
 .docara-prose sf-alert:not(:where(.docara-example-inline *)),.docara-prose sf-button:not(:where(.docara-example-inline *)){margin-block:var(--sf-space-2)}
 .docara-prose>.docara-smart-block{margin-block:var(--sf-space-2)}
@@ -241,7 +223,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 [data-docara-media="hero"],[data-docara-media="promo"]{aspect-ratio:16/9;object-fit:contain}
 [data-docara-media="showcase"]{aspect-ratio:16/9;object-fit:contain}
 [data-docara-media="feature-icon"]{inline-size:var(--sf-e0);block-size:var(--sf-e0);object-fit:contain}
-[data-docara-block="features"]>li>.docara-icon{align-self:flex-start}
+[data-docara-block="features"]>li>.docara-icon,[data-docara-block="features"]>li>.sf-featured-icon{align-self:flex-start}
 /* A closed panel waits for find-in-page with hidden="until-found", which keeps its box; drop the padding so only the trigger shows. */
 [data-docara-block="details"]>.sf-accordion-content[hidden]{padding:0}
 .docara-landing [data-docara-block="columns"]>div>h3:first-child{font-size:var(--sf-heading-4--size);line-height:var(--sf-heading-4--height)}
@@ -252,9 +234,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-preview{overflow:hidden;margin-block-end:var(--sf-space-1);border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius--surface);background:var(--sf-surface-0)}
 /* layout=wide: the example spans the page edge to edge like a full-width surface, so its frame loses the side borders and the rounded corners that would sit on the window edge. */
 .docara-example-preview--wide{border-inline:0;border-radius:0}
-.docara-example-preview__header{border-block-end:1px solid var(--sf-outline-variant)}
 .docara-example-inline{display:flow-root;min-inline-size:0}
-.docara-example-preview__tabs{display:inline-flex;inline-size:max-content;max-inline-size:100%;align-items:center;gap:0}
 /* An example's label: a caption under its frame, as under a picture. */
 .docara-example-figure{margin:0 0 var(--sf-space-1);max-inline-size:100%}
 .docara-example-figure>.docara-example-preview{margin-block-end:0}
@@ -269,11 +249,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-preview__chip{align-self:center;font-size:var(--sf-text-size-1\/2);line-height:var(--sf-text-height-1\/2);color:var(--sf-on-surface-variant);font-variant-numeric:tabular-nums;white-space:nowrap}.docara-example-preview__chip[hidden]{display:none}
 /* The viewer takes the frame out of its figure: its header shows the caption. */
 .docara-example-preview__title{display:none}
-.docara-example-preview[data-docara-example-viewer-active="true"] .docara-example-preview__title{display:block;grid-column:1/-1;padding:var(--sf-space-1\/3) var(--sf-space-1) 0;font-size:var(--sf-text-size-1\/2);line-height:var(--sf-text-height-1\/2);color:var(--sf-on-surface-variant);overflow-wrap:break-word}
-.docara-example-preview__tab{display:inline-flex;align-items:center;justify-content:center;min-block-size:var(--sf-ui-1--control-height);margin:0;padding-inline:var(--sf-space-1);border:0;border-radius:0;background:transparent;color:var(--sf-on-surface-variant);font-size:var(--sf-text-size-1);line-height:var(--sf-text-height-1);cursor:pointer;white-space:nowrap;flex-shrink:0}
-.docara-example-preview__tab[aria-selected="true"]{color:var(--sf-on-surface)}
-.docara-example-preview__tab:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);outline-offset:calc(var(--sf-focus--width) * -1)}
-.docara-example-preview__indicator,.docara-example-log__indicator{position:absolute;inset-block-end:-1px;inset-inline-start:0;z-index:1;inline-size:0;block-size:var(--sf-a2);background:var(--sf-outline);pointer-events:none;transition:inset-inline-start 180ms ease,inline-size 180ms ease}
+.docara-example-preview[data-docara-example-viewer-active="true"] .docara-example-preview__title{display:block;padding:var(--sf-space-1\/3) var(--sf-space-1) 0;font-size:var(--sf-text-size-1\/2);line-height:var(--sf-text-height-1\/2);color:var(--sf-on-surface-variant);overflow-wrap:break-word}
 .docara-example-preview__actions{justify-content:flex-end}
 .docara-example-preview__action,.docara-example-preview__copy{margin:0;color:var(--sf-on-surface-variant)}
 .docara-example-preview__action .sf-icon,.docara-example-preview__copy .sf-icon{--sf-icon--color:var(--sf-on-surface-variant)}
@@ -296,8 +272,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-preview[data-preview-size="compact"] iframe:not([data-docara-example-frame]){block-size:var(--sf-g1)}
 .docara-example-preview[data-preview-size="tall"] iframe:not([data-docara-example-frame]){block-size:var(--sf-h1)}
 [data-docara-example-panel]:not([data-docara-example-panel="example"]) [data-docara-code-block]{block-size:auto;margin:0;border:0;border-radius:0;background:var(--sf-surface-0)}
-[data-docara-example-panel]:not([data-docara-example-panel="example"]) [data-docara-code-block]>.sf--highlight-head{display:none}
-[data-docara-example-panel]:not([data-docara-example-panel="example"]) [data-docara-code-block]>[data-docara-code-fallback]{display:none}
+[data-docara-example-panel]:not([data-docara-example-panel="example"]) [data-docara-code-block]>.sf-highlight__head{display:none}
 [data-docara-example-panel] .docara-code-scroll{box-sizing:border-box;block-size:auto;margin:0;background:var(--sf-surface-0)}
 [data-docara-example-panel] .docara-code-scroll code{background:transparent}
 [data-docara-example-panel] .docara-code-scroll .hljs-ln{inline-size:max-content;margin:0;border:0;border-spacing:0;border-collapse:collapse;background:transparent}
@@ -309,12 +284,9 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln{inline-size:100%;table-layout:fixed}
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln-code{white-space:pre-wrap;overflow-wrap:anywhere}
 [data-docara-example-copy][hidden],[data-docara-example-viewer][hidden],[data-docara-example-viewports][hidden],[data-docara-example-wrap][hidden]{display:none}
-/* The example log: a bottom section of the example's frame. Its head repeats the top tab bar (same header box, tab and indicator rules); the line under the head goes when the log is collapsed. */
+/* The example log: a bottom section of the example's frame. Its head repeats the top tab bar (the Framework underline tabs with a count on each tab); the line under the head goes when the log is collapsed. */
 .docara-example-log{border-block-start:1px solid var(--sf-outline-variant);background:var(--sf-surface-0)}
-.docara-example-log__head{border-block-end:1px solid var(--sf-outline-variant)}
-.docara-example-log[data-docara-example-log-state="collapsed"] .docara-example-log__head{border-block-end:0}
-.docara-example-log__tab{gap:var(--sf-space-1\/3)}
-.docara-example-log__count{box-sizing:border-box;display:inline-block;min-inline-size:calc(var(--sf-text-height-1\/3) + var(--sf-space-1\/3));padding-inline:var(--sf-space-1\/4);border-radius:var(--sf-text-height-1\/3);background:var(--sf-surface-container);color:var(--sf-on-surface-variant);font-size:var(--sf-text-size-1\/3);line-height:var(--sf-text-height-1\/3);text-align:center;font-variant-numeric:tabular-nums}
+.docara-example-log[data-docara-example-log-state="collapsed"] .docara-example-log__head{--sf-tabs-top-container--border-width:0}
 .docara-example-log__panels[hidden],.docara-example-log__panel[hidden],.docara-example-log__empty[hidden]{display:none}
 .docara-example-log__panel{box-sizing:border-box;max-block-size:calc(var(--sf-text-height-1\/2) * 8);overflow:auto;padding:var(--sf-space-1\/3) var(--sf-space-1) var(--sf-space-1\/2);overscroll-behavior:contain}
 .docara-example-log__panel:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);outline-offset:calc(var(--sf-focus--width) * -1)}
@@ -343,17 +315,6 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 /* At tablet and phone widths the device column stays on surface-0 and the area around it is surface-1, so the contrast marks the simulated width. */
 .docara-example-preview[data-docara-example-viewer-active="true"]:is([data-docara-example-viewport="tablet"],[data-docara-example-viewport="mobile"]) [data-docara-example-panel="example"].is-active{background:var(--sf-surface-1)}
 .docara-example-preview[data-docara-example-viewer-active="true"] iframe[data-docara-example-frame]{flex:0 0 auto;min-block-size:100%;max-inline-size:none;background:var(--sf-surface-0)}
-/* Steps in the quiet look (C101, C137): the marker is one text line (24, 20 with the smaller text rung below lg), centred on the first line, with a regular number a rung smaller in the caption colour; marker to text 12, 8 with the smaller rung (C105 H2); the 1px line keeps the same 4 gap at both markers. A list without a named current step has no state; done is filled with a check, current filled with a ring through a gap. */
-.docara-step{position:relative;grid-template-columns:var(--sf-text-height-1) minmax(0,1fr);column-gap:var(--sf-space-1\/2);padding-block-end:var(--sf-space-1)}
-.docara-step:last-child{padding-block-end:0}
-.docara-step:not(:last-child)::after{content:"";position:absolute;inset-block-start:calc(var(--sf-text-height-1) + var(--sf-space-1\/4));inset-block-end:var(--sf-space-1\/4);inset-inline-start:calc((var(--sf-text-height-1) - var(--sf-px)) / 2);inline-size:var(--sf-px);background:var(--sf-outline-variant)}
-.docara-step-marker{position:relative;z-index:1;box-sizing:border-box;inline-size:var(--sf-text-height-1);block-size:var(--sf-text-height-1);align-self:start;border:var(--sf-px) solid var(--sf-outline);border-radius:var(--sf-radius-circle);background:var(--sf-surface-0);color:var(--sf-on-surface-variant);font-size:var(--sf-text-size-1\/2);line-height:1;font-weight:var(--sf-font-weight-regular);font-variant-numeric:tabular-nums}
-.docara-step[data-step-state="complete"] .docara-step-marker{border-color:var(--sf-primary);background:var(--sf-primary);color:var(--sf-on-primary)}
-.docara-step[data-step-state="current"] .docara-step-marker{border-color:var(--sf-primary);background:var(--sf-primary);color:var(--sf-on-primary);outline:var(--sf-px) solid var(--sf-primary);outline-offset:calc(var(--sf-px) * 2)}
-@media not all and (min-width:60rem){.docara-step{column-gap:var(--sf-space-1\/3)}}
-.docara-step-content{min-inline-size:0}
-.docara-step-content>p{margin:0;color:var(--sf-on-surface-variant)}
-.docara-step-content strong{color:var(--sf-on-surface);font-weight:700}
 .docara-skip-link:focus-visible,[data-docara-component-details-summary]:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
 /* The shell changes layout only at SIMAI Framework breakpoints (32, 44, 60, 72, 80rem = sm..xxl), written as the complement of the Framework's own min-width so a width belongs to one side only. Below xl (72rem) the header navigation and the outline rail move into sheets; below lg (60rem) the sidebar does too, because up to that step the grid is capped at the md container and a sidebar would leave the text 352px wide; below md (44rem) the example viewer, which previews desktop and tablet widths, has no room at all. */
 @media not all and (min-width:72rem){
@@ -381,7 +342,7 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
   .docara-example-log__detail{grid-column:1/-1}
 }
 /* Reduced motion: 0s, not .01ms. A nonzero duration starts a transition on every element, all properties being transitionable by default, and a background effect reading a theme colour through a probe element would get the colour the probe inherits instead. */
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:0s!important;animation-duration:.01ms!important;animation-iteration-count:1!important}.docara-example-preview__indicator,.docara-example-log__indicator{transition:none!important}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:0s!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 
 /* Key chips follow the hint text size instead of the browser's smaller monospace default. */
 /* Product-owned composition around the Framework icon primitive. */

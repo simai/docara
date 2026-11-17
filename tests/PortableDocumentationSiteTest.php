@@ -233,8 +233,8 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // picture and as the slotted original the element places.
         self::assertSame(2, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-smart="docara.navigation" data-docara-view="header"'));
-        self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
-        self::assertStringContainsString('sf-menu sf-menu--horizontal docara-header-navigation-list', $catalogIndex);
+        self::assertStringContainsString('class="sf-menu-element docara-header-navigation-link"', $catalogIndex);
+        self::assertStringContainsString('sf-menu sf-menu--horizontal sf-menu--navigation docara-header-navigation-list', $catalogIndex);
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));
         // header_navigation.repository puts the GitHub mark beside search; the
         // header menu itself lists the guide and the components.
@@ -500,7 +500,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // the shell stylesheets: 3310. The SEO and GEO page in two languages,
         // with the files it adds, and the left menu on Framework's
         // documentation-tree preset (fewer shell stylesheet groups): 3309.
-        self::assertCount(3309, $firstFiles);
+        // Docara's own parts on Framework parts (sf-tabs, sf-procedure,
+        // sf-featured-icon, the static highlight head) change the
+        // components the pages use and the shell groups: 3313.
+        self::assertCount(3313, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

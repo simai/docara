@@ -69,7 +69,7 @@ final readonly class PortableSearchTextExtractor
         }
         // Build-time code lines are elements without a newline between them;
         // a space keeps the last word of one line apart from the next.
-        foreach ($xpath->query('//*[@id="docara-search-root"]//*[contains(concat(" ", normalize-space(@class), " "), " docara-code-line ")]') ?: [] as $line) {
+        foreach ($xpath->query('//*[@id="docara-search-root"]//*[contains(concat(" ", normalize-space(@class), " "), " sf-code-line ")]') ?: [] as $line) {
             if ($line instanceof DOMElement) {
                 $line->appendChild($document->createTextNode(' '));
             }

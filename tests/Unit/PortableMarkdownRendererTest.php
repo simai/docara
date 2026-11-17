@@ -309,8 +309,8 @@ MD);
         preg_match('/<figcaption id="([^"]+)"/', $html, $id);
         self::assertNotEmpty($id);
         // The frame and its tab list are named by the caption; no tab holds the label.
-        self::assertStringContainsString(' aria-labelledby="' . $id[1] . '"><div class="docara-example-preview__header">', $html);
-        self::assertStringContainsString('<div role="tablist" aria-labelledby="' . $id[1] . '" class="docara-example-preview__tabs">', $html);
+        self::assertStringContainsString(' aria-labelledby="' . $id[1] . '"><div class="docara-example-preview__header sf-tabs sf-tabs--underline sf-tabs--size-1">', $html);
+        self::assertStringContainsString('<nav role="tablist" aria-labelledby="' . $id[1] . '" class="sf-tabs-top docara-example-preview__tabs flex">', $html);
         self::assertSame(0, preg_match('~role="tab"[^>]*>[^<]*' . preg_quote($label, '~') . '~u', $html));
         // The viewer header repeats the text; the preview frame keeps it as its title.
         self::assertStringContainsString('<span data-docara-example-title class="docara-example-preview__title">' . $label . '</span>', $html);
@@ -325,12 +325,11 @@ MD);
         self::assertStringStartsWith('<section data-docara-example="', trim($plain));
         self::assertStringNotContainsString('<figcaption', $plain);
         self::assertStringNotContainsString('data-docara-example-title', $plain);
-        self::assertStringContainsString('<div role="tablist" aria-label="Example" class="docara-example-preview__tabs">', $plain);
+        self::assertStringContainsString('<nav role="tablist" aria-label="Example" class="sf-tabs-top docara-example-preview__tabs flex">', $plain);
 
         // The caption reads like one under a picture and the tab row never scrolls.
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
         self::assertStringContainsString('.docara-example-preview__caption{margin-block-start:var(--sf-space-1\\/3);font-size:var(--sf-text-size-1\\/2);line-height:var(--sf-text-height-1\\/2);color:var(--sf-on-surface-variant);overflow-wrap:break-word}', $css);
-        self::assertStringContainsString('.docara-example-preview__tabs{display:inline-flex;inline-size:max-content;max-inline-size:100%;align-items:center;gap:0}', $css);
         self::assertStringContainsString('.docara-example-preview__title{display:none}', $css);
     }
 
@@ -348,15 +347,15 @@ MD);
 
         self::assertStringContainsString('data-docara-example=', $markdown);
         // The first tab is the localized "Example"; the author's label is the caption under the frame.
-        self::assertStringContainsString('data-docara-example-default-label class="docara-example-preview__tab">Example</button>', $markdown);
+        self::assertStringContainsString('data-docara-example-default-label class="docara-example-preview__tab sf-button sf-button--default sf-button--primary sf-button--size-1 selected"><span class="sf-button-text-container">Example</span></button>', $markdown);
         self::assertStringContainsString('class="docara-example-preview__caption">Пример</figcaption></figure>', $markdown);
         self::assertStringContainsString('data-docara-example-tab="markdown"', $markdown);
         self::assertStringContainsString(
             'data-docara-example-panel="markdown" aria-hidden="true" class="docara-example-preview__panel docara-example-preview__panel--source"',
             $markdown,
         );
-        self::assertStringContainsString('data-docara-example-tab="example" data-docara-example-default-label class="docara-example-preview__tab"', $markdown);
-        self::assertStringContainsString('data-docara-example-tab="markdown" class="docara-example-preview__tab"', $markdown);
+        self::assertStringContainsString('data-docara-example-tab="example" data-docara-example-default-label class="docara-example-preview__tab sf-button', $markdown);
+        self::assertStringContainsString('data-docara-example-tab="markdown" class="docara-example-preview__tab sf-button sf-button--default sf-button--primary sf-button--size-1"', $markdown);
         self::assertStringContainsString('data-docara-example-copy', $markdown);
         self::assertStringContainsString('data-docara-example-fullscreen="true"', $markdown);
         self::assertStringContainsString('data-docara-example-wrap="true"', $markdown);
@@ -378,11 +377,11 @@ MD);
         self::assertStringNotContainsString('data-copied-icon="check""', $markdown);
         self::assertSame(substr_count($markdown, '<div'), substr_count($markdown, '</div>'));
         self::assertStringContainsString('<sf-icon icon="content_copy" aria-hidden="true"></sf-icon>', $markdown);
-        self::assertStringContainsString('class="docara-example-preview__header"', $markdown);
-        self::assertStringContainsString('class="docara-example-preview__tabs"', $markdown);
-        self::assertStringContainsString('class="docara-example-preview__indicator"', $markdown);
+        // The frame head is the Framework tab row: underline look, size 1.
+        self::assertStringContainsString('class="docara-example-preview__header sf-tabs sf-tabs--underline sf-tabs--size-1"', $markdown);
+        self::assertStringContainsString('class="sf-tabs-top docara-example-preview__tabs flex"', $markdown);
+        self::assertStringNotContainsString('docara-example-preview__indicator', $markdown);
         self::assertStringContainsString('class="docara-example-preview__panels"', $markdown);
-        self::assertStringNotContainsString('sf-tabs sf-tabs--underline', $markdown);
         // The frame document waiting in data-docara-srcdoc is its own page;
         // the example markup around it carries no inline styles.
         self::assertStringNotContainsString('style=', (string) preg_replace('/ data-docara-srcdoc="[^"]*"/', '', $markdown));
@@ -700,8 +699,9 @@ MD);
         self::assertStringContainsString('<kbd class="sf-kbd">Esc</kbd>', $html);
         self::assertStringContainsString('sf-icon-rounded sf-icon-filled', $html);
         self::assertStringContainsString('role="img" aria-label="Поиск"', $html);
+        // A contained icon is the Framework featured icon.
         self::assertStringContainsString(
-            'class="docara-icon inline-grid" data-docara-icon-container="circle" data-docara-icon-variant="main" data-docara-icon-scheme="success" data-docara-icon-size="1"',
+            'class="sf-featured-icon sf-featured-icon--size-1 sf-featured-icon--circle sf-featured-icon--success sf-featured-icon--solid" data-docara-icon-container="circle" data-docara-icon-variant="main" data-docara-icon-scheme="success" data-docara-icon-size="1"',
             $html,
         );
         self::assertStringContainsString('role="img" aria-label="Быстро"', $html);
@@ -762,8 +762,8 @@ MD);
             trim($interactive),
         );
 
-        // A static tree is a nested list (C102, C109): no toggle column, an
-        // icon before each name, nothing to press.
+        // A static tree is the Framework static tree (sf-tree--static, C102,
+        // C109): no toggle column, an icon before each name, nothing to press.
         $static = $renderer->render(<<<'MD'
 :::tree {interactive=false}
 - content
@@ -771,23 +771,20 @@ MD);
 - docara.json
 :::
 MD);
-        $row = static fn (string $icon, string $name): string => '<span class="docara-tree__row"><i class="sf-icon docara-tree__icon" aria-hidden="true">'
-            . $icon . '</i><span class="docara-tree__name">' . $name . '</span></span>';
+        $row = static fn (string $icon, string $name): string => '<div class="sf-tree-item-container flex"><i class="sf-icon sf-tree-node-icon" aria-hidden="true">'
+            . $icon . '</i><span class="sf-tree-item-name">' . $name . '</span></div>';
         self::assertSame(
-            '<ul data-docara-block="tree" data-interactive="false" class="docara-tree m-bottom-1">'
-            . '<li class="docara-tree__item">' . $row('folder_open', 'content')
-            . '<ul class="docara-tree__group"><li class="docara-tree__item">' . $row('draft', 'index.md') . '</li></ul></li>'
-            . '<li class="docara-tree__item">' . $row('draft', 'docara.json') . '</li></ul>',
+            '<div data-docara-block="tree" data-interactive="false" class="sf-tree sf-tree--static flex flex-col m-bottom-1"><ul class="sf-tree-group" role="list">'
+            . '<li class="sf-tree-item flex flex-col open">' . $row('folder_open', 'content')
+            . '<ul class="sf-tree-group" role="list"><li class="sf-tree-item flex flex-col">' . $row('draft', 'index.md') . '</li></ul></li>'
+            . '<li class="sf-tree-item flex flex-col">' . $row('draft', 'docara.json') . '</li></ul></div>',
             trim($static),
         );
-        self::assertStringNotContainsString('sf-tree', $static);
+        self::assertStringNotContainsString('<button', $static);
 
-        // The level step is the icon and the row gap, the same gap as inside
-        // a row, so a child's icon stands under its parent's name.
+        // The shell draws no tree of its own any more.
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString('.docara-tree__group{margin-block:0;padding-inline-start:calc(var(--sf-icon-size-3) + var(--sf-space-1\\/2))}', $css);
-        self::assertStringContainsString('.docara-tree__row{display:flex;align-items:center;gap:var(--sf-space-1\\/2);', $css);
-        self::assertStringContainsString('.docara-tree__icon{flex:none;inline-size:var(--sf-icon-size-3);', $css);
+        self::assertStringNotContainsString('.docara-tree', $css);
     }
 
     #[Test]
@@ -845,37 +842,34 @@ MD;
             '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-page border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1">',
             $html,
         );
-        self::assertStringContainsString(
-            '<ol class="m-0 p-0">',
-            $html,
-        );
-        self::assertStringContainsString('class="docara-step grid items-cross-start gap-1 list-none"', $html);
-        self::assertStringContainsString('class="docara-step-marker inline-flex items-cross-center content-main-center"', $html);
-        self::assertStringContainsString('<div class="docara-step-content">Установите PHP-зависимости.</div>', $html);
+        // Steps are the Framework procedure (C194).
+        self::assertStringContainsString('<ol class="sf-procedure">', $html);
+        self::assertStringContainsString('<li class="sf-procedure-step"><div class="sf-procedure-content">Установите PHP-зависимости.</div></li>', $html);
+        self::assertStringNotContainsString('docara-step', $html);
         self::assertStringNotContainsString('absolute inset-inline-start-0', $html);
         self::assertStringContainsString(
             '<div data-docara-table-scroll class="table-frame m-bottom-1"><table class="table table-stripe">',
             $html,
         );
         self::assertStringContainsString(
-            '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="php" data-docara-code-wrap="true" class="source init sf-code-surface docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-surface m-bottom-1">',
+            '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="php" data-docara-code-wrap="true" class="sf-highlight sf-code-surface init docara-code-block m-bottom-1">',
             $html,
         );
-        self::assertStringContainsString('data-docara-code-fallback', $html);
-        // The header sits on the block's own surface, so it needs no backdrop
-        // blur; a blur on every code header made the sticky header and outline
-        // blank out for a frame while the page scrolled.
-        self::assertStringContainsString('<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center">', $html);
+        // The head is the Framework highlight head on the block's own
+        // surface, so it needs no backdrop blur; a blur on every code header
+        // made the sticky header and outline blank out for a frame while the
+        // page scrolled.
+        self::assertStringContainsString('<div data-docara-code-head class="sf-highlight__head"><span class="sf-highlight__language sf-text-1/2 weight-5">PHP</span>', $html);
         self::assertStringNotContainsString('bg-surface-overlay', $html);
-        self::assertStringContainsString('data-docara-code-actions', $html);
         self::assertStringContainsString('data-docara-code-wrap-toggle', $html);
         self::assertStringContainsString('data-docara-code-copy', $html);
         self::assertStringContainsString(
-            '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
+            '<pre class="sf-code-surface__scroll docara-code-scroll"><code class="language-php">',
             $html,
         );
         self::assertSame(1, substr_count($html, 'data-docara-code-block'));
-        self::assertSame(1, substr_count(
+        // The frame is the Framework highlight's own; no border utility.
+        self::assertSame(0, substr_count(
             strstr($html, '<div data-docara-code-block') ?: '',
             ' border ',
         ));
@@ -915,10 +909,12 @@ MD;
         $html = (new PortableMarkdownRenderer)->render($markdown);
 
         self::assertSame(1, substr_count($html, '<div data-docara-code-block'));
-        self::assertSame(1, substr_count($html, ' border border-outline-variant'));
-        self::assertStringContainsString('class="source init sf-code-surface docara-code-block', $html);
+        // The Framework highlight draws the frame: no shell border utilities.
+        self::assertSame(0, substr_count($html, ' border border-outline-variant'));
+        self::assertStringContainsString('data-sf-highlight-chrome="static" data-docara-code-language="shell"', $html);
+        self::assertStringContainsString('class="sf-highlight sf-code-surface init docara-code-block', $html);
         self::assertStringContainsString('data-docara-code-language="shell"', $html);
-        self::assertStringContainsString('data-docara-code-fallback', $html);
+        self::assertStringContainsString('data-docara-code-head class="sf-highlight__head"', $html);
         self::assertStringContainsString('data-docara-code-copy', $html);
         self::assertStringContainsString(
             "<code class=\"language-shell\">printf '&lt;Docara&gt; &amp; exact'\n  second line\n</code>",
@@ -946,7 +942,7 @@ MD;
         $html = (new PortableMarkdownRenderer)->render($markdown);
 
         self::assertStringContainsString(
-            '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start m-bottom-1" href="/start/" title="Быстрый старт"><span class="sf-button-text-container">Начать работу</span></a>',
+            '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start m-bottom-1" href="/start/" title="Быстрый старт"><span class="sf-button-text-container">Начать работу</span></a>',
             $html,
         );
         self::assertStringNotContainsString('bg-primary color-on-primary p-1/2 line-none', $html);
@@ -999,10 +995,11 @@ MD);
 :::
 MD);
 
-        $icon = '<span class="docara-icon inline-grid" data-docara-icon-container="square" data-docara-icon-variant="tonal" data-docara-icon-scheme="primary" data-docara-icon-size="1">'
-            . '<i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">bolt</i></span>';
-        // The icon is a flex row of its own, like a feature image, so the
-        // shell rule [data-docara-block="features"]>li>.docara-icon reaches it.
+        $icon = '<span class="sf-featured-icon sf-featured-icon--size-1 sf-featured-icon--square sf-featured-icon--primary sf-featured-icon--soft" data-docara-icon-container="square" data-docara-icon-variant="tonal" data-docara-icon-scheme="primary" data-docara-icon-size="1">'
+            . '<i class="sf-icon sf-icon-loaded sf-icon-regular" aria-hidden="true">bolt</i></span>';
+        // The icon is the Framework featured icon and a flex row of its own,
+        // like a feature image, so the shell rule
+        // [data-docara-block="features"]>li>.sf-featured-icon reaches it.
         self::assertStringContainsString(
             'flex-col gap-1">' . $icon . '<strong>Fast.</strong><span class="min-w-0">Static output.</span></li>',
             $html,
@@ -1021,10 +1018,10 @@ MD);
         $plain = $renderer->render("```\nnpm install\n```\n");
 
         self::assertStringContainsString('data-docara-code-language="html"', $markup);
-        self::assertStringContainsString('<span class="flex sf-text-1/3 weight-5">HTML</span>', $markup);
+        self::assertStringContainsString('<span class="sf-highlight__language sf-text-1/2 weight-5">HTML</span>', $markup);
         self::assertStringContainsString('class="language-html"', $markup);
         self::assertStringContainsString('data-docara-code-language="code"', $plain);
-        self::assertStringContainsString('<span class="flex sf-text-1/3 weight-5">Code</span>', $plain);
+        self::assertStringContainsString('<span class="sf-highlight__language sf-text-1/2 weight-5">Code</span>', $plain);
     }
 
     #[Test]
@@ -1069,10 +1066,11 @@ MD);
         self::assertSame(1, substr_count($named, 'aria-current="step"'));
         self::assertStringContainsString('<li data-step-state="current" aria-current="step"', $named);
         self::assertStringNotContainsString('aria-current', $plain);
-        // A passive list marks no step: no state, no check mark, plain numbers (C137).
+        // A passive list marks no step: no state, plain Framework numbers (C137).
         self::assertStringNotContainsString('data-step-state', $plain);
-        self::assertStringContainsString('<span class="docara-step-marker-text">1</span>', $plain);
-        self::assertStringContainsString('<li data-step-state="complete" class="docara-step', $named);
+        self::assertStringContainsString('<li class="sf-procedure-step"><div class="sf-procedure-content">A</div></li>', $plain);
+        self::assertStringContainsString('<li data-step-state="complete" class="sf-procedure-step sf-procedure-step--complete"', $named);
+        self::assertStringContainsString('class="sf-procedure-step sf-procedure-step--current"', $named);
     }
 
     #[Test]
@@ -2172,16 +2170,17 @@ MD);
             . ' data-docara-example-log-console="true" data-docara-example-log-state="collapsed" aria-label="Example log" class="docara-example-log">~s',
             $html,
         );
-        self::assertStringContainsString('role="tablist" aria-label="Example log" class="docara-example-preview__tabs docara-example-log__tabs"', $html);
-        self::assertStringContainsString('aria-selected="true" tabindex="0" data-docara-example-log-tab="events" class="docara-example-preview__tab docara-example-log__tab"', $html);
+        self::assertStringContainsString('class="docara-example-log__head sf-tabs sf-tabs--underline sf-tabs--size-1"', $html);
+        self::assertStringContainsString('role="tablist" aria-label="Example log" class="sf-tabs-top docara-example-log__tabs flex"', $html);
+        self::assertStringContainsString('aria-selected="true" tabindex="0" data-docara-example-log-tab="events" class="docara-example-log__tab sf-button sf-button--default sf-button--primary sf-button--size-1 selected"', $html);
         self::assertStringContainsString('aria-selected="false" tabindex="-1" data-docara-example-log-tab="console"', $html);
-        self::assertSame(2, substr_count($html, 'data-docara-example-log-count class="docara-example-log__count">0</span>'));
+        self::assertSame(2, substr_count($html, 'data-docara-example-log-count class="sf-tabs-count">0</span>'));
         self::assertStringContainsString('<sf-icon icon="delete" aria-hidden="true"></sf-icon>', $html);
         self::assertStringContainsString('aria-expanded="false" aria-label="Expand the log"', $html);
         self::assertStringContainsString('<sf-icon icon="expand_more" aria-hidden="true"></sf-icon>', $html);
         self::assertMatchesRegularExpression('~<div id="[^"]+-log-panels" hidden class="docara-example-log__panels">~', $html);
         self::assertSame(2, substr_count($html, '<div role="log" class="docara-example-log__rows"></div>'));
-        self::assertStringContainsString('<span class="docara-example-log__indicator" aria-hidden="true"></span>', $html);
+        self::assertStringNotContainsString('docara-example-log__indicator', $html);
         self::assertStringNotContainsString('<svg', $html);
         // The device-width viewer shows the inline example in a frame of its
         // own: that document records the same events and console.

@@ -6,6 +6,33 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Changed
+
+- **Docara's own interface parts are SIMAI Framework parts.** The shell no
+  longer draws its own versions of parts the Framework ships:
+  - The top bar items are `sf-menu--navigation` items: the current section
+    takes the Framework's header look (a medium label and a line on the
+    header's edge) instead of the shell's grey plate. The sidebar and the
+    shell buttons drop their own `radius-*` and `weight-5` utilities.
+  - The example frame head and the example log head are `sf-tabs`
+    (underline look, size 1) with `sf-button` tabs; the log counts are
+    `sf-tabs-count`. The shell's own tab indicator and its positioning
+    script are removed.
+  - A code block is a static Framework highlight: the head is
+    `sf-highlight__head` with the language or file name in
+    `sf-highlight__language`, the code takes the Framework code size, and
+    numbered lines use `sf-code-line`, `sf-code-line__number` and
+    `sf-code-line__content`.
+  - A static `:::tree` is `sf-tree--static`, and `:::steps` is
+    `sf-procedure` (the Framework numbers the steps and marks the complete
+    and current ones).
+  - An icon with a container (`:icon[...]{container=...}`), such as a
+    landing feature icon, is `sf-featured-icon`.
+  - The "Made with SIMAI" line takes its colours from Framework tokens; the
+    shell CSS holds no hex colours.
+  - The unused preferences menu rules are removed from `preferences.css`;
+    the side-panel rules stay.
+
 ## [3.17.0] - 2026-11-17
 
 ### Added

@@ -31,28 +31,17 @@ final class FrameworkNativeSurfaceTest extends TestCase
         // 120 px from 60rem, 100 px below it, not a 40 px icon.
         self::assertStringContainsString('.sf-site-header-tools>sf-language[data-docara-language]:not([data-look]){display:inline-block;inline-size:7.5rem;block-size:2.5rem}', $css);
         self::assertStringContainsString('@media(max-width:59.99rem){.sf-site-header-tools>sf-language[data-docara-language]:not([data-look]){inline-size:6.25rem}}', $css);
-        self::assertStringContainsString('[data-docara-block="features"]>li>.docara-icon{align-self:flex-start}', $css);
-        self::assertStringContainsString("head.classList.add('docara-code-header')", $runtime);
-        self::assertStringContainsString('title&&title.textContent!==languageLabel', $runtime);
-        self::assertStringContainsString("button.classList.add('docara-code-copy','sf-icon-button'", $runtime);
-        self::assertStringContainsString("codeIcon.classList.add('sf-icon-regular')", $runtime);
+        self::assertStringContainsString('[data-docara-block="features"]>li>.docara-icon,[data-docara-block="features"]>li>.sf-featured-icon{align-self:flex-start}', $css);
+        // A code block is the Framework highlight in its static chrome: the
+        // renderer writes the head, the script only localises its label.
+        self::assertStringContainsString("block.querySelector(':scope > .sf-highlight__head')", $runtime);
         self::assertStringContainsString("language||'code'", $runtime);
-        self::assertStringContainsString(
-            '.docara-code-header>span,.docara-code-block>.sf--highlight-head>span{display:inline-flex',
-            $css,
-        );
-        self::assertStringContainsString(
-            '.docara-code-header,.docara-code-block>.sf--highlight-head,.docara-example-preview__header,.docara-example-log__head{position:relative;box-sizing:border-box;display:grid;',
-            $css,
-        );
-        self::assertStringContainsString(
-            '.docara-code-header>[data-docara-code-actions],.docara-code-block>.sf--highlight-head>[data-docara-code-actions]{margin:0}',
-            $css,
-        );
-        self::assertStringNotContainsString('line-height:var(--sf-text-height-1);box-shadow:inset 0 -2px var(--sf-outline)', $css);
-        self::assertStringContainsString('.docara-code-block.bg-surface-container{background:var(--sf-surface-0)}', $css);
-        self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}', $css);
-        self::assertStringContainsString('.docara-step:not(:last-child)::after{content:""', $css);
+        self::assertStringNotContainsString('docara-code-header', $runtime);
+        self::assertStringNotContainsString('.docara-code-header', $css);
+        self::assertStringNotContainsString('sf--highlight-head', $css);
+        self::assertStringContainsString('.docara-code-block{--sf-highlight-background-color:var(--sf-surface-0)}', $css);
+        self::assertStringContainsString('.docara-code-block>.sf-highlight__head>*{margin-block:0}', $css);
+        self::assertStringNotContainsString('.docara-step', $css);
     }
 
     #[Test]
@@ -272,7 +261,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
 
         self::assertIsString($css);
         self::assertIsString($template);
-        self::assertStringContainsString('sf-menu sf-menu--horizontal docara-header-navigation-list', $template);
+        self::assertStringContainsString('sf-menu sf-menu--horizontal sf-menu--navigation docara-header-navigation-list', $template);
         self::assertStringContainsString(
             '.docara-header-navigation-list{flex-direction:row;justify-content:center;white-space:nowrap}',
             $css,

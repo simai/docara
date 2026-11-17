@@ -163,9 +163,13 @@ final class CodeLinePresenter
             if ($line['diff'] === 'remove' || ($commands && $line['output'])) {
                 $attributes .= ' data-copy-skip';
             }
-            $html .= '<span class="docara-code-line"' . $attributes . '>';
+            // A line and its number are the Framework highlighter's own
+            // (sf-code-line, sf-code-line__number, as data-lines draws
+            // them); the diff sign, the prompt and the screen reader word
+            // are Docara's until the Framework has them.
+            $html .= '<span class="sf-code-line"' . $attributes . '>';
             if ($start !== null) {
-                $html .= '<span class="docara-code-line__number" aria-hidden="true" data-line-number="' . $numberOf($index) . '"></span>';
+                $html .= '<span class="sf-code-line__number" aria-hidden="true">' . $numberOf($index) . '</span>';
             }
             if ($diff) {
                 $html .= '<span class="docara-code-line__sign" aria-hidden="true"></span>';
@@ -178,7 +182,7 @@ final class CodeLinePresenter
             if ($line['prompt']) {
                 $html .= '<span class="docara-code-line__prompt" aria-hidden="true"></span>';
             }
-            $html .= '<span class="docara-code-line__content"'
+            $html .= '<span class="sf-code-line__content"'
                 . (str_contains($line['text'], '[!') ? ' ' . self::SHORTCODE_GUARD : '')
                 . '>' . $this->escape($line['text']) . '</span></span>';
         }

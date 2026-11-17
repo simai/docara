@@ -39,7 +39,7 @@
   function codeCopyText(code){
     if(!code.hasAttribute('data-docara-code-lines'))return code.textContent||'';
     return Array.prototype.filter.call(code.children,function(line){return !line.hasAttribute('data-copy-skip')}).map(function(line){
-      var content=line.querySelector(':scope>.docara-code-line__content');
+      var content=line.querySelector(':scope>.sf-code-line__content');
       return content?content.textContent:'';
     }).join('\n');
   }
@@ -65,7 +65,7 @@
     if(!engine||typeof engine.highlight!=='function')return;
     var scope=root&&root.querySelectorAll?root:document;
     scope.querySelectorAll('code[data-docara-code-lines]:not([data-docara-code-coloured])').forEach(function(code){
-      var contents=Array.prototype.map.call(code.children,function(line){return line.querySelector(':scope>.docara-code-line__content')});
+      var contents=Array.prototype.map.call(code.children,function(line){return line.querySelector(':scope>.sf-code-line__content')});
       if(contents.indexOf(null)!==-1)return;
       var name=Array.prototype.filter.call(code.classList,function(item){return /^(?:language|lang)-/.test(item)})[0];
       var language=name?name.replace(/^(?:language|lang)-/,'').toLowerCase():'plaintext';
@@ -98,36 +98,13 @@
         // rendered by Docara names it only in its language-* class.
         var classLanguage=code&&/(?:^|\s)language-([\w+-]+)/.exec(code.className||'');
         var language=(code&&code.dataset.requestedLang||classLanguage&&classLanguage[1]||'').trim().toLowerCase();
-        var head=block.querySelector(':scope > .sf--highlight-head,:scope > [data-docara-code-fallback]');
-        var title=head&&head.querySelector(':scope > span');
+        var head=block.querySelector(':scope > .sf-highlight__head');
+        var title=head&&head.querySelector(':scope > .sf-highlight__language');
         var languageLabels={html:'HTML',xhtml:'HTML',css:'CSS',js:'JavaScript',javascript:'JavaScript',json:'JSON',php:'PHP',bash:'Bash',shell:'Shell',markdown:'Markdown',md:'Markdown',text:'Code',plaintext:'Code'};
         var languageLabel=block.dataset.docaraCodeTitle||languageLabels[language]||language||(title&&title.textContent.trim())||'Code';
-        if(head){head.classList.add('docara-code-header')}
         if(title&&title.textContent!==languageLabel){title.textContent=languageLabel}
-        button.classList.remove('sf-button','sf-button--size-1/3','sf-button--on-surface','sf-button--link');
-        button.classList.add('docara-code-copy','sf-icon-button','sf-icon-button--icon','sf-icon-button--on-surface','sf-icon-button--link','sf-icon-button--size-1','inline-grid','items-cross-center','content-main-center','m-0');
-        var codeIcon=button.querySelector('.sf-icon');
-        if(codeIcon){codeIcon.classList.add('sf-icon-regular')}
         block.dataset.docaraCodeLanguage=language||'code';
-        var actions=head&&head.querySelector(':scope > [data-docara-code-actions]');
-        if(head&&!actions){
-          actions=document.createElement('div');
-          actions.dataset.docaraCodeActions='';
-          actions.className='docara-code-actions flex items-cross-center gap-1/3';
-          head.appendChild(actions);
-        }
-        if(actions&&button.parentElement!==actions){actions.appendChild(button)}
-        var wrapButton=actions&&actions.querySelector('[data-docara-code-wrap-toggle]');
-        if(actions&&block.dataset.docaraCodeWrap!=='false'&&!wrapButton){
-          wrapButton=document.createElement('button');
-          wrapButton.type='button';
-          wrapButton.dataset.docaraCodeWrapToggle='';
-          wrapButton.dataset.wrapIcon='wrap_text';
-          wrapButton.dataset.unwrapIcon='format_text_overflow';
-          wrapButton.className='docara-code-wrap sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0';
-          wrapButton.innerHTML='<span aria-hidden="true" class="sf-icon sf-icon-regular">wrap_text</span><span class="sf-button-text-container sr-only"></span>';
-          actions.insertBefore(wrapButton,button);
-        }
+        var wrapButton=head&&block.dataset.docaraCodeWrap!=='false'?head.querySelector(':scope > [data-docara-code-wrap-toggle]'):null;
         if(wrapButton){
           syncCodeWrap(block,wrapButton,sourceWrapActive);
           if(!wrapButton.dataset.docaraCodeWrapBound){
@@ -296,26 +273,6 @@
       });
     }
   }
-  function positionExampleIndicator(example,animate){
-    positionTabIndicator(
-      example.querySelector('[data-docara-example-tab][aria-selected="true"]'),
-      example.querySelector('.docara-example-preview__indicator'),
-      example.querySelector('.docara-example-preview__header'),
-      animate
-    );
-  }
-  function positionTabIndicator(selected,indicator,header,animate){
-    if(!selected||!indicator||!header)return;
-    if(animate===false){indicator.style.transition='none'}
-    var tabRect=selected.getBoundingClientRect();
-    var headerRect=header.getBoundingClientRect();
-    var inlineStart=document.documentElement.dir==='rtl'
-      ?headerRect.right-tabRect.right
-      :tabRect.left-headerRect.left;
-    indicator.style.insetInlineStart=inlineStart+'px';
-    indicator.style.inlineSize=tabRect.width+'px';
-    if(animate===false){requestAnimationFrame(function(){indicator.style.removeProperty('transition')})}
-  }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));
   var docaraExampleFrames=Array.from(document.querySelectorAll('iframe[data-docara-example-frame]'));
   /* A frame document starts in the page's language and direction: scripts inside it read <html lang> as they start (file sizes, dates, default labels), before the frame runtime hears from the page. */
@@ -392,7 +349,8 @@
     if(label==='examples.example')return;
     document.querySelectorAll('[data-docara-example-default-label]').forEach(function(element){
       if(element.tagName==='IFRAME'){element.setAttribute('title',label);return}
-      element.textContent=label;
+      var text=element.querySelector(':scope>.sf-button-text-container')||element;
+      text.textContent=label;
       var list=element.closest('[role="tablist"]');
       /* A captioned example's tab list is named by its caption. */
       if(list&&!list.hasAttribute('aria-labelledby'))list.setAttribute('aria-label',label);
@@ -994,6 +952,7 @@
       var key=tab.dataset.docaraExampleTab;
       tabs.forEach(function(candidate){
         var selected=candidate===tab;
+        candidate.classList.toggle('selected',selected);
         candidate.setAttribute('aria-selected',selected?'true':'false');
         candidate.tabIndex=selected?0:-1;
       });
@@ -1006,7 +965,6 @@
       if(copyButton){copyButton.hidden=key==='example'}
       syncViewer();
       syncWrap(sourceWrapActive);
-      positionExampleIndicator(example,true);
       if(moveFocus){tab.focus()}
     }
     tabs.forEach(function(tab,index){
@@ -1106,14 +1064,7 @@
     }
     syncViewer();
     syncWrap(sourceWrapActive);
-    positionExampleIndicator(example,false);
   });
-  if(document.fonts&&document.fonts.ready){
-    document.fonts.ready.then(function(){docaraExamples.forEach(function(example){positionExampleIndicator(example,false)})});
-  }
-  window.addEventListener('resize',function(){
-    docaraExamples.forEach(function(example){positionExampleIndicator(example,false)});
-  },{passive:true});
   /* An example log (:::example {log="…"}) is a section of the example's frame under its panels: tabs for the example's events and, with log_console=true, its console, newest row first. An inline example is part of the page, so the shell listens on its root here; a framed example's runtime records the rows in its own document and posts them as docara:example-log messages, which count only from one of the page's example frames. */
   (function(){
     var exampleLogs=[];
@@ -1160,8 +1111,6 @@
     docaraExamples.forEach(function(example){
       var section=Array.from(example.querySelectorAll('[data-docara-example-log]')).find(function(candidate){return candidate.closest('[data-docara-example]')===example});
       if(!section)return;
-      var head=section.querySelector('.docara-example-log__head');
-      var indicator=section.querySelector('.docara-example-log__indicator');
       var tabs=Array.from(section.querySelectorAll('[data-docara-example-log-tab]'));
       var panels=section.querySelector('.docara-example-log__panels');
       var clearButton=section.querySelector('[data-docara-example-log-clear]');
@@ -1170,7 +1119,6 @@
       if(!tabs.length||!panels||!clearButton||!toggleButton)return;
       function panelOf(key){return section.querySelector('[data-docara-example-log-panel="'+key+'"]')}
       function selectedTab(){return tabs.find(function(tab){return tab.getAttribute('aria-selected')==='true'})||tabs[0]}
-      function placeIndicator(animate){positionTabIndicator(selectedTab(),indicator,head,animate)}
       var title=logText('examples.log_title','Example log');
       section.setAttribute('aria-label',title);
       if(tablist)tablist.setAttribute('aria-label',title);
@@ -1198,11 +1146,11 @@
       function selectTab(tab,moveFocus){
         tabs.forEach(function(candidate){
           var selected=candidate===tab,panel=panelOf(candidate.dataset.docaraExampleLogTab);
+          candidate.classList.toggle('selected',selected);
           candidate.setAttribute('aria-selected',selected?'true':'false');
           candidate.tabIndex=selected?0:-1;
           if(panel)panel.hidden=!selected;
         });
-        placeIndicator(true);
         if(moveFocus)tab.focus();
       }
       function updateCount(key){
@@ -1258,14 +1206,9 @@
           root.addEventListener(name,function(event){write('events','',event.type,logEventDetail(event))},true);
         });
       }
-      exampleLogs.push({example:example,write:write,place:placeIndicator,inline:Boolean(root),console:section.dataset.docaraExampleLogConsole==='true'});
-      placeIndicator(false);
+      exampleLogs.push({example:example,write:write,inline:Boolean(root),console:section.dataset.docaraExampleLogConsole==='true'});
     });
     if(!exampleLogs.length)return;
-    if(document.fonts&&document.fonts.ready){
-      document.fonts.ready.then(function(){exampleLogs.forEach(function(entry){entry.place(false)})});
-    }
-    window.addEventListener('resize',function(){exampleLogs.forEach(function(entry){entry.place(false)})},{passive:true});
     window.addEventListener('message',function(event){
       var data=event.data;
       if(!data||data.type!=='docara:example-log')return;

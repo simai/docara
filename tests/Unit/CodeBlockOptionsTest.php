@@ -78,7 +78,7 @@ final class CodeBlockOptionsTest extends TestCase
         $html = (new PortableMarkdownRenderer)->render("```php\necho \"<a>\" & 1;\n```\n");
 
         self::assertStringContainsString(
-            '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">echo &quot;&lt;a&gt;&quot; &amp; 1;' . "\n" . '</code></pre>',
+            '<pre class="sf-code-surface__scroll docara-code-scroll"><code class="language-php">echo &quot;&lt;a&gt;&quot; &amp; 1;' . "\n" . '</code></pre>',
             $html,
         );
         self::assertStringNotContainsString('data-docara-code-lines', $html);
@@ -92,7 +92,9 @@ final class CodeBlockOptionsTest extends TestCase
         $html = (new PortableMarkdownRenderer)->render("```php {title=\"config/app.php\"}\nreturn [];\n```\n");
 
         self::assertStringContainsString('data-docara-code-title="config/app.php"', $html);
-        self::assertStringContainsString('<span class="flex sf-text-1/3 weight-5">config/app.php</span>', $html);
+        // The file name stands in the Framework head's language place
+        // (decision C285, look A).
+        self::assertStringContainsString('<div data-docara-code-head class="sf-highlight__head"><span class="sf-highlight__language sf-text-1/2 weight-5">config/app.php</span>', $html);
         self::assertStringContainsString('<code class="language-php">return [];' . "\n" . '</code>', $html);
         self::assertStringNotContainsString('data-docara-code-lines', $html);
     }
@@ -102,17 +104,18 @@ final class CodeBlockOptionsTest extends TestCase
     {
         $html = (new PortableMarkdownRenderer)->render("```php {highlight=\"1,3-4\" numbers=10}\na\nb\nc\nd\n```\n");
 
-        self::assertStringContainsString('<pre class="docara-code-scroll docara-code-scroll--lines overflow-auto m-0"><code class="language-php" data-highlighted="lines" data-docara-code-lines>', $html);
+        self::assertStringContainsString('<pre class="sf-code-surface__scroll docara-code-scroll docara-code-scroll--lines"><code class="language-php" data-highlighted="lines" data-docara-code-lines>', $html);
         self::assertStringContainsString('data-docara-code-lines="4" data-docara-code-digits="2"', $html);
-        self::assertSame(4, substr_count($html, 'class="docara-code-line"'));
+        self::assertSame(4, substr_count($html, 'class="sf-code-line"'));
         self::assertSame(3, substr_count($html, 'data-line-highlight'));
         foreach ([10, 11, 12, 13] as $number) {
-            self::assertStringContainsString('<span class="docara-code-line__number" aria-hidden="true" data-line-number="' . $number . '"></span>', $html);
+            self::assertStringContainsString('<span class="sf-code-line__number" aria-hidden="true">' . $number . '</span>', $html);
         }
         self::assertSame(['a', 'b', 'c', 'd'], $this->lineTexts($html));
-        // A line number is generated content of an aria-hidden span: it is
-        // neither text a selection copies nor text a screen reader reads.
-        self::assertStringNotContainsString('>10<', $html);
+        // A line number is the Framework's number column: an aria-hidden
+        // span a selection leaves behind (user-select: none) and the copy
+        // button never reads.
+        self::assertSame("a\nb\nc\nd", $this->copyText($html));
 
         $shorthand = (new PortableMarkdownRenderer)->render("```js{1,3}\na\nb\nc\n```\n");
         self::assertSame(2, substr_count($shorthand, 'data-line-highlight'));
@@ -189,7 +192,7 @@ MD);
 
         self::assertStringContainsString('<code data-sf-observer="ignore">[!code ++]</code>', $html);
         self::assertStringContainsString('<code>plain</code>', $html);
-        self::assertStringContainsString('<span class="docara-code-line__content" data-sf-observer="ignore">&gt; [!NOTE]</span>', $html);
+        self::assertStringContainsString('<span class="sf-code-line__content" data-sf-observer="ignore">&gt; [!NOTE]</span>', $html);
     }
 
     #[Test]
@@ -229,8 +232,8 @@ MD);
 
         $html = $renderer->render(":::code {src=builder.php region=build dedent=true numbers highlight=3}\n:::\n", $this->root, $page);
         self::assertSame(['public function build(): string', '{', "    return 'ok';", '}'], $this->lineTexts($html));
-        self::assertStringContainsString('data-line-number="6"', $html);
-        self::assertStringContainsString('data-line-number="11"', $html);
+        self::assertStringContainsString('<span class="sf-code-line__number" aria-hidden="true">6</span>', $html);
+        self::assertStringContainsString('<span class="sf-code-line__number" aria-hidden="true">11</span>', $html);
         self::assertSame(1, substr_count($html, 'data-line-highlight'));
         self::assertStringContainsString('data-docara-code-title="builder.php"', $html);
         self::assertStringNotContainsString('#region', $html);
@@ -248,8 +251,8 @@ MD);
         self::assertStringContainsString("<code class=\"language-php\">return 'ok';\n</code>", $between);
 
         $lines = $renderer->render(":::code {src=builder.php lines=6-7 numbers}\n:::\n", $this->root, $page);
-        self::assertStringContainsString('data-line-number="6"', $lines);
-        self::assertStringContainsString('data-line-number="7"', $lines);
+        self::assertStringContainsString('<span class="sf-code-line__number" aria-hidden="true">6</span>', $lines);
+        self::assertStringContainsString('<span class="sf-code-line__number" aria-hidden="true">7</span>', $lines);
     }
 
     #[Test]
@@ -336,7 +339,7 @@ MD);
     {
         return array_map(
             static fn (DOMElement $line): string => (string) $line->textContent,
-            $this->query($html, '//span[contains(concat(" ", @class, " "), " docara-code-line__content ")]'),
+            $this->query($html, '//span[contains(concat(" ", @class, " "), " sf-code-line__content ")]'),
         );
     }
 
@@ -347,7 +350,7 @@ MD);
     private function copyText(string $html): string
     {
         $lines = [];
-        foreach ($this->query($html, '//code[@data-docara-code-lines]/span[not(@data-copy-skip)]/span[contains(concat(" ", @class, " "), " docara-code-line__content ")]') as $content) {
+        foreach ($this->query($html, '//code[@data-docara-code-lines]/span[not(@data-copy-skip)]/span[contains(concat(" ", @class, " "), " sf-code-line__content ")]') as $content) {
             $lines[] = (string) $content->textContent;
         }
 

@@ -909,8 +909,10 @@ MD);
         self::assertStringNotContainsString('.docara-prose img{max-inline-size:100%;block-size:auto}', $shellCss);
         self::assertStringContainsString('.docara-prose figure,.docara-prose picture{max-inline-size:100%}', $shellCss);
         self::assertStringNotContainsString('.docara-prose img{inline-size:100%', $shellCss);
-        self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:var(--sf-surface-0);', $shellCss);
-        self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}', $shellCss);
+        // The code scroll is the Framework's (sf-code-surface__scroll); the
+        // shell sets only the block fill through the highlighter's variable.
+        self::assertStringContainsString('.docara-code-block{--sf-highlight-background-color:var(--sf-surface-0)}', $shellCss);
+        self::assertStringNotContainsString('.docara-code-header', $shellCss);
         self::assertStringNotContainsString('[data-docara-table-scroll]', $shellCss);
         self::assertStringContainsString(
             '.docara-sidebar-scroll>.sf-scrollbar__viewport>[data-docara-section]{padding-block:var(--sf-space-1);padding-inline-end:var(--sf-space-1);padding-inline-start:0}',
@@ -1085,7 +1087,7 @@ MD);
             self::assertStringContainsString("customElements.whenDefined('sf-icon')", $surface);
             self::assertStringNotContainsString('navigator.clipboard.writeText(text)', $surface);
             self::assertStringContainsString("document.execCommand('copy')", $surface);
-            self::assertStringContainsString('background:var(--sf-surface-0);border:0;border-radius:0;box-shadow:none', $surface);
+            self::assertStringContainsString('.docara-code-block{--sf-highlight-background-color:var(--sf-surface-0)}', $surface);
             self::assertStringNotContainsString('.docara-code-block>.sf--highlight-head button{min-inline-size:', $surface);
             self::assertStringNotContainsString('.docara-mobile-navigation-trigger{min-inline-size:', $surface);
             self::assertStringNotContainsString('.docara-outline-trigger{min-block-size:', $surface);
@@ -1193,10 +1195,13 @@ MD);
         self::assertStringNotContainsString('--sf-menu-element--padding-inline-start', $smartSurface);
         self::assertStringNotContainsString('--sf-menu-element--border-top-width', $smartSurface);
         self::assertStringNotContainsString('--sf-menu-element--background-color', $smartSurface);
+        // The header items are sf-menu--navigation items: height, padding,
+        // colour and the current mark are the Framework's.
         self::assertStringContainsString(
-            '.docara-header-navigation .docara-header-navigation-link{box-sizing:border-box;min-block-size:var(--sf-d0)',
+            '.docara-header-navigation .docara-header-navigation-link{text-decoration:none}',
             $smartSurface,
         );
+        self::assertStringNotContainsString('.docara-header-navigation-link[aria-current', $smartSurface);
         self::assertStringContainsString(
             '.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible'
             . '{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight)'
@@ -1569,8 +1574,10 @@ MD);
         // The reading toolbar sits next to the breadcrumbs and its state is restored before paint.
         self::assertMatchesRegularExpression('~<button type="button" data-docara-outline-toggle data-docara-label-hide="[^"]+" data-docara-label-show="[^"]+" aria-controls="docara-outline"~', $html);
         self::assertMatchesRegularExpression('~<button type="button" data-docara-focus-toggle aria-pressed="false"~', $html);
-        // Reading mode exits through a round Framework icon button.
-        self::assertMatchesRegularExpression('~<button type="button" data-docara-focus-exit [^>]*class="docara-focus-exit sf-icon-button [^"]*\\bradius-rounded\\b~', $html);
+        // Reading mode exits through a Framework icon button with the
+        // Framework's own radius, no shell radius utility.
+        self::assertMatchesRegularExpression('~<button type="button" data-docara-focus-exit [^>]*class="docara-focus-exit sf-icon-button [^"]*"~', $html);
+        self::assertDoesNotMatchRegularExpression('~<button type="button" data-docara-focus-exit [^>]*class="[^"]*\\bradius-rounded\\b~', $html);
         self::assertStringContainsString('<aside id="docara-outline" class="docara-outline-rail"', $html);
         self::assertStringContainsString("var layoutKey=key.replace(/^docara\\.preferences\\./,'docara.reading.')", $html);
         self::assertStringContainsString('window.DocaraReadingLayout={key:layoutKey', $html);
@@ -1746,10 +1753,10 @@ MD);
         // square with a light ring, and letters in the colour of the line's
         // text, so they read on a light and a dark sidebar.
         $shellCss = (string) file_get_contents(dirname(__DIR__) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:1.25rem;--docara-credit-wordmark:color-mix(in srgb,var(--sf-on-surface-variant) 65%,transparent);--docara-credit-mark:#505050;--docara-credit-ring:#F7F7F7;color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:1.25rem;--docara-credit-wordmark:var(--sf-on-surface-variant);--docara-credit-mark:var(--sf-on-surface-variant);--docara-credit-ring:var(--sf-surface-0);color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
         self::assertStringContainsString('.docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}.docara-sidebar-credit-ring{fill:var(--docara-credit-ring)}', $shellCss);
         // Hover and keyboard focus show the logo in colour: theme text and the Docara red.
-        self::assertStringContainsString('.docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:#E81123}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:var(--sf-red-50)}', $shellCss);
         self::assertStringContainsString('.docara-sidebar-credit-link:focus-visible{outline:', $shellCss);
         self::assertSame('Made with {docara}', UiCopy::buildText('ar', 'branding.credit'));
         // A landing page has no sidebar and so no credit line.

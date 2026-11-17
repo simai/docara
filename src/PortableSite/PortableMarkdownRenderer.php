@@ -266,7 +266,8 @@ final class PortableMarkdownRenderer
         // card lifts that icon out of its text run (renderFeatures).
         $iconPlaceholders = array_keys(array_filter(
             $inline['replacements'],
-            static fn (string $replacement): bool => str_starts_with($replacement, '<span class="docara-icon '),
+            static fn (string $replacement): bool => str_starts_with($replacement, '<span class="docara-icon ')
+                || str_starts_with($replacement, '<span class="sf-featured-icon '),
         ));
         $inspection = $this->inspectDirectives($markdown);
         $this->assertDirectivePlacement($markdown, $inspection);
@@ -612,19 +613,24 @@ final class PortableMarkdownRenderer
         }
         $content = (string) $rendered;
         if ($view === 'timeline') {
+            // The timeline is the Framework procedure (decision C194): its
+            // marker numbers the step, fills a complete one and rings the
+            // current one.
             $index = 0;
             $content = preg_replace_callback('/<li>(?<content>.*?)<\/li>/su', static function (array $match) use (&$index, $current): string {
                 $index++;
                 $state = $current === null ? null : ($index < $current ? 'complete' : ($index === $current ? 'current' : 'pending'));
-                $marker = $state === 'complete' ? '&#10003;' : (string) $index;
+                $class = match ($state) {
+                    'complete' => ' sf-procedure-step--complete',
+                    'current' => ' sf-procedure-step--current',
+                    default => '',
+                };
 
-                return '<li' . ($state === null ? '' : ' data-step-state="' . $state . '"') . ($state === 'current' ? ' aria-current="step"' : '') . ' class="docara-step grid items-cross-start gap-1 list-none">'
-                    . '<span aria-hidden="true" class="docara-step-marker inline-flex items-cross-center content-main-center">'
-                    . '<span class="docara-step-marker-text">' . $marker . '</span></span>'
-                    . '<div class="docara-step-content">'
+                return '<li' . ($state === null ? '' : ' data-step-state="' . $state . '"') . ($state === 'current' ? ' aria-current="step"' : '') . ' class="sf-procedure-step' . $class . '">'
+                    . '<div class="sf-procedure-content">'
                     . (string) $match['content'] . '</div></li>';
             }, $content) ?? $content;
-            $content = preg_replace('/^<ol\b/', '<ol class="m-0 p-0"', $content, 1) ?? $content;
+            $content = preg_replace('/^<ol\b/', '<ol class="sf-procedure"', $content, 1) ?? $content;
         } else {
             $content = preg_replace('/^<ol\b/', '<ol class="flex flex-col gap-1 p-inline-start-3"', $content, 1) ?? $content;
         }
@@ -2254,12 +2260,12 @@ HTML;
         $list = preg_replace('~^<ul>|</ul>$~u', '', $list) ?? $list;
 
         if (! $interactive) {
-            // A static tree is a nested list with nothing to press (owner
-            // decisions C102 and C109): no toggle column, a type icon before
-            // each name, and a level steps by that icon and the row gap, so
-            // a child's icon stands under its parent's name.
-            return '<ul data-docara-block="tree" data-interactive="false" class="docara-tree m-bottom-1">'
-                . $this->staticTreeItems($list) . '</ul>';
+            // A static tree is the Framework's static tree (owner decisions
+            // C102 (5) and C109): a nested list with nothing to press, a type
+            // icon before each name, and a level stepping by that icon and
+            // the row gap, so a child's icon stands under its parent's name.
+            return '<div data-docara-block="tree" data-interactive="false" class="sf-tree sf-tree--static flex flex-col m-bottom-1">'
+                . '<ul class="sf-tree-group" role="list">' . $this->staticTreeItems($list) . '</ul></div>';
         }
 
         // The interactive block is the Framework tree: branches open by
@@ -2279,12 +2285,13 @@ HTML;
             $label = preg_replace('~^<p>(.*)</p>$~su', '$1', $label) ?? $label;
             // A branch is an open folder; a leaf is the Framework's generic
             // file icon until the Framework ships its file type map.
-            $html .= '<li class="docara-tree__item"><span class="docara-tree__row">'
-                . '<i class="sf-icon docara-tree__icon" aria-hidden="true">' . ($nested === false ? 'draft' : 'folder_open') . '</i>'
-                . '<span class="docara-tree__name">' . $label . '</span></span>';
+            $html .= '<li class="sf-tree-item flex flex-col' . ($nested === false ? '' : ' open') . '">'
+                . '<div class="sf-tree-item-container flex">'
+                . '<i class="sf-icon sf-tree-node-icon" aria-hidden="true">' . ($nested === false ? 'draft' : 'folder_open') . '</i>'
+                . '<span class="sf-tree-item-name">' . $label . '</span></div>';
             if ($nested !== false) {
                 $children = substr($item, $nested + 4, (int) strrpos($item, '</ul>') - $nested - 4);
-                $html .= '<ul class="docara-tree__group">' . $this->staticTreeItems($children) . '</ul>';
+                $html .= '<ul class="sf-tree-group" role="list">' . $this->staticTreeItems($children) . '</ul>';
             }
             $html .= '</li>';
         }
@@ -2690,7 +2697,7 @@ HTML;
             );
         }
 
-        return '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start m-bottom-1"'
+        return '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start m-bottom-1"'
             . $match['attributes'] . '><span class="sf-button-text-container">'
             . $match['label'] . '</span></a>';
     }
@@ -3118,7 +3125,7 @@ HTML;
 
                     return '<a data-docara-hero-action class="sf-button sf-button--default sf-button--'
                         . $type
-                        . ' sf-button--size-1 box-border h-c8 lg:h-d0 radius-default inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start"'
+                        . ' sf-button--size-1 box-border h-c8 lg:h-d0 inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start"'
                         . (string) $match['attributes'] . '><span class="sf-button-text-container">'
                         . (string) $match['label'] . '</span></a>';
                 },
@@ -3707,7 +3714,7 @@ HTML;
             $content = preg_replace_callback(
                 '/<p><a(?<attributes>[^>]*)>(?<label>.*?)<\/a><\/p>/su',
                 static fn (array $match): string => '<a data-docara-' . $block
-                    . '-action class="sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start"'
+                    . '-action class="sf-button sf-button--default sf-button--primary sf-button--size-1 inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start"'
                     . (string) $match['attributes'] . '><span class="sf-button-text-container">'
                     . (string) $match['label'] . '</span></a>',
                 $content,
@@ -3960,8 +3967,8 @@ HTML;
     }
 
     /**
-     * One code block: the Docara header with its title or language, the copy
-     * and wrap actions, and the code itself. Line options (numbers,
+     * One code block: the Framework highlighter's head with the title or
+     * the language, the wrap and copy buttons, and the code itself. Line options (numbers,
      * highlight, focus, diff markers, the terminal layout) are worked out
      * here, at build time, by CodeLinePresenter.
      */
@@ -4031,21 +4038,26 @@ HTML;
             }
         }
 
+        // The block is the Framework highlighter's own (sf-highlight,
+        // sf-code-surface) with its head (sf-highlight__head): the file
+        // name or the language in the head's language place (decision C285,
+        // look A), the wrap toggle and the copy button. The build writes the
+        // head and keeps the highlighter from drawing a second one
+        // (data-sf-highlight-chrome="static"): a block whose lines the
+        // build wrapped is coloured by the shell, and the highlighter of
+        // this pair has no place for a file name.
         return '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="' . $this->escapeHtml($language)
             . '" data-docara-code-wrap="' . ($wrap ? 'true' : 'false') . '"' . $blockAttributes
-            . ' class="source init sf-code-surface docara-code-block' . $blockClasses . ' min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-surface m-bottom-1">'
-            . '<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center">'
-            . '<span class="flex sf-text-1/3 weight-5">' . $this->escapeHtml($label) . '</span>'
-            . '<div data-docara-code-actions class="docara-code-actions flex items-cross-center gap-1/3">'
-            . ($wrap ? '<button type="button" data-docara-code-wrap-toggle hidden data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow" class="docara-code-wrap sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Wrap source lines" aria-pressed="false">'
-                . '<span aria-hidden="true" class="sf-icon sf-icon-regular">wrap_text</span>'
-                . '<span class="sf-button-text-container sr-only">Wrap source lines</span></button>' : '')
-            . '<button type="button" data-docara-code-copy class="docara-code-copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Copy">'
-            . '<span aria-hidden="true" class="sf-icon sf-icon-regular">content_copy</span>'
-            . '<span class="sf-button-text-container sr-only">Copy</span></button></div></div>'
+            . ' class="sf-highlight sf-code-surface init docara-code-block' . $blockClasses . ' m-bottom-1">'
+            . '<div data-docara-code-head class="sf-highlight__head">'
+            . '<span class="sf-highlight__language sf-text-1/2 weight-5">' . $this->escapeHtml($label) . '</span>'
+            . ($wrap ? '<button type="button" data-docara-code-wrap-toggle hidden data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow" class="sf-highlight__wrap-toggle sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center" aria-label="Wrap source lines" aria-pressed="false">'
+                . '<span aria-hidden="true" class="sf-icon">wrap_text</span></button>' : '')
+            . '<button type="button" data-docara-code-copy class="sf-highlight__copy sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center" aria-label="Copy">'
+            . '<span aria-hidden="true" class="sf-icon">content_copy</span></button></div>'
             . ($enhanced
-                ? '<pre class="docara-code-scroll docara-code-scroll--lines overflow-auto m-0"><code' . $attributes . ' data-highlighted="lines" data-docara-code-lines>'
-                : '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code' . $attributes . '>')
+                ? '<pre class="sf-code-surface__scroll docara-code-scroll docara-code-scroll--lines"><code' . $attributes . ' data-highlighted="lines" data-docara-code-lines>'
+                : '<pre class="sf-code-surface__scroll docara-code-scroll"><code' . $attributes . '>')
             . $code . '</code></pre>'
             . '</div>';
     }

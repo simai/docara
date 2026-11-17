@@ -17,8 +17,8 @@
                 <span class="color-on-surface-variant"><?= $view->pageTitle ?></span>
             </div>
             <nav class="flex flex-wrap items-center gap-1" aria-label="Preview controls">
-                <a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 radius-default decoration-none" href="<?= $view->catalogUrl ?>"><?= $view->copy['all_pages'] ?></a>
-                <a class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 radius-default decoration-none" href="<?= $view->legacyUrl ?>"><?= $view->copy['open_legacy'] ?></a>
+                <a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 decoration-none" href="<?= $view->catalogUrl ?>"><?= $view->copy['all_pages'] ?></a>
+                <a class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 decoration-none" href="<?= $view->legacyUrl ?>"><?= $view->copy['open_legacy'] ?></a>
             </nav>
         </div>
     </div>

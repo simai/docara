@@ -27,11 +27,11 @@ final class SharedSurfaceAdoptionTest extends TestCase
             ],
             'showcase' => [
                 ":::showcase\n## Проверяемый результат\n\nСобранная документация видна до публикации.\n\n[Открыть пример](/landing/)\n\n![Интерфейс Docara](/assets/screen.png)\n:::\n",
-                '7d7e42d7c7d271afb79acea9bd884ec5097a4b8b5a6671cdac839698d770d86b',
+                '53ab79b33cadde54cabab639768a54343fb27235c1da22f516cce3586238f285',
             ],
             'promo' => [
                 ":::promo\n## Соберите первый сайт\n\nСоздайте проект и получите статический результат.\n\n[Начать](/start/)\n\n![](/assets/promo.png)\n:::\n",
-                'b117dee1817d9a43d50f28e04659df6b4c4553ac401401a66d8ddfda988fcaba',
+                '46f2d64416ed5c7725eafbb13e6c0e2f9f9afe9ee7ea2a4e1e2f6800396ebeb9',
             ],
         ];
 
@@ -78,7 +78,7 @@ final class SharedSurfaceAdoptionTest extends TestCase
         self::assertNotContains('docara.showcase', $typed);
         self::assertContains('docara.promo', $typed);
         self::assertSame(
-            '94abfcb4715b54fab95824fb70ef683a936e3621b1154fff3b541db4f68de4ba',
+            'f9515df238d790dbfcb839927545624f2f66a52ec0a09449a8d0f29d0f06bdb3',
             hash('sha256', $result->contentHtml),
         );
         foreach (['hero' => 1, 'features' => 3, 'showcase' => 0, 'promo' => 1] as $block => $count) {

@@ -26,7 +26,12 @@ final class RendererFrameworkUtilityTest extends TestCase
      */
     // sf-tabs-main-tab has no Framework CSS rule: the Framework tabs script
     // finds its panels by it, as in the Framework's own tabs markup.
-    private const HOOKS = ['is-active', 'mermaid', 'footnote', 'footnote-ref', 'footnote-backref', 'footnotes', 'sf-tabs-main-tab'];
+    /*
+     * sf-highlight__language and sf-highlight__copy are the Framework
+     * highlight runtime's own head parts: its script finds and fills them,
+     * and no stylesheet selects them.
+     */
+    private const HOOKS = ['is-active', 'mermaid', 'footnote', 'footnote-ref', 'footnote-backref', 'footnotes', 'sf-tabs-main-tab', 'sf-highlight__language', 'sf-highlight__copy'];
 
     private const HOOK_PREFIXES = ['docara-', 'language-'];
 

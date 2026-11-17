@@ -88,7 +88,7 @@ Body.
 MD);
         self::assertStringContainsString('data-docara-block="surface"', $html);
         self::assertStringContainsString('data-docara-block="steps"', $html);
-        self::assertStringContainsString('docara-step-marker', $html);
+        self::assertStringContainsString('class="sf-procedure-step"', $html);
         self::assertStringContainsString('data-docara-block="grid"', $html);
         self::assertStringContainsString('data-docara-block="card"', $html);
 

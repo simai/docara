@@ -38,7 +38,7 @@ final class PageExampleTest extends TestCase
         self::assertStringContainsString('<iframe src="/ru/demo/" title="Результат" data-docara-example-frame data-docara-example-page', $html);
         self::assertStringContainsString('data-docara-example-preview-resolved="page"', $html);
         self::assertStringContainsString('data-docara-example-tab="page-json"', $html);
-        self::assertStringContainsString('>page.json</button>', $html);
+        self::assertStringContainsString('>page.json</span></button>', $html);
         self::assertStringContainsString('&quot;title&quot;', $html);
         self::assertSame(1, substr_count($html, 'data-line-highlight'));
         // A built page has its own width, so the responsive check is offered.
@@ -58,7 +58,7 @@ final class PageExampleTest extends TestCase
             $page,
         );
 
-        self::assertLessThan(strpos($html, '>First</button>'), strpos($html, '>Second</button>'));
+        self::assertLessThan(strpos($html, '>First</span></button>'), strpos($html, '>Second</span></button>'));
     }
 
     #[Test]

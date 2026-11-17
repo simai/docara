@@ -10,7 +10,6 @@ final readonly class NavigationItemTemplateViewModel
         public NavigationItemViewModel $item,
         public string $childrenHtml,
         public ?string $activeRole,
-        public string $weightClass,
         public int $frameworkLevel,
         public string $expandLabel,
         public string $collapseLabel,

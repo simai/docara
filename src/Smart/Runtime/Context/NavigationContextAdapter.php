@@ -84,7 +84,6 @@ final readonly class NavigationContextAdapter implements SmartContextAdapter
                 $item,
                 $children,
                 $activeRole,
-                in_array($activeRole, ['page', 'section'], true) ? ' weight-5' : '',
                 min(4, $item->depth),
                 $expand,
                 $collapse,

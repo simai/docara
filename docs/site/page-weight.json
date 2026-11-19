@@ -1,72 +1,160 @@
 {
-  "$comment": "Page-weight budgets for the documentation site, checked in CI by scripts/verify-page-weight.php. Recalibrated on 2026-11-05 for SIMAI Framework ui-c3015f76bcc2, whose core.js grew from 727 KB to 1.12 MB: 167 pages, median 4.28 MB, heaviest ordinary pages 5.39 MB (ru/components/surface/) and 5.24 MB (ru/project-demos/, ru/development/composition/). First calibrated on 2026-10-20 (main 57686108). Static estimate; headless Chrome loads 0.5-0.9 MB more per page (Framework chunks a script loads, icon weights picked at run time). On 2026-11-05 the English pages got their own budgets beside the Russian ones (259 pages). Recalibrated on 2026-11-15 for SIMAI Framework ui-141822273efe, whose role tokens and core styles 1.13 grew the shared sheets (core.css 308 KB to 332 KB, core.min.js 522 KB to 536 KB, and the role variables in each Smart sheet): median 4.38 MB; the surface, composition and example-gallery pages crossed their budgets by 0.03-0.13 MB. Remeasured on 2026-11-15 for Docara 3.15.0, whose shell stylesheets take two and a half times their distinct bytes and carry the brand, navigation and preferences styles: ordinary pages stay within 8 KB of before (median 4.37 MB), but a page that embeds a whole demonstrator page in its example frame shares fewer of its larger shell sheets with that frame and grows by about 0.2 MB; region-aside and smart-alert crossed the default.",
-  "max_page_bytes": 5500000,
-  "max_image_bytes": 1300000,
-  "image_oversize_ratio": 2.5,
-  "pages": {
-    "/en/components/diagram-gallery/": {
-      "max_page_bytes": 8700000,
-      "reason": "8.31 MB: Mermaid (3.57 MB) loads once for the 22 diagrams of the English gallery."
-    },
-    "/en/components/diagram/": {
-      "max_page_bytes": 8300000,
-      "reason": "7.95 MB: Mermaid (3.57 MB) renders the diagrams on the English copy of this page."
-    },
-    "/en/components/icon/": {
-      "max_page_bytes": 6500000,
-      "reason": "6.16 MB: the English copy of the icon page, which draws every family, weight and fill."
-    },
-    "/en/components/surface/": {
-      "max_page_bytes": 5800000,
-      "reason": "5.53 MB: the surface page shows every surface and its parts, so it links more Framework sheets than an ordinary page; over the default from ui-141822273efe."
-    },
-    "/en/development/composition/": {
-      "max_page_bytes": 6300000,
-      "reason": "5.95 MB: the composition guide, measured over the default after the English pages were added and remeasured for ui-141822273efe."
-    },
-    "/en/examples/extensions/": {
-      "max_page_bytes": 6900000,
-      "reason": "6.63 MB: the English copy of the example gallery, with the same components; remeasured for ui-141822273efe."
-    },
-    "/en/examples/region-aside/": {
-      "max_page_bytes": 5900000,
-      "reason": "5.67 MB: the English copy of the aside-region example, whose frame shows a whole demonstrator page with its own shell sheets; over the default from Docara 3.15.0, whose larger shell sheets the page and its frame share less of (+0.2 MB)."
-    },
-    "/en/examples/smart-alert/": {
-      "max_page_bytes": 5800000,
-      "reason": "5.53 MB: the English copy of the Smart alert example, whose frame shows a whole demonstrator page with its own shell sheets; over the default from Docara 3.15.0, whose larger shell sheets the page and its frame share less of (+0.2 MB)."
-    },
-    "/ru/components/diagram-gallery/": {
-      "max_page_bytes": 8700000,
-      "reason": "8.24 MB: Mermaid (3.57 MB) loads once for the 22 diagrams; the page's own HTML holds every diagram's source twice, live and on its Markdown tab."
-    },
-    "/ru/components/diagram/": {
-      "max_page_bytes": 8300000,
-      "reason": "7.87 MB: Mermaid (3.57 MB) renders the diagrams on this page."
-    },
-    "/ru/components/icon/": {
-      "max_page_bytes": 6500000,
-      "reason": "6.08 MB: the icon page draws every family, weight and fill, so it loads catalogue faces the other pages do not, and lists all 3926 icon names."
-    },
-    "/ru/components/surface/": {
-      "max_page_bytes": 5800000,
-      "reason": "5.54 MB: the surface page shows every surface and its parts, so it links more Framework sheets than an ordinary page; over the default from ui-141822273efe."
-    },
-    "/ru/development/composition/": {
-      "max_page_bytes": 6300000,
-      "reason": "6.02 MB: the composition guide, measured over the default after the English pages were added and remeasured for ui-141822273efe."
-    },
-    "/ru/examples/extensions/": {
-      "max_page_bytes": 6900000,
-      "reason": "6.62 MB: the heaviest example gallery; the Framework search, contents, pager and settings components (sf-search, sf-contents, sf-pager, sf-menu-context) every page loads took it past the default; remeasured for ui-141822273efe."
-    },
-    "/ru/examples/region-aside/": {
-      "max_page_bytes": 5900000,
-      "reason": "5.68 MB: the aside-region example, whose frame shows a whole demonstrator page with its own shell sheets; over the default from Docara 3.15.0, whose larger shell sheets the page and its frame share less of (+0.2 MB)."
-    },
-    "/ru/examples/smart-alert/": {
-      "max_page_bytes": 5800000,
-      "reason": "5.54 MB: the Smart alert example, whose frame shows a whole demonstrator page with its own shell sheets; over the default from Docara 3.15.0, whose larger shell sheets the page and its frame share less of (+0.2 MB)."
+    "$comment": "Page-weight budgets for the documentation site, checked in CI by scripts/verify-page-weight.php. Recalibrated on 2026-11-05 for SIMAI Framework ui-c3015f76bcc2, whose core.js grew from 727 KB to 1.12 MB: 167 pages, median 4.28 MB, heaviest ordinary pages 5.39 MB (ru/components/surface/) and 5.24 MB (ru/project-demos/, ru/development/composition/). First calibrated on 2026-10-20 (main 57686108). Static estimate; headless Chrome loads 0.5-0.9 MB more per page (Framework chunks a script loads, icon weights picked at run time). On 2026-11-05 the English pages got their own budgets beside the Russian ones (259 pages). Recalibrated on 2026-11-15 for SIMAI Framework ui-141822273efe, whose role tokens and core styles 1.13 grew the shared sheets (core.css 308 KB to 332 KB, core.min.js 522 KB to 536 KB, and the role variables in each Smart sheet): median 4.38 MB; the surface, composition and example-gallery pages crossed their budgets by 0.03-0.13 MB. Remeasured on 2026-11-15 for Docara 3.15.0, whose shell stylesheets take two and a half times their distinct bytes and carry the brand, navigation and preferences styles: ordinary pages stay within 8 KB of before (median 4.37 MB), but a page that embeds a whole demonstrator page in its example frame shares fewer of its larger shell sheets with that frame and grows by about 0.2 MB; region-aside and smart-alert crossed the default. Recalibrated on 2026-11-19 for SIMAI Framework ui-dc9fc39aeb26 (Docara 3.18.0), whose component sheets about doubled (menu.min.css 280 KB to 567 KB, buttons.min.css 287 KB to 525 KB, icon-buttons.min.css 182 KB to 312 KB, core.css 332 KB to 497 KB) and whose menu now draws the header on every page: median 6.30 MB (was 4.38 MB), heaviest ordinary page 7.01 MB (ru/components/landing-blocks/); the example pages count their frame's shell sheets again and reach 7.5-8.2 MB. Over the network the shell sheets travel gzip-compressed (about a tenth: 346 KB for the 3.3 MB of a docs page) with a one-year immutable cache, and example frames load lazily. Lower the budgets again when the Framework sheets shrink.",
+    "max_page_bytes": 7400000,
+    "max_image_bytes": 1300000,
+    "image_oversize_ratio": 2.5,
+    "pages": {
+        "/en/components/diagram-gallery/": {
+            "max_page_bytes": 11100000,
+            "reason": "10.67 MB: Mermaid (3.57 MB) loads once for the 22 diagrams of the English gallery. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/en/components/diagram/": {
+            "max_page_bytes": 10600000,
+            "reason": "10.13 MB: Mermaid (3.57 MB) renders the diagrams on the English copy of this page. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/en/components/icon/": {
+            "max_page_bytes": 8700000,
+            "reason": "8.32 MB: the English copy of the icon page, which draws every family, weight and fill. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/en/components/surface/": {
+            "max_page_bytes": 7600000,
+            "reason": "7.26 MB: the surface page shows every surface and its parts, so it links more Framework sheets than an ordinary page; over the default from ui-141822273efe. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/en/development/composition/": {
+            "max_page_bytes": 9400000,
+            "reason": "8.96 MB: the composition guide, measured over the default after the English pages were added and remeasured for ui-141822273efe. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/en/examples/composition-inheritance/": {
+            "max_page_bytes": 8199999,
+            "reason": "7.79 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/extensions/": {
+            "max_page_bytes": 9700000,
+            "reason": "9.29 MB: the English copy of the example gallery, with the same components; remeasured for ui-141822273efe. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/en/examples/inheritance/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.91 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/page-recipe/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.92 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/preset-docs/": {
+            "max_page_bytes": 8100000,
+            "reason": "7.78 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/preset-landing/": {
+            "max_page_bytes": 8500000,
+            "reason": "8.08 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/region-aside/": {
+            "max_page_bytes": 8700000,
+            "reason": "8.28 MB: the English copy of the aside-region example, whose frame shows a whole demonstrator page with its own shell sheets; over the default from Docara 3.15.0, whose larger shell sheets the page and its frame share less of (+0.2 MB). Remeasured for ui-dc9fc39aeb26."
+        },
+        "/en/examples/region-footer/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.92 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/region-header/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.89 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/region-sidebar/": {
+            "max_page_bytes": 8199999,
+            "reason": "7.79 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/regions-composed/": {
+            "max_page_bytes": 8199999,
+            "reason": "7.85 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/regions-disabled/": {
+            "max_page_bytes": 8199999,
+            "reason": "7.82 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/en/examples/smart-alert/": {
+            "max_page_bytes": 8700000,
+            "reason": "8.34 MB: the English copy of the Smart alert example, whose frame shows a whole demonstrator page with its own shell sheets; over the default from Docara 3.15.0, whose larger shell sheets the page and its frame share less of (+0.2 MB). Remeasured for ui-dc9fc39aeb26."
+        },
+        "/en/examples/smart-button/": {
+            "max_page_bytes": 8199999,
+            "reason": "7.84 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/components/diagram-gallery/": {
+            "max_page_bytes": 11300000,
+            "reason": "10.80 MB: Mermaid (3.57 MB) loads once for the 22 diagrams; the page's own HTML holds every diagram's source twice, live and on its Markdown tab. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/ru/components/diagram/": {
+            "max_page_bytes": 10700000,
+            "reason": "10.24 MB: Mermaid (3.57 MB) renders the diagrams on this page. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/ru/components/icon/": {
+            "max_page_bytes": 8800000,
+            "reason": "8.44 MB: the icon page draws every family, weight and fill, so it loads catalogue faces the other pages do not, and lists all 3926 icon names. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/ru/components/surface/": {
+            "max_page_bytes": 7700000,
+            "reason": "7.38 MB: the surface page shows every surface and its parts, so it links more Framework sheets than an ordinary page; over the default from ui-141822273efe. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/ru/development/composition/": {
+            "max_page_bytes": 9600000,
+            "reason": "9.14 MB: the composition guide, measured over the default after the English pages were added and remeasured for ui-141822273efe. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/ru/examples/composition-inheritance/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.91 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/extensions/": {
+            "max_page_bytes": 9800000,
+            "reason": "9.38 MB: the heaviest example gallery; the Framework search, contents, pager and settings components (sf-search, sf-contents, sf-pager, sf-menu-context) every page loads took it past the default; remeasured for ui-141822273efe. Remeasured for ui-dc9fc39aeb26."
+        },
+        "/ru/examples/inheritance/": {
+            "max_page_bytes": 8400000,
+            "reason": "8.03 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/page-recipe/": {
+            "max_page_bytes": 8400000,
+            "reason": "8.05 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/preset-docs/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.90 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/preset-landing/": {
+            "max_page_bytes": 8600000,
+            "reason": "8.19 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/region-aside/": {
+            "max_page_bytes": 8800000,
+            "reason": "8.40 MB: the aside-region example, whose frame shows a whole demonstrator page with its own shell sheets; over the default from Docara 3.15.0, whose larger shell sheets the page and its frame share less of (+0.2 MB). Remeasured for ui-dc9fc39aeb26."
+        },
+        "/ru/examples/region-footer/": {
+            "max_page_bytes": 8400000,
+            "reason": "8.03 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/region-header/": {
+            "max_page_bytes": 8400000,
+            "reason": "8.01 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/region-sidebar/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.91 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/regions-composed/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.97 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/regions-disabled/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.94 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/examples/smart-alert/": {
+            "max_page_bytes": 8800000,
+            "reason": "8.46 MB: the Smart alert example, whose frame shows a whole demonstrator page with its own shell sheets; over the default from Docara 3.15.0, whose larger shell sheets the page and its frame share less of (+0.2 MB). Remeasured for ui-dc9fc39aeb26."
+        },
+        "/ru/examples/smart-button/": {
+            "max_page_bytes": 8300000,
+            "reason": "7.96 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        }
     }
-  }
 }

@@ -68,6 +68,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- Details blocks with `layout=lines` in a row read as one list, as the
+  Framework accordion stacks its items: no gap between them, only the divider.
 - Search finds the heading of an `sf-alert` written with the `heading`
   attribute.
 - The header and the reader settings dialog stay preloaded with the new

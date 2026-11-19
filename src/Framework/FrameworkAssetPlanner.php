@@ -294,6 +294,28 @@ final readonly class FrameworkAssetPlanner
             ];
         }
 
+        // The page language's Framework language file (owner decision C282):
+        // the Framework's bundles say English only, and a page in another
+        // language loads core/lang/<code>.js before core and every Smart
+        // script, so the components draw their own words from the first paint
+        // without fetching the parts one by one.
+        $languageFile = $html === null ? null : $this->pageLanguageFile($html);
+        if ($languageFile !== null) {
+            $firstScript = count($assets);
+            foreach ($assets as $index => $asset) {
+                if (in_array($asset['kind'] ?? null, ['javascript', 'preloaded_smart_javascript'], true)) {
+                    $firstScript = $index;
+
+                    break;
+                }
+            }
+            array_splice($assets, $firstScript, 0, [[
+                'key' => 'simai.framework.language.js',
+                'kind' => 'javascript',
+                ...$this->runtimeBootAsset($uiCommit, 'ui/distr/' . $languageFile, $cacheVersion),
+            ]]);
+        }
+
         $assets[] = [
             'key' => 'simai.framework.core.js',
             'kind' => 'javascript',
@@ -313,6 +335,23 @@ final readonly class FrameworkAssetPlanner
             $shell['preload'],
             $shell['diagnostics'],
         );
+    }
+
+    /**
+     * The projected language file for the page's language (`<html lang>`,
+     * its primary subtag), or null: English and a language the Framework has
+     * no file for need none.
+     */
+    private function pageLanguageFile(string $html): ?string
+    {
+        if ($this->repository->runtimeProjection() === null
+            || preg_match('/<html\b[^>]*\slang\s*=\s*["\']?([A-Za-z]{2,3})(?:[-_][^"\'\s>]*)?["\']?/i', $html, $match) !== 1
+        ) {
+            return null;
+        }
+        $path = 'core/lang/' . strtolower($match[1]) . '.js';
+
+        return $this->repository->hasRuntimeAsset($path) ? $path : null;
     }
 
     /**
@@ -2328,8 +2367,12 @@ final readonly class FrameworkAssetPlanner
             // takes the catalogue.
             // An icon without a name yet (a Framework checkbox mark before
             // it is checked) has no glyph to fetch; the subset face covers it.
-            . 'function family(icon){var variant=icon.classList.contains("sf-icon-rounded")?"rounded":icon.classList.contains("sf-icon-shape")?"shape":"outlined",name=iconName(icon),filled=icon.matches(".sf-icon-filled,.sf-icon--filled,.sf-icon-solid")?1:0,style=getComputedStyle(icon),weight=parseFloat(style.fontWeight)||400,'
-            . 'drawn=axis(style,"--sf-icon--fill",0)===filled&&axis(style,"--sf-icon--grade",0)===0&&axis(style,"--sf-icon--optical-size",24)===24&&catalogWeights.indexOf(weight)!==-1;'
+            // measure() only reads and family() only writes, so a batch of
+            // icons reads every computed style first and then writes every
+            // class: one style recalculation per batch, not one per icon.
+            . 'function measure(icon){var variant=icon.classList.contains("sf-icon-rounded")?"rounded":icon.classList.contains("sf-icon-shape")?"shape":"outlined",name=iconName(icon),filled=icon.matches(".sf-icon-filled,.sf-icon--filled,.sf-icon-solid")?1:0,style=getComputedStyle(icon),weight=parseFloat(style.fontWeight)||400;'
+            . 'return{variant:variant,name:name,filled:filled,weight:weight,drawn:axis(style,"--sf-icon--fill",0)===filled&&axis(style,"--sf-icon--grade",0)===0&&axis(style,"--sf-icon--optical-size",24)===24&&catalogWeights.indexOf(weight)!==-1}}'
+            . 'function family(icon,measured){var variant=measured.variant,name=measured.name,filled=measured.filled,weight=measured.weight,drawn=measured.drawn;'
             . 'if(!drawn&&(variant==="outlined"||variants[variant])){classSet(icon,"sf-icon-complete",false);classSet(icon,"sf-icon-full-font",true);return variant==="outlined"?{family:"Material Symbols Outlined Full",weight:weight,full:"full"}:{family:variants[variant],weight:weight,full:variant+"-full"}}'
             . 'classSet(icon,"sf-icon-full-font",false);var complete=variant==="outlined"&&!filled&&beyondSubset.test(name);classSet(icon,"sf-icon-complete",complete);'
             . 'if(variant==="outlined"&&!filled&&!complete&&weight===400)return{family:subsetFamily,weight:400};'
@@ -2347,11 +2390,13 @@ final readonly class FrameworkAssetPlanner
             // The Framework owns sf-icon-loaded, on the page and in example
             // frames: it watches document.fonts. This script only chooses the
             // face and loads it, so the Framework sees the face arrive.
-            . 'function ready(icon){var current=iconName(icon);if(icon.getAttribute("data-docara-icon-name")===current){if(icon.getAttribute("data-docara-icon-face")!==faceClass(icon)){family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon))}return}icon.setAttribute("data-docara-icon-name",current);var face=family(icon);icon.setAttribute("data-docara-icon-face",faceClass(icon));'
-            . 'ensureFace(face).then(function(){var key=face.weight+\' 24px "\'+face.family+\'"\';return loaded[key]||(loaded[key]=document.fonts&&document.fonts.load?document.fonts.load(key,current||undefined):Promise.resolve([]))}).catch(function(){})}'
-            . 'function mark(root){if(root.nodeType===1&&root.matches(".sf-icon"))ready(root);if(root.querySelectorAll){root.querySelectorAll(".sf-icon").forEach(ready)}}'
+            . 'function load(face,current){ensureFace(face).then(function(){var key=face.weight+\' 24px "\'+face.family+\'"\';return loaded[key]||(loaded[key]=document.fonts&&document.fonts.load?document.fonts.load(key,current||undefined):Promise.resolve([]))}).catch(function(){})}'
+            . 'function ready(icons){var work=[],queued=new Set();icons.forEach(function(icon){if(queued.has(icon))return;queued.add(icon);var current=iconName(icon),seen=icon.getAttribute("data-docara-icon-name")===current;if(seen&&icon.getAttribute("data-docara-icon-face")===faceClass(icon))return;work.push({icon:icon,name:current,seen:seen})});'
+            . 'work.forEach(function(item){item.measured=measure(item.icon)});'
+            . 'work.forEach(function(item){var icon=item.icon,face=family(icon,item.measured);if(!item.seen)icon.setAttribute("data-docara-icon-name",item.name);icon.setAttribute("data-docara-icon-face",faceClass(icon));if(!item.seen)load(face,item.name)})}'
+            . 'function collect(root,icons){if(root.nodeType===1&&root.matches(".sf-icon"))icons.push(root);if(root.querySelectorAll){root.querySelectorAll(".sf-icon").forEach(function(icon){icons.push(icon)})}return icons}'
             . 'function owner(node){var element=node&&node.nodeType===1?node:node&&node.parentElement;return element&&element.closest?element.closest(".sf-icon"):null}'
-            . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark);var icon=owner(record.target);if(icon)ready(icon)})}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["icon","class"]})}'
+            . 'function watch(){ready(collect(document,[]));if(!document.body)return;new MutationObserver(function(records){var icons=[];records.forEach(function(record){record.addedNodes.forEach(function(node){collect(node,icons)});var icon=owner(record.target);if(icon)icons.push(icon)});if(icons.length)ready(icons)}).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:["icon","class"]})}'
             . 'function start(){document.documentElement.dataset.docaraIconSubsetReady="true";watch()}'
             . 'if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start,{once:true})}else{start()}})();';
     }

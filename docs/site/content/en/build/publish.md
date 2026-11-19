@@ -147,3 +147,4 @@ deployment either.
 - [Checking the build](/en/build/verify/)
 - [Hosting the site](/en/build/hosting/)
 - [Updating Docara](/en/build/update/)
+- [SEO and GEO](/en/settings/seo-and-geo/) — how search engines and AI assistants find the published site

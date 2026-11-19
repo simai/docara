@@ -461,7 +461,10 @@ JS;
         self::assertStringContainsString("previewFrame.style.inlineSize=viewport==='desktop'?'min('+exampleViewportWidths[viewport]+'px, 100%)':exampleViewportWidths[viewport]+'px'", $shell);
         self::assertStringContainsString("document.dispatchEvent(new CustomEvent('docara:example-viewport-change'", $shell);
         self::assertStringContainsString("previewFrame.style.removeProperty('inline-size')", $shell);
-        self::assertStringContainsString("message('examples.viewport_'+button.dataset.docaraExampleViewport)", $shell);
+        // The viewport switch is the Framework sf-segmented; its labels are the page's words with the width.
+        self::assertStringContainsString("var label=message('examples.viewport_'+entry[0])+' · '+exampleViewportWidths[entry[0]]+' px';", $shell);
+        // An icon-only choice is named through aria-label.
+        self::assertStringContainsString("return {value:entry[0],label:label,'aria-label':label,icon:entry[1],'icon-only':true};", $shell);
         self::assertStringContainsString('viewportControls.hidden=!active||!selected', $shell);
         self::assertStringContainsString("localStorage.setItem(sourceWrapStorageKey,sourceWrapActive?'true':'false')", $shell);
         self::assertStringContainsString("sourceWrapStorageKey='docara.source.wrap'", $shell);
@@ -473,8 +476,8 @@ JS;
         self::assertStringContainsString('syncSourceWrapIcon(wrapButton,active)', $shell);
         self::assertStringContainsString("block.dataset.docaraCodeWrapActive=active?'true':'false'", $shell);
         self::assertStringNotContainsString("window.matchMedia('not all and (min-width: 44rem)').matches", $shell);
-        self::assertStringContainsString("setViewport(button.dataset.docaraExampleViewport,true);\n        // Safari", $shell);
-        self::assertStringContainsString('if(document.activeElement!==button){button.focus()}', $shell);
+        self::assertStringContainsString("if(event.target!==viewportSwitch||!event.detail||typeof event.detail.value!=='string')return;\n        setViewport(event.detail.value,true);", $shell);
+        self::assertStringNotContainsString('data-docara-example-viewport=', $shell);
         // A fence names its language in its language-* class only; the header keeps it.
         self::assertStringContainsString("/(?:^|\\s)language-([\\w+-]+)/.exec(code.className||'')", $shell);
         self::assertStringContainsString("||(title&&title.textContent.trim())||'Code'", $shell);
@@ -490,7 +493,8 @@ JS;
         self::assertStringContainsString('[data-docara-example-viewer]{display:none!important}', $styles);
         self::assertStringNotContainsString('.docara-example-preview__viewport[aria-pressed="true"]', $styles);
         self::assertStringContainsString("button.setAttribute('aria-pressed',active?'true':'false')", $shell);
-        self::assertStringContainsString("button.classList.toggle('active',active)", $shell);
+        // The viewport choice is the sf-segmented value; no viewport button keeps an active class.
+        self::assertStringNotContainsString("button.classList.toggle('active',active)", $shell);
         self::assertStringContainsString('.docara-example-preview .docara-example-preview__action:focus:not(:focus-visible)', $styles);
         self::assertStringNotContainsString('.docara-example-preview .docara-example-preview__action:focus,.docara-example-preview .docara-example-preview__action:focus-visible', $styles);
     }

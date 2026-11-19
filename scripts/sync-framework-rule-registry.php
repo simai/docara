@@ -281,12 +281,24 @@ $noticeFiles = [
     'core/contracts/third-party-notices.v1.json',
 ];
 
+// Files core fetches by a URL it builds from sfPath, which no entrypoint or
+// stylesheet names: the icon names list a late or unknown icon name is looked
+// up in (the icon picker reads it too).
+$fetchedCoreFiles = [
+    'core/contracts/icon-names.v1.json',
+];
+
 // Asset directories a component fetches by a URL it builds from sfPath at run
 // time: sf-flag requests component/flag/flags/index.json and the rect/ and
 // circle/ SVGs itself, and no stylesheet names them, so the walks above never
 // reach them. An explicit list of directories, never the .gz variants.
 $componentAssetDirectories = [
     'component/flag/flags',
+    // The language files (owner decision C282, since ui-1ed6b6c9a040): the
+    // Framework's bundles carry English only, and a page in another language
+    // loads core/lang/<code>.js before core, or core fetches the parts
+    // core/lang/<code>/<family>.json it needs.
+    'core/lang',
 ];
 $componentAssetFiles = [];
 foreach ($componentAssetDirectories as $assetDirectory) {
@@ -339,7 +351,7 @@ foreach (array_merge($coreFiles, [
     'component/menu/css/menu.css',
     'component/menu/js/menu.js',
     'component/highlight/js/highlight.js',
-], $highlightChunkFiles, $noticeFiles, $componentAssetFiles) as $runtimeFile) {
+], $highlightChunkFiles, $noticeFiles, $fetchedCoreFiles, $componentAssetFiles) as $runtimeFile) {
     $runtimeTarget = $distribution . '/' . $runtimeFile;
     $runtimeBytes = $readRuntime($runtimeFile);
     if (! is_dir(dirname($runtimeTarget))
@@ -494,6 +506,9 @@ foreach ([
     'component/icons/fonts/MaterialIconsSharp-Regular.otf',
 ] as $fontFile) {
     $manifest['files'][$fontFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $fontFile)];
+}
+foreach ($fetchedCoreFiles as $fetchedCoreFile) {
+    $manifest['files'][$fetchedCoreFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $fetchedCoreFile)];
 }
 foreach ($noticeFiles as $noticeFile) {
     $manifest['files'][$noticeFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $noticeFile)];

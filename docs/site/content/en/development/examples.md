@@ -12,7 +12,7 @@ show the documentation of a fictional payment service, Acme Pay.
 
 ::::grid {columns=2 gap=2}
 :::card
-#### Header with an action button
+### Header with an action button
 
 The site's main button on the right of the header, next to search.
 
@@ -20,7 +20,7 @@ The site's main button on the right of the header, next to search.
 :::
 
 :::card
-#### Header, menu and contents
+### Header, menu and contents
 
 The parts that make up an ordinary documentation page.
 
@@ -28,7 +28,7 @@ The parts that make up an ordinary documentation page.
 :::
 
 :::card
-#### A note under the menu
+### A note under the menu
 
 A short block with a link under the menu on the left.
 
@@ -40,7 +40,7 @@ A short block with a link under the menu on the left.
 
 ::::grid {columns=2 gap=2}
 :::card
-#### A note next to the contents
+### A note next to the contents
 
 A warning that stays visible while the reader scrolls the page.
 
@@ -48,7 +48,7 @@ A warning that stays visible while the reader scrolls the page.
 :::
 
 :::card
-#### Page footer
+### Page footer
 
 A company line and a link at the bottom of the page.
 
@@ -56,7 +56,7 @@ A company line and a link at the bottom of the page.
 :::
 
 :::card
-#### A page without side columns
+### A page without side columns
 
 A long full-width document without a menu or contents.
 
@@ -68,7 +68,7 @@ A long full-width document without a menu or contents.
 
 ::::grid {columns=2 gap=2}
 :::card
-#### Shared section settings
+### Shared section settings
 
 The section sets the settings, and one page changes only the width.
 
@@ -76,7 +76,7 @@ The section sets the settings, and one page changes only the width.
 :::
 
 :::card
-#### Settings on three levels
+### Settings on three levels
 
 The site, section and page settings combine, and the page resets what it does not need.
 
@@ -88,7 +88,7 @@ The site, section and page settings combine, and the page resets what it does no
 
 ::::grid {columns=2 gap=2}
 :::card
-#### Documentation page
+### Documentation page
 
 A header, a menu on the left and contents on the right.
 
@@ -96,7 +96,7 @@ A header, a menu on the left and contents on the right.
 :::
 
 :::card
-#### Product landing page
+### Product landing page
 
 A first screen, benefit cards and an action button, without a menu.
 
@@ -104,7 +104,7 @@ A first screen, benefit cards and an action button, without a menu.
 :::
 
 :::card
-#### Page from a template
+### Page from a template
 
 One template and a setting that picks the header variant.
 
@@ -116,7 +116,7 @@ One template and a setting that picks the header variant.
 
 ::::grid {columns=2 gap=2}
 :::card
-#### Alert in the text
+### Alert in the text
 
 A prominent SIMAI Framework alert right in Markdown.
 
@@ -124,7 +124,7 @@ A prominent SIMAI Framework alert right in Markdown.
 :::
 
 :::card
-#### Button in the text
+### Button in the text
 
 A SIMAI Framework button right in Markdown.
 
@@ -132,7 +132,7 @@ A SIMAI Framework button right in Markdown.
 :::
 
 :::card
-#### Your own project component
+### Your own project component
 
 An install command builder and a plan calculator from the site folder.
 

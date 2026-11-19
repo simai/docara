@@ -212,16 +212,18 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 : null,
         ));
         $portalHome = $this->portalHome($page);
-        // The bar collapses where Docara's narrow layout begins: below xl
-        // (72rem) when the header navigation must move into the sheet, below
-        // lg (60rem) when only the sidebar does, never when the sheet is empty.
+        // The bar collapses where Docara's narrow layout begins: below lg
+        // (60rem), where the sidebar moves into the sheet, and never when the
+        // sheet is empty. Above it the header navigation is a Framework
+        // sf-menu with overflow more: sections that do not fit the bar go
+        // under its More item instead of running under the brand or the tools.
         $chrome['site_header'] = (new PortableSiteHeader)->render(
             $regions['header'],
             $portalHome,
             $chrome['header_actions'],
             $mobileNavigationEnabled ? $chrome['mobile_navigation'] : '',
             $escapedCopy,
-            $primaryNavigationEnabled ? 'xl' : ($mobileNavigationEnabled ? 'lg' : 'none'),
+            $primaryNavigationEnabled || $mobileNavigationEnabled ? 'lg' : 'none',
             $portalHome === null ? '' : ' data-portal-shell="header"',
         );
 
@@ -395,7 +397,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             : '<span class="docara-sidebar-credit-text docara-sidebar-credit-text--' . $side . '">'
                 . htmlspecialchars(trim($text), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>';
 
-        return '<p class="docara-sidebar-credit text-small color-on-surface-variant" data-docara-sidebar-credit>'
+        return '<p class="docara-sidebar-credit text-1/2 color-on-surface-variant" data-docara-sidebar-credit>'
             . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.simai.io/" rel="noopener"'
             . ' aria-label="' . $name . '" title="' . $name . '">'
             . $words($before, 'before') . $this->creditLogo() . $words($after, 'after')
@@ -688,7 +690,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         $count = 0;
         $clone = preg_replace(
             ['/\\blayout="column" sticky="false"/', '/\\bsf-contents--layout-column sf-contents--size-half"/', '/\\bdata-docara-view="default"/'],
-            ['layout="compact" data-compact="true"', 'sf-contents--layout-compact sf-contents--size-half sf-contents--sticky"', 'data-docara-view="compact"'],
+            ['layout="sheet" data-compact="true"', 'sf-contents--layout-sheet sf-contents--size-half sf-contents--sticky"', 'data-docara-view="compact"'],
             $html,
             1,
             $count,

@@ -2322,7 +2322,7 @@ HTML;
                 continue;
             }
             $children = substr($item, $nested + 4, (int) strrpos($item, '</ul>') - $nested - 4);
-            $toggle = '<button type="button" class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>';
+            $toggle = '<button type="button" class="sf-icon-button sf-icon-button--ghost sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>';
             $html .= '<div class="sf-tree-item open"><div class="sf-tree-item-container flex items-cross-center">'
                 . $toggle . $name . '</div><div class="sf-tree-group">'
                 . $this->treeItems($children) . '</div></div>';
@@ -4057,10 +4057,10 @@ HTML;
             . '" data-docara-code-wrap="' . ($wrap ? 'true' : 'false') . '"' . $blockAttributes
             . ' class="sf-highlight sf-code-surface init docara-code-block' . $blockClasses . ' m-bottom-1">'
             . '<div data-docara-code-head class="sf-highlight__head">'
-            . '<span class="sf-highlight__language sf-text-1/2 weight-5">' . $this->escapeHtml($label) . '</span>'
-            . ($wrap ? '<button type="button" data-docara-code-wrap-toggle hidden data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow" class="sf-highlight__wrap-toggle sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center" aria-label="Wrap source lines" aria-pressed="false">'
+            . '<span class="sf-highlight__language sf-text-1/2 weight-medium">' . $this->escapeHtml($label) . '</span>'
+            . ($wrap ? '<button type="button" data-docara-code-wrap-toggle hidden data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow" class="sf-highlight__wrap-toggle sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface flex items-cross-center" aria-label="Wrap source lines" aria-pressed="false">'
                 . '<span aria-hidden="true" class="sf-icon">wrap_text</span></button>' : '')
-            . '<button type="button" data-docara-code-copy class="sf-highlight__copy sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface flex items-cross-center" aria-label="Copy">'
+            . '<button type="button" data-docara-code-copy class="sf-highlight__copy sf-icon-button sf-icon-button--size-1/2 sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface flex items-cross-center" aria-label="Copy">'
             . '<span aria-hidden="true" class="sf-icon">content_copy</span></button></div>'
             . ($enhanced
                 ? '<pre class="sf-code-surface__scroll docara-code-scroll docara-code-scroll--lines"><code' . $attributes . ' data-highlighted="lines" data-docara-code-lines>'

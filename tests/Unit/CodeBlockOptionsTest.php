@@ -94,7 +94,7 @@ final class CodeBlockOptionsTest extends TestCase
         self::assertStringContainsString('data-docara-code-title="config/app.php"', $html);
         // The file name stands in the Framework head's language place
         // (decision C285, look A).
-        self::assertStringContainsString('<div data-docara-code-head class="sf-highlight__head"><span class="sf-highlight__language sf-text-1/2 weight-5">config/app.php</span>', $html);
+        self::assertStringContainsString('<div data-docara-code-head class="sf-highlight__head"><span class="sf-highlight__language sf-text-1/2 weight-medium">config/app.php</span>', $html);
         self::assertStringContainsString('<code class="language-php">return [];' . "\n" . '</code>', $html);
         self::assertStringNotContainsString('data-docara-code-lines', $html);
     }

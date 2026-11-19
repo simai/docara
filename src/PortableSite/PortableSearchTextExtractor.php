@@ -100,7 +100,7 @@ final readonly class PortableSearchTextExtractor
             ) {
                 continue;
             }
-            foreach (['title', 'text', 'supporting-text', 'label', 'description'] as $attribute) {
+            foreach (['title', 'heading', 'text', 'supporting-text', 'label', 'description'] as $attribute) {
                 if ($element->hasAttribute($attribute)) {
                     $parts[] = $this->normalizeText($element->getAttribute($attribute));
                 }

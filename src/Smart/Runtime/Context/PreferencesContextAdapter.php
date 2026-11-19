@@ -60,6 +60,15 @@ final class PreferencesContextAdapter implements SmartContextAdapter
                         ? 'inline'
                         : 'list',
                     'options' => $options,
+                    // The side panel's choice: a Framework sf-segmented, its
+                    // items as the attribute value (escaped for the attribute).
+                    'segmented_items' => $this->escape(json_encode(
+                        array_map(static fn (array $option): array => [
+                            'value' => (string) $option['value'],
+                            'label' => (string) $option['title'],
+                        ], $field['options']),
+                        JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+                    )),
                 ];
             }
             $groups[] = [

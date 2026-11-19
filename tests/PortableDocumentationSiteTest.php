@@ -241,7 +241,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-repository-link'));
         self::assertMatchesRegularExpression('~<a href="https://github.com/simai/docara" rel="noopener" data-docara-repository-link [^>]*aria-label="Репозиторий"[^>]*><svg class="docara-repository-mark" viewBox="0 0 16 16"~', $catalogIndex);
         self::assertStringNotContainsString('>GitHub</', $catalogIndex);
-        self::assertSame(1, substr_count($catalogIndex, '<sf-header-site class="docara-header" collapse="xl" sticky'));
+        self::assertSame(1, substr_count($catalogIndex, '<sf-header-site class="docara-header" collapse="lg" sticky'));
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-sheet-content'));
         self::assertStringContainsString(
             ':root{--docara-header-block-size:calc(var(--sf-d0) + var(--sf-space-1) * 2 + var(--sf-a1));'
@@ -492,7 +492,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // and the shell groups that follow it: 3301. The Framework's shared
         // scrim for search and the example viewer, and the reading settings
         // as sf-settings, change the components the pages use and the shell
-        // files that follow them: 3299. SIMAI Framework ui-141822273efe (its
+        // files that follow them: 3299. SIMAI Framework ui-dc9fc39aeb26 (its
         // Smart and runtime files) and the shell groups that follow it: 3309.
         // Docara 3.15.0 over that pair (shell stylesheets of two and a half
         // times their distinct bytes that carry the brand, navigation and
@@ -502,8 +502,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // documentation-tree preset (fewer shell stylesheet groups): 3309.
         // Docara's own parts on Framework parts (sf-tabs, sf-procedure,
         // sf-featured-icon, the static highlight head) change the
-        // components the pages use and the shell groups: 3313.
-        self::assertCount(3313, $firstFiles);
+        // components the pages use and the shell groups: 3313. The Framework
+        // pair ui-dc9fc39aeb26 (more runtime files and language files), the
+        // shell preloaded again and the page-language script: 3400.
+        self::assertCount(3400, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

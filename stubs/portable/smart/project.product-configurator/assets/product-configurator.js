@@ -89,8 +89,9 @@
             summary.textContent = `${result.variant} — ${result.selected.length ? result.selected.join(', ') : text('textNoOptions', 'no extra options')}`;
             return result;
         };
-        dropdown.addEventListener('sf-dropdown:change', (event) => {
-            selectedVariant = event.detail?.label || event.detail?.value || '';
+        dropdown.addEventListener('change', (event) => {
+            if (event.target !== dropdown || !event.detail) return;
+            selectedVariant = event.detail.label || event.detail.value || '';
             queueMicrotask(render);
         });
         root.addEventListener('change', render);

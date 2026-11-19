@@ -9,10 +9,10 @@
     <title><?= $view->title ?></title>
 <?= $view->headHtml ?>
 </head>
-<body class="bg-surface color-on-surface m-0">
+<body class="bg-surface-area color-on-surface m-0">
     <main class="container flex flex-col gap-3 p-3">
         <header class="flex flex-col gap-2">
-            <p class="m-0 color-primary weight-7"><?= $view->copy['eyebrow'] ?></p>
+            <p class="m-0 color-primary weight-bold"><?= $view->copy['eyebrow'] ?></p>
             <h1 class="m-0"><?= $view->copy['title'] ?></h1>
             <p class="m-0 color-on-surface-variant"><?= $view->copy['description'] ?></p>
             <div class="flex flex-wrap gap-1">

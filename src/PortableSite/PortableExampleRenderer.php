@@ -115,27 +115,31 @@ final class PortableExampleRenderer
             . ' class="sf-tabs-top docara-example-preview__tabs flex">' . implode('', $tabs) . '</nav>'
             . '<div class="docara-example-preview__actions">'
             . ($desktop ? '<span data-docara-example-desktop-chip hidden class="docara-example-preview__chip">1280 · 100 % · scroll</span>' : '')
-            // The width switcher is three Framework icon buttons like the
-            // close button beside it; the chosen width is pressed.
-            // An inline Markdown example gets the switcher when its preview
-            // carries a hidden responsive frame.
-            . ($fullscreen && ($resolvedPreview === 'sandbox' || $responsive) ? '<div data-docara-example-viewports hidden role="group" aria-label="Preview width" class="docara-example-preview__viewports">'
-                . $this->viewportButton('desktop', 'desktop_windows', 'Desktop', true)
-                . $this->viewportButton('tablet', 'tablet', 'Tablet', false)
-                . $this->viewportButton('mobile', 'smartphone', 'Mobile', false)
-                . '</div><button type="button" data-docara-example-viewer hidden aria-pressed="false" aria-label="Check responsive preview"'
+            // The width switcher is one choice of three, so it is a Framework
+            // sf-segmented with icon-only items (owner decision C211), not
+            // three pressed toggles: the selected width takes the plate and
+            // its icon keeps the regular weight. An inline Markdown example
+            // gets the switcher when its preview carries a hidden responsive
+            // frame.
+            . ($fullscreen && ($resolvedPreview === 'sandbox' || $responsive) ? '<sf-segmented data-docara-example-viewports hidden size="1" aria-label="Preview width" value="desktop" class="docara-example-preview__viewports" items="'
+                . $this->escape(json_encode([
+                    ['value' => 'desktop', 'label' => 'Desktop', 'aria-label' => 'Desktop', 'icon' => 'desktop_windows', 'icon-only' => true],
+                    ['value' => 'tablet', 'label' => 'Tablet', 'aria-label' => 'Tablet', 'icon' => 'tablet', 'icon-only' => true],
+                    ['value' => 'mobile', 'label' => 'Mobile', 'aria-label' => 'Mobile', 'icon' => 'smartphone', 'icon-only' => true],
+                ], JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR))
+                . '"></sf-segmented><button type="button" data-docara-example-viewer hidden aria-pressed="false" aria-label="Check responsive preview"'
                 . ' data-viewer-icon="devices" data-viewer-exit-icon="close"'
-                . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
+                . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
                 . '<sf-icon icon="devices" aria-hidden="true"></sf-icon></button>' : '')
             . ($wrap ? '<button type="button" data-docara-example-wrap hidden aria-pressed="false" aria-label="Wrap source lines"'
                 . ' data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow"'
-                . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
+                . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
                 . '<sf-icon icon="wrap_text" aria-hidden="true"></sf-icon></button>' : '')
             . '<button type="button" data-docara-example-copy hidden aria-label="' . $this->escape($copyLabel)
             . '" data-copy-label="' . $this->escape($copyLabel) . '" data-copied-label="'
             . $this->escape($copiedLabel)
             . '" data-copy-icon="content_copy" data-copied-icon="check"'
-            . ' class="docara-example-preview__copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
+            . ' class="docara-example-preview__copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
             . '<sf-icon icon="content_copy" aria-hidden="true"></sf-icon>'
             . '</button></div></div></div>'
             . '<div class="docara-example-preview__panels">' . implode('', $panels) . '</div>'
@@ -189,7 +193,7 @@ final class PortableExampleRenderer
                 . '<p data-docara-example-log-empty class="docara-example-log__empty">' . $this->escape($empty[$key]) . '</p>'
                 . '<div role="log" class="docara-example-log__rows"></div></div>';
         }
-        $button = ' class="docara-example-preview__action docara-example-log__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0"';
+        $button = ' class="docara-example-preview__action docara-example-log__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0"';
 
         return '<section data-docara-example-log data-docara-example-log-events="' . $this->escape(implode(' ', $log->events))
             . '" data-docara-example-log-console="' . ($log->console ? 'true' : 'false')
@@ -218,14 +222,5 @@ final class PortableExampleRenderer
     private function escape(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
-    }
-
-    private function viewportButton(string $viewport, string $icon, string $label, bool $selected): string
-    {
-        return '<button type="button" data-docara-example-viewport="' . $viewport . '" aria-pressed="'
-            . ($selected ? 'true' : 'false') . '" aria-label="' . $label . '" title="' . $label
-            . '" class="docara-example-preview__viewport sf-icon-button sf-icon-button--icon sf-icon-button--on-surface'
-            . ' sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0'
-            . ($selected ? ' active' : '') . '"><sf-icon icon="' . $icon . '" aria-hidden="true"></sf-icon></button>';
     }
 }

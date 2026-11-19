@@ -1,0 +1,220 @@
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+@layer sf.components {
+  /* A link is a run of the text it stands in (RG-NV 5, 6): it takes the
+     text's size, line, family and weight (C103: one line, one step; a link
+     of 16/24 stood among words of 14 or 20), and it is an inline box that
+     flows and wraps with the sentence (C147 (1)): as an inline-flex box a long
+     link jumped to a line of its own as one block (256 x 48 in a 16rem
+     paragraph). A page that wants a link of its own size writes the step
+     (text-1, text-1/2 ...) on it or around it. The new-tab sign core puts
+     after the last word rides the same unbroken tail (C186 (3)). */
+  .sf-link {
+    --sf-link--color: var(--sf-place--ink, var(--sf-link));
+    --sf-link--background-color: var(--sf-transparent);
+    /* An icon in text stands 4 from the words (C105 H3, C173 (2)): the role
+       name --sf-gap--icon-inline where C173's names are built, its step 4
+       before them. */
+    --sf-link--gap: var(--sf-gap--icon-inline, var(--sf-space-1\/4));
+    --sf-link--text-decoration: underline;
+    display: inline;
+    font: inherit;
+    -webkit-text-decoration-line: var(--sf-link--text-decoration);
+            text-decoration-line: var(--sf-link--text-decoration);
+    /* The line at rest is the link's colour at ink 48, full under the pointer
+       (owner decision C186 (1)), as core draws a link in text. */
+    -webkit-text-decoration-color: color-mix(in srgb, currentColor 48%, transparent);
+            text-decoration-color: color-mix(in srgb, currentColor 48%, transparent);
+    -webkit-text-decoration-color: color-mix(in srgb, currentColor var(--sf-link--underline-ink, 48%), transparent);
+            text-decoration-color: color-mix(in srgb, currentColor var(--sf-link--underline-ink, 48%), transparent);
+    text-decoration-thickness: var(--sf-px);
+    text-decoration-thickness: var(--sf-link--underline-weight, var(--sf-px));
+    text-underline-offset: var(--sf-a3);
+  }
+  /* A link with an icon part (before or after its words) is one control of
+     the line: the icon and the words side by side, 4 apart, the icon as high
+     as the line it stands in. */
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-link:has(> .sf-link__icon) {
+    display: inline-flex;
+    box-sizing: border-box;
+    align-items: center;
+    gap: var(--sf-link--gap);
+    min-width: var(--sf-0);
+    min-inline-size: var(--sf-0);
+    max-width: 100%;
+    max-inline-size: 100%;
+    vertical-align: bottom;
+  }
+  .sf-link:has(> .sf-link-icon) {
+    display: inline-flex;
+    box-sizing: border-box;
+    align-items: center;
+    gap: var(--sf-link--gap);
+    min-width: var(--sf-0);
+    min-inline-size: var(--sf-0);
+    max-width: 100%;
+    max-inline-size: 100%;
+    vertical-align: bottom;
+  }
+  /* In navigation, a menu or a table the link is the item's own word: no
+     line until the pointer or the keyboard comes to it (C186 (1), C147 (3)). */
+  :where(nav, menu, [role=navigation], [role=menu], [role=menubar], [role=tablist], table, [role=table], [role=grid], [role=treegrid]) .sf-link {
+    --sf-link--text-decoration: none;
+  }
+  .sf-link :where(.sf-link__content, .sf-link-content) {
+    min-width: var(--sf-0);
+    min-inline-size: var(--sf-0);
+    font: inherit;
+    word-wrap: anywhere;
+    text-decoration: inherit;
+  }
+  /* The new-tab sign core puts after the words (C186 (3)) stands 4 from
+     them; in an sf-link without a content part it is a flex item, so the
+     link's own gap is taken back from it. */
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-link:has(> .sf-link__icon) > [data-sf-new-tab=mark] {
+    margin-left: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  @supports not (margin-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-link:has(> .sf-link__icon) > [data-sf-new-tab=mark] {
+    margin-left: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+    }
+  }
+  .sf-link:has(> .sf-link__icon) > [data-sf-new-tab=mark]:where(:dir(ltr)) {
+    margin-left: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-link:has(> .sf-link__icon) > [data-sf-new-tab=mark] {
+    margin-right: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  @supports not (margin-inline-start: initial) {
+  [dir="rtl"] .sf-link:has(> .sf-link__icon) > [data-sf-new-tab=mark] {
+    margin-right: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+    }
+  }
+  .sf-link:has(> .sf-link__icon) > [data-sf-new-tab=mark]:where(:dir(rtl)) {
+    margin-right: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  .sf-link:has(> .sf-link__icon) > [data-sf-new-tab=mark] {
+    -webkit-margin-start: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+            margin-inline-start: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-link:has(> .sf-link-icon) > [data-sf-new-tab=mark] {
+    margin-left: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  @supports not (margin-inline-start: initial) {
+  html:not([dir="rtl"]) .sf-link:has(> .sf-link-icon) > [data-sf-new-tab=mark] {
+    margin-left: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+    }
+  }
+  .sf-link:has(> .sf-link-icon) > [data-sf-new-tab=mark]:where(:dir(ltr)) {
+    margin-left: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-link:has(> .sf-link-icon) > [data-sf-new-tab=mark] {
+    margin-right: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  @supports not (margin-inline-start: initial) {
+  [dir="rtl"] .sf-link:has(> .sf-link-icon) > [data-sf-new-tab=mark] {
+    margin-right: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+    }
+  }
+  .sf-link:has(> .sf-link-icon) > [data-sf-new-tab=mark]:where(:dir(rtl)) {
+    margin-right: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  .sf-link:has(> .sf-link-icon) > [data-sf-new-tab=mark] {
+    -webkit-margin-start: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+            margin-inline-start: calc(var(--sf-space-1\/4) - var(--sf-link--gap));
+  }
+  .sf-link :where(.sf-link__icon, .sf-link-icon) {
+    /* The line's height: 24 beside text of 16/24, 20 beside 14/20 (C107 (5)).
+       In font-size, lh is the parent's line: the glyph is as tall as the line
+       of the text the link stands in, and the box is that glyph (1em). */
+    --sf-icon--font-size: 1lh;
+    --sf-icon--width: 1em;
+    --sf-icon--height: 1em;
+    --sf-link-icon--size: 1em;
+    flex: none;
+    height: var(--sf-link-icon--size);
+    block-size: var(--sf-link-icon--size);
+    width: var(--sf-link-icon--size);
+    inline-size: var(--sf-link-icon--size);
+  }
+}
+@layer sf.paint {
+  .sf-link {
+    color: var(--sf-link--color);
+    background-color: var(--sf-link--background-color);
+  }
+  .sf-link :where(.sf-link__content, .sf-link-content) {
+    color: inherit;
+  }
+  .sf-link :where(.sf-link__icon, .sf-link-icon) {
+    color: currentColor;
+  }
+}
+@layer sf.states {
+  /* A visited colour only where the page asks for it (C186 (2)):
+     data-sf-visited="on" on a region or on <html>, as core's link. */
+  :where([data-sf-visited=on]) .sf-link:visited:not(.disabled):not([aria-disabled=true]) {
+    --sf-link--color: var(--sf-place--ink, var(--sf-link-visited));
+  }
+  /* Under the pointer and pressed the line stays and takes the full colour
+     (C186 (1)); it was dropped there, the reverse of every link in text. */
+  .sf-link:hover:not(.disabled):not([aria-disabled=true]) {
+    --sf-link--color: var(--sf-place--ink, var(--sf-link-hover));
+    --sf-link--text-decoration: underline;
+    -webkit-text-decoration-color: currentColor;
+            text-decoration-color: currentColor;
+  }
+  .sf-link:active:not(.disabled):not([aria-disabled=true]) {
+    --sf-link--color: var(--sf-place--ink, var(--sf-link-active));
+    --sf-link--text-decoration: underline;
+    -webkit-text-decoration-color: currentColor;
+            text-decoration-color: currentColor;
+  }
+  .sf-link.focus-visible:not(.disabled):not([aria-disabled=true]) {
+    --sf-link--text-decoration: underline;
+  }
+  .sf-link:focus-visible:not(.disabled):not([aria-disabled=true]) {
+    --sf-link--text-decoration: underline;
+  }
+  .sf-link:focus {
+    outline: none;
+  }
+  /* The ring of a link (C186 (4)): 2px --sf-focus, two pixels off the
+     words, the UI's corner (4). */
+  .sf-link.focus-visible {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    border-radius: var(--sf-radius--ui);
+    outline-color: var(--sf-focus);
+    outline-offset: var(--sf-a2);
+    outline-style: var(--sf-focus--style);
+    outline-width: var(--sf-focus--width);
+  }
+  .sf-link:focus-visible {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    border-radius: var(--sf-radius--ui);
+    outline-color: var(--sf-focus);
+    outline-offset: var(--sf-a2);
+    outline-style: var(--sf-focus--style);
+    outline-width: var(--sf-focus--width);
+  }
+  .sf-link.disabled {
+    --sf-link--color: var(--sf-on-surface-disabled);
+    --sf-link--text-decoration: none;
+    cursor: default;
+  }
+  .sf-link[aria-disabled=true] {
+    --sf-link--color: var(--sf-on-surface-disabled);
+    --sf-link--text-decoration: none;
+    cursor: default;
+  }
+  @media (forced-colors: active) {
+    .sf-link.focus-visible {
+      outline-color: Highlight;
+    }
+    .sf-link:focus-visible {
+      outline-color: Highlight;
+    }
+  }
+}

@@ -51,6 +51,18 @@ fingerprint.
 Technical key conflicts and ambiguous links stay diagnostics. An editorial
 status does not hide them.
 
+## Checking against a Framework release
+
+The optional `linkage` block of a source in `documentation_tracking.sources`
+links pages to the change journal of a SIMAI Framework release by the
+`simai.linkage` standard. Its fields are `inventory`, `since`, `changes`,
+`journal`, `usage` and `brought_up_on`. The `docara documentation linkage`
+command shows which pages describe components changed since the `since`
+release, with a quote from the journal; the build writes the same to
+`build_<environment>.docara/framework-linkage.json` and does not stop because
+of what it finds. The options are in the
+[command reference](/en/reference/cli/).
+
 ## Safe work for an agent
 
 An agent first reads `documentation status` and the exact `inspect source`,

@@ -799,7 +799,15 @@
     var copyButton=owned('[data-docara-example-copy]')[0]||null;
     var viewerButton=owned('[data-docara-example-viewer]')[0]||null;
     var viewportControls=owned('[data-docara-example-viewports]')[0]||null;
-    var viewportButtons=owned('[data-docara-example-viewport]');
+    /* The width switcher is a Framework sf-segmented (C211): one choice of three, reported by its change event. */
+    var viewportSwitch=viewportControls&&viewportControls.localName==='sf-segmented'?viewportControls:null;
+    if(viewportSwitch){
+      viewportSwitch.setAttribute('items',JSON.stringify([['desktop','desktop_windows'],['tablet','tablet'],['mobile','smartphone']].map(function(entry){
+        /* An icon-only choice names itself through aria-label; the Framework warns about an icon with no name. */
+        var label=message('examples.viewport_'+entry[0])+' · '+exampleViewportWidths[entry[0]]+' px';
+        return {value:entry[0],label:label,'aria-label':label,icon:entry[1],'icon-only':true};
+      })));
+    }
     var previewFrame=owned('iframe[data-docara-example-frame]')[0]||null;
     var responsiveFrame=owned('iframe[data-docara-example-responsive-frame]')[0]||null;
     /* An inline example's responsive frame stays hidden, so the lazy loader never reaches it. It loads when the viewer opens: a frame moved into the viewer dialog reloads, so loading it earlier would only load it twice. The viewer keeps the inline preview until the frame reports it is styled. */
@@ -823,14 +831,7 @@
       // tablet or phone width stays exact and scrolls if it must.
       previewFrame.style.inlineSize=viewport==='desktop'?'min('+exampleViewportWidths[viewport]+'px, 100%)':exampleViewportWidths[viewport]+'px';
       previewFrame.style.maxInlineSize='none';
-      viewportButtons.forEach(function(button){
-        var active=button.dataset.docaraExampleViewport===viewport;
-        var label=message('examples.viewport_'+button.dataset.docaraExampleViewport)+' · '+exampleViewportWidths[button.dataset.docaraExampleViewport]+' px';
-        button.setAttribute('aria-pressed',active?'true':'false');
-        button.setAttribute('aria-label',label);
-        button.title=label;
-        button.classList.toggle('active',active);
-      });
+      if(viewportSwitch&&viewportSwitch.getAttribute('value')!==viewport){viewportSwitch.setAttribute('value',viewport)}
       if(persist){
         try{sessionStorage.setItem(exampleViewportStorageKey,viewport)}catch(error){}
         document.dispatchEvent(new CustomEvent('docara:example-viewport-change',{detail:{viewport:viewport}}));
@@ -949,7 +950,7 @@
       try{viewerDialog.showModal()}catch(error){restoreViewer();return}
       loadResponsiveFrame();
       syncViewer();
-      var selectedViewport=viewportButtons.find(function(button){return button.dataset.docaraExampleViewport===activeViewport});
+      var selectedViewport=viewportSwitch&&viewportSwitch.querySelector('[aria-checked="true"],[tabindex="0"]');
       if(selectedViewport){selectedViewport.focus()}
     }
     function syncWrap(active){
@@ -991,14 +992,12 @@
         event.preventDefault();selectTab(tabs[next],true);
       });
     });
-    viewportButtons.forEach(function(button){
-      button.addEventListener('click',function(){
-        setViewport(button.dataset.docaraExampleViewport,true);
-        // Safari does not focus a button it clicks, so focus stayed on the
-        // width the viewer opened with and kept its ring beside the pressed one.
-        if(document.activeElement!==button){button.focus()}
+    if(viewportSwitch){
+      viewportSwitch.addEventListener('change',function(event){
+        if(event.target!==viewportSwitch||!event.detail||typeof event.detail.value!=='string')return;
+        setViewport(event.detail.value,true);
       });
-    });
+    }
     document.addEventListener('docara:example-viewport-change',function(event){
       var viewport=event.detail&&event.detail.viewport;
       if(!Object.prototype.hasOwnProperty.call(exampleViewportWidths,viewport))return;
@@ -1378,7 +1377,7 @@
       button.type='button';
       button.hidden=true;
       button.dataset.docaraEffectToggle='';
-      button.className='docara-effect-toggle sf-icon-button sf-icon-button--icon sf-icon-button--surface sf-icon-button--on-surface sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0';
+      button.className='docara-effect-toggle sf-icon-button sf-icon-button--icon sf-icon-button--tonal sf-icon-button--on-surface sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0';
       button.innerHTML='<span aria-hidden="true" class="sf-icon sf-icon-regular">pause</span>';
       hero.appendChild(button);
       var wide=window.matchMedia?window.matchMedia('(min-width: 44rem)'):null;

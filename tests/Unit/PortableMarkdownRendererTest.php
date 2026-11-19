@@ -203,7 +203,7 @@ MD);
         $smart = $renderer->render(<<<'MD'
 :::example {label="Alert" preview=sandbox}
 ```html
-<sf-alert type="info" title="Notice"></sf-alert>
+<sf-alert status="info" heading="Notice"></sf-alert>
 ```
 :::
 MD);
@@ -371,7 +371,7 @@ MD);
         self::assertStringContainsString('data-docara-example-wrap', $markdown);
         self::assertStringContainsString('<sf-icon icon="wrap_text" aria-hidden="true"></sf-icon>', $markdown);
         self::assertStringContainsString('data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow"', $markdown);
-        self::assertStringContainsString('sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1', $markdown);
+        self::assertStringContainsString('sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-1', $markdown);
         self::assertStringContainsString('content-main-center m-0', $markdown);
         self::assertStringContainsString('data-copy-icon="content_copy" data-copied-icon="check"', $markdown);
         self::assertStringNotContainsString('data-copied-icon="check""', $markdown);
@@ -533,12 +533,10 @@ MD);
         self::assertStringContainsString('&lt;style&gt;#hello { color: red; }&lt;/style&gt;', $web);
         self::assertStringContainsString('data-docara-example-viewer', $web);
         self::assertStringContainsString('data-docara-example-viewports', $web);
-        self::assertStringContainsString('data-docara-example-viewport="desktop"', $web);
-        self::assertStringContainsString('data-docara-example-viewport="tablet"', $web);
-        self::assertStringContainsString('data-docara-example-viewport="mobile"', $web);
-        self::assertStringContainsString('role="group" aria-label="Preview width" class="docara-example-preview__viewports"', $web);
-        self::assertStringContainsString('<sf-icon icon="desktop_windows" aria-hidden="true"></sf-icon>', $web);
-        self::assertStringContainsString('<sf-icon icon="smartphone" aria-hidden="true"></sf-icon>', $web);
+        // The preview width is a Framework sf-segmented: icon-only choices, desktop first.
+        self::assertStringContainsString('<sf-segmented data-docara-example-viewports hidden size="1" aria-label="Preview width" value="desktop" class="docara-example-preview__viewports" items="', $web);
+        self::assertStringContainsString('&quot;value&quot;:&quot;mobile&quot;,&quot;label&quot;:&quot;Mobile&quot;,&quot;aria-label&quot;:&quot;Mobile&quot;,&quot;icon&quot;:&quot;smartphone&quot;,&quot;icon-only&quot;:true', $web);
+        self::assertStringNotContainsString('data-docara-example-viewport="', $web);
         self::assertStringContainsString('<sf-icon icon="devices" aria-hidden="true"></sf-icon>', $web);
     }
 
@@ -754,7 +752,7 @@ MD);
             . $toggle . '<span class="sf-tree-item-name">' . $name . '</span></div><div class="sf-tree-group">';
         $file = static fn (string $name): string => '<div class="sf-tree-item"><div class="sf-tree-item-container flex items-cross-center">'
             . '<span class="sf-tree-toggle-spacer" aria-hidden="true"></span><span class="sf-tree-item-name">' . $name . '</span></div></div>';
-        $button = '<button type="button" class="sf-icon-button sf-icon-button--link sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>';
+        $button = '<button type="button" class="sf-icon-button sf-icon-button--ghost sf-icon-button--size-1/3" tabindex="-1" aria-hidden="true"><i class="sf-icon" aria-hidden="true">folder_open</i></button>';
         self::assertSame(
             '<div data-docara-block="tree" data-interactive="true" class="sf-tree flex flex-col m-bottom-1">'
             . $folder('content', $button) . $folder('ru', $button) . $file('<code>index.md</code>') . '</div></div></div></div>'
@@ -859,7 +857,7 @@ MD;
         // surface, so it needs no backdrop blur; a blur on every code header
         // made the sticky header and outline blank out for a frame while the
         // page scrolled.
-        self::assertStringContainsString('<div data-docara-code-head class="sf-highlight__head"><span class="sf-highlight__language sf-text-1/2 weight-5">PHP</span>', $html);
+        self::assertStringContainsString('<div data-docara-code-head class="sf-highlight__head"><span class="sf-highlight__language sf-text-1/2 weight-medium">PHP</span>', $html);
         self::assertStringNotContainsString('bg-surface-overlay', $html);
         self::assertStringContainsString('data-docara-code-wrap-toggle', $html);
         self::assertStringContainsString('data-docara-code-copy', $html);
@@ -1018,10 +1016,10 @@ MD);
         $plain = $renderer->render("```\nnpm install\n```\n");
 
         self::assertStringContainsString('data-docara-code-language="html"', $markup);
-        self::assertStringContainsString('<span class="sf-highlight__language sf-text-1/2 weight-5">HTML</span>', $markup);
+        self::assertStringContainsString('<span class="sf-highlight__language sf-text-1/2 weight-medium">HTML</span>', $markup);
         self::assertStringContainsString('class="language-html"', $markup);
         self::assertStringContainsString('data-docara-code-language="code"', $plain);
-        self::assertStringContainsString('<span class="sf-highlight__language sf-text-1/2 weight-5">Code</span>', $plain);
+        self::assertStringContainsString('<span class="sf-highlight__language sf-text-1/2 weight-medium">Code</span>', $plain);
     }
 
     #[Test]

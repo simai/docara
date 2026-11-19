@@ -59,6 +59,15 @@
         option.checked=on;
         paint(option);
       });
+      // In the side panel each setting is a Framework sf-segmented: its value
+      // attribute is the selected option.
+      segments().forEach(function(group){
+        var value=store.current(group.dataset.preferenceId);
+        if(value!=null&&group.getAttribute('value')!==String(value))group.setAttribute('value',String(value));
+      });
+    }
+    function segments(){
+      return Array.from(document.querySelectorAll('[data-docara-preference-segmented]'));
     }
     var menu=modal.hasAttribute('data-docara-reader-settings-menu'),menuClosedAt=0;
     // The menu lists one row per setting; a row opens a submenu with its values.
@@ -124,14 +133,13 @@
     }
     // The Framework window names itself with a generic word; the panel heading is its name.
     function name(event){
-      var root=event&&event.detail&&event.detail.root?event.detail.root:(typeof modal.getModalRoot==='function'?modal.getModalRoot():null);
+      var root=modal.modalRoot||null;
       if(!root||!root.setAttribute)return;
       root.setAttribute('aria-labelledby','docara-reader-settings-title');
       root.removeAttribute('aria-label');
     }
     if(!menu){
-      modal.addEventListener('modal:ready',name);
-      modal.addEventListener('modal:update',name);
+      modal.addEventListener('sf-after-render',name);
       name();
     }
     trigger.addEventListener('click',open);
@@ -188,17 +196,39 @@
         if(items[next])items[next].focus();
       });
     }
-    modal.addEventListener('modal:after-open',function(){
+    modal.addEventListener('sf-modal-opened',function(){
       name();
       trigger.setAttribute('aria-expanded','true');
       sync();
-      var selected=options().find(function(option){return option.checked});
+      var selected=options().find(function(option){return option.checked})
+        ||modal.querySelector('[data-docara-preference-segmented] [role="radio"][aria-checked="true"],[data-docara-preference-segmented] input:checked');
       if(selected)selected.focus();
     });
-    modal.addEventListener('modal:after-close',function(){
+    modal.addEventListener('sf-modal-closed',function(){
       trigger.setAttribute('aria-expanded','false');
       trigger.focus();
     });
+    // sf-segmented reports a choice with its own change event, detail
+    // {value, previous, item}; the inner radios' native change is not one.
+    function selectSegment(event){
+      var group=event.target&&event.target.closest?event.target.closest('[data-docara-preference-segmented]'):null;
+      var current=group&&group.closest('[data-docara-smart="docara.preferences"]');
+      if(!group||!current||event.target!==group||!event.detail||typeof event.detail.value!=='string')return;
+      var id=group.dataset.preferenceId,value=event.detail.value;
+      var result=store.set(id,value);
+      if(!result.applied)return;
+      sync();
+      var label=event.detail.item&&event.detail.item.label?String(event.detail.item.label):value;
+      var field=group.closest('[data-docara-preference-field]');
+      var heading=field&&field.querySelector('.docara-preferences-label');
+      var title=heading?heading.textContent.trim():'';
+      announce(result.persisted?message('reader.saved',{setting:title,value:label}):message('reader.applied_not_saved'));
+      current.dispatchEvent(new CustomEvent('docara-preference-change',{
+        bubbles:true,
+        detail:{id:id,value:value,persisted:result.persisted}
+      }));
+    }
+    document.addEventListener('change',selectSegment,true);
     function selectOption(event){
       var option=event.target&&event.target.closest
         ?event.target.closest('[data-docara-preference-option]')

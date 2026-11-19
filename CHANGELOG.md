@@ -6,7 +6,40 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **The Framework's words in the page language.** A page whose `lang` has a
+  SIMAI Framework language file (`core/lang/<code>.js`, for example Russian)
+  loads it before the Framework core, so Framework parts such as the page
+  contents heading or the header's More item speak the page language.
+  Example frames load it too.
+- **Hosting docs: files examples need.** «Размещение на хостинге» explains
+  which files an isolated example window reads from another origin (fonts
+  and `core/contracts/icon-names.v1.json`) and the
+  `Access-Control-Allow-Origin: *` header they need, with an nginx sample.
+
 ### Changed
+
+- **SIMAI Framework pair `ui-dc9fc39aeb26`.** Docara pins the newest
+  Framework release (runtime projection of 2,323 files, including the
+  `core/lang` language files and the icon names list). Locks from earlier
+  Docara releases keep building.
+- **The header menu is the Framework `sf-menu` with `overflow="more"`.**
+  Links that do not fit move into its More item, so the header no longer
+  collapses at a fixed wide step: the header panel opens below the `lg`
+  step (60rem) only. Docara's own header link and list rules are removed.
+- **Reader settings use Framework parts.** Each setting in the side panel is
+  an `sf-segmented` switch; the settings menu is size 1; the reset button
+  has no tooltip.
+- **The example width switch is an `sf-segmented`** with icon-only
+  choices whose labels name the width (for example «Телефон · 390 px»).
+- **Icon buttons use the Framework's current looks:** `link` is `ghost` and
+  `surface` is `tonal`.
+- **Framework names that stop working on 2026-12-01 are replaced:** the
+  `sf-modal` and `sf-dropdown` events, `sf-alert` attributes (`status`,
+  `appearance`, `heading`), the `sheet` contents layout and the renamed
+  utilities (`pointer-events-none`, `weight-bold`, `weight-medium`,
+  `text-1/2`, `bg-surface-area`).
 
 - **Docara's own interface parts are SIMAI Framework parts.** The shell no
   longer draws its own versions of parts the Framework ships:
@@ -32,6 +65,19 @@ All notable changes to Docara are recorded here. The format follows
     shell CSS holds no hex colours.
   - The unused preferences menu rules are removed from `preferences.css`;
     the side-panel rules stay.
+
+### Fixed
+
+- Search finds the heading of an `sf-alert` written with the `heading`
+  attribute.
+- The header and the reader settings dialog stay preloaded with the new
+  Framework pair: its modal now needs the close button part, whose loader
+  data the lock now carries.
+- The icon face script reads the computed style of every icon in a batch
+  first and then writes their classes, so a page no longer recalculates
+  styles once per icon (most visible on dark pages with many icons).
+- The example width choices name themselves through `aria-label`, so the
+  Framework no longer warns about icon-only buttons with no name.
 
 ## [3.17.0] - 2026-11-17
 

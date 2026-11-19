@@ -1,10 +1,10 @@
 <div class="docara-reading-actions flex flex-none items-cross-center gap-1/4" data-docara-reading-actions>
 <?php if ($view->readingModeToggleEnabled) { ?>
-    <button type="button" data-docara-focus-toggle aria-pressed="false" aria-label="<?= $view->copy['reader.focus_mode'] ?>" title="<?= $view->copy['reader.focus_mode'] ?>" class="docara-focus-toggle sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1"><sf-icon icon="article" aria-hidden="true"></sf-icon></button>
+    <button type="button" data-docara-focus-toggle aria-pressed="false" aria-label="<?= $view->copy['reader.focus_mode'] ?>" title="<?= $view->copy['reader.focus_mode'] ?>" class="docara-focus-toggle sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-1"><sf-icon icon="article" aria-hidden="true"></sf-icon></button>
 <?php } ?>
 <?php // The outline toggle exists only where the page has outline entries: the builder empties the outline region otherwise.?>
 <?php if ($view->regions['outline'] !== '') { ?>
-    <button type="button" data-docara-outline-toggle data-docara-label-hide="<?= $view->copy['reader.outline_hide'] ?>" data-docara-label-show="<?= $view->copy['reader.outline_show'] ?>" aria-controls="docara-outline" aria-label="<?= $view->copy['reader.outline_hide'] ?>" title="<?= $view->copy['reader.outline_hide'] ?>" class="docara-outline-toggle sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1"><sf-icon icon="dock_to_left" aria-hidden="true"></sf-icon></button>
+    <button type="button" data-docara-outline-toggle data-docara-label-hide="<?= $view->copy['reader.outline_hide'] ?>" data-docara-label-show="<?= $view->copy['reader.outline_show'] ?>" aria-controls="docara-outline" aria-label="<?= $view->copy['reader.outline_hide'] ?>" title="<?= $view->copy['reader.outline_hide'] ?>" class="docara-outline-toggle sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-1"><sf-icon icon="dock_to_left" aria-hidden="true"></sf-icon></button>
 <?php } ?>
     <button type="button" data-docara-focus-exit aria-label="<?= $view->copy['reader.focus_mode_exit'] ?>" title="<?= $view->copy['reader.focus_mode_exit'] ?>" class="docara-focus-exit sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--tonal sf-icon-button--size-1"><sf-icon icon="close" aria-hidden="true"></sf-icon></button>
 </div>

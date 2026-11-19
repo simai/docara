@@ -19,7 +19,7 @@ final class PortableSearchTextExtractorTest extends TestCase
             . '<div hidden>Скрытое содержимое</div><p aria-hidden="true">Скрыто от чтения</p>'
             . '<script>danger()</script><style>.secret{}</style><template>Черновик</template>'
             . '<pre><code>docara build production</code></pre>'
-            . '<sf-alert title="Обратите внимание" supporting-text="Индекс строится локально." aria-label="Не индексировать повторно"></sf-alert>'
+            . '<sf-alert heading="Обратите внимание" supporting-text="Индекс строится локально." aria-label="Не индексировать повторно"></sf-alert>'
             . '<sf-button text="Открыть руководство" data-action="unsafeInternalAction"></sf-button>',
             [
                 [

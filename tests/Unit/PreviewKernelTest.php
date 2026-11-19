@@ -9,6 +9,7 @@ use Simai\Docara\Console\PreviewCommand;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\PortableSite\HtmlAttributeQuoting;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Preview\PreviewKernel;
@@ -296,7 +297,8 @@ final class PreviewKernelTest extends TestCase
             libxml_use_internal_errors($previous);
         }
 
-        return (string) $document->saveHTML($document->getElementsByTagName('body')->item(0));
+        // The kernel prints attributes in double quotes, as the page does.
+        return HtmlAttributeQuoting::normalize((string) $document->saveHTML($document->getElementsByTagName('body')->item(0)));
     }
 
     private function node(string $html, string $query): string
@@ -312,6 +314,6 @@ final class PreviewKernelTest extends TestCase
         $node = (new \DOMXPath($document))->query($query)?->item(0);
         self::assertNotNull($node);
 
-        return (string) $document->saveHTML($node);
+        return HtmlAttributeQuoting::normalize((string) $document->saveHTML($node));
     }
 }

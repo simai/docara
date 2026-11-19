@@ -110,10 +110,10 @@ final class FrameworkNativeSurfaceTest extends TestCase
             $template,
         );
         self::assertStringContainsString(
-            '<span class="sf-button-text-container text-center pointer-event-none"><?= $view->copy[\'search.label\'] ?></span>',
+            '<span class="sf-button-text-container text-center pointer-events-none"><?= $view->copy[\'search.label\'] ?></span>',
             $template,
         );
-        self::assertStringContainsString('<kbd class="sf-kbd--group sf-button-shortcut pointer-event-none" aria-hidden="true">', $template);
+        self::assertStringContainsString('<kbd class="sf-kbd--group sf-button-shortcut pointer-events-none" aria-hidden="true">', $template);
         self::assertStringNotContainsString('docara-search-shortcut', $template);
         self::assertStringContainsString(
             'for="docara-search-trigger"',
@@ -261,10 +261,13 @@ final class FrameworkNativeSurfaceTest extends TestCase
 
         self::assertIsString($css);
         self::assertIsString($template);
+        // The row is the Framework sf-menu with overflow more (D-1): sections
+        // that do not fit go under its More item; its printed list is the
+        // menu's own classes, and the shell neither centres nor restyles it.
+        self::assertStringContainsString('<sf-menu class="docara-navigation docara-header-navigation" orientation="horizontal" appearance="navigation" overflow="more" collapse="none"', $template);
         self::assertStringContainsString('sf-menu sf-menu--horizontal sf-menu--navigation docara-header-navigation-list', $template);
-        self::assertStringContainsString(
-            '.docara-header-navigation-list{flex-direction:row;justify-content:center;white-space:nowrap}',
-            $css,
-        );
+        self::assertStringContainsString('.docara-header-navigation{min-inline-size:0}', $css);
+        self::assertStringNotContainsString('.docara-header-navigation-list{', $css);
+        self::assertStringNotContainsString('.docara-header-navigation-link', $css);
     }
 }

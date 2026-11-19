@@ -50,6 +50,17 @@ adapter и получает предупреждение об ограничен
 Технические конфликты ключей и неоднозначные связи остаются diagnostics. Они не
 маскируются редакционным статусом.
 
+## Сверка с выпуском Framework
+
+Необязательный блок `linkage` у источника в `documentation_tracking.sources`
+связывает страницы с журналом изменений выпуска SIMAI Framework по стандарту
+`simai.linkage`. Поля: `inventory`, `since`, `changes`, `journal`, `usage` и
+`brought_up_on`. Команда `docara documentation linkage` показывает, какие
+страницы описывают компоненты, изменившиеся с выпуска `since`, с цитатой из
+журнала; сборка пишет то же в `build_<environment>.docara/framework-linkage.json`
+и не останавливается из-за найденного. Подробности о параметрах — в
+[справочнике команд](/ru/reference/cli/).
+
 ## Безопасная работа агента
 
 Агент сначала читает `documentation status` и точный `inspect source`, затем

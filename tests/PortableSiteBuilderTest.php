@@ -1063,13 +1063,14 @@ MD);
             );
             self::assertStringContainsString('aria-haspopup="dialog"', $html);
             self::assertStringContainsString('data-docara-reader-settings-dialog', $html);
-            self::assertStringContainsString('data-docara-preference-option', $html);
+            self::assertStringContainsString('data-docara-preference-segmented', $html);
             self::assertStringContainsString('data-docara-smart="docara.preferences"', $html);
             self::assertStringContainsString('position="right"', $html);
             self::assertStringContainsString('width="min(100vw, var(--sf-g6))"', $html);
             self::assertStringContainsString('value="system"', $html);
-            self::assertStringContainsString('value="light"', $html);
-            self::assertStringContainsString('value="dark"', $html);
+            // The choices are the sf-segmented items.
+            self::assertStringContainsString('&quot;value&quot;:&quot;light&quot;', $html);
+            self::assertStringContainsString('&quot;value&quot;:&quot;dark&quot;', $html);
             self::assertStringContainsString('data-docara-reader-settings-reset', $html);
             self::assertStringNotContainsString('class="sf-theme-button ', $html);
             self::assertStringContainsString('"theme":false', $html);
@@ -1111,7 +1112,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/141822273efead4cca7b1244fb547218aa6bdd81/distr/',
+                '/_docara/vendor/simai-framework/runtime/dc9fc39aeb266bbd8fd2486f21da50d7d1d85d74/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -1182,7 +1183,7 @@ MD);
         self::assertStringContainsString('sheet.appendChild(credit.cloneNode(true))', $shellRuntime);
         // The narrow-screen contents is the compact sf-contents, not a sheet.
         self::assertStringNotContainsString('id="docara-outline-dialog"', $guide);
-        self::assertStringContainsString('<sf-button-icon class="sf-site-header-menu-button" icon="menu" appearance="link" scheme="on-surface" size="1"', $guide);
+        self::assertStringContainsString('<sf-button-icon class="sf-site-header-menu-button" icon="menu" appearance="ghost" scheme="on-surface" size="1"', $guide);
         self::assertStringContainsString('data-docara-transient-dialog', $guide);
         self::assertStringContainsString("document.addEventListener('docara:open-transient'", $shellRuntime);
         self::assertStringNotContainsString('id="docara-mobile-navigation"', $guide);
@@ -1196,15 +1197,12 @@ MD);
         self::assertStringNotContainsString('--sf-menu-element--padding-inline-start', $smartSurface);
         self::assertStringNotContainsString('--sf-menu-element--border-top-width', $smartSurface);
         self::assertStringNotContainsString('--sf-menu-element--background-color', $smartSurface);
-        // The header items are sf-menu--navigation items: height, padding,
-        // colour and the current mark are the Framework's.
+        // The header row is the Framework sf-menu (overflow more): its
+        // items, decoration, focus ring and current mark are the Framework's.
+        self::assertStringContainsString('.docara-header-navigation{min-inline-size:0}', $smartSurface);
+        self::assertStringNotContainsString('.docara-header-navigation-link', $smartSurface);
         self::assertStringContainsString(
-            '.docara-header-navigation .docara-header-navigation-link{text-decoration:none}',
-            $smartSurface,
-        );
-        self::assertStringNotContainsString('.docara-header-navigation-link[aria-current', $smartSurface);
-        self::assertStringContainsString(
-            '.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible'
+            '[data-docara-disclosure]:focus-visible'
             . '{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight)'
             . ';outline-offset:var(--sf-focus--offset)',
             $smartSurface,
@@ -1234,8 +1232,9 @@ MD);
         self::assertStringNotContainsString('.sf-breadcrumbs-item[hidden]{display:none}', $shellCss);
         self::assertStringNotContainsString('.sf-breadcrumbs{overscroll-behavior-inline:contain}', $shellCss);
 
-        // Theme (3), font size (3) and page width (2); blur and radius are no longer reader options.
-        self::assertSame(8, substr_count($index, '<input data-docara-preference-option name='));
+        // Theme, font size and page width, each a Framework sf-segmented; blur and radius are no longer reader options.
+        self::assertSame(3, substr_count($index, '<sf-segmented class="docara-preferences-options" data-docara-preference-segmented'));
+        self::assertStringNotContainsString('data-docara-preference-option', $index);
         self::assertMatchesRegularExpression('/docara\\.preferences\\.[a-f0-9]{16}\\.v1/', $index);
         self::assertStringContainsString("matchMedia('(prefers-color-scheme: dark)')", $index);
         self::assertStringContainsString('localStorage.getItem', $index);
@@ -1378,9 +1377,9 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => '447e06e15272617d919555cb6bccf712754b1bc0754172eea12d87c32dadf85e',
-            'smart/button/js/button.js' => '6e3e35ce4162e0fbbf9f1dee25efb1485ba2a739e008951229427e18cfd7e091',
-            'smart/icon/js/icon.js' => 'f4820b27a6c53b4c8a65b5720fe271a80ef5f3dddbea87472b6bedf93bd64a8a',
+            'smart/alert/js/alert.js' => '8b77bc4979065ed983d2768cd6f01da9cbcf91d738a612d14d3a93eca52a5bc1',
+            'smart/button/js/button.js' => '613abcf187feef9704712cfe73b39494ec61f3ddc976f98d303c2b6096bf35e2',
+            'smart/icon/js/icon.js' => '9fa56722958ebbbfd8e1f36a9b9bedda7d8653ece7f4e28aa54a7b798133718a',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
             self::assertFileExists($published);
@@ -1477,7 +1476,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('ui-141822273efe', $componentCatalog['framework_pair']);
+        self::assertSame('ui-dc9fc39aeb26', $componentCatalog['framework_pair']);
         self::assertCount(40, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1563,7 +1562,7 @@ MD);
         self::assertStringContainsString('"values":{"appearance.theme":"dark","appearance.font_size":"normal","appearance.content_width":"normal"}', $html);
         self::assertStringContainsString(',site={"modal_blur":"small","ui_radius":"large"}', $html);
         self::assertMatchesRegularExpression(
-            '~data-docara-preference-option name="docara-preference-appearance\\.theme" type="radio" value="dark" data-preference-id="appearance\\.theme" checked~',
+            '~data-docara-preference-segmented data-preference-id="appearance\\.theme" [^>]*value="dark"~',
             $html,
         );
         // Modal blur and control radius remain author settings; readers no longer get controls for them.
@@ -1686,7 +1685,7 @@ MD);
         // The Framework sf-contents twice: the column, and its compact copy
         // (a button that opens the list) for the narrow screen.
         self::assertStringContainsString('layout="column" sticky="false"', $always);
-        self::assertStringContainsString('layout="compact" data-compact="true"', $always);
+        self::assertStringContainsString('layout="sheet" data-compact="true"', $always);
         self::assertStringContainsString('<span class="sf-contents-label" aria-hidden="true">Содержание</span>', $always);
         self::assertSame(1, substr_count($always, 'id="docara-contents-compact-list"'));
 
@@ -1723,7 +1722,7 @@ MD);
         $logo = trim((string) file_get_contents(dirname(__DIR__) . '/resources/publisher/credit-logo.svg'));
         // The words stay text; the Docara logo is an inline SVG in their
         // place, and the link names the whole sentence for assistive tech.
-        $credit = static fn (string $words, string $name): string => '<p class="docara-sidebar-credit text-small color-on-surface-variant" data-docara-sidebar-credit>'
+        $credit = static fn (string $words, string $name): string => '<p class="docara-sidebar-credit text-1/2 color-on-surface-variant" data-docara-sidebar-credit>'
             . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.simai.io/" rel="noopener" aria-label="' . $name . '" title="' . $name . '">'
             . '<span class="docara-sidebar-credit-text docara-sidebar-credit-text--before">' . $words . '</span>' . $logo . '</a></p>';
         // The square mark with its ring comes first, then the letters.
@@ -2087,7 +2086,7 @@ MD;
             $this->tmpPath('build_local.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.min\.js\?sf_v=ui-141822273efe-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.min\.js\?sf_v=ui-dc9fc39aeb26-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));
@@ -2971,7 +2970,7 @@ MD;
             // settings components add their own since 3.10.0; the shell's
             // example caption, desktop scroll and static tree rules in 3.14.3
             // tip the getting-started page's bundling to 13, the
-            // ui-7fb26d395af2 sheets to 14). ui-141822273efe orders the
+            // ui-7fb26d395af2 sheets to 14). ui-dc9fc39aeb26 orders the
             // closures differently (sf-button requires its split menu, and
             // tooltip, list and header-site sheets join the order), so the
             // shared bundles split finer: 56 bundles instead of 46, the
@@ -3011,7 +3010,7 @@ MD;
         // shell (example caption, desktop scroll, static tree) regroups the
         // stub site's bundles to 8.25 (the documentation site's pages then
         // linked about 10.5 shell stylesheets; an older count of 7.66 stood
-        // here). With ui-141822273efe the sr-only
+        // here). With ui-dc9fc39aeb26 the sr-only
         // utility comes before the layout utilities on some pages and after
         // them on others (the components that need it differ), and the menu
         // and scrollbar sheets likewise, so fewer runs are shared: 10.375

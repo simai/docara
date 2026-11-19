@@ -281,6 +281,24 @@ location ~ ^/_docara/(docara-shell\.[0-9a-f]{64}\.css$|brand/[0-9a-f]{64}\.|vend
 
 Для сайта в подкаталоге добавьте префикс `base_url` в начало выражения.
 
+## Файлы для примеров
+
+Пример в изолированном окне (`preview=sandbox`) работает в изолированной рамке без
+своего адреса: браузер считает её чужим сайтом. Шрифты и список имён значков
+SIMAI Framework такая рамка получает, только если сервер разрешает их чтение
+с любого адреса заголовком `Access-Control-Allow-Origin: *`. Без него в
+примере не появляются значки и шрифт Inter, а выбор значка остаётся пустым.
+
+```nginx
+location ~ ^/_docara/vendor/simai-framework/runtime/.+\.(woff2|otf)$|^/_docara/vendor/simai-framework/runtime/.+/core/contracts/icon-names\.v1\.json$ {
+    add_header Access-Control-Allow-Origin "*";
+    add_header Cache-Control "public, max-age=31536000, immutable";
+}
+```
+
+Заголовок нужен только этим файлам: страницы и остальные ресурсы его не
+требуют. GitHub Pages отдаёт его для всех файлов сам.
+
 ## Особенности площадок
 
 - **GitHub Pages.** При публикации через GitHub Actions

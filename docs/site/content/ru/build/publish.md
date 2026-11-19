@@ -148,3 +148,4 @@ releases/2026-07-19T120000Z/
 - [Проверка сборки](/ru/build/verify/)
 - [Размещение на хостинге](/ru/build/hosting/)
 - [Обновление Docara](/ru/build/update/)
+- [SEO и GEO](/ru/settings/seo-and-geo/) — как поисковики и ИИ-ассистенты находят опубликованный сайт

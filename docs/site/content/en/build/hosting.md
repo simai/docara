@@ -284,6 +284,25 @@ location ~
 For a site in a subfolder add the `base_url` prefix at the start of the
 expression.
 
+## Files examples need
+
+An example in an isolated window (`preview=sandbox`) runs in an isolated frame
+that has no address of its own, so the browser treats it as another site. Such
+a frame gets the SIMAI Framework fonts and icon names list only when the
+server allows reading them from any address with the
+`Access-Control-Allow-Origin: *` header. Without it the example shows no icons
+and no Inter font, and the icon picker stays empty.
+
+```nginx
+location ~ ^/_docara/vendor/simai-framework/runtime/.+\.(woff2|otf)$|^/_docara/vendor/simai-framework/runtime/.+/core/contracts/icon-names\.v1\.json$ {
+    add_header Access-Control-Allow-Origin "*";
+    add_header Cache-Control "public, max-age=31536000, immutable";
+}
+```
+
+Only these files need the header: pages and other files do not. GitHub Pages
+sends it for every file by itself.
+
 ## Notes for each platform
 
 - **GitHub Pages.** When publishing through GitHub Actions

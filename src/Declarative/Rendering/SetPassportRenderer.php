@@ -48,7 +48,7 @@ final readonly class SetPassportRenderer
                 . $this->escape($passport['history']) . '</a>';
         }
 
-        return '<p class="docara-set-passport text-small color-on-surface-variant m-0" data-docara-set-passport="'
+        return '<p class="docara-set-passport text-1/2 color-on-surface-variant m-0" data-docara-set-passport="'
             . $this->escape((string) ($passport['package'] ?? '')) . '">'
             . implode('<span class="docara-set-passport-separator" aria-hidden="true"> · </span>', $parts)
             . '</p>';

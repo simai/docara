@@ -50,7 +50,7 @@ MD, 'content/install.md'),
         self::assertStringContainsString('<h1 id="installation">Installation</h1>', $artifact->html);
         self::assertStringContainsString('href="/guide/"', $artifact->html);
         self::assertStringContainsString('<sf-alert', $artifact->html);
-        self::assertStringContainsString('title="Before &lt;install&gt;"', $artifact->html);
+        self::assertStringContainsString('heading="Before &lt;install&gt;"', $artifact->html);
         self::assertStringContainsString('supporting-text=', $artifact->html);
         self::assertStringContainsString('Create &quot;a backup&quot;.', $artifact->html);
         self::assertStringNotContainsString('simai.framework.bridge.js', implode(',', $artifact->assets));

@@ -76,7 +76,6 @@
         };
         root.addEventListener('input', render);
         root.addEventListener('change', render);
-        root.addEventListener('sf-dropdown:change', render);
         copy.addEventListener('click', async () => {
             const result = render();
             if (!result.ok) return;

@@ -7,7 +7,7 @@
         <span class="sf-menu-element-wrap docara-navigation-label flex flex-1 items-cross-center"><span class="sf-menu-element-text"><?= $item->title ?></span></span>
 <?php } ?>
 <?php if ($item->hasChildren) { ?>
-        <button type="button" data-docara-disclosure<?= $item->activeAncestor ? ' data-docara-contains-current="true"' : '' ?> aria-expanded="<?= $item->open ? 'true' : 'false' ?>" aria-label="<?= $item->open ? $view->collapseLabel : $view->expandLabel ?><?= $item->title ?><?= $item->activeAncestor ? $view->containsCurrentLabel : '' ?>" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1"><sf-icon icon="<?= $item->open ? 'keyboard_arrow_down' : 'chevron_right' ?>" aria-hidden="true"></sf-icon></button>
+        <button type="button" data-docara-disclosure<?= $item->activeAncestor ? ' data-docara-contains-current="true"' : '' ?> aria-expanded="<?= $item->open ? 'true' : 'false' ?>" aria-label="<?= $item->open ? $view->collapseLabel : $view->expandLabel ?><?= $item->title ?><?= $item->activeAncestor ? $view->containsCurrentLabel : '' ?>" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--ghost sf-icon-button--size-1"><sf-icon icon="<?= $item->open ? 'keyboard_arrow_down' : 'chevron_right' ?>" aria-hidden="true"></sf-icon></button>
 <?php } ?>
     </div>
 <?php if ($item->hasChildren) { ?>

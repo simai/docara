@@ -44,12 +44,15 @@ final class ShellBreakpointTest extends TestCase
         $root = dirname(__DIR__, 2);
         $css = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
 
-        self::assertStringContainsString("@media not all and (min-width:72rem){\n  .docara-header-navigation{display:none}", $css);
+        self::assertStringContainsString("@media not all and (min-width:60rem){\n  .docara-header-navigation{display:none}", $css);
+        self::assertStringNotContainsString("@media not all and (min-width:72rem){\n  .docara-header-navigation{display:none}", $css);
         // The header's panel is the Framework sf-site-header's own: it closes
-        // itself above its collapse step, which the publisher sets to the
-        // same Framework steps (xl with header links, else lg).
+        // itself above its collapse step, which the publisher sets to lg (the
+        // 60rem step) whenever the header has links or a mobile menu. Above
+        // it the header menu is the Framework sf-menu, which moves the links
+        // that do not fit into its More item.
         $publisher = (string) file_get_contents($root . '/src/PortableSite/DeclarativePortablePagePublisher.php');
-        self::assertStringContainsString("\$primaryNavigationEnabled ? 'xl' : (\$mobileNavigationEnabled ? 'lg' : 'none')", $publisher);
+        self::assertStringContainsString("\$primaryNavigationEnabled || \$mobileNavigationEnabled ? 'lg' : 'none'", $publisher);
     }
 
     /** @return array<string, string> */

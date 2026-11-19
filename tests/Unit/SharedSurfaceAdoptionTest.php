@@ -78,7 +78,7 @@ final class SharedSurfaceAdoptionTest extends TestCase
         self::assertNotContains('docara.showcase', $typed);
         self::assertContains('docara.promo', $typed);
         self::assertSame(
-            'f9515df238d790dbfcb839927545624f2f66a52ec0a09449a8d0f29d0f06bdb3',
+            '6e567acc197dac4c071a3c02e54fea3d77b5eaf5269d41ceb43b739b21372b8a',
             hash('sha256', $result->contentHtml),
         );
         foreach (['hero' => 1, 'features' => 3, 'showcase' => 0, 'promo' => 1] as $block => $count) {

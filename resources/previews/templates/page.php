@@ -9,7 +9,7 @@
     <title><?= $view->title ?></title>
 <?= $view->headHtml ?>
 </head>
-<body class="bg-surface color-on-surface m-0">
+<body class="bg-surface-area color-on-surface m-0">
     <div class="surface-container border-bottom-1 border-outline-variant p-2">
         <div class="flex flex-wrap items-center content-main-between gap-2">
             <div class="flex flex-col gap-1">

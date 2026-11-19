@@ -34,7 +34,7 @@ final readonly class PortableSiteHeader
      * @param  string  $tools  the search, language, reader settings and repository controls in one element; the language picker is split out of it (splitTools)
      * @param  string  $sheet  the navigation sheet content, or ''
      * @param  array<string, string>  $copy  escaped UI copy
-     * @param  string  $collapse  the Framework breakpoint below which the bar collapses: xl, lg or none
+     * @param  string  $collapse  the Framework breakpoint below which the bar collapses: lg or none
      * @param  string  $attributes  further host attributes, escaped, each with a leading space
      */
     public function render(
@@ -159,9 +159,9 @@ final readonly class PortableSiteHeader
     /** A Framework sf-button-icon in its printed form, like the element draws it. */
     private function iconButton(string $class, string $icon, string $label, string $attributes): string
     {
-        return '<sf-button-icon class="' . $class . '" icon="' . $icon . '" appearance="link" scheme="on-surface" size="1" aria-label="' . $label . '"' . $attributes . ' style="display: contents;">'
-            . '<button type="button" class="sf-icon-button sf-icon-button--size-1 sf-icon-button--icon sf-icon-button--link flex items-cross-center sf-icon-button--on-surface" aria-label="' . $label . '"' . $attributes . ' data-sf-static>'
-            . '<sf-icon root-class="pointer-event-none" weight="400" aria-hidden="true" filled="false" icon="' . $icon . '" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-event-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>' . $icon . '</i></sf-icon>'
+        return '<sf-button-icon class="' . $class . '" icon="' . $icon . '" appearance="ghost" scheme="on-surface" size="1" aria-label="' . $label . '"' . $attributes . ' style="display: contents;">'
+            . '<button type="button" class="sf-icon-button sf-icon-button--size-1 sf-icon-button--icon sf-icon-button--ghost flex items-cross-center sf-icon-button--on-surface" aria-label="' . $label . '"' . $attributes . ' data-sf-static>'
+            . '<sf-icon root-class="pointer-events-none" weight="400" aria-hidden="true" filled="false" icon="' . $icon . '" style="display: contents;"><i class="sf-icon sf-icon--weight-regular pointer-events-none" style="--sf-icon--grade:0;--sf-icon--optical-size:24" aria-hidden="true" data-sf-static>' . $icon . '</i></sf-icon>'
             . '</button></sf-button-icon>';
     }
 }

@@ -70,8 +70,8 @@ $read = static function (string $path) use ($git, $revision): string {
 };
 
 // The module closure: static `from './x.mjs'` and dynamic `import('./x.mjs')`
-// specifiers, followed from the entry. Only relative modules inside
-// distr/core/js/ are allowed (the composition directory and, since
+// specifiers, followed from the entry. Only relative modules and JSON files
+// inside distr/core/js/ are allowed (the composition directory and, since
 // ui-1cb0739a8423, core modules beside it such as ../schema-name.mjs; since
 // ui-c3015f76bcc2, plain `.js` core modules and dotted names, such as
 // ../page-language.js and ./elements.generated.mjs); anything else would need
@@ -84,11 +84,14 @@ while ($pending !== []) {
     if (isset($files[$path])) {
         continue;
     }
-    if (preg_match('#^distr/core/js/(?:composition/)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.m?js$#D', $path) !== 1) {
+    if (preg_match('#^distr/core/(?:js|lang)/(?:[a-z0-9-]+/){0,2}[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:m?js|json)$#D', $path) !== 1) {
         throw new RuntimeException('FRAMEWORK_COMPOSITION_MODULE_PATH_INVALID: ' . $path);
     }
     $bytes = $read($path);
     $files[$path] = $bytes;
+    if (str_ends_with($path, '.json')) {
+        continue;
+    }
     $specifiers = [];
     foreach ([
         '#^\s*(?:import|export)\s[^;\'"]*?\bfrom\s*([\'"])([^\'"]+)\1#ms',
@@ -99,13 +102,30 @@ while ($pending !== []) {
         array_push($specifiers, ...$matches[2]);
     }
     foreach ($specifiers as $specifier) {
-        if (preg_match('#^\./[a-z0-9-]+(?:\.[a-z0-9-]+)*\.m?js$#D', $specifier) === 1) {
-            $pending[] = dirname($path) . '/' . substr($specifier, 2);
-        } elseif (preg_match('#^\.\./[a-z0-9-]+(?:\.[a-z0-9-]+)*\.m?js$#D', $specifier) === 1) {
-            $pending[] = dirname($path, 2) . '/' . substr($specifier, 3);
-        } else {
+        // A relative module or JSON file (since ui-1ed6b6c9a040 the element
+        // words, ../lang/composition/index.mjs and its ./en.json, and the page
+        // language's ../lang/built-in.mjs), resolved against the importing
+        // file and kept inside distr/core/js/ or distr/core/lang/.
+        if (preg_match('#^\.{1,2}/(?:[a-z0-9-]+/)*[a-z0-9-]+(?:\.[a-z0-9-]+)*\.(?:m?js|json)$#D', $specifier) !== 1) {
             throw new RuntimeException('FRAMEWORK_COMPOSITION_IMPORT_UNSUPPORTED: ' . $path . ' -> ' . $specifier);
         }
+        $segments = explode('/', dirname($path));
+        foreach (explode('/', $specifier) as $segment) {
+            if ($segment === '.') {
+                continue;
+            }
+            if ($segment === '..') {
+                array_pop($segments);
+
+                continue;
+            }
+            $segments[] = $segment;
+        }
+        $resolved = implode('/', $segments);
+        if (! str_starts_with($resolved, 'distr/core/js/') && ! str_starts_with($resolved, 'distr/core/lang/')) {
+            throw new RuntimeException('FRAMEWORK_COMPOSITION_IMPORT_UNSUPPORTED: ' . $path . ' -> ' . $specifier);
+        }
+        $pending[] = $resolved;
     }
 }
 foreach ((array) ($recipeLock['runtime']['modules'] ?? []) as $module) {

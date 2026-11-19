@@ -1,14 +1,10 @@
-/* The header row keeps the header's own item spacing. */
-.docara-navigation .docara-header-navigation-list{gap:var(--sf-space-1\/3)}
 .docara-navigation-link,.docara-navigation-label{min-width:0}
 .docara-navigation-link:not([aria-current]),.docara-navigation-label{color:var(--sf-on-surface)}
 .docara-navigation-link .sf-menu-element-text,.docara-navigation-label .sf-menu-element-text{overflow-wrap:anywhere}
 .docara-navigation [data-docara-disclosure]{flex:0 0 auto;}
 .docara-navigation--compact .sf-menu-element{min-block-size:var(--sf-d0)}
 .docara-navigation--compact .sf-menu-element-wrap{min-block-size:var(--sf-c6)}
-.docara-navigation-link:focus-visible,.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
+.docara-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
 .docara-navigation [data-docara-disclosure]:focus{box-shadow:none}
-.docara-header-navigation{min-inline-size:0;flex:1 1 auto}
-.docara-header-navigation-list{flex-direction:row;justify-content:center;white-space:nowrap}
-.docara-header-navigation-item{flex:0 0 auto}
-.docara-header-navigation .docara-header-navigation-link{text-decoration:none}
+/* The header row is the Framework sf-menu (overflow more): it may shrink in the bar, and the sections that do not fit go under its More item. */
+.docara-header-navigation{min-inline-size:0}

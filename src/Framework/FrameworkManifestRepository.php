@@ -469,6 +469,15 @@ final readonly class FrameworkManifestRepository
      * path itself when the release ships none (utility.full.css, a utility
      * script) or the projection predates the twins.
      */
+    /** Whether the runtime projection carries this file. */
+    public function hasRuntimeAsset(string $relativePath): bool
+    {
+        $this->assertSafeRelativePath($relativePath);
+
+        return $this->lock->runtimeProjection() !== null
+            && is_array($this->runtimeManifest()['files'][$relativePath] ?? null);
+    }
+
     public function runtimeTwin(string $relativePath): string
     {
         $twin = self::minifiedTwinPath($relativePath);

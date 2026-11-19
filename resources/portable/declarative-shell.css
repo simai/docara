@@ -316,17 +316,17 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 .docara-example-preview[data-docara-example-viewer-active="true"]:is([data-docara-example-viewport="tablet"],[data-docara-example-viewport="mobile"]) [data-docara-example-panel="example"].is-active{background:var(--sf-surface-1)}
 .docara-example-preview[data-docara-example-viewer-active="true"] iframe[data-docara-example-frame]{flex:0 0 auto;min-block-size:100%;max-inline-size:none;background:var(--sf-surface-0)}
 .docara-skip-link:focus-visible,[data-docara-component-details-summary]:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}
-/* The shell changes layout only at SIMAI Framework breakpoints (32, 44, 60, 72, 80rem = sm..xxl), written as the complement of the Framework's own min-width so a width belongs to one side only. Below xl (72rem) the header navigation and the outline rail move into sheets; below lg (60rem) the sidebar does too, because up to that step the grid is capped at the md container and a sidebar would leave the text 352px wide; below md (44rem) the example viewer, which previews desktop and tablet widths, has no room at all. */
+/* The shell changes layout only at SIMAI Framework breakpoints (32, 44, 60, 72, 80rem = sm..xxl), written as the complement of the Framework's own min-width so a width belongs to one side only. Below xl (72rem) the outline rail moves into a sheet; below lg (60rem) the header navigation and the sidebar do too, because up to that step the grid is capped at the md container and a sidebar would leave the text 352px wide; below md (44rem) the example viewer, which previews desktop and tablet widths, has no room at all. */
 @media not all and (min-width:72rem){
-  .docara-header-navigation{display:none}
-  /* In the open panel the sheet lists the header links as a column, so the horizontal menu with its dropdowns stays out of it. */
-  .docara-header .sf-site-header-nav:not(:has(.docara-header-content>:not(.docara-header-navigation))){display:none}
   .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(var(--sf-f4),var(--sf-f8)) minmax(0,1fr)}
   .docara-docs-layout[data-sidebar="false"],.docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr)}
   .docara-outline-rail{display:none}
   .docara-outline-mobile{display:block}
 }
 @media not all and (min-width:60rem){
+  .docara-header-navigation{display:none}
+  /* In the open panel the sheet lists the header links as a column, so the horizontal menu with its dropdowns stays out of it. */
+  .docara-header .sf-site-header-nav:not(:has(.docara-header-content>:not(.docara-header-navigation))){display:none}
   /* The search button, which opens the Framework sf-search window, keeps only its icon on a narrow header. */
   .docara-search-trigger .sf-button-text-container,.docara-search-trigger .sf-button-shortcut{display:none}
   .docara-docs-layout,.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(0,1fr)}

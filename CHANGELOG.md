@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.18.0] - 2026-11-19
+
 ### Added
 
 - **The Framework's words in the page language.** A page whose `lang` has a

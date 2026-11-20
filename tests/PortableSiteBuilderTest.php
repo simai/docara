@@ -832,18 +832,18 @@ MD);
         self::assertStringNotContainsString('docara-content bg-surface-page border radius-surface', $index);
         self::assertStringNotContainsString('docara-outline-rail bg-surface-page border radius-surface', $guide);
         self::assertStringContainsString(
-            '<div class="docara-sidebar-scroll sf-scrollbar">',
+            '<div class="docara-sidebar-scroll sf-scrollbar" data-mode="thin flush square">',
             $guide,
-            'The default overlay preset must use the Framework component default without a redundant attribute.',
+            'The default overlay preset draws the thin square bar on the column line (sf-scrollbar data-mode, C210).',
         );
         self::assertStringContainsString(
-            '<div class="docara-outline-scroll sf-scrollbar">',
+            '<div class="docara-outline-scroll sf-scrollbar" data-mode="thin flush square">',
             $guide,
             'The outline must use the same Framework scrollbar preset as the navigation.',
         );
         self::assertStringContainsString('class="sf-scrollbar__viewport"', $guide);
         self::assertStringNotContainsString(
-            'class="docara-sidebar-scroll sf-scrollbar" data-sf-scrollbar=',
+            'data-sf-scrollbar=',
             $guide,
         );
         self::assertStringContainsString('class="docara-landing"', $landing);

@@ -6,6 +6,24 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **Column widths.** `:::columns {widths=2/1}` gives the columns shares of
+  the row on a wide screen, left to right (`1/1`, `2/1`, `1/2`, `3/1`, `1/3`,
+  `3/2`, `2/3`, and `2/1/1`, `1/2/1`, `1/1/2` for three columns). A phone still
+  stacks them. A share list that does not match the number of columns stops
+  the build with `MARKDOWN_COLUMNS_WIDTHS_MISMATCH`.
+- **Blocks inside columns.** An outer `::::columns` may hold details, card,
+  alert, figure and steps blocks, so questions and a side card can stand in
+  one row.
+
+### Changed
+
+- **The documentation home page** merges its two benefit grids into six
+  points, shows the examples as larger cards with pictures, puts the
+  questions beside a short "Docara at a glance" card, and ends with one call
+  to action and a footer.
+
 ## [3.18.0] - 2026-11-19
 
 ### Added

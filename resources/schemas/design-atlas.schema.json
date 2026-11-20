@@ -77,7 +77,8 @@
         "max_children": {"type": "integer", "minimum": 1, "maximum": 512},
         "order": {"type": "string", "enum": ["declared", "layout_regions", "manifest"]},
         "max_depth": {"type": "integer", "minimum": 1, "maximum": 16},
-        "depth_semantics": {"type": "string", "enum": ["relative_subtree_root_level_1"]}
+        "depth_semantics": {"type": "string", "enum": ["relative_subtree_root_level_1"]},
+        "rendered_by": {"type": "string", "enum": ["document", "block"]}
       },
       "additionalProperties": false
     }

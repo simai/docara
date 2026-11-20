@@ -32,35 +32,46 @@ php vendor/bin/docara serve production
 
 Заготовки, проверка результата и публикация — в [полном быстром старте](/ru/start/quick-start/).
 
-## Почему Docara
+## Что вы получаете
 
 :::features
-- :icon[package_2]{size=2 container=square variant=tonal scheme=primary} **Composer вместо npm.** Docara ставится и обновляется как обычный PHP-пакет: без npm-зависимостей и собственной темы, которую нужно поддерживать.
-- :icon[bolt]{size=2 container=square variant=tonal scheme=primary} **Статический результат.** Сборка выдаёт готовые HTML, CSS и JavaScript. Их можно положить на GitHub Pages или любой веб-сервер: PHP и Node.js там не нужны.
-- :icon[palette]{size=2 container=square variant=tonal scheme=primary} **Дизайн-система SIMAI.** Интерфейс, светлая и тёмная темы и компоненты берутся из SIMAI Framework. Ошибку в вызове компонента сборка найдёт до публикации.
+- :icon[package_2]{size=2 container=square variant=tonal scheme=primary} **Composer вместо npm.** Docara ставится и обновляется как обычный PHP-пакет. Сборка выдаёт готовые HTML, CSS и JavaScript: их можно выложить на GitHub Pages или любой веб-сервер без PHP и Node.js.
+- :icon[palette]{size=2 container=square variant=tonal scheme=primary} **Дизайн-система SIMAI.** Интерфейс, светлая и тёмная темы и компоненты берутся из SIMAI Framework. Читатель сам выбирает тему, размер шрифта и ширину текста.
+- :icon[account_tree]{size=2 container=square variant=tonal scheme=primary} **Меню из структуры файлов.** Разделы, хлебные крошки, содержание страницы и переходы к соседним материалам строятся сами. Подробнее — в [«Меню и разделах»](/ru/authoring/navigation/).
+- :icon[search]{size=2 container=square variant=tonal scheme=primary} **Поиск без сервера.** Индекс собирается при сборке и работает в браузере читателя: не нужны ни база данных, ни внешний сервис.
+- :icon[translate]{size=2 container=square variant=tonal scheme=primary} **Несколько языков.** Каждый язык — своя папка с Markdown, переключатель языка и `hreflang` появляются сами. Подробнее — в [«Многоязычном сайте»](/ru/authoring/multilingual-site/).
+- :icon[verified]{size=2 container=square variant=tonal scheme=primary} **Проверка до публикации.** Ошибку в вызове компонента сборка найдёт сразу, а `verify-static` проверит страницы, ссылки, ресурсы и поиск. Подробнее — в [«Проверке результата»](/ru/build/verify/).
 :::
 
-## Документация из коробки
+## Посмотрите, как это выглядит
 
-Меню, поиск и удобное чтение Docara строит сама — без своей темы и плагинов.
+::::grid {columns=3 gap=2}
+:::card
+![](assets/media-components.webp)
 
-:::features
-- :icon[account_tree]{size=2 container=square variant=tonal scheme=primary} **Меню и навигация.** Разделы, хлебные крошки, содержание страницы и переходы к соседним материалам строятся из структуры файлов. Подробнее — в разделе [«Меню и разделы»](/ru/authoring/navigation/).
-- :icon[search]{size=2 container=square variant=tonal scheme=primary} **Поиск по сайту.** Индекс собирается при сборке и работает в браузере читателя: серверу не нужны ни база данных, ни внешний сервис.
-- :icon[tune]{size=2 container=square variant=tonal scheme=primary} **Удобно читать.** Читатель сам выбирает светлую или тёмную тему, размер шрифта и ширину текста.
-- :icon[translate]{size=2 container=square variant=tonal scheme=primary} **Несколько языков.** Каждый язык — своя папка с Markdown. Связанные страницы получают переключатель языка и `hreflang`, подробнее — в [«Многоязычном сайте»](/authoring/multilingual-site/).
-- :icon[web]{size=2 container=square variant=tonal scheme=primary} **Лендинг из тех же файлов.** Эта страница — тоже Docara: preset `landing` убирает меню документации и оставляет первый экран, блоки и призыв к действию. Как она устроена — [на отдельной странице](/landing/).
-- :icon[verified]{size=2 container=square variant=tonal scheme=primary} **Проверка перед публикацией.** Команда `verify-static` проверяет готовый сайт до выкладки: страницы, локальные ссылки, ресурсы и поисковый индекс. Подробнее — в [«Проверке статического результата»](/build/verify/).
+#### [Каталог компонентов](/ru/components/)
+
+Каждый компонент — с живым примером, параметрами и кодом, который можно скопировать.
 :::
 
-## Примеры страниц
+:::card
+![](assets/hero-split.webp)
 
-:::features
-- :icon[widgets]{size=2 container=square variant=tonal scheme=primary} **[Каталог компонентов](/components/).** Каждый компонент с живым примером, параметрами и кодом, который можно скопировать.
-- :icon[dashboard]{size=2 container=square variant=tonal scheme=primary} **[Примеры макетов](/ru/development/examples/).** Отдельные страницы с разными областями, шапками и наследованием настроек — вместе с исходными файлами.
-- :icon[extension]{size=2 container=square variant=tonal scheme=primary} **[Компоненты проекта](/project-demos/).** Собственные компоненты сайта, подключённые без изменения Docara: конструктор команды установки и конфигуратор продукта.
+#### [Примеры макетов](/ru/development/examples/)
+
+Страницы с разными областями, шапками и наследованием настроек — вместе с исходными файлами.
 :::
 
+:::card
+![](assets/promo.webp)
+
+#### [Лендинг из тех же файлов](/ru/landing/)
+
+Эта страница — тоже Docara: тот же Markdown, только без меню документации.
+:::
+::::
+
+::::columns {widths=2/1}
 ## Частые вопросы
 
 :::details {layout=lines}
@@ -69,17 +80,7 @@ php vendor/bin/docara serve production
 VitePress и Docusaurus — проекты на npm: сайт собирается из JavaScript-пакетов,
 а внешний вид задаёт тема, которую команда настраивает и обновляет. Docara
 ставится через Composer, хранит содержание в Markdown и JSON, а интерфейс
-берёт из SIMAI Framework. Она подходит командам, которые работают на PHP или
-хотят документацию в общем стиле с продуктами SIMAI.
-:::
-
-:::details {layout=lines}
-### Какие требования?
-
-Для сборки нужны PHP 8.2+ с расширениями `ctype`, `dom`, `intl`, `json`,
-`libxml` и `mbstring`, Composer и Node.js 20+: команда `node` в `PATH` или путь
-в переменной `DOCARA_NODE_BINARY`. Готовый сайт статический, ему нужен только
-веб-сервер.
+берёт из SIMAI Framework. Подробное сравнение — в [«Что такое Docara»](/ru/start/what-is-docara/).
 :::
 
 :::details {layout=lines}
@@ -105,10 +106,21 @@ VitePress и Docusaurus — проекты на npm: сайт собираетс
 предыдущей версии можно командой `upgrade --rollback=latest`.
 :::
 
-:::promo
-## Соберите первый сайт
+---
 
-Быстрый старт проведёт от пустого каталога до готовой страницы в браузере.
+## Коротко о Docara
 
+:::card
+- **Версия:** Docara 3, лицензия Apache 2.0
+- **Для сборки:** PHP 8.2+, Composer, Node.js 20+
+- **Для сайта:** любой статический веб-сервер
+- **Поиск по документации:** :kbd[⌘] + :kbd[K] или :kbd[Ctrl] + :kbd[K]
+- **Для ИИ-помощников:** [llms.txt](/llms.txt) — вся документация одним текстом
+
+[Быстрый старт](/ru/start/quick-start/) · [Справочник](/ru/reference/)
+:::
+::::
+
+:::cta
 [Перейти к быстрому старту](/ru/start/quick-start/)
 :::

@@ -294,6 +294,12 @@ final class PortableMarkdownRenderer
                 TypedRendererId::Columns => $this->renderColumns(
                     $block['markdown'],
                     $referenceDefinitions,
+                    $block['attributes'],
+                    $sourceRoot,
+                    $sourceFile,
+                    $sourceLine,
+                    $exampleSettings,
+                    $codeSettings,
                 ),
                 TypedRendererId::Steps => $this->renderSteps($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Cta => $this->renderCta($this->converter->convert($blockMarkdown)),
@@ -3742,10 +3748,34 @@ HTML;
         );
     }
 
-    private function renderColumns(string $markdown, string $referenceDefinitions): string
-    {
+    /**
+     * @param  array<string,string>  $attributes
+     * @param  array<string,mixed>  $exampleSettings
+     * @param  array<string,mixed>  $codeSettings
+     */
+    private function renderColumns(
+        string $markdown,
+        string $referenceDefinitions,
+        array $attributes = [],
+        ?string $sourceRoot = null,
+        ?string $sourceFile = null,
+        int $sourceLine = 1,
+        array $exampleSettings = [],
+        array $codeSettings = [],
+    ): string {
+        $this->assertAttributes($attributes, 'columns');
         $regions = $this->columnRegions->parse($markdown);
         $count = count($regions);
+        $widths = null;
+        if (isset($attributes['widths'])) {
+            $widths = $this->catalogueChoice($attributes['widths'], 'columns', 'widths');
+            if (count(explode('/', $widths)) !== $count) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_COLUMNS_WIDTHS_MISMATCH',
+                    "Columns [widths=$widths] names " . count(explode('/', $widths)) . " shares, but the block has $count regions.",
+                );
+            }
+        }
         $classes = match ($count) {
             2 => 'grid grid-col-1 md:grid-col-2 gap-2',
             3 => 'grid grid-col-1 md:grid-col-2 lg:grid-col-3 gap-2',
@@ -3756,7 +3786,11 @@ HTML;
             if ($referenceDefinitions !== '') {
                 $region = $referenceDefinitions . "\n\n" . $region;
             }
-            $html = trim((string) $this->converter->convert($region));
+            // A region may hold Docara blocks (an outer ::::columns around
+            // :::details or :::card); those render as on the page itself.
+            $html = trim(preg_match('/^:::/m', $region) === 1
+                ? $this->renderCompiled($region, $sourceRoot, $sourceFile, $sourceLine, $exampleSettings, $codeSettings)
+                : (string) $this->converter->convert($region));
             if ($html === '') {
                 throw new PortableConfigurationException(
                     'MARKDOWN_COLUMNS_REGION_EMPTY',
@@ -3771,8 +3805,9 @@ HTML;
             $content[] = '<div class="min-w-0">' . $html . '</div>';
         }
 
-        return '<section data-docara-block="columns" data-docara-columns="' . $count
-            . '" class="' . $classes . ' m-bottom-1">' . implode('', $content) . '</section>';
+        return '<section data-docara-block="columns" data-docara-columns="' . $count . '"'
+            . ($widths === null ? '' : ' data-docara-columns-widths="' . $widths . '"')
+            . ' class="' . $classes . ' m-bottom-1">' . implode('', $content) . '</section>';
     }
 
     private function containsVisibleText(string $text): bool

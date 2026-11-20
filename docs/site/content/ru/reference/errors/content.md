@@ -205,6 +205,7 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_COLUMNS_REGION_COUNT_INVALID` | В columns меньше двух или больше четырёх колонок. **Что сделать:** Разделите содержимое на 2–4 части. |
 | `MARKDOWN_COLUMNS_SEPARATOR_INVALID` | Колонки разделены не строкой `---` с пустыми строками до и после. **Что сделать:** Поставьте между колонками отдельную строку `---`, окружённую пустыми строками. |
 | `MARKDOWN_COLUMNS_REGION_EMPTY` | Одна из колонок пустая. **Что сделать:** Добавьте в неё текст или уменьшите число колонок. |
+| `MARKDOWN_COLUMNS_WIDTHS_MISMATCH` | В `widths` долей больше или меньше, чем колонок: `widths=2/1/1` у двух колонок. **Что сделать:** Укажите по одной доле на колонку, например `widths=2/1`, или уберите параметр. |
 | `MARKDOWN_SURFACE_CONTENT_REQUIRED` | [Surface](/components/surface/) пустой. **Что сделать:** Добавьте содержимое. |
 | `MARKDOWN_SURFACE_BACKGROUND_REQUIRED` | Положение фона указано без `background_image`. **Что сделать:** Добавьте `background_image` или уберите настройки положения. |
 | `MARKDOWN_SURFACE_OVERLAY_REQUIRED` | `overlay_strength` указан при `overlay=none`. **Что сделать:** Укажите `overlay=light` или `overlay=dark`. |

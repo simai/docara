@@ -182,7 +182,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/landing-blocks.md",
-            "source_sha256": "395e1ec42478888ea1583041d5c42eb62e386fe3946d93217c6925eb99c95b70",
+            "source_sha256": "6796f98fefa06f5da239892448802b18d8bb60719ac56368219b03899f986738",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/components/landing-blocks.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/components/landing-blocks.md",
@@ -358,7 +358,7 @@
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.columns.json",
-            "source_sha256": "ea56620ce21eaa0505b79fff899550099ec52d01a751d75bb0f1b8d0aea4995d",
+            "source_sha256": "af16b23931d2105a6f53fb3ac1e18d805ddb82a65ef32c79a3800620f98d2de9",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/resources/component-catalog/typed/docara.columns.json",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/resources/component-catalog/typed/docara.columns.json",
@@ -573,5 +573,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "dfea88128c1a85612a8d83298cd6597634473126e68b802a116d5d0afd56a4ce"
+    "content_sha256": "3e30693e1e63584f8c0d5bfc5597b0593b2b5c4810ec0e79f73f5467bbd69ad2"
 }

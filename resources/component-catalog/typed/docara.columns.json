@@ -11,12 +11,48 @@
         "jobs": [
             "arrange_related_regions"
         ],
-        "parameters": []
+        "parameters": [
+            {
+                "name": "widths",
+                "type": "enum",
+                "required": false,
+                "values": [
+                    "1/1",
+                    "2/1",
+                    "1/2",
+                    "3/1",
+                    "1/3",
+                    "3/2",
+                    "2/3",
+                    "1/1/1",
+                    "2/1/1",
+                    "1/2/1",
+                    "1/1/2",
+                    "1/1/1/1"
+                ]
+            }
+        ]
     },
     "states": [
         "stacked",
         "responsive_columns"
     ],
+    "container_contract": {
+        "allowed_children": [
+            "docara.alert",
+            "docara.card",
+            "docara.details",
+            "docara.figure",
+            "docara.steps"
+        ],
+        "slots": [],
+        "min_children": 0,
+        "max_children": 24,
+        "order": "declared",
+        "max_depth": 2,
+        "depth_semantics": "relative_subtree_root_level_1",
+        "rendered_by": "block"
+    },
     "verification": {
         "renderer": true,
         "tests": true,

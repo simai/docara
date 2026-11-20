@@ -1572,10 +1572,10 @@ MD);
     }
 
     #[Test]
-    public function columns_reject_nested_typed_and_smart_directives(): void
+    public function columns_reject_nested_blocks_outside_their_contract_and_smart_directives(): void
     {
-        foreach (['card', 'ui.alert'] as $inner) {
-            $innerBody = $inner === 'card' ? "Nested card\n" : "{}\n";
+        foreach (['grid', 'hero', 'ui.alert'] as $inner) {
+            $innerBody = $inner === 'ui.alert' ? "{}\n" : "Nested\n";
 
             try {
                 (new PortableMarkdownRenderer)->render(
@@ -1587,6 +1587,42 @@ MD);
                 self::fail("Nested [$inner] unexpectedly survived [columns].");
             } catch (PortableConfigurationException $exception) {
                 self::assertSame('MARKDOWN_BLOCK_NESTING_UNSUPPORTED', $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
+    public function columns_hold_details_and_card_blocks_and_take_declared_widths(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(
+            "::::columns {widths=2/1}\n"
+            . "## Questions\n\n:::details {layout=lines}\n### One?\n\nYes.\n:::\n\n"
+            . ":::details {layout=lines}\n### Two?\n\nNo.\n:::\n\n---\n\n"
+            . ":::card\n### About\n\nShort facts.\n:::\n"
+            . "::::\n",
+        );
+
+        self::assertStringContainsString(
+            '<section data-docara-block="columns" data-docara-columns="2" data-docara-columns-widths="2/1" class="grid grid-col-1 md:grid-col-2 gap-2 m-bottom-1">',
+            $html,
+        );
+        self::assertSame(2, substr_count($html, '<article data-docara-block="details" data-view="lines"'));
+        self::assertSame(1, substr_count($html, '<section data-docara-block="card"'));
+        self::assertStringNotContainsString(':::', $html);
+
+        $plain = (new PortableMarkdownRenderer)->render(":::columns\nA\n\n---\n\nB\n:::\n");
+        self::assertStringNotContainsString('data-docara-columns-widths', $plain);
+
+        foreach ([
+            [":::columns {widths=2/1/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COLUMNS_WIDTHS_MISMATCH'],
+            [":::columns {widths=5/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
+            [":::columns {width=2/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN'],
+        ] as [$markdown, $code]) {
+            try {
+                (new PortableMarkdownRenderer)->render($markdown);
+                self::fail("Columns unexpectedly rendered for [$code].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($code, $exception->errorCode);
             }
         }
     }

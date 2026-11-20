@@ -4,7 +4,9 @@
   "description": "Docara собирает статический сайт документации из Markdown и JSON: ставится через Composer, работает на PHP и SIMAI Framework, публикуется на любом хостинге.",
   "preset": "landing",
   "layout": {
-    "container": {"max": 7}
+    "container": {
+      "max": 7
+    }
   },
   "navigation": {
     "hidden": true,

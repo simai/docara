@@ -62,4 +62,20 @@ final readonly class PortablePageViewModel
         public string $contentLanguage = '',
         public string $sidebarScrollRestore = '',
     ) {}
+
+    /**
+     * The words of the Framework scrollbar (sf-scrollbar data-mode, C210) for
+     * the menu and contents columns. The layout presets keep their names:
+     * overlay is the thin square bar laid on the column's line, as Docara
+     * drew it before C210; persistent keeps it always shown.
+     */
+    public function scrollbarMode(): string
+    {
+        return match ($this->scrollbarPreset) {
+            'persistent' => 'always thin flush square',
+            'standard' => '',
+            'hidden' => 'hidden',
+            default => 'thin flush square',
+        };
+    }
 }

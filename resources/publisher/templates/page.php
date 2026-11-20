@@ -46,7 +46,7 @@
 <?php if ($view->regions['sidebar'] !== '') { ?>
         <aside class="docara-sidebar" data-docara-region="sidebar" data-sf-observer="ignore">
             <div class="docara-sidebar-panel">
-                <div class="docara-sidebar-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
+                <div class="docara-sidebar-scroll sf-scrollbar"<?= ' data-mode="' . $view->scrollbarMode() . '"' ?>>
                     <div class="sf-scrollbar__viewport" tabindex="0" aria-label="<?= $view->copy['navigation.sections'] ?>"><?= $view->regions['sidebar'] ?></div>
                 </div>
 <?php if ($view->sidebarCredit !== null) { ?>
@@ -79,7 +79,7 @@ $docaraMain = $view->regions['main'];
         </div>
 <?php if ($view->regions['outline'] !== '') { ?>
         <aside id="docara-outline" class="docara-outline-rail" data-docara-region="outline">
-            <div class="docara-outline-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
+            <div class="docara-outline-scroll sf-scrollbar"<?= ' data-mode="' . $view->scrollbarMode() . '"' ?>>
                 <div class="sf-scrollbar__viewport" tabindex="0" aria-label="<?= $view->copy['navigation.outline'] ?>"><?= $view->regions['outline'] ?></div>
             </div>
         </aside>

@@ -273,6 +273,7 @@ final class MarkdownCompiler
         while (isset($lines[$end]) && trim($lines[$end]) !== $fence) {
             if (! $pageExample
             && ! $this->isContainerDefinition($definition)
+            && ! $this->rendersOwnChildren($definition)
             && preg_match('/^:{3,}[a-z]/', $lines[$end]) === 1
             ) {
                 throw $this->locatedException(
@@ -392,8 +393,29 @@ final class MarkdownCompiler
     /** @param array<string,mixed> $definition */
     private function isContainerDefinition(array $definition): bool
     {
-        return is_array($definition['container_contract'] ?? null)
-            || is_array($definition['nesting_contract'] ?? null);
+        $contract = $this->nestingContract($definition);
+
+        return $contract !== null && ($contract['rendered_by'] ?? 'document') !== 'block';
+    }
+
+    /**
+     * A block whose contract is rendered_by "block" keeps its nested
+     * directives in its own body and renders them itself (columns split
+     * their regions first), so the document does not take it apart.
+     *
+     * @param array<string,mixed> $definition
+     */
+    private function rendersOwnChildren(array $definition): bool
+    {
+        return ($this->nestingContract($definition)['rendered_by'] ?? null) === 'block';
+    }
+
+    /** @param array<string,mixed> $definition @return array<string,mixed>|null */
+    private function nestingContract(array $definition): ?array
+    {
+        $contract = $definition['container_contract'] ?? $definition['nesting_contract'] ?? null;
+
+        return is_array($contract) ? $contract : null;
     }
 
     /** @param list<string> $lines @return array{0:ComponentBlockNode,1:int} */

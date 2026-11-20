@@ -2,22 +2,86 @@
   "schema": "docara.section.v1",
   "title": "Документация Docara",
   "preset": "docs",
-  "branding": {"share_image": "assets/share-ru.png"},
+  "branding": {
+    "share_image": "assets/share-ru.png"
+  },
   "layout": {
-    "container": {"max": 7}
+    "container": {
+      "max": 7
+    },
+    "regions": {
+      "footer": {
+        "enabled": true,
+        "sections": [
+          {
+            "id": "site-footer",
+            "section": "docara.shell",
+            "utilities": [
+              "flex",
+              "flex-wrap",
+              "items-center",
+              "content-main-between",
+              "gap-2"
+            ],
+            "blocks": [
+              {
+                "id": "copyright",
+                "block": "shell.element",
+                "slot": "content",
+                "element": {
+                  "tag": "p",
+                  "text": "Документация Docara · © 2026 SIMAI",
+                  "utilities": [
+                    "m-0"
+                  ]
+                }
+              },
+              {
+                "id": "made-with",
+                "block": "shell.element",
+                "slot": "content",
+                "element": {
+                  "tag": "a",
+                  "text": "Сделано на Docara",
+                  "href": "/ru/start/what-is-docara/",
+                  "aria_label": "Что такое Docara"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
   },
   "header_navigation": {
     "enabled": true,
     "repository": "https://github.com/simai/docara",
     "items": [
-      {"id": "home", "label": "Главная", "href": "/ru/"},
+      {
+        "id": "home",
+        "label": "Главная",
+        "href": "/ru/"
+      },
       {
         "id": "guide",
         "label": "Руководство",
         "href": "/ru/start/",
-        "sections": ["/ru/start/", "/ru/authoring/", "/ru/settings/", "/ru/build/", "/ru/reference/", "/ru/troubleshooting/", "/ru/migration/", "/ru/development/"]
+        "sections": [
+          "/ru/start/",
+          "/ru/authoring/",
+          "/ru/settings/",
+          "/ru/build/",
+          "/ru/reference/",
+          "/ru/troubleshooting/",
+          "/ru/migration/",
+          "/ru/development/"
+        ]
       },
-      {"id": "components", "label": "Компоненты", "href": "/ru/components/"}
+      {
+        "id": "components",
+        "label": "Компоненты",
+        "href": "/ru/components/"
+      }
     ]
   }
 }

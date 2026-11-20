@@ -1,4 +1,4 @@
-:::hero {layout=centered padding=2xl effect=chladni effect_settings='{"speed":100,"transparency":75,"density":30,"palette":"graphite","interactive":true}'}
+:::hero {layout=centered padding=2xl effect=text-search effect_settings='{"speed":80,"intensity":20,"density":40,"columns":3,"hits":4}'}
 # Сайт документации из Markdown — на PHP и Composer
 
 Пишите страницы в Markdown, а настройки — в JSON. Docara соберёт из них

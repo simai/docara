@@ -17,7 +17,7 @@ Composition Document: тот описывает готовую страницу 
 | Заголовок, абзац, ссылка, изображение, список, цитата, код или таблица | Обычный Markdown | [Markdown](/ru/authoring/markdown/) |
 | Короткая метка, кнопка-ссылка, значок или клавиша внутри строки | Inline Docara | [Каталог компонентов](/ru/components/) |
 | Самостоятельный смысловой фрагмент | Блочный компонент Docara | [Каталог компонентов](/ru/components/) |
-| Несколько вложенных блоков с ограничениями | Контейнер Docara | [Surface](/ru/components/surface/) и [Сетка](/ru/components/grid/) |
+| Несколько вложенных блоков с ограничениями | Контейнер Docara | [Surface](/ru/components/layout/surface/) и [Сетка](/ru/components/layout/grid/) |
 | Готовый проверенный элемент интерфейса из SIMAI Framework | Smart-компонент Framework | [Framework-компоненты](/ru/development/smart-components/#новый-компонент-simai-framework) |
 | Компонент конкретного проекта | Smart-компонент проекта или вклад в оболочку | [SDK для разработчика](/ru/development/developer-sdk/) |
 
@@ -80,7 +80,7 @@ Inline-компонент не разрывает абзац:
 ::::
 ```
 
-Для общей контентной полосы используйте [Surface](/ru/components/surface/).
+Для общей контентной полосы используйте [Surface](/ru/components/layout/surface/).
 Hero, Showcase и Promo уже оформлены так же, как Surface, и не требуют
 дополнительной обёртки.
 
@@ -149,14 +149,14 @@ Docara принимает только Smart-компоненты точной �
 
 | Компонент | Было | Стало |
 | --- | --- | --- |
-| [Бейдж](/ru/components/badge/), [кнопка-ссылка](/ru/components/button/) | `type` | `variant` |
-| [Раскрывающийся блок](/ru/components/details/), [шаги](/ru/components/steps/) | `view` | `layout` |
-| [Hero](/ru/components/hero/) | `variant` | `layout` |
-| [Загрузка файла](/ru/components/download/) | `name`, `size` | `title`, `file_size` |
-| [Встроенный материал](/ru/components/embed/) | `title` | `label` |
+| [Бейдж](/ru/components/inline/badge/), [кнопка-ссылка](/ru/components/inline/button/) | `type` | `variant` |
+| [Раскрывающийся блок](/ru/components/blocks/details/), [шаги](/ru/components/blocks/steps/) | `view` | `layout` |
+| [Hero](/ru/components/layout/hero/) | `variant` | `layout` |
+| [Загрузка файла](/ru/components/images-and-files/download/) | `name`, `size` | `title`, `file_size` |
+| [Встроенный материал](/ru/components/images-and-files/embed/) | `title` | `label` |
 | [Цитата с подписью](/ru/authoring/markdown/) | `url` | `href` |
-| Изображение, [рисунок](/ru/components/figure/), [медиа](/ru/components/media/), embed | `ratio=16x9` | `ratio=16/9` |
-| [Логотипы](/ru/components/logos/) | `tone=normal` | `tone=default` |
+| Изображение, [рисунок](/ru/components/images-and-files/figure/), [медиа](/ru/components/images-and-files/media/), embed | `ratio=16x9` | `ratio=16/9` |
+| [Логотипы](/ru/components/images-and-files/logos/) | `tone=normal` | `tone=default` |
 
 Рисунок, медиа и embed теперь принимают один набор пропорций: `1/1`, `4/3`,
 `3/2`, `16/9` и `21/9`.

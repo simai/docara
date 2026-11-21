@@ -73,5 +73,5 @@ TalkBack на Android — и прослушайте начало страниц�
 
 - [Качество документации](/ru/authoring/documentation-quality/)
 - [Панель читателя](/ru/settings/reader-preferences/)
-- [Рисунок](/ru/components/figure/) — описание и подпись изображения
+- [Рисунок](/ru/components/images-and-files/figure/) — описание и подпись изображения
 - [Коды отчёта о качестве](/ru/reference/errors/quality/)

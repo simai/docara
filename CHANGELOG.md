@@ -8,17 +8,27 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
-- **Column widths.** `:::columns {widths=2/1}` gives the columns shares of
+- **Column ratio.** `:::columns {ratio=2/1}` gives the columns shares of
   the row on a wide screen, left to right (`1/1`, `2/1`, `1/2`, `3/1`, `1/3`,
   `3/2`, `2/3`, and `2/1/1`, `1/2/1`, `1/1/2` for three columns). A phone still
   stacks them. A share list that does not match the number of columns stops
-  the build with `MARKDOWN_COLUMNS_WIDTHS_MISMATCH`.
+  the build with `MARKDOWN_COLUMNS_RATIO_MISMATCH`. Columns now check their attributes:
+  an unknown one stops the build with `MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN`.
 - **Blocks inside columns.** An outer `::::columns` may hold details, card,
   alert, figure and steps blocks, so questions and a side card can stand in
   one row.
 
 ### Changed
 
+- **Component pages in menu sections.** The documentation's component pages
+  sit in six sections of the left menu, the same as on the Components overview:
+  content blocks, code and data, layout, media (`images-and-files`), inline and
+  actions, and SIMAI Framework. Each section has its own page with a short guide
+  to choosing; the old addresses such as `/ru/components/alert/` redirect to the
+  new ones such as `/ru/components/blocks/alert/`.
+- **Example frame tab bar inset.** The example and log tab bars again stand a
+  step in from the frame's sides and a third of a step from its top; after the
+  ui-dc9fc39aeb26 repin their padding utility lost to the Framework tabs layer.
 - **The documentation home page** merges its two benefit grids into six
   points, shows the examples as larger cards with pictures, puts the
   questions beside a short "Docara at a glance" card, and ends with one call

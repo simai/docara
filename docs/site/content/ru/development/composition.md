@@ -305,10 +305,10 @@ design/
 `.docara-preview/output/<target>/`:
 
 ```bash
-docara preview page --page=/ru/components/alert/
-docara preview layout --page=/ru/components/alert/
-docara preview region --page=/ru/components/alert/ --selector=main
-docara preview smart --page=/ru/components/alert/ --selector=ui.alert
+docara preview page --page=/ru/components/blocks/alert/
+docara preview layout --page=/ru/components/blocks/alert/
+docara preview region --page=/ru/components/blocks/alert/ --selector=main
+docara preview smart --page=/ru/components/blocks/alert/ --selector=ui.alert
 ```
 
 Для автоматизации добавьте `--json`. С `--watch` команда следит за всем, от
@@ -317,7 +317,7 @@ docara preview smart --page=/ru/components/alert/ --selector=ui.alert
 из пакета и проекта:
 
 ```bash
-docara preview region --page=/ru/components/alert/ --selector=main --watch
+docara preview region --page=/ru/components/blocks/alert/ --selector=main --watch
 ```
 
 В каталоге результата лежат три файла:

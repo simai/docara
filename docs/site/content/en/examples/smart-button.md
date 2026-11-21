@@ -20,7 +20,7 @@ with three lines, without HTML.
 2. `text` is the label, `preset` a ready button look. The other parameters
    come from the view.
 3. This is a button, not a link: it does not go anywhere by itself. To go to another
-   page, use the [Docara link button](/en/components/button/).
+   page, use the [Docara link button](/en/components/inline/button/).
 
 ## What you can change
 
@@ -36,4 +36,4 @@ with three lines, without HTML.
 
 - [A header with an action button](../region-header/)
 - [An alert in the page text](../smart-alert/)
-- [SIMAI Framework components](/en/components/smart-ui/)
+- [SIMAI Framework components](/en/components/simai-framework/smart-ui/)

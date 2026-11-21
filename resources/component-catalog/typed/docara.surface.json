@@ -24,7 +24,7 @@
     },
     "states": ["contained", "full_bleed", "decorative_media"],
     "verification": {"renderer": true, "tests": true, "docs": true, "demo": true},
-    "docs_ref": "docs/site/content/ru/components/surface.md",
+    "docs_ref": "docs/site/content/ru/components/layout/surface.md",
     "container_contract": {
         "allowed_children": [],
         "allowed_child_capabilities": ["content.embeddable"],

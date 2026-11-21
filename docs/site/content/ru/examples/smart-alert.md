@@ -32,10 +32,10 @@ description: "Как поставить в текст страницы заме�
 | `closable` | Можно ли закрыть уведомление |
 | `aria-label` | Название уведомления для экранного диктора |
 
-Для простых заметок без SIMAI Framework есть [блок «Уведомление»](/ru/components/alert/).
+Для простых заметок без SIMAI Framework есть [блок «Уведомление»](/ru/components/blocks/alert/).
 
 ## См. также
 
 - [Заметка рядом с оглавлением](../region-aside/)
 - [Кнопка в тексте страницы](../smart-button/)
-- [Компоненты SIMAI Framework](/ru/components/smart-ui/)
+- [Компоненты SIMAI Framework](/ru/components/simai-framework/smart-ui/)

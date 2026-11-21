@@ -152,5 +152,5 @@ php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
   представления, пресеты — на странице [«Smart-компоненты»](/ru/development/smart-components/).
 - Весь путь от плана до проверки для разработчика и AI-агента — на странице
   [«SDK для разработчика и AI-агента»](/ru/development/developer-sdk/).
-- Компонент можно поставить внутрь [оформленной полосы](/ru/components/surface/),
+- Компонент можно поставить внутрь [оформленной полосы](/ru/components/layout/surface/),
   если объявить его встраиваемым.

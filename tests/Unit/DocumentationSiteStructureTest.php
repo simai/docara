@@ -27,9 +27,20 @@ final class DocumentationSiteStructureTest extends TestCase
             self::assertFileDoesNotExist($root . '/' . $entry . '.md');
             self::assertStringNotContainsString('/ru/components/' . $entry . '/', $index);
         }
-        $pages = glob($root . '/*.md') ?: [];
+        // The component pages sit in six menu sections, one per catalogue
+        // category; each section has its own page and no loose page remains.
+        $sections = ['blocks', 'code-and-data', 'layout', 'images-and-files', 'inline', 'simai-framework'];
+        $sectionPages = array_map(static fn (string $page): string => basename($page, '.md'), glob($root . '/*.md') ?: []);
+        sort($sectionPages);
+        $expectedSections = $sections;
+        sort($expectedSections);
+        self::assertSame($expectedSections, $sectionPages);
+        $pages = glob($root . '/*/*.md') ?: [];
         self::assertSame(31, count($pages));
-        self::assertSame(31, preg_match_all('#/ru/components/[a-z0-9-]+/#', $index));
+        self::assertSame(31, preg_match_all('#/ru/components/[a-z0-9-]+/[a-z0-9-]+/#', $index));
+        foreach ($sections as $section) {
+            self::assertSame(1, substr_count($index, '](/ru/components/' . $section . '/)'), $section);
+        }
         foreach (['Текст и Markdown', 'Содержательные блоки', 'Код и данные', 'Макет', 'Медиа', 'Inline и действия', 'SIMAI Framework'] as $category) {
             self::assertStringContainsString('## ' . $category, $index);
         }
@@ -39,8 +50,10 @@ final class DocumentationSiteStructureTest extends TestCase
         self::assertSame(1, substr_count($index, "| Конструкция | Для чего |\n| --- | --- |"));
         foreach ($pages as $page) {
             $slug = basename($page, '.md');
+            $section = basename(dirname($page));
+            self::assertContains($section, $sections, $slug);
             self::assertMatchesRegularExpression(
-                '#^\| \[[^]]+\]\(/ru/components/' . preg_quote($slug, '#') . '/\) \| \S[^|]* \|$#mu',
+                '#^\| \[[^]]+\]\(/ru/components/' . preg_quote($section . '/' . $slug, '#') . '/\) \| \S[^|]* \|$#mu',
                 $index,
                 $slug,
             );
@@ -57,7 +70,7 @@ final class DocumentationSiteStructureTest extends TestCase
         // Each native capability is listed in the catalogue and described in
         // its own part of the Markdown guide; fenced code also has a page.
         $refs = [
-            'native.code' => ['/ru/components/code/', '## Код'],
+            'native.code' => ['/ru/components/code-and-data/code/', '## Код'],
             'native.description_list' => ['/ru/authoring/markdown/#чеклисты-и-определения', '## Чеклисты и определения'],
             'native.footnotes_and_sources' => ['/ru/authoring/markdown/#сноски-и-источники', '## Сноски и источники'],
             'native.headings_and_text' => ['/ru/authoring/markdown/#заголовки-и-текст', '## Заголовки и текст'],
@@ -201,23 +214,26 @@ final class DocumentationSiteStructureTest extends TestCase
         // redirect of every page, and every redirects.json source.
         $outputs = ['index.html' => 'root', '404.html' => 'not_found'];
         $pages = [];
-        $content = $site . '/content/ru';
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($content, \FilesystemIterator::SKIP_DOTS));
-        foreach ($iterator as $file) {
-            if (! $file instanceof \SplFileInfo || $file->getExtension() !== 'md') {
-                continue;
-            }
-            $route = substr($file->getPathname(), strlen($content) + 1, -3);
-            $sidecar = substr($file->getPathname(), 0, -3) . '.page.json';
-            if (is_file($sidecar)) {
-                $page = json_decode((string) file_get_contents($sidecar), true, 512, JSON_THROW_ON_ERROR);
-                self::assertArrayNotHasKey('slug', $page, "$route: a slug would move the page away from its file route.");
-            }
-            $route = $route === 'index' ? '' : preg_replace('#/index$#', '', $route);
-            $pages['ru' . ($route === '' ? '' : '/' . $route)] = true;
-            $outputs['ru/' . ($route === '' ? '' : $route . '/') . 'index.html'] = 'page';
-            if ($route !== '') {
-                $outputs[$route . '/index.html'] = 'legacy';
+        // English pages count too: redirects keep the old English addresses.
+        foreach (['ru', 'en'] as $locale) {
+            $content = $site . '/content/' . $locale;
+            $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($content, \FilesystemIterator::SKIP_DOTS));
+            foreach ($iterator as $file) {
+                if (! $file instanceof \SplFileInfo || $file->getExtension() !== 'md') {
+                    continue;
+                }
+                $route = substr($file->getPathname(), strlen($content) + 1, -3);
+                $sidecar = substr($file->getPathname(), 0, -3) . '.page.json';
+                if (is_file($sidecar)) {
+                    $page = json_decode((string) file_get_contents($sidecar), true, 512, JSON_THROW_ON_ERROR);
+                    self::assertArrayNotHasKey('slug', $page, "$route: a slug would move the page away from its file route.");
+                }
+                $route = $route === 'index' ? '' : preg_replace('#/index$#', '', $route);
+                $pages[$locale . ($route === '' ? '' : '/' . $route)] = true;
+                $outputs[$locale . '/' . ($route === '' ? '' : $route . '/') . 'index.html'] = 'page';
+                if ($locale === 'ru' && $route !== '') {
+                    $outputs[$route . '/index.html'] = 'legacy';
+                }
             }
         }
         $redirects = json_decode((string) file_get_contents($site . '/redirects.json'), true, 512, JSON_THROW_ON_ERROR);

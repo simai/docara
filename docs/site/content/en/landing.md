@@ -27,9 +27,9 @@ Such an icon sits above the card title, like an image.
 
 The Markdown source of the home page is in `content/en/index.md` (and
 `content/ru/index.md` for Russian). The first screen and the expandable
-questions are described on the [Hero](/components/hero/) and
-[Details](/components/details/) pages, the background animation on the
-[Background effects](/components/effects/) page. The `features`, `showcase`,
+questions are described on the [Hero](/components/layout/hero/) and
+[Details](/components/blocks/details/) pages, the background animation on the
+[Background effects](/components/layout/effects/) page. The `features`, `showcase`,
 `promo`, `columns` and `cta` blocks with live examples are described on the
-[Landing blocks](/components/landing-blocks/) page. The other components are
+[Landing blocks](/components/layout/landing-blocks/) page. The other components are
 listed in the [component reference](/components/).

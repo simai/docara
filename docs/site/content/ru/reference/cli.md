@@ -55,7 +55,7 @@ Environment по умолчанию — `local`, каталог результа
 сборки:
 
 ```bash
-php vendor/bin/docara build production --page=/ru/components/badge/
+php vendor/bin/docara build production --page=/ru/components/inline/badge/
 ```
 
 Docara проверит accepted full-build receipts, выберет route до компиляции

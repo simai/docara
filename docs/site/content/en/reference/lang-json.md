@@ -36,7 +36,7 @@ and `transitions`. The `examples` group holds only the interface labels of
 examples, such as the responsive preview button; `blocks` and `atlas` hold
 the labels of blocks and of the Design Atlas list that Docara writes at build
 time, `reference` the labels of the
-[component reference](/en/components/component-reference/). The groups `pages`, `components` and `catalog` are forbidden: page text
+[component reference](/en/components/code-and-data/component-reference/). The groups `pages`, `components` and `catalog` are forbidden: page text
 and component descriptions belong to Markdown.
 
 ## Declare the locale
@@ -292,4 +292,4 @@ The `docara init` starters write `reader.appearance`, `reader.appearance_descrip
 
 - [Multilingual site](/en/authoring/multilingual-site/) — how languages and fallback languages work
 - [lang.json error codes](/en/reference/errors/site/#lang-json-interface-strings)
-- [Background effects](/components/effects/) — the labels of the pause button
+- [Background effects](/components/layout/effects/) — the labels of the pause button

@@ -55,7 +55,7 @@ MD, $this->site, $this->site . '/content/ru/components/surface.md');
         $full = (new PortableMarkdownRenderer)->render(
             ":::surface {width=full content_width=full padding=lg}\n## Full\n\nText.\n:::\n",
             $this->site,
-            $this->site . '/content/ru/components/surface.md',
+            $this->site . '/content/ru/components/layout/surface.md',
         );
         self::assertStringContainsString('w-full p-3', $full);
         // On a narrow screen the landing shell sets the vertical padding only.
@@ -120,7 +120,7 @@ MD);
                 (new PortableMarkdownRenderer)->render(
                     ":::surface {{$attributes}}\n## Title\n\nBody.\n:::\n",
                     $this->site,
-                    $this->site . '/content/ru/components/surface.md',
+                    $this->site . '/content/ru/components/layout/surface.md',
                 );
                 self::fail("Unsafe Surface input [$attributes] was accepted.");
             } catch (PortableConfigurationException $exception) {
@@ -209,7 +209,7 @@ MD);
     {
         $destination = $this->site . '/build_surface-pagebuilder-' . bin2hex(random_bytes(8));
         try {
-            $plan = (new PortableConfigurationLoader($this->site))->resolve('content/ru/components/surface.md');
+            $plan = (new PortableConfigurationLoader($this->site))->resolve('content/ru/components/layout/surface.md');
             $site = json_decode((string) file_get_contents($this->site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
             $project = ProjectSmartRuntime::fromSite($this->site, $site, $plan->frameworkLock);
             self::assertNotNull($project);
@@ -260,7 +260,7 @@ MD);
                 recipeCompiler: FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot),
             ))->build($this->site, $destination);
 
-            $html = (string) file_get_contents($destination . '/ru/components/surface/index.html');
+            $html = (string) file_get_contents($destination . '/ru/components/layout/surface/index.html');
             self::assertSame(1, substr_count($html, 'data-project-product-configurator'));
             self::assertSame(1, substr_count($html, '/_docara/smart/project.product-configurator/assets/product-configurator.js'));
             self::assertFileExists($destination . '/_docara/smart/project.product-configurator/assets/product-configurator.js');
@@ -393,7 +393,7 @@ MD);
         ?MarkdownCompiler $compiler = null,
         ?TypedComponentDefinitionRepository $definitions = null,
     ): PageBuilderResult {
-        $base = (new PortableConfigurationLoader($this->site))->resolve('content/ru/components/surface.md');
+        $base = (new PortableConfigurationLoader($this->site))->resolve('content/ru/components/layout/surface.md');
         $site = json_decode((string) file_get_contents($this->site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
         $project = $this->projectRuntime($base->frameworkLock);
         $plan = new ResolvedPagePlan(
@@ -423,7 +423,7 @@ MD);
     {
         $site = json_decode((string) file_get_contents($this->site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
         $frameworkLock ??= (new PortableConfigurationLoader($this->site))
-            ->resolve('content/ru/components/surface.md')->frameworkLock;
+            ->resolve('content/ru/components/layout/surface.md')->frameworkLock;
         $project = ProjectSmartRuntime::fromSite($this->site, $site, $frameworkLock);
         self::assertNotNull($project);
 

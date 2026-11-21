@@ -116,7 +116,7 @@ template_omit: [classes]
 и снижают оценку полноты страницы.
 
 ```bash
-php vendor/bin/docara validate page /ru/components/button/ --json
+php vendor/bin/docara validate page /ru/components/inline/button/ --json
 ```
 
 ## Новая страница по шаблону
@@ -125,7 +125,7 @@ php vendor/bin/docara validate page /ru/components/button/ --json
 по порядку:
 
 ```bash
-php vendor/bin/docara scaffold page components/badge --template=component --title="Значок"
+php vendor/bin/docara scaffold page components/inline/badge --template=component --title="Значок"
 ```
 
 В заготовке:

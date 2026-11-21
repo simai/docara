@@ -117,7 +117,7 @@ they make one `QUALITY_TEMPLATE_MISMATCH` finding and lower the page's
 completeness score.
 
 ```bash
-php vendor/bin/docara validate page /en/components/button/ --json
+php vendor/bin/docara validate page /en/components/inline/button/ --json
 ```
 
 ## A new page from a template
@@ -126,7 +126,7 @@ php vendor/bin/docara validate page /en/components/button/ --json
 template, in order:
 
 ```bash
-php vendor/bin/docara scaffold page components/badge --template=component --title="Badge"
+php vendor/bin/docara scaffold page components/inline/badge --template=component --title="Badge"
 ```
 
 The new page has:

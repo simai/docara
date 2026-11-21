@@ -127,7 +127,7 @@ php vendor/simai/docara/scripts/verify-page-weight.php build_production --config
   "max_page_bytes": 4500000,
   "max_image_bytes": 1300000,
   "pages": {
-    "/ru/components/diagram/": {"max_page_bytes": 6900000, "reason": "Mermaid"}
+    "/ru/components/code-and-data/diagram/": {"max_page_bytes": 6900000, "reason": "Mermaid"}
   }
 }
 ```

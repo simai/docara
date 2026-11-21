@@ -70,7 +70,7 @@ other references are in [Reference](/en/reference/).
 
 - **Smart component** — a self-contained interface element with a manifest,
   for example `ui.button` or `docara.navigation`. See
-  [Smart components ui.*](/en/components/smart-ui/).
+  [Smart components ui.*](/en/components/simai-framework/smart-ui/).
 
 - **Typed Docara component** — a Docara block with a fixed syntax and
   parameter checks, for example `:::card` or `:::steps`. An **inline
@@ -129,7 +129,7 @@ other references are in [Reference](/en/reference/).
 - **Hero and Surface** — the first screen of a landing page and a styled band
   around a part of a page. An **overlay** is a darkening layer over a
   background image that keeps the text on it readable. See
-  [First screen](/en/components/hero/) and [Surface](/en/components/surface/).
+  [First screen](/en/components/layout/hero/) and [Surface](/en/components/layout/surface/).
 
 ## Build and checks
 

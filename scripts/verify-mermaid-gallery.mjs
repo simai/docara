@@ -21,8 +21,8 @@ const bundle = join(root, 'resources/portable/vendor/mermaid/mermaid.min.js');
 const pages = process.argv.slice(2).length > 0
     ? process.argv.slice(2).map((page) => resolve(page))
     : [
-        join(root, 'docs/site/content/ru/components/diagram.md'),
-        join(root, 'docs/site/content/ru/components/diagram-gallery.md'),
+        join(root, 'docs/site/content/ru/components/code-and-data/diagram.md'),
+        join(root, 'docs/site/content/ru/components/code-and-data/diagram-gallery.md'),
     ];
 
 export function extractDiagrams(markdown) {

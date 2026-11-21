@@ -49,4 +49,4 @@ description: "Как поставить под оглавлением справ
 
 - [Подсказка под меню](../region-sidebar/)
 - [Уведомление в тексте страницы](../smart-alert/)
-- [Компоненты SIMAI Framework](/ru/components/smart-ui/)
+- [Компоненты SIMAI Framework](/ru/components/simai-framework/smart-ui/)

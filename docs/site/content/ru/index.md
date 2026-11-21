@@ -71,7 +71,7 @@ php vendor/bin/docara serve production
 :::
 ::::
 
-::::columns {widths=2/1}
+::::columns {ratio=2/1}
 ## Частые вопросы
 
 :::details {layout=lines}
@@ -115,7 +115,7 @@ VitePress и Docusaurus — проекты на npm: сайт собираетс
 - **Для сборки:** PHP 8.2+, Composer, Node.js 20+
 - **Для сайта:** любой статический веб-сервер
 - **Поиск по документации:** :kbd[⌘] + :kbd[K] или :kbd[Ctrl] + :kbd[K]
-- **Для ИИ-помощников:** [llms.txt](/llms.txt) — вся документация одним текстом
+- **Для ИИ-помощников:** [llms.txt](https://docara.simai.io/llms.txt) — вся документация одним текстом
 
 [Быстрый старт](/ru/start/quick-start/) · [Справочник](/ru/reference/)
 :::

@@ -61,7 +61,7 @@ final class MermaidDiagramGalleryTest extends TestCase
     {
         $types = array_map(
             static fn (array $diagram): string => $diagram['type'],
-            $this->diagrams($this->root() . '/docs/site/content/ru/components/diagram-gallery.md'),
+            $this->diagrams($this->root() . '/docs/site/content/ru/components/code-and-data/diagram-gallery.md'),
         );
 
         self::assertSame(array_keys(self::GALLERY_TYPES), $types);
@@ -70,7 +70,7 @@ final class MermaidDiagramGalleryTest extends TestCase
     #[Test]
     public function diagram_page_examples_use_listed_types(): void
     {
-        $diagrams = $this->diagrams($this->root() . '/docs/site/content/ru/components/diagram.md');
+        $diagrams = $this->diagrams($this->root() . '/docs/site/content/ru/components/code-and-data/diagram.md');
 
         self::assertNotEmpty($diagrams);
         foreach ($diagrams as $diagram) {
@@ -103,7 +103,7 @@ final class MermaidDiagramGalleryTest extends TestCase
     #[Test]
     public function gallery_sources_follow_the_documented_label_rules(): void
     {
-        foreach ($this->diagrams($this->root() . '/docs/site/content/ru/components/diagram-gallery.md') as $diagram) {
+        foreach ($this->diagrams($this->root() . '/docs/site/content/ru/components/code-and-data/diagram-gallery.md') as $diagram) {
             $source = $diagram['source'];
             if ($diagram['type'] === 'sankey-beta') {
                 self::assertDoesNotMatchRegularExpression('/\p{Cyrillic}/u', $source, 'sankey-beta does not render Cyrillic labels.');

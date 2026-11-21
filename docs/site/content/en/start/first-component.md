@@ -152,5 +152,5 @@ Other codes are in the error reference:
   presets: [Smart components](/en/development/smart-components/).
 - The whole path from plan to checks for developers and AI agents:
   [SDK for developers and AI agents](/en/development/developer-sdk/).
-- A component can go inside a [surface](/en/components/surface/)
+- A component can go inside a [surface](/en/components/layout/surface/)
   once it declares itself embeddable.

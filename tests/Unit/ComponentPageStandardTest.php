@@ -22,7 +22,7 @@ final class ComponentPageStandardTest extends TestCase
     #[Test]
     public function every_standard_component_page_keeps_the_sections_in_order(): void
     {
-        $pages = glob(dirname(__DIR__, 2) . '/docs/site/content/ru/components/*.md') ?: [];
+        $pages = glob(dirname(__DIR__, 2) . '/docs/site/content/ru/components/*/*.md') ?: [];
         $checked = 0;
         foreach ($pages as $page) {
             $markdown = (string) file_get_contents($page);

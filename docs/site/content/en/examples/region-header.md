@@ -55,4 +55,4 @@ To show the button on every page of a section, move `layout` from
 ## See also
 
 - [Layout regions](/en/settings/layout-and-regions/)
-- [SIMAI Framework components](/en/components/smart-ui/)
+- [SIMAI Framework components](/en/components/simai-framework/smart-ui/)

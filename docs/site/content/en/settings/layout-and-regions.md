@@ -65,13 +65,13 @@ Create `content/landing.md` and a sidecar:
 
 The content stays Markdown, and the landing blocks set the composition:
 
-- [hero](/en/components/hero/) creates a full-width first screen;
-- [grid](/en/components/grid/) and [card](/en/components/card/) build a row
+- [hero](/en/components/layout/hero/) creates a full-width first screen;
+- [grid](/en/components/layout/grid/) and [card](/en/components/layout/card/) build a row
   of features without a special component;
-- [figure](/en/components/figure/) or [media](/en/components/media/) show a
+- [figure](/en/components/images-and-files/figure/) or [media](/en/components/images-and-files/media/) show a
   product screenshot;
-- [logos](/en/components/logos/) shows participants or customers;
-- [banner](/en/components/banner/) with [button](/en/components/button/)
+- [logos](/en/components/images-and-files/logos/) shows participants or customers;
+- [banner](/en/components/blocks/banner/) with [button](/en/components/inline/button/)
   ends the page with a clear action.
 
 Ordinary headings, text and code stay in the inner container. Only
@@ -79,7 +79,7 @@ registered full-width blocks take the whole width of the landing area; the
 author adds no negative margins, CSS classes or media sizes.
 
 Ready blocks for benefits, showing a result and a call to action are
-described on [Landing blocks](/en/components/landing-blocks/).
+described on [Landing blocks](/en/components/layout/landing-blocks/).
 [Open the home page of this documentation](/en/).
 
 ## Checking both recipes

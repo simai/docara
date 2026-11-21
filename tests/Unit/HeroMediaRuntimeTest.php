@@ -262,13 +262,13 @@ final class HeroMediaRuntimeTest extends TestCase
         return (new PortableMarkdownRenderer)->render(
             $source,
             $this->site,
-            $this->site . '/content/ru/components/hero.md',
+            $this->site . '/content/ru/components/layout/hero.md',
         );
     }
 
     private function build(string $markdown): PageBuilderResult
     {
-        $base = (new PortableConfigurationLoader($this->site))->resolve('content/ru/components/hero.md');
+        $base = (new PortableConfigurationLoader($this->site))->resolve('content/ru/components/layout/hero.md');
         $site = json_decode((string) file_get_contents($this->site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
         $project = ProjectSmartRuntime::fromSite($this->site, $site, $base->frameworkLock);
         self::assertNotNull($project);

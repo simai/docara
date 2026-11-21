@@ -42,6 +42,6 @@ button. The same Docara builds it from the same Markdown.
 
 ## See also
 
-- [Hero](/en/components/hero/)
-- [Landing blocks](/en/components/landing-blocks/)
+- [Hero](/en/components/layout/hero/)
+- [Landing blocks](/en/components/layout/landing-blocks/)
 - [Documentation page](../preset-docs/)

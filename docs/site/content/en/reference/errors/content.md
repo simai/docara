@@ -53,7 +53,7 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 | `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID` | The attribute value is not in the list of allowed values. **What to do:** Take a value from the block description. |
 | `MARKDOWN_PARAMETER_DEPRECATED` | A warning, not an error: the page uses an old parameter name or an old value, for example `view` instead of `layout` or `ratio=16x9` instead of `ratio=16/9`. The page looks the same; the build does not stop and writes one summary line. **What to do:** Run `docara validate page <address>`: it shows the line and the new name. Replace the name or value. The full list is in [Former parameter names](/en/start/component-model/#former-parameter-names). |
 | `PRESERVED_NOT_SHOWN` | A warning, not an error: the page has a `:::preserved` block. Its text stays in the Markdown source but does not reach the built page, its title or its description. The build does not stop and writes one summary line. **What to do:** If the text is kept in the block on purpose, nothing is needed. To show the text on the site, move it out of the block or remove the `:::preserved` line and its closing `:::`. `docara validate page <address>` shows the line of each block. If the block holds other blocks, open it with a longer line, for example `::::preserved`, and close it with `::::`. |
-| `MARKDOWN_RAW_HTML_FORBIDDEN` | The Markdown has HTML tags. Docara does not let HTML into a page. **What to do:** Rewrite the fragment in Markdown, or put the code in an [html](/components/html/) or [example](/components/example/) block, which show it in an isolated frame. |
+| `MARKDOWN_RAW_HTML_FORBIDDEN` | The Markdown has HTML tags. Docara does not let HTML into a page. **What to do:** Rewrite the fragment in Markdown, or put the code in an [html](/components/code-and-data/html/) or [example](/components/blocks/example/) block, which show it in an isolated frame. |
 | `MARKDOWN_BLOCK_PLACEHOLDER_CARDINALITY_INVALID`, `MARKDOWN_INLINE_PLACEHOLDER_CARDINALITY_INVALID`, `FRAMEWORK_PLACEHOLDER_CARDINALITY_INVALID` | The page text happened to match the service mark that Docara uses for the place of a block. **What to do:** Change the text near the block. If the error repeats, report it in the Docara repository. |
 
 ## Links and images
@@ -69,26 +69,26 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `MARKDOWN_ALERT_HEADING_REQUIRED` | An [alert](/components/alert/) does not start with a level 2–5 heading. **What to do:** Make a heading the first line of the block, for example `## Warning`. |
+| `MARKDOWN_ALERT_HEADING_REQUIRED` | An [alert](/components/blocks/alert/) does not start with a level 2–5 heading. **What to do:** Make a heading the first line of the block, for example `## Warning`. |
 | `MARKDOWN_ALERT_CONTENT_REQUIRED` | The alert has no text after the heading. **What to do:** Add explanatory text. |
-| `MARKDOWN_BANNER_CONTENT_REQUIRED` | The [banner](/components/banner/) is empty. **What to do:** Add text. |
-| `MARKDOWN_DETAILS_HEADING_REQUIRED` | A [details](/components/details/) block does not start with a level 2–4 heading. **What to do:** Make a heading the first line; it becomes the label of the expandable block. |
+| `MARKDOWN_BANNER_CONTENT_REQUIRED` | The [banner](/components/blocks/banner/) is empty. **What to do:** Add text. |
+| `MARKDOWN_DETAILS_HEADING_REQUIRED` | A [details](/components/blocks/details/) block does not start with a level 2–4 heading. **What to do:** Make a heading the first line; it becomes the label of the expandable block. |
 | `MARKDOWN_DETAILS_CONTENT_REQUIRED` | The details block has no text after the heading. **What to do:** Add content. |
-| `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` | [Steps](/components/steps/) does not hold exactly one numbered list. **What to do:** Keep one `1.`, `2.`, `3.` list in the block. |
-| `MARKDOWN_TABS_ITEMS_REQUIRED` | [Tabs](/components/tabs/) has fewer than two tabs. A tab is a level 3 heading with text under it. **What to do:** Add at least two `###` headings with content. |
+| `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` | [Steps](/components/blocks/steps/) does not hold exactly one numbered list. **What to do:** Keep one `1.`, `2.`, `3.` list in the block. |
+| `MARKDOWN_TABS_ITEMS_REQUIRED` | [Tabs](/components/blocks/tabs/) has fewer than two tabs. A tab is a level 3 heading with text under it. **What to do:** Add at least two `###` headings with content. |
 | `MARKDOWN_TABS_ITEM_INVALID` | A tab has no label or no content. **What to do:** Give each `###` heading text under it. |
-| `MARKDOWN_TABS_DEFAULT_NOT_FOUND` | In [tabs](/components/tabs/) the `default` parameter names a tab that the block does not have. The message lists the tab names of the block. **What to do:** Give the label of one of the tabs or its name: the label in lowercase with punctuation replaced by a hyphen. |
-| `MARKDOWN_TREE_LIST_REQUIRED` | [Tree](/components/tree/) does not hold one nested bulleted list. **What to do:** Keep one `-` list with nested items in the block. |
-| `MARKDOWN_FIGURE_IMAGE_REQUIRED` | [Figure](/components/figure/) holds more than one image or extra text. **What to do:** Keep one image and, if you like, one caption paragraph. |
-| `MARKDOWN_MEDIA_CONTENT_REQUIRED` | [Media](/components/media/) has no image or no text. **What to do:** Add one image and text beside it. |
-| `MARKDOWN_GRID_CARD_REQUIRED` | [Grid](/components/grid/) holds something other than `card` blocks. **What to do:** Put the content into [card](/components/card/) blocks. |
-| `MARKDOWN_DOWNLOAD_LINK_REQUIRED` | [Download](/components/download/) holds more than one link. **What to do:** Keep one link to the file. |
+| `MARKDOWN_TABS_DEFAULT_NOT_FOUND` | In [tabs](/components/blocks/tabs/) the `default` parameter names a tab that the block does not have. The message lists the tab names of the block. **What to do:** Give the label of one of the tabs or its name: the label in lowercase with punctuation replaced by a hyphen. |
+| `MARKDOWN_TREE_LIST_REQUIRED` | [Tree](/components/blocks/tree/) does not hold one nested bulleted list. **What to do:** Keep one `-` list with nested items in the block. |
+| `MARKDOWN_FIGURE_IMAGE_REQUIRED` | [Figure](/components/images-and-files/figure/) holds more than one image or extra text. **What to do:** Keep one image and, if you like, one caption paragraph. |
+| `MARKDOWN_MEDIA_CONTENT_REQUIRED` | [Media](/components/images-and-files/media/) has no image or no text. **What to do:** Add one image and text beside it. |
+| `MARKDOWN_GRID_CARD_REQUIRED` | [Grid](/components/layout/grid/) holds something other than `card` blocks. **What to do:** Put the content into [card](/components/layout/card/) blocks. |
+| `MARKDOWN_DOWNLOAD_LINK_REQUIRED` | [Download](/components/images-and-files/download/) holds more than one link. **What to do:** Keep one link to the file. |
 | `MARKDOWN_QUOTE_ATTRIBUTION_REQUIRED` | A quote with attribution has no author or source. **What to do:** Give the author or the source. |
-| `MARKDOWN_MATH_SOURCE_REQUIRED` | [Math](/components/math/) is empty. **What to do:** Add a formula in TeX notation. |
-| `MARKDOWN_DIAGRAM_SOURCE_REQUIRED` | [Diagram](/components/diagram/) is empty. **What to do:** Add the diagram description. |
-| `MARKDOWN_DIAGRAM_LABEL_EMPTY` | The `label` parameter of a [diagram](/components/diagram/) is empty, and it is the text alternative for screen readers. **What to do:** Write in `label` what the diagram shows, or remove the parameter: then the name from `title` is read. |
-| `MARKDOWN_HTML_FENCE_REQUIRED` | [Html](/components/html/) holds more than one HTML code block. **What to do:** Keep one code block with the language `html`. |
-| `MARKDOWN_BACKLINKS_LIMIT_INVALID` | `limit` of [backlinks](/components/backlinks/) is outside the range 1–50. **What to do:** Give a number from 1 to 50. |
+| `MARKDOWN_MATH_SOURCE_REQUIRED` | [Math](/components/code-and-data/math/) is empty. **What to do:** Add a formula in TeX notation. |
+| `MARKDOWN_DIAGRAM_SOURCE_REQUIRED` | [Diagram](/components/code-and-data/diagram/) is empty. **What to do:** Add the diagram description. |
+| `MARKDOWN_DIAGRAM_LABEL_EMPTY` | The `label` parameter of a [diagram](/components/code-and-data/diagram/) is empty, and it is the text alternative for screen readers. **What to do:** Write in `label` what the diagram shows, or remove the parameter: then the name from `title` is read. |
+| `MARKDOWN_HTML_FENCE_REQUIRED` | [Html](/components/code-and-data/html/) holds more than one HTML code block. **What to do:** Keep one code block with the language `html`. |
+| `MARKDOWN_BACKLINKS_LIMIT_INVALID` | `limit` of [backlinks](/components/blocks/backlinks/) is outside the range 1–50. **What to do:** Give a number from 1 to 50. |
 | `MARKDOWN_SCHEMA_REFERENCE_FIELDS_INVALID` | `fields` of `schema_reference` names a field that is not in the schema, or it is written with spaces. **What to do:** List top-level fields separated by commas without spaces: `fields=reading,search`. |
 | `MARKDOWN_INLINE_COMPONENT_LABEL_REQUIRED` | A component inside text, for example `:badge[...]` or `:kbd[...]`, is empty. **What to do:** Write text in the square brackets: `:kbd[Esc]`. |
 | `MARKDOWN_ATLAS_FILTER_INVALID` | The atlas filter contains forbidden characters. **What to do:** List identifiers separated by commas: lowercase Latin letters, digits, `.`, `_`, `-`. |
@@ -97,12 +97,12 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `MARKDOWN_CODE_SOURCE_REQUIRED` | A [code from a file](/components/code-from-file/) block has no `src`. **What to do:** Give the file path in `src`. |
+| `MARKDOWN_CODE_SOURCE_REQUIRED` | A [code from a file](/components/code-and-data/code-from-file/) block has no `src`. **What to do:** Give the file path in `src`. |
 | `MARKDOWN_CODE_SOURCE_UNSAFE` | The path in `src` is absolute, leads outside the project or to a symbolic link, or the file does not exist. **What to do:** Give the path to an existing file relative to the page. |
 | `MARKDOWN_CODE_SOURCE_INVALID` | The file is larger than 1 MiB or not UTF-8. **What to do:** Take a smaller file, or the fragment you need through `lines`. |
 | `MARKDOWN_CODE_LINES_INVALID` | `lines` is not written as `N` or `N-M`. **What to do:** Write `lines=5` or `lines=5-12`. |
 | `MARKDOWN_CODE_LANGUAGE_INVALID` | The highlighting language is written with forbidden characters. **What to do:** Give the language in lowercase, for example `php` or `json`. |
-| `MARKDOWN_CODE_RANGE_INVALID` | In `highlight` or `focus` of a [code block](/components/code/) a line number is greater than the number of lines in the block, a range is reversed or not numeric, or `start_after` and `end_before` left no lines. **What to do:** Write the numbers separated by commas, counting from the first line of the block: `highlight="1,4-6"`. |
+| `MARKDOWN_CODE_RANGE_INVALID` | In `highlight` or `focus` of a [code block](/components/code-and-data/code/) a line number is greater than the number of lines in the block, a range is reversed or not numeric, or `start_after` and `end_before` left no lines. **What to do:** Write the numbers separated by commas, counting from the first line of the block: `highlight="1,4-6"`. |
 | `MARKDOWN_CODE_REGION_UNKNOWN` | The file has no region from `region`, the region is not closed with `#endregion`, or no line contains the `start_after` or `end_before` text. **What to do:** Mark the region in the file with the comments `// #region name` and `// #endregion name`, or fix the name and the text of the marks. |
 | `MARKDOWN_CODE_OPTIONS_CONFLICT` | A file fragment is selected in two ways at once: `lines` together with `region`, or with `start_after` and `end_before`. **What to do:** Keep one way. |
 
@@ -110,7 +110,7 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID` | `component` of a [component reference](/components/component-reference/) is empty or does not look like a tag: it needs lowercase Latin letters, digits and at least one hyphen. **What to do:** Give the tag, for example `component=sf-view-table`. |
+| `MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID` | `component` of a [component reference](/components/code-and-data/component-reference/) is empty or does not look like a tag: it needs lowercase Latin letters, digits and at least one hyphen. **What to do:** Give the tag, for example `component=sf-view-table`. |
 | `MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID` | `sections` names an unknown part, repeats a part or is written with spaces. **What to do:** List parts from `overview`, `attributes`, `events`, `methods`, `css`, `accessibility`, separated by commas without spaces. |
 | `COMPONENT_REFERENCE_MANIFEST_MISSING` | There is no `components/<folder>/smart.manifest.json` for the tag in `component`. The folder is the tag without the `sf-` prefix. **What to do:** Copy the component's manifest into that folder or fix the tag. |
 | `COMPONENT_REFERENCE_MANIFEST_INVALID` | `smart.manifest.json` or `component.json` is not a JSON object, is larger than 4 MB, is a symbolic link, describes another tag (`custom_element`), or its `inputs`, `events`, `methods`, `accessibility` or `css-variables` field is not an object. **What to do:** Take the manifest from the component's release unchanged and check that `custom_element` matches `component`. |
@@ -122,10 +122,10 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `MARKDOWN_EMBED_LINK_REQUIRED` | [Embed](/components/embed/) holds more than one link. **What to do:** Keep one link to the embedded material. |
+| `MARKDOWN_EMBED_LINK_REQUIRED` | [Embed](/components/images-and-files/embed/) holds more than one link. **What to do:** Keep one link to the embedded material. |
 | `MARKDOWN_EMBED_LABEL_REQUIRED` | The link in embed has no text. **What to do:** Write the link text: readers see it before loading. |
 | `MARKDOWN_EMBED_URL_UNSAFE` | The link in embed uses an unsafe scheme. **What to do:** Use an `https://` address. |
-| `MARKDOWN_EMBED_ORIGIN_FORBIDDEN` | The address does not suit the chosen provider or consent mode. **What to do:** Use an address of the service named in `provider`. The list of addresses is on the [embed](/components/embed/) page. |
+| `MARKDOWN_EMBED_ORIGIN_FORBIDDEN` | The address does not suit the chosen provider or consent mode. **What to do:** Use an address of the service named in `provider`. The list of addresses is on the [embed](/components/images-and-files/embed/) page. |
 | `MARKDOWN_EMBED_ID_INVALID` | The `id` of embed contains forbidden characters. **What to do:** Use lowercase Latin letters, digits and a hyphen. |
 | `MARKDOWN_INTERNAL_PREVIEW_LINK_REQUIRED` | A preview of a site page holds more than one link. **What to do:** Keep one link. |
 | `MARKDOWN_INTERNAL_PREVIEW_TITLE_REQUIRED` | The preview has no frame title. **What to do:** Add a title: a screen reader reads it. |
@@ -135,7 +135,7 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `MARKDOWN_EXAMPLE_FENCED_SOURCE_REQUIRED` | [Example](/components/example/) has no code block. **What to do:** Add a Markdown code block, or HTML, CSS and JavaScript. |
+| `MARKDOWN_EXAMPLE_FENCED_SOURCE_REQUIRED` | [Example](/components/blocks/example/) has no code block. **What to do:** Add a Markdown code block, or HTML, CSS and JavaScript. |
 | `MARKDOWN_EXAMPLE_SOURCE_ONLY` | The example has text outside the code blocks. **What to do:** Move the explanation outside the block. |
 | `MARKDOWN_EXAMPLE_HTML_REQUIRED` | There is CSS or JavaScript but no HTML. **What to do:** Add an `html` code block. |
 | `MARKDOWN_EXAMPLE_SOURCE_COMBINATION_INVALID` | A Markdown example is mixed with HTML, CSS or JavaScript. **What to do:** Make two separate examples. |
@@ -159,7 +159,7 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `MARKDOWN_HERO_H1_REQUIRED` | [Hero](/components/hero/) does not start with a level 1 heading. **What to do:** Make `# Title` the first line. |
+| `MARKDOWN_HERO_H1_REQUIRED` | [Hero](/components/layout/hero/) does not start with a level 1 heading. **What to do:** Make `# Title` the first line. |
 | `MARKDOWN_HERO_DESCRIPTION_REQUIRED` | There are not one or two description paragraphs. **What to do:** Add one or two paragraphs after the heading. |
 | `MARKDOWN_HERO_STRUCTURE_INVALID` | The hero holds something other than the heading, paragraphs, button links and an image. **What to do:** Remove lists, tables and other blocks. |
 | `MARKDOWN_HERO_LINK_REQUIRED` | A button has no text. **What to do:** Write the link text. |
@@ -191,7 +191,7 @@ Background effect codes that depend on `docara.json` are described in
 | `MARKDOWN_FEATURES_ITEM_CONTENT_INVALID` | An item has more than one paragraph or an unsupported element. **What to do:** Keep one paragraph of text in the item. |
 | `MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED` | An item without visible text. **What to do:** Add text. |
 | `MARKDOWN_FEATURES_IMAGE_UNSAFE` | An image in an item uses an unsafe scheme. **What to do:** Use `https://` or a site path. |
-| `MARKDOWN_LOGOS_UNORDERED_LIST_REQUIRED` | [Logos](/components/logos/) does not hold one flat list. **What to do:** Keep one `-` list. |
+| `MARKDOWN_LOGOS_UNORDERED_LIST_REQUIRED` | [Logos](/components/images-and-files/logos/) does not hold one flat list. **What to do:** Keep one `-` list. |
 | `MARKDOWN_LOGOS_ITEM_COUNT_INVALID` | There are fewer than two or more than twelve logos. **What to do:** Keep from two to twelve. |
 | `MARKDOWN_LOGOS_ITEM_CONTENT_INVALID` | An item has more than one paragraph. **What to do:** Keep one image, or one link with an image, in the item. |
 | `MARKDOWN_CTA_LINK_REQUIRED` | The cta does not hold exactly one link with text. **What to do:** Keep one button link. |
@@ -206,7 +206,7 @@ Background effect codes that depend on `docara.json` are described in
 | `MARKDOWN_COLUMNS_REGION_COUNT_INVALID` | Columns has fewer than two or more than four columns. **What to do:** Split the content into 2–4 parts. |
 | `MARKDOWN_COLUMNS_SEPARATOR_INVALID` | The columns are not separated by a `---` line with blank lines before and after it. **What to do:** Put a separate `---` line between the columns, surrounded by blank lines. |
 | `MARKDOWN_COLUMNS_REGION_EMPTY` | One of the columns is empty. **What to do:** Add text to it or reduce the number of columns. |
-| `MARKDOWN_SURFACE_CONTENT_REQUIRED` | [Surface](/components/surface/) is empty. **What to do:** Add content. |
+| `MARKDOWN_SURFACE_CONTENT_REQUIRED` | [Surface](/components/layout/surface/) is empty. **What to do:** Add content. |
 | `MARKDOWN_SURFACE_BACKGROUND_REQUIRED` | A background position is given without `background_image`. **What to do:** Add `background_image` or remove the position settings. |
 | `MARKDOWN_SURFACE_OVERLAY_REQUIRED` | `overlay_strength` is given with `overlay=none`. **What to do:** Give `overlay=light` or `overlay=dark`. |
 | `MARKDOWN_SURFACE_BACKGROUND_UNSAFE`, `MARKDOWN_SURFACE_BACKGROUND_CASE_MISMATCH`, `MARKDOWN_SURFACE_BACKGROUND_CONTEXT_INVALID` | The background image was not found in `assets/`, the path differs in letter case, or the page lies outside `content/<language>/`. **What to do:** Put the file into `assets/` and give the exact path `/assets/...`. |
@@ -215,13 +215,13 @@ Background effect codes that depend on `docara.json` are described in
 
 Inline components are written inside a paragraph: `:icon[name]{...}`,
 `:badge[text]{...}`, `:button[text]{...}`, `:kbd[key]`. The parameters of
-each are described on its page: [icon](/en/components/icon/),
-[badge](/en/components/badge/), [button link](/en/components/button/),
-[key](/en/components/kbd/).
+each are described on its page: [icon](/en/components/inline/icon/),
+[badge](/en/components/inline/badge/), [button link](/en/components/inline/button/),
+[key](/en/components/inline/kbd/).
 
 | Code | Cause and what to do |
 | --- | --- |
-| `CONTENT_COMPONENT_ICON_UNKNOWN` | There is no icon with this name in the Material Symbols set that ships with Docara. Most often this is a typo: `:icon[setings]` instead of `:icon[settings]`. **What to do:** Find the name in the [list of all icons](/en/components/icon/#all-icon-names) and fix it. |
+| `CONTENT_COMPONENT_ICON_UNKNOWN` | There is no icon with this name in the Material Symbols set that ships with Docara. Most often this is a typo: `:icon[setings]` instead of `:icon[settings]`. **What to do:** Find the name in the [list of all icons](/en/components/inline/icon/#all-icon-names) and fix it. |
 | `CONTENT_COMPONENT_SLOT_INVALID` | The icon name contains capital letters, spaces or other characters, for example `:icon[Search]`. **What to do:** Write the name in lowercase Latin letters, digits and `_`, for example `check_circle`. |
 | `CONTENT_COMPONENT_PROP_UNKNOWN` | The component has no such parameter, for example `:kbd[Esc]{size=1}`. **What to do:** Remove the parameter or fix its name from the component page. |
 | `CONTENT_COMPONENT_PROP_INVALID` | The parameter value is not in the list of allowed values, for example `:icon[search]{weight=bold}`, or a button has no safe `href`. **What to do:** Take a value from the component page. |
@@ -252,7 +252,7 @@ JSON. The parameter list of each component is on its page in the
 | `FRAMEWORK_PROP_MINIMUM_INVALID`, `FRAMEWORK_PROP_MAXIMUM_INVALID` | The number is below the minimum or above the maximum. **What to do:** Give a number in the allowed range. |
 | `FRAMEWORK_PROP_MIN_LENGTH_INVALID`, `FRAMEWORK_PROP_MAX_LENGTH_INVALID` | The string is shorter or longer than allowed. **What to do:** Shorten or extend the text. |
 | `FRAMEWORK_PROP_PATTERN_INVALID` | The string does not match the parameter format. **What to do:** Check the format on the component page. |
-| `FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME` | The parameter value is forbidden in the site's `simai-framework.lock.json`: a static site does not support it, for example `"closable": true` or `"type": "success"` on `ui.alert`. The message gives `component:parameter`. **What to do:** Choose another value; the list of restrictions is on [Smart components ui.*](/en/components/smart-ui/). |
+| `FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME` | The parameter value is forbidden in the site's `simai-framework.lock.json`: a static site does not support it, for example `"closable": true` or `"type": "success"` on `ui.alert`. The message gives `component:parameter`. **What to do:** Choose another value; the list of restrictions is on [Smart components ui.*](/en/components/simai-framework/smart-ui/). |
 | `SMART_PROPS_INVALID` | The parameters of a Smart component failed the check. The message has the path to the field. **What to do:** Compare the parameters with the description of the Smart component. |
 | `TYPED_COMPONENT_UNSUPPORTED` | There is no such Docara block. **What to do:** Check the block name in the [component catalogue](/components/). |
 
@@ -264,13 +264,13 @@ opened block is closed and stands where it is allowed.
 | Code | Cause and what to do |
 | --- | --- |
 | `DOCUMENT_TYPED_DIRECTIVE_UNCLOSED`, `DOCUMENT_COMPONENT_BLOCK_UNCLOSED`, `DOCUMENT_SMART_UNCLOSED` | The block has no closing line. **What to do:** Add a `:::` line with as many colons as the opening line. |
-| `DOCUMENT_TYPED_DIRECTIVE_NESTED_FORBIDDEN`, `DOCUMENT_COMPONENT_BLOCK_NESTED_FORBIDDEN`, `DOCUMENT_SMART_NESTED_FORBIDDEN` | Another block stands inside a block that does not accept nested blocks. **What to do:** Move the inner block out. Only [surface](/en/components/surface/), [grid](/en/components/grid/) and [card](/en/components/card/) accept other blocks; which ones is written on the block page. |
+| `DOCUMENT_TYPED_DIRECTIVE_NESTED_FORBIDDEN`, `DOCUMENT_COMPONENT_BLOCK_NESTED_FORBIDDEN`, `DOCUMENT_SMART_NESTED_FORBIDDEN` | Another block stands inside a block that does not accept nested blocks. **What to do:** Move the inner block out. Only [surface](/en/components/layout/surface/), [grid](/en/components/layout/grid/) and [card](/en/components/layout/card/) accept other blocks; which ones is written on the block page. |
 | `DOCUMENT_COMPONENT_ALIAS_UNKNOWN` | After `:::` stands a name that is neither a Docara block nor a project component. **What to do:** Check the name in the [component catalogue](/en/components/). |
 | `DOCUMENT_COMPONENT_BLOCK_CONTENT_REQUIRED`, `DOCUMENT_COMPONENT_SLOT_REQUIRED` | The block is empty although it needs visible content. **What to do:** Add text inside the block or remove the block. |
 | `DOCUMENT_COMPONENT_BLOCK_CHILD_INVALID`, `DOCUMENT_IR_EXAMPLE_COMPONENT_BOUNDARY_INVALID` | A code block starts inside a block and ends outside it, or the other way round. **What to do:** Close the code block before the `:::` line. If the code block itself contains `:::`, surround it with a longer fence: four backticks or `~~~`. |
 | `DOCUMENT_IR_CODE_BLOCK_UNCLOSED` | The code block has no closing fence. **What to do:** Add a line with the same backticks as at the start. |
 | `DOCUMENT_IR_CODE_BLOCK_OPENING_INVALID` | The first line of the code block is written incorrectly: the fence is shorter than three characters, or `` ` `` and `~` are mixed. **What to do:** Start the block with three backticks or three tildes, then the language. |
-| `DOCUMENT_IR_EXAMPLE_UNCLOSED` | An [example](/en/components/example/) has no closing `:::` line. **What to do:** Add it after the last code block of the example. |
+| `DOCUMENT_IR_EXAMPLE_UNCLOSED` | An [example](/en/components/blocks/example/) has no closing `:::` line. **What to do:** Add it after the last code block of the example. |
 | `DOCUMENT_HTML_COMMENT_UNCLOSED` | A `<!--` comment is not closed. **What to do:** Add `-->`. |
 | `DOCUMENT_DIRECTIVE_LIMIT_EXCEEDED` | The page has more than 128 blocks. **What to do:** Split the page into several. |
 | `DOCUMENT_CONTAINER_CHILD_COUNT_MIN` | A surface or grid is empty. **What to do:** Add content or remove the block. |
@@ -304,7 +304,7 @@ described in [Smart components](/en/development/smart-components/).
 
 A shared example is kept in `examples/<path>/` and called with
 `:::example {id="<path>"}`. More on the
-[Interactive example](/en/components/example/#shared-example-from-the-project)
+[Interactive example](/en/components/blocks/example/#shared-example-from-the-project)
 page.
 
 | Code | Cause and what to do |

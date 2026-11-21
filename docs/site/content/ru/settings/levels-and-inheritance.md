@@ -379,8 +379,8 @@ build_<environment>.docara/resolved-page-plans.json
 Для одной страницы то же самое показывает команда:
 
 ```bash
-docara inspect page /ru/components/alert/ --json
-docara build production --page=/ru/components/alert/
+docara inspect page /ru/components/blocks/alert/ --json
+docara build production --page=/ru/components/blocks/alert/
 ```
 
 ## Когда нужна полная сборка

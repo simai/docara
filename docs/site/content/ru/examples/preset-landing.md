@@ -42,6 +42,6 @@ description: "Как сделать посадочную страницу про
 
 ## См. также
 
-- [Первый экран](/ru/components/hero/)
-- [Блоки лендинга](/ru/components/landing-blocks/)
+- [Первый экран](/ru/components/layout/hero/)
+- [Блоки лендинга](/ru/components/layout/landing-blocks/)
 - [Страница документации](../preset-docs/)

@@ -225,7 +225,7 @@ with a clear visual explanation and an accessible description.
 Use a clear label that shows where the link goes:
 
 - [read the quick start](/en/start/quick-start/);
-- [open the backlinks page](/en/components/backlinks/);
+- [open the backlinks page](/en/components/blocks/backlinks/);
 - [see the Docara repository](https://github.com/simai/docara).
 
 Do not replace the meaning of the label with "click here". Use paths from
@@ -246,7 +246,7 @@ refused.
 
 Alternative text must convey the purpose of the image. Do not use a
 decorative picture instead of a heading or an instruction. An image with a
-caption and set proportions comes from the [Figure](/en/components/figure/)
+caption and set proportions comes from the [Figure](/en/components/images-and-files/figure/)
 component.
 
 ## Tables
@@ -288,7 +288,7 @@ braces, you can give a file name, line numbers and highlighting, focus or a
 terminal frame:
 `` ```php {title="app.php" highlight="2-3" numbers} ``. All options and
 including a fragment from a project file are described on
-[Code](/en/components/code/) and [Code from a file](/en/components/code-from-file/).
+[Code](/en/components/code-and-data/code/) and [Code from a file](/en/components/code-and-data/code-from-file/).
 
 Inside an ordinary code block directive lines stay text and are shown safely
 to the reader — this is how you show a component call:
@@ -337,8 +337,8 @@ Raw HTML is removed. If ordinary Markdown is not enough:
 3. copy the exact call from the component's page;
 4. rebuild and check the site.
 
-For a styled band use [Surface](/en/components/surface/), and for a first
-screen [Hero](/en/components/hero/) (both in Russian). Hero, Showcase and
+For a styled band use [Surface](/en/components/layout/surface/), and for a first
+screen [Hero](/en/components/layout/hero/) (both in Russian). Hero, Showcase and
 Promo already use the shared Surface styling: do not nest them in a Surface
 and do not add CSS, a template path or a separate background.
 

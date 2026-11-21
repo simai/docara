@@ -46,7 +46,7 @@ Builder применяет `base_url` самостоятельно.
 через `#` — так же, как он выглядит в адресе:
 
 ```json
-{ "from": "components/tree-item", "to": "components/tree#узел-дерева" }
+{ "from": "components/tree-item", "to": "components/blocks/tree#узел-дерева" }
 ```
 
 Читатель попадёт сразу к заголовку «Узел дерева». Якорь может быть на любом

@@ -28,7 +28,7 @@ final class MarkdownCompilerTest extends TestCase
     public function test_badge_markdown_compiles_to_typed_in_memory_ir_with_exact_source_locations(): void
     {
         $root = dirname(__DIR__, 2);
-        $path = $root . '/docs/site/content/ru/components/badge.md';
+        $path = $root . '/docs/site/content/ru/components/inline/badge.md';
         $document = (new MarkdownCompiler)->compile(
             (string) file_get_contents($path),
             'content/ru/components/badge.md',

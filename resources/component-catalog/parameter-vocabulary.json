@@ -311,6 +311,7 @@
         }
     },
     "meaning_exceptions": {
+        "columns.ratio": "Shares of the row the columns take on a wide screen, left to right (2/1, 1/2/1): the same a/b notation as an aspect ratio, one share per column, so it accepts its own value set. SIMAI Framework names the same columns setting ratio in its layout kit (owner decision 2026-11-21).",
         "internal_preview.size": "Internal build view, not a public component: its frame height (compact, normal, tall) predates the vocabulary. Its only callers are the composition guide pages; it moves to height with them.",
         "internal_preview.title": "Internal build view, not a public component: the text is the iframe's accessible name, so it would be label; it moves with internal_preview.size."
     }

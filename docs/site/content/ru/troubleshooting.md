@@ -103,7 +103,7 @@ php vendor/bin/docara serve local --host=localhost --port=8000
 
 Для локального просмотра используйте `docara serve`: встроенный read-only
 router понимает pretty URL и идентификаторы с точкой, например
-`/components/alert/`.
+`/components/blocks/alert/`.
 
 На внешнем сервере включите обычное разрешение каталога в `index.html`. Не
 переписывайте URL на PHP и не направляйте запросы к Markdown-исходникам.

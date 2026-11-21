@@ -52,7 +52,7 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID` | Значение атрибута не из списка допустимых. **Что сделать:** Возьмите значение из описания блока. |
 | `MARKDOWN_PARAMETER_DEPRECATED` | Предупреждение, а не ошибка: страница использует старое имя параметра или старое значение, например `view` вместо `layout` или `ratio=16x9` вместо `ratio=16/9`. Страница выглядит так же, сборка не останавливается и пишет одну строку-итог. **Что сделать:** Запустите `docara validate page <адрес>`: он покажет строку и новое имя. Замените имя или значение. Полный список — в разделе [«Устаревшие имена параметров»](/ru/start/component-model/#устаревшие-имена-параметров). |
 | `PRESERVED_NOT_SHOWN` | Предупреждение, а не ошибка: на странице есть блок `:::preserved`. Его текст остаётся в исходном Markdown, но в собранную страницу, её заголовок и описание не попадает. Сборка не останавливается и пишет одну строку-итог. **Что сделать:** Если текст хранится в блоке намеренно, ничего делать не нужно. Чтобы показать текст на сайте, перенесите его из блока или удалите строки `:::preserved` и закрывающую `:::`. `docara validate page <адрес>` покажет строку каждого блока. Если внутри блока есть другие блоки, открывайте его более длинной строкой, например `::::preserved`, и закрывайте строкой `::::`. |
-| `MARKDOWN_RAW_HTML_FORBIDDEN` | В Markdown есть HTML-теги. Docara не пропускает HTML в страницу. **Что сделать:** Перепишите фрагмент на Markdown или поместите код в блок [html](/components/html/) или [example](/components/example/), которые показывают его в изолированной рамке. |
+| `MARKDOWN_RAW_HTML_FORBIDDEN` | В Markdown есть HTML-теги. Docara не пропускает HTML в страницу. **Что сделать:** Перепишите фрагмент на Markdown или поместите код в блок [html](/components/code-and-data/html/) или [example](/components/blocks/example/), которые показывают его в изолированной рамке. |
 | `MARKDOWN_BLOCK_PLACEHOLDER_CARDINALITY_INVALID`, `MARKDOWN_INLINE_PLACEHOLDER_CARDINALITY_INVALID`, `FRAMEWORK_PLACEHOLDER_CARDINALITY_INVALID` | Текст страницы случайно совпал со служебной меткой, которой Docara отмечает место блока. **Что сделать:** Измените текст рядом с блоком. Если ошибка повторяется, сообщите о ней в репозиторий Docara. |
 
 ## Ссылки и картинки
@@ -68,26 +68,26 @@ Front matter — блок между двумя строками `---` в нач
 
 | Код | Причина и что сделать |
 | --- | --- |
-| `MARKDOWN_ALERT_HEADING_REQUIRED` | [Alert](/components/alert/) не начинается с заголовка уровня 2–5. **Что сделать:** Первой строкой блока поставьте заголовок, например `## Внимание`. |
+| `MARKDOWN_ALERT_HEADING_REQUIRED` | [Alert](/components/blocks/alert/) не начинается с заголовка уровня 2–5. **Что сделать:** Первой строкой блока поставьте заголовок, например `## Внимание`. |
 | `MARKDOWN_ALERT_CONTENT_REQUIRED` | В alert нет текста после заголовка. **Что сделать:** Добавьте поясняющий текст. |
-| `MARKDOWN_BANNER_CONTENT_REQUIRED` | [Banner](/components/banner/) пустой. **Что сделать:** Добавьте текст. |
-| `MARKDOWN_DETAILS_HEADING_REQUIRED` | [Details](/components/details/) не начинается с заголовка уровня 2–4. **Что сделать:** Первой строкой поставьте заголовок, он станет подписью раскрывающегося блока. |
+| `MARKDOWN_BANNER_CONTENT_REQUIRED` | [Banner](/components/blocks/banner/) пустой. **Что сделать:** Добавьте текст. |
+| `MARKDOWN_DETAILS_HEADING_REQUIRED` | [Details](/components/blocks/details/) не начинается с заголовка уровня 2–4. **Что сделать:** Первой строкой поставьте заголовок, он станет подписью раскрывающегося блока. |
 | `MARKDOWN_DETAILS_CONTENT_REQUIRED` | В details нет текста после заголовка. **Что сделать:** Добавьте содержимое. |
-| `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` | [Steps](/components/steps/) не содержит ровно один нумерованный список. **Что сделать:** Оставьте в блоке один список `1.`, `2.`, `3.`. |
-| `MARKDOWN_TABS_ITEMS_REQUIRED` | В [tabs](/components/tabs/) меньше двух вкладок. Вкладка — заголовок уровня 3 с текстом под ним. **Что сделать:** Добавьте не меньше двух заголовков `###` с содержимым. |
+| `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` | [Steps](/components/blocks/steps/) не содержит ровно один нумерованный список. **Что сделать:** Оставьте в блоке один список `1.`, `2.`, `3.`. |
+| `MARKDOWN_TABS_ITEMS_REQUIRED` | В [tabs](/components/blocks/tabs/) меньше двух вкладок. Вкладка — заголовок уровня 3 с текстом под ним. **Что сделать:** Добавьте не меньше двух заголовков `###` с содержимым. |
 | `MARKDOWN_TABS_ITEM_INVALID` | У вкладки нет подписи или содержимого. **Что сделать:** Дайте каждому заголовку `###` текст под ним. |
-| `MARKDOWN_TABS_DEFAULT_NOT_FOUND` | В [tabs](/components/tabs/) параметр `default` называет вкладку, которой в блоке нет. Сообщение перечисляет имена вкладок блока. **Что сделать:** Укажите подпись одной из вкладок или её имя — подпись строчными буквами, знаки заменены на дефис. |
-| `MARKDOWN_TREE_LIST_REQUIRED` | [Tree](/components/tree/) не содержит один вложенный маркированный список. **Что сделать:** Оставьте в блоке один список `-` с вложенными пунктами. |
-| `MARKDOWN_FIGURE_IMAGE_REQUIRED` | [Figure](/components/figure/) содержит не одну картинку или лишний текст. **Что сделать:** Оставьте одну картинку и, при желании, один абзац подписи. |
-| `MARKDOWN_MEDIA_CONTENT_REQUIRED` | В [media](/components/media/) нет картинки или текста. **Что сделать:** Добавьте одну картинку и текст рядом с ней. |
-| `MARKDOWN_GRID_CARD_REQUIRED` | В [grid](/components/grid/) есть что-то кроме блоков `card`. **Что сделать:** Поместите содержимое в блоки [card](/components/card/). |
-| `MARKDOWN_DOWNLOAD_LINK_REQUIRED` | [Download](/components/download/) содержит не одну ссылку. **Что сделать:** Оставьте одну ссылку на файл. |
+| `MARKDOWN_TABS_DEFAULT_NOT_FOUND` | В [tabs](/components/blocks/tabs/) параметр `default` называет вкладку, которой в блоке нет. Сообщение перечисляет имена вкладок блока. **Что сделать:** Укажите подпись одной из вкладок или её имя — подпись строчными буквами, знаки заменены на дефис. |
+| `MARKDOWN_TREE_LIST_REQUIRED` | [Tree](/components/blocks/tree/) не содержит один вложенный маркированный список. **Что сделать:** Оставьте в блоке один список `-` с вложенными пунктами. |
+| `MARKDOWN_FIGURE_IMAGE_REQUIRED` | [Figure](/components/images-and-files/figure/) содержит не одну картинку или лишний текст. **Что сделать:** Оставьте одну картинку и, при желании, один абзац подписи. |
+| `MARKDOWN_MEDIA_CONTENT_REQUIRED` | В [media](/components/images-and-files/media/) нет картинки или текста. **Что сделать:** Добавьте одну картинку и текст рядом с ней. |
+| `MARKDOWN_GRID_CARD_REQUIRED` | В [grid](/components/layout/grid/) есть что-то кроме блоков `card`. **Что сделать:** Поместите содержимое в блоки [card](/components/layout/card/). |
+| `MARKDOWN_DOWNLOAD_LINK_REQUIRED` | [Download](/components/images-and-files/download/) содержит не одну ссылку. **Что сделать:** Оставьте одну ссылку на файл. |
 | `MARKDOWN_QUOTE_ATTRIBUTION_REQUIRED` | У цитаты с подписью нет автора или источника. **Что сделать:** Укажите автора или источник. |
-| `MARKDOWN_MATH_SOURCE_REQUIRED` | [Math](/components/math/) пустой. **Что сделать:** Добавьте формулу в записи TeX. |
-| `MARKDOWN_DIAGRAM_SOURCE_REQUIRED` | [Diagram](/components/diagram/) пустой. **Что сделать:** Добавьте описание диаграммы. |
-| `MARKDOWN_DIAGRAM_LABEL_EMPTY` | У [схемы](/components/diagram/) параметр `label` пустой, а это текстовая альтернатива для программ экранного доступа. **Что сделать:** Напишите в `label`, что показывает схема, или уберите параметр — тогда читают название из `title`. |
-| `MARKDOWN_HTML_FENCE_REQUIRED` | [Html](/components/html/) содержит не один блок кода HTML. **Что сделать:** Оставьте один блок кода с языком `html`. |
-| `MARKDOWN_BACKLINKS_LIMIT_INVALID` | `limit` у [backlinks](/components/backlinks/) вне диапазона 1–50. **Что сделать:** Укажите число от 1 до 50. |
+| `MARKDOWN_MATH_SOURCE_REQUIRED` | [Math](/components/code-and-data/math/) пустой. **Что сделать:** Добавьте формулу в записи TeX. |
+| `MARKDOWN_DIAGRAM_SOURCE_REQUIRED` | [Diagram](/components/code-and-data/diagram/) пустой. **Что сделать:** Добавьте описание диаграммы. |
+| `MARKDOWN_DIAGRAM_LABEL_EMPTY` | У [схемы](/components/code-and-data/diagram/) параметр `label` пустой, а это текстовая альтернатива для программ экранного доступа. **Что сделать:** Напишите в `label`, что показывает схема, или уберите параметр — тогда читают название из `title`. |
+| `MARKDOWN_HTML_FENCE_REQUIRED` | [Html](/components/code-and-data/html/) содержит не один блок кода HTML. **Что сделать:** Оставьте один блок кода с языком `html`. |
+| `MARKDOWN_BACKLINKS_LIMIT_INVALID` | `limit` у [backlinks](/components/blocks/backlinks/) вне диапазона 1–50. **Что сделать:** Укажите число от 1 до 50. |
 | `MARKDOWN_SCHEMA_REFERENCE_FIELDS_INVALID` | `fields` у `schema_reference` называет поле, которого нет в схеме, или записан с пробелами. **Что сделать:** Перечислите поля верхнего уровня через запятую без пробелов: `fields=reading,search`. |
 | `MARKDOWN_INLINE_COMPONENT_LABEL_REQUIRED` | Встроенный в текст компонент, например `:badge[...]` или `:kbd[...]`, пустой. **Что сделать:** Напишите текст в квадратных скобках: `:kbd[Esc]`. |
 | `MARKDOWN_ATLAS_FILTER_INVALID` | Фильтр атласа содержит недопустимые символы. **Что сделать:** Перечислите идентификаторы через запятую: строчные латинские буквы, цифры, `.`, `_`, `-`. |
@@ -96,12 +96,12 @@ Front matter — блок между двумя строками `---` в нач
 
 | Код | Причина и что сделать |
 | --- | --- |
-| `MARKDOWN_CODE_SOURCE_REQUIRED` | У блока [кода из файла](/components/code-from-file/) нет `src`. **Что сделать:** Укажите путь к файлу в `src`. |
+| `MARKDOWN_CODE_SOURCE_REQUIRED` | У блока [кода из файла](/components/code-and-data/code-from-file/) нет `src`. **Что сделать:** Укажите путь к файлу в `src`. |
 | `MARKDOWN_CODE_SOURCE_UNSAFE` | Путь в `src` абсолютный, ведёт за пределы проекта или на символическую ссылку, либо файла нет. **Что сделать:** Укажите путь к существующему файлу относительно страницы. |
 | `MARKDOWN_CODE_SOURCE_INVALID` | Файл больше 1 МиБ или не в кодировке UTF-8. **Что сделать:** Возьмите файл меньше или нужный фрагмент через `lines`. |
 | `MARKDOWN_CODE_LINES_INVALID` | `lines` записан не как `N` или `N-M`. **Что сделать:** Пишите `lines=5` или `lines=5-12`. |
 | `MARKDOWN_CODE_LANGUAGE_INVALID` | Язык подсветки записан с недопустимыми символами. **Что сделать:** Укажите язык строчными буквами, например `php` или `json`. |
-| `MARKDOWN_CODE_RANGE_INVALID` | В `highlight` или `focus` у [блока кода](/components/code/) номер строки больше, чем строк в блоке, диапазон записан наоборот или не числами; либо `start_after` и `end_before` не оставили ни одной строки. **Что сделать:** Пишите номера через запятую, считая от первой строки блока: `highlight="1,4-6"`. |
+| `MARKDOWN_CODE_RANGE_INVALID` | В `highlight` или `focus` у [блока кода](/components/code-and-data/code/) номер строки больше, чем строк в блоке, диапазон записан наоборот или не числами; либо `start_after` и `end_before` не оставили ни одной строки. **Что сделать:** Пишите номера через запятую, считая от первой строки блока: `highlight="1,4-6"`. |
 | `MARKDOWN_CODE_REGION_UNKNOWN` | В файле нет области из `region`, область не закрыта `#endregion`, или ни одна строка не содержит текст `start_after` или `end_before`. **Что сделать:** Отметьте область в файле комментарием `// #region имя` и `// #endregion имя` или исправьте название и текст меток. |
 | `MARKDOWN_CODE_OPTIONS_CONFLICT` | Фрагмент файла выбран двумя способами сразу: `lines` вместе с `region` или с `start_after` и `end_before`. **Что сделать:** Оставьте один способ. |
 
@@ -109,7 +109,7 @@ Front matter — блок между двумя строками `---` в нач
 
 | Код | Причина и что сделать |
 | --- | --- |
-| `MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID` | `component` у [справочника компонента](/components/component-reference/) пустой или не похож на тег: нужны строчные латинские буквы, цифры и хотя бы один дефис. **Что сделать:** Укажите тег, например `component=sf-view-table`. |
+| `MARKDOWN_COMPONENT_REFERENCE_COMPONENT_INVALID` | `component` у [справочника компонента](/components/code-and-data/component-reference/) пустой или не похож на тег: нужны строчные латинские буквы, цифры и хотя бы один дефис. **Что сделать:** Укажите тег, например `component=sf-view-table`. |
 | `MARKDOWN_COMPONENT_REFERENCE_SECTIONS_INVALID` | `sections` называет неизвестную часть, повторяет часть или записан с пробелами. **Что сделать:** Перечислите через запятую без пробелов части из `overview`, `attributes`, `events`, `methods`, `css`, `accessibility`. |
 | `COMPONENT_REFERENCE_MANIFEST_MISSING` | Нет файла `components/<папка>/smart.manifest.json` для тега из `component`. Папка — тег без приставки `sf-`. **Что сделать:** Скопируйте манифест компонента в эту папку или исправьте тег. |
 | `COMPONENT_REFERENCE_MANIFEST_INVALID` | `smart.manifest.json` или `component.json` — не JSON-объект, больше 4 МБ, символическая ссылка, описывает другой тег (`custom_element`) или поля `inputs`, `events`, `methods`, `accessibility`, `css-variables` не объекты. **Что сделать:** Возьмите манифест из выпуска компонента без правок и проверьте, что `custom_element` совпадает с `component`. |
@@ -121,10 +121,10 @@ Front matter — блок между двумя строками `---` в нач
 
 | Код | Причина и что сделать |
 | --- | --- |
-| `MARKDOWN_EMBED_LINK_REQUIRED` | [Embed](/components/embed/) содержит не одну ссылку. **Что сделать:** Оставьте одну ссылку на встраиваемый материал. |
+| `MARKDOWN_EMBED_LINK_REQUIRED` | [Embed](/components/images-and-files/embed/) содержит не одну ссылку. **Что сделать:** Оставьте одну ссылку на встраиваемый материал. |
 | `MARKDOWN_EMBED_LABEL_REQUIRED` | У ссылки в embed нет текста. **Что сделать:** Напишите текст ссылки: его увидят до загрузки. |
 | `MARKDOWN_EMBED_URL_UNSAFE` | Ссылка в embed использует опасную схему. **Что сделать:** Используйте адрес `https://`. |
-| `MARKDOWN_EMBED_ORIGIN_FORBIDDEN` | Адрес не подходит выбранному провайдеру или режиму согласия. **Что сделать:** Используйте адрес того сервиса, который указан в `provider`. Список адресов — на странице [embed](/components/embed/). |
+| `MARKDOWN_EMBED_ORIGIN_FORBIDDEN` | Адрес не подходит выбранному провайдеру или режиму согласия. **Что сделать:** Используйте адрес того сервиса, который указан в `provider`. Список адресов — на странице [embed](/components/images-and-files/embed/). |
 | `MARKDOWN_EMBED_ID_INVALID` | `id` у embed содержит недопустимые символы. **Что сделать:** Используйте строчные латинские буквы, цифры и дефис. |
 | `MARKDOWN_INTERNAL_PREVIEW_LINK_REQUIRED` | Предпросмотр страницы сайта содержит не одну ссылку. **Что сделать:** Оставьте одну ссылку. |
 | `MARKDOWN_INTERNAL_PREVIEW_TITLE_REQUIRED` | У предпросмотра нет заголовка рамки. **Что сделать:** Добавьте заголовок: его прочитает программа экранного доступа. |
@@ -134,7 +134,7 @@ Front matter — блок между двумя строками `---` в нач
 
 | Код | Причина и что сделать |
 | --- | --- |
-| `MARKDOWN_EXAMPLE_FENCED_SOURCE_REQUIRED` | В [example](/components/example/) нет блока кода. **Что сделать:** Добавьте блок кода Markdown или HTML, CSS и JavaScript. |
+| `MARKDOWN_EXAMPLE_FENCED_SOURCE_REQUIRED` | В [example](/components/blocks/example/) нет блока кода. **Что сделать:** Добавьте блок кода Markdown или HTML, CSS и JavaScript. |
 | `MARKDOWN_EXAMPLE_SOURCE_ONLY` | В example есть текст вне блоков кода. **Что сделать:** Вынесите пояснение за пределы блока. |
 | `MARKDOWN_EXAMPLE_HTML_REQUIRED` | Есть CSS или JavaScript, но нет HTML. **Что сделать:** Добавьте блок кода `html`. |
 | `MARKDOWN_EXAMPLE_SOURCE_COMBINATION_INVALID` | Пример на Markdown смешан с HTML, CSS или JavaScript. **Что сделать:** Сделайте два отдельных примера. |
@@ -158,7 +158,7 @@ Front matter — блок между двумя строками `---` в нач
 
 | Код | Причина и что сделать |
 | --- | --- |
-| `MARKDOWN_HERO_H1_REQUIRED` | [Hero](/components/hero/) не начинается с заголовка первого уровня. **Что сделать:** Первой строкой поставьте `# Заголовок`. |
+| `MARKDOWN_HERO_H1_REQUIRED` | [Hero](/components/layout/hero/) не начинается с заголовка первого уровня. **Что сделать:** Первой строкой поставьте `# Заголовок`. |
 | `MARKDOWN_HERO_DESCRIPTION_REQUIRED` | Нет одного или двух абзацев описания. **Что сделать:** Добавьте один-два абзаца после заголовка. |
 | `MARKDOWN_HERO_STRUCTURE_INVALID` | В hero есть что-то кроме заголовка, абзацев, ссылок-кнопок и картинки. **Что сделать:** Уберите списки, таблицы и другие блоки. |
 | `MARKDOWN_HERO_LINK_REQUIRED` | У кнопки нет текста. **Что сделать:** Напишите текст ссылки. |
@@ -190,7 +190,7 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_FEATURES_ITEM_CONTENT_INVALID` | В пункте больше одного абзаца или неподдерживаемый элемент. **Что сделать:** Оставьте в пункте один абзац текста. |
 | `MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED` | Пункт без видимого текста. **Что сделать:** Добавьте текст. |
 | `MARKDOWN_FEATURES_IMAGE_UNSAFE` | Картинка в пункте использует опасную схему. **Что сделать:** Используйте `https://` или путь сайта. |
-| `MARKDOWN_LOGOS_UNORDERED_LIST_REQUIRED` | В [logos](/components/logos/) нет одного плоского списка. **Что сделать:** Оставьте один список `-`. |
+| `MARKDOWN_LOGOS_UNORDERED_LIST_REQUIRED` | В [logos](/components/images-and-files/logos/) нет одного плоского списка. **Что сделать:** Оставьте один список `-`. |
 | `MARKDOWN_LOGOS_ITEM_COUNT_INVALID` | Логотипов меньше двух или больше двенадцати. **Что сделать:** Оставьте от двух до двенадцати. |
 | `MARKDOWN_LOGOS_ITEM_CONTENT_INVALID` | В пункте не один абзац. **Что сделать:** Оставьте в пункте одну картинку или ссылку с картинкой. |
 | `MARKDOWN_CTA_LINK_REQUIRED` | В cta не ровно одна ссылка с текстом. **Что сделать:** Оставьте одну ссылку-кнопку. |
@@ -205,8 +205,8 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_COLUMNS_REGION_COUNT_INVALID` | В columns меньше двух или больше четырёх колонок. **Что сделать:** Разделите содержимое на 2–4 части. |
 | `MARKDOWN_COLUMNS_SEPARATOR_INVALID` | Колонки разделены не строкой `---` с пустыми строками до и после. **Что сделать:** Поставьте между колонками отдельную строку `---`, окружённую пустыми строками. |
 | `MARKDOWN_COLUMNS_REGION_EMPTY` | Одна из колонок пустая. **Что сделать:** Добавьте в неё текст или уменьшите число колонок. |
-| `MARKDOWN_COLUMNS_WIDTHS_MISMATCH` | В `widths` долей больше или меньше, чем колонок: `widths=2/1/1` у двух колонок. **Что сделать:** Укажите по одной доле на колонку, например `widths=2/1`, или уберите параметр. |
-| `MARKDOWN_SURFACE_CONTENT_REQUIRED` | [Surface](/components/surface/) пустой. **Что сделать:** Добавьте содержимое. |
+| `MARKDOWN_COLUMNS_RATIO_MISMATCH` | В `ratio` долей больше или меньше, чем колонок: `ratio=2/1/1` у двух колонок. **Что сделать:** Укажите по одной доле на колонку, например `ratio=2/1`, или уберите параметр. |
+| `MARKDOWN_SURFACE_CONTENT_REQUIRED` | [Surface](/components/layout/surface/) пустой. **Что сделать:** Добавьте содержимое. |
 | `MARKDOWN_SURFACE_BACKGROUND_REQUIRED` | Положение фона указано без `background_image`. **Что сделать:** Добавьте `background_image` или уберите настройки положения. |
 | `MARKDOWN_SURFACE_OVERLAY_REQUIRED` | `overlay_strength` указан при `overlay=none`. **Что сделать:** Укажите `overlay=light` или `overlay=dark`. |
 | `MARKDOWN_SURFACE_BACKGROUND_UNSAFE`, `MARKDOWN_SURFACE_BACKGROUND_CASE_MISMATCH`, `MARKDOWN_SURFACE_BACKGROUND_CONTEXT_INVALID` | Фоновая картинка не найдена в `assets/`, путь отличается регистром или страница лежит вне `content/<язык>/`. **Что сделать:** Положите файл в `assets/` и укажите точный путь `/assets/...`. |
@@ -215,13 +215,13 @@ Front matter — блок между двумя строками `---` в нач
 
 Строчные компоненты пишутся внутри абзаца: `:icon[имя]{...}`,
 `:badge[текст]{...}`, `:button[текст]{...}`, `:kbd[клавиша]`. Параметры каждого
-описаны на его странице: [значок](/ru/components/icon/),
-[бейдж](/ru/components/badge/), [кнопка-ссылка](/ru/components/button/),
-[клавиша](/ru/components/kbd/).
+описаны на его странице: [значок](/ru/components/inline/icon/),
+[бейдж](/ru/components/inline/badge/), [кнопка-ссылка](/ru/components/inline/button/),
+[клавиша](/ru/components/inline/kbd/).
 
 | Код | Причина и что сделать |
 | --- | --- |
-| `CONTENT_COMPONENT_ICON_UNKNOWN` | Значка с таким именем нет в наборе Material Symbols, который поставляется с Docara. Чаще всего это опечатка: `:icon[setings]` вместо `:icon[settings]`. **Что сделать:** Найдите имя в [списке всех значков](/ru/components/icon/#все-имена-значков) и исправьте его. |
+| `CONTENT_COMPONENT_ICON_UNKNOWN` | Значка с таким именем нет в наборе Material Symbols, который поставляется с Docara. Чаще всего это опечатка: `:icon[setings]` вместо `:icon[settings]`. **Что сделать:** Найдите имя в [списке всех значков](/ru/components/inline/icon/#все-имена-значков) и исправьте его. |
 | `CONTENT_COMPONENT_SLOT_INVALID` | Имя значка содержит заглавные буквы, пробелы или другие символы, например `:icon[Search]`. **Что сделать:** Пишите имя строчными латинскими буквами, цифрами и `_`, например `check_circle`. |
 | `CONTENT_COMPONENT_PROP_UNKNOWN` | У компонента нет такого параметра, например `:kbd[Esc]{size=1}`. **Что сделать:** Удалите параметр или исправьте его имя по странице компонента. |
 | `CONTENT_COMPONENT_PROP_INVALID` | Значение параметра не из списка допустимых, например `:icon[search]{weight=bold}`, или у кнопки нет безопасного `href`. **Что сделать:** Возьмите значение со страницы компонента. |
@@ -252,7 +252,7 @@ Front matter — блок между двумя строками `---` в нач
 | `FRAMEWORK_PROP_MINIMUM_INVALID`, `FRAMEWORK_PROP_MAXIMUM_INVALID` | Число меньше минимума или больше максимума. **Что сделать:** Укажите число в допустимом диапазоне. |
 | `FRAMEWORK_PROP_MIN_LENGTH_INVALID`, `FRAMEWORK_PROP_MAX_LENGTH_INVALID` | Строка короче или длиннее допустимого. **Что сделать:** Сократите или дополните текст. |
 | `FRAMEWORK_PROP_PATTERN_INVALID` | Строка не подходит под формат параметра. **Что сделать:** Проверьте формат на странице компонента. |
-| `FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME` | Значение параметра запрещено в `simai-framework.lock.json` сайта: статический сайт его не поддерживает, например `"closable": true` или `"type": "success"` у `ui.alert`. В сообщении указано `компонент:параметр`. **Что сделать:** Выберите другое значение; список запретов — на странице [Smart-компоненты ui.*](/ru/components/smart-ui/). |
+| `FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME` | Значение параметра запрещено в `simai-framework.lock.json` сайта: статический сайт его не поддерживает, например `"closable": true` или `"type": "success"` у `ui.alert`. В сообщении указано `компонент:параметр`. **Что сделать:** Выберите другое значение; список запретов — на странице [Smart-компоненты ui.*](/ru/components/simai-framework/smart-ui/). |
 | `SMART_PROPS_INVALID` | Параметры Smart-компонента не прошли проверку. В сообщении есть путь к полю. **Что сделать:** Сверьте параметры с описанием Smart-компонента. |
 | `TYPED_COMPONENT_UNSUPPORTED` | Такого блока Docara нет. **Что сделать:** Проверьте имя блока в [каталоге компонентов](/components/). |
 
@@ -264,13 +264,13 @@ Front matter — блок между двумя строками `---` в нач
 | Код | Причина и что сделать |
 | --- | --- |
 | `DOCUMENT_TYPED_DIRECTIVE_UNCLOSED`, `DOCUMENT_COMPONENT_BLOCK_UNCLOSED`, `DOCUMENT_SMART_UNCLOSED` | У блока нет закрывающей строки. **Что сделать:** Добавьте строку `:::` — столько же двоеточий, сколько в открывающей строке. |
-| `DOCUMENT_TYPED_DIRECTIVE_NESTED_FORBIDDEN`, `DOCUMENT_COMPONENT_BLOCK_NESTED_FORBIDDEN`, `DOCUMENT_SMART_NESTED_FORBIDDEN` | Внутри блока, который не принимает вложенные блоки, стоит другой блок. **Что сделать:** Вынесите внутренний блок наружу. Другие блоки принимают только [полоса](/ru/components/surface/), [сетка](/ru/components/grid/) и [карточка](/ru/components/card/); что именно, написано на странице блока. |
+| `DOCUMENT_TYPED_DIRECTIVE_NESTED_FORBIDDEN`, `DOCUMENT_COMPONENT_BLOCK_NESTED_FORBIDDEN`, `DOCUMENT_SMART_NESTED_FORBIDDEN` | Внутри блока, который не принимает вложенные блоки, стоит другой блок. **Что сделать:** Вынесите внутренний блок наружу. Другие блоки принимают только [полоса](/ru/components/layout/surface/), [сетка](/ru/components/layout/grid/) и [карточка](/ru/components/layout/card/); что именно, написано на странице блока. |
 | `DOCUMENT_COMPONENT_ALIAS_UNKNOWN` | После `:::` стоит имя, которого нет среди блоков Docara и компонентов проекта. **Что сделать:** Проверьте имя в [каталоге компонентов](/ru/components/). |
 | `DOCUMENT_COMPONENT_BLOCK_CONTENT_REQUIRED`, `DOCUMENT_COMPONENT_SLOT_REQUIRED` | Блок пустой, хотя ему нужно видимое содержимое. **Что сделать:** Добавьте текст внутрь блока или удалите блок. |
 | `DOCUMENT_COMPONENT_BLOCK_CHILD_INVALID`, `DOCUMENT_IR_EXAMPLE_COMPONENT_BOUNDARY_INVALID` | Блок кода начинается внутри блока, а заканчивается снаружи — или наоборот. **Что сделать:** Закройте блок кода до строки `:::`. Если блок кода сам содержит `:::`, окружите его более длинной оградой: четырьмя обратными кавычками или `~~~`. |
 | `DOCUMENT_IR_CODE_BLOCK_UNCLOSED` | У блока кода нет закрывающей ограды. **Что сделать:** Добавьте строку с теми же кавычками, что и в начале. |
 | `DOCUMENT_IR_CODE_BLOCK_OPENING_INVALID` | Первая строка блока кода записана неверно: ограда короче трёх символов или смешаны `` ` `` и `~`. **Что сделать:** Начинайте блок с трёх обратных кавычек или трёх тильд, затем язык. |
-| `DOCUMENT_IR_EXAMPLE_UNCLOSED` | У [примера](/ru/components/example/) нет закрывающей строки `:::`. **Что сделать:** Добавьте её после последнего блока кода примера. |
+| `DOCUMENT_IR_EXAMPLE_UNCLOSED` | У [примера](/ru/components/blocks/example/) нет закрывающей строки `:::`. **Что сделать:** Добавьте её после последнего блока кода примера. |
 | `DOCUMENT_HTML_COMMENT_UNCLOSED` | Комментарий `<!--` не закрыт. **Что сделать:** Добавьте `-->`. |
 | `DOCUMENT_DIRECTIVE_LIMIT_EXCEEDED` | На странице больше 128 блоков. **Что сделать:** Разделите страницу на несколько. |
 | `DOCUMENT_CONTAINER_CHILD_COUNT_MIN` | Полоса или сетка пустая. **Что сделать:** Добавьте содержимое или удалите блок. |
@@ -304,7 +304,7 @@ Front matter — блок между двумя строками `---` в нач
 
 Общий пример хранится в `examples/<путь>/` и вызывается
 `:::example {id="<путь>"}`. Подробнее — на странице
-[«Интерактивный пример»](/ru/components/example/#общий-пример-из-проекта).
+[«Интерактивный пример»](/ru/components/blocks/example/#общий-пример-из-проекта).
 
 | Код | Причина и что сделать |
 | --- | --- |

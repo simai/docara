@@ -13,7 +13,7 @@ use Simai\Docara\Document\IconNameCatalog;
  */
 final class IconNameReference
 {
-    public const PAGE = 'docs/site/content/ru/components/icon.md';
+    public const PAGE = 'docs/site/content/ru/components/inline/icon.md';
 
     public const START = '<!-- docara:icon-names:start -->';
 

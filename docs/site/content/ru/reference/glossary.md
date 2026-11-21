@@ -71,7 +71,7 @@ tags: [словарь, термины, глоссарий, lock, manifest, prese
 
 - **Smart-компонент** — самостоятельный элемент интерфейса с manifest, например
   `ui.button` или `docara.navigation`. См.
-  [«Smart-компоненты ui.*»](/ru/components/smart-ui/).
+  [«Smart-компоненты ui.*»](/ru/components/simai-framework/smart-ui/).
 
 - **Типизированный компонент Docara (typed)** — блок Docara с фиксированным
   синтаксисом и проверкой параметров, например `:::card` или `:::steps`.
@@ -130,8 +130,8 @@ tags: [словарь, термины, глоссарий, lock, manifest, prese
 
 - **Hero и Surface** — первый экран лендинга и оформленная полоса вокруг части
   страницы. **Наложение (overlay)** — затемняющий слой поверх фонового
-  изображения, чтобы текст на нём оставался читаемым. См. [«Первый экран»](/ru/components/hero/) и
-  [«Surface»](/ru/components/surface/).
+  изображения, чтобы текст на нём оставался читаемым. См. [«Первый экран»](/ru/components/layout/hero/) и
+  [«Surface»](/ru/components/layout/surface/).
 
 ## Сборка и проверка
 

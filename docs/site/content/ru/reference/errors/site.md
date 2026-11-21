@@ -153,7 +153,7 @@ description: "Коды ошибок настроек сайта: перенап�
 ## Фоновые эффекты
 
 Эффекты подключаются полем `effects` в `docara.json` и параметром `effect`
-блока [hero](/components/hero/).
+блока [hero](/components/layout/hero/).
 
 | Код | Причина и что сделать |
 | --- | --- |

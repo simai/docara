@@ -49,4 +49,4 @@ that everyone must see in the page text.
 
 - [A hint under the menu](../region-sidebar/)
 - [An alert in the page text](../smart-alert/)
-- [SIMAI Framework components](/en/components/smart-ui/)
+- [SIMAI Framework components](/en/components/simai-framework/smart-ui/)

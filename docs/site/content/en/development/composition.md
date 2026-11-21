@@ -303,10 +303,10 @@ The `docara preview smart|region|layout|page` command builds the chosen part
 into `.docara-preview/output/<target>/`:
 
 ```bash
-docara preview page --page=/en/components/alert/
-docara preview layout --page=/en/components/alert/
-docara preview region --page=/en/components/alert/ --selector=main
-docara preview smart --page=/en/components/alert/ --selector=ui.alert
+docara preview page --page=/en/components/blocks/alert/
+docara preview layout --page=/en/components/blocks/alert/
+docara preview region --page=/en/components/blocks/alert/ --selector=main
+docara preview smart --page=/en/components/blocks/alert/ --selector=ui.alert
 ```
 
 For automation, add `--json`. With `--watch`, the command watches everything
@@ -315,7 +315,7 @@ the layout, section, block, Smart component, template and assets from the
 package and the project that are actually used:
 
 ```bash
-docara preview region --page=/en/components/alert/ --selector=main --watch
+docara preview region --page=/en/components/blocks/alert/ --selector=main --watch
 ```
 
 The result folder holds three files:

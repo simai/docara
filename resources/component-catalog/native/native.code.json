@@ -59,7 +59,7 @@
         "docs": true,
         "demo": true
     },
-    "docs_ref": "docs/site/content/ru/components/code.md",
+    "docs_ref": "docs/site/content/ru/components/code-and-data/code.md",
     "provenance": {
         "source_kind": "portable_markdown_profile",
         "profile_id": "docara.portable_markdown_profile.v1"

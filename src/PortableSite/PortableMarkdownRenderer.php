@@ -632,9 +632,24 @@ final class PortableMarkdownRenderer
                     default => '',
                 };
 
+                // A tight list leaves a step's text without a paragraph; the
+                // procedure content stacks its children, so bold or code at
+                // the start of a step would stand on a line of its own. The
+                // text before the first block goes into one paragraph.
+                $body = (string) $match['content'];
+                if (preg_match('/\A\s*<(?:p|ul|ol|div|pre|h[1-6]|section|figure|table|blockquote)\b/i', $body) !== 1) {
+                    $split = preg_match('/<(?:p|ul|ol|div|pre|h[1-6]|section|figure|table|blockquote)\b/i', $body, $block, PREG_OFFSET_CAPTURE) === 1
+                        ? (int) $block[0][1]
+                        : strlen($body);
+                    $text = trim(substr($body, 0, $split));
+                    if ($text !== '') {
+                        $body = '<p>' . $text . '</p>' . substr($body, $split);
+                    }
+                }
+
                 return '<li' . ($state === null ? '' : ' data-step-state="' . $state . '"') . ($state === 'current' ? ' aria-current="step"' : '') . ' class="sf-procedure-step' . $class . '">'
                     . '<div class="sf-procedure-content">'
-                    . (string) $match['content'] . '</div></li>';
+                    . $body . '</div></li>';
             }, $content) ?? $content;
             $content = preg_replace('/^<ol\b/', '<ol class="sf-procedure"', $content, 1) ?? $content;
         } else {
@@ -3766,13 +3781,13 @@ HTML;
         $this->assertAttributes($attributes, 'columns');
         $regions = $this->columnRegions->parse($markdown);
         $count = count($regions);
-        $widths = null;
-        if (isset($attributes['widths'])) {
-            $widths = $this->catalogueChoice($attributes['widths'], 'columns', 'widths');
-            if (count(explode('/', $widths)) !== $count) {
+        $ratio = null;
+        if (isset($attributes['ratio'])) {
+            $ratio = $this->catalogueChoice($attributes['ratio'], 'columns', 'ratio');
+            if (count(explode('/', $ratio)) !== $count) {
                 throw new PortableConfigurationException(
-                    'MARKDOWN_COLUMNS_WIDTHS_MISMATCH',
-                    "Columns [widths=$widths] names " . count(explode('/', $widths)) . " shares, but the block has $count regions.",
+                    'MARKDOWN_COLUMNS_RATIO_MISMATCH',
+                    "Columns [ratio=$ratio] names " . count(explode('/', $ratio)) . " shares, but the block has $count regions.",
                 );
             }
         }
@@ -3806,7 +3821,7 @@ HTML;
         }
 
         return '<section data-docara-block="columns" data-docara-columns="' . $count . '"'
-            . ($widths === null ? '' : ' data-docara-columns-widths="' . $widths . '"')
+            . ($ratio === null ? '' : ' data-docara-columns-ratio="' . $ratio . '"')
             . ' class="' . $classes . ' m-bottom-1">' . implode('', $content) . '</section>';
     }
 

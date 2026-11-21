@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Rewrites the list of every icon name on docs/site/content/ru/components/icon.md
+ * Rewrites the list of every icon name on docs/site/content/ru/components/inline/icon.md
  * from the bundled icon catalogue. Run it after regenerating the catalogue with
  * scripts/build-icon-catalog.cjs.
  *

@@ -2161,7 +2161,7 @@ final readonly class PortableSiteBuilder
         if (! is_string($path) || $path === '' || str_contains($path, '\\')) {
             throw new PortableConfigurationException(
                 'PORTABLE_PAGE_SELECTOR_INVALID',
-                'The page selector must be a public URL such as [/ru/components/badge/].',
+                'The page selector must be a public URL such as [/ru/components/inline/badge/].',
             );
         }
 

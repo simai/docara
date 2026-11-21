@@ -32,10 +32,10 @@ test mode no money is charged. It is set in Markdown, without HTML.
 | `closable` | Whether the alert can be closed |
 | `aria-label` | The alert name for screen readers |
 
-For simple notes without SIMAI Framework there is the [Alert block](/en/components/alert/).
+For simple notes without SIMAI Framework there is the [Alert block](/en/components/blocks/alert/).
 
 ## See also
 
 - [A note next to the page outline](../region-aside/)
 - [A button in the page text](../smart-button/)
-- [SIMAI Framework components](/en/components/smart-ui/)
+- [SIMAI Framework components](/en/components/simai-framework/smart-ui/)

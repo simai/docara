@@ -842,7 +842,7 @@ MD;
         );
         // Steps are the Framework procedure (C194).
         self::assertStringContainsString('<ol class="sf-procedure">', $html);
-        self::assertStringContainsString('<li class="sf-procedure-step"><div class="sf-procedure-content">Установите PHP-зависимости.</div></li>', $html);
+        self::assertStringContainsString('<li class="sf-procedure-step"><div class="sf-procedure-content"><p>Установите PHP-зависимости.</p></div></li>', $html);
         self::assertStringNotContainsString('docara-step', $html);
         self::assertStringNotContainsString('absolute inset-inline-start-0', $html);
         self::assertStringContainsString(
@@ -1066,7 +1066,7 @@ MD);
         self::assertStringNotContainsString('aria-current', $plain);
         // A passive list marks no step: no state, plain Framework numbers (C137).
         self::assertStringNotContainsString('data-step-state', $plain);
-        self::assertStringContainsString('<li class="sf-procedure-step"><div class="sf-procedure-content">A</div></li>', $plain);
+        self::assertStringContainsString('<li class="sf-procedure-step"><div class="sf-procedure-content"><p>A</p></div></li>', $plain);
         self::assertStringContainsString('<li data-step-state="complete" class="sf-procedure-step sf-procedure-step--complete"', $named);
         self::assertStringContainsString('class="sf-procedure-step sf-procedure-step--current"', $named);
     }
@@ -1592,10 +1592,10 @@ MD);
     }
 
     #[Test]
-    public function columns_hold_details_and_card_blocks_and_take_declared_widths(): void
+    public function columns_hold_details_and_card_blocks_and_take_a_declared_ratio(): void
     {
         $html = (new PortableMarkdownRenderer)->render(
-            "::::columns {widths=2/1}\n"
+            "::::columns {ratio=2/1}\n"
             . "## Questions\n\n:::details {layout=lines}\n### One?\n\nYes.\n:::\n\n"
             . ":::details {layout=lines}\n### Two?\n\nNo.\n:::\n\n---\n\n"
             . ":::card\n### About\n\nShort facts.\n:::\n"
@@ -1603,7 +1603,7 @@ MD);
         );
 
         self::assertStringContainsString(
-            '<section data-docara-block="columns" data-docara-columns="2" data-docara-columns-widths="2/1" class="grid grid-col-1 md:grid-col-2 gap-2 m-bottom-1">',
+            '<section data-docara-block="columns" data-docara-columns="2" data-docara-columns-ratio="2/1" class="grid grid-col-1 md:grid-col-2 gap-2 m-bottom-1">',
             $html,
         );
         self::assertSame(2, substr_count($html, '<article data-docara-block="details" data-view="lines"'));
@@ -1611,11 +1611,11 @@ MD);
         self::assertStringNotContainsString(':::', $html);
 
         $plain = (new PortableMarkdownRenderer)->render(":::columns\nA\n\n---\n\nB\n:::\n");
-        self::assertStringNotContainsString('data-docara-columns-widths', $plain);
+        self::assertStringNotContainsString('data-docara-columns-ratio', $plain);
 
         foreach ([
-            [":::columns {widths=2/1/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COLUMNS_WIDTHS_MISMATCH'],
-            [":::columns {widths=5/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
+            [":::columns {ratio=2/1/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COLUMNS_RATIO_MISMATCH'],
+            [":::columns {ratio=5/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
             [":::columns {width=2/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN'],
         ] as [$markdown, $code]) {
             try {
@@ -2027,6 +2027,15 @@ MD);
         } catch (PortableConfigurationException $exception) {
             self::assertSame('MARKDOWN_BLOCK_PLACEHOLDER_CARDINALITY_INVALID', $exception->errorCode);
         }
+    }
+
+    #[Test]
+    public function a_step_that_starts_with_bold_or_code_keeps_its_text_in_one_paragraph(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(":::steps\n1. **Site** settings in `docara.json`.\n2. `section.json` for a section.\n   - one\n   - two\n:::\n");
+
+        self::assertStringContainsString('<div class="sf-procedure-content"><p><strong>Site</strong> settings in <code>docara.json</code>.</p></div>', $html);
+        self::assertStringContainsString('<div class="sf-procedure-content"><p><code>section.json</code> for a section.</p><ul>', $html);
     }
 
     #[Test]

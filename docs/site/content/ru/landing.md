@@ -26,9 +26,9 @@ Docara и утилит SIMAI Framework.
 Такой значок стоит над заголовком карточки, как изображение.
 
 Исходный Markdown главной находится в `content/ru/index.md`. Первый экран и
-раскрывающиеся вопросы описаны на страницах [Первый экран](/components/hero/)
-и [Раскрывающийся блок](/components/details/), фоновая анимация — на странице
-[Фоновые эффекты](/components/effects/). Блоки `features`, `showcase`,
+раскрывающиеся вопросы описаны на страницах [Первый экран](/components/layout/hero/)
+и [Раскрывающийся блок](/components/blocks/details/), фоновая анимация — на странице
+[Фоновые эффекты](/components/layout/effects/). Блоки `features`, `showcase`,
 `promo`, `columns` и `cta` с живыми примерами описаны на странице
-[Блоки лендинга](/components/landing-blocks/). Остальные компоненты
+[Блоки лендинга](/components/layout/landing-blocks/). Остальные компоненты
 перечислены в [справочнике компонентов](/components/).

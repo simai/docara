@@ -64,5 +64,5 @@ description: "Как добавить на сайт свой интеракти�
 
 ## См. также
 
-- [Компоненты SIMAI Framework](/ru/components/smart-ui/)
+- [Компоненты SIMAI Framework](/ru/components/simai-framework/smart-ui/)
 - [Подвал страницы](../region-footer/)

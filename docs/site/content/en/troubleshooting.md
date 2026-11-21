@@ -101,7 +101,7 @@ preview does not start: this guards against silently showing an old build.
 
 For local preview use `docara serve`: its built-in read-only router
 understands pretty URLs and identifiers with a dot, for example
-`/components/alert/`.
+`/components/blocks/alert/`.
 
 On an external server, turn on the usual resolution of a folder to
 `index.html`. Do not rewrite URLs to PHP and do not route requests to the

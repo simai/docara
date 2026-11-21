@@ -51,7 +51,7 @@ Documentation quality: 93/100 — 102 page(s) scored, 48 need attention, 15 skip
   links          100
 
 Fix first:
-  1. +0.07  /en/components/figure/  QUALITY_DESCRIPTION_MISSING
+  1. +0.07  /en/components/images-and-files/figure/  QUALITY_DESCRIPTION_MISSING
        No description in front matter or in the page file. Add description: one sentence about what the reader gets from the page.
 
 Biggest gains by check (fixed on every page):

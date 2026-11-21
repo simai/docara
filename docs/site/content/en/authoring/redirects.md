@@ -45,7 +45,7 @@ When an old page has become a section of another page, add the section's
 anchor to `to` after `#`, as it appears in the address:
 
 ```json
-{ "from": "components/tree-item", "to": "components/tree#узел-дерева" }
+{ "from": "components/tree-item", "to": "components/blocks/tree#узел-дерева" }
 ```
 
 The reader lands right on the "Узел дерева" heading. The anchor may be in any

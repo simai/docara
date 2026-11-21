@@ -55,7 +55,7 @@ final class PageBuilderTest extends TestCase
     public function test_alert_uses_the_same_pagebuilder_with_nine_typed_gateway_blocks(): void
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
-        $plan = (new PortableConfigurationLoader($root))->resolve('content/ru/components/alert.md');
+        $plan = (new PortableConfigurationLoader($root))->resolve('content/ru/components/blocks/alert.md');
         $result = (new PageBuilder(new PortableMarkdownRenderer))->build(
             $plan,
             $root,
@@ -77,14 +77,14 @@ final class PageBuilderTest extends TestCase
         self::assertSame(4, substr_count($result->contentHtml, 'data-docara-code-block'));
         foreach ($result->componentArtifacts as $artifact) {
             self::assertSame('component_block', $artifact->hydration['node_type']);
-            self::assertSame('content/ru/components/alert.md', $artifact->hydration['source']['file']);
+            self::assertSame('content/ru/components/blocks/alert.md', $artifact->hydration['source']['file']);
             self::assertSame([], $artifact->assets);
         }
 
         // The page follows the component page standard: sections in order,
         // one H3 per parameter axis with its live example, and the generated
         // parameter table.
-        $source = (string) file_get_contents($root . '/content/ru/components/alert.md');
+        $source = (string) file_get_contents($root . '/content/ru/components/blocks/alert.md');
         $positions = array_map(static fn (string $needle): int|false => strpos($source, $needle), [
             '## Пример', '## Разметка', '## Варианты', '### Тип', ':::example {label="Типы уведомлений"}',
             '### Вид', ':::example {label="Вид уведомления"}', '## Доступность', '## Параметры',
@@ -100,7 +100,7 @@ final class PageBuilderTest extends TestCase
     public function test_badge_uses_one_pagebuilder_with_typed_ir_and_sixteen_gateway_artifacts(): void
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
-        $plan = (new PortableConfigurationLoader($root))->resolve('content/ru/components/badge.md');
+        $plan = (new PortableConfigurationLoader($root))->resolve('content/ru/components/inline/badge.md');
         $result = (new PageBuilder(new PortableMarkdownRenderer))->build(
             $plan,
             $root,
@@ -126,13 +126,13 @@ final class PageBuilderTest extends TestCase
                 ]))->types(),
         );
         self::assertSame(
-            'c82a0ce42cc3f828b8f71406c677452bbc98fe664d2aa6238168285867f9915f',
+            'cf8762cccb326a865c736f27aacabd9762807155bcf6b55cd0be5e494098fee8',
             hash('sha256', $result->contentHtml),
         );
         foreach ($result->componentArtifacts as $artifact) {
             self::assertSame('docara.badge', $artifact->hydration['smart']);
             self::assertSame('badge', $artifact->hydration['alias']);
-            self::assertSame('content/ru/components/badge.md', $artifact->hydration['source']['file']);
+            self::assertSame('content/ru/components/inline/badge.md', $artifact->hydration['source']['file']);
             self::assertSame([], $artifact->assets);
         }
     }
@@ -141,13 +141,13 @@ final class PageBuilderTest extends TestCase
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
         foreach ([
-            'components/backlinks' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
-            'components/banner' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
-            'components/code' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'html_comment'],
+            'components/blocks/backlinks' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
+            'components/blocks/banner' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
+            'components/code-and-data/code' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'html_comment'],
             // Pages moved to the page standard add lists and the markers of
             // the generated parameter table.
-            'components/details' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
-            'components/download' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
+            'components/blocks/details' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
+            'components/images-and-files/download' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
             // The native Markdown constructions share one guide page.
             'authoring/markdown' => ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example'],
         ] as $slug => $expectedTypes) {

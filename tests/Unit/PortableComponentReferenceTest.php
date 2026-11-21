@@ -274,7 +274,7 @@ final class PortableComponentReferenceTest extends TestCase
         $renderer = new PortableMarkdownRenderer;
         $pages = [];
         foreach (['ru', 'en'] as $locale) {
-            $source = (string) file_get_contents(self::DOCS_SITE . "/content/$locale/components/component-reference.md");
+            $source = (string) file_get_contents(self::DOCS_SITE . "/content/$locale/components/code-and-data/component-reference.md");
             self::assertStringContainsString(':::component_reference {component=demo-counter}', $source);
             $pages[] = [
                 'locale' => $locale,

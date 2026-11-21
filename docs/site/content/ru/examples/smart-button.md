@@ -20,7 +20,7 @@ description: "Как поставить в текст страницы кноп�
 2. `text` — надпись, `preset` — готовый вид кнопки. Остальные параметры
    берутся из вида.
 3. Это кнопка, а не ссылка: она никуда не ведёт сама. Для перехода на другую
-   страницу используйте [кнопку-ссылку Docara](/ru/components/button/).
+   страницу используйте [кнопку-ссылку Docara](/ru/components/inline/button/).
 
 ## Что можно поменять
 
@@ -36,4 +36,4 @@ description: "Как поставить в текст страницы кноп�
 
 - [Шапка с кнопкой действия](../region-header/)
 - [Уведомление в тексте страницы](../smart-alert/)
-- [Компоненты SIMAI Framework](/ru/components/smart-ui/)
+- [Компоненты SIMAI Framework](/ru/components/simai-framework/smart-ui/)

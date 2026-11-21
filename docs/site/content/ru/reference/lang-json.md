@@ -36,7 +36,7 @@ tags: [lang-json, подписи, перевод, интерфейс, i18n]
 Группа `examples` содержит только подписи интерфейса примеров, например кнопку
 адаптивного просмотра; `blocks` и `atlas` — подписи блоков и списка Design
 Atlas, которые Docara пишет при сборке, `reference` — подписи
-[справочника компонента](/ru/components/component-reference/). Группы
+[справочника компонента](/ru/components/code-and-data/component-reference/). Группы
 `pages`, `components` и `catalog` запрещены: текст страниц и описания
 компонентов принадлежат Markdown.
 
@@ -290,4 +290,4 @@ Docara пишет эти строки при сборке на английск�
 
 - [Мультиязычный сайт](/ru/authoring/multilingual-site/) — как устроены языки и запасные языки
 - [Коды ошибок lang.json](/ru/reference/errors/site/#строки-интерфейса-lang-json)
-- [Фоновые эффекты](/ru/components/effects/) — подписи кнопки паузы
+- [Фоновые эффекты](/ru/components/layout/effects/) — подписи кнопки паузы

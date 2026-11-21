@@ -152,7 +152,7 @@ nothing. How the command works is described in
 ## Background effects
 
 Effects are connected with the `effects` field in `docara.json` and the
-`effect` parameter of the [hero](/components/hero/) block.
+`effect` parameter of the [hero](/components/layout/hero/) block.
 
 | Code | Cause and what to do |
 | --- | --- |

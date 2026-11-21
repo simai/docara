@@ -217,7 +217,7 @@ final class ComponentParameterVocabularyTest extends TestCase
         foreach ($model->components() as $component) {
             if ($model->names($component) === []) {
                 // These declare no parameters. kbd and component_index reject
-                // any attribute; columns, cta, features, html, promo, showcase
+                // any attribute; cta, features, html, promo, showcase
                 // and tabs have always ignored an attribute block, and
                 // rejecting one now would stop sites that build today. Listed
                 // exactly, so a parameter added to the catalogue for one of
@@ -250,7 +250,7 @@ final class ComponentParameterVocabularyTest extends TestCase
             $probed++;
         }
         self::assertGreaterThanOrEqual(15, $probed);
-        self::assertSame(['columns', 'component_index', 'cta', 'features', 'html', 'kbd', 'promo', 'showcase'], $withoutParameters);
+        self::assertSame(['component_index', 'cta', 'features', 'html', 'kbd', 'promo', 'showcase'], $withoutParameters);
 
         foreach (['image' => "![Знак](https://example.com/a.png){%s}\n", 'quote' => "> Цитата\n{author=\"Автор\" %s}\n"] as $component => $template) {
             foreach ($model->names($component) as $name) {

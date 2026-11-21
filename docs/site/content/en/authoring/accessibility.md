@@ -71,5 +71,5 @@ image description is clear or the reading order is right.
 
 - [Documentation quality](/en/authoring/documentation-quality/)
 - [Reader panel](/en/settings/reader-preferences/)
-- [Figure](/en/components/figure/) — image description and caption
+- [Figure](/en/components/images-and-files/figure/) — image description and caption
 - [Quality report codes](/en/reference/errors/quality/)

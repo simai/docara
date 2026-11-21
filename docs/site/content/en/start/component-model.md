@@ -17,7 +17,7 @@ sections and blocks. [Architecture](/en/development/architecture/) explains the 
 | A heading, paragraph, link, image, list, quote, code or table | Plain Markdown | [Markdown](/en/authoring/markdown/) |
 | A short label, link button, icon or key inside a line | An inline Docara component | [Component catalogue](/en/components/) |
 | A self-contained fragment with its own meaning | A Docara block | [Component catalogue](/en/components/) |
-| Several nested blocks with constraints | A Docara container | [Surface](/en/components/surface/) and [Grid](/en/components/grid/) |
+| Several nested blocks with constraints | A Docara container | [Surface](/en/components/layout/surface/) and [Grid](/en/components/layout/grid/) |
 | A ready, checked interface element from SIMAI Framework | A Framework Smart component | [Framework components](/en/development/smart-components/#a-new-simai-framework-component) |
 | A component of one project | A project Smart component or a shell contribution | [Developer SDK](/en/development/developer-sdk/) |
 
@@ -81,7 +81,7 @@ Build the page.
 ::::
 ```
 
-For a shared content band use [Surface](/en/components/surface/). Hero,
+For a shared content band use [Surface](/en/components/layout/surface/). Hero,
 Showcase and Promo are already styled like Surface and need no extra wrapper.
 
 ## SIMAI Framework
@@ -149,14 +149,14 @@ the next minor version.
 
 | Component | Was | Now |
 | --- | --- | --- |
-| [Badge](/en/components/badge/), [link button](/en/components/button/) | `type` | `variant` |
-| [Details](/en/components/details/), [steps](/en/components/steps/) | `view` | `layout` |
-| [Hero](/en/components/hero/) | `variant` | `layout` |
-| [Download](/en/components/download/) | `name`, `size` | `title`, `file_size` |
-| [Embed](/en/components/embed/) | `title` | `label` |
+| [Badge](/en/components/inline/badge/), [link button](/en/components/inline/button/) | `type` | `variant` |
+| [Details](/en/components/blocks/details/), [steps](/en/components/blocks/steps/) | `view` | `layout` |
+| [Hero](/en/components/layout/hero/) | `variant` | `layout` |
+| [Download](/en/components/images-and-files/download/) | `name`, `size` | `title`, `file_size` |
+| [Embed](/en/components/images-and-files/embed/) | `title` | `label` |
 | [Attributed quote](/en/authoring/markdown/) | `url` | `href` |
-| Image, [figure](/en/components/figure/), [media](/en/components/media/), embed | `ratio=16x9` | `ratio=16/9` |
-| [Logos](/en/components/logos/) | `tone=normal` | `tone=default` |
+| Image, [figure](/en/components/images-and-files/figure/), [media](/en/components/images-and-files/media/), embed | `ratio=16x9` | `ratio=16/9` |
+| [Logos](/en/components/images-and-files/logos/) | `tone=normal` | `tone=default` |
 
 Figure, media and embed now accept one set of proportions: `1/1`, `4/3`,
 `3/2`, `16/9` and `21/9`.

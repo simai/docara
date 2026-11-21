@@ -55,7 +55,7 @@ build is atomic: on an error the previous result stays.
 `--page` quickly rebuilds one existing page after the first full build:
 
 ```bash
-php vendor/bin/docara build production --page=/en/components/badge/
+php vendor/bin/docara build production --page=/en/components/inline/badge/
 ```
 
 Docara checks the accepted full-build receipts, selects the route before

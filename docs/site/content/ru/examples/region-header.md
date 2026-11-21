@@ -55,4 +55,4 @@ description: "Как добавить в шапку сайта главную к
 ## См. также
 
 - [Области макета](/ru/settings/layout-and-regions/)
-- [Компоненты SIMAI Framework](/ru/components/smart-ui/)
+- [Компоненты SIMAI Framework](/ru/components/simai-framework/smart-ui/)

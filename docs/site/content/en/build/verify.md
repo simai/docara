@@ -131,7 +131,7 @@ The budgets live in a JSON file, and those of a single page in `pages`:
   "max_page_bytes": 4500000,
   "max_image_bytes": 1300000,
   "pages": {
-    "/en/components/diagram/": {"max_page_bytes": 6900000, "reason": "Mermaid"}
+    "/en/components/code-and-data/diagram/": {"max_page_bytes": 6900000, "reason": "Mermaid"}
   }
 }
 ```

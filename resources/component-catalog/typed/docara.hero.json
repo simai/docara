@@ -40,7 +40,7 @@
         "docs": true,
         "demo": true
     },
-    "docs_ref": "docs/site/content/ru/components/hero.md",
+    "docs_ref": "docs/site/content/ru/components/layout/hero.md",
     "provenance": {
         "source_kind": "typed_definition",
         "definition_ref": "resources/component-catalog/typed/docara.hero.json"

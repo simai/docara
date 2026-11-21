@@ -64,5 +64,5 @@ assembles the command, and the calculator computes the total in the browser.
 
 ## See also
 
-- [SIMAI Framework components](/en/components/smart-ui/)
+- [SIMAI Framework components](/en/components/simai-framework/smart-ui/)
 - [Page footer](../region-footer/)

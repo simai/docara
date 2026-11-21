@@ -64,13 +64,13 @@ tags: [макет, layout, области, регионы, preset, лендин�
 
 Содержание остаётся Markdown, а композицию задают блоки лендинга:
 
-- [hero](/ru/components/hero/) создаёт полноширинный первый экран;
-- [grid](/ru/components/grid/) и [card](/ru/components/card/) собирают
+- [hero](/ru/components/layout/hero/) создаёт полноширинный первый экран;
+- [grid](/ru/components/layout/grid/) и [card](/ru/components/layout/card/) собирают
   ряд возможностей без отдельного специального компонента;
-- [figure](/ru/components/figure/) или [media](/ru/components/media/)
+- [figure](/ru/components/images-and-files/figure/) или [media](/ru/components/images-and-files/media/)
   показывают продуктовый скриншот;
-- [logos](/ru/components/logos/) выводит участников или клиентов;
-- [banner](/ru/components/banner/) с [button](/ru/components/button/)
+- [logos](/ru/components/images-and-files/logos/) выводит участников или клиентов;
+- [banner](/ru/components/blocks/banner/) с [button](/ru/components/inline/button/)
   завершает страницу понятным действием.
 
 Обычные заголовки, текст и код остаются во внутреннем контейнере. Только
@@ -78,7 +78,7 @@ tags: [макет, layout, области, регионы, preset, лендин�
 автор не добавляет отрицательные отступы, CSS-классы и размеры media.
 
 Готовые блоки преимуществ, показа результата и призыва к действию описаны на
-странице [«Блоки лендинга»](/ru/components/landing-blocks/).
+странице [«Блоки лендинга»](/ru/components/layout/landing-blocks/).
 [Открыть главную страницу этой документации](/ru/).
 
 ## Проверка обоих рецептов

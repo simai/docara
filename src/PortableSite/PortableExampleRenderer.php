@@ -109,7 +109,7 @@ final class PortableExampleRenderer
             // The full-screen viewer takes the frame out of its figure, so
             // the header carries the caption's text, shown only there.
             . ($caption === null ? '' : '<span data-docara-example-title class="docara-example-preview__title">' . $this->escape($caption) . '</span>')
-            . '<div class="sf-tabs-top-container flex items-cross-center content-main-between gap-1 p-x-1">'
+            . '<div class="sf-tabs-top-container flex items-cross-center content-main-between gap-1">'
             . '<nav role="tablist" '
             . ($caption === null ? 'aria-label="' . $this->escape($exampleLabel) . '"' : 'aria-labelledby="' . $captionId . '"')
             . ' class="sf-tabs-top docara-example-preview__tabs flex">' . implode('', $tabs) . '</nav>'
@@ -204,7 +204,7 @@ final class PortableExampleRenderer
             . ($caption === null ? '' : ' aria-describedby="' . $id . '-caption"')
             . ' class="docara-example-log">'
             . '<div class="docara-example-log__head sf-tabs sf-tabs--underline sf-tabs--size-1">'
-            . '<div class="sf-tabs-top-container flex items-cross-center content-main-between gap-1 p-x-1">'
+            . '<div class="sf-tabs-top-container flex items-cross-center content-main-between gap-1">'
             . '<nav role="tablist" aria-label="Example log" class="sf-tabs-top docara-example-log__tabs flex">' . $buttons . '</nav>'
             . '<div class="docara-example-log__actions">'
             . '<button type="button" data-docara-example-log-clear aria-label="Clear the log" title="Clear the log"' . $button . '>'

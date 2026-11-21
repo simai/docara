@@ -841,6 +841,13 @@ MD);
             $guide,
             'The outline must use the same Framework scrollbar preset as the navigation.',
         );
+        if (str_contains($guide, '<sf-settings id="docara-reader-settings-dialog"')) {
+            self::assertMatchesRegularExpression(
+                '/<sf-settings id="docara-reader-settings-dialog"[^>]* size="1"[ >]/',
+                $guide,
+                'The reading settings menu is the ordinary size 1 on a site (C22); compactness is region density only.',
+            );
+        }
         self::assertStringContainsString('class="sf-scrollbar__viewport"', $guide);
         self::assertStringNotContainsString(
             'data-sf-scrollbar=',

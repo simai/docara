@@ -276,31 +276,28 @@
   });
   if(window.mermaid&&typeof window.mermaid.initialize==='function'){
     window.mermaid.initialize({startOnLoad:false,securityLevel:'strict',theme:'default'});
-    var diagrams=Array.from(document.querySelectorAll('[data-docara-diagram-source]'));
-    /* Mermaid measures its labels as it draws: a diagram in a hidden tab or a closed details block measures nothing and comes out a 16px box. Such a diagram waits until it has a width, then draws once. */
-    var drawDiagrams=function(nodes){
+    /* Mermaid measures its labels as it draws: a diagram in a hidden tab or a closed details block measures nothing and comes out a 16px box. Only diagrams that have a width are drawn; the rest wait. Tabs may rebuild their panels after this script runs, so a waiting diagram is found again by query, not held: after a tab switch, a details toggle or a resize, every shown diagram that is not drawn yet is drawn once. */
+    var drawShownDiagrams=function(){
+      if(typeof window.mermaid.run!=='function')return;
+      var nodes=Array.from(document.querySelectorAll('[data-docara-diagram-source]:not([data-processed]):not([data-docara-diagram-drawing])')).filter(function(diagram){
+        return diagram.getClientRects().length>0&&diagram.clientWidth>0;
+      });
+      if(!nodes.length)return;
+      nodes.forEach(function(diagram){diagram.dataset.docaraDiagramDrawing='';});
       window.mermaid.run({nodes:nodes}).catch(function(){
         nodes.forEach(function(diagram){
           if(!diagram.querySelector('svg'))diagram.dataset.docaraRenderError='diagram';
         });
+      }).then(function(){
+        nodes.forEach(function(diagram){delete diagram.dataset.docaraDiagramDrawing;});
       });
     };
-    if(diagrams.length&&typeof window.mermaid.run==='function'){
-      var shownDiagrams=diagrams.filter(function(diagram){return diagram.getClientRects().length>0&&diagram.clientWidth>0;});
-      var hiddenDiagrams=diagrams.filter(function(diagram){return shownDiagrams.indexOf(diagram)<0;});
-      if(shownDiagrams.length)drawDiagrams(shownDiagrams);
-      if(hiddenDiagrams.length&&typeof ResizeObserver==='function'){
-        var diagramWatcher=new ResizeObserver(function(entries){
-          entries.forEach(function(entry){
-            if(entry.contentRect.width<=0)return;
-            diagramWatcher.unobserve(entry.target);
-            drawDiagrams([entry.target]);
-          });
-        });
-        hiddenDiagrams.forEach(function(diagram){diagramWatcher.observe(diagram);});
-      }else if(hiddenDiagrams.length){
-        drawDiagrams(hiddenDiagrams);
-      }
+    if(document.querySelector('[data-docara-diagram-source]')){
+      drawShownDiagrams();
+      var diagramSoon=function(){window.setTimeout(drawShownDiagrams,0);window.setTimeout(drawShownDiagrams,300);};
+      ['click','keyup','toggle'].forEach(function(type){document.addEventListener(type,diagramSoon,true);});
+      window.addEventListener('hashchange',diagramSoon);
+      window.addEventListener('resize',diagramSoon);
     }
   }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));

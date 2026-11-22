@@ -81,7 +81,10 @@ All notable changes to Docara are recorded here. The format follows
   effect, with no plate; the first card row follows the hero 48 px below;
   example captions that repeated the tab name are gone; six link cards with an
   icon line; a section on AI agents with three cards; the closing call to
-  action on a full-width band.
+  action on a full-width band. The hero says plainly what Docara is:
+  «Сайты документации из Markdown». The blocks section shows code, a terminal,
+  a file tree and a collapsible block instead of a plain table. The footer
+  reads «Docara © 2026 Rim Zabarov».
 
 - **Component pages in menu sections.** The documentation's component pages
   sit in six sections of the left menu, the same as on the Components overview:
@@ -104,6 +107,14 @@ All notable changes to Docara are recorded here. The format follows
   `MARKDOWN_PARAMETER_DEPRECATED` and the replacement. The banner docs page is
   merged into the alert page and its address redirects there.
   `MARKDOWN_ALERT_HEADING_REQUIRED` is retired.
+
+### Fixed
+
+- **A fenced diagram stops the build.** A ```` ```mermaid ```` fence inside
+  `:::diagram` used to reach the browser as text, and Mermaid drew a syntax
+  error instead of the picture (the home page's diagram example did). The build
+  now stops with `MARKDOWN_DIAGRAM_SOURCE_FENCED` and says to remove the fence.
+  The home page example writes the diagram directly and has a text alternative.
 
 ## [3.18.0] - 2026-11-19
 

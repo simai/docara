@@ -150,6 +150,8 @@ graph LR
 - Without `title` the name is generic: "Diagram" on an English page,
   "Схема" on a Russian page. An empty `label` stops the build with
   `MARKDOWN_DIAGRAM_LABEL_EMPTY`.
+- Write the diagram directly inside the block, without a ```` ```mermaid ````
+  fence: with one the build stops with `MARKDOWN_DIAGRAM_SOURCE_FENCED`.
 - Retell a complex diagram in the text next to it: the sequence of steps,
   the main decision. An image does not replace an explanation.
 - Do not convey meaning by colour alone: label the nodes and arrows.

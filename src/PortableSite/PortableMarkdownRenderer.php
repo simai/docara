@@ -2597,6 +2597,14 @@ HTML;
         if ($source === '') {
             throw new PortableConfigurationException('MARKDOWN_DIAGRAM_SOURCE_REQUIRED', 'A diagram requires a declarative source.');
         }
+        // The block is already the diagram: a fence inside it reaches the
+        // browser as text, and Mermaid draws a syntax error instead of a picture.
+        if (preg_match('/\A(`{3,}|~{3,})/', $source) === 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_DIAGRAM_SOURCE_FENCED',
+                'A diagram takes its Mermaid source directly; remove the ``` fence inside :::diagram.',
+            );
+        }
         // A screen reader meets the drawing as one image. Its name is the
         // caption, which says what the picture is; `label` replaces that name
         // with the author's own text alternative, which can say what the

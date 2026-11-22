@@ -1172,6 +1172,14 @@ MD);
     }
 
     #[Test]
+    public function a_fenced_diagram_source_stops_the_build(): void
+    {
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('MARKDOWN_DIAGRAM_SOURCE_FENCED');
+        (new PortableMarkdownRenderer)->render(":::diagram\n```mermaid\nflowchart LR\n  A --> B\n```\n:::\n");
+    }
+
+    #[Test]
     public function a_tabs_default_that_names_no_tab_stops_the_build(): void
     {
         $this->expectException(PortableConfigurationException::class);

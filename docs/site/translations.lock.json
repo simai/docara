@@ -1458,11 +1458,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/code-and-data/diagram.md",
-            "source_sha256": "624e7d563fe3846f3d6bd9b146f0954471d9b0d069a224eda7242c7986e5b0f9",
-            "source_structure_sha256": "c66e3ec678f40ab181bd6d0bd4cd00749dac065651f3ca1d7462d40baa14d042",
+            "source_sha256": "6b23fd5171d64a42cee2b8a94b77f801508c8fc623bf0c88c956014a182690a0",
+            "source_structure_sha256": "c15f9d6a23ee3b87438e6466b9603dc41153310d09e0b225441f55aa16d7e2b9",
             "target_path": "content/en/components/code-and-data/diagram.md",
-            "target_sha256": "eec1270abfb233216bef51006053121998fb7c8f03efdda00e92db58d19f0fc3",
-            "target_structure_sha256": "c66e3ec678f40ab181bd6d0bd4cd00749dac065651f3ca1d7462d40baa14d042"
+            "target_sha256": "d9109547b9908d25b0a8664910e42f057777dd901783f82791483b7778d3009d",
+            "target_structure_sha256": "c15f9d6a23ee3b87438e6466b9603dc41153310d09e0b225441f55aa16d7e2b9"
         },
         {
             "key": "components/code-and-data/html.md",
@@ -2286,11 +2286,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/content.md",
-            "source_sha256": "794fd8d2e3d9416a2368532fd8541f71facf2d0a8dda6fdab2b0a25240e43955",
-            "source_structure_sha256": "93f7d6cb65180ded31d69f1638744504905e0a3e266417621a84b91cc9c3240a",
+            "source_sha256": "8a457cd77d7b08872bd00bdd8d5b18a8144d208292dd24cd98b47da6deccc3d9",
+            "source_structure_sha256": "92436bc9ba252ef327afd76d4a3e37fc13d756ef49b70fbbbdf74506084d79ce",
             "target_path": "content/en/reference/errors/content.md",
-            "target_sha256": "191a1b493456b3752f0323f6710a228047c90b957cb4ef77ed48051747c1bd3c",
-            "target_structure_sha256": "93f7d6cb65180ded31d69f1638744504905e0a3e266417621a84b91cc9c3240a"
+            "target_sha256": "d8df2996f0b456b569730806d0f5a92969f27d8db681407af63d3736a4d39e58",
+            "target_structure_sha256": "92436bc9ba252ef327afd76d4a3e37fc13d756ef49b70fbbbdf74506084d79ce"
         },
         {
             "key": "reference/errors/developer.md",

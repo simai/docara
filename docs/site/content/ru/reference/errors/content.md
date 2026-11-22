@@ -86,6 +86,7 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_MATH_SOURCE_REQUIRED` | [Math](/components/code-and-data/math/) пустой. **Что сделать:** Добавьте формулу в записи TeX. |
 | `MARKDOWN_DIAGRAM_SOURCE_REQUIRED` | [Diagram](/components/code-and-data/diagram/) пустой. **Что сделать:** Добавьте описание диаграммы. |
 | `MARKDOWN_DIAGRAM_LABEL_EMPTY` | У [схемы](/components/code-and-data/diagram/) параметр `label` пустой, а это текстовая альтернатива для программ экранного доступа. **Что сделать:** Напишите в `label`, что показывает схема, или уберите параметр — тогда читают название из `title`. |
+| `MARKDOWN_DIAGRAM_SOURCE_FENCED` | Внутри [схемы](/components/code-and-data/diagram/) код обёрнут в ```` ```mermaid ````. Блок сам задаёт схему, поэтому обёртка попала бы в браузер как текст, и вместо рисунка была бы ошибка Mermaid. **Что сделать:** Уберите строки с ```` ``` ```` и оставьте внутри блока только запись схемы. |
 | `MARKDOWN_HTML_FENCE_REQUIRED` | [Html](/components/code-and-data/html/) содержит не один блок кода HTML. **Что сделать:** Оставьте один блок кода с языком `html`. |
 | `MARKDOWN_BACKLINKS_LIMIT_INVALID` | `limit` у [backlinks](/components/blocks/backlinks/) вне диапазона 1–50. **Что сделать:** Укажите число от 1 до 50. |
 | `MARKDOWN_SCHEMA_REFERENCE_FIELDS_INVALID` | `fields` у `schema_reference` называет поле, которого нет в схеме, или записан с пробелами. **Что сделать:** Перечислите поля верхнего уровня через запятую без пробелов: `fields=reading,search`. |

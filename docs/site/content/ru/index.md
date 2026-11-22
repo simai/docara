@@ -1,8 +1,8 @@
 :::hero {space=6 layout=centered padding=2xl effect=chladni effect_settings='{"speed":100,"transparency":85,"density":40,"palette":"graphite","interactive":true}'}
-# Документация из файлов — сайт, который собирается сам
+# Сайты документации из Markdown
 
-Пишите страницы в Markdown рядом с проектом. Docara соберёт из них
-статический сайт с поиском, меню и тёмной темой — на GitHub Pages или любом
+Docara собирает из Markdown-файлов статический сайт: меню, поиск, несколько
+языков, проверка ссылок перед публикацией. Работает на GitHub Pages и любом
 хостинге.
 
 [Начать](/ru/start/quick-start/)
@@ -154,33 +154,72 @@ composer require simai/docara:^3.0
 ````
 ::::
 
+### Код
+
+::::example
+`````markdown
+````php {title="config/site.php" highlight=3 numbers}
+return [
+    'name' => 'Docara',
+    'locale' => 'ru',
+];
+````
+`````
+::::
+
+### Терминал
+
+::::example
+`````markdown
+````bash {layout=terminal}
+composer require simai/docara:^3.0
+php vendor/bin/docara init .
+php vendor/bin/docara build production
+````
+`````
+::::
+
+### Дерево файлов
+
+::::example
+```markdown
+:::tree
+- content
+  - ru
+    - index.md
+    - section.json
+  - assets
+    - logo.svg
+- docara.json
+:::
+```
+::::
+
 ### Схема
 
 ::::example
-````markdown
-:::diagram {title="Публикация страницы документации"}
-```mermaid
+```markdown
+:::diagram {title="Публикация страницы документации" label="Черновик в Markdown идёт на сборку сайта; если проверки прошли, страница публикуется, иначе ошибки правят и собирают снова"}
 flowchart LR
   draft[Черновик в Markdown] --> build(Сборка сайта)
   build --> check{Проверки прошли?}
   check -->|да| publish[Публикация]
   check -->|нет| fix[Правка ошибок]
   fix --> build
-```
 :::
-````
+```
 ::::
 
-### Таблица
+### Раскрывающийся блок
 
 ::::example
 ```markdown
-| Команда | Что делает |
-| --- | --- |
-| `docara init .` | Создаёт заготовку сайта |
-| `docara serve production` | Собирает сайт и открывает его в браузере |
-| `docara verify-static` | Проверяет ссылки, файлы и поиск |
-| `docara upgrade` | Обновляет Docara с проверкой и откатом |
+:::details
+#### Что делать, если сборка остановилась?
+
+Docara пишет код ошибки, файл и что исправить. Поправьте файл и запустите
+сборку снова.
+:::
 ```
 ::::
 

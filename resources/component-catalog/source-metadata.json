@@ -102,7 +102,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/code-and-data/diagram.md",
-            "source_sha256": "aba9132c4b5bf95bd9b7cfe4fc3c83485551595b8747e581f8447be2b68826fb",
+            "source_sha256": "5a41e52b1204f562f5337e84663b389e9cb1a11140cba47d90527767d00bf195",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/components/code-and-data/diagram.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/components/code-and-data/diagram.md",
@@ -581,5 +581,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "02fc919f05c85374e7c54d9cced18643640a85814cfbd6eec24e6675134d2360"
+    "content_sha256": "8c529f565f1a01a05b66ae61579072bc2480eba0e4b837e877298ca8ae6c4a97"
 }

@@ -5,8 +5,10 @@ description: How to arrange blocks in a responsive grid of several columns that 
 # Grid
 
 A grid places self-contained blocks — most often [cards](../card/) — in
-columns. On a phone the blocks stack into one column, on a tablet into two,
-on a wide screen into the set number.
+columns. The grid looks at its own width, not the window width: below 44rem
+the blocks stack into one column, up to 60rem into two, wider into the set
+number. So in the documentation column between the menu and the outline the
+cards do not get squeezed.
 
 ## Example
 
@@ -80,7 +82,7 @@ The second self-contained block.
 ### Gap
 
 `gap` is the space between blocks on the SIMAI Framework spacing scale, from
-`0` to `4`. Keep one step for the whole group so that the rhythm is even.
+`0` to `8`. Keep one step for the whole group so that the rhythm is even.
 
 :::example {label="Gap 4"}
 ```markdown
@@ -94,6 +96,34 @@ The space between the cards is larger.
 #### Air
 
 Handy for large blocks.
+:::
+::::
+```
+:::
+
+### How many fit
+
+`min` is the smallest tile width in rem: `20`, `24` or `32`. As many tiles
+as fit go into a row, and the space left over is shared between them. `min`
+is written instead of `columns`.
+
+:::example {label="Tiles no narrower than 20rem"}
+```markdown
+::::grid {min=20 gap=2}
+:::card
+#### Table
+
+Rows and columns, sorting.
+:::
+:::card
+#### Board
+
+Columns by status.
+:::
+:::card
+#### Feed
+
+Entries one under another.
 :::
 ::::
 ```
@@ -113,13 +143,15 @@ Handy for large blocks.
 
 | Parameter | Values | Default | Sets |
 | --- | --- | --- | --- |
-| `columns` | `1`, `2`, `3`, `4` | `3` | How many columns there are on a wide screen. On a phone the grid has one column. |
-| `gap` | `0`, `1`, `2`, `3`, `4` | `2` | The space between cells on the spacing scale. |
+| `columns` | `1`, `2`, `3`, `4` | `3` | How many columns there are when the grid has enough width. The grid looks at its own width, not the window width: below 44rem one column, up to 60rem two. |
+| `gap` | `0`, `1`, `2`, `3`, `4`, `5`, `6`, `7`, `8` | `2` | The space between cells on the SIMAI Framework spacing scale, from `0` to `8`. |
+| `min` | `20`, `24`, `32` | — | The smallest tile width in rem: as many tiles as fit go into a row. Instead of `columns`; the two are not written together. |
 
 <!-- docara:component-parameters:end -->
 
 ## See also
 
 - [Card](../card/)
+- [Columns and width](../columns/) — page parts side by side with set shares
 - [Landing blocks](../landing-blocks/) — ready-made feature grids
 - [How components work](/en/start/component-model/) — nested blocks

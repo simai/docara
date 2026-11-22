@@ -14,7 +14,8 @@
         "src": "Address of a file the component reads or shows.",
         "open": "Initial disclosure state.",
         "sync": "Group of components that switch together.",
-        "tone": "Tone of the surface or block: default, muted, accent, contrast."
+        "tone": "Tone of the surface or block: default, muted, accent, contrast.",
+        "space": "Space below a block, a step of the Framework spacing ladder (0-8, default 1); a heading right after a block that sets it keeps no top space of its own."
     },
     "status_values": ["clear", "info", "note", "tip", "success", "warning", "danger"],
     "size_scale": ["1/3", "1/2", "1", "2", "3"],
@@ -158,8 +159,20 @@
             "reason": "Number of grid columns on wide screens; a count."
         },
         "gap": {
+            "components": ["columns", "grid"],
+            "reason": "Space between grid items or columns on the Framework gap scale (0-8); spacing, not size."
+        },
+        "min": {
             "components": ["grid"],
-            "reason": "Space between grid items on the Framework gap scale (0-4); spacing, not size."
+            "reason": "Narrowest tile of a grid that fits as many tiles as its width holds (20, 24, 32 rem); a length, the counterpart of columns."
+        },
+        "fold": {
+            "components": ["columns"],
+            "reason": "Width step of the block below which its columns stand one under another (sm, md, lg, none); a breakpoint, not an arrangement."
+        },
+        "align": {
+            "components": ["columns", "container"],
+            "reason": "Where the parts stand on the cross line: columns in their row (start, center, end, stretch, after CSS align-items), a container block in the column (start, center, end)."
         },
         "padding": {
             "components": ["hero", "surface"],
@@ -210,7 +223,7 @@
             "reason": "Inline or block formula, the TeX term for the same choice."
         },
         "side": {
-            "components": ["media"],
+            "components": ["hero", "media"],
             "reason": "Which side the image takes beside the text. Kept until media, showcase and promo merge into one media block with a layout."
         },
         "current": {
@@ -218,8 +231,8 @@
             "reason": "Number of the current step; a position, not a style or arrangement."
         },
         "width": {
-            "components": ["surface"],
-            "reason": "Whether the surface spans the content column or the full window."
+            "components": ["container", "surface"],
+            "reason": "How wide the block stands: a surface spans the content column or the full window; a container takes a share of the column (1/4 to 3/4) or all of it."
         },
         "content_width": {
             "components": ["surface"],

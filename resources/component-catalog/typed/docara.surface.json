@@ -19,7 +19,8 @@
             {"name": "overlay", "type": "enum", "required": false, "default": "none", "values": ["none", "light", "dark"]},
             {"name": "overlay_strength", "type": "enum", "required": false, "default": "medium", "values": ["soft", "medium", "strong"]},
             {"name": "padding", "type": "enum", "required": false, "default": "md", "values": ["none", "sm", "md", "lg", "xl"]},
-            {"name": "tone", "type": "enum", "required": false, "default": "default", "values": ["default", "muted", "accent", "contrast"]}
+            {"name": "tone", "type": "enum", "required": false, "default": "default", "values": ["default", "muted", "accent", "contrast"]},
+            {"name": "space", "type": "enum", "required": false, "default": "1", "values": ["0", "1", "2", "3", "4", "5", "6", "7", "8"]}
         ]
     },
     "states": ["contained", "full_bleed", "decorative_media"],

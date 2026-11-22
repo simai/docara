@@ -15,7 +15,7 @@ and SIMAI Framework sets the width, spacing and theme.
 | [`features`](#features-feature-cards) | Two to six cards: an icon or an image, a heading and a short text |
 | [`showcase`](#showcase-show-the-result) | A heading, an explanation, an action and a large image of the result |
 | [`promo`](#promo-final-call-to-action) | The final block of the page with one action |
-| [`columns`](#columns-columns) | Two to four columns of text side by side |
+| [`columns`](../columns/) | Two to four columns side by side with set shares |
 | [`cta`](#cta-action-button) | One prominent button link |
 
 ## Example
@@ -136,34 +136,8 @@ Markdown and JSON turn into a checked static site.
 
 ### Columns: columns
 
-The block places two to four parts of text side by side. The parts are
-separated by a separate `---` line with blank lines before and after it. On
-a narrow screen the columns stack in the same order.
-
-:::example {label="Three columns"}
-```markdown
-:::columns
-### Markdown
-
-The content stays readable source text.
-
----
-
-### JSON
-
-Settings are inherited and checked by schemas.
-
----
-
-### PHP
-
-The build does not need Node.js.
-:::
-```
-:::
-
-Inside a column you can write plain Markdown: paragraphs, lists, links. An
-empty column stops the build.
+Columns place two to four parts of a page side by side with set shares.
+They are described on a separate page: [Columns and width](../columns/).
 
 ### CTA: action button
 
@@ -196,10 +170,6 @@ in a paragraph or a showcase with links.
 ## Parameters
 
 <!-- docara:component-parameters:start -->
-
-### `:::columns`
-
-No parameters.
 
 ### `:::cta`
 

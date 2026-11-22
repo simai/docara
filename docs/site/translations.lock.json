@@ -1626,11 +1626,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/layout.md",
-            "source_sha256": "204b1dfa5bd8f3aef9e77df1e505d585630f13ed40f70ca496dd0ac2cc4b7fe9",
-            "source_structure_sha256": "61145a5fe2aad398c2df45fbe5fdb689c2684bf468ecec2e702a85415bac9ac3",
+            "source_sha256": "a981c43b9e6579aa3c9c1e54841330b7252b33957de73de60332466dd8656481",
+            "source_structure_sha256": "c96312a5061b693584f455065f9265b6b236f9fb55b03e4310d1fa0dd732613d",
             "target_path": "content/en/components/layout.md",
-            "target_sha256": "2454887d49bfec55006fe796db6afa08b0ad6401ae4f99d5fa3a5253dc3ba6ee",
-            "target_structure_sha256": "61145a5fe2aad398c2df45fbe5fdb689c2684bf468ecec2e702a85415bac9ac3"
+            "target_sha256": "ff4dc9c10dc653e0b93e56194a8f44cc32fb7f4844aa6aae32a3a396ee50513b",
+            "target_structure_sha256": "c96312a5061b693584f455065f9265b6b236f9fb55b03e4310d1fa0dd732613d"
         },
         {
             "key": "components/layout/card.md",
@@ -1643,6 +1643,18 @@
             "target_path": "content/en/components/layout/card.md",
             "target_sha256": "44fb59e642edc403b78a27b2b601bea309cea9071adeffcc60bb03741ff6ec49",
             "target_structure_sha256": "6580b97e73003edc602c533cdc30a8b81850e60ae60976bdfefab70d62874d71"
+        },
+        {
+            "key": "components/layout/columns.md",
+            "kind": "page",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/components/layout/columns.md",
+            "source_sha256": "f8c355af2716ff92848eb8aa46df1a26617e39382ddfee0c1420fead273fa409",
+            "source_structure_sha256": "a5766d5c99c2fc509047b3ceb55753691a592270bd815ffa98029d909c162fa4",
+            "target_path": "content/en/components/layout/columns.md",
+            "target_sha256": "fc29364c6eaedd7b8501a5973a27ca54087e8d24143fa7d643ba3562ccc3f2d6",
+            "target_structure_sha256": "a5766d5c99c2fc509047b3ceb55753691a592270bd815ffa98029d909c162fa4"
         },
         {
             "key": "components/layout/effects.md",
@@ -1662,11 +1674,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/layout/grid.md",
-            "source_sha256": "a2b3ae7d1c110098d93cfb8875be78ba8e803eca8c1001c3c7bdbb7188b04965",
-            "source_structure_sha256": "74dead622193d8330e366cebe3f858ee4fc6a1be468e74867f1364cc07b40876",
+            "source_sha256": "6ad80079e9698cd25f0a77ce95c5898b07d654817f09c4a2c44928a85cffdfb0",
+            "source_structure_sha256": "8067acc421e886c2c5277740f711ceda0aaf304df71f48d3521f0f59ced32249",
             "target_path": "content/en/components/layout/grid.md",
-            "target_sha256": "3e9c4de50d9623b75cc68df2288165154ef1069ae90c9a7bf47b9804736e259a",
-            "target_structure_sha256": "74dead622193d8330e366cebe3f858ee4fc6a1be468e74867f1364cc07b40876"
+            "target_sha256": "2e006b6de9acde7a84ed5358ba5a5dc591bf8a861c45dbcdd32665653b48ca85",
+            "target_structure_sha256": "8067acc421e886c2c5277740f711ceda0aaf304df71f48d3521f0f59ced32249"
         },
         {
             "key": "components/layout/hero.md",
@@ -1674,11 +1686,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/layout/hero.md",
-            "source_sha256": "619d3e7c244e954ed1fa8f666f7d9993ced638dcf1bd7a44bb1928540c5984db",
-            "source_structure_sha256": "c32a7e369457048ebf1b395149a2eb7bb564b2aff91ff6a885ca08e2cbc3d6cd",
+            "source_sha256": "9e228cfa898f5575d4d448a49ac6f508e20e3e8d7541f3d094c756b72cbe56ee",
+            "source_structure_sha256": "4c5ffcd02566be7d3094584085229e4cca09c9e7a62b523619455704454ce587",
             "target_path": "content/en/components/layout/hero.md",
-            "target_sha256": "18acd35d9820c1fb421e5857f4ca3d36b3fc9b14607a346becaa8cf08cfc07c2",
-            "target_structure_sha256": "c32a7e369457048ebf1b395149a2eb7bb564b2aff91ff6a885ca08e2cbc3d6cd"
+            "target_sha256": "e252a1b2a25eb86996d84b30a1a69e6668a1a0c05a6e20a867f62348ea886b18",
+            "target_structure_sha256": "4c5ffcd02566be7d3094584085229e4cca09c9e7a62b523619455704454ce587"
         },
         {
             "key": "components/layout/landing-blocks.md",
@@ -1686,11 +1698,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/layout/landing-blocks.md",
-            "source_sha256": "99a41bf2abd5de40fd9930a79a9bc305d6c4000f95c1db42d0dfa3b2bb8efd36",
-            "source_structure_sha256": "b722598117fd64de064e9e135fd5e61406af39452b2b839b005e2abbe64f17c6",
+            "source_sha256": "6513984d7773a842fc99b146f445cd092413fdac2418d13773ad696ca62c8733",
+            "source_structure_sha256": "447e34bbabf6504bcb6245fc26104c4025ed2d41f099582ea2f171d019f806c2",
             "target_path": "content/en/components/layout/landing-blocks.md",
-            "target_sha256": "7d3307d2104a5384addd35f69f528350f2b7bf53a8dd3083d3060daddbf67635",
-            "target_structure_sha256": "b722598117fd64de064e9e135fd5e61406af39452b2b839b005e2abbe64f17c6"
+            "target_sha256": "c80a4eb306532bb1c719e42e2cd070b768c100cbea11c62fddcd049b853c4542",
+            "target_structure_sha256": "447e34bbabf6504bcb6245fc26104c4025ed2d41f099582ea2f171d019f806c2"
         },
         {
             "key": "components/layout/surface.md",
@@ -2274,11 +2286,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/content.md",
-            "source_sha256": "e7029d218d37d1ba17cccf367890c1744fc433b13ac76b2cb6fa4015c540c226",
-            "source_structure_sha256": "592b1014faef395b299d945ad5b2ac2dde4dc25be2b768e7e0bf065c74337fc7",
+            "source_sha256": "794fd8d2e3d9416a2368532fd8541f71facf2d0a8dda6fdab2b0a25240e43955",
+            "source_structure_sha256": "93f7d6cb65180ded31d69f1638744504905e0a3e266417621a84b91cc9c3240a",
             "target_path": "content/en/reference/errors/content.md",
-            "target_sha256": "c839ef1ad4a7795a97cd0105192934676423fe6f274bf7bcfa4b67e7ff2d06af",
-            "target_structure_sha256": "592b1014faef395b299d945ad5b2ac2dde4dc25be2b768e7e0bf065c74337fc7"
+            "target_sha256": "191a1b493456b3752f0323f6710a228047c90b957cb4ef77ed48051747c1bd3c",
+            "target_structure_sha256": "93f7d6cb65180ded31d69f1638744504905e0a3e266417621a84b91cc9c3240a"
         },
         {
             "key": "reference/errors/developer.md",

@@ -74,6 +74,13 @@ The compact variant suits an inner page without an image.
 ```
 :::
 
+### Side
+
+`side=left` puts the image or the effect to the left of the text on a wide
+screen; by default they are on the right. It works only with `layout=split`.
+In the markup the text always comes first, so a screen reader reads it
+first, and on a phone the image stands below the text.
+
 ### Height
 
 `padding` sets the top and bottom padding. By default `compact` has `lg`,
@@ -161,6 +168,20 @@ The effect is drawn under the text and does not get in the way of reading.
 :::
 ```
 
+With `layout=split` and no image, the effect is drawn not under the text but
+in the second half of the hero, like an image. The text stands on the
+block's usual background; on a narrow screen the effect goes below the text.
+
+```markdown
+:::hero {layout=split padding=2xl effect=chladni}
+# Documentation from files
+
+The site builds itself from Markdown and checkable settings.
+
+[Get started](/en/start/)
+:::
+```
+
 How to connect the catalogue, choose an effect and what your hosting needs
 for Content-Security-Policy is described on the
 [Background effects](../effects/) page.
@@ -200,6 +221,7 @@ motion is turned on in the system, the effect shows a still frame.
 | `effect` | string | — | The name of a SIMAI Framework background effect. |
 | `effect_theme` | `auto`, `dark`, `light` | `auto` | The effect theme: follows the page theme, always dark or always light. |
 | `effect_settings` | string | — | The effect settings as JSON. |
+| `side` | `left`, `right` | `right` | Which side the image or the effect scene is on with `layout=split` on a wide screen. In the markup the text always comes first; on a phone the image is below the text. |
 
 <!-- docara:component-parameters:end -->
 

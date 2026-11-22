@@ -1263,7 +1263,7 @@ MD);
 MD);
 
         self::assertStringContainsString(
-            '<div data-docara-hero-actions class="flex flex-wrap items-cross-center gap-1">',
+            '<div data-docara-hero-actions class="flex flex-wrap items-cross-center gap-1/3">',
             $html,
         );
         self::assertSame(2, substr_count($html, 'data-docara-hero-action class='));
@@ -1454,9 +1454,9 @@ MD);
     public function columns_render_two_to_four_source_ordered_regions_with_exact_framework_layout(): void
     {
         $cases = [
-            2 => 'grid grid-col-1 md:grid-col-2 gap-2',
-            3 => 'grid grid-col-1 md:grid-col-2 lg:grid-col-3 gap-2',
-            4 => 'grid grid-col-1 md:grid-col-2 lg:grid-col-4 gap-2',
+            2 => 'grid grid-col-1 cq-md:grid-col-2 gap-2',
+            3 => 'grid grid-col-1 cq-md:grid-col-2 cq-lg:grid-col-3 gap-2',
+            4 => 'grid grid-col-1 cq-md:grid-col-2 cq-lg:grid-col-4 gap-2',
         ];
 
         foreach ($cases as $count => $classes) {
@@ -1475,7 +1475,7 @@ MD);
             self::assertSame($first, $second, "{$count} columns must render deterministically.");
             self::assertStringContainsString(
                 '<section data-docara-block="columns" data-docara-columns="' . $count
-                . '" class="' . $classes . ' m-bottom-1">',
+                . '" class="query-container m-bottom-1"><div class="' . $classes . '">',
                 $first,
             );
             self::assertSame($count, substr_count($first, '<div class="min-w-0">'));
@@ -1629,7 +1629,8 @@ MD);
         );
 
         self::assertStringContainsString(
-            '<section data-docara-block="columns" data-docara-columns="2" data-docara-columns-ratio="2/1" class="grid grid-col-1 md:grid-col-2 gap-2 m-bottom-1">',
+            '<section data-docara-block="columns" data-docara-columns="2" data-docara-columns-ratio="2/1" class="query-container m-bottom-1">'
+            . '<div class="grid grid-col-1 cq-md:grid-col-3 gap-2"><div class="min-w-0 cq-md:col-span-2">',
             $html,
         );
         self::assertSame(2, substr_count($html, '<article data-docara-block="details" data-view="lines"'));
@@ -1643,6 +1644,8 @@ MD);
             [":::columns {ratio=2/1/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COLUMNS_RATIO_MISMATCH'],
             [":::columns {ratio=5/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
             [":::columns {width=2/1}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN'],
+            [":::columns {fold=xl}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
+            [":::columns {gap=9}\nA\n\n---\n\nB\n:::\n", 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
         ] as [$markdown, $code]) {
             try {
                 (new PortableMarkdownRenderer)->render($markdown);
@@ -1650,6 +1653,136 @@ MD);
             } catch (PortableConfigurationException $exception) {
                 self::assertSame($code, $exception->errorCode);
             }
+        }
+    }
+
+    #[Test]
+    public function columns_take_a_gap_a_fold_step_and_an_alignment_on_framework_utilities(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $two = "A\n\n---\n\nB\n:::\n";
+        $three = "A\n\n---\n\nB\n\n---\n\nC\n:::\n";
+
+        foreach ([
+            ":::columns {ratio=1/2 gap=4 align=start}\n" . $two => ['query-container m-bottom-1', 'grid grid-col-1 cq-md:grid-col-3 gap-4 items-cross-start', ['min-w-0', 'min-w-0 cq-md:col-span-2']],
+            ":::columns {ratio=3/1 fold=none}\n" . $two => ['m-bottom-1', 'grid grid-col-4 gap-2', ['min-w-0 col-span-3', 'min-w-0']],
+            ":::columns {fold=lg}\n" . $two => ['query-container m-bottom-1', 'grid grid-col-1 cq-lg:grid-col-2 gap-2', ['min-w-0', 'min-w-0']],
+            ":::columns {ratio=1/1/1 fold=sm}\n" . $three => ['query-container m-bottom-1', 'grid grid-col-1 cq-sm:grid-col-3 gap-2', ['min-w-0', 'min-w-0', 'min-w-0']],
+        ] as $markdown => [$outer, $track, $cells]) {
+            $html = $renderer->render($markdown);
+            self::assertStringContainsString('class="' . $outer . '"><div class="' . $track . '">', $html, $markdown);
+            foreach ($cells as $cell) {
+                self::assertStringContainsString('<div class="' . $cell . '">', $html, $markdown);
+            }
+            self::assertSame(count($cells), substr_count($html, '<div class="min-w-0'), $markdown);
+        }
+    }
+
+    #[Test]
+    public function a_container_takes_a_share_of_the_column_and_stands_at_its_start_centre_or_end(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $html = $renderer->render(":::container {width=1/2 align=center}\n## Why\n\nShort lines read easier.\n:::\n");
+        self::assertStringContainsString(
+            '<section data-docara-block="container" data-docara-width-share="1/2" data-align="center" data-docara-track-start="4" class="query-container m-bottom-1">'
+            . '<div class="grid grid-col-12"><div class="min-w-0 col-span-12 cq-md:col-span-6"><h2>Why</h2>',
+            $html,
+        );
+        self::assertStringContainsString(
+            'data-docara-width-share="2/3" data-align="start" class="query-container m-bottom-1"><div class="grid grid-col-12"><div class="min-w-0 col-span-12 cq-md:col-span-8">',
+            $renderer->render(":::container {width=2/3}\nNote.\n:::\n"),
+        );
+        self::assertStringContainsString(
+            'data-docara-width-share="1/4" data-align="end" data-docara-track-start="10"',
+            $renderer->render(":::container {width=1/4 align=end}\nAside.\n:::\n"),
+        );
+        self::assertStringContainsString(
+            '<div class="min-w-0 col-span-12">Full.',
+            str_replace('<p>', '', $renderer->render(":::container {width=full}\nFull.\n:::\n")),
+        );
+
+        foreach ([
+            ":::container\nText.\n:::\n" => 'MARKDOWN_CONTAINER_WIDTH_REQUIRED',
+            ":::container {width=3/4 align=center}\nText.\n:::\n" => 'MARKDOWN_CONTAINER_ALIGN_INVALID',
+            ":::container {width=44}\nText.\n:::\n" => 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+            ":::container {width=1/2 ratio=1/1}\nText.\n:::\n" => 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN',
+        ] as $markdown => $code) {
+            try {
+                $renderer->render($markdown);
+                self::fail("Container unexpectedly rendered for [$code].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($code, $exception->errorCode, $markdown);
+            }
+        }
+    }
+
+    #[Test]
+    public function grids_fold_by_their_own_width_and_fit_tiles_no_narrower_than_min(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $cards = ":::card\n#### A\n\nOne.\n:::\n:::card\n#### B\n\nTwo.\n:::\n::::\n";
+        self::assertStringContainsString(
+            '<section data-docara-block="grid" class="query-container m-bottom-1"><div class="grid grid-col-1 cq-md:grid-col-2 cq-lg:grid-col-3 gap-2">',
+            $renderer->render("::::grid\n" . $cards),
+        );
+        self::assertStringContainsString(
+            '<div class="grid grid-col-1 cq-md:grid-col-2 gap-6">',
+            $renderer->render("::::grid {columns=2 gap=6}\n" . $cards),
+        );
+        self::assertStringContainsString(
+            '<div class="grid grid-col-fit-g0 gap-2">',
+            $renderer->render("::::grid {min=20}\n" . $cards),
+        );
+        try {
+            $renderer->render("::::grid {min=20 columns=3}\n" . $cards);
+            self::fail('A grid with both min and columns rendered.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_GRID_COLUMNS_MIN_CONFLICT', $exception->errorCode);
+        }
+    }
+
+    #[Test]
+    public function space_sets_the_step_below_any_block_and_marks_it_for_the_next_heading(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $html = $renderer->render(
+            "::::grid {columns=2 space=6}\n:::card\n#### A\n\nOne.\n:::\n::::\n\n## Next\n\n"
+            . ":::alert {type=warning space=0}\nShort notice.\n:::\n\n:::cta {space=3}\n[Go](/go/)\n:::\n",
+        );
+        self::assertStringContainsString('<section data-docara-block="grid" class="query-container m-bottom-6" data-docara-space="6">', $html);
+        self::assertMatchesRegularExpression('~<aside data-docara-block="alert"[^>]* class="[^"]*\bm-bottom-0" data-docara-space="0">~', $html);
+        self::assertMatchesRegularExpression('~<a data-docara-block="cta" class="[^"]*\bm-bottom-3" href="/go/" data-docara-space="3">~', $html);
+        self::assertStringNotContainsString('m-bottom-1" data-docara-space', $html);
+        self::assertStringNotContainsString('data-docara-space', $renderer->render("::::grid\n:::card\n#### A\n\nOne.\n:::\n::::\n"));
+
+        try {
+            $renderer->render(":::alert {space=9}\nText.\n:::\n");
+            self::fail('space=9 rendered.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID', $exception->errorCode);
+        }
+    }
+
+    #[Test]
+    public function a_split_hero_with_an_effect_draws_it_as_a_scene_beside_the_text(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(
+            ":::hero {layout=split effect=chladni side=left}\n# Title\n\nLead.\n\n[Start](/start/)\n:::\n",
+        );
+        self::assertStringStartsWith('<section data-docara-block="hero" data-variant="split" data-docara-width="full"', $html);
+        self::assertStringNotContainsString('<section data-docara-block="hero" data-sf-effect', $html);
+        self::assertStringContainsString('grid grid-col-1 lg:grid-col-2 gap-4', $html);
+        self::assertStringContainsString(
+            '<div data-docara-hero-scene aria-hidden="true" class="min-w-0 radius-surface overflow-hidden lg:order-first" data-sf-effect="chladni"',
+            $html,
+        );
+        self::assertLessThan(strpos($html, 'data-docara-hero-scene'), strpos($html, '<h1'));
+
+        try {
+            (new PortableMarkdownRenderer)->render(":::hero {layout=centered side=left}\n# Title\n\nLead.\n:::\n");
+            self::fail('side rendered on a centred hero.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE', $exception->errorCode);
         }
     }
 

@@ -1325,7 +1325,8 @@
   })();
   /* A hero's background effect keeps moving, so the reader can pause it (WCAG 2.2.2). The Framework does not hand out the handle of an effect it mounts from data-sf-effect, so Docara places the hero's effect itself with SF.Effects.placeEffect and the same attributes: this script runs before the deferred core.js, so its load listener runs before the Framework's declarative scan, which then skips the placed hero. The handle's pause() and resume() drive the toggle. The choice is kept for the site. With reduced motion the Framework draws one still frame and the toggle is hidden. */
   (function(){
-    var heroes=document.querySelectorAll('[data-docara-block="hero"][data-sf-effect]');
+    /* A split hero draws its effect in its scene half (data-docara-hero-scene); the toggle stays on the hero, outside the decorative scene. */
+    var heroes=document.querySelectorAll('[data-docara-block="hero"][data-sf-effect],[data-docara-block="hero"]>[data-docara-container]>[data-docara-hero-scene][data-sf-effect]');
     if(!heroes.length)return;
     var storageKey='docara.effects.paused';
     var paused=false;
@@ -1345,7 +1346,7 @@
       return {effect:hero.getAttribute('data-sf-effect'),settings:settings,themeMode:hero.getAttribute('data-sf-effect-theme')||'auto'};
     }
     function sync(entry){
-      var running=entry.hero.getAttribute('data-sf-effect-state')==='running';
+      var running=entry.target.getAttribute('data-sf-effect-state')==='running';
       var reduced=Boolean(reducedMotion&&reducedMotion.matches);
       var narrow=hiddenNarrow(entry);
       entry.button.hidden=!running||reduced||narrow||!(entry.handle||effects());
@@ -1366,13 +1367,14 @@
       var api=effects();
       if(!api)return;
       if(!entry.placing){
-        entry.placing=Promise.resolve(api.placeEffect(entry.hero,options(entry.hero))).then(function(handle){
+        entry.placing=Promise.resolve(api.placeEffect(entry.target,options(entry.target))).then(function(handle){
           entry.handle=handle||null;
           sync(entry);
         },function(){entry.placing=null});
       }
     }
-    Array.prototype.forEach.call(heroes,function(hero){
+    Array.prototype.forEach.call(heroes,function(target){
+      var hero=target.closest('[data-docara-block="hero"]');
       var button=document.createElement('button');
       button.type='button';
       button.hidden=true;
@@ -1380,8 +1382,9 @@
       button.className='docara-effect-toggle sf-icon-button sf-icon-button--icon sf-icon-button--tonal sf-icon-button--on-surface sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0';
       button.innerHTML='<span aria-hidden="true" class="sf-icon sf-icon-regular">pause</span>';
       hero.appendChild(button);
-      var wide=window.matchMedia?window.matchMedia('(min-width: 44rem)'):null;
-      var entry={hero:hero,button:button,icon:button.firstChild,handle:null,placing:null,wide:wide};
+      /* A scene stands beside or under the text, never behind it, so it is shown at every width. */
+      var wide=window.matchMedia&&target===hero?window.matchMedia('(min-width: 44rem)'):null;
+      var entry={hero:hero,target:target,button:button,icon:button.firstChild,handle:null,placing:null,wide:wide};
       entries.push(entry);
       if(wide){
         var onWidth=function(){
@@ -1399,12 +1402,12 @@
           sync(item);
         });
       });
-      new MutationObserver(function(){sync(entry)}).observe(hero,{attributes:true,attributeFilter:['data-sf-effect-state']});
+      new MutationObserver(function(){sync(entry)}).observe(target,{attributes:true,attributeFilter:['data-sf-effect-state']});
       sync(entry);
     });
     function start(){
       entries.forEach(function(entry){
-        if(!entry.hero.hasAttribute('data-sf-effect-state')||paused||hiddenNarrow(entry))place(entry);
+        if(!entry.target.hasAttribute('data-sf-effect-state')||paused||hiddenNarrow(entry))place(entry);
         sync(entry);
       });
     }

@@ -11,7 +11,15 @@
         "jobs": [
             "summarize_features"
         ],
-        "parameters": []
+        "parameters": [
+            {
+                "name": "space",
+                "type": "enum",
+                "required": false,
+                "default": "1",
+                "values": ["0", "1", "2", "3", "4", "5", "6", "7", "8"]
+            }
+        ]
     },
     "states": [],
     "verification": {

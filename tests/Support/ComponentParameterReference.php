@@ -121,8 +121,13 @@ final class ComponentParameterReference
     /** @param array<string, mixed> $entry */
     private function table(array $entry): string
     {
-        $parameters = $entry['authoring']['parameters'] ?? [];
-        if (! is_array($parameters) || $parameters === []) {
+        // space is the one parameter every block takes; the layout section
+        // page documents it once instead of a row on every component page.
+        $parameters = array_values(array_filter(
+            is_array($entry['authoring']['parameters'] ?? null) ? $entry['authoring']['parameters'] : [],
+            static fn (mixed $parameter): bool => is_array($parameter) && ($parameter['name'] ?? null) !== 'space',
+        ));
+        if ($parameters === []) {
             return "Параметров нет.\n";
         }
         $descriptions = $this->descriptions();

@@ -215,8 +215,8 @@ final class ComponentParameterVocabularyTest extends TestCase
         $probed = 0;
         $withoutParameters = [];
         foreach ($model->components() as $component) {
-            if ($model->names($component) === []) {
-                // These declare no parameters. kbd and component_index reject
+            if (array_diff($model->names($component), ['space']) === []) {
+                // These declare no parameters but the space every block takes. kbd and component_index reject
                 // any attribute; cta, features, html, promo, showcase
                 // and tabs have always ignored an attribute block, and
                 // rejecting one now would stop sites that build today. Listed

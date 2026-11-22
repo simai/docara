@@ -129,8 +129,12 @@ final readonly class ContentComponentRenderer
     /** @param array<string, mixed> $definition */
     private function blockArtifact(ComponentBlockNode $node, array $definition, string $html): RenderArtifact
     {
+        // The props check admitted the value; a block without space keeps
+        // its template's own bottom margin.
+        $space = $node->props['space'] ?? null;
+
         return new RenderArtifact(
-            rtrim($html, "\r\n"),
+            BlockSpace::apply(rtrim($html, "\r\n"), is_string($space) ? $space : null),
             array_values($definition['assets'] ?? []),
             [
                 'runtime' => 'docara.content.smart',

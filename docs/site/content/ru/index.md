@@ -1,4 +1,4 @@
-:::hero {layout=centered padding=2xl effect=chladni effect_settings='{"palette":"ink","speed":60,"transparency":25,"density":55}'}
+:::hero {space=7 layout=centered padding=2xl effect=chladni effect_settings='{"palette":"ink","speed":60,"transparency":25,"density":55}'}
 # Документация из файлов — сайт, который собирается сам
 
 Пишите страницы в Markdown рядом с проектом. Docara соберёт из них
@@ -12,7 +12,7 @@
 
 ## Три вещи, ради которых берут Docara
 
-::::grid {columns=3 gap=4}
+::::grid {space=7 columns=3 gap=4}
 :::card
 ### Документация как код
 
@@ -53,7 +53,7 @@ GitHub Pages ещё и бесплатно.
 
 ## Как это работает
 
-::::grid {columns=3 gap=4}
+::::grid {space=7 columns=3 gap=4}
 :::card
 ### 1. Пишете Markdown
 
@@ -98,7 +98,7 @@ GitHub Actions собирает и проверяет сайт и выклады
 Каждый пример ниже — живой: переключите вкладку и посмотрите Markdown, из
 которого он собран.
 
-:::::tabs
+:::::tabs {space=7}
 ### Шаги
 
 ::::example {label="Шаги"}
@@ -224,7 +224,7 @@ flowchart LR
 :::
 ::::
 
-::::grid {columns=2 gap=2}
+::::grid {space=7 columns=2 gap=2}
 :::card
 #### :icon[package_2]{size=2 container=square variant=tonal scheme=primary} [Установка через Composer](/ru/build/update/)
 
@@ -240,7 +240,7 @@ flowchart LR
 :::
 ::::
 
-:::card
+:::card {space=7}
 ## ИИ-помощник — если хотите
 
 Docara работает и без ИИ. Если вы пользуетесь агентом вроде Claude Code или
@@ -290,7 +290,7 @@ Composer и Node.js 20+ нужны только там, где сайт соби
 дополнительная возможность.
 :::
 
-:::details {layout=lines}
+:::details {space=7 layout=lines}
 ### Чем Docara отличается от VitePress и Docusaurus?
 
 Docara ставится через Composer, как обычный PHP-пакет, а не из npm; поиск,

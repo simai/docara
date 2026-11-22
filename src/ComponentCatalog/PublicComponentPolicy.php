@@ -15,7 +15,6 @@ final class PublicComponentPolicy
 {
     /** @var list<string> */
     private const RETIRED_COMPOSITION_IDS = [
-        'docara.columns',
         'docara.cta',
         'docara.features',
         'docara.promo',

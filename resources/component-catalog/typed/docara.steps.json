@@ -13,7 +13,8 @@
         ],
     "parameters": [
       {"name": "layout", "type": "enum", "required": false, "default": "timeline", "values": ["timeline", "list"], "deprecated_names": ["view"]},
-      {"name": "current", "type": "integer", "required": false}
+      {"name": "current", "type": "integer", "required": false},
+      {"name": "space", "type": "enum", "required": false, "default": "1", "values": ["0", "1", "2", "3", "4", "5", "6", "7", "8"]}
     ]
     },
     "capabilities": ["content.embeddable"],

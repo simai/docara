@@ -80,6 +80,7 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_FIGURE_IMAGE_REQUIRED` | [Figure](/components/images-and-files/figure/) содержит не одну картинку или лишний текст. **Что сделать:** Оставьте одну картинку и, при желании, один абзац подписи. |
 | `MARKDOWN_MEDIA_CONTENT_REQUIRED` | В [media](/components/images-and-files/media/) нет картинки или текста. **Что сделать:** Добавьте одну картинку и текст рядом с ней. |
 | `MARKDOWN_GRID_CARD_REQUIRED` | В [grid](/components/layout/grid/) есть что-то кроме блоков `card`. **Что сделать:** Поместите содержимое в блоки [card](/components/layout/card/). |
+| `MARKDOWN_GRID_COLUMNS_MIN_CONFLICT` | У [grid](/components/layout/grid/) заданы и `columns`, и `min`. **Что сделать:** Оставьте одно: `columns` — точное число колонок, `min` — сколько плиток поместится. |
 | `MARKDOWN_DOWNLOAD_LINK_REQUIRED` | [Download](/components/images-and-files/download/) содержит не одну ссылку. **Что сделать:** Оставьте одну ссылку на файл. |
 | `MARKDOWN_QUOTE_ATTRIBUTION_REQUIRED` | У цитаты с подписью нет автора или источника. **Что сделать:** Укажите автора или источник. |
 | `MARKDOWN_MATH_SOURCE_REQUIRED` | [Math](/components/code-and-data/math/) пустой. **Что сделать:** Добавьте формулу в записи TeX. |
@@ -205,6 +206,9 @@ Front matter — блок между двумя строками `---` в нач
 | `MARKDOWN_COLUMNS_SEPARATOR_INVALID` | Колонки разделены не строкой `---` с пустыми строками до и после. **Что сделать:** Поставьте между колонками отдельную строку `---`, окружённую пустыми строками. |
 | `MARKDOWN_COLUMNS_REGION_EMPTY` | Одна из колонок пустая. **Что сделать:** Добавьте в неё текст или уменьшите число колонок. |
 | `MARKDOWN_COLUMNS_RATIO_MISMATCH` | В `ratio` долей больше или меньше, чем колонок: `ratio=2/1/1` у двух колонок. **Что сделать:** Укажите по одной доле на колонку, например `ratio=2/1`, или уберите параметр. |
+| `MARKDOWN_CONTAINER_WIDTH_REQUIRED` | У блока [container](/components/layout/columns/#ширина-блока) нет `width`. **Что сделать:** Укажите долю колонки, например `width=1/2`, или `width=full`. |
+| `MARKDOWN_CONTAINER_ALIGN_INVALID` | Блок `container` шириной `1/4` или `3/4` нельзя поставить по центру: он не делит двенадцать колонок поровну. **Что сделать:** Возьмите `1/3`, `1/2` или `2/3` либо поставьте блок у начала или конца строки (`align=start`, `align=end`). |
+| `MARKDOWN_CONTAINER_CONTENT_REQUIRED` | В блоке `container` нет видимого содержимого. **Что сделать:** Напишите внутри текст или блок либо удалите пустой блок. |
 | `MARKDOWN_SURFACE_CONTENT_REQUIRED` | [Surface](/components/layout/surface/) пустой. **Что сделать:** Добавьте содержимое. |
 | `MARKDOWN_SURFACE_BACKGROUND_REQUIRED` | Положение фона указано без `background_image`. **Что сделать:** Добавьте `background_image` или уберите настройки положения. |
 | `MARKDOWN_SURFACE_OVERLAY_REQUIRED` | `overlay_strength` указан при `overlay=none`. **Что сделать:** Укажите `overlay=light` или `overlay=dark`. |

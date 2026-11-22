@@ -26,6 +26,7 @@ use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\ComponentCatalog\TypedRendererId;
 use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
+use Simai\Docara\Document\BlockSpace;
 use Simai\Docara\Document\ComponentAliasRegistry;
 use Simai\Docara\Document\ComponentBlockNode;
 use Simai\Docara\Document\ContainerNode;
@@ -183,21 +184,24 @@ final class PortableMarkdownRenderer
         ?string $sourceFile = null,
     ): string {
         try {
-            return match (TypedRendererId::from($node->renderer)) {
+            $props = $node->props;
+            $space = BlockSpace::take($props, $node->alias);
+
+            return BlockSpace::apply(match (TypedRendererId::from($node->renderer)) {
                 TypedRendererId::Surface => $this->renderSurfaceContent(
                     $contentHtml,
-                    $node->props,
+                    $props,
                     $sourceRoot,
                     $sourceFile,
                 ),
-                TypedRendererId::Grid => $this->renderGridContent($contentHtml, $node->props),
-                TypedRendererId::Card => $this->renderCardContent($contentHtml, $node->props),
-                TypedRendererId::Tabs => $this->renderTabs($contentHtml, $node->props),
+                TypedRendererId::Grid => $this->renderGridContent($contentHtml, $props),
+                TypedRendererId::Card => $this->renderCardContent($contentHtml, $props),
+                TypedRendererId::Tabs => $this->renderTabs($contentHtml, $props),
                 default => throw new PortableConfigurationException(
                     'DOCUMENT_CONTAINER_RENDERER_UNSUPPORTED',
                     "Container renderer [{$node->renderer}] is not supported by the shared presentation runtime.",
                 ),
-            };
+            }, $space);
         } catch (PortableConfigurationException $exception) {
             if ($exception->hasFileLocation()) {
                 throw $exception;
@@ -286,12 +290,23 @@ final class PortableMarkdownRenderer
                 $blockMarkdown = $referenceDefinitions . "\n\n" . $blockMarkdown;
             }
             $renderer = TypedRendererId::from($block['renderer']);
+            $space = BlockSpace::take($block['attributes'], $block['type']);
             $rendered = match ($renderer) {
                 TypedRendererId::Card => $this->renderCard(
                     $this->renderCompiled($blockMarkdown, $sourceRoot, $sourceFile, $sourceLine, $exampleSettings, $codeSettings),
                     $block['attributes'],
                 ),
                 TypedRendererId::Columns => $this->renderColumns(
+                    $block['markdown'],
+                    $referenceDefinitions,
+                    $block['attributes'],
+                    $sourceRoot,
+                    $sourceFile,
+                    $sourceLine,
+                    $exampleSettings,
+                    $codeSettings,
+                ),
+                TypedRendererId::Container => $this->renderWidthContainer(
                     $block['markdown'],
                     $referenceDefinitions,
                     $block['attributes'],
@@ -359,6 +374,7 @@ final class PortableMarkdownRenderer
                     $sourceFile,
                 ),
             };
+            $rendered = BlockSpace::apply($rendered, $space);
             $wrapper = '<p>' . $block['placeholder'] . '</p>';
             if (substr_count($html, $wrapper) !== 1) {
                 throw new PortableConfigurationException(
@@ -2167,8 +2183,6 @@ HTML;
     private function renderGrid(string $markdown, array $attributes): string
     {
         $this->assertAttributes($attributes, 'grid');
-        $columns = $this->catalogueChoice($attributes['columns'] ?? '3', 'grid', 'columns');
-        $gap = $this->catalogueChoice($attributes['gap'] ?? '2', 'grid', 'gap');
         $inspection = $this->inspectDirectives($markdown);
         $remainingLines = preg_split('/\r\n|\n|\r/u', $markdown);
         if (! is_array($remainingLines)) {
@@ -2198,8 +2212,6 @@ HTML;
     private function renderGridContent(string $html, array $attributes): string
     {
         $this->assertAttributes($attributes, 'grid');
-        $columns = $this->catalogueChoice($attributes['columns'] ?? '3', 'grid', 'columns');
-        $gap = $this->catalogueChoice($attributes['gap'] ?? '2', 'grid', 'gap');
         $cardRoot = '<section data-docara-block="card"';
         $count = substr_count($html, $cardRoot);
         if ($count < 1) {
@@ -2233,8 +2245,43 @@ HTML;
             $html,
         ) ?? $html;
 
-        return '<section data-docara-block="grid" class="grid grid-col-1 md:grid-col-2 lg:grid-col-'
-            . $columns . ' gap-' . $gap . ' m-bottom-1">' . $html . '</section>';
+        return '<section data-docara-block="grid" class="query-container m-bottom-1"><div class="'
+            . $this->gridTrackClasses($attributes) . '">' . $html . '</div></section>';
+    }
+
+    /**
+     * Grid tracks fold by the grid's own width (Framework container query
+     * variants on the block's query container), not the window's: three
+     * cards in a 610 px documentation column stay two across instead of
+     * squeezing to 190 px. min=N fits as many tiles as the width holds,
+     * none narrower than N rem.
+     *
+     * @param  array<string,string>  $attributes
+     */
+    private function gridTrackClasses(array $attributes): string
+    {
+        $gap = $this->catalogueChoice($attributes['gap'] ?? '2', 'grid', 'gap');
+        if (isset($attributes['min'])) {
+            if (isset($attributes['columns'])) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_GRID_COLUMNS_MIN_CONFLICT',
+                    'A grid takes either columns or min, not both.',
+                );
+            }
+            $fit = match ($this->catalogueChoice($attributes['min'], 'grid', 'min')) {
+                '20' => 'g0',
+                '24' => 'g2',
+                '32' => 'g6',
+            };
+
+            return 'grid grid-col-fit-' . $fit . ' gap-' . $gap;
+        }
+        $columns = (int) $this->catalogueChoice($attributes['columns'] ?? '3', 'grid', 'columns');
+
+        return 'grid grid-col-1'
+            . ($columns >= 2 ? ' cq-md:grid-col-2' : '')
+            . ($columns >= 3 ? ' cq-lg:grid-col-' . $columns : '')
+            . ' gap-' . $gap;
     }
 
     /** @param array<string,string> $attributes */
@@ -3179,13 +3226,31 @@ HTML;
             ) ?? $content;
             $content = preg_replace(
                 '/(?<actions>(?:<a data-docara-hero-action\b.*?<\/a>\s*){1,2})/su',
-                '<div data-docara-hero-actions class="flex flex-wrap items-cross-center gap-1">$1</div>',
+                '<div data-docara-hero-actions class="flex flex-wrap items-cross-center gap-1/3">$1</div>',
                 $content,
                 1,
             ) ?? $content;
         }
 
-        $columns = $variant === 'split' && $image !== '' ? 'grid-col-1 lg:grid-col-2' : 'grid-col-1';
+        $side = $this->catalogueChoice($attributes['side'] ?? 'right', 'hero', 'side');
+        if (isset($attributes['side']) && $variant !== 'split') {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE',
+                'Hero side requires layout=split.',
+            );
+        }
+        // A split hero with an effect and no image draws the effect as its
+        // scene in the second half, so the moving pattern never runs under
+        // the text: the text keeps its half on the hero's own surface, and
+        // below lg the scene stands under the text.
+        $scene = '';
+        if ($variant === 'split' && $effect !== '' && $image === '' && $mediaMode !== 'background') {
+            $scene = '<div data-docara-hero-scene aria-hidden="true" class="min-w-0 radius-surface overflow-hidden'
+                . ($side === 'left' ? ' lg:order-first' : '') . '"' . $effect . '></div>';
+        } elseif ($side === 'left' && $image !== '') {
+            $image = (string) preg_replace('/\A<div class="min-w-0 /', '<div class="min-w-0 lg:order-first ', $image, 1);
+        }
+        $columns = $variant === 'split' && ($image !== '' || $scene !== '') ? 'grid-col-1 lg:grid-col-2' : 'grid-col-1';
         $alignment = $variant === 'centered' ? ' text-center items-cross-center' : '';
         if ($mediaMode === 'background') {
             $overlay = $this->catalogueChoice($attributes['overlay'] ?? 'dark', 'hero', 'overlay');
@@ -3218,9 +3283,9 @@ HTML;
             padding: $padding,
             twoColumns: $columns === 'grid-col-1 lg:grid-col-2',
             content: '<div class="min-w-0 flex flex-col gap-2' . $alignment . '">' . $content . '</div>',
-            media: $image,
+            media: $scene !== '' ? $scene : $image,
         );
-        if ($effect === '') {
+        if ($effect === '' || $scene !== '') {
             return $frame;
         }
         $marked = preg_replace('/\A<section data-docara-block="hero"/', '<section data-docara-block="hero"' . $effect, $frame, 1, $count);
@@ -3808,11 +3873,6 @@ HTML;
                 );
             }
         }
-        $classes = match ($count) {
-            2 => 'grid grid-col-1 md:grid-col-2 gap-2',
-            3 => 'grid grid-col-1 md:grid-col-2 lg:grid-col-3 gap-2',
-            4 => 'grid grid-col-1 md:grid-col-2 lg:grid-col-4 gap-2',
-        };
         $content = [];
         foreach ($regions as $region) {
             if ($referenceDefinitions !== '') {
@@ -3834,12 +3894,126 @@ HTML;
                 '<img data-docara-media="card" loading="lazy" decoding="async"$1>',
                 $html,
             ) ?? $html;
-            $content[] = '<div class="min-w-0">' . $html . '</div>';
+            $content[] = $html;
+        }
+        [$track, $spans] = $this->columnTracks($attributes, $count, $ratio, implode('', $content));
+        $cells = '';
+        foreach ($content as $index => $html) {
+            $cells .= '<div class="' . trim('min-w-0 ' . $spans[$index]) . '">' . $html . '</div>';
         }
 
         return '<section data-docara-block="columns" data-docara-columns="' . $count . '"'
             . ($ratio === null ? '' : ' data-docara-columns-ratio="' . $ratio . '"')
-            . ' class="' . $classes . ' m-bottom-1">' . implode('', $content) . '</section>';
+            . ' class="' . (str_contains($track, 'cq-') ? 'query-container ' : '') . 'm-bottom-1"><div class="' . $track . '">' . $cells . '</div></section>';
+    }
+
+    /**
+     * The columns row on Framework grid utilities: as many equal tracks as
+     * the shares add up to, each column spanning its share, so 2/1 lines up
+     * with a three-card grid above it. The row folds into one column below
+     * the fold step of its own width (container query variants): md (44rem)
+     * for two columns, lg (60rem) for three and four, or what fold names;
+     * fold=none never folds. A row holding an inline example folds by the
+     * window instead, because a query container would also become the
+     * containing block of the example's fixed popups.
+     *
+     * @param  array<string,string>  $attributes
+     * @return array{0: string, 1: list<string>}
+     */
+    private function columnTracks(array $attributes, int $count, ?string $ratio, string $html): array
+    {
+        $gap = $this->catalogueChoice($attributes['gap'] ?? '2', 'columns', 'gap');
+        $fold = isset($attributes['fold']) ? $this->catalogueChoice($attributes['fold'], 'columns', 'fold') : null;
+        $align = isset($attributes['align']) ? $this->catalogueChoice($attributes['align'], 'columns', 'align') : null;
+        $variant = str_contains($html, 'data-docara-example') ? '' : 'cq-';
+        $prefix = static fn (string $step): string => $step === 'none' ? '' : $variant . $step . ':';
+        $shares = $ratio === null ? array_fill(0, $count, 1) : array_map('intval', explode('/', $ratio));
+        $total = array_sum($shares);
+        if ($fold === null && $ratio === null && $count > 2) {
+            // Equal columns without a fold step keep today's two steps:
+            // two across from md, all of them from lg.
+            $track = 'grid grid-col-1 ' . $prefix('md') . 'grid-col-2 ' . $prefix('lg') . 'grid-col-' . $count;
+        } else {
+            $step = $fold ?? ($count === 2 ? 'md' : 'lg');
+            $track = $step === 'none'
+                ? 'grid grid-col-' . $total
+                : 'grid grid-col-1 ' . $prefix($step) . 'grid-col-' . $total;
+        }
+        $spanStep = $fold ?? ($count === 2 ? 'md' : 'lg');
+        $spans = array_map(
+            static fn (int $share): string => $share > 1 ? $prefix($spanStep) . 'col-span-' . $share : '',
+            $shares,
+        );
+
+        return [$track . ' gap-' . $gap . ($align === null ? '' : ' items-cross-' . $align), $spans];
+    }
+
+    /**
+     * A block narrower than the column it stands in: width is a share of
+     * that column on the Framework twelve-track grid (1/2 spans 6 tracks,
+     * 2/3 spans 8), aligned to its start, centre or end. Below the md step of
+     * the block's own width (44rem) it takes the whole column. The tracks it
+     * starts at for centre and end come from the shell stylesheet until the
+     * Framework pair carries cq-md:col-start-N; inside a block that holds an
+     * inline example it folds by the window, as columns do.
+     *
+     * @param  array<string,string>  $attributes
+     */
+    private function renderWidthContainer(
+        string $markdown,
+        string $referenceDefinitions,
+        array $attributes,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+        int $sourceLine,
+        array $exampleSettings = [],
+        array $codeSettings = [],
+    ): string {
+        $this->assertAttributes($attributes, 'container');
+        if (! isset($attributes['width'])) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_CONTAINER_WIDTH_REQUIRED',
+                'A container block needs width: a share of the column (1/4, 1/3, 1/2, 2/3, 3/4) or full.',
+            );
+        }
+        $width = $this->catalogueChoice($attributes['width'], 'container', 'width');
+        $align = $this->catalogueChoice($attributes['align'] ?? 'start', 'container', 'align');
+        $region = $referenceDefinitions === '' ? $markdown : $referenceDefinitions . "\n\n" . $markdown;
+        $html = trim(preg_match('/^:::/m', $markdown) === 1
+            ? $this->renderCompiled($region, $sourceRoot, $sourceFile, $sourceLine, $exampleSettings, $codeSettings)
+            : (string) $this->converter->convert($region));
+        if (! $this->containsVisibleText(strip_tags($html)) && preg_match('/<(img|section|aside|figure|article|div)\b/u', $html) !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_CONTAINER_CONTENT_REQUIRED',
+                'A container block must hold visible Markdown content.',
+            );
+        }
+        $span = match ($width) {
+            '1/4' => 3,
+            '1/3' => 4,
+            '1/2' => 6,
+            '2/3' => 8,
+            '3/4' => 9,
+            'full' => 12,
+        };
+        $start = match ($align) {
+            'start' => 1,
+            'center' => intdiv(12 - $span, 2) + 1,
+            'end' => 13 - $span,
+        };
+        if ($align === 'center' && (12 - $span) % 2 !== 0) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_CONTAINER_ALIGN_INVALID',
+                "A container of width [$width] cannot stand in the centre of the twelve column tracks; use 1/3, 1/2 or 2/3, or align it to the start or the end.",
+            );
+        }
+        $variant = str_contains($html, 'data-docara-example') ? 'md:' : 'cq-md:';
+        $cell = 'min-w-0 col-span-12' . ($span === 12 ? '' : ' ' . $variant . 'col-span-' . $span);
+
+        return '<section data-docara-block="container" data-docara-width-share="' . $width . '" data-align="' . $align . '"'
+            . ($start > 1 && $span < 12 ? ' data-docara-track-start="' . $start . '"' : '')
+            . ' class="' . ($variant === 'md:' ? '' : 'query-container ') . 'm-bottom-1"><div class="grid grid-col-12"><div class="' . $cell . '">'
+            . $html . '</div></div></section>';
     }
 
     private function containsVisibleText(string $text): bool

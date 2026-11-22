@@ -81,6 +81,7 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 | `MARKDOWN_FIGURE_IMAGE_REQUIRED` | [Figure](/components/images-and-files/figure/) holds more than one image or extra text. **What to do:** Keep one image and, if you like, one caption paragraph. |
 | `MARKDOWN_MEDIA_CONTENT_REQUIRED` | [Media](/components/images-and-files/media/) has no image or no text. **What to do:** Add one image and text beside it. |
 | `MARKDOWN_GRID_CARD_REQUIRED` | [Grid](/components/layout/grid/) holds something other than `card` blocks. **What to do:** Put the content into [card](/components/layout/card/) blocks. |
+| `MARKDOWN_GRID_COLUMNS_MIN_CONFLICT` | A [grid](/components/layout/grid/) sets both `columns` and `min`. **What to do:** Keep one: `columns` for an exact number of columns, `min` to fit as many tiles as the width holds. |
 | `MARKDOWN_DOWNLOAD_LINK_REQUIRED` | [Download](/components/images-and-files/download/) holds more than one link. **What to do:** Keep one link to the file. |
 | `MARKDOWN_QUOTE_ATTRIBUTION_REQUIRED` | A quote with attribution has no author or source. **What to do:** Give the author or the source. |
 | `MARKDOWN_MATH_SOURCE_REQUIRED` | [Math](/components/code-and-data/math/) is empty. **What to do:** Add a formula in TeX notation. |
@@ -205,6 +206,10 @@ Background effect codes that depend on `docara.json` are described in
 | `MARKDOWN_COLUMNS_REGION_COUNT_INVALID` | Columns has fewer than two or more than four columns. **What to do:** Split the content into 2–4 parts. |
 | `MARKDOWN_COLUMNS_SEPARATOR_INVALID` | The columns are not separated by a `---` line with blank lines before and after it. **What to do:** Put a separate `---` line between the columns, surrounded by blank lines. |
 | `MARKDOWN_COLUMNS_REGION_EMPTY` | One of the columns is empty. **What to do:** Add text to it or reduce the number of columns. |
+| `MARKDOWN_COLUMNS_RATIO_MISMATCH` | `ratio` names more or fewer shares than there are columns: `ratio=2/1/1` on two columns. **What to do:** Give one share per column, such as `ratio=2/1`, or remove the parameter. |
+| `MARKDOWN_CONTAINER_WIDTH_REQUIRED` | A [container](/components/layout/columns/#block-width) block has no `width`. **What to do:** Set a share of the column, such as `width=1/2`, or `width=full`. |
+| `MARKDOWN_CONTAINER_ALIGN_INVALID` | A `container` block `1/4` or `3/4` wide cannot stand in the centre: it does not split the twelve column tracks evenly. **What to do:** Use `1/3`, `1/2` or `2/3`, or place the block at the start or the end of the line (`align=start`, `align=end`). |
+| `MARKDOWN_CONTAINER_CONTENT_REQUIRED` | A `container` block has no visible content. **What to do:** Write text or a block inside it, or remove the empty block. |
 | `MARKDOWN_SURFACE_CONTENT_REQUIRED` | [Surface](/components/layout/surface/) is empty. **What to do:** Add content. |
 | `MARKDOWN_SURFACE_BACKGROUND_REQUIRED` | A background position is given without `background_image`. **What to do:** Add `background_image` or remove the position settings. |
 | `MARKDOWN_SURFACE_OVERLAY_REQUIRED` | `overlay_strength` is given with `overlay=none`. **What to do:** Give `overlay=light` or `overlay=dark`. |

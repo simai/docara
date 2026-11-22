@@ -8,6 +8,7 @@ enum TypedRendererId: string
 {
     case Card = 'docara.card.v1';
     case Columns = 'docara.columns.v1';
+    case Container = 'docara.container.v1';
     case Steps = 'docara.steps.v1';
     case Cta = 'docara.cta.v1';
     case Features = 'docara.features.v1';

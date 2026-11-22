@@ -58,6 +58,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'columns',
             'component_index',
             'component_reference',
+            'container',
             'cta',
             'details',
             'diagram',
@@ -91,6 +92,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.columns',
             'docara.component_index',
             'docara.component_reference',
+            'docara.container',
             'docara.cta',
             'docara.details',
             'docara.diagram',
@@ -396,7 +398,9 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.button' => 'docs/site/content/ru/components/inline/button.md',
             'docara.card' => 'docs/site/content/ru/components/layout/card.md',
             'docara.code' => 'docs/site/content/ru/components/code-and-data/code-from-file.md',
+            'docara.columns' => 'docs/site/content/ru/components/layout/columns.md',
             'docara.component_reference' => 'docs/site/content/ru/components/code-and-data/component-reference.md',
+            'docara.container' => 'docs/site/content/ru/components/layout/columns.md',
             'docara.details' => 'docs/site/content/ru/components/blocks/details.md',
             'docara.diagram' => 'docs/site/content/ru/components/code-and-data/diagram.md',
             'docara.download' => 'docs/site/content/ru/components/images-and-files/download.md',
@@ -717,8 +721,16 @@ final class EffectiveComponentCatalogTest extends TestCase
                 '<figcaption',
             ],
             'docara.grid' => [
-                '<section data-docara-block="grid"',
-                'lg:grid-col-3',
+                '<section data-docara-block="grid" class="query-container',
+                'cq-lg:grid-col-3',
+            ],
+            'docara.columns' => [
+                '<section data-docara-block="columns" data-docara-columns="4"',
+                'cq-lg:grid-col-4',
+            ],
+            'docara.container' => [
+                '<section data-docara-block="container" data-docara-width-share="1/2" data-align="center"',
+                'cq-md:col-span-6',
             ],
             'docara.hero' => [
                 '<section data-docara-block="hero" data-variant="split" data-docara-width="full"',
@@ -771,7 +783,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(36, $supported);
+        self::assertCount(38, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),
@@ -849,6 +861,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                     'docara.button' => 'button',
                     'docara.card' => 'card',
                     'docara.code' => 'code-from-file',
+                    'docara.columns', 'docara.container' => 'columns',
                     'docara.details' => 'details',
                     'docara.download' => 'download',
                     'docara.embed' => 'embed',

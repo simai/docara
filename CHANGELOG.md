@@ -17,8 +17,54 @@ All notable changes to Docara are recorded here. The format follows
 - **Blocks inside columns.** An outer `::::columns` may hold details, card,
   alert, figure and steps blocks, so questions and a side card can stand in
   one row.
+- **Space below a block.** Every block takes `space=0…8`, a step of the
+  SIMAI Framework spacing ladder printed as its `m-bottom-N`. A block that sets
+  it owns the distance below it: a heading right after it drops its own top
+  space, so the gap is exactly that step. A block without it keeps today's
+  `m-bottom-1`. A value outside 0–8 stops the build with
+  `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID`. The layout section page
+  documents it once; the component parameter tables leave it out.
+- **Container block.** `:::container {width=1/2 align=center}` makes a block a
+  share of the column it stands in (`1/4`, `1/3`, `1/2`, `2/3`, `3/4`, `full`),
+  at its start, centre or end, on the Framework twelve-track grid. It takes the
+  whole column below 44rem of its own width. A missing width, a centred `1/4`
+  or `3/4` and an empty block stop the build with
+  `MARKDOWN_CONTAINER_WIDTH_REQUIRED`, `MARKDOWN_CONTAINER_ALIGN_INVALID` and
+  `MARKDOWN_CONTAINER_CONTENT_REQUIRED`. The start track of a centred or
+  end-aligned block comes from the shell stylesheet until the Framework pair
+  carries `cq-md:col-start-N`. Widths in characters follow when the pair ships
+  the C396 measure ladder.
+- **Columns gap, fold and alignment.** `:::columns` takes `gap=0…8` (default
+  2), `fold=sm|md|lg|none` (the width step of the block below which its columns
+  stack; two columns fold at md, three and four at lg) and
+  `align=start|center|end|stretch`. Columns are a public component again, on
+  their own page «Колонки и ширина» with the container block.
+- **Grid min and a wider gap.** `:::grid {min=20|24|32}` fits as many tiles as
+  the width holds, none narrower than that many rem (the Framework
+  `grid-col-fit-g0/g2/g6`); with `columns` as well it stops the build with
+  `MARKDOWN_GRID_COLUMNS_MIN_CONFLICT`. `gap` now runs 0–8.
+- **Hero scene and side.** A `layout=split` hero with an effect and no image
+  draws the effect as a scene in its second half, beside the text on a wide
+  screen and under it below lg, so the text needs no plate; the pause button
+  stays on the hero. `side=left` puts the image or the scene on the left on a
+  wide screen; the text stays first in the markup.
 
 ### Changed
+
+- **Columns and grids fold by their own width.** Columns and grids stand on
+  Framework container query utilities (`query-container`, `cq-md:grid-col-2`,
+  `cq-md:col-span-2`) instead of window breakpoints and Docara's own ratio
+  rules, so three cards in a 610 px documentation column stay two across
+  instead of squeezing to 190 px. The block's outer element is the query
+  container and its tracks are one element inside it. A columns or container
+  block that holds an inline example folds by the window (`md:`), because a
+  query container would also become the containing block of the example's
+  fixed popups.
+- **Hero buttons 8 px apart.** The two hero actions stand a third of a step
+  apart (`gap-1/3`), as buttons of one group do in the Framework horizontal
+  spacing standard, instead of a full step.
+- **Home page rhythm.** Each section of the home page ends with `space=7`, so
+  every section starts the same distance below the one before it.
 
 - **Component pages in menu sections.** The documentation's component pages
   sit in six sections of the left menu, the same as on the Components overview:

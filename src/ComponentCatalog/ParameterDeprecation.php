@@ -15,7 +15,7 @@ final readonly class ParameterDeprecation
     public function __construct(
         /** The name the page uses to call the component: details, badge, image, quote. */
         public string $component,
-        /** "name" for a renamed parameter, "value" for a renamed value. */
+        /** "name" for a renamed parameter, "value" for a renamed value, "component" for a component folded into another. */
         public string $kind,
         /** The current parameter name. */
         public string $parameter,
@@ -25,6 +25,10 @@ final readonly class ParameterDeprecation
 
     public function message(): string
     {
+        if ($this->kind === 'component') {
+            return "Component [{$this->deprecated}] is deprecated; write [{$this->replacement}] instead. The page renders the same.";
+        }
+
         return $this->kind === 'name'
             ? "Parameter [{$this->deprecated}] of [{$this->component}] is deprecated; write [{$this->replacement}] instead. The page renders the same."
             : "Value [{$this->deprecated}] of parameter [{$this->parameter}] in [{$this->component}] is deprecated; write [{$this->replacement}] instead. The page renders the same.";

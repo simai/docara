@@ -36,8 +36,8 @@ final class PortableMultilingualProductTest extends TestCase
         );
         $destination = $this->tmpPath('build_product');
         $first = $builder->build($this->tmp, $destination);
-        // The root 404.html page adds one file: 42.
-        self::assertCount(42, $first);
+        // The root 404.html page adds one file; the banner page folded into the alert page: 41.
+        self::assertCount(41, $first);
         self::assertFileExists($destination . '/404.html');
         $firstTree = $this->tree($destination);
         $builder->build($this->tmp, $destination);

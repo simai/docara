@@ -70,6 +70,27 @@ final readonly class ContentComponentRenderer
         $children = $node->children();
         $heading = $children[0] ?? null;
         $levels = $slot['heading_levels'] ?? [];
+        // A slot with an optional heading (an alert as a one-line notice)
+        // renders its content alone when the block does not open with one.
+        if (($slot['heading'] ?? 'required') === 'optional'
+            && ! ($heading instanceof SourceNode && $heading->type() === 'heading')
+        ) {
+            $content = trim($bodyHtml);
+            if (trim(strip_tags($content)) === '') {
+                throw $this->error(
+                    'CONTENT_COMPONENT_BLOCK_CONTENT_REQUIRED',
+                    $node,
+                    'The document slot requires visible content.',
+                );
+            }
+
+            return $this->blockArtifact($node, $definition, $this->template(
+                (string) $definition['_template'],
+                $props,
+                title: '',
+                content: $content,
+            ));
+        }
         if (! $heading instanceof SourceNode
             || $heading->type() !== 'heading'
             || ! is_array($levels)
@@ -102,6 +123,12 @@ final readonly class ContentComponentRenderer
             content: $content,
         );
 
+        return $this->blockArtifact($node, $definition, $html);
+    }
+
+    /** @param array<string, mixed> $definition */
+    private function blockArtifact(ComponentBlockNode $node, array $definition, string $html): RenderArtifact
+    {
         return new RenderArtifact(
             rtrim($html, "\r\n"),
             array_values($definition['assets'] ?? []),

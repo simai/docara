@@ -69,9 +69,8 @@ Markdown blocks start with a `:::name` line and end with a `:::` line.
 
 | Code | Cause and what to do |
 | --- | --- |
-| `MARKDOWN_ALERT_HEADING_REQUIRED` | An [alert](/components/blocks/alert/) does not start with a level 2–5 heading. **What to do:** Make a heading the first line of the block, for example `## Warning`. |
-| `MARKDOWN_ALERT_CONTENT_REQUIRED` | The alert has no text after the heading. **What to do:** Add explanatory text. |
-| `MARKDOWN_BANNER_CONTENT_REQUIRED` | The [banner](/components/blocks/banner/) is empty. **What to do:** Add text. |
+| `MARKDOWN_ALERT_CONTENT_REQUIRED` | The alert has no text. **What to do:** Add explanatory text. |
+| `MARKDOWN_BANNER_CONTENT_REQUIRED` | The deprecated `:::banner` block is empty. **What to do:** Replace it with an [alert](/components/blocks/alert/) without a heading and add text. |
 | `MARKDOWN_DETAILS_HEADING_REQUIRED` | A [details](/components/blocks/details/) block does not start with a level 2–4 heading. **What to do:** Make a heading the first line; it becomes the label of the expandable block. |
 | `MARKDOWN_DETAILS_CONTENT_REQUIRED` | The details block has no text after the heading. **What to do:** Add content. |
 | `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` | [Steps](/components/blocks/steps/) does not hold exactly one numbered list. **What to do:** Keep one `1.`, `2.`, `3.` list in the block. |

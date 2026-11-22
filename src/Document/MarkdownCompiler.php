@@ -403,7 +403,7 @@ final class MarkdownCompiler
      * directives in its own body and renders them itself (columns split
      * their regions first), so the document does not take it apart.
      *
-     * @param array<string,mixed> $definition
+     * @param  array<string,mixed>  $definition
      */
     private function rendersOwnChildren(array $definition): bool
     {

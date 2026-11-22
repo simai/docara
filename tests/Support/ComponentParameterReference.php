@@ -51,6 +51,11 @@ final class ComponentParameterReference
         $pages = [];
         foreach ($this->entries() as $entry) {
             $page = (string) ($entry['docs_ref'] ?? '');
+            // The deprecated banner points at the alert page, which documents
+            // the alert's own parameters only.
+            if (($entry['id'] ?? null) === 'docara.banner') {
+                continue;
+            }
             if (str_starts_with($page, self::PAGES)) {
                 $pages[$page][] = $entry;
             }

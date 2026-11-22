@@ -208,4 +208,4 @@ motion is turned on in the system, the effect shows a still frame.
 - [Background effects](../effects/)
 - [Landing blocks](../landing-blocks/)
 - [Surface](../surface/)
-- [Banner](../../blocks/banner/) — an announcement inside a regular article
+- [Alert](../../blocks/alert/) — an announcement inside a regular article

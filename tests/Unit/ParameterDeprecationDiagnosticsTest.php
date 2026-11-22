@@ -151,6 +151,11 @@ MD;
         $message = (new ParameterDeprecation('steps', 'name', 'layout', 'view', 'layout'))->message();
         self::assertStringContainsString('[view]', $message);
         self::assertStringContainsString('[layout]', $message);
+        $banner = (new ParameterDeprecationScanner)->scan("Текст\n\n:::banner {type=warning}\nОбъявление\n:::\n\n`:::banner` в коде\n");
+        self::assertCount(1, $banner);
+        self::assertSame(3, $banner[0]['line']);
+        self::assertSame('component', $banner[0]['deprecation']->kind);
+        self::assertStringContainsString('[:::alert without a heading]', $banner[0]['deprecation']->message());
         self::assertSame([], (new ParameterDeprecationScanner)->scan(":badge[Новое]{variant=main}\n:::details {layout=lines}\n## А\n\nБ\n:::\n"));
     }
 
@@ -163,7 +168,8 @@ MD;
         foreach (['docs/site/content', 'stubs', 'resources/component-catalog/examples'] as $directory) {
             $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($root . '/' . $directory, \FilesystemIterator::SKIP_DOTS));
             foreach ($files as $file) {
-                if ($file->getExtension() !== 'md') {
+                // The deprecated banner's own catalogue example keeps :::banner.
+                if ($file->getExtension() !== 'md' || str_ends_with($file->getPathname(), '/examples/docara.banner.md')) {
                     continue;
                 }
                 foreach ($scanner->scan((string) file_get_contents($file->getPathname())) as $use) {

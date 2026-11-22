@@ -68,9 +68,8 @@ Front matter — блок между двумя строками `---` в нач
 
 | Код | Причина и что сделать |
 | --- | --- |
-| `MARKDOWN_ALERT_HEADING_REQUIRED` | [Alert](/components/blocks/alert/) не начинается с заголовка уровня 2–5. **Что сделать:** Первой строкой блока поставьте заголовок, например `## Внимание`. |
-| `MARKDOWN_ALERT_CONTENT_REQUIRED` | В alert нет текста после заголовка. **Что сделать:** Добавьте поясняющий текст. |
-| `MARKDOWN_BANNER_CONTENT_REQUIRED` | [Banner](/components/blocks/banner/) пустой. **Что сделать:** Добавьте текст. |
+| `MARKDOWN_ALERT_CONTENT_REQUIRED` | В alert нет текста. **Что сделать:** Добавьте поясняющий текст. |
+| `MARKDOWN_BANNER_CONTENT_REQUIRED` | Устаревший блок `:::banner` пустой. **Что сделать:** Замените его на [alert](/components/blocks/alert/) без заголовка и добавьте текст. |
 | `MARKDOWN_DETAILS_HEADING_REQUIRED` | [Details](/components/blocks/details/) не начинается с заголовка уровня 2–4. **Что сделать:** Первой строкой поставьте заголовок, он станет подписью раскрывающегося блока. |
 | `MARKDOWN_DETAILS_CONTENT_REQUIRED` | В details нет текста после заголовка. **Что сделать:** Добавьте содержимое. |
 | `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` | [Steps](/components/blocks/steps/) не содержит ровно один нумерованный список. **Что сделать:** Оставьте в блоке один список `1.`, `2.`, `3.`. |

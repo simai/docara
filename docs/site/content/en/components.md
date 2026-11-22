@@ -26,7 +26,6 @@ Menu section: [Content blocks](/en/components/blocks/).
 | Component | Purpose |
 | --- | --- |
 | [Alert](/en/components/blocks/alert/) | A note, tip or warning next to the text |
-| [Banner](/en/components/blocks/banner/) | A short announcement that applies to the whole page |
 | [Details](/en/components/blocks/details/) | An extra explanation that the reader opens on demand |
 | [Interactive example](/en/components/blocks/example/) | A live result next to its source code |
 | [Steps](/en/components/blocks/steps/) | A numbered instruction of several steps |

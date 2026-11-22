@@ -392,7 +392,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.alert' => 'docs/site/content/ru/components/blocks/alert.md',
             'docara.backlinks' => 'docs/site/content/ru/components/blocks/backlinks.md',
             'docara.badge' => 'docs/site/content/ru/components/inline/badge.md',
-            'docara.banner' => 'docs/site/content/ru/components/blocks/banner.md',
+            'docara.banner' => 'docs/site/content/ru/components/blocks/alert.md',
             'docara.button' => 'docs/site/content/ru/components/inline/button.md',
             'docara.card' => 'docs/site/content/ru/components/layout/card.md',
             'docara.code' => 'docs/site/content/ru/components/code-and-data/code-from-file.md',
@@ -845,7 +845,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             ], true)) {
                 $slug = match ($entry['id']) {
                     'docara.backlinks' => 'backlinks',
-                    'docara.banner' => 'banner',
+                    'docara.banner' => 'alert', // folded into the alert page
                     'docara.button' => 'button',
                     'docara.card' => 'card',
                     'docara.code' => 'code-from-file',

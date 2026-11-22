@@ -30,8 +30,10 @@ What happened and what to do next.
 ```
 
 - The first line is a `##`–`#####` heading: it names the situation briefly.
-- After it comes an explanation or the next action. An alert without a
-  heading or without an explanation stops the build.
+- After it comes an explanation or the next action. An alert without an
+  explanation stops the build.
+- The heading may be left out: the alert is then a short message of one or
+  two lines. This is how you write an announcement for the whole page.
 
 The alert is built on the SIMAI Framework alert (`sf-alert`).
 
@@ -76,6 +78,24 @@ The configuration failed the checks.
 ```
 :::
 
+### Without a heading
+
+A short announcement for the whole page — about the docs version, a deadline
+or an important change — is written without a heading and placed at the top
+of the page.
+
+:::example {label="Alert without a heading"}
+```markdown
+:::alert {type=warning variant=flat}
+This version no longer receives security fixes.
+:::
+```
+:::
+
+There used to be a separate `:::banner` block for this. It still builds the
+same, but `docara validate page` suggests replacing it with an alert without
+a heading (`MARKDOWN_PARAMETER_DEPRECATED`).
+
 ### Look
 
 `variant` changes the density of the styling, not the meaning.
@@ -105,7 +125,8 @@ When you need a lighter accent.
 ## Accessibility
 
 - An alert is a `status` region named after its heading: screen readers
-  announce it as a separate block.
+  announce it as a separate block. A `danger` alert without a heading is an
+  `alert` region, announced at once.
 - Colour is not the only carrier of meaning: the icon and the heading both
   convey the type. Name the situation in words: "Note", "Fix required".
 - Do not put several alerts in a row: the reader stops noticing them.
@@ -123,6 +144,5 @@ When you need a lighter accent.
 
 ## See also
 
-- [Banner](../banner/) — an announcement for the whole page
 - [Details](../details/) — for additional details
 - [SIMAI Framework ui.* components](../../simai-framework/smart-ui/) — the `ui.alert` alert

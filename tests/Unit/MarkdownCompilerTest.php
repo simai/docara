@@ -331,7 +331,6 @@ MD, $source);
         foreach ([
             ['CONTENT_COMPONENT_PROP_UNKNOWN', ':::alert {unknown=yes}', "#### Title\n\nText"],
             ['CONTENT_COMPONENT_PROP_INVALID', ':::alert {type=purple}', "#### Title\n\nText"],
-            ['CONTENT_COMPONENT_BLOCK_HEADING_REQUIRED', ':::alert', 'Text only'],
             ['CONTENT_COMPONENT_BLOCK_CONTENT_REQUIRED', ':::alert', '#### Title'],
         ] as [$code, $opening, $body]) {
             $document = $compiler->compile(

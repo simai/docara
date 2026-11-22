@@ -8,49 +8,6 @@
   "layout": {
     "container": {
       "max": 7
-    },
-    "regions": {
-      "footer": {
-        "enabled": true,
-        "sections": [
-          {
-            "id": "site-footer",
-            "section": "docara.shell",
-            "utilities": [
-              "flex",
-              "flex-wrap",
-              "items-center",
-              "content-main-between",
-              "gap-2"
-            ],
-            "blocks": [
-              {
-                "id": "copyright",
-                "block": "shell.element",
-                "slot": "content",
-                "element": {
-                  "tag": "p",
-                  "text": "Документация Docara · © 2026 SIMAI",
-                  "utilities": [
-                    "m-0"
-                  ]
-                }
-              },
-              {
-                "id": "made-with",
-                "block": "shell.element",
-                "slot": "content",
-                "element": {
-                  "tag": "a",
-                  "text": "Сделано на Docara",
-                  "href": "/ru/start/what-is-docara/",
-                  "aria_label": "Что такое Docara"
-                }
-              }
-            ]
-          }
-        ]
-      }
     }
   },
   "header_navigation": {

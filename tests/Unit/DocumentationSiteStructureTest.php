@@ -20,7 +20,7 @@ final class DocumentationSiteStructureTest extends TestCase
         $root = dirname(__DIR__, 2) . '/docs/site/content/ru/components';
         $retired = [
             'native-markdown', 'inline-docara', 'block-docara', 'containers',
-            'framework', 'project', 'syntax',
+            'framework', 'project', 'syntax', 'blocks/banner',
         ];
         $index = (string) file_get_contents(dirname($root) . '/components.md');
         foreach ($retired as $entry) {
@@ -36,8 +36,8 @@ final class DocumentationSiteStructureTest extends TestCase
         sort($expectedSections);
         self::assertSame($expectedSections, $sectionPages);
         $pages = glob($root . '/*/*.md') ?: [];
-        self::assertSame(31, count($pages));
-        self::assertSame(31, preg_match_all('#/ru/components/[a-z0-9-]+/[a-z0-9-]+/#', $index));
+        self::assertSame(30, count($pages));
+        self::assertSame(30, preg_match_all('#/ru/components/[a-z0-9-]+/[a-z0-9-]+/#', $index));
         foreach ($sections as $section) {
             self::assertSame(1, substr_count($index, '](/ru/components/' . $section . '/)'), $section);
         }

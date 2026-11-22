@@ -567,6 +567,32 @@ MD);
     }
 
     #[Test]
+    public function an_alert_without_a_heading_is_a_one_line_notice_and_the_banner_renders_as_before(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $notice = $renderer->render(":::alert {type=danger variant=flat}\nЭта версия больше не получает исправления.\n:::\n");
+        self::assertStringContainsString(
+            '<aside data-docara-block="alert" role="alert" class="sf-alert sf-alert--danger sf-alert--flat flex items-cross-start m-bottom-1"><sf-icon icon="error" aria-hidden="true"></sf-icon>',
+            $notice,
+        );
+        self::assertStringContainsString('<div class="sf-alert-content"><p>Эта версия больше не получает исправления.</p></div>', $notice);
+        self::assertStringNotContainsString('aria-label', $notice);
+
+        $banner = $renderer->render(":::banner {type=warning}\nСохраните сборку.\n:::\n");
+        self::assertStringContainsString(
+            '<aside data-docara-block="banner" role="status" class="sf-alert sf-alert--warning sf-alert--flat flex items-cross-start m-bottom-1"><sf-icon icon="warning" aria-hidden="true"></sf-icon>',
+            $banner,
+        );
+
+        try {
+            $renderer->render(":::alert {type=info}\n:::\n");
+            self::fail('An empty alert must stop the build.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_BLOCK_EMPTY', $exception->errorCode);
+        }
+    }
+
+    #[Test]
     public function alert_inside_markdown_example_uses_the_content_smart_gateway(): void
     {
         $renderer = new PortableMarkdownRenderer;

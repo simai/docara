@@ -32,7 +32,15 @@ All notable changes to Docara are recorded here. The format follows
 - **The documentation home page** merges its two benefit grids into six
   points, shows the examples as larger cards with pictures, puts the
   questions beside a short "Docara at a glance" card, and ends with one call
-  to action and a footer.
+  to action and a footer. Inner pages have no footer: it sits on the home
+  pages only (`layout.regions.footer` in `index.page.json`).
+- **Banner folded into alert.** An `:::alert` may now leave out its heading:
+  it is then a one-line notice, the same as the former banner, and the
+  announcement for a whole page is written this way. `:::banner` still renders
+  as before; `docara validate page` and the build summary report it with
+  `MARKDOWN_PARAMETER_DEPRECATED` and the replacement. The banner docs page is
+  merged into the alert page and its address redirects there.
+  `MARKDOWN_ALERT_HEADING_REQUIRED` is retired.
 
 ## [3.18.0] - 2026-11-19
 

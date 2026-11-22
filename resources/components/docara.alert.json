@@ -7,7 +7,7 @@
         "variant": {"default": "default", "enum": ["default", "flat", "outlined"]}
     },
     "slots": {
-        "default": {"required": true, "kind": "document", "heading_levels": [2, 3, 4, 5]}
+        "default": {"required": true, "kind": "document", "heading_levels": [2, 3, 4, 5], "heading": "optional"}
     },
     "renderer": "docara.content.template",
     "template": "templates/alert.php",

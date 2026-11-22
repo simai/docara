@@ -9,7 +9,8 @@ use Simai\Docara\ComponentCatalog\ParameterDeprecation;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 /**
- * Finds former parameter names and values in a page, with their line.
+ * Finds former parameter names and values in a page, with their line, and
+ * :::banner, folded into an alert without a heading.
  *
  * The renderer already maps them to the current names (the page renders the
  * same); this scan only tells the author what to change. It reads component
@@ -61,6 +62,11 @@ final readonly class ParameterDeprecationScanner
                 $example = $opening['fence'];
             } elseif ($fence === null && $example !== null && trim($line) === $example) {
                 $example = null;
+            }
+            if (preg_match('/^\s*:{3,}banner(?:\s|\{|$)/', $this->withoutCodeSpans($line)) === 1) {
+                $found[] = ['line' => $index + 1, 'deprecation' => new ParameterDeprecation(
+                    'banner', 'component', 'banner', ':::banner', ':::alert without a heading',
+                )];
             }
             foreach ($this->attributeBlocks($line, $parameters) as [$component, $attributes]) {
                 try {

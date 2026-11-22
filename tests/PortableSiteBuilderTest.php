@@ -747,8 +747,8 @@ MD);
 
         $result = $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        // 39 authored pages and 404.html.
-        self::assertCount(40, $result);
+        // 38 authored pages and 404.html.
+        self::assertCount(39, $result);
         self::assertTrue($result->get('/404.html')['not_found'] ?? false);
         self::assertFileExists($this->tmpPath('build_local/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/getting-started/index.html'));
@@ -1402,10 +1402,10 @@ MD);
         $shellReceipt = $diagnostics['build']['framework']['shell'];
         self::assertSame('docara.framework_asset_plans.v2', $shellReceipt['schema']);
         self::assertSame('production_exact', $shellReceipt['mode']);
-        self::assertCount(40, $shellReceipt['plans']);
+        self::assertCount(39, $shellReceipt['plans']);
         $performance = $this->jsonFile($this->tmpPath('build_local.docara/performance.json'));
         self::assertSame('docara.performance_receipt.v1', $performance['schema']);
-        self::assertSame(40, $performance['site']['page_count']);
+        self::assertSame(39, $performance['site']['page_count']);
         self::assertSame(
             $performance['content_sha256'],
             $diagnostics['build']['public_projections']['performance_sha256'],
@@ -1441,7 +1441,7 @@ MD);
             'utility.full.css',
             (string) file_get_contents($this->tmpPath('build_local/index.html')),
         );
-        self::assertCount(40, $diagnostics['pages']);
+        self::assertCount(39, $diagnostics['pages']);
         $indexPlan = collect($diagnostics['pages'])->firstWhere('output', 'index.html');
         self::assertIsArray($indexPlan);
         self::assertSame('published', $indexPlan['declarative_pipeline']['status']);
@@ -1470,7 +1470,7 @@ MD);
         $searchIndex = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertSame('docara.search_index.v1', $searchIndex['schema']);
         self::assertSame('docara-prefix-v1', $searchIndex['algorithm']);
-        self::assertCount(38, $searchIndex['documents']);
+        self::assertCount(37, $searchIndex['documents']);
         self::assertNotContains('/landing/', array_column($searchIndex['documents'], 'url'));
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $searchIndex['content_sha256']);
         $searchText = implode(' ', array_column($searchIndex['documents'], 'text'));
@@ -1917,7 +1917,6 @@ MD);
             '/components/alert/',
             '/components/backlinks/',
             '/components/badge/',
-            '/components/banner/',
             '/components/button/',
             '/components/card/',
             '/components/code/',

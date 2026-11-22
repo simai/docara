@@ -99,7 +99,7 @@
     {"from": "settings/security", "to": "ru/reference/security-and-errors"},
     {"from": "settings/site", "to": "ru/reference/docara-json"},
     {"from": "ru/components/alert", "to": "ru/components/blocks/alert"},
-    {"from": "ru/components/banner", "to": "ru/components/blocks/banner"},
+    {"from": "ru/components/banner", "to": "ru/components/blocks/alert"},
     {"from": "ru/components/details", "to": "ru/components/blocks/details"},
     {"from": "ru/components/example", "to": "ru/components/blocks/example"},
     {"from": "ru/components/steps", "to": "ru/components/blocks/steps"},
@@ -131,7 +131,7 @@
     {"from": "ru/components/framework", "to": "ru/start/component-model"},
     {"from": "ru/components/smart-ui", "to": "ru/components/simai-framework/smart-ui"},
     {"from": "en/components/alert", "to": "en/components/blocks/alert"},
-    {"from": "en/components/banner", "to": "en/components/blocks/banner"},
+    {"from": "en/components/banner", "to": "en/components/blocks/alert"},
     {"from": "en/components/details", "to": "en/components/blocks/details"},
     {"from": "en/components/example", "to": "en/components/blocks/example"},
     {"from": "en/components/steps", "to": "en/components/blocks/steps"},
@@ -162,7 +162,7 @@
     {"from": "en/components/kbd", "to": "en/components/inline/kbd"},
     {"from": "en/components/smart-ui", "to": "en/components/simai-framework/smart-ui"},
     {"from": "components/alert", "to": "ru/components/blocks/alert"},
-    {"from": "components/banner", "to": "ru/components/blocks/banner"},
+    {"from": "components/banner", "to": "ru/components/blocks/alert"},
     {"from": "components/details", "to": "ru/components/blocks/details"},
     {"from": "components/example", "to": "ru/components/blocks/example"},
     {"from": "components/steps", "to": "ru/components/blocks/steps"},
@@ -191,6 +191,8 @@
     {"from": "components/button", "to": "ru/components/inline/button"},
     {"from": "components/icon", "to": "ru/components/inline/icon"},
     {"from": "components/kbd", "to": "ru/components/inline/kbd"},
-    {"from": "components/smart-ui", "to": "ru/components/simai-framework/smart-ui"}
+    {"from": "components/smart-ui", "to": "ru/components/simai-framework/smart-ui"},
+    {"from": "ru/components/blocks/banner", "to": "ru/components/blocks/alert"},
+    {"from": "en/components/blocks/banner", "to": "en/components/blocks/alert"}
   ]
 }

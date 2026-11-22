@@ -52,7 +52,7 @@ final class PageBuilderTest extends TestCase
         self::assertStringContainsString('<sf-alert', $result->contentHtml);
     }
 
-    public function test_alert_uses_the_same_pagebuilder_with_nine_typed_gateway_blocks(): void
+    public function test_alert_uses_the_same_pagebuilder_with_ten_typed_gateway_blocks(): void
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
         $plan = (new PortableConfigurationLoader($root))->resolve('content/ru/components/blocks/alert.md');
@@ -64,7 +64,7 @@ final class PageBuilderTest extends TestCase
         );
 
         self::assertNotNull($result->document);
-        self::assertCount(9, $result->componentArtifacts);
+        self::assertCount(10, $result->componentArtifacts);
         self::assertSame(
             ['docara.alert'],
             array_values(array_unique(array_column(
@@ -72,9 +72,11 @@ final class PageBuilderTest extends TestCase
                 'smart',
             ))),
         );
-        self::assertSame(9, substr_count($result->contentHtml, 'data-docara-block="alert"'));
-        // Three examples show their Markdown source; «Разметка» adds one block.
-        self::assertSame(4, substr_count($result->contentHtml, 'data-docara-code-block'));
+        self::assertSame(10, substr_count($result->contentHtml, 'data-docara-block="alert"'));
+        // One of them is a one-line notice without a heading.
+        self::assertSame(1, substr_count($result->contentHtml, '<aside data-docara-block="alert"'));
+        // Four examples show their Markdown source; «Разметка» adds one block.
+        self::assertSame(5, substr_count($result->contentHtml, 'data-docara-code-block'));
         foreach ($result->componentArtifacts as $artifact) {
             self::assertSame('component_block', $artifact->hydration['node_type']);
             self::assertSame('content/ru/components/blocks/alert.md', $artifact->hydration['source']['file']);
@@ -87,14 +89,14 @@ final class PageBuilderTest extends TestCase
         $source = (string) file_get_contents($root . '/content/ru/components/blocks/alert.md');
         $positions = array_map(static fn (string $needle): int|false => strpos($source, $needle), [
             '## Пример', '## Разметка', '## Варианты', '### Тип', ':::example {label="Типы уведомлений"}',
-            '### Вид', ':::example {label="Вид уведомления"}', '## Доступность', '## Параметры',
+            '### Без заголовка', ':::example {label="Уведомление без заголовка"}', '### Вид', ':::example {label="Вид уведомления"}', '## Доступность', '## Параметры',
             '<!-- docara:component-parameters:start -->', '| `type` |', '| `variant` |', '## См. также',
         ]);
         self::assertNotContains(false, $positions);
         $sorted = $positions;
         sort($sorted);
         self::assertSame($sorted, $positions);
-        self::assertSame(3, substr_count($result->contentHtml, 'data-docara-example='));
+        self::assertSame(4, substr_count($result->contentHtml, 'data-docara-example='));
     }
 
     public function test_badge_uses_one_pagebuilder_with_typed_ir_and_sixteen_gateway_artifacts(): void
@@ -142,7 +144,6 @@ final class PageBuilderTest extends TestCase
         $root = dirname(__DIR__, 2) . '/docs/site';
         foreach ([
             'components/blocks/backlinks' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
-            'components/blocks/banner' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'],
             'components/code-and-data/code' => ['heading', 'paragraph', 'list', 'table', 'code_block', 'example', 'html_comment'],
             // Pages moved to the page standard add lists and the markers of
             // the generated parameter table.

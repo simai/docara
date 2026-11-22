@@ -71,7 +71,7 @@ The content stays Markdown, and the landing blocks set the composition:
 - [figure](/en/components/images-and-files/figure/) or [media](/en/components/images-and-files/media/) show a
   product screenshot;
 - [logos](/en/components/images-and-files/logos/) shows participants or customers;
-- [banner](/en/components/blocks/banner/) with [button](/en/components/inline/button/)
+- an [alert](/en/components/blocks/alert/) without a heading with [button](/en/components/inline/button/)
   ends the page with a clear action.
 
 Ordinary headings, text and code stay in the inner container. Only

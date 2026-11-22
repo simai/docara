@@ -2384,10 +2384,16 @@ HTML;
         $nodes = iterator_to_array($rendered->getDocument()->children());
         $heading = $nodes[0] ?? null;
         if (! $heading instanceof Heading || ! in_array($heading->getLevel(), [2, 3, 4, 5], true)) {
-            throw new PortableConfigurationException(
-                'MARKDOWN_ALERT_HEADING_REQUIRED',
-                'An alert block must start with a level-two through level-five heading.',
-            );
+            // No heading: a short notice in one line, the former banner.
+            $content = trim((string) $rendered);
+            if (! $this->containsVisibleText(strip_tags($content))) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_ALERT_CONTENT_REQUIRED',
+                    'An alert block requires visible content.',
+                );
+            }
+
+            return $this->noticeMarkup('alert', $type, $variant, $content);
         }
         $title = $this->inlineVisibleText($heading);
         if (! $this->containsVisibleText($title) || count($nodes) < 2) {
@@ -2513,12 +2519,23 @@ HTML;
         if ($content === '') {
             throw new PortableConfigurationException('MARKDOWN_BANNER_CONTENT_REQUIRED', 'A banner requires visible Markdown content.');
         }
-        $icon = match ($type) {
-            'success' => 'check_circle', 'warning' => 'warning', 'danger' => 'error', default => 'info',
-        };
 
-        return '<aside data-docara-block="banner" role="status" class="sf-alert sf-alert--' . $type
-            . ' sf-alert--flat flex items-cross-start m-bottom-1"><sf-icon icon="' . $icon . '" aria-hidden="true"></sf-icon>'
+        return $this->noticeMarkup('banner', $type, 'flat', $content);
+    }
+
+    /**
+     * A one-line notice: an alert without a heading, or the former banner
+     * (deprecated in favour of an alert without a heading; it renders the same).
+     */
+    private function noticeMarkup(string $block, string $type, string $variant, string $content): string
+    {
+        $icon = match ($type) {
+            'success' => 'check_circle', 'warning' => 'warning', 'danger' => 'error', 'clear' => 'notifications', default => 'info',
+        };
+        $role = $block === 'alert' && $type === 'danger' ? 'alert' : 'status';
+
+        return '<aside data-docara-block="' . $block . '" role="' . $role . '" class="sf-alert sf-alert--' . $type
+            . ' sf-alert--' . $variant . ' flex items-cross-start m-bottom-1"><sf-icon icon="' . $icon . '" aria-hidden="true"></sf-icon>'
             . '<div class="sf-alert-wrap flex-1"><div class="sf-alert-content">' . $content . '</div></div></aside>';
     }
 

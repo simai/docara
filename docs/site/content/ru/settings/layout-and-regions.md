@@ -70,7 +70,7 @@ tags: [макет, layout, области, регионы, preset, лендин�
 - [figure](/ru/components/images-and-files/figure/) или [media](/ru/components/images-and-files/media/)
   показывают продуктовый скриншот;
 - [logos](/ru/components/images-and-files/logos/) выводит участников или клиентов;
-- [banner](/ru/components/blocks/banner/) с [button](/ru/components/inline/button/)
+- [alert](/ru/components/blocks/alert/) без заголовка с [button](/ru/components/inline/button/)
   завершает страницу понятным действием.
 
 Обычные заголовки, текст и код остаются во внутреннем контейнере. Только

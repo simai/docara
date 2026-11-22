@@ -270,7 +270,25 @@ final class MarkdownCompiler
         $pageExample = $alias === 'example' && strlen($fence) > 3
             && preg_match('/(?:^|\s)src\s*=/', (string) ($opening['attributes'] ?? '')) === 1;
         $end = $start + 1;
-        while (isset($lines[$end]) && trim($lines[$end]) !== $fence) {
+        // Lines inside a fenced code block are code, not directives: an
+        // example inside tabs shows its :::-lines as Markdown source.
+        $code = null;
+        while (isset($lines[$end]) && ($code !== null || trim($lines[$end]) !== $fence)) {
+            if (preg_match('/^\s*(?<mark>`{3,}|~{3,})/', $lines[$end], $codeFence) === 1) {
+                if ($code === null) {
+                    $code = $codeFence['mark'];
+                } elseif ($codeFence['mark'][0] === $code[0] && strlen($codeFence['mark']) >= strlen($code) && trim($lines[$end]) === $codeFence['mark']) {
+                    $code = null;
+                }
+                $end++;
+
+                continue;
+            }
+            if ($code !== null) {
+                $end++;
+
+                continue;
+            }
             if (! $pageExample
             && ! $this->isContainerDefinition($definition)
             && ! $this->rendersOwnChildren($definition)

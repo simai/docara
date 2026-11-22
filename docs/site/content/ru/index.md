@@ -1,126 +1,302 @@
-:::hero {layout=centered padding=2xl effect=text-search effect_settings='{"speed":80,"intensity":20,"density":40,"columns":3,"hits":4}'}
-# Сайт документации из Markdown — на PHP и Composer
+:::hero {layout=centered padding=2xl effect=chladni effect_settings='{"palette":"ink","speed":60,"transparency":25,"density":55}'}
+# Документация из файлов — сайт, который собирается сам
 
-Пишите страницы в Markdown, а настройки — в JSON. Docara соберёт из них
-быстрый статический сайт на SIMAI Framework с меню, поиском и тёмной темой.
-Такой сайт можно выложить на любой хостинг.
+Пишите страницы в Markdown рядом с проектом. Docara соберёт из них
+статический сайт с поиском, меню и тёмной темой — на GitHub Pages или любом
+хостинге.
 
-Docara 3 · открытый код на [GitHub](https://github.com/simai/docara) ·
-лицензия Apache 2.0
+[Начать](/ru/start/quick-start/)
 
-[Быстрый старт](/ru/start/quick-start/)
-
-[Посмотреть пример](/components/)
+[Документация](/ru/start/)
 :::
 
-## Первый сайт за три команды
+## Три вещи, ради которых берут Docara
 
-Установите пакет через Composer, создайте заготовку и соберите сайт. Для сборки
-нужны PHP 8.2+, Composer и Node.js 20+; готовому сайту — только статический
-веб-сервер.
+::::grid {columns=3 gap=4}
+:::card
+### Документация как код
 
-```bash
-# 1. Установите Docara
-composer require simai/docara:^3.0
+```markdown
+# Быстрый старт
+Установите пакет и создайте сайт.
 
-# 2. Создайте заготовку сайта
-php vendor/bin/docara init .
-
-# 3. Соберите сайт и откройте его в браузере
-php vendor/bin/docara serve production
+1. composer require simai/docara
+2. docara init .
 ```
 
-Заготовки, проверка результата и публикация — в [полном быстром старте](/ru/start/quick-start/).
-
-## Что вы получаете
-
-:::features
-- :icon[package_2]{size=2 container=square variant=tonal scheme=primary} **Composer вместо npm.** Docara ставится и обновляется как обычный PHP-пакет. Сборка выдаёт готовые HTML, CSS и JavaScript: их можно выложить на GitHub Pages или любой веб-сервер без PHP и Node.js.
-- :icon[palette]{size=2 container=square variant=tonal scheme=primary} **Дизайн-система SIMAI.** Интерфейс, светлая и тёмная темы и компоненты берутся из SIMAI Framework. Читатель сам выбирает тему, размер шрифта и ширину текста.
-- :icon[account_tree]{size=2 container=square variant=tonal scheme=primary} **Меню из структуры файлов.** Разделы, хлебные крошки, содержание страницы и переходы к соседним материалам строятся сами. Подробнее — в [«Меню и разделах»](/ru/authoring/navigation/).
-- :icon[search]{size=2 container=square variant=tonal scheme=primary} **Поиск без сервера.** Индекс собирается при сборке и работает в браузере читателя: не нужны ни база данных, ни внешний сервис.
-- :icon[translate]{size=2 container=square variant=tonal scheme=primary} **Несколько языков.** Каждый язык — своя папка с Markdown, переключатель языка и `hreflang` появляются сами. Подробнее — в [«Многоязычном сайте»](/ru/authoring/multilingual-site/).
-- :icon[verified]{size=2 container=square variant=tonal scheme=primary} **Проверка до публикации.** Ошибку в вызове компонента сборка найдёт сразу, а `verify-static` проверит страницы, ссылки, ресурсы и поиск. Подробнее — в [«Проверке результата»](/ru/build/verify/).
-:::
-
-## Посмотрите, как это выглядит
-
-::::grid {columns=3 gap=2}
-:::card
-![](assets/media-components.webp)
-
-#### [Каталог компонентов](/ru/components/)
-
-Каждый компонент — с живым примером, параметрами и кодом, который можно скопировать.
+Текст — обычные файлы Markdown рядом с проектом. Правите файл — получаете
+страницу. История — в GitHub, изменения — через pull request.
 :::
 
 :::card
-![](assets/hero-split.webp)
+### Готовый статический сайт
 
-#### [Примеры макетов](/ru/development/examples/)
+- :icon[check_circle] Сборка сайта
+- :icon[check_circle] Проверка ссылок и поиска
+- :icon[check_circle] Публикация на GitHub Pages
 
-Страницы с разными областями, шапками и наследованием настроек — вместе с исходными файлами.
+Сайт собирается прямо в GitHub и публикуется на GitHub Pages или любой
+хостинг. Ни сервера, ни базы данных — только файлы, поэтому быстро, а на
+GitHub Pages ещё и бесплатно.
 :::
 
 :::card
-![](assets/promo.webp)
+### Много готовых блоков
 
-#### [Лендинг из тех же файлов](/ru/landing/)
+:badge[Шаги] :badge[Карточки] :badge[Вкладки] :badge[Схемы] :badge[Таблицы]
+:badge[Уведомления] :badge[Первый экран] :badge[Колонки] :badge[Примеры]
 
-Эта страница — тоже Docara: тот же Markdown, только без меню документации.
+Шаги, карточки, вкладки, схемы, таблицы, уведомления. Из них собираются не
+только справочники, но и любые страницы, лендинги тоже.
 :::
 ::::
 
-::::columns {ratio=2/1}
+## Как это работает
+
+::::grid {columns=3 gap=4}
+:::card
+### 1. Пишете Markdown
+
+```markdown
+## Установка
+Выполните в терминале:
+`composer require simai/docara`
+```
+
+Страница — файл в папке `docs/`. Блоки — тоже Markdown: `:::steps`,
+`:::tabs`, `:::card`.
+:::
+
+:::card
+### 2. Отправляете в GitHub
+
+```bash
+git commit -m "Страница установки"
+git push
+```
+
+`git push` или pull request — как с кодом.
+:::
+
+:::card
+### 3. Сайт обновляется сам
+
+```text
+✓ Сборка   ✓ Проверка   ✓ GitHub Pages
+```
+
+GitHub Actions собирает и проверяет сайт и выкладывает его на GitHub Pages.
+Если проверка не прошла, старая версия остаётся на месте.
+:::
+::::
+
+Готовый файл процесса для GitHub Actions — в разделе
+[«Сборка в CI»](/ru/build/ci/).
+
+## Блоки, из которых собирается страница
+
+Каждый пример ниже — живой: переключите вкладку и посмотрите Markdown, из
+которого он собран.
+
+:::::tabs
+### Шаги
+
+::::example {label="Шаги"}
+```markdown
+:::steps {current=2}
+1. Создайте проект.
+2. Добавьте страницы.
+3. Опубликуйте сайт.
+:::
+```
+::::
+
+### Карточки
+
+::::example {label="Карточки"}
+```markdown
+::::grid {columns=3}
+:::card
+#### Markdown
+
+Страницы — обычный текст с заголовками и списками.
+:::
+
+:::card
+#### JSON
+
+Настройки сайта, разделов и страниц.
+:::
+
+:::card
+#### PHP
+
+Сборка и проверка — один пакет Composer.
+:::
+::::
+```
+::::
+
+### Вкладки
+
+::::example {label="Вкладки"}
+````markdown
+:::tabs
+### Composer
+```bash
+composer require simai/docara:^3.0
+```
+### Архив
+Скачайте архив и распакуйте его в пустой каталог.
+### Результат
+Готовый сайт появится в каталоге сборки.
+:::
+````
+::::
+
+### Схема
+
+::::example {label="Схема"}
+````markdown
+:::diagram {title="Публикация страницы документации"}
+```mermaid
+flowchart LR
+  draft[Черновик в Markdown] --> build(Сборка сайта)
+  build --> check{Проверки прошли?}
+  check -->|да| publish[Публикация]
+  check -->|нет| fix[Правка ошибок]
+  fix --> build
+```
+:::
+````
+::::
+
+### Таблица
+
+::::example {label="Таблица"}
+```markdown
+| Команда | Что делает |
+| --- | --- |
+| `docara init .` | Создаёт заготовку сайта |
+| `docara serve production` | Собирает сайт и открывает его в браузере |
+| `docara verify-static` | Проверяет ссылки, файлы и поиск |
+| `docara upgrade` | Обновляет Docara с проверкой и откатом |
+```
+::::
+
+### Уведомление
+
+::::example {label="Уведомление"}
+```markdown
+:::alert {type=info}
+#### Полезная информация
+
+Продолжайте работу в обычном порядке.
+:::
+```
+::::
+:::::
+
+В документации Docara у каждого примера можно посмотреть код и проверить его
+на ширине компьютера, планшета и телефона.
+
+## Для команд и больших проектов
+
+::::grid {columns=3 gap=2}
+:::card
+#### :icon[translate]{size=2 container=square variant=tonal scheme=primary} [Несколько языков](/ru/authoring/multilingual-site/)
+
+Каждый язык — своя папка. Docara видит, какой перевод отстал от оригинала, и
+может публиковать только актуальные страницы.
+:::
+
+:::card
+#### :icon[search]{size=2 container=square variant=tonal scheme=primary} [Поиск без сервера](/ru/settings/search/)
+
+Индекс строится вместе с сайтом. Поиск работает в браузере читателя и никуда
+не отправляет запросы.
+:::
+
+:::card
+#### :icon[dark_mode]{size=2 container=square variant=tonal scheme=primary} [Удобно читать](/ru/settings/reader-preferences/)
+
+Светлая и тёмная тема, размер шрифта и ширина текста — читатель выбирает сам.
+:::
+::::
+
+::::grid {columns=2 gap=2}
+:::card
+#### :icon[package_2]{size=2 container=square variant=tonal scheme=primary} [Установка через Composer](/ru/build/update/)
+
+Обычный PHP-пакет `simai/docara`, версия закреплена в `composer.lock`.
+Обновление — одной командой, при ошибке прежняя версия возвращается сама.
+:::
+
+:::card
+#### :icon[menu_book]{size=2 container=square variant=tonal scheme=primary} [Подробная документация](/ru/start/)
+
+Больше 130 страниц на русском и английском: каждый блок с живым примером,
+настройки, сборка и публикация.
+:::
+::::
+
+:::card
+## ИИ-помощник — если хотите
+
+Docara работает и без ИИ. Если вы пользуетесь агентом вроде Claude Code или
+Codex, навык Docara помогает в трёх делах:
+
+- :icon[translate] **Перевод.** Агент переводит страницы, а Docara проверяет,
+  что форма страницы сохранилась и перевод не отстал.
+- :icon[description] **Черновик из материалов.** Агент переносит README, папку
+  `docs/` и заметки в страницы Docara.
+- :icon[dashboard_customize] **Страница по описанию.** «Добавь страницу про
+  установку с вкладками для каждой системы» — агент собирает её из готовых
+  блоков.
+
+[Как подключить навык](/ru/start/ai-agent/). Агент собирает и проверяет сайт,
+выкладку решаете вы.
+:::
+
 ## Частые вопросы
+
+:::details {layout=lines}
+### Нужны ли сервер и база данных?
+
+Нет. Готовый сайт — статические файлы: HTML, CSS и JavaScript. PHP 8.2+,
+Composer и Node.js 20+ нужны только там, где сайт собирается, — на вашем
+компьютере или в GitHub Actions.
+:::
+
+:::details {layout=lines}
+### Можно ли сделать не только документацию?
+
+Да. Те же блоки собирают лендинг, страницу продукта или раздел с примерами;
+для главной есть готовая заготовка `landing`.
+:::
+
+:::details {layout=lines}
+### Как обновлять Docara?
+
+Командой `php vendor/bin/docara upgrade`. Docara сначала собирает и проверяет
+сайт на новой версии в отдельной папке и только потом заменяет старую; при
+ошибке всё остаётся как было.
+:::
+
+:::details {layout=lines}
+### Обязательно ли пользоваться ИИ?
+
+Нет. Всё делается обычными командами и правкой файлов. Навык для ИИ-агента —
+дополнительная возможность.
+:::
 
 :::details {layout=lines}
 ### Чем Docara отличается от VitePress и Docusaurus?
 
-VitePress и Docusaurus — проекты на npm: сайт собирается из JavaScript-пакетов,
-а внешний вид задаёт тема, которую команда настраивает и обновляет. Docara
-ставится через Composer, хранит содержание в Markdown и JSON, а интерфейс
-берёт из SIMAI Framework. Подробное сравнение — в [«Что такое Docara»](/ru/start/what-is-docara/).
+Docara ставится через Composer, как обычный PHP-пакет, а не из npm; поиск,
+проверка ссылок перед публикацией и контроль переводов уже входят в неё.
 :::
 
-:::details {layout=lines}
-### Можно ли сделать лендинг?
+## Начните с одной фразы или трёх команд
 
-Да. Preset `landing` использует тот же Markdown, JSON и компоненты, но убирает
-меню документации. Эта страница собрана именно так.
-:::
-
-:::details {layout=lines}
-### Можно ли добавить свой компонент?
-
-Да. Сначала попробуйте обычный Markdown и готовые компоненты Docara. Если их не
-хватает, подключите собственный компонент сайта по
-[документированному контракту](/ru/development/#как-развивать-возможности).
-:::
-
-:::details {layout=lines}
-### Как безопасно обновляться?
-
-Команда `php vendor/bin/docara upgrade` готовит новую версию отдельно,
-собирает и проверяет сайт и только затем применяет результат. Вернуться к
-предыдущей версии можно командой `upgrade --rollback=latest`.
-:::
-
----
-
-## Коротко о Docara
-
-:::card
-- **Версия:** Docara 3, лицензия Apache 2.0
-- **Для сборки:** PHP 8.2+, Composer, Node.js 20+
-- **Для сайта:** любой статический веб-сервер
-- **Поиск по документации:** :kbd[⌘] + :kbd[K] или :kbd[Ctrl] + :kbd[K]
-- **Для ИИ-помощников:** [llms.txt](https://docara.simai.io/llms.txt) — вся документация одним текстом
-
-[Быстрый старт](/ru/start/quick-start/) · [Справочник](/ru/reference/)
-:::
-::::
-
-:::cta
-[Перейти к быстрому старту](/ru/start/quick-start/)
-:::
+:button[Поручить агенту]{href=/ru/start/ai-agent/} :button[Быстрый старт]{href=/ru/start/quick-start/ variant=outline scheme=on-surface}

@@ -25,6 +25,8 @@ The component is ready to use :badge[New]{variant=tonal scheme=primary size=1}
   All parameters are optional.
 - A badge sits inside a line: in a paragraph, a list item, a table cell or a
   heading.
+- A paragraph of badges alone becomes a row of labels: they wrap onto a new
+  line with an even gap and do not touch each other.
 
 The badge is built on the SIMAI Framework badge (`sf-badge`).
 

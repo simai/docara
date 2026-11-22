@@ -166,7 +166,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/inline/badge.md",
-            "source_sha256": "aa9314a42187106875c35c15c0b982b271d1486ea8771864621b5cf732a23e42",
+            "source_sha256": "e1a753299211fa7731c0eb9a604162cad577f24253042385698175000ae81b74",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/components/inline/badge.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/components/inline/badge.md",
@@ -581,5 +581,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "8c529f565f1a01a05b66ae61579072bc2480eba0e4b837e877298ca8ae6c4a97"
+    "content_sha256": "9d46ad6e54fc9fd4e96d8ddb28a114c96785fdd8e827912c503813a201b50375"
 }

@@ -1578,11 +1578,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/inline/badge.md",
-            "source_sha256": "3ab0b541947fa1adcaec2cb37031129f43a607a89f71c781f78140c1ed36b8da",
-            "source_structure_sha256": "38686007ca43100b22a08a893a723c969d1bcff8d22be5417a82157bd1ff6965",
+            "source_sha256": "dfe5c4104808c776f5e6a29a20ece057b0718c0eb32ed9316d5747c1a562b7c0",
+            "source_structure_sha256": "4a2d3a86a64229f532d4214f80dbc276f37fc7f16ca6ed6f17ce18922ddaab4e",
             "target_path": "content/en/components/inline/badge.md",
-            "target_sha256": "fc7e86d6a2e208dc4d14781a56737cb478c0e506878ffd265b9d51cba03900da",
-            "target_structure_sha256": "38686007ca43100b22a08a893a723c969d1bcff8d22be5417a82157bd1ff6965"
+            "target_sha256": "e383768a4ce51a83098cdc58e5eb64e5b7523c8ec3e8d6bc2bc81f8da24939e7",
+            "target_structure_sha256": "4a2d3a86a64229f532d4214f80dbc276f37fc7f16ca6ed6f17ce18922ddaab4e"
         },
         {
             "key": "components/inline/button.md",

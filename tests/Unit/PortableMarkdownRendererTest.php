@@ -1172,6 +1172,18 @@ MD);
     }
 
     #[Test]
+    public function a_paragraph_of_badges_alone_is_a_wrapping_row_with_a_gap(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $row = $renderer->render(":badge[One] :badge[Two]\n:badge[Three]\n");
+        self::assertStringContainsString('<p data-docara-badge-row class="flex flex-wrap items-cross-center gap-1/3">', $row);
+        self::assertSame(3, substr_count($row, 'class="sf-badge '));
+
+        $text = $renderer->render("Status :badge[New] and :badge[Beta]\n");
+        self::assertStringNotContainsString('data-docara-badge-row', $text);
+    }
+
+    #[Test]
     public function a_fenced_diagram_source_stops_the_build(): void
     {
         $this->expectException(PortableConfigurationException::class);

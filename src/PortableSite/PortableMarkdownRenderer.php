@@ -385,6 +385,22 @@ final class PortableMarkdownRenderer
             $html = str_replace($wrapper, $rendered, $html);
         }
 
+        // A paragraph of badges alone is a row of labels, not a line of text:
+        // inline badges wrapped by the text's line height touch the row above.
+        // Such a paragraph wraps its badges with a gap from the Framework scale.
+        $badgePlaceholders = array_keys(array_filter(
+            $inline['replacements'],
+            static fn (string $replacement): bool => str_starts_with($replacement, '<span class="sf-badge '),
+        ));
+        if ($badgePlaceholders !== []) {
+            $badge = implode('|', array_map(static fn (string $placeholder): string => preg_quote($placeholder, '/'), $badgePlaceholders));
+            $html = (string) preg_replace(
+                '/<p>(\s*(?:' . $badge . ')(?:\s+(?:' . $badge . '))+\s*)<\/p>/u',
+                '<p data-docara-badge-row class="flex flex-wrap items-cross-center gap-1/3">$1</p>',
+                $html,
+            );
+        }
+
         foreach ($inline['replacements'] as $placeholder => $replacement) {
             if (substr_count($html, $placeholder) !== 1) {
                 throw new PortableConfigurationException(

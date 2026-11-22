@@ -110,6 +110,9 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- **A row of badges keeps a gap.** A paragraph of badges alone wraps them
+  with a gap from the Framework scale; before, a wrapped row touched the row
+  above. A badge inside text is unchanged.
 - **A fenced diagram stops the build.** A ```` ```mermaid ```` fence inside
   `:::diagram` used to reach the browser as text, and Mermaid drew a syntax
   error instead of the picture (the home page's diagram example did). The build

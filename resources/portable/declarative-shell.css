@@ -130,6 +130,20 @@ html[data-docara-content-width="wide"] .docara-docs-layout .docara-prose p:not(:
 /* The head's label carries sf-text-1/2, and that utility gives its next sibling a text margin (.sf-text-1\/2 + *), which pushed the shown wrap button down and made the head 48 tall instead of the control height. The head's parts sit on one line, so none of them takes a block margin. Framework defect, reported. */
 .docara-code-block>.sf-highlight__head>*{margin-block:0}
 .docara-code-block+*{margin-block-start:var(--sf-space-4)}
+/* A card lays its parts out with the flex gap, where margins add instead of collapsing: its first part takes no top margin, the part after a code block keeps only the gap and the code block's own step, and a heading right after the card's icon line sits on the gap. */
+[data-docara-block="card"]>:first-child{margin-block-start:0}
+[data-docara-block="card"]>.docara-code-block+*{margin-block-start:0}
+[data-docara-block="card"]>p:first-child:has(>:only-child:is(.sf-icon,.sf-featured-icon)){margin-block-end:0}
+[data-docara-block="card"]>p:first-child:has(>:only-child:is(.sf-icon,.sf-featured-icon))+:is(h2,h3,h4,h5,h6){margin-block-start:0}
+/* A card whose heading is one link is a link card: the whole card opens the link, the heading keeps the text colour without an underline and shows one on hover, and the card's edge shows focus and hover. Other links in the card stay clickable above it. */
+[data-docara-card-link]{position:relative}
+[data-docara-card-link]>:is(h2,h3,h4,h5,h6)>a:only-child{color:inherit;text-decoration:none}
+[data-docara-card-link]>:is(h2,h3,h4,h5,h6)>a:only-child::after{content:"";position:absolute;inset:0;border-radius:inherit}
+[data-docara-card-link]>:is(h2,h3,h4,h5,h6)>a:only-child:focus-visible{outline:none}
+[data-docara-card-link]:has(>:is(h2,h3,h4,h5,h6)>a:only-child:focus-visible){outline:2px solid var(--sf-primary);outline-offset:2px}
+[data-docara-card-link]:hover{border-color:var(--sf-primary)}
+[data-docara-card-link]:hover>:is(h2,h3,h4,h5,h6)>a:only-child{text-decoration:underline}
+[data-docara-card-link] a:not(:is(h2,h3,h4,h5,h6)>a:only-child){position:relative;z-index:1}
 .docara-code-scroll{overscroll-behavior-inline:contain}
 .docara-code-scroll .hljs-ln{inline-size:max-content;margin:0;border:0;border-spacing:0;border-collapse:collapse;background:transparent}
 .docara-code-scroll .hljs-ln td{margin:0;padding:0;border:0;background:transparent}
@@ -175,9 +189,6 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 /* A hero with a background effect: the Framework gives the area the theme the effect draws (sf-effect-area with theme-dark or theme-light). The area takes that theme's surface and ink, so the text never keeps the page's colour over a scene of the other theme while the effect loads, draws translucently or is hidden. */
 /* Before the effect loads (or when it is refused) the hero already has the plain surface the effect draws on, in the effect's theme, so the background does not jump when the scene appears. */
 [data-docara-block="hero"][data-sf-effect]{position:relative;background:var(--sf-surface-0);color:var(--sf-on-surface)}
-/* Text over a centred effect hero stands on a calm plate of the page surface with soft edges, so the moving pattern never crosses the letters (contrast stays that of text on the surface); the pattern stays visible around it. */
-[data-docara-block="hero"][data-sf-effect]:not([data-variant="split"])>[data-docara-container]>div{position:relative;isolation:isolate}
-[data-docara-block="hero"][data-sf-effect]:not([data-variant="split"])>[data-docara-container]>div::before{content:"";position:absolute;inset:calc(-1 * var(--sf-space-4));z-index:-1;pointer-events:none;background:color-mix(in srgb,var(--sf-surface-0) 92%,transparent);-webkit-mask-image:linear-gradient(to right,transparent,#000 var(--sf-space-4),#000 calc(100% - var(--sf-space-4)),transparent),linear-gradient(to bottom,transparent,#000 var(--sf-space-4),#000 calc(100% - var(--sf-space-4)),transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 var(--sf-space-4),#000 calc(100% - var(--sf-space-4)),transparent),linear-gradient(to bottom,transparent,#000 var(--sf-space-4),#000 calc(100% - var(--sf-space-4)),transparent);mask-composite:intersect}
 /* A split hero's scene: the effect draws in the second half, beside the text on a wide screen and under it below lg (a scene of --sf-g0 height there), so the text needs no plate. The scene holds the effect's own surface until the effect runs; the hero holds the pause button. */
 [data-docara-block="hero"]:has(>[data-docara-container]>[data-docara-hero-scene]){position:relative}
 [data-docara-hero-scene]{position:relative;align-self:stretch;min-block-size:var(--sf-g0);background:var(--sf-surface-0)}

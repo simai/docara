@@ -2086,6 +2086,21 @@ MD);
     }
 
     #[Test]
+    public function a_card_whose_heading_is_one_link_is_a_link_card(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $link = $renderer->render(":::card\n:icon[search]\n\n#### [Search](/search/)\n\nText with [another link](/other/).\n:::\n");
+        self::assertStringContainsString('<section data-docara-block="card" data-docara-card-variant="default" data-docara-card-link class=', $link);
+
+        foreach ([
+            ":::card\n#### Search\n\n[Open](/search/)\n:::\n",
+            ":::card\n#### [Search](/search/) and more\n\nText.\n:::\n",
+        ] as $markdown) {
+            self::assertStringNotContainsString('data-docara-card-link', $renderer->render($markdown));
+        }
+    }
+
+    #[Test]
     public function card_can_use_page_level_reference_definitions(): void
     {
         $html = (new PortableMarkdownRenderer)->render(

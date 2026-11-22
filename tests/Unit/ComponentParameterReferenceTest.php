@@ -31,6 +31,11 @@ final class ComponentParameterReferenceTest extends TestCase
         $parameters = [];
         foreach ((new ComponentParameterReference($root))->entries() as $entry) {
             foreach ($entry['authoring']['parameters'] ?? [] as $parameter) {
+                // space is the one layout parameter every block shares; the
+                // layout page describes it once instead of every block table.
+                if ($parameter['name'] === 'space') {
+                    continue;
+                }
                 $parameters[] = $entry['id'] . '.' . $parameter['name'];
             }
         }

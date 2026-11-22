@@ -55,6 +55,7 @@ Menu section: [Layout](/en/components/layout/).
 | --- | --- |
 | [Card](/en/components/layout/card/) | A short self-contained block with a heading |
 | [Grid](/en/components/layout/grid/) | Several cards in a row that stack into a column on a phone |
+| [Columns and width](/en/components/layout/columns/) | Parts of a page side by side in set shares, and a block narrower than the page column |
 | [Surface](/en/components/layout/surface/) | A styled full-width band around part of the page |
 | [Hero](/en/components/layout/hero/) | The start of a landing page: heading, description, actions and an image |
 | [Background effects](/en/components/layout/effects/) | An animation under the hero text instead of an image |

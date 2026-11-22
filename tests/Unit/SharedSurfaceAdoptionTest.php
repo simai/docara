@@ -73,20 +73,23 @@ final class SharedSurfaceAdoptionTest extends TestCase
             ),
         ));
 
-        // The round-4 home page: a hero, card grids, a tabs showcase of
-        // examples, a card and a run of details; no retired landing blocks.
+        // The round-4 home page: a hero, card grids (six link cards among
+        // them), a tabs showcase of examples, a run of details and a closing
+        // full-width surface; no retired landing blocks.
         self::assertContains('docara.hero', $typed);
         foreach (['docara.features', 'docara.showcase', 'docara.promo', 'docara.columns', 'docara.cta'] as $retired) {
             self::assertNotContains($retired, $typed);
         }
         self::assertSame(
-            'fbc866db4e6af590c52bcd57270eba8c9347da697f7d5500a0957fd61fae03d6',
+            '489c8f5e106f5d2f6a601a41217fe69e5147c39aa9439d1b621fd86c52aaf9e4',
             hash('sha256', $result->contentHtml),
         );
-        foreach (['hero' => 1, 'grid' => 5, 'tabs' => 2, 'details' => 5, 'features' => 0, 'columns' => 0, 'cta' => 0] as $block => $count) {
+        foreach (['hero' => 1, 'grid' => 5, 'tabs' => 2, 'details' => 5, 'surface' => 1, 'features' => 0, 'columns' => 0, 'cta' => 0] as $block => $count) {
             self::assertSame($count, substr_count($result->contentHtml, 'data-docara-block="' . $block . '"'), $block);
         }
-        self::assertSame(7, substr_count($result->contentHtml, 'data-docara-space="7"'));
+        self::assertSame(5, substr_count($result->contentHtml, 'data-docara-space="7"'));
+        self::assertSame(1, substr_count($result->contentHtml, 'data-docara-space="6"'));
+        self::assertSame(6, substr_count($result->contentHtml, 'data-docara-card-link'));
         self::assertSame([], $result->documentArtifact->assets);
         self::assertSame([], $result->componentArtifacts);
     }

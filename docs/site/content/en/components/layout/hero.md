@@ -170,7 +170,9 @@ The effect is drawn under the text and does not get in the way of reading.
 
 With `layout=split` and no image, the effect is drawn not under the text but
 in the second half of the hero, like an image. The text stands on the
-block's usual background; on a narrow screen the effect goes below the text.
+block's usual background; on a narrow screen the effect goes below the text. This happens only when
+`layout=split` is written: a hero without `layout` or with `media=none` draws
+the effect under the whole block, as before.
 
 ```markdown
 :::hero {layout=split padding=2xl effect=chladni}

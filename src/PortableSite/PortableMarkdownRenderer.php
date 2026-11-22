@@ -2716,18 +2716,34 @@ HTML;
         $this->assertAttributes($attributes, 'card');
         $variant = $this->catalogueChoice($attributes['variant'] ?? 'default', 'card', 'variant');
 
-        return $this->cardOpening($variant)
-            . (string) $rendered . '</section>';
+        $rendered = (string) $rendered;
+
+        return $this->cardOpening($variant, $this->cardHeadingIsOneLink($rendered))
+            . $rendered . '</section>';
     }
 
-    private function cardOpening(string $variant): string
+    /**
+     * A card whose first heading is exactly one link is a link card: the shell
+     * lets the whole card open that link. Nothing new to write: the author
+     * makes the heading a link, as before.
+     */
+    private function cardHeadingIsOneLink(string $html): bool
+    {
+        if (preg_match('/<h([2-6])\b[^>]*>(?<inner>.*?)<\/h\1>/su', $html, $heading) !== 1) {
+            return false;
+        }
+
+        return preg_match('/\A\s*<a\s[^>]*\bhref="[^"]+"[^>]*>(?:(?!<\/?a\b).)*<\/a>\s*\z/su', $heading['inner']) === 1;
+    }
+
+    private function cardOpening(string $variant, bool $link = false): string
     {
         $classes = $variant === 'plain'
             ? 'flex flex-col gap-1 m-bottom-1'
             : 'bg-surface-page border border-outline-variant radius-surface p-3 flex flex-col gap-1 m-bottom-1';
 
         return '<section data-docara-block="card" data-docara-card-variant="' . $variant
-            . '" class="' . $classes . '">';
+            . '"' . ($link ? ' data-docara-card-link' : '') . ' class="' . $classes . '">';
     }
 
     private function renderCta(RenderedContentInterface $rendered): string
@@ -3242,9 +3258,11 @@ HTML;
         // A split hero with an effect and no image draws the effect as its
         // scene in the second half, so the moving pattern never runs under
         // the text: the text keeps its half on the hero's own surface, and
-        // below lg the scene stands under the text.
+        // below lg the scene stands under the text. Only a hero that writes
+        // layout=split asks for it: the default split hero and media=none keep
+        // the effect behind the whole hero, as before.
         $scene = '';
-        if ($variant === 'split' && $effect !== '' && $image === '' && $mediaMode !== 'background') {
+        if (isset($attributes['layout']) && $variant === 'split' && $effect !== '' && $image === '' && ! in_array($mediaMode, ['background', 'none'], true)) {
             $scene = '<div data-docara-hero-scene aria-hidden="true" class="min-w-0 radius-surface overflow-hidden'
                 . ($side === 'left' ? ' lg:order-first' : '') . '"' . $effect . '></div>';
         } elseif ($side === 'left' && $image !== '') {

@@ -69,7 +69,9 @@ final class HeroEffectTest extends TestCase
         );
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
         foreach ([
-            "var wide=window.matchMedia?window.matchMedia('(min-width: 44rem)'):null;",
+            // A split hero's scene stands under the text on a phone, so only an
+            // effect behind the whole hero is held on a narrow screen.
+            "var wide=window.matchMedia&&target===hero?window.matchMedia('(min-width: 44rem)'):null;",
             'if(paused||narrow){entry.handle.pause()}else{entry.handle.resume()}',
             'entry.button.hidden=!running||reduced||narrow||',
         ] as $needle) {
@@ -90,8 +92,8 @@ final class HeroEffectTest extends TestCase
         // control with reduced motion. The behaviour is checked in a browser.
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
         foreach ([
-            "'[data-docara-block=\"hero\"][data-sf-effect]'",
-            'api.placeEffect(entry.hero,options(entry.hero))',
+            "'[data-docara-block=\"hero\"][data-sf-effect],[data-docara-block=\"hero\"]>[data-docara-container]>[data-docara-hero-scene][data-sf-effect]'",
+            'api.placeEffect(entry.target,options(entry.target))',
             'entry.handle.pause()',
             'entry.handle.resume()',
             "'docara.effects.paused'",

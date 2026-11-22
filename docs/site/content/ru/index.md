@@ -1,4 +1,4 @@
-:::hero {space=7 layout=centered padding=2xl effect=chladni effect_settings='{"palette":"ink","speed":60,"transparency":25,"density":55}'}
+:::hero {space=6 layout=centered padding=2xl effect=chladni effect_settings='{"speed":100,"transparency":85,"density":40,"palette":"graphite","interactive":true}'}
 # Документация из файлов — сайт, который собирается сам
 
 Пишите страницы в Markdown рядом с проектом. Docara соберёт из них
@@ -9,8 +9,6 @@
 
 [Документация](/ru/start/)
 :::
-
-## Три вещи, ради которых берут Docara
 
 ::::grid {space=7 columns=3 gap=4}
 :::card
@@ -103,7 +101,7 @@ GitHub Actions собирает и проверяет сайт и выклады
 :::::tabs
 ### Шаги
 
-::::example {label="Шаги"}
+::::example
 ```markdown
 :::steps {current=2}
 1. Создайте проект.
@@ -115,7 +113,7 @@ GitHub Actions собирает и проверяет сайт и выклады
 
 ### Карточки
 
-::::example {label="Карточки"}
+::::example
 ```markdown
 ::::grid {columns=3}
 :::card
@@ -141,7 +139,7 @@ GitHub Actions собирает и проверяет сайт и выклады
 
 ### Вкладки
 
-::::example {label="Вкладки"}
+::::example
 ````markdown
 :::tabs
 ### Composer
@@ -158,7 +156,7 @@ composer require simai/docara:^3.0
 
 ### Схема
 
-::::example {label="Схема"}
+::::example
 ````markdown
 :::diagram {title="Публикация страницы документации"}
 ```mermaid
@@ -175,7 +173,7 @@ flowchart LR
 
 ### Таблица
 
-::::example {label="Таблица"}
+::::example
 ```markdown
 | Команда | Что делает |
 | --- | --- |
@@ -188,7 +186,7 @@ flowchart LR
 
 ### Уведомление
 
-::::example {label="Уведомление"}
+::::example
 ```markdown
 :::alert {type=info}
 #### Полезная информация
@@ -199,67 +197,101 @@ flowchart LR
 ::::
 :::::
 
-:::container {width=full space=7}
-В документации Docara у каждого примера можно посмотреть код и проверить его
-на ширине компьютера, планшета и телефона.
-:::
-
 ## Для команд и больших проектов
 
-::::grid {columns=3 gap=2}
+::::grid {space=7 columns=3 gap=2}
 :::card
-#### :icon[translate]{size=2 container=square variant=tonal scheme=primary} [Несколько языков](/ru/authoring/multilingual-site/)
+:icon[translate]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Несколько языков](/ru/authoring/multilingual-site/)
 
 Каждый язык — своя папка. Docara видит, какой перевод отстал от оригинала, и
 может публиковать только актуальные страницы.
 :::
 
 :::card
-#### :icon[search]{size=2 container=square variant=tonal scheme=primary} [Поиск без сервера](/ru/settings/search/)
+:icon[search]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Поиск без сервера](/ru/settings/search/)
 
 Индекс строится вместе с сайтом. Поиск работает в браузере читателя и никуда
 не отправляет запросы.
 :::
 
 :::card
-#### :icon[dark_mode]{size=2 container=square variant=tonal scheme=primary} [Удобно читать](/ru/settings/reader-preferences/)
+:icon[dark_mode]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Удобно читать](/ru/settings/reader-preferences/)
 
 Светлая и тёмная тема, размер шрифта и ширина текста — читатель выбирает сам.
 :::
-::::
 
-::::grid {space=7 columns=2 gap=2}
 :::card
-#### :icon[package_2]{size=2 container=square variant=tonal scheme=primary} [Установка через Composer](/ru/build/update/)
+:icon[fact_check]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Проверка перед выкладкой](/ru/build/verify/)
+
+Перед публикацией Docara проверяет ссылки, файлы и поиск. Если что-то
+сломано, сайт не выкладывается.
+:::
+
+:::card
+:icon[package_2]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Установка через Composer](/ru/build/update/)
 
 Обычный PHP-пакет `simai/docara`, версия закреплена в `composer.lock`.
 Обновление — одной командой, при ошибке прежняя версия возвращается сама.
 :::
 
 :::card
-#### :icon[menu_book]{size=2 container=square variant=tonal scheme=primary} [Подробная документация](/ru/start/)
+:icon[menu_book]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Подробная документация](/ru/start/)
 
 Больше 130 страниц на русском и английском: каждый блок с живым примером,
 настройки, сборка и публикация.
 :::
 ::::
 
-:::card {space=7}
-## ИИ-помощник — если хотите
+## Работает с ИИ-агентами
 
-Docara работает и без ИИ. Если вы пользуетесь агентом вроде Claude Code или
-Codex, навык Docara помогает в трёх делах:
+Docara работает и без ИИ. Если вы пишете с Claude Code или Codex, подключите
+навык Docara: агент будет знать блоки и правила сайта и проверит свою работу
+сборкой.
 
-- **Перевод.** Агент переводит страницы, а Docara проверяет,
-  что форма страницы сохранилась и перевод не отстал.
-- **Черновик из материалов.** Агент переносит README, папку
-  `docs/` и заметки в страницы Docara.
-- **Страница по описанию.** «Добавь страницу про
-  установку с вкладками для каждой системы» — агент собирает её из готовых
-  блоков.
+::::grid {columns=3 gap=2}
+:::card
+:icon[language]{size=2 container=square variant=tonal scheme=primary}
 
+#### Переводит страницы
+
+Агент переводит, а Docara проверяет, что форма страницы сохранилась и перевод
+не отстал от оригинала.
+:::
+
+:::card
+:icon[drive_file_move]{size=2 container=square variant=tonal scheme=primary}
+
+#### Переносит материалы
+
+README, папка `docs/` и заметки становятся страницами Docara с меню и
+поиском.
+:::
+
+:::card
+:icon[edit_note]{size=2 container=square variant=tonal scheme=primary}
+
+#### Собирает страницу по описанию
+
+«Добавь страницу про установку с вкладками для каждой системы» — агент
+соберёт её из готовых блоков.
+:::
+::::
+
+:::container {width=full space=7}
 [Как подключить навык](/ru/start/ai-agent/). Агент собирает и проверяет сайт,
-выкладку решаете вы.
+а выкладку решаете вы.
 :::
 
 ## Частые вопросы
@@ -301,6 +333,11 @@ Docara ставится через Composer, как обычный PHP-паке�
 проверка ссылок перед публикацией и контроль переводов уже входят в неё.
 :::
 
+:::surface {width=full tone=muted padding=xl space=0}
 ## Начните с одной фразы или трёх команд
 
+Поручите сайт агенту или поставьте Docara сами: сайт собирается на вашем
+компьютере и в GitHub Actions.
+
 :button[Поручить агенту]{href=/ru/start/ai-agent/} :button[Быстрый старт]{href=/ru/start/quick-start/ variant=outline scheme=on-surface}
+:::

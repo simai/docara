@@ -36,8 +36,8 @@ final class DocumentationSiteStructureTest extends TestCase
         sort($expectedSections);
         self::assertSame($expectedSections, $sectionPages);
         $pages = glob($root . '/*/*.md') ?: [];
-        self::assertSame(30, count($pages));
-        self::assertSame(30, preg_match_all('#/ru/components/[a-z0-9-]+/[a-z0-9-]+/#', $index));
+        self::assertSame(31, count($pages));
+        self::assertSame(31, preg_match_all('#/ru/components/[a-z0-9-]+/[a-z0-9-]+/#', $index));
         foreach ($sections as $section) {
             self::assertSame(1, substr_count($index, '](/ru/components/' . $section . '/)'), $section);
         }
@@ -109,7 +109,7 @@ final class DocumentationSiteStructureTest extends TestCase
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
         $atlas = (new DesignAtlasService)->atlas($root)->toArray()['data'];
-        self::assertSame(89, $atlas['count']);
+        self::assertSame(91, $atlas['count']);
         $groups = [
             'native' => [':::atlas_index {origin=native authoring=markdown support=supported}', ['native.code', 'native.table']],
             'inline' => [':::atlas_index {kind=block origin=docara authoring=inline support=supported}', ['docara.badge', 'docara.button', 'docara.icon', 'docara.kbd']],

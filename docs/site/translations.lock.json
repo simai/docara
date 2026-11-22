@@ -1290,11 +1290,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components.md",
-            "source_sha256": "462ea9153de7dd3b19178b074b22ed7507f6a956084927eb30d1ff071331a4d5",
-            "source_structure_sha256": "2b2b741b944ba27e7a2e7b36708901bc674f1c1fea59a9f9db9c6a2d25de61c8",
+            "source_sha256": "0d4e5aa9377b6a816f5050945b83be81a7d87e819904703cca292b687a75382d",
+            "source_structure_sha256": "233b62c443d11f0df417202ec89d54807019705e0ade78ce67ddbce3b39c1870",
             "target_path": "content/en/components.md",
-            "target_sha256": "9c62a9742490e60d8f853b13e390438d2f583e4f10797dc704f7109615840378",
-            "target_structure_sha256": "2b2b741b944ba27e7a2e7b36708901bc674f1c1fea59a9f9db9c6a2d25de61c8"
+            "target_sha256": "e2a6eb5f3e4d349546342b26460905df404dfa2d4c04f483e98899ab2a34bbd0",
+            "target_structure_sha256": "233b62c443d11f0df417202ec89d54807019705e0ade78ce67ddbce3b39c1870"
         },
         {
             "key": "components/blocks.md",
@@ -1638,11 +1638,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/layout/card.md",
-            "source_sha256": "462c1691987f0cba7685bec10412b5f03dff7cdfd1e74d564bd649bfa7dd0c1f",
-            "source_structure_sha256": "6580b97e73003edc602c533cdc30a8b81850e60ae60976bdfefab70d62874d71",
+            "source_sha256": "2e62fb90e61599a470f8303e56311abcaed17c47abf7cc0906ee91d129d21270",
+            "source_structure_sha256": "808fcd1efc3aec991e13566154a0c2613c1e9e2a4d4e84f303ee7c7146415728",
             "target_path": "content/en/components/layout/card.md",
-            "target_sha256": "44fb59e642edc403b78a27b2b601bea309cea9071adeffcc60bb03741ff6ec49",
-            "target_structure_sha256": "6580b97e73003edc602c533cdc30a8b81850e60ae60976bdfefab70d62874d71"
+            "target_sha256": "9fe1c4fd700776935cc436d10070632043706b264c93a9660a8ed3d4994fe2cb",
+            "target_structure_sha256": "808fcd1efc3aec991e13566154a0c2613c1e9e2a4d4e84f303ee7c7146415728"
         },
         {
             "key": "components/layout/columns.md",
@@ -1686,10 +1686,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/layout/hero.md",
-            "source_sha256": "9e228cfa898f5575d4d448a49ac6f508e20e3e8d7541f3d094c756b72cbe56ee",
+            "source_sha256": "e536c4d44e1d54df82683bcb50aca55f746262dd9291b36da3b44fd49976c42d",
             "source_structure_sha256": "4c5ffcd02566be7d3094584085229e4cca09c9e7a62b523619455704454ce587",
             "target_path": "content/en/components/layout/hero.md",
-            "target_sha256": "e252a1b2a25eb86996d84b30a1a69e6668a1a0c05a6e20a867f62348ea886b18",
+            "target_sha256": "5a4c90edfc3b5a5531dd0ba3b3c00ff3546276ac0a0b0fa987b8faee9eb6d73c",
             "target_structure_sha256": "4c5ffcd02566be7d3094584085229e4cca09c9e7a62b523619455704454ce587"
         },
         {

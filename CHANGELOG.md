@@ -46,8 +46,15 @@ All notable changes to Docara are recorded here. The format follows
 - **Hero scene and side.** A `layout=split` hero with an effect and no image
   draws the effect as a scene in its second half, beside the text on a wide
   screen and under it below lg, so the text needs no plate; the pause button
-  stays on the hero. `side=left` puts the image or the scene on the left on a
+  stays on the hero. Only a hero that writes `layout=split` gets the scene:
+  a hero without `layout`, or with `media=none`, keeps the effect behind the
+  whole block as before. `side=left` puts the image or the scene on the left on a
   wide screen; the text stays first in the markup.
+
+- **Link cards.** A card whose heading is one link opens as a whole: the
+  heading keeps the text colour without an underline, and hover or keyboard
+  focus marks the card's edge. Nothing new to write; an icon can stand on its
+  own line above the heading.
 
 ### Changed
 
@@ -65,6 +72,16 @@ All notable changes to Docara are recorded here. The format follows
   spacing standard, instead of a full step.
 - **Home page rhythm.** Each section of the home page ends with `space=7`, so
   every section starts the same distance below the one before it.
+
+- **Card spacing.** A card's first part takes no top margin, and the text
+  after a code block in a card keeps the card's own gap, so cards with code
+  no longer open a wide hole under it.
+
+- **Home page, round 5.** The effect hero's text stands straight on the
+  effect, with no plate; the first card row follows the hero 48 px below;
+  example captions that repeated the tab name are gone; six link cards with an
+  icon line; a section on AI agents with three cards; the closing call to
+  action on a full-width band.
 
 - **Component pages in menu sections.** The documentation's component pages
   sit in six sections of the left menu, the same as on the Components overview:

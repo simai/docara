@@ -57,12 +57,33 @@ Only the content, without its own surface.
 ```
 :::
 
+### Link card
+
+When a card's heading is one link, the whole card opens it. The heading keeps
+the text colour without an underline; on hover the card's edge is
+highlighted and the heading is underlined. An icon can stand on its own line
+above the heading.
+
+:::example
+```markdown
+:::card
+:icon[search]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Search without a server](/en/settings/search/)
+
+The index is built with the site and runs in the reader's browser.
+:::
+```
+:::
+
 ## Accessibility
 
 - A card is a landmark region (`section`) with its own heading: screen
   readers move through it like a section of the page.
 - Choose the heading level by its place on the page: `###` for a card inside
   a `##` section.
+- A link card has one link, its heading: a screen reader reads the link's
+  name, not the whole text of the card.
 - Do not make a card just for a border around long text: a long article
   reads better without it.
 

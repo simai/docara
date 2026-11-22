@@ -867,7 +867,9 @@ function docaraCatalogEntryContractError(
         }
         $container = $entry[$contractName];
         $requiredContainerKeys = ['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth', 'depth_semantics'];
-        $containerKeys = [...$requiredContainerKeys, 'allowed_child_capabilities'];
+        // rendered_by says whether the block renders its own nested blocks
+        // (columns, container) or the document renders them as children.
+        $containerKeys = [...$requiredContainerKeys, 'allowed_child_capabilities', 'rendered_by'];
         if (! is_array($container)
             || array_is_list($container)
             || array_diff($requiredContainerKeys, array_keys($container)) !== []
@@ -886,6 +888,7 @@ function docaraCatalogEntryContractError(
             || $container['max_depth'] < 1
             || $container['max_depth'] > 16
             || $container['depth_semantics'] !== 'relative_subtree_root_level_1'
+            || (isset($container['rendered_by']) && ! in_array($container['rendered_by'], ['block', 'document'], true))
         ) {
             return 'The effective component catalogue container contract is invalid.';
         }

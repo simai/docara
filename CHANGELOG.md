@@ -115,6 +115,10 @@ All notable changes to Docara are recorded here. The format follows
   error instead of the picture (the home page's diagram example did). The build
   now stops with `MARKDOWN_DIAGRAM_SOURCE_FENCED` and says to remove the fence.
   The home page example writes the diagram directly and has a text alternative.
+- **A diagram in a hidden tab draws when shown.** Mermaid measures its labels
+  as it draws, so a diagram inside a hidden tab or a closed details block came
+  out as a 16px box. Such a diagram now waits until it has a width and draws
+  then.
 
 ## [3.18.0] - 2026-11-19
 

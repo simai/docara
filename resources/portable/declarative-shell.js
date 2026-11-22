@@ -277,12 +277,30 @@
   if(window.mermaid&&typeof window.mermaid.initialize==='function'){
     window.mermaid.initialize({startOnLoad:false,securityLevel:'strict',theme:'default'});
     var diagrams=Array.from(document.querySelectorAll('[data-docara-diagram-source]'));
-    if(diagrams.length&&typeof window.mermaid.run==='function'){
-      window.mermaid.run({nodes:diagrams}).catch(function(){
-        diagrams.forEach(function(diagram){
+    /* Mermaid measures its labels as it draws: a diagram in a hidden tab or a closed details block measures nothing and comes out a 16px box. Such a diagram waits until it has a width, then draws once. */
+    var drawDiagrams=function(nodes){
+      window.mermaid.run({nodes:nodes}).catch(function(){
+        nodes.forEach(function(diagram){
           if(!diagram.querySelector('svg'))diagram.dataset.docaraRenderError='diagram';
         });
       });
+    };
+    if(diagrams.length&&typeof window.mermaid.run==='function'){
+      var shownDiagrams=diagrams.filter(function(diagram){return diagram.getClientRects().length>0&&diagram.clientWidth>0;});
+      var hiddenDiagrams=diagrams.filter(function(diagram){return shownDiagrams.indexOf(diagram)<0;});
+      if(shownDiagrams.length)drawDiagrams(shownDiagrams);
+      if(hiddenDiagrams.length&&typeof ResizeObserver==='function'){
+        var diagramWatcher=new ResizeObserver(function(entries){
+          entries.forEach(function(entry){
+            if(entry.contentRect.width<=0)return;
+            diagramWatcher.unobserve(entry.target);
+            drawDiagrams([entry.target]);
+          });
+        });
+        hiddenDiagrams.forEach(function(diagram){diagramWatcher.observe(diagram);});
+      }else if(hiddenDiagrams.length){
+        drawDiagrams(hiddenDiagrams);
+      }
     }
   }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));

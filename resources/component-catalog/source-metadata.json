@@ -14,7 +14,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components.md",
-            "source_sha256": "462ea9153de7dd3b19178b074b22ed7507f6a956084927eb30d1ff071331a4d5",
+            "source_sha256": "0d4e5aa9377b6a816f5050945b83be81a7d87e819904703cca292b687a75382d",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/components.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/components.md",
@@ -198,7 +198,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/layout/card.md",
-            "source_sha256": "084394ec828ece65c5b753c56290a1b91cf90ad61d94d20a14d6e70897782639",
+            "source_sha256": "bbc5a6c8ca5fbb900ff9ab55fa020bf7f63c0c8043f4a68e2a21f44472503ba5",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/components/layout/card.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/components/layout/card.md",
@@ -222,7 +222,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/layout/hero.md",
-            "source_sha256": "19eb6dbaa3acef6d6dbc01fed0e1dafe243b4f401b6d3b7cc177a41179547029",
+            "source_sha256": "83aa751790a42599e1bfce7dc6203faf6c67f9e423e1b901b2801d37122dfc10",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/components/layout/hero.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/components/layout/hero.md",
@@ -581,5 +581,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "12f9421b5bfcc6dde91f7986bde8309147676dd78c72a0901fef724f776e3c83"
+    "content_sha256": "02fc919f05c85374e7c54d9cced18643640a85814cfbd6eec24e6675134d2360"
 }

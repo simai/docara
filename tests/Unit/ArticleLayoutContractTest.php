@@ -44,9 +44,19 @@ final class ArticleLayoutContractTest extends TestCase
         self::assertStringNotContainsString('container-type', $css);
         self::assertDoesNotMatchRegularExpression('/[{;]\s*container\s*:/', $css);
         self::assertStringNotContainsString('container-type', $template);
-        // Nothing reads container units or queries the main region.
+        // Nothing reads container units or queries the main region. The one
+        // query the shell has is the width block's start track, and it reads
+        // the block's own query-container (a Framework class on a block that
+        // never holds an inline example), not anything around the article.
         self::assertDoesNotMatchRegularExpression('/\d(?:cqw|cqi|cqh|cqb|cqmin|cqmax)\b/', $css);
-        self::assertStringNotContainsString('@container', $css);
+        preg_match_all('/@container\s*\([^)]*\)\{((?:[^{}]*\{[^}]*\})*)\}/', $css, $queries);
+        self::assertSame(substr_count($css, '@container'), count($queries[0]));
+        foreach ($queries[1] as $rules) {
+            preg_match_all('/([^{}]+)\{/', $rules, $selectors);
+            foreach ($selectors[1] as $selector) {
+                self::assertStringStartsWith('[data-docara-block="container"].query-container', trim($selector));
+            }
+        }
         // Nor does anything else around the article make it a containing block.
         self::assertDoesNotMatchRegularExpression(
             '/(?:\[data-docara-region="main"\]|\.docara-landing|\.docara-content|\.docara-prose)\{[^}]*(?:contain:|transform:|will-change|filter:|perspective:)/',

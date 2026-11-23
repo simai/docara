@@ -1,117 +1,382 @@
-:::hero {layout=centered padding=2xl effect=text-flow}
-# A documentation site from Markdown — on PHP and Composer
+:::hero {space=6 layout=centered padding=2xl effect=text-flow}
+# Documentation sites from Markdown
 
-Write pages in Markdown and settings in JSON. Docara builds a fast static
-site from them on SIMAI Framework, with a menu, search and a dark theme. You
-can publish it on any host.
+Docara builds a static site from Markdown files: menu, search, several
+languages, and a link check before publishing. It runs on GitHub Pages and
+any other host.
 
-Docara 3 · open source on [GitHub](https://github.com/simai/docara) ·
-Apache 2.0 license
+[Get started](/en/start/quick-start/)
 
-[Quick start](/en/start/quick-start/)
-
-[See an example](/en/components/)
+[Documentation](/en/start/)
 :::
 
-## A first site in three commands
+::::grid {space=7 columns=3 gap=4}
+:::card
+### Docs as code
 
-Install the package with Composer, create a starter and build the site.
-Building needs PHP 8.2+, Composer and Node.js 20+; the finished site needs
-only a static web server.
+```markdown
+# Quick start
+Install the package and create a site.
 
-```bash
-# 1. Install Docara
-composer require simai/docara:^3.0
-
-# 2. Create a starter site
-php vendor/bin/docara init .
-
-# 3. Build the site and open it in the browser
-php vendor/bin/docara serve production
+1. composer require simai/docara
+2. docara init .
 ```
 
-Starters, checking the result and publishing are in the
-[full quick start](/en/start/quick-start/).
-
-## Why Docara
-
-:::features
-- :icon[package_2]{size=2 container=square variant=tonal scheme=primary} **Composer instead of npm.** Docara installs and updates like any PHP package: no npm dependencies and no theme of your own to maintain.
-- :icon[bolt]{size=2 container=square variant=tonal scheme=primary} **Static output.** The build produces plain HTML, CSS and JavaScript. Put them on GitHub Pages or any web server: no PHP or Node.js there.
-- :icon[palette]{size=2 container=square variant=tonal scheme=primary} **SIMAI design system.** The interface, the light and dark themes and the components come from SIMAI Framework. The build catches a wrong component call before you publish.
+The text is plain Markdown files next to your project. Edit a file and you
+get a page. History lives in GitHub, changes go through pull requests.
 :::
 
-## Documentation out of the box
+:::card
+### A ready static site
 
-Docara builds the menu, search and a comfortable reading view itself — no
-theme or plugins of your own.
+:icon[check_circle]{scheme=success} Site build\
+:icon[check_circle]{scheme=success} Link and search check\
+:icon[check_circle]{scheme=success} Publishing to GitHub Pages
 
-:::features
-- :icon[account_tree]{size=2 container=square variant=tonal scheme=primary} **Menu and navigation.** Sections, breadcrumbs, the page outline and links to neighbouring pages come from the file structure. More in [Menu and sections](/en/authoring/navigation/).
-- :icon[search]{size=2 container=square variant=tonal scheme=primary} **Site search.** The index is built at build time and runs in the reader's browser: the server needs no database and no external service.
-- :icon[tune]{size=2 container=square variant=tonal scheme=primary} **Comfortable reading.** Readers choose a light or dark theme, the font size and the text width.
-- :icon[translate]{size=2 container=square variant=tonal scheme=primary} **Several languages.** Each language is its own Markdown folder. Linked pages get a language switcher and `hreflang`; more in [Multilingual site](/en/authoring/multilingual-site/).
-- :icon[web]{size=2 container=square variant=tonal scheme=primary} **A landing page from the same files.** This page is Docara too: the `landing` preset drops the documentation menu and keeps the first screen, the blocks and the call to action. How it is built is described [on a separate page](/en/landing/).
-- :icon[verified]{size=2 container=square variant=tonal scheme=primary} **Checked before publishing.** `verify-static` checks the finished site before it goes live: pages, local links, files and the search index. More in [Checking the build](/en/build/verify/).
+The site is built right in GitHub and published to GitHub Pages or any
+host. No server and no database, only files: that makes it fast, and on
+GitHub Pages also free.
 :::
 
-## Example pages
+:::card
+### Many ready-made blocks
 
-:::features
-- :icon[widgets]{size=2 container=square variant=tonal scheme=primary} **[Component catalogue](/en/components/)**. Every component with a live example, its parameters and code to copy.
-- :icon[dashboard]{size=2 container=square variant=tonal scheme=primary} **[Layout examples](/en/development/examples/)**. Pages with different regions, headers and setting inheritance — with their source files.
-- :icon[extension]{size=2 container=square variant=tonal scheme=primary} **[Project components](/en/project-demos/)**. A site's own components, added without changing Docara: an install command builder and a product configurator.
+:badge[Steps]{size=1} :badge[Cards]{size=1} :badge[Tabs]{size=1} :badge[Diagrams]{size=1} :badge[Tables]{size=1}
+:badge[Alerts]{size=1} :badge[Hero]{size=1} :badge[Columns]{size=1} :badge[Examples]{size=1}
+
+Use them to build references, guides and landing pages.
+:::
+::::
+
+## How it works
+
+::::grid {columns=3 gap=4}
+:::card
+### 1. Write Markdown
+
+```markdown
+## Installation
+Run in the terminal:
+`composer require simai/docara`
+```
+
+A page is a file in the `docs/` folder. Blocks are Markdown too: `:::steps`,
+`:::tabs`, `:::card`.
 :::
 
-## Frequently asked questions
+:::card
+### 2. Push to GitHub
+
+```bash
+git commit -m "Installation page"
+git push
+```
+
+`git push` or a pull request, just like code.
+:::
+
+:::card
+### 3. The site updates itself
+
+```text
+✓ Build   ✓ Check   ✓ GitHub Pages
+```
+
+GitHub Actions builds and checks the site and deploys it to GitHub Pages.
+If the check fails, the previous version stays in place.
+:::
+::::
+
+:::container {width=full space=7}
+A ready GitHub Actions workflow file is in
+[Build in CI](/en/build/ci/).
+:::
+
+## Blocks that make up a page
+
+Every example below is live: switch the tab to see the Markdown it is built
+from.
+
+:::::tabs
+### Steps
+
+::::example
+```markdown
+:::steps {current=2}
+1. Create a project.
+2. Add pages.
+3. Publish the site.
+:::
+```
+::::
+
+### Cards
+
+::::example
+```markdown
+::::grid {columns=3}
+:::card
+#### Markdown
+
+Pages are plain text with headings and lists.
+:::
+
+:::card
+#### JSON
+
+Settings for the site, sections and pages.
+:::
+
+:::card
+#### PHP
+
+Build and checks come in one Composer package.
+:::
+::::
+```
+::::
+
+### Tabs
+
+::::example
+````markdown
+:::tabs
+### Composer
+```bash
+composer require simai/docara:^3.0
+```
+### Archive
+Download the archive and unpack it into an empty directory.
+### Result
+The finished site appears in the build directory.
+:::
+````
+::::
+
+### Code
+
+::::example
+`````markdown
+````php {title="config/site.php" highlight=3 numbers}
+return [
+    'name' => 'Docara',
+    'locale' => 'ru',
+];
+````
+`````
+::::
+
+### Terminal
+
+::::example
+`````markdown
+````bash {layout=terminal}
+composer require simai/docara:^3.0
+php vendor/bin/docara init .
+php vendor/bin/docara build production
+````
+`````
+::::
+
+### File tree
+
+::::example
+```markdown
+:::tree
+- content
+  - ru
+    - index.md
+    - section.json
+  - assets
+    - logo.svg
+- docara.json
+:::
+```
+::::
+
+### Diagram
+
+::::example
+```markdown
+:::diagram {title="Publishing a documentation page" label="A Markdown draft goes to the site build; if the checks pass, the page is published, otherwise the errors are fixed and the site is built again"}
+flowchart LR
+  draft[Markdown draft] --> build(Site build)
+  build --> check{Checks passed?}
+  check -->|yes| publish[Publish]
+  check -->|no| fix[Fix errors]
+  fix --> build
+:::
+```
+::::
+
+### Details
+
+::::example
+```markdown
+:::details
+#### What if the build stops?
+
+Docara prints the error code, the file and what to fix. Fix the file and run
+the build again.
+:::
+```
+::::
+
+### Alert
+
+::::example
+```markdown
+:::alert {type=info}
+#### Useful information
+
+Carry on as usual.
+:::
+```
+::::
+:::::
+
+## For teams and large projects
+
+::::grid {space=7 columns=3 gap=2}
+:::card
+:icon[translate]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Several languages](/en/authoring/multilingual-site/)
+
+Each language is its own folder. Docara sees which translation has fallen
+behind the original and can publish only up-to-date pages.
+:::
+
+:::card
+:icon[search]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Search without a server](/en/settings/search/)
+
+The index is built together with the site. Search runs in the reader's
+browser and sends no requests anywhere.
+:::
+
+:::card
+:icon[dark_mode]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Comfortable reading](/en/settings/reader-preferences/)
+
+Light and dark theme, font size and text width: the reader chooses.
+:::
+
+:::card
+:icon[fact_check]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Checks before deploy](/en/build/verify/)
+
+Before publishing, Docara checks links, files and search. If something is
+broken, the site is not deployed.
+:::
+
+:::card
+:icon[package_2]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Install with Composer](/en/build/update/)
+
+A regular PHP package, `simai/docara`, with the version pinned in
+`composer.lock`. Updating takes one command; on error the previous version
+comes back by itself.
+:::
+
+:::card
+:icon[menu_book]{size=2 container=square variant=tonal scheme=primary}
+
+#### [Full documentation](/en/start/)
+
+Every block with a live example, all settings, build and publishing.
+:::
+::::
+
+## Works with AI agents
+
+Docara works without AI too. If you write with Claude Code or Codex, connect
+the Docara skill: the agent will know the site's blocks and rules and will
+check its work with a build.
+
+::::grid {columns=3 gap=2}
+:::card
+:icon[language]{size=2 container=square variant=tonal scheme=primary}
+
+#### Translates pages
+
+The agent translates, and Docara checks that the page structure is kept and
+the translation has not fallen behind the original.
+:::
+
+:::card
+:icon[drive_file_move]{size=2 container=square variant=tonal scheme=primary}
+
+#### Moves content over
+
+A README, a `docs/` folder and notes become Docara pages with a menu and
+search.
+:::
+
+:::card
+:icon[edit_note]{size=2 container=square variant=tonal scheme=primary}
+
+#### Builds a page from a description
+
+"Add an installation page with a tab for each operating system": the agent
+builds it from ready-made blocks.
+:::
+::::
+
+:::container {width=full space=7}
+[How to connect the skill](/en/start/ai-agent/). The agent builds and checks
+the site; you decide when to deploy.
+:::
+
+## FAQ
 
 :::details {layout=lines}
+### Do I need a server and a database?
+
+No. The finished site is static files: HTML, CSS and JavaScript. PHP 8.2+,
+Composer and Node.js 20+ are needed only where the site is built: on your
+computer or in GitHub Actions.
+:::
+
+:::details {layout=lines}
+### Can I build more than documentation?
+
+Yes. The same blocks make a landing page, a product page or a section of
+examples; there is a ready `landing` preset for the home page.
+:::
+
+:::details {layout=lines}
+### How do I update Docara?
+
+With `php vendor/bin/docara upgrade`. Docara first builds and checks the
+site on the new version in a separate folder and only then replaces the old
+one; on error everything stays as it was.
+:::
+
+:::details {layout=lines}
+### Do I have to use AI?
+
+No. Everything works with regular commands and file edits. The AI agent
+skill is an extra option.
+:::
+
+:::details {space=7 layout=lines}
 ### How is Docara different from VitePress and Docusaurus?
 
-VitePress and Docusaurus are npm projects: the site is built from JavaScript
-packages, and a theme that the team configures and updates sets its look.
-Docara installs with Composer, keeps content in Markdown and JSON and takes
-its interface from SIMAI Framework. It suits teams that work in PHP or want
-documentation in the same style as SIMAI products.
+Docara installs with Composer, like a regular PHP package, not from npm;
+search, a link check before publishing and translation tracking are
+already built in.
 :::
 
-:::details {layout=lines}
-### What does it need?
+:::surface {width=full tone=muted padding=xl space=0}
+## Start with one sentence or three commands
 
-Building needs PHP 8.2+ with the `ctype`, `dom`, `intl`, `json`, `libxml`
-and `mbstring` extensions, Composer and Node.js 20+: the `node` command on
-`PATH` or a path in the `DOCARA_NODE_BINARY` variable. The finished site is
-static and needs only a web server.
-:::
+Hand the site to an agent or install Docara yourself: the site builds on
+your computer and in GitHub Actions.
 
-:::details {layout=lines}
-### Can I build a landing page?
-
-Yes. The `landing` preset uses the same Markdown, JSON and components but
-drops the documentation menu. This page is built that way.
-:::
-
-:::details {layout=lines}
-### Can I add my own component?
-
-Yes. Try plain Markdown and the ready Docara blocks first. If they are not
-enough, add a component of your own through the
-[documented contract](/en/development/#how-to-extend-capabilities).
-:::
-
-:::details {layout=lines}
-### How do I update safely?
-
-`php vendor/bin/docara upgrade` prepares the new version separately, builds
-and checks the site and only then applies the result. Go back to the previous
-version with `upgrade --rollback=latest`.
-:::
-
-:::promo
-## Build your first site
-
-The quick start takes you from an empty folder to a finished page in the
-browser.
-
-[Go to the quick start](/en/start/quick-start/)
+:button[Ask an agent]{href=/en/start/ai-agent/} :button[Quick start]{href=/en/start/quick-start/ variant=outline scheme=on-surface}
 :::

@@ -2262,11 +2262,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/index.md",
-            "source_sha256": "7fa67acec972956eee90820ef111bf6f1101ce839165e46f01ba9726333c3ba5",
-            "source_structure_sha256": "511b34e530c825d6e74ec22672e14afaf49217c4478be7e627822110e2ef9dba",
+            "source_sha256": "e9a2d736dee6c8645a0b1d42c116c5b54dc94ce55da702dfb37a3d42a64fbfec",
+            "source_structure_sha256": "9c2b36545f50960031af44459ef9e5390656236cbaf386ccbc9bae2cf4caf44c",
             "target_path": "content/en/index.md",
-            "target_sha256": "e321e9eea1277e67003532b2329d6a61e103ff8a75426419bd7ea2e557d99a9c",
-            "target_structure_sha256": "511b34e530c825d6e74ec22672e14afaf49217c4478be7e627822110e2ef9dba"
+            "target_sha256": "7de3b9fb7713fe28afa92cec4b31df459f025d44444c938d515649ef4e796cdf",
+            "target_structure_sha256": "9c2b36545f50960031af44459ef9e5390656236cbaf386ccbc9bae2cf4caf44c"
         },
         {
             "key": "landing.md",

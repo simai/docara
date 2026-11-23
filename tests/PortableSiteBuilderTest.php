@@ -1733,7 +1733,7 @@ MD);
         // The words stay text; the Docara logo is an inline SVG in their
         // place, and the link names the whole sentence for assistive tech.
         $credit = static fn (string $words, string $name): string => '<p class="docara-sidebar-credit text-1/2 color-on-surface-variant" data-docara-sidebar-credit>'
-            . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.simai.io/" rel="noopener" aria-label="' . $name . '" title="' . $name . '">'
+            . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.io/" rel="noopener" aria-label="' . $name . '" title="' . $name . '">'
             . '<span class="docara-sidebar-credit-text docara-sidebar-credit-text--before">' . $words . '</span>' . $logo . '</a></p>';
         // The square mark with its ring comes first, then the letters.
         self::assertStringStartsWith('<svg class="docara-sidebar-credit-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2303 600" width="54" height="14" fill="currentColor" aria-hidden="true" focusable="false"><rect class="docara-sidebar-credit-mark" width="600" height="600" rx="60"/><path class="docara-sidebar-credit-ring" fill-rule="evenodd" d="', $logo);
@@ -1786,7 +1786,7 @@ MD);
             $html = (string) file_get_contents($this->tmpPath('build_local/' . $output));
             self::assertStringContainsString('data-docara-region="sidebar"', $html, $output);
             self::assertStringNotContainsString('data-docara-sidebar-credit', $html, $output);
-            self::assertStringNotContainsString('docara.simai.io', $html, $output);
+            self::assertStringNotContainsString('docara.io', $html, $output);
             // No empty footer is left behind: the panel ends with the menu.
             self::assertStringNotContainsString('docara-sidebar-credit', $html, $output);
             self::assertMatchesRegularExpression('~<div class="docara-sidebar-panel">\s*<div class="docara-sidebar-scroll sf-scrollbar"[^>]*>\s*<div class="sf-scrollbar__viewport" tabindex="0"[^>]*>.*?</div>\s*</div>\s*</div>\s*</aside>~s', $html, $output);

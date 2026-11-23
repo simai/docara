@@ -413,7 +413,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 . htmlspecialchars(trim($text), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '</span>';
 
         return '<p class="docara-sidebar-credit text-1/2 color-on-surface-variant" data-docara-sidebar-credit>'
-            . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.simai.io/" rel="noopener"'
+            . '<a class="docara-sidebar-credit-link decoration-none" href="https://docara.io/" rel="noopener"'
             . ' aria-label="' . $name . '" title="' . $name . '">'
             . $words($before, 'before') . $this->creditLogo() . $words($after, 'after')
             . '</a></p>';

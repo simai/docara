@@ -76,6 +76,9 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Changed
 
+- **Docara's own site moves to docara.io.** The "Made with Docara" sidebar
+  line links to <https://docara.io/>, and the site deploys there;
+  docara.simai.io redirects to the same path on the new address.
 - **Columns and grids fold by their own width.** Columns and grids stand on
   Framework container query utilities (`query-container`, `cq-md:grid-col-2`,
   `cq-md:col-span-2`) instead of window breakpoints and Docara's own ratio

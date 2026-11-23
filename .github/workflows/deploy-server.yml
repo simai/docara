@@ -1,11 +1,11 @@
 name: Deploy to the simai server
 
-# Builds Docara's own documentation (docs/site) as https://docara.simai.io/ and
+# Builds Docara's own documentation (docs/site) as https://docara.io/ and
 # deploys it to the simai-env server (201.51.24.222) after the Documentation
 # site workflow succeeds on a push to main, or on a manual run. It does nothing
 # until the repository variable SIMAI_SERVER_DEPLOY is "true" and the
 # environment simai-server holds SIMAI_DEPLOY_KEY (a key the server's deploy
-# gate lets deploy docara.simai.io only) and SIMAI_DEPLOY_KNOWN_HOSTS. GitHub
+# gate lets deploy docara.io only) and SIMAI_DEPLOY_KNOWN_HOSTS. GitHub
 # Pages stays as the fallback.
 
 on:
@@ -52,7 +52,7 @@ jobs:
       - name: Set the site base URL and site URL
         working-directory: docs/site
         run: |
-          jq --arg base "/" --arg site "https://docara.simai.io/" \
+          jq --arg base "/" --arg site "https://docara.io/" \
             '.base_url = $base | .site_url = $site' docara.json > docara.json.server
           mv docara.json.server docara.json
           jq -r '.base_url, .site_url' docara.json

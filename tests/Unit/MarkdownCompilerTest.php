@@ -59,7 +59,7 @@ final class MarkdownCompilerTest extends TestCase
             'line' => $components[0]->location()->line,
             'column' => $components[0]->location()->column,
         ]);
-        self::assertSame(73, $components[15]->location()->line);
+        self::assertSame(75, $components[15]->location()->line);
         self::assertSame(
             trim((string) file_get_contents($root . '/tests/fixtures/document-ir/badge.json')),
             trim(CanonicalJson::encodePretty($document->toArray())),

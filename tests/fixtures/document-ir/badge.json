@@ -132,7 +132,7 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 27,
+                "end_line": 29,
                 "file": "content/ru/components/badge.md",
                 "line": 24
             },
@@ -145,9 +145,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 29,
+                "end_line": 31,
                 "file": "content/ru/components/badge.md",
-                "line": 29
+                "line": 31
             },
             "type": "paragraph"
         },
@@ -156,20 +156,6 @@
             "data": {
                 "level": 2,
                 "text": "Варианты"
-            },
-            "source": {
-                "column": 1,
-                "end_line": 31,
-                "file": "content/ru/components/badge.md",
-                "line": 31
-            },
-            "type": "heading"
-        },
-        {
-            "children": [],
-            "data": {
-                "level": 3,
-                "text": "Вид"
             },
             "source": {
                 "column": 1,
@@ -182,13 +168,27 @@
         {
             "children": [],
             "data": {
-                "text": "`variant` задаёт, насколько заметно бейдж выделяется."
+                "level": 3,
+                "text": "Вид"
             },
             "source": {
                 "column": 1,
                 "end_line": 35,
                 "file": "content/ru/components/badge.md",
                 "line": 35
+            },
+            "type": "heading"
+        },
+        {
+            "children": [],
+            "data": {
+                "text": "`variant` задаёт, насколько заметно бейдж выделяется."
+            },
+            "source": {
+                "column": 1,
+                "end_line": 37,
+                "file": "content/ru/components/badge.md",
+                "line": 37
             },
             "type": "paragraph"
         },
@@ -201,9 +201,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 42,
+                        "end_line": 44,
                         "file": "content/ru/components/badge.md",
-                        "line": 38
+                        "line": 40
                     },
                     "type": "code_block"
                 },
@@ -217,9 +217,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 39,
+                        "end_line": 41,
                         "file": "content/ru/components/badge.md",
-                        "line": 39
+                        "line": 41
                     },
                     "type": "component"
                 },
@@ -233,9 +233,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 40,
+                        "end_line": 42,
                         "file": "content/ru/components/badge.md",
-                        "line": 40
+                        "line": 42
                     },
                     "type": "component"
                 },
@@ -249,9 +249,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 41,
+                        "end_line": 43,
                         "file": "content/ru/components/badge.md",
-                        "line": 41
+                        "line": 43
                     },
                     "type": "component"
                 }
@@ -261,9 +261,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 43,
+                "end_line": 45,
                 "file": "content/ru/components/badge.md",
-                "line": 37
+                "line": 39
             },
             "type": "example"
         },
@@ -275,9 +275,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 45,
+                "end_line": 47,
                 "file": "content/ru/components/badge.md",
-                "line": 45
+                "line": 47
             },
             "type": "heading"
         },
@@ -288,9 +288,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 48,
+                "end_line": 50,
                 "file": "content/ru/components/badge.md",
-                "line": 47
+                "line": 49
             },
             "type": "paragraph"
         },
@@ -303,9 +303,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 61,
+                        "end_line": 63,
                         "file": "content/ru/components/badge.md",
-                        "line": 51
+                        "line": 53
                     },
                     "type": "code_block"
                 },
@@ -319,9 +319,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 52,
+                        "end_line": 54,
                         "file": "content/ru/components/badge.md",
-                        "line": 52
+                        "line": 54
                     },
                     "type": "component"
                 },
@@ -335,9 +335,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 53,
+                        "end_line": 55,
                         "file": "content/ru/components/badge.md",
-                        "line": 53
+                        "line": 55
                     },
                     "type": "component"
                 },
@@ -351,9 +351,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 54,
+                        "end_line": 56,
                         "file": "content/ru/components/badge.md",
-                        "line": 54
+                        "line": 56
                     },
                     "type": "component"
                 },
@@ -367,9 +367,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 55,
+                        "end_line": 57,
                         "file": "content/ru/components/badge.md",
-                        "line": 55
+                        "line": 57
                     },
                     "type": "component"
                 },
@@ -383,9 +383,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 56,
+                        "end_line": 58,
                         "file": "content/ru/components/badge.md",
-                        "line": 56
+                        "line": 58
                     },
                     "type": "component"
                 },
@@ -399,9 +399,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 57,
+                        "end_line": 59,
                         "file": "content/ru/components/badge.md",
-                        "line": 57
+                        "line": 59
                     },
                     "type": "component"
                 },
@@ -415,9 +415,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 58,
+                        "end_line": 60,
                         "file": "content/ru/components/badge.md",
-                        "line": 58
+                        "line": 60
                     },
                     "type": "component"
                 },
@@ -431,9 +431,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 59,
+                        "end_line": 61,
                         "file": "content/ru/components/badge.md",
-                        "line": 59
+                        "line": 61
                     },
                     "type": "component"
                 },
@@ -448,9 +448,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 60,
+                        "end_line": 62,
                         "file": "content/ru/components/badge.md",
-                        "line": 60
+                        "line": 62
                     },
                     "type": "component"
                 }
@@ -460,9 +460,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 62,
+                "end_line": 64,
                 "file": "content/ru/components/badge.md",
-                "line": 50
+                "line": 52
             },
             "type": "example"
         },
@@ -474,9 +474,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 64,
+                "end_line": 66,
                 "file": "content/ru/components/badge.md",
-                "line": 64
+                "line": 66
             },
             "type": "heading"
         },
@@ -487,9 +487,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 67,
+                "end_line": 69,
                 "file": "content/ru/components/badge.md",
-                "line": 66
+                "line": 68
             },
             "type": "paragraph"
         },
@@ -502,9 +502,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 74,
+                        "end_line": 76,
                         "file": "content/ru/components/badge.md",
-                        "line": 70
+                        "line": 72
                     },
                     "type": "code_block"
                 },
@@ -517,9 +517,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 71,
+                        "end_line": 73,
                         "file": "content/ru/components/badge.md",
-                        "line": 71
+                        "line": 73
                     },
                     "type": "component"
                 },
@@ -532,9 +532,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 72,
+                        "end_line": 74,
                         "file": "content/ru/components/badge.md",
-                        "line": 72
+                        "line": 74
                     },
                     "type": "component"
                 },
@@ -547,9 +547,9 @@
                     },
                     "source": {
                         "column": 1,
-                        "end_line": 73,
+                        "end_line": 75,
                         "file": "content/ru/components/badge.md",
-                        "line": 73
+                        "line": 75
                     },
                     "type": "component"
                 }
@@ -559,9 +559,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 75,
+                "end_line": 77,
                 "file": "content/ru/components/badge.md",
-                "line": 69
+                "line": 71
             },
             "type": "example"
         },
@@ -573,9 +573,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 77,
+                "end_line": 79,
                 "file": "content/ru/components/badge.md",
-                "line": 77
+                "line": 79
             },
             "type": "heading"
         },
@@ -586,9 +586,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 83,
+                "end_line": 85,
                 "file": "content/ru/components/badge.md",
-                "line": 79
+                "line": 81
             },
             "type": "list"
         },
@@ -600,9 +600,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 85,
+                "end_line": 87,
                 "file": "content/ru/components/badge.md",
-                "line": 85
+                "line": 87
             },
             "type": "heading"
         },
@@ -611,9 +611,9 @@
             "data": [],
             "source": {
                 "column": 1,
-                "end_line": 87,
+                "end_line": 89,
                 "file": "content/ru/components/badge.md",
-                "line": 87
+                "line": 89
             },
             "type": "html_comment"
         },
@@ -624,9 +624,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 93,
+                "end_line": 95,
                 "file": "content/ru/components/badge.md",
-                "line": 89
+                "line": 91
             },
             "type": "table"
         },
@@ -635,9 +635,9 @@
             "data": [],
             "source": {
                 "column": 1,
-                "end_line": 95,
+                "end_line": 97,
                 "file": "content/ru/components/badge.md",
-                "line": 95
+                "line": 97
             },
             "type": "html_comment"
         },
@@ -649,9 +649,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 97,
+                "end_line": 99,
                 "file": "content/ru/components/badge.md",
-                "line": 97
+                "line": 99
             },
             "type": "heading"
         },
@@ -662,9 +662,9 @@
             },
             "source": {
                 "column": 1,
-                "end_line": 101,
+                "end_line": 103,
                 "file": "content/ru/components/badge.md",
-                "line": 99
+                "line": 101
             },
             "type": "list"
         }

@@ -1,4 +1,4 @@
-:::hero {space=6 layout=centered padding=2xl effect=chladni effect_settings='{"speed":100,"transparency":85,"density":40,"palette":"graphite","interactive":true}'}
+:::hero {space=6 layout=centered padding=2xl effect=text-flow}
 # Сайты документации из Markdown
 
 Docara собирает из Markdown-файлов статический сайт: меню, поиск, несколько

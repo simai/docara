@@ -81,7 +81,7 @@ final class SharedSurfaceAdoptionTest extends TestCase
             self::assertNotContains($retired, $typed);
         }
         self::assertSame(
-            '2a51b0042aa90acc9ce08ef4631ad146fa8e18abe03da4cd61d7227d7fbe462d',
+            'e20f0242ab0fa2dab0319455b28ca761c6497ee8080e2463f0b9ff15b4dddcd2',
             hash('sha256', $result->contentHtml),
         );
         foreach (['hero' => 1, 'grid' => 5, 'tabs' => 2, 'details' => 6, 'surface' => 1, 'features' => 0, 'columns' => 0, 'cta' => 0] as $block => $count) {

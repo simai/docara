@@ -156,11 +156,10 @@
             "$ref": "presentation.schema.json#/$defs/branding"
         },
         "theme": {
-            "description": "The site's colours from one main colour: color is a hex colour, #rgb or #rrggbb; hue (0-360) and chroma (0-150) override how the colour is read.",
+            "description": "The site's colours from one main colour: color is a hex colour, #rgb or #rrggbb; hue (0-360) and chroma (0-150) override how the colour is read. choices offers readers more colours in the settings menu.",
             "type": "object",
-            "required": [
-                "color"
-            ],
+            "if": {"required": ["choices"]},
+            "else": {"required": ["color"]},
             "properties": {
                 "color": {
                     "type": "string",
@@ -175,6 +174,28 @@
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 150
+                },
+                "choices": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 8,
+                    "items": {
+                        "type": "object",
+                        "required": ["id", "color", "title"],
+                        "properties": {
+                            "id": {"type": "string", "pattern": "^(?!site$)[a-z][a-z0-9-]{0,31}$"},
+                            "color": {"type": "string", "minLength": 1},
+                            "hue": {"type": "integer", "minimum": 0, "maximum": 360},
+                            "chroma": {"type": "integer", "minimum": 0, "maximum": 150},
+                            "title": {
+                                "oneOf": [
+                                    {"type": "string", "minLength": 1, "maxLength": 40},
+                                    {"type": "object", "minProperties": 1, "additionalProperties": {"type": "string", "minLength": 1, "maxLength": 40}}
+                                ]
+                            }
+                        },
+                        "additionalProperties": false
+                    }
                 }
             },
             "additionalProperties": false

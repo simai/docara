@@ -23,6 +23,7 @@ final readonly class PortablePageViewModel
      * @param  string|null  $sidebarCredit  the "Made with Docara" line under the sidebar navigation, already escaped HTML
      * @param  string  $contentLanguage  ` lang`/` dir` attributes of the article on a page showing the source text, escaped, or ''
      * @param  string  $sidebarScrollRestore  the inline script that restores the sidebar's scroll before the first paint, or ''
+     * @param  string  $density  the author's SIMAI Framework density, `normal` or `compact`, printed on the root so it holds without the preferences script
      */
     public function __construct(
         public string $locale,
@@ -61,6 +62,7 @@ final readonly class PortablePageViewModel
         public ?string $sidebarCredit = null,
         public string $contentLanguage = '',
         public string $sidebarScrollRestore = '',
+        public string $density = 'normal',
     ) {}
 
     /**

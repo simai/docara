@@ -14,8 +14,15 @@ final readonly class ReaderPreferenceCompiler
      */
     public const RETIRED_FIELDS = ['appearance.modal_blur', 'appearance.ui_radius'];
 
-    /** Bundled reader controls that every enabled panel shows unless the site hides them. */
-    public const DEFAULT_FIELDS = ['appearance.theme', 'appearance.font_size', 'appearance.content_width'];
+    /**
+     * Bundled reader controls that every enabled panel shows unless the site
+     * hides them. `appearance.color` exists only on a site with
+     * `theme.choices`; elsewhere it is skipped.
+     */
+    public const DEFAULT_FIELDS = ['appearance.theme', 'appearance.color', 'appearance.font_size', 'appearance.content_width', 'appearance.density'];
+
+    /** The colour field a site with `theme.choices` brings. */
+    public const COLOR_FIELD = 'appearance.color';
 
     private ReaderPreferenceRegistry $registry;
 
@@ -23,6 +30,38 @@ final readonly class ReaderPreferenceCompiler
         ?ReaderPreferenceRegistry $registry = null,
     ) {
         $this->registry = $registry ?? ReaderPreferenceRegistry::bundled();
+    }
+
+    /**
+     * This compiler with the site's colour choices as the `appearance.color`
+     * field: «site» (the site's own colours) first, then each choice id. Their
+     * titles are `reader.color_site` and `reader.color_choice.<id>` in the copy.
+     *
+     * @param  list<string>  $choiceIds
+     */
+    public function withColorChoices(array $choiceIds): self
+    {
+        if ($choiceIds === []) {
+            return $this;
+        }
+        $titles = ['site' => 'reader.color_site'];
+        foreach ($choiceIds as $id) {
+            $titles[$id] = 'reader.color_choice.' . $id;
+        }
+
+        return new self($this->registry->with(new ReaderPreferenceDefinition(
+            self::COLOR_FIELD,
+            'appearance',
+            'choice',
+            ['site', ...$choiceIds],
+            'docara.color',
+            'prepaint',
+            'site',
+            $titles,
+            [],
+            'reader.color_title',
+            'reader.color_description',
+        )));
     }
 
     /** @return array{enabled:bool,view:string,storage_key:string,schema:int,groups:list<array<string,mixed>>,values:array<string,string>} */
@@ -71,7 +110,10 @@ final readonly class ReaderPreferenceCompiler
                         'Reader preference field ids must be strings.',
                     );
                 }
-                if (in_array($fieldId, self::RETIRED_FIELDS, true)) {
+                // A listed colour field without theme.choices has nothing to offer.
+                if (in_array($fieldId, self::RETIRED_FIELDS, true)
+                    || ($fieldId === self::COLOR_FIELD && ! $this->registry->has($fieldId))
+                ) {
                     continue;
                 }
                 if (isset($seenFields[$fieldId])) {
@@ -198,7 +240,7 @@ final readonly class ReaderPreferenceCompiler
                     'Reader preference hidden_fields must be a list of field ids.',
                 );
             }
-            if (in_array($fieldId, self::RETIRED_FIELDS, true)) {
+            if (in_array($fieldId, self::RETIRED_FIELDS, true) || $fieldId === self::COLOR_FIELD) {
                 continue;
             }
             try {
@@ -218,7 +260,7 @@ final readonly class ReaderPreferenceCompiler
             }
         }
         foreach (self::DEFAULT_FIELDS as $fieldId) {
-            if (isset($listed[$fieldId]) || in_array($fieldId, $hidden, true)) {
+            if (isset($listed[$fieldId]) || in_array($fieldId, $hidden, true) || ! $this->registry->has($fieldId)) {
                 continue;
             }
             $groupId = $this->registry->get($fieldId)->group;

@@ -565,6 +565,42 @@
             "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
         },
         {
+            "key": "reader.color_description",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/reader/color_description",
+            "source_sha256": "1de0c0991aefa436f7f1c859ef3b4f5aaf2aeea51a274bc03fb5737abbdcddae",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/reader/color_description",
+            "target_sha256": "fe2fd3f048f1fba966d1091c3258a76e1768aa8a98c2fdfc39c7062823ff79e3",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "reader.color_site",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/reader/color_site",
+            "source_sha256": "93d79392625d99e394033b8bc6048d65580013643b4b6b20d0ae7d287e98ae84",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/reader/color_site",
+            "target_sha256": "c78b1a8231b47405120e48fffbf8601a1a706596c0f4c05e2dabb3a26b74941e",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "reader.color_title",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/reader/color_title",
+            "source_sha256": "92ab62ad6f3c1e6b2ff616654f9d31f8e782b19dffa9300a7bc73f86cf997341",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/reader/color_title",
+            "target_sha256": "3a9dfa58df63e0dda962a147a6cea86cc5294a5e859d89ddfa8e74a977fedf5d",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
             "key": "reader.content_width_description",
             "kind": "lang",
             "locale": "en",
@@ -610,6 +646,54 @@
             "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
             "target_path": "content/en/lang.json#/reader/content_width_wide",
             "target_sha256": "147170e793c6e58f2f7c858cb567f1aa926232793d664c034a4260f9d0e19875",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "reader.density_compact",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/reader/density_compact",
+            "source_sha256": "6d8c7c3ea8626b0a6ada2f242ce260c31946b9c32380107d16a65f57317a651e",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/reader/density_compact",
+            "target_sha256": "99452646e34b69704c9134a093d5ce5af823cc6d4ed3566fe8ad3ba1555057ae",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "reader.density_description",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/reader/density_description",
+            "source_sha256": "502cf2b79808b0bc0af1e4c1d080ccc1bd09f1c4002d4652904b16633ad040da",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/reader/density_description",
+            "target_sha256": "825ea89258221e3b137d066d5e01684cccbd541f61a5e4e2aa8952e5fa7d9fcd",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "reader.density_normal",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/reader/density_normal",
+            "source_sha256": "59e953a0abd9d601cafa6e56e062790a8bb9806a034d6407eaa76d7bb48bf898",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/reader/density_normal",
+            "target_sha256": "a7248eeb45eb1ce247f81693283e22e8b39e8a50890cecd22d02e75025547d90",
+            "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
+        },
+        {
+            "key": "reader.density_title",
+            "kind": "lang",
+            "locale": "en",
+            "review": "ai_verified",
+            "source_path": "content/ru/lang.json#/reader/density_title",
+            "source_sha256": "1fdda81c614423696fe1c3622b66b8050e1af7c4aa3f8063113f8817ecbaeeea",
+            "source_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687",
+            "target_path": "content/en/lang.json#/reader/density_title",
+            "target_sha256": "77a283d69258c2ae985dc2343725d0af253da0fc1d87626966f7cefe4a3c7469",
             "target_structure_sha256": "44e194478eef1bdbd7567d0cf92c6aa09c6ff3a713a572f870a8c3e3e0263687"
         },
         {
@@ -2358,11 +2442,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/errors/site.md",
-            "source_sha256": "8c8af888fb81780cb5f35749a7fcd5aaf22f71dc1f774192872bad5e48b4903b",
-            "source_structure_sha256": "9925fffc8de042690112195ed98bc9ba3e6d43a851839bd1fad931554bb3debe",
+            "source_sha256": "e3a5e94d90a3336c02a15df8fd33b2cbdbe45551980b269a4e2d9552d7727709",
+            "source_structure_sha256": "c9f1347a4eb59aca81ccf192fe09f2ffb33661e2605f1df52455d5a57deb6a0e",
             "target_path": "content/en/reference/errors/site.md",
-            "target_sha256": "baf1b79cb0aee767fe0b27d1467337192569d387a3af849bddb2ee6df261a94c",
-            "target_structure_sha256": "9925fffc8de042690112195ed98bc9ba3e6d43a851839bd1fad931554bb3debe"
+            "target_sha256": "16d28815574d1c759d6d5e901153ba00c6fd689e5af2747c479e7557829753ba",
+            "target_structure_sha256": "c9f1347a4eb59aca81ccf192fe09f2ffb33661e2605f1df52455d5a57deb6a0e"
         },
         {
             "key": "reference/errors/upgrade.md",
@@ -2418,11 +2502,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/reference/lang-json.md",
-            "source_sha256": "7f4cac0652eaa57f28e5f57fd7475bde4109b2428610bfefe7b6160aa5bd2602",
-            "source_structure_sha256": "2b642124a75a3dd5f9b18829e396e8606fb32edcdd7c44fcf6b8d9c46cde2f04",
+            "source_sha256": "c10a3d41e9c32d368e1393ce18d538888c5de2b8571db96d35b9b43488fff115",
+            "source_structure_sha256": "8fd9ab08f10b618859410a071ba1ea5299759f02f2a6fc025f9f27cdf7784f28",
             "target_path": "content/en/reference/lang-json.md",
-            "target_sha256": "9979fd425d0edc66fabbb620ea8efd9fca05a3978292656be68ebc13359d0f07",
-            "target_structure_sha256": "2b642124a75a3dd5f9b18829e396e8606fb32edcdd7c44fcf6b8d9c46cde2f04"
+            "target_sha256": "ad4ac4ba2f49a618a931d0a749e04356a9be552bad63671fc5f8ec3dc91d24d3",
+            "target_structure_sha256": "8fd9ab08f10b618859410a071ba1ea5299759f02f2a6fc025f9f27cdf7784f28"
         },
         {
             "key": "reference/schemas.md",
@@ -2490,11 +2574,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/branding-and-theme.md",
-            "source_sha256": "dddf90b9ebe874512e204c31fd77bfa53d105c380d08567ffdca54ca0644ab65",
-            "source_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7",
+            "source_sha256": "1270993ca2e608179f88236e9ae46cfa0bc6f51f2527f8c77ef0b09778f6f270",
+            "source_structure_sha256": "5ebe6c03fab4b82ddde34b351ab8531a23b3f1366f438321a96bec95f4b52779",
             "target_path": "content/en/settings/branding-and-theme.md",
-            "target_sha256": "f9f3d43f34b87a756682d3fab0a68f373336c175cad5f41834163fe2ff806c41",
-            "target_structure_sha256": "bba3dd490086298ebdcc5943299ff769f465fe7826398ce35cf76c4c1ebc64e7"
+            "target_sha256": "09e0e56b9c0e568e6ce4046e8528cbbaa51b26c05e3f3fce8a2a83f923c51404",
+            "target_structure_sha256": "5ebe6c03fab4b82ddde34b351ab8531a23b3f1366f438321a96bec95f4b52779"
         },
         {
             "key": "settings/layout-and-regions.md",
@@ -2502,10 +2586,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/layout-and-regions.md",
-            "source_sha256": "fbdacd5f87ea7a68cd9b6a926e6769c482255946e4128cd42c4f9cc7d1328908",
+            "source_sha256": "59927a7b4c8bcc7b57853ab4311188fc63385b61c959727cde6e1f11a028ded6",
             "source_structure_sha256": "f33264b49aa32259afbd2f0593a5edb64bc805f532e2571dfc996ac108585657",
             "target_path": "content/en/settings/layout-and-regions.md",
-            "target_sha256": "2f10a69fcab7431794d02e2bd81201b43dacb8d1c8b7c32901527ad3384a350e",
+            "target_sha256": "41b783836da50a04153608f2994e02b8201357241d904f5a985f42a50979fb78",
             "target_structure_sha256": "f33264b49aa32259afbd2f0593a5edb64bc805f532e2571dfc996ac108585657"
         },
         {
@@ -2526,11 +2610,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/settings/reader-preferences.md",
-            "source_sha256": "9fd34432c73b06acae36a7b4beff8328685942a6afcbe013f51ed92c11d12588",
-            "source_structure_sha256": "613f0dadd63abe5b4139f8728f19c5d71a1cf1124d981a093e03e99e76e364ce",
+            "source_sha256": "9f1e0a865a3d05513437d7e60ad502617322449e43f16c94daa58751dc4c8f3b",
+            "source_structure_sha256": "9e1fc6142e25f63f23be3a2953383a38f2be229aa941c43499c2f0dbc13a325e",
             "target_path": "content/en/settings/reader-preferences.md",
-            "target_sha256": "ad435bb3af240ae9f6057143c6019bc1e3d5185dce96ee123a764e51766ce461",
-            "target_structure_sha256": "613f0dadd63abe5b4139f8728f19c5d71a1cf1124d981a093e03e99e76e364ce"
+            "target_sha256": "4739bca768b808b9a92c53edce2a1b70aaee5c7078ca67a9685b7fda131843c1",
+            "target_structure_sha256": "9e1fc6142e25f63f23be3a2953383a38f2be229aa941c43499c2f0dbc13a325e"
         },
         {
             "key": "settings/reading.md",

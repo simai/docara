@@ -1,5 +1,5 @@
 ---
-description: The "Settings" menu under the gear button — theme, font size, page width, reading mode, which settings docara.json shows and how the browser keeps the choice.
+description: The "Settings" menu under the gear button — theme, font size, page width, density, reading mode, which settings docara.json shows and how the browser keeps the choice.
 tags: [reader-panel, reading-settings, theme, font, reading-mode]
 ---
 
@@ -10,8 +10,9 @@ built by the `docara.preferences` product Smart component: the menu itself
 is the SIMAI Framework settings menu (`sf-settings`) that opens under the
 button over the page.
 
-Out of the box the menu has three rows: "Theme", "Font size" and "Page
-width". The current value is shown under a row's name. A row opens its
+Out of the box the menu has four rows: "Theme", "Font size", "Page
+width" and "Density". When the site sets colours to choose from, a "Colour"
+row follows "Theme". The current value is shown under a row's name. A row opens its
 values in the same menu, with a back arrow to the list of settings. The
 selected value is highlighted. A change applies at once, nothing needs
 saving, and the menu returns to the list of settings with the new value.
@@ -43,6 +44,14 @@ The theme has three values:
 - **Light** — the light theme is always used;
 - **Dark** — the dark theme is always used.
 
+## Colour
+
+The row is there only when the author lists choices in `theme.choices` (see
+[Colours for the reader to choose](/en/settings/branding-and-theme/#colours-for-the-reader-to-choose)).
+**Site colour** is the main colour the author set, the other items are its
+alternatives. The chosen colour changes buttons, links, backgrounds and
+borders in the light and dark schemes.
+
 ## Font size
 
 **Small**, **Normal** and **Large** change the size of the whole
@@ -65,6 +74,16 @@ and the footer, and lifts the line-length limit of paragraphs and lists. The
 width does not grow forever: on a large screen or at a reduced browser zoom
 it stops at that step. If the site already uses `max: 8`, the wide format
 changes only the line length.
+
+## Density
+
+**Normal** is the standard SIMAI Framework sizing. **Compact** brings every
+component one size step down: buttons, fields, menus, tables and the spacing
+inside them. More fits on the screen, which helps on pages with a lot of
+data.
+
+The author sets the default with the `settings.density` field (see
+[Brand and theme](/en/settings/branding-and-theme/#light-and-dark-scheme-density-blur-and-rounding)).
 
 ## Contents and reading mode
 
@@ -95,10 +114,11 @@ other tabs.
 The author sets the site theme with the `settings.theme` field, which is
 inherited and can be overridden in `section.json` and `<page>.page.json`
 (see
-[Brand and theme](/en/settings/branding-and-theme/#light-and-dark-scheme-blur-and-rounding)).
+[Brand and theme](/en/settings/branding-and-theme/#light-and-dark-scheme-density-blur-and-rounding)).
 The reader's local choice wins. In the side panel the "Reset settings"
 button removes all of the reader's overrides and applies the current page's values again. For font
-size and width the site value is "Normal".
+size and width the site value is "Normal", for density the value of
+`settings.density`.
 
 `modal_blur` and `ui_radius` stay author settings: they apply before the
 page is first shown, but they are not in the reader settings.
@@ -115,15 +135,16 @@ The set of settings is set only at the site level in `docara.json`:
     "groups": [
       {
         "id": "appearance",
-        "fields": ["appearance.theme", "appearance.font_size", "appearance.content_width"]
+        "fields": ["appearance.theme", "appearance.color", "appearance.font_size", "appearance.content_width", "appearance.density"]
       }
     ]
   }
 }
 ```
 
-Without the `reader_preferences` branch the same set is used. Theme, font
-size and page width are built-in parameters: they are always shown, even if
+Without the `reader_preferences` branch the same set is used. Theme, colour
+(when the site has `theme.choices`), font size, page width and density are
+built-in parameters: they are always shown, even if
 the site lists the fields itself. Listed fields keep the group and order the
 author gave, and a built-in parameter missing from the list is added at the
 end of its group. To hide a built-in parameter, list it in `hidden_fields`:

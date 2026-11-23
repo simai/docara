@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="<?= $view->locale ?>" dir="<?= $view->direction ?>" class="theme-light" data-docara-documentation-version="<?= $view->documentationVersion ?>">
+<html lang="<?= $view->locale ?>" dir="<?= $view->direction ?>" class="theme-light"<?= $view->density === 'compact' ? ' data-sf-density="compact"' : '' ?> data-docara-documentation-version="<?= $view->documentationVersion ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

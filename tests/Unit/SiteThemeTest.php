@@ -51,6 +51,14 @@ final class SiteThemeTest extends TestCase
             'hue out of range' => [['color' => '#0a7d4f', 'hue' => 361], 'THEME_HUE_INVALID'],
             'hue not whole' => [['color' => '#0a7d4f', 'hue' => 12.5], 'THEME_HUE_INVALID'],
             'chroma out of range' => [['color' => '#0a7d4f', 'chroma' => 151], 'THEME_CHROMA_INVALID'],
+            'empty choices' => [['color' => '#0a7d4f', 'choices' => []], 'THEME_CHOICES_INVALID'],
+            'nine choices' => [['choices' => array_map(static fn (int $i): array => ['id' => 'c' . $i, 'color' => '#0a7d4f', 'title' => 'C'], range(1, 9))], 'THEME_CHOICES_INVALID'],
+            'a choice named site' => [['choices' => [['id' => 'site', 'color' => '#0a7d4f', 'title' => 'Site']]], 'THEME_CHOICES_INVALID'],
+            'a choice id with capitals' => [['choices' => [['id' => 'Forest', 'color' => '#0a7d4f', 'title' => 'Forest']]], 'THEME_CHOICES_INVALID'],
+            'a repeated choice id' => [['choices' => [['id' => 'a', 'color' => '#0a7d4f', 'title' => 'A'], ['id' => 'a', 'color' => '#c62828', 'title' => 'B']]], 'THEME_CHOICES_INVALID'],
+            'a choice without a title' => [['choices' => [['id' => 'a', 'color' => '#0a7d4f']]], 'THEME_CHOICES_INVALID'],
+            'a choice with a bad colour' => [['choices' => [['id' => 'a', 'color' => 'green', 'title' => 'A']]], 'THEME_COLOR_INVALID'],
+            'tuning without a colour' => [['hue' => 120, 'choices' => [['id' => 'a', 'color' => '#0a7d4f', 'title' => 'A']]], 'THEME_COLOR_INVALID'],
         ];
     }
 
@@ -72,6 +80,10 @@ final class SiteThemeTest extends TestCase
     {
         $site = ['schema' => 'docara.site.v1', 'preset' => 'docs', 'framework_lock' => 'simai-framework.lock.json'];
         (new SchemaRepository)->assertValid([...$site, 'theme' => ['color' => '#0a7d4f', 'hue' => 161, 'chroma' => 85]], 'site.schema.json');
+        (new SchemaRepository)->assertValid([...$site, 'theme' => ['choices' => [
+            ['id' => 'forest', 'color' => '#2e7d32', 'title' => ['ru' => 'Лес', 'en' => 'Forest']],
+            ['id' => 'brick', 'color' => '#c62828', 'hue' => 20, 'title' => 'Brick'],
+        ]]], 'site.schema.json');
 
         foreach ([
             ['color' => '#0a7d4f', 'hue' => 400],
@@ -79,6 +91,9 @@ final class SiteThemeTest extends TestCase
             ['color' => '#0a7d4f', 'extra' => true],
             ['hue' => 120],
             ['color' => 5],
+            ['choices' => []],
+            ['choices' => [['id' => 'site', 'color' => '#2e7d32', 'title' => 'Site']]],
+            ['choices' => [['id' => 'forest', 'color' => '#2e7d32']]],
         ] as $theme) {
             try {
                 (new SchemaRepository)->assertValid([...$site, 'theme' => $theme], 'site.schema.json');
@@ -121,6 +136,44 @@ final class SiteThemeTest extends TestCase
         self::assertSame('docara-theme.' . hash('sha256', $result['content']) . '.css', $receipt['stylesheet']['filename']);
 
         self::assertSame($result, $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0A7D4F'])), 'The same colour gives the same bytes.');
+    }
+
+    #[Test]
+    public function choices_add_a_palette_under_each_marked_root_and_leave_the_site_rule_as_it_was(): void
+    {
+        $alone = $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0a7d4f']));
+        $theme = $this->theme(['color' => '#0a7d4f', 'choices' => [
+            ['id' => 'brick', 'color' => '#C62828', 'title' => ['ru' => 'Кирпич', 'en' => 'Brick']],
+            ['id' => 'tuned', 'color' => '#0a7d4f', 'hue' => 200, 'chroma' => 40, 'title' => 'Tuned'],
+        ]]);
+        $result = $this->palette()->stylesheet($this->lock(), $theme);
+
+        self::assertStringStartsWith($alone['content'] . '/* docara-theme choice brick: #c62828 (hue ', $result['content']);
+        self::assertStringContainsString(":root[data-docara-color=\"brick\"] {\n  --sf-primary-5: ", $result['content']);
+        self::assertStringContainsString("/* docara-theme choice tuned: #0a7d4f (hue 200, chroma 40) */\n:root[data-docara-color=\"tuned\"] {", $result['content']);
+        self::assertStringContainsString('  --sf-primary-40: #00696c;', $result['content']);
+        self::assertSame(['hue' => 161, 'chroma' => 85], $result['receipt']['palette']);
+        self::assertSame(['tuned', 200, 40], [$result['receipt']['choices'][1]['id'], $result['receipt']['choices'][1]['hue'], $result['receipt']['choices'][1]['chroma']]);
+        self::assertSame('brick', $result['receipt']['input']['choices'][0]['id']);
+        self::assertSame('#c62828', $result['receipt']['input']['choices'][0]['color']);
+        self::assertSame('Кирпич', SiteTheme::choiceTitle($theme->choices[0], 'ru'));
+        self::assertSame('Кирпич', SiteTheme::choiceTitle($theme->choices[0], 'de'), 'A missing language takes the first title.');
+        self::assertSame('Tuned', SiteTheme::choiceTitle($theme->choices[1], 'en'));
+        self::assertArrayNotHasKey('choices', $alone['receipt'], 'A theme without choices keeps its receipt.');
+        self::assertArrayNotHasKey('choices', $alone['receipt']['input']);
+    }
+
+    #[Test]
+    public function choices_alone_keep_the_frameworks_own_colours_for_the_site(): void
+    {
+        $result = $this->palette()->stylesheet($this->lock(), $this->theme(['choices' => [
+            ['id' => 'forest', 'color' => '#2e7d32', 'title' => 'Forest'],
+        ]]));
+
+        self::assertStringStartsWith('/* docara-theme choice forest: #2e7d32 (hue ', $result['content']);
+        self::assertStringNotContainsString("\n:root {", $result['content']);
+        self::assertNull($result['receipt']['palette']);
+        self::assertSame(144, $result['receipt']['stylesheet']['variables']);
     }
 
     #[Test]

@@ -183,6 +183,13 @@ Docara нет.
 | `reader.content_width_description` — Пояснение к настройке ширины страницы | Wide uses the full window and does not limit line length. | Широкий формат занимает всё окно и не ограничивает длину строк. |
 | `reader.content_width_normal` — Вариант обычной ширины | Normal | Обычная |
 | `reader.content_width_wide` — Вариант широкой страницы | Wide | Широкая |
+| `reader.density_title` — Название настройки плотности интерфейса | Density | Плотность |
+| `reader.density_description` — Пояснение к настройке плотности интерфейса | Compact makes every element one size smaller, so more fits on the screen. | В компактном режиме все элементы на шаг меньше, и на экране помещается больше. |
+| `reader.density_normal` — Вариант обычной плотности | Normal | Обычная |
+| `reader.density_compact` — Вариант компактного интерфейса | Compact | Компактная |
+| `reader.color_title` — Название настройки цвета сайта | Colour | Цвет |
+| `reader.color_description` — Пояснение к настройке цвета сайта | The main colour of the site design. | Основной цвет оформления сайта. |
+| `reader.color_site` — Вариант собственного цвета сайта | Site colour | Цвет сайта |
 | `reader.outline_hide` — Кнопка, скрывающая оглавление страницы | Hide page contents | Скрыть содержание страницы |
 | `reader.outline_show` — Кнопка, возвращающая скрытое оглавление страницы | Show page contents | Показать содержание страницы |
 | `reader.focus_mode` — Кнопка режима чтения | Reading mode | Режим чтения |

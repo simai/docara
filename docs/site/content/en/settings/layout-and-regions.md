@@ -132,7 +132,7 @@ width, hover, dragging, hide timer, keyboard scrolling and the `ltr/rtl`
 direction belong to the Framework and are not overridden by project CSS.
 
 The scheme, blur and rounding are described in
-[Brand and theme](/en/settings/branding-and-theme/#light-and-dark-scheme-blur-and-rounding).
+[Brand and theme](/en/settings/branding-and-theme/#light-and-dark-scheme-density-blur-and-rounding).
 
 ## Five regions
 

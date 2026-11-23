@@ -93,6 +93,44 @@ final class SiteThemeBuildTest extends TestCase
     }
 
     #[Test]
+    public function colour_choices_add_their_palettes_and_a_colour_row_to_the_reader_settings(): void
+    {
+        $site = $this->tmpPath('site-theme-choices');
+        $this->filesystem->ensureDirectoryExists($site);
+        $this->docara(['init', '--template=minimal', '--lang=en'], $site);
+        $this->setTheme($site, ['choices' => [
+            ['id' => 'forest', 'color' => '#2e7d32', 'title' => ['ru' => 'Лес', 'en' => 'Forest']],
+            ['id' => 'brick', 'color' => '#c62828', 'title' => 'Brick'],
+        ]]);
+
+        $this->docara(['build', 'production'], $site);
+        $built = $this->tree($site . '/build_production');
+        $themeFiles = array_values(array_filter(array_keys($built), static fn (string $path): bool => str_starts_with($path, '_docara/docara-theme.')));
+        self::assertCount(1, $themeFiles);
+        $css = $built[$themeFiles[0]];
+        // The site keeps the Framework's own colours; each choice is a palette under its mark.
+        self::assertStringNotContainsString("\n:root {\n", $css);
+        self::assertStringContainsString(":root[data-docara-color=\"forest\"] {\n", $css);
+        self::assertStringContainsString(":root[data-docara-color=\"brick\"] {\n", $css);
+        self::assertSame(128, preg_match_all('/^  --sf-[a-z]+-[0-9]+: #[0-9a-f]{6};$/m', $css));
+
+        $home = $built['index.html'];
+        self::assertSame(1, preg_match_all(self::THEME_LINK, $home));
+        self::assertStringContainsString("'docara.color':applyColor", $home);
+        self::assertStringContainsString('"id":"appearance.color"', $home);
+        self::assertStringContainsString('"values":["site","forest","brick"]', $home);
+        self::assertStringContainsString('"title":"Forest"', $home);
+        self::assertStringContainsString('"title":"Site colour"', $home);
+
+        $receipt = $this->buildReceipt($site)['theme'];
+        self::assertNull($receipt['palette']);
+        self::assertSame(['forest', 'brick'], array_column($receipt['choices'], 'id'));
+        $verification = $this->docara(['verify-static', 'build_production', '--no-ansi'], $site);
+        $verification = json_decode(substr($verification, (int) strpos($verification, '{')), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame([], $verification['broken']);
+    }
+
+    #[Test]
     public function a_bad_colour_stops_the_build_with_its_code(): void
     {
         $site = $this->tmpPath('site-theme-invalid');

@@ -14,7 +14,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
     {
         $manifest = (new ReaderPreferenceCompiler)->compile(
             ReaderPreferenceCompiler::defaultConfiguration(),
-            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
+            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal', 'appearance.density' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -41,7 +41,11 @@ final class ReaderPreferenceCompilerTest extends TestCase
         self::assertSame('appearance.content_width', $manifest['groups'][0]['fields'][2]['id']);
         self::assertSame('docara.content_width', $manifest['groups'][0]['fields'][2]['effect']);
         self::assertSame(['normal', 'wide'], $manifest['groups'][0]['fields'][2]['values']);
-        self::assertCount(3, $manifest['groups'][0]['fields']);
+        self::assertSame('appearance.density', $manifest['groups'][0]['fields'][3]['id']);
+        self::assertSame('docara.density', $manifest['groups'][0]['fields'][3]['effect']);
+        self::assertSame(['normal', 'compact'], $manifest['groups'][0]['fields'][3]['values']);
+        self::assertSame('Плотность', $manifest['groups'][0]['fields'][3]['title']);
+        self::assertCount(4, $manifest['groups'][0]['fields']);
     }
 
     public function test_retired_fields_listed_by_an_older_site_configuration_are_skipped(): void
@@ -54,13 +58,13 @@ final class ReaderPreferenceCompilerTest extends TestCase
                     ['id' => 'appearance', 'fields' => ['appearance.theme', 'appearance.modal_blur', 'appearance.ui_radius']],
                 ],
             ],
-            ['appearance.theme' => 'dark', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
+            ['appearance.theme' => 'dark', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal', 'appearance.density' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
 
         self::assertSame(
-            ['appearance.theme', 'appearance.font_size', 'appearance.content_width'],
+            ['appearance.theme', 'appearance.font_size', 'appearance.content_width', 'appearance.density'],
             array_column($manifest['groups'][0]['fields'], 'id'),
         );
     }
@@ -69,7 +73,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
     {
         $compile = fn (array $configuration): array => (new ReaderPreferenceCompiler)->compile(
             ['enabled' => true, 'view' => 'side-panel', ...$configuration],
-            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
+            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal', 'appearance.density' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -80,17 +84,17 @@ final class ReaderPreferenceCompilerTest extends TestCase
 
         // A site that lists only the theme still shows the bundled controls after it.
         self::assertSame(
-            ['appearance.theme', 'appearance.font_size', 'appearance.content_width'],
+            ['appearance.theme', 'appearance.font_size', 'appearance.content_width', 'appearance.density'],
             $ids($compile(['groups' => [['id' => 'appearance', 'fields' => ['appearance.theme']]]])),
         );
         // The site keeps its own order for the fields it lists.
         self::assertSame(
-            ['appearance.content_width', 'appearance.theme', 'appearance.font_size'],
+            ['appearance.content_width', 'appearance.theme', 'appearance.font_size', 'appearance.density'],
             $ids($compile(['groups' => [['id' => 'appearance', 'fields' => ['appearance.content_width', 'appearance.theme']]]])),
         );
         // hidden_fields opts a bundled control out.
         self::assertSame(
-            ['appearance.theme', 'appearance.content_width'],
+            ['appearance.theme', 'appearance.content_width', 'appearance.density'],
             $ids($compile([
                 'hidden_fields' => ['appearance.font_size'],
                 'groups' => [['id' => 'appearance', 'fields' => ['appearance.theme']]],
@@ -108,6 +112,34 @@ final class ReaderPreferenceCompilerTest extends TestCase
         }
     }
 
+    public function test_colour_choices_bring_a_colour_field_after_the_theme_and_only_then(): void
+    {
+        $values = ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal', 'appearance.density' => 'normal'];
+        $copy = [...$this->copy(), 'reader.color_choice.forest' => 'Лес', 'reader.color_choice.brick' => 'Кирпич'];
+        $manifest = (new ReaderPreferenceCompiler)->withColorChoices(['forest', 'brick'])->compile(
+            ReaderPreferenceCompiler::defaultConfiguration(),
+            [...$values, 'appearance.color' => 'site'],
+            $copy,
+            'docara.preferences.site.v1',
+        );
+        $color = $manifest['groups'][0]['fields'][1];
+        self::assertSame('appearance.color', $color['id']);
+        self::assertSame('docara.color', $color['effect']);
+        self::assertSame(['site', 'forest', 'brick'], $color['values']);
+        self::assertSame(['Цвет сайта', 'Лес', 'Кирпич'], array_column($color['options'], 'title'));
+        self::assertSame('site', $color['configured']);
+
+        // Without choices the field is not offered, even when a site lists or hides it.
+        foreach ([
+            ReaderPreferenceCompiler::defaultConfiguration(),
+            ['enabled' => true, 'groups' => [['id' => 'appearance', 'fields' => ['appearance.color', 'appearance.theme']]]],
+            ['enabled' => true, 'hidden_fields' => ['appearance.color'], 'groups' => [['id' => 'appearance', 'fields' => ['appearance.theme']]]],
+        ] as $configuration) {
+            $plain = (new ReaderPreferenceCompiler)->compile($configuration, $values, $this->copy(), 'docara.preferences.site.v1');
+            self::assertNotContains('appearance.color', array_column($plain['groups'][0]['fields'], 'id'));
+        }
+    }
+
     public function test_it_fails_closed_for_an_unknown_field(): void
     {
         $this->expectException(PortableConfigurationException::class);
@@ -121,7 +153,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
                     ['id' => 'appearance', 'fields' => ['appearance.unknown']],
                 ],
             ],
-            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
+            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal', 'appearance.density' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -141,7 +173,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
                     ['id' => 'secondary', 'fields' => ['appearance.theme']],
                 ],
             ],
-            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal'],
+            ['appearance.theme' => 'system', 'appearance.font_size' => 'normal', 'appearance.content_width' => 'normal', 'appearance.density' => 'normal'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -177,6 +209,13 @@ final class ReaderPreferenceCompilerTest extends TestCase
             'reader.content_width_description' => 'Ширина области страницы.',
             'reader.content_width_normal' => 'Обычная',
             'reader.content_width_wide' => 'Широкая',
+            'reader.density_title' => 'Плотность',
+            'reader.density_description' => 'Плотность интерфейса.',
+            'reader.density_normal' => 'Обычная',
+            'reader.density_compact' => 'Компактная',
+            'reader.color_title' => 'Цвет',
+            'reader.color_description' => 'Основной цвет оформления сайта.',
+            'reader.color_site' => 'Цвет сайта',
         ];
     }
 }

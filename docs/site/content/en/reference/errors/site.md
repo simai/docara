@@ -195,6 +195,7 @@ Docara creates `404.html` in the site root if `not_found.enabled` is not
 | --- | --- |
 | `THEME_INVALID` | `theme` is not an object with `color`. **What to do:** Write `"theme": {"color": "#0a7d4f"}`. |
 | `THEME_COLOR_INVALID` | The colour is not in the form `#rgb` or `#rrggbb`. **What to do:** Give the colour as a hexadecimal code. Colour names are not accepted. |
+| `THEME_CHOICES_INVALID` | `theme.choices` is empty or longer than 8, a choice has no `id`, `color` or `title`, or an `id` repeats, is `site` or holds anything but lower-case latin letters, digits and hyphens. **What to do:** Fix the choice after the pattern `{"id": "forest", "color": "#2e7d32", "title": "Forest"}`. |
 | `THEME_HUE_INVALID`, `THEME_CHROMA_INVALID` | `hue` is outside 0–360 or `chroma` outside 0–150. **What to do:** Give a whole number in the range or remove the field. |
 | `THEME_FRAMEWORK_UNSUPPORTED` | The pinned SIMAI Framework version cannot build a palette. **What to do:** Update `simai-framework.lock.json` to a version with the theme generator, or remove `theme`. |
 | `THEME_PALETTE_FAILED`, `THEME_PALETTE_RESULT_INVALID`, `THEME_PALETTE_RUNTIME_UNAVAILABLE` | The palette generator did not start or returned an unexpected result. **What to do:** Check that Node.js is available to the build, and build again. |

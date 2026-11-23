@@ -1557,7 +1557,7 @@ MD);
         $this->copyPortableFixture($this->tmp);
         $sectionPath = $this->tmpPath('content/guides/section.json');
         $section = $this->jsonFile($sectionPath);
-        $section['settings'] = ['theme' => 'dark', 'modal_blur' => 'small', 'ui_radius' => 'large'];
+        $section['settings'] = ['theme' => 'dark', 'modal_blur' => 'small', 'ui_radius' => 'large', 'density' => 'compact'];
         file_put_contents(
             $sectionPath,
             json_encode($section, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
@@ -1566,7 +1566,10 @@ MD);
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
         $html = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
-        self::assertStringContainsString('"values":{"appearance.theme":"dark","appearance.font_size":"normal","appearance.content_width":"normal"}', $html);
+        self::assertStringContainsString('"values":{"appearance.theme":"dark","appearance.font_size":"normal","appearance.content_width":"normal","appearance.density":"compact"}', $html);
+        // The author's compact density is printed on the root, so it holds before and without the preferences script.
+        self::assertMatchesRegularExpression('~<html [^>]*class="theme-light" data-sf-density="compact"~', $html);
+        self::assertStringContainsString("root.setAttribute('data-sf-density',mode)", $html);
         self::assertStringContainsString(',site={"modal_blur":"small","ui_radius":"large"}', $html);
         self::assertMatchesRegularExpression(
             '~data-docara-preference-segmented data-preference-id="appearance\\.theme" [^>]*value="dark"~',
@@ -1577,7 +1580,7 @@ MD);
         self::assertStringNotContainsString('docara-preference-appearance.ui_radius', $html);
         self::assertStringContainsString('function prune(){', $html);
         // Font size and wide format are restored before paint from the same document.
-        self::assertStringContainsString("'docara.font_size':applyFontSize,'docara.content_width':applyContentWidth", $html);
+        self::assertStringContainsString("'docara.font_size':applyFontSize,'docara.content_width':applyContentWidth,'docara.density':applyDensity", $html);
         // The reading toolbar sits next to the breadcrumbs and its state is restored before paint.
         self::assertMatchesRegularExpression('~<button type="button" data-docara-outline-toggle data-docara-label-hide="[^"]+" data-docara-label-show="[^"]+" aria-controls="docara-outline"~', $html);
         self::assertMatchesRegularExpression('~<button type="button" data-docara-focus-toggle aria-pressed="false"~', $html);

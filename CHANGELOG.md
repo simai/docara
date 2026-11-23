@@ -8,6 +8,24 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **Colours for readers to choose.** `theme.choices` in `docara.json` lists up
+  to eight colours, each with an `id`, a `color` and a `title` (text, or text
+  by locale). The build makes each with the pinned SIMAI Framework palette into
+  the same theme stylesheet, under `:root[data-docara-color="<id>"]`, and the
+  settings menu gains a «Colour» row (`appearance.color`): the site's own
+  colour first, then the choices, applied before the first paint. `color` may
+  be left out when the site keeps the Framework's colours and only offers
+  choices. A bad list stops the build with `THEME_CHOICES_INVALID`;
+  `verify-static` checks every palette block. The Docara site offers Forest,
+  Brick and Plum.
+- **Compact density.** `settings.density` (`normal` by default, or
+  `compact`) in `docara.json`, `section.json` or a page sidecar turns on the
+  SIMAI Framework's compact mode: every component comes one size step down, so
+  pages with a lot of data fit more on the screen. Docara prints the
+  Framework's own `data-sf-density="compact"` on the page root, so it holds
+  without scripts. Readers get a fourth bundled row in the settings menu,
+  «Density» (`appearance.density`), stored like the other reader settings;
+  a site hides it with `hidden_fields`.
 - **Column ratio.** `:::columns {ratio=2/1}` gives the columns shares of
   the row on a wide screen, left to right (`1/1`, `2/1`, `1/2`, `3/1`, `1/3`,
   `3/2`, `2/3`, and `2/1/1`, `1/2/1`, `1/1/2` for three columns). A phone still

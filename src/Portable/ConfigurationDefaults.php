@@ -55,6 +55,7 @@ final class ConfigurationDefaults
         'settings.theme' => 'system',
         'settings.modal_blur' => 'none',
         'settings.ui_radius' => 'default',
+        'settings.density' => 'normal',
         'navigation.hidden' => false,
         'navigation.scope' => 'site',
         'header_navigation.enabled' => false,

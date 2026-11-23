@@ -65,7 +65,65 @@ final class FrameworkThemePalette
                 $exception,
             );
         }
-        $result = $this->run($source, self::sharedModules(), $theme);
+        $modules = self::sharedModules();
+        $content = '';
+        $palette = null;
+        if ($theme->color !== null) {
+            $main = $this->palette($source, $modules, $theme->input());
+            $palette = $main['palette'];
+            $content = '/* docara-theme: ' . $theme->color . ' (hue ' . $palette['hue'] . ', chroma ' . $palette['chroma']
+                . '), SIMAI Framework ' . $pair . ' SF.ThemePalette.themeToCss */' . "\n" . $main['css'];
+            $count = $main['count'];
+        }
+        // A reader's colour choice: the same palette, under the root marked
+        // with the choice, after the site's own rule so it wins.
+        $choices = [];
+        foreach ($theme->choices as $choice) {
+            $made = $this->palette($source, $modules, [
+                'color' => $choice['color'],
+                'hue' => $choice['hue'],
+                'chroma' => $choice['chroma'],
+            ]);
+            $selector = ':root[data-docara-color="' . $choice['id'] . '"]';
+            $content .= '/* docara-theme choice ' . $choice['id'] . ': ' . $choice['color']
+                . ' (hue ' . $made['palette']['hue'] . ', chroma ' . $made['palette']['chroma'] . ') */' . "\n"
+                . $selector . substr($made['css'], strlen(':root'));
+            $choices[] = ['id' => $choice['id'], ...$made['palette']];
+            $count ??= $made['count'];
+        }
+        $sha256 = hash('sha256', $content);
+
+        return [
+            'content' => $content,
+            'receipt' => [
+                'schema' => SiteTheme::SCHEMA,
+                'input' => $theme->input(),
+                'palette' => $palette,
+                ...($choices === [] ? [] : ['choices' => $choices]),
+                'framework' => [
+                    'pair_id' => $pair,
+                    'runtime' => self::RUNTIME_PATH,
+                    'sha256' => hash('sha256', $source),
+                ],
+                'stylesheet' => [
+                    'filename' => 'docara-theme.' . $sha256 . '.css',
+                    'sha256' => $sha256,
+                    'variables' => $count ?? 0,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * One colour through the Framework palette, checked.
+     *
+     * @param  array<string, string>  $modules
+     * @param  array{color: string|null, hue: int|null, chroma: int|null}  $input
+     * @return array{css: string, palette: array{hue: int, chroma: int}, count: int}
+     */
+    private function palette(string $source, array $modules, array $input): array
+    {
+        $result = $this->run($source, $modules, $input);
         $variables = self::checkedVariables($result['variables'] ?? null);
         $css = $result['css'] ?? null;
         if (! is_string($css) || $css !== self::rule($variables)) {
@@ -84,31 +142,8 @@ final class FrameworkThemePalette
                 'The SIMAI Framework theme palette did not report the hue and chroma it used.',
             );
         }
-        $content = '/* docara-theme: ' . $theme->color . ' (hue ' . $read['hue'] . ', chroma ' . $read['chroma']
-            . '), SIMAI Framework ' . $pair . ' SF.ThemePalette.themeToCss */' . "\n" . $css;
-        $sha256 = hash('sha256', $content);
 
-        return [
-            'content' => $content,
-            'receipt' => [
-                'schema' => SiteTheme::SCHEMA,
-                'input' => $theme->input(),
-                'palette' => [
-                    'hue' => $read['hue'],
-                    'chroma' => $read['chroma'],
-                ],
-                'framework' => [
-                    'pair_id' => $pair,
-                    'runtime' => self::RUNTIME_PATH,
-                    'sha256' => hash('sha256', $source),
-                ],
-                'stylesheet' => [
-                    'filename' => 'docara-theme.' . $sha256 . '.css',
-                    'sha256' => $sha256,
-                    'variables' => count($variables),
-                ],
-            ],
-        ];
+        return ['css' => $css, 'palette' => ['hue' => $read['hue'], 'chroma' => $read['chroma']], 'count' => count($variables)];
     }
 
     /**
@@ -158,9 +193,10 @@ final class FrameworkThemePalette
 
     /**
      * @param  array<string, string>  $modules
+     * @param  array{color: string|null, hue: int|null, chroma: int|null}  $input
      * @return array<string, mixed>
      */
-    private function run(string $source, array $modules, SiteTheme $theme): array
+    private function run(string $source, array $modules, array $input): array
     {
         if (! is_file($this->adapter) || is_link($this->adapter)) {
             throw new PortableConfigurationException('THEME_PALETTE_RUNTIME_UNAVAILABLE', 'The theme palette adapter is missing.');
@@ -168,7 +204,7 @@ final class FrameworkThemePalette
         $process = new Process([$this->nodeBinary, $this->adapter]);
         $process->setTimeout(60);
         $process->setInput(json_encode(
-            ['source' => $source, 'filename' => self::RUNTIME_PATH, 'modules' => $modules, ...$theme->input()],
+            ['source' => $source, 'filename' => self::RUNTIME_PATH, 'modules' => $modules, ...$input],
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
         ));
         $process->run();

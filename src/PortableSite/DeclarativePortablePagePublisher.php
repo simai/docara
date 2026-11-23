@@ -108,6 +108,9 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         $configuredUiRadius = in_array($page['ui_radius'] ?? null, ['default', 'medium', 'large'], true)
             ? (string) $page['ui_radius']
             : 'default';
+        $configuredDensity = in_array($page['density'] ?? null, ['normal', 'compact'], true)
+            ? (string) $page['density']
+            : 'normal';
         $searchEnabled = ($page['search_enabled'] ?? false) === true
             && is_string($page['search_runtime_url'] ?? null)
             && is_string($page['search_index_url'] ?? null);
@@ -126,12 +129,23 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 $escapedCopy[$id] = $this->escape($message);
             }
         }
-        $readerPreferences = $this->preferenceCompiler->compile(
+        // A site with theme.choices brings the colour field; its option titles
+        // are the choices' own titles in the page's language.
+        $themeChoices = [];
+        foreach (is_array($page['theme_choices'] ?? null) ? $page['theme_choices'] : [] as $choice) {
+            if (is_array($choice) && is_string($choice['id'] ?? null) && is_string($choice['title'] ?? null)) {
+                $themeChoices[$choice['id']] = $choice['title'];
+                $copy['reader.color_choice.' . $choice['id']] = $choice['title'];
+            }
+        }
+        $readerPreferences = $this->preferenceCompiler->withColorChoices(array_keys($themeChoices))->compile(
             is_array($page['reader_preferences'] ?? null) ? $page['reader_preferences'] : [],
             [
                 'appearance.theme' => $configuredTheme,
                 'appearance.font_size' => 'normal',
                 'appearance.content_width' => 'normal',
+                'appearance.density' => $configuredDensity,
+                ...($themeChoices === [] ? [] : ['appearance.color' => 'site']),
             ],
             $copy,
             is_string($page['reader_preferences_storage_key'] ?? null)
@@ -285,6 +299,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 : null,
             $contentLanguage,
             $regions['sidebar'] === '' ? '' : self::SIDEBAR_SCROLL_RESTORE,
+            $configuredDensity,
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
@@ -626,7 +641,11 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             // Content size is a root attribute so the shell stylesheet scales the reading column before first paint.
             . "function applyFontSize(mode,source){if(['small','normal','large'].indexOf(mode)===-1)mode='normal';var root=document.documentElement;if(mode==='normal')root.removeAttribute('data-docara-font-size');else root.setAttribute('data-docara-font-size',mode);root.dataset.docaraFontSizeSource=source}"
             . "function applyContentWidth(mode,source){if(['normal','wide'].indexOf(mode)===-1)mode='normal';var root=document.documentElement;if(mode==='normal')root.removeAttribute('data-docara-content-width');else root.setAttribute('data-docara-content-width',mode);root.dataset.docaraContentWidthSource=source}"
-            . "var effects={'docara.theme':applyTheme,'docara.font_size':applyFontSize,'docara.content_width':applyContentWidth};"
+            // Density is the SIMAI Framework's own switch: data-sf-density="compact" on the root moves every component one size step down.
+            . "function applyDensity(mode,source){if(['normal','compact'].indexOf(mode)===-1)mode='normal';var root=document.documentElement;if(mode==='normal')root.removeAttribute('data-sf-density');else root.setAttribute('data-sf-density',mode);root.dataset.docaraDensitySource=source}"
+            // A colour choice marks the root; the site's theme stylesheet holds a palette under each mark.
+            . "function applyColor(mode,source){var field=fields['appearance.color'];if(!field||field.values.indexOf(mode)===-1)mode='site';var root=document.documentElement;if(mode==='site')root.removeAttribute('data-docara-color');else root.setAttribute('data-docara-color',mode);root.dataset.docaraColorSource=source}"
+            . "var effects={'docara.theme':applyTheme,'docara.color':applyColor,'docara.font_size':applyFontSize,'docara.content_width':applyContentWidth,'docara.density':applyDensity};"
             // Modal blur and control radius are author settings only; readers no longer override them.
             . "function applySite(){applyModalBlur(site.modal_blur,'site');applyUiRadius(site.ui_radius,'site')}"
             // Drop values of fields this site no longer offers (for example retired preferences) from storage.

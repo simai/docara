@@ -159,17 +159,50 @@ function docaraVerifySiteTheme(string $root, mixed $receipt, string $deploymentB
     $palette = is_array($receipt) ? ($receipt['palette'] ?? null) : null;
     $framework = is_array($receipt) ? ($receipt['framework'] ?? null) : null;
     $stylesheet = is_array($receipt) ? ($receipt['stylesheet'] ?? null) : null;
+    $choices = is_array($receipt) ? ($receipt['choices'] ?? []) : [];
+    $validPalette = static fn (mixed $value): bool => is_array($value)
+        && docaraExactKeys($value, ['hue', 'chroma'])
+        && is_int($value['hue'] ?? null)
+        && is_int($value['chroma'] ?? null);
+    $validColor = static fn (mixed $value): bool => is_string($value) && preg_match('/\A#[0-9a-f]{6}\z/D', $value) === 1;
+    $validTuning = static fn (array $value): bool => ($value['hue'] === null || is_int($value['hue']))
+        && ($value['chroma'] === null || is_int($value['chroma']));
+    // A theme of earlier releases has one colour; it may now add
+    // reader choices (`theme.choices`), each a palette under its marked root,
+    // and the site's own colour may be left to the Framework.
+    $receiptKeys = array_key_exists('choices', is_array($receipt) ? $receipt : [])
+        ? ['schema', 'input', 'palette', 'choices', 'framework', 'stylesheet']
+        : ['schema', 'input', 'palette', 'framework', 'stylesheet'];
+    $inputChoices = is_array($input) ? ($input['choices'] ?? []) : [];
+    $choicesValid = is_array($choices) && array_is_list($choices) && is_array($inputChoices) && array_is_list($inputChoices)
+        && count($choices) === count($inputChoices) && count($choices) <= 8;
+    $choiceIds = [];
+    if ($choicesValid) {
+        foreach ($choices as $index => $choice) {
+            $given = $inputChoices[$index];
+            $choicesValid = $choicesValid
+                && is_array($choice) && docaraExactKeys($choice, ['id', 'hue', 'chroma'])
+                && is_string($choice['id'] ?? null) && preg_match('/\A(?!site\z)[a-z][a-z0-9-]{0,31}\z/D', $choice['id']) === 1
+                && ! in_array($choice['id'], $choiceIds, true)
+                && $validPalette(['hue' => $choice['hue'] ?? null, 'chroma' => $choice['chroma'] ?? null])
+                && is_array($given) && docaraExactKeys($given, ['id', 'color', 'hue', 'chroma'])
+                && ($given['id'] ?? null) === $choice['id'] && $validColor($given['color'] ?? null) && $validTuning($given);
+            if (! $choicesValid) {
+                break;
+            }
+            $choiceIds[] = $choice['id'];
+        }
+    }
     if (! is_array($receipt)
-        || ! docaraExactKeys($receipt, ['schema', 'input', 'palette', 'framework', 'stylesheet'])
+        || ! docaraExactKeys($receipt, $receiptKeys)
         || ($receipt['schema'] ?? null) !== 'docara.site_theme.v1'
         || ! is_array($input)
-        || ! docaraExactKeys($input, ['color', 'hue', 'chroma'])
-        || ! is_string($input['color'] ?? null)
-        || preg_match('/\A#[0-9a-f]{6}\z/D', $input['color']) !== 1
-        || ! is_array($palette)
-        || ! docaraExactKeys($palette, ['hue', 'chroma'])
-        || ! is_int($palette['hue'] ?? null)
-        || ! is_int($palette['chroma'] ?? null)
+        || ! docaraExactKeys($input, $inputChoices === [] && ! array_key_exists('choices', $input) ? ['color', 'hue', 'chroma'] : ['color', 'hue', 'chroma', 'choices'])
+        || ! $choicesValid
+        || (array_key_exists('choices', $receipt) && $choices === [])
+        || ($input['color'] === null
+            ? ($palette !== null || $choices === [] || $input['hue'] !== null || $input['chroma'] !== null)
+            : (! $validColor($input['color']) || ! $validPalette($palette) || ! $validTuning($input)))
         || ! is_array($framework)
         || ! docaraExactKeys($framework, ['pair_id', 'runtime', 'sha256'])
         || ! is_string($framework['pair_id'] ?? null)
@@ -199,20 +232,32 @@ function docaraVerifySiteTheme(string $root, mixed $receipt, string $deploymentB
     // Checked line by line: one pattern repeated 226 times is too large for PCRE.
     $tone = '--sf-' . $palettes . '-(?:5|10|15|20|25|30|35|40|50|60|70|80|85|90|95|98)';
     $lines = explode("\n", $content);
-    $variables = array_slice($lines, 2, $stylesheet['variables']);
-    $tones = 0;
-    while ($tones < count($variables) && preg_match('/\A  ' . $tone . ': #[0-9a-f]{6};\z/D', $variables[$tones]) === 1) {
-        $tones++;
-    }
-    $themeShapeValid = count($lines) === $stylesheet['variables'] + 4
-        && in_array($tones, [64, 128], true)
-        && preg_match('/\A\/\* docara-theme: [^*]*\*\/\z/D', $lines[0]) === 1
-        && $lines[1] === ':root {'
-        && $lines[count($lines) - 2] === '}'
-        && $lines[count($lines) - 1] === '';
-    foreach (array_slice($variables, $tones) as $line) {
-        $themeShapeValid = $themeShapeValid
-            && preg_match('/\A  ' . $tone . '--alfa-[1-9][0-9]?: #[0-9a-f]{8};\z/D', $line) === 1;
+    // One block per palette: a comment, the selector, the variables, `}`.
+    $selectors = [
+        ...($palette === null ? [] : [':root {']),
+        ...array_map(static fn (string $id): string => ':root[data-docara-color="' . $id . '"] {', $choiceIds),
+    ];
+    $block = $stylesheet['variables'] + 3;
+    $themeShapeValid = count($lines) === count($selectors) * $block + 1 && $lines[count($lines) - 1] === '';
+    foreach ($selectors as $index => $selector) {
+        if (! $themeShapeValid) {
+            break;
+        }
+        $at = $index * $block;
+        $comment = $selector === ':root {' ? '/\A\/\* docara-theme: [^*]*\*\/\z/D' : '/\A\/\* docara-theme choice ' . preg_quote($choiceIds[$index - ($palette === null ? 0 : 1)], '/') . ': [^*]*\*\/\z/D';
+        $variables = array_slice($lines, $at + 2, $stylesheet['variables']);
+        $tones = 0;
+        while ($tones < count($variables) && preg_match('/\A  ' . $tone . ': #[0-9a-f]{6};\z/D', $variables[$tones]) === 1) {
+            $tones++;
+        }
+        $themeShapeValid = in_array($tones, [64, 128], true)
+            && preg_match($comment, $lines[$at]) === 1
+            && $lines[$at + 1] === $selector
+            && $lines[$at + $block - 1] === '}';
+        foreach (array_slice($variables, $tones) as $line) {
+            $themeShapeValid = $themeShapeValid
+                && preg_match('/\A  ' . $tone . '--alfa-[1-9][0-9]?: #[0-9a-f]{8};\z/D', $line) === 1;
+        }
     }
     if (! $themeShapeValid) {
         throw new RuntimeException('Site theme stylesheet holds more than the Framework theme variables.');

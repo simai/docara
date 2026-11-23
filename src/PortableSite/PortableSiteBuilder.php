@@ -479,6 +479,7 @@ final readonly class PortableSiteBuilder
                 'theme' => (string) data_get($plan->configuration, 'settings.theme', ConfigurationDefaults::value('settings.theme')),
                 'modal_blur' => (string) data_get($plan->configuration, 'settings.modal_blur', ConfigurationDefaults::value('settings.modal_blur')),
                 'ui_radius' => (string) data_get($plan->configuration, 'settings.ui_radius', ConfigurationDefaults::value('settings.ui_radius')),
+                'density' => (string) data_get($plan->configuration, 'settings.density', ConfigurationDefaults::value('settings.density')),
                 'reader_preferences' => is_array($plan->configuration['reader_preferences'] ?? null)
                     ? $plan->configuration['reader_preferences']
                     : ReaderPreferenceCompiler::defaultConfiguration(),
@@ -507,6 +508,11 @@ final readonly class PortableSiteBuilder
                     'theme_stylesheet_url' => rtrim($localeUrls->deploymentBase(), '/') . '/_docara/'
                         . $themeStylesheet['receipt']['stylesheet']['filename'],
                 ]),
+                // The reader's colour choices, titled in the page's language.
+                'theme_choices' => array_map(static fn (array $choice): array => [
+                    'id' => $choice['id'],
+                    'title' => SiteTheme::choiceTitle($choice, $pageLocale),
+                ], $siteTheme?->choices ?? []),
                 'content_html' => $contentHtml,
                 'document_artifact' => $pageResult->documentArtifact,
                 'document_ir' => $pageResult->document,

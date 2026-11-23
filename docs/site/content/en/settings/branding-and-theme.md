@@ -157,20 +157,27 @@ The line disappears entirely, together with the rule above it. `credit` is
 `BRANDING_CREDIT_SITE_ONLY`. The reader does not change it, and it is not in
 the settings panel.
 
-## Light and dark scheme, blur and rounding
+## Light and dark scheme, density, blur and rounding
 
 The `settings` branch is inherited and can be overridden in `section.json`
 and `<page>.page.json`. Its fields accept only values from the list:
 
 ```json
 {
-  "settings": {"theme": "system", "modal_blur": "none", "ui_radius": "default"}
+  "settings": {"theme": "system", "density": "normal", "modal_blur": "none", "ui_radius": "default"}
 }
 ```
 
 - `settings.theme` — `system`, `light` or `dark`: the scheme on the first
   visit. The reader can pick their own in the
   [reader panel](/en/settings/reader-preferences/), and their choice wins.
+- `settings.density` — `normal` or `compact`: the interface density. The
+  default is `normal`. With `compact` every SIMAI Framework component comes one
+  size step down: buttons, fields, menus, tables and the spacing inside them.
+  It suits pages with a lot of data. Docara turns it on with the Framework's
+  `data-sf-density="compact"` attribute on the page root, so it works without
+  scripts too. The reader can pick another density in the
+  [reader panel](/en/settings/reader-preferences/).
 - `settings.modal_blur` — `none`, `small`, `medium` or `large`: the blur of
   the page behind the search and settings windows. The default is `none`: no
   blur, only the standard dimming of the backdrop.
@@ -207,7 +214,8 @@ the Framework. The Framework takes all semantic colours from the theme's palette
 borders change in the light and dark schemes at once. Examples in frames get
 the same colours together with the other page tokens.
 
-- `color` — required, `#rgb` or `#rrggbb`, case does not matter.
+- `color` — `#rgb` or `#rrggbb`, case does not matter. Required unless
+  `choices` is set.
 - `hue` (0–360) and `chroma` (0–150) — optional, the generator's hue and
   saturation, as in the "Fine tuning" fields of `sf-theme-generator`. When
   set, they win over how the colour was read. If the site keeps a choice from
@@ -237,10 +245,47 @@ section), and `docara verify-static` checks that the file matches the record,
 holds only these variables (the tones and their translucent shades) and is
 linked on every page.
 
+### Colours for the reader to choose
+
+`theme.choices` adds a "Colour" row to the
+[reader panel](/en/settings/reader-preferences/#colour). The reader picks
+"Site colour" or one of the listed choices, and the choice is kept like the
+other reading settings:
+
+```json
+{
+  "theme": {
+    "color": "#005bbe",
+    "choices": [
+      {"id": "forest", "color": "#2e7d32", "title": {"ru": "Лес", "en": "Forest"}},
+      {"id": "brick", "color": "#c62828", "title": {"ru": "Кирпич", "en": "Brick"}}
+    ]
+  }
+}
+```
+
+- `id` — lower-case latin letters, digits and hyphens, starting with a letter.
+  The word `site` is taken by the "Site colour" option.
+- `color`, `hue`, `chroma` — as for the main colour.
+- `title` — the name in the menu, up to 40 characters: a string or an object
+  with a name for each site language. When the page's language has no name,
+  the first one is used.
+- From 1 to 8 choices.
+
+Without `choices` you can leave `color` out: "Site colour" is then the
+Framework's own colours. The build makes every choice with the same generator
+ahead of time and puts it into the same theme file, under
+`:root[data-docara-color="<id>"]`. The reader's choice sets this attribute on
+the page root before the first paint. Without `choices` the menu has no
+"Colour" row.
+
 Errors:
 
 - `THEME_COLOR_INVALID` — `color` is neither `#rgb` nor `#rrggbb`, for example
   `"green"` or `"#0a7d4"`;
+- `THEME_CHOICES_INVALID` — `choices` is empty or longer than 8, a choice has
+  no `id`, `color` or `title`, or an `id` repeats, is `site` or breaks the
+  rules;
 - `THEME_HUE_INVALID`, `THEME_CHROMA_INVALID` — a number out of range;
 - `THEME_FRAMEWORK_UNSUPPORTED` — `simai-framework.lock.json` pins a
   Framework release without the theme generator. Replace the lock with

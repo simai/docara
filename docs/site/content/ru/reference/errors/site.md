@@ -196,6 +196,7 @@ Docara создаёт `404.html` в корне сайта, если `not_found.e
 | --- | --- |
 | `THEME_INVALID` | `theme` — не объект с `color`. **Что сделать:** Запишите `"theme": {"color": "#0a7d4f"}`. |
 | `THEME_COLOR_INVALID` | Цвет не в виде `#rgb` или `#rrggbb`. **Что сделать:** Укажите цвет шестнадцатеричным кодом. Названия цветов не принимаются. |
+| `THEME_CHOICES_INVALID` | `theme.choices` пустой или длиннее 8, у варианта нет `id`, `color` или `title`, `id` повторяется, равен `site` или содержит что-то кроме латинских строчных букв, цифр и дефиса. **Что сделать:** Исправьте вариант по образцу `{"id": "forest", "color": "#2e7d32", "title": "Лес"}`. |
 | `THEME_HUE_INVALID`, `THEME_CHROMA_INVALID` | `hue` вне 0–360 или `chroma` вне 0–150. **Что сделать:** Укажите целое число в диапазоне или удалите поле. |
 | `THEME_FRAMEWORK_UNSUPPORTED` | Закреплённая версия SIMAI Framework не умеет строить палитру. **Что сделать:** Обновите `simai-framework.lock.json` до версии с генератором темы или уберите `theme`. |
 | `THEME_PALETTE_FAILED`, `THEME_PALETTE_RESULT_INVALID`, `THEME_PALETTE_RUNTIME_UNAVAILABLE` | Генератор палитры не запустился или вернул неожиданный результат. **Что сделать:** Проверьте, что Node.js доступен сборке, и повторите сборку. |

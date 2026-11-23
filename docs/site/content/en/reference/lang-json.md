@@ -185,6 +185,13 @@ If a string is missing from `lang.json`, Docara takes the built-in text: Russian
 | `reader.content_width_description` — The explanation of the page width setting | Wide uses the full window and does not limit line length. | Широкий формат занимает всё окно и не ограничивает длину строк. |
 | `reader.content_width_normal` — The normal width option | Normal | Обычная |
 | `reader.content_width_wide` — The wide page option | Wide | Широкая |
+| `reader.density_title` — The name of the interface density setting | Density | Плотность |
+| `reader.density_description` — The explanation of the interface density setting | Compact makes every element one size smaller, so more fits on the screen. | В компактном режиме все элементы на шаг меньше, и на экране помещается больше. |
+| `reader.density_normal` — The normal density option | Normal | Обычная |
+| `reader.density_compact` — The compact interface option | Compact | Компактная |
+| `reader.color_title` — The name of the site colour setting | Colour | Цвет |
+| `reader.color_description` — The explanation of the site colour setting | The main colour of the site design. | Основной цвет оформления сайта. |
+| `reader.color_site` — The site's own colour option | Site colour | Цвет сайта |
 | `reader.outline_hide` — The button that hides the page outline | Hide page contents | Скрыть содержание страницы |
 | `reader.outline_show` — The button that brings back a hidden page outline | Show page contents | Показать содержание страницы |
 | `reader.focus_mode` — The reading mode button | Reading mode | Режим чтения |

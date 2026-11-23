@@ -58,5 +58,21 @@ final class CoreReaderPreferenceContribution implements ReaderPreferenceContribu
             'reader.content_width_title',
             'reader.content_width_description',
         ));
+        $registry->add(new ReaderPreferenceDefinition(
+            'appearance.density',
+            'appearance',
+            'choice',
+            ['normal', 'compact'],
+            'docara.density',
+            'prepaint',
+            'site',
+            [
+                'normal' => 'reader.density_normal',
+                'compact' => 'reader.density_compact',
+            ],
+            [],
+            'reader.density_title',
+            'reader.density_description',
+        ));
     }
 }

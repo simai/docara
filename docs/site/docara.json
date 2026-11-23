@@ -56,6 +56,13 @@
     "scrollbar": {"preset": "overlay"},
     "content": {"gap": 0}
   },
+  "theme": {
+    "choices": [
+      {"id": "forest", "color": "#2e7d32", "title": {"ru": "Лес", "en": "Forest"}},
+      {"id": "brick", "color": "#c62828", "title": {"ru": "Кирпич", "en": "Brick"}},
+      {"id": "plum", "color": "#6a1b9a", "title": {"ru": "Слива", "en": "Plum"}}
+    ]
+  },
   "settings": {
     "theme": "system",
     "modal_blur": "none",
@@ -67,7 +74,7 @@
     "groups": [
       {
         "id": "appearance",
-        "fields": ["appearance.theme", "appearance.font_size", "appearance.content_width"]
+        "fields": ["appearance.theme", "appearance.color", "appearance.font_size", "appearance.content_width", "appearance.density"]
       }
     ]
   },

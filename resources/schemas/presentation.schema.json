@@ -243,6 +243,10 @@
                 "ui_radius": {
                     "type": "string",
                     "enum": ["default", "medium", "large"]
+                },
+                "density": {
+                    "type": "string",
+                    "enum": ["normal", "compact"]
                 }
             },
             "additionalProperties": false

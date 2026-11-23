@@ -13,6 +13,8 @@ final class PreferencesContextAdapter implements SmartContextAdapter
         'appearance.theme' => 'contrast',
         'appearance.font_size' => 'format_size',
         'appearance.content_width' => 'width_normal',
+        'appearance.density' => 'density_small',
+        'appearance.color' => 'palette',
     ];
 
     public function id(): string

@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.19.0] - 2026-11-24
+
 ### Added
 
 - **Four more SIMAI Framework Smart components on Markdown pages.**

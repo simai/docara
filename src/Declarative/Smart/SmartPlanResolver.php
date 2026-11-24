@@ -31,9 +31,13 @@ final readonly class SmartPlanResolver
     {
         $frameworkLock = FrameworkLock::fromArray($lock);
 
+        // A superseded project lock is served the bundled release, so the
+        // consumer policies come from the lock the manifests describe.
+        $manifests = FrameworkManifestRepository::bundled($frameworkLock);
+
         return new self(
-            FrameworkManifestRepository::bundled($frameworkLock),
-            consumerPolicy: FrameworkConsumerPolicy::fromLock($frameworkLock),
+            $manifests,
+            consumerPolicy: FrameworkConsumerPolicy::fromLock($manifests->effectiveLock()),
         );
     }
 

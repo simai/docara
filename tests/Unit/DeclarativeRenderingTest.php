@@ -93,7 +93,8 @@ MD, 'content/install.md'),
             ...glob($root . '/previews/templates/*.php') ?: [],
         ]));
         // docara.preferences has two views: the menu and the side panel.
-        self::assertCount(21, $templates);
+        // Seven admitted ui.* Smart components add one template each.
+        self::assertCount(28, $templates);
         foreach ($templates as $template) {
             $source = (string) file_get_contents($template);
             self::assertStringNotContainsString('<style', $source);

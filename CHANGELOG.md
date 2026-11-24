@@ -156,6 +156,7 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Fixed
 
+- A site whose `simai-framework.lock.json` names a superseded Framework release builds again with the newly admitted `ui.*` Smart components: the consumer policies now come from the bundled release the site is served, the same lock the component catalogue already uses.
 - **A row of badges keeps a gap.** A paragraph of badges alone wraps them
   with a gap from the Framework scale; before, a wrapped row touched the row
   above. A badge inside text is unchanged.

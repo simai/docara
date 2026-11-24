@@ -22,7 +22,7 @@ final readonly class FrameworkComponentRuntime
 
         return self::create(
             $repository,
-            FrameworkConsumerPolicy::fromLock($frameworkLock),
+            FrameworkConsumerPolicy::fromLock($repository->effectiveLock()),
             $assetBase ?? self::assetBaseFromRepository($repository),
         );
     }
@@ -34,7 +34,7 @@ final readonly class FrameworkComponentRuntime
 
         return self::create(
             $repository,
-            FrameworkConsumerPolicy::fromLock($frameworkLock),
+            FrameworkConsumerPolicy::fromLock($repository->effectiveLock()),
             $assetBase ?? self::assetBaseFromRepository($repository),
         );
     }

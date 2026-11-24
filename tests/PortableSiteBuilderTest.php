@@ -1484,7 +1484,7 @@ MD);
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
         self::assertSame('ui-dc9fc39aeb26', $componentCatalog['framework_pair']);
-        self::assertCount(40, $componentCatalog['entries']);
+        self::assertCount(48, $componentCatalog['entries']);
         self::assertEquals(
             [
                 'catalog_is_canonical_framework_registry' => false,

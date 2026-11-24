@@ -87,7 +87,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
                 && ($entry['docs_ref'] ?? null) === 'docs/site/content/ru/authoring/markdown.md')
                 // The deprecated banner is documented on the alert page.
                 && ! ($entry['id'] === 'docara.banner'
-                && ($entry['docs_ref'] ?? null) === 'docs/site/content/ru/components/blocks/alert.md'),
+                && ($entry['docs_ref'] ?? null) === 'docs/site/content/ru/components/blocks/alert.md')
+                // The width container is documented on the columns page.
+                && ! ($entry['id'] === 'docara.container'
+                && ($entry['docs_ref'] ?? null) === 'docs/site/content/ru/components/layout/columns.md'),
         ));
 
         self::assertCount(275, $pages);
@@ -116,9 +119,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
         self::assertCount(214, $search['documents']);
-        self::assertCount(40, $catalog['entries']);
-        self::assertCount(34, $supported);
-        self::assertCount(4, $unavailable);
+        self::assertCount(48, $catalog['entries']);
+        self::assertCount(36, $supported);
+        self::assertCount(3, $unavailable);
         self::assertFileDoesNotExist($build . '.docara/component-catalog-pages.json');
         self::assertFileDoesNotExist($build . '.docara/declarative-example-pages.json');
         self::assertFileDoesNotExist($build . '/_docara/declarative-examples.json');
@@ -131,7 +134,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             )->count(),
         );
         self::assertCount(192, $redirectReceipt['redirects']);
-        self::assertCount(136, $localeRouteReceipt['redirects']);
+        self::assertCount(137, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -193,7 +196,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $examplePage = (string) file_get_contents($build . '/ru/components/blocks/example/index.html');
         self::assertSame(7, substr_count($catalogIndex, 'data-docara-table-scroll'));
         preg_match_all('~href="(/ru/components/[a-z0-9-]+/[a-z0-9-]+/)"~', $catalogIndex, $componentLinks);
-        self::assertSame(30, count(array_unique($componentLinks[1] ?? [])));
+        self::assertSame(31, count(array_unique($componentLinks[1] ?? [])));
         preg_match_all('~href="(/ru/components/[a-z0-9-]+/)"~', $catalogIndex, $sectionLinks);
         self::assertSame(6, count(array_unique($sectionLinks[1] ?? [])));
         self::assertStringContainsString('Текст и Markdown', $catalogIndex);
@@ -512,8 +515,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // shell preloaded again and the page-language script: 3400. The component pages in six menu
         // sections (twelve section pages and redirects from the old addresses): 3516.
         // The columns page in two languages and the reader density row, as counted on CI
-        // for 9678ad0e: 3519.
-        self::assertCount(3519, $firstFiles);
+        // for 9678ad0e: 3519. Seven admitted ui.* Smart components with their
+        // runtime files, counted on the merged main: 3528.
+        self::assertCount(3528, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

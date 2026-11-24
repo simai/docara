@@ -15,7 +15,7 @@ body[data-docara-shell]{opacity:1!important}
 .docara-header .sf-site-header--open .sf-site-header-scrim,.docara-header .sf-site-header--open .sf-site-header-panel{z-index:1}
 /* The search field follows the Framework size-1 control height, which is smaller on phones, like the icon buttons beside it. */
 .docara-header{--docara-header-control-size:calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-default))}
-.docara-header .docara-brand--logo{--docara-brand-mark-size:var(--sf-c6)}
+.docara-header .docara-brand--logo{--docara-brand-mark-size:calc(var(--sf-text-height-2) + var(--sf-a4))}
 /* A phone bar is narrower than the brand and the tools together: sf-header-site lets the brand slot shrink (C142), so the logo scales down inside it rather than running under the tools. */
 .docara-header .docara-brand--logo .docara-brand-mark{display:flex;flex:0 1 auto;min-inline-size:0}
 .docara-header .docara-brand--logo .docara-brand-mark>img{min-inline-size:0;max-inline-size:100%;object-fit:contain;object-position:0 50%}
@@ -37,7 +37,7 @@ body[data-docara-shell]{opacity:1!important}
 .docara-sidebar-panel>.docara-sidebar-credit{position:relative}
 .docara-sidebar-panel>.docara-sidebar-credit::before{content:"";position:absolute;inset-block-start:-1px;inset-inline-end:100%;inline-size:100vw;border-block-start:1px solid var(--sf-outline-variant);pointer-events:none}
 /* The logo is sized from the text: its lowercase letters (250 of the 600-unit height) match the text's x-height (about 0.55em), and its baseline (175 units above the bottom) sits on the text's baseline. */
-.docara-sidebar-credit-link{--docara-credit-logo-size:1.25rem;--docara-credit-wordmark:var(--sf-on-surface-variant);--docara-credit-mark:var(--sf-on-surface-variant);--docara-credit-ring:var(--sf-surface-0);color:var(--sf-on-surface-variant);text-decoration:none}
+.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-text-height-1\/2);--docara-credit-wordmark:var(--sf-on-surface-variant);--docara-credit-mark:var(--sf-on-surface-variant);--docara-credit-ring:var(--sf-surface-0);color:var(--sf-on-surface-variant);text-decoration:none}
 /* One logo, three colour variables, all Framework roles (C18, C19): the letters and the mark in the caption colour, the ring in the page colour. Hover and focus only swap them, to the text colour and the red of the Framework palette. */
 .docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:var(--sf-red-50)}
 .docara-sidebar-credit-link:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--offset)}

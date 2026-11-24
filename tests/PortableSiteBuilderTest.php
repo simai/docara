@@ -1763,7 +1763,7 @@ MD);
         // square with a light ring, and letters in the colour of the line's
         // text, so they read on a light and a dark sidebar.
         $shellCss = (string) file_get_contents(dirname(__DIR__) . '/resources/portable/declarative-shell.css');
-        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:1.25rem;--docara-credit-wordmark:var(--sf-on-surface-variant);--docara-credit-mark:var(--sf-on-surface-variant);--docara-credit-ring:var(--sf-surface-0);color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
+        self::assertStringContainsString('.docara-sidebar-credit-link{--docara-credit-logo-size:var(--sf-text-height-1\/2);--docara-credit-wordmark:var(--sf-on-surface-variant);--docara-credit-mark:var(--sf-on-surface-variant);--docara-credit-ring:var(--sf-surface-0);color:var(--sf-on-surface-variant);text-decoration:none}', $shellCss);
         self::assertStringContainsString('.docara-sidebar-credit-mark{fill:var(--docara-credit-mark)}.docara-sidebar-credit-ring{fill:var(--docara-credit-ring)}', $shellCss);
         // Hover and keyboard focus show the logo in colour: theme text and the Docara red.
         self::assertStringContainsString('.docara-sidebar-credit-link:hover,.docara-sidebar-credit-link:focus-visible{color:var(--sf-on-surface);--docara-credit-wordmark:var(--sf-on-surface);--docara-credit-mark:var(--sf-red-50)}', $shellCss);

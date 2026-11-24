@@ -1239,8 +1239,8 @@ MD);
         self::assertStringNotContainsString('.sf-breadcrumbs-item[hidden]{display:none}', $shellCss);
         self::assertStringNotContainsString('.sf-breadcrumbs{overscroll-behavior-inline:contain}', $shellCss);
 
-        // Theme, font size and page width, each a Framework sf-segmented; blur and radius are no longer reader options.
-        self::assertSame(3, substr_count($index, '<sf-segmented class="docara-preferences-options" data-docara-preference-segmented'));
+        // Theme, font size, page width and density, each a Framework sf-segmented; blur and radius are no longer reader options.
+        self::assertSame(4, substr_count($index, '<sf-segmented class="docara-preferences-options" data-docara-preference-segmented'));
         self::assertStringNotContainsString('data-docara-preference-option', $index);
         self::assertMatchesRegularExpression('/docara\\.preferences\\.[a-f0-9]{16}\\.v1/', $index);
         self::assertStringContainsString("matchMedia('(prefers-color-scheme: dark)')", $index);

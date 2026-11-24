@@ -41,6 +41,7 @@ final class DeveloperDiscoveryCommandTest extends TestCase
             'ui.avatar',
             'ui.badge',
             'ui.button',
+            'ui.button-copy',
             'ui.checkbox',
             'ui.dropdown',
             'ui.input',

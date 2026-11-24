@@ -3327,6 +3327,19 @@
                 "excluded_states": []
             }
         },
+        "ui.button-copy": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "736fd711ed37b4d774c174081f28b1a60d9b7c42cf142c7b061e743e4b7d603f",
+            "consumer_policy": {
+                "managed": [],
+                "blocked": [],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": []
+            }
+        },
         "ui.progress-bar": {
             "provider": "larena/ui",
             "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
@@ -3417,6 +3430,30 @@
             },
             "smart/button-close/js/button-close.min.js": {
                 "sha256": "cea2541e6e8bad730efd39af6bdacadcbc4f337bd408285612c87e911513dff8"
+            },
+            "smart/button-copy/css/button-copy.css": {
+                "sha256": "ba3bea40bb79e3e3127ba84c6fbc5ab2f26e4277603e650ae04f1a753a985574"
+            },
+            "smart/button-copy/css/button-copy.min.css": {
+                "sha256": "8d586705d9f4a47bbf24fcc471e57d03e87feaab598e50d0482640b7b742cbc7"
+            },
+            "smart/button-copy/js/button-copy.js": {
+                "sha256": "b4b1806453dfbd50fa58f1effdec982c18b602eae9930079d7f5fbb031fdb050"
+            },
+            "smart/button-copy/js/button-copy.min.js": {
+                "sha256": "8a61e71b987d8d8eab42c0bd45ba4e7b03b2bc7d618b7739d82564c8a6966818"
+            },
+            "smart/button-icon/css/button-icon.css": {
+                "sha256": "4e0dd8bd70d8f7e45a280cf2e15cae90e1c1b7d0d81fc18a74d5d68779d8c605"
+            },
+            "smart/button-icon/css/button-icon.min.css": {
+                "sha256": "594bf26b8da057142dff351d7c9d98176fb87381859d2bf0cf30f7d672f65434"
+            },
+            "smart/button-icon/js/button-icon.js": {
+                "sha256": "d56b7b9504b9dc897b55f69357197c31c2fbfd88531508a716873b6491ed84e5"
+            },
+            "smart/button-icon/js/button-icon.min.js": {
+                "sha256": "c8407f8877341ab5ff5052fe8bf9a379fc4db03648c28d5957865f3431a85d3c"
             },
             "smart/button/js/button.js": {
                 "sha256": "613abcf187feef9704712cfe73b39494ec61f3ddc976f98d303c2b6096bf35e2"
@@ -3528,35 +3565,11 @@
             "smart/breadcrumbs/js/breadcrumbs.min.js": {
                 "sha256": "bb08d9a19f4f5833687ec13d6b31327b4716c89011b6a9b6873c327b633085af"
             },
-            "smart/button-copy/css/button-copy.css": {
-                "sha256": "ba3bea40bb79e3e3127ba84c6fbc5ab2f26e4277603e650ae04f1a753a985574"
-            },
-            "smart/button-copy/css/button-copy.min.css": {
-                "sha256": "8d586705d9f4a47bbf24fcc471e57d03e87feaab598e50d0482640b7b742cbc7"
-            },
-            "smart/button-copy/js/button-copy.js": {
-                "sha256": "b4b1806453dfbd50fa58f1effdec982c18b602eae9930079d7f5fbb031fdb050"
-            },
-            "smart/button-copy/js/button-copy.min.js": {
-                "sha256": "8a61e71b987d8d8eab42c0bd45ba4e7b03b2bc7d618b7739d82564c8a6966818"
-            },
             "smart/button-group/js/button-group.js": {
                 "sha256": "38bafe73f3f8f48255eec46807c4eedbafd4797e372253fd96593d9af17d4004"
             },
             "smart/button-group/js/button-group.min.js": {
                 "sha256": "48401e60745c3c6cd2f41364f9d3d15b3b411e88a92a1add77b508e094e81f4d"
-            },
-            "smart/button-icon/css/button-icon.css": {
-                "sha256": "4e0dd8bd70d8f7e45a280cf2e15cae90e1c1b7d0d81fc18a74d5d68779d8c605"
-            },
-            "smart/button-icon/css/button-icon.min.css": {
-                "sha256": "594bf26b8da057142dff351d7c9d98176fb87381859d2bf0cf30f7d672f65434"
-            },
-            "smart/button-icon/js/button-icon.js": {
-                "sha256": "d56b7b9504b9dc897b55f69357197c31c2fbfd88531508a716873b6491ed84e5"
-            },
-            "smart/button-icon/js/button-icon.min.js": {
-                "sha256": "c8407f8877341ab5ff5052fe8bf9a379fc4db03648c28d5957865f3431a85d3c"
             },
             "smart/buttons/js/buttons.js": {
                 "sha256": "5095cfe2a3d11020806f418f177f33534b9208cedb9e796c7f651c07de9b1b31"

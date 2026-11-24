@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "ui.button-copy",
+  "view": "default",
+  "template": "smart.ui.button-copy.default"
+}

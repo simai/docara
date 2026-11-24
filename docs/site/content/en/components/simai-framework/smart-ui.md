@@ -1,7 +1,7 @@
 ---
 title: "SIMAI Framework ui.* components"
-description: "The ui.* Smart components from SIMAI Framework — a button, an alert, a badge, a tag, a tooltip, an avatar, a progress bar and a reference link: what they are, how a site allows them and how to call them."
-tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar, sf-progress-bar, sf-reference-link]
+description: "The ui.* Smart components from SIMAI Framework — a button, an alert, a badge, a tag, a tooltip, an avatar, a progress bar, a reference link and a copy button: what they are, how a site allows them and how to call them."
+tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar, sf-progress-bar, sf-reference-link, sf-button-copy]
 ---
 
 # SIMAI Framework ui.* components
@@ -54,8 +54,8 @@ checksum of its description, and also the restrictions for a static site:
 build checks the checksums against the component descriptions that ship
 with Docara: if a component is not in the lock or the description does not
 match, the build stops. This site's lock allows `ui.button`, `ui.alert`,
-`ui.badge`, `ui.tag`, `ui.tooltip`, `ui.avatar`, `ui.progress-bar` and
-`ui.reference-link` — the same ones a new
+`ui.badge`, `ui.tag`, `ui.tooltip`, `ui.avatar`, `ui.progress-bar`,
+`ui.reference-link` and `ui.button-copy` — the same ones a new
 project gets. The lock fields are described in detail
 in the [Framework lock](/en/reference/framework-lock/) reference.
 
@@ -344,6 +344,39 @@ Result:
 {"label":"Old page","state":"missing"}
 :::
 
+## Copy button ui.button-copy
+
+A copy button copies a value or the text of an element on the page, shows a
+check for a moment and tells screen readers the result.
+
+```markdown
+:::ui.button-copy
+{"value":"composer require simai/docara","label":"Copy the command"}
+:::
+```
+
+Result:
+
+:::ui.button-copy
+{"value":"composer require simai/docara","label":"Copy the command"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `value` | The text to copy |
+| `target` | Instead of `value`: the `#id` of an element on the page whose text or field value is copied. Do not give it together with `value` |
+| `text` | A visible label; without it the button is an icon only |
+| `label` | What is copied, for screen readers, such as "Copy the command"; "Copy" without it |
+| `size` | `1/3`, `1/2`, `1` (default), `2` or `3` |
+| `appearance` | `ghost` (default), `outline`, `tonal` or `plain`, an icon without a plate |
+| `icon`, `success-icon` | The icon before the press (`content_copy`) and after a successful copy (`check`) |
+| `success-text`, `error-text` | Your own success and error text |
+| `duration` | How many milliseconds the result stays shown, 2000 by default |
+
+:::ui.button-copy
+{"value":"https://docara.io/","text":"Copy the link","icon":"link","appearance":"tonal"}
+:::
+
 ## Other components
 
 - `ui.input`, `ui.checkbox`, `ui.dropdown` and `ui.list-item` (only the text
@@ -354,8 +387,6 @@ Result:
 - `ui.tabs` and `ui.dataview` are not accepted yet. Use the Docara
   [tabs](/en/components/blocks/tabs/) and
   [table](/en/authoring/markdown/#tables) instead.
-- `ui.copy-button` is not accepted yet either: it does not have a
-  description Docara can check yet.
 
 The `php vendor/bin/docara atlas --json` command shows which components are
 available to your site, and

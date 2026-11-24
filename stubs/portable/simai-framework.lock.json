@@ -3327,6 +3327,32 @@
                 "excluded_states": []
             }
         },
+        "ui.progress-bar": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "eef30c2f193323e6501af2cf52ed1dd194f6c3a45b14d031cf07256fdf80da87",
+            "consumer_policy": {
+                "managed": [],
+                "blocked": [],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": []
+            }
+        },
+        "ui.reference-link": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "f0edb55c93e1e4c89c34a7913f1dcd7f2c4d40c8830705b20f149017471efac7",
+            "consumer_policy": {
+                "managed": [],
+                "blocked": [],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": []
+            }
+        },
         "ui.tag": {
             "provider": "larena/ui",
             "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
@@ -3409,6 +3435,18 @@
             },
             "smart/modal/js/modal.min.js": {
                 "sha256": "0da2116c77106c5146684cf8c231729e07671b80a26a2d5abd127b10570f7ded"
+            },
+            "smart/progress-bar/js/progress-bar.js": {
+                "sha256": "e3ec6c3f65672473672801016d6de76e2191125b4bb35eb86de86d6ef9a57512"
+            },
+            "smart/progress-bar/js/progress-bar.min.js": {
+                "sha256": "a10f002064f288016b23a3009e623db41d6cad910c7a7d8020d26d89e49fbcd0"
+            },
+            "smart/reference-link/js/reference-link.js": {
+                "sha256": "7742058515bd2ab6a835830f35f3129179f412e84b61c8146c8c1d03936b2c09"
+            },
+            "smart/reference-link/js/reference-link.min.js": {
+                "sha256": "4bc0550c0bb660424aace504d444d4ec0f9ad53623490c0090d78a11ac4972b8"
             },
             "smart/tag/css/tag.css": {
                 "sha256": "eaa8b1e6d0351bc07c2d953b2d662df1789ea9b789a8a135f7f53a4bf81483ea"
@@ -4141,12 +4179,6 @@
             "smart/profile-picker/js/profile-picker.min.js": {
                 "sha256": "b78e9b836aaa34f7a00d97759783900cf82c95dc88e2c17e6a499a271f6a8dde"
             },
-            "smart/progress-bar/js/progress-bar.js": {
-                "sha256": "e3ec6c3f65672473672801016d6de76e2191125b4bb35eb86de86d6ef9a57512"
-            },
-            "smart/progress-bar/js/progress-bar.min.js": {
-                "sha256": "a10f002064f288016b23a3009e623db41d6cad910c7a7d8020d26d89e49fbcd0"
-            },
             "smart/progress-ring/js/progress-ring.js": {
                 "sha256": "143d1b4199ce510e984a239d212b4dd3512592455387629e4da7c76ad643c69f"
             },
@@ -4197,12 +4229,6 @@
             },
             "smart/range-slider/js/range-slider.min.js": {
                 "sha256": "3788508edcf3837d5d02b9e62400e404ca1d0cac43a67ac69c84ffc38061def3"
-            },
-            "smart/reference-link/js/reference-link.js": {
-                "sha256": "7742058515bd2ab6a835830f35f3129179f412e84b61c8146c8c1d03936b2c09"
-            },
-            "smart/reference-link/js/reference-link.min.js": {
-                "sha256": "4bc0550c0bb660424aace504d444d4ec0f9ad53623490c0090d78a11ac4972b8"
             },
             "smart/resizer/css/resizer.css": {
                 "sha256": "61b985fa54ae730f6efcb982541e664e19446684d5e9a62bcdacc7d6375367e6"

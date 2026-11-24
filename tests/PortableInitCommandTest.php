@@ -220,6 +220,10 @@ class PortableInitCommandTest extends TestCase
             'smart/icon/js/icon.min.js' => 'ccc35e22f1a69f6667273184e04228972cd8eb5717cf9c0b1412b953a005fcdb',
             'smart/modal/js/modal.js' => '7c18ac1c4a0d9807f926c9d5d8b615f6272b603a0e2e3bd07982fc97fdd6f15d',
             'smart/modal/js/modal.min.js' => '0da2116c77106c5146684cf8c231729e07671b80a26a2d5abd127b10570f7ded',
+            'smart/progress-bar/js/progress-bar.js' => 'e3ec6c3f65672473672801016d6de76e2191125b4bb35eb86de86d6ef9a57512',
+            'smart/progress-bar/js/progress-bar.min.js' => 'a10f002064f288016b23a3009e623db41d6cad910c7a7d8020d26d89e49fbcd0',
+            'smart/reference-link/js/reference-link.js' => '7742058515bd2ab6a835830f35f3129179f412e84b61c8146c8c1d03936b2c09',
+            'smart/reference-link/js/reference-link.min.js' => '4bc0550c0bb660424aace504d444d4ec0f9ad53623490c0090d78a11ac4972b8',
             'smart/tag/css/tag.css' => 'eaa8b1e6d0351bc07c2d953b2d662df1789ea9b789a8a135f7f53a4bf81483ea',
             'smart/tag/css/tag.min.css' => '27cc9279eab272c47b129e32b54b45cb78c65a89f2f442572eccc3aaad83594e',
             'smart/tag/js/tag.js' => 'fbd288c87483eb03497d1f14b8f1e6596c904f9b00b3f4aa60e8ff690cd33f62',
@@ -233,7 +237,7 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame('docara.framework_dynamic_asset_projection.v1', $lock['dynamic_asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['dynamic_asset_projection']['mount']);
         $this->assertSame($lock['runtime']['ui_smart']['commit'], $lock['dynamic_asset_projection']['source']['revision']);
-        $this->assertCount(330, $lock['dynamic_asset_projection']['files']);
+        $this->assertCount(326, $lock['dynamic_asset_projection']['files']);
         $this->assertSame(
             '7d75f7a7ff1513c924637b2b899564863be8ccedd78184fdc2baed18d070b939',
             $lock['dynamic_asset_projection']['files']['smart/input/js/input.js']['sha256'],

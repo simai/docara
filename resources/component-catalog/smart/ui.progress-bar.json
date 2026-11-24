@@ -1,0 +1,34 @@
+{
+    "id": "ui.progress-bar",
+    "family": "framework_smart",
+    "category": "feedback",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive_json",
+        "call": ":::ui.progress-bar",
+        "jobs": [
+            "report_progress"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "default",
+        "success",
+        "warning",
+        "error",
+        "indeterminate",
+        "paused",
+        "meter"
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/components/simai-framework/smart-ui.md",
+    "provenance": {
+        "source_kind": "smart_consumer_metadata",
+        "manifest_ref": "resources/framework/manifests/ui-progress-bar.json"
+    }
+}

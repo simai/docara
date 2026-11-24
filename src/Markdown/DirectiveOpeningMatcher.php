@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Simai\Docara\Markdown;
 
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
+use Simai\Docara\Framework\FrameworkComponentName;
 
 final readonly class DirectiveOpeningMatcher
 {
-    private const FRAMEWORK_NAME_PATTERN = '/\Aui(?:\.[a-z][a-z0-9_]*)+\z/D';
+    private const FRAMEWORK_NAME_PATTERN = FrameworkComponentName::FRAMEWORK_PATTERN;
 
     /**
      * The text between a directive's braces: anything but a brace or a line

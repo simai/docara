@@ -196,6 +196,8 @@ final class EffectiveComponentCatalogTest extends TestCase
             'ui.avatar',
             'ui.badge',
             'ui.button',
+            'ui.progress-bar',
+            'ui.reference-link',
             'ui.tag',
             'ui.tooltip',
         ] as $id) {
@@ -435,6 +437,8 @@ final class EffectiveComponentCatalogTest extends TestCase
             'ui.badge' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.button' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.dataview' => 'docs/site/content/ru/start/component-model.md',
+            'ui.progress-bar' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
+            'ui.reference-link' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.tabs' => 'docs/site/content/ru/start/component-model.md',
             'ui.tag' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.tooltip' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
@@ -780,6 +784,8 @@ final class EffectiveComponentCatalogTest extends TestCase
             'ui.avatar' => '<sf-avatar',
             'ui.badge' => '<sf-badge',
             'ui.button' => '<sf-button',
+            'ui.progress-bar' => '<sf-progress-bar',
+            'ui.reference-link' => '<sf-reference-link',
             'ui.tag' => '<sf-tag',
             'ui.tooltip' => '<sf-tooltip',
         ];
@@ -793,7 +799,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(42, $supported);
+        self::assertCount(44, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),

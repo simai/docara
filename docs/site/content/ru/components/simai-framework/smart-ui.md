@@ -1,7 +1,7 @@
 ---
 title: "Компоненты SIMAI Framework ui.*"
-description: "Smart-компоненты ui.* из SIMAI Framework — кнопка, уведомление, бейдж, тег, подсказка и аватар: что это, как сайт разрешает их в lock-файле и как вызвать в Markdown."
-tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar]
+description: "Smart-компоненты ui.* из SIMAI Framework — кнопка, уведомление, бейдж, тег, подсказка, аватар, полоса прогресса и ссылка-карточка: что это, как сайт разрешает их в lock-файле и как вызвать в Markdown."
+tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar, sf-progress-bar, sf-reference-link]
 ---
 
 # Компоненты SIMAI Framework ui.*
@@ -52,7 +52,8 @@ Smart-компоненты `ui.*` — готовые элементы интер
 контрольные суммы с описаниями компонентов, которые поставляются с Docara:
 если компонента нет в lock или описание не совпадает, сборка
 останавливается. Lock этого сайта разрешает
-`ui.button`, `ui.alert`, `ui.badge`, `ui.tag`, `ui.tooltip` и `ui.avatar` —
+`ui.button`, `ui.alert`, `ui.badge`, `ui.tag`, `ui.tooltip`, `ui.avatar`,
+`ui.progress-bar` и `ui.reference-link` —
 те же, что получает новый проект. Подробно поля
 lock описаны в справочнике [Framework lock](/ru/reference/framework-lock/).
 
@@ -266,6 +267,80 @@ lock описаны в справочнике [Framework lock](/ru/reference/fra
 {"heading":"Команда документации","shape":"square","hue":"indigo","status":"verified"}
 :::
 
+## Полоса прогресса ui.progress-bar
+
+Полоса прогресса показывает, сколько работы уже сделано, или насколько
+заполнен известный объём, например место на диске.
+
+```markdown
+:::ui.progress-bar
+{"value":40,"label":"Загрузка","text-position":"top"}
+:::
+```
+
+Результат:
+
+:::ui.progress-bar
+{"value":40,"label":"Загрузка","text-position":"top"}
+:::
+
+| Параметр | Значение |
+| --- | --- |
+| `value` | Сколько сделано, в процентах: от 0 до 100 |
+| `label` | Подпись: что именно выполняется |
+| `value-text` | Свой текст значения для программ экранного доступа, например «3 из 8 файлов» |
+| `text-position` | Где показать проценты: `none` (по умолчанию), `top` — над полосой, `inline-end` — в конце строки |
+| `status` | Цвет: пусто — основной цвет темы, `neutral`, `info`, `success`, `warning` или `error` |
+| `warning-at`, `error-at` | Пороги в процентах: с этого значения полоса сама становится предупреждением или ошибкой |
+| `indeterminate` | Работа идёт, но её объём пока неизвестен: по полосе бежит отрезок |
+| `paused` | Работа на паузе |
+| `meter` | Это не ход работы, а заполненность объёма: квота, диск |
+| `inline` | Короткая полоса в конце строки, например в ячейке таблицы; используйте вместе с `meter` |
+| `size` | `1/3`, `1/2`, `1` (по умолчанию), `2` или `3` |
+| `aria-label` | Подпись для программ экранного доступа |
+
+:::ui.progress-bar
+{"value":83,"label":"Диск","meter":true,"warning-at":80,"error-at":95,"text-position":"top"}
+:::
+
+:::ui.progress-bar
+{"label":"Подготовка","indeterminate":true}
+:::
+
+## Ссылка-карточка ui.reference-link
+
+Ссылка-карточка ведёт на другую страницу: название, короткая пометка рядом
+и значок типа. Её ставят, когда ссылка должна быть заметнее строки текста.
+
+```markdown
+:::ui.reference-link
+{"label":"Модель компонентов","href":"/ru/start/component-model/","text":"Начало"}
+:::
+```
+
+Результат:
+
+:::ui.reference-link
+{"label":"Модель компонентов","href":"/ru/start/component-model/","text":"Начало"}
+:::
+
+| Параметр | Значение |
+| --- | --- |
+| `label` | Название ссылки |
+| `href` | Куда ведёт ссылка: адрес на сайте (`/…`, `./…`, `#…`) или внешний адрес `https://…` |
+| `text` | Короткая пометка рядом с названием: раздел, источник или номер |
+| `appearance` | `card` (по умолчанию) — отдельная карточка, `inline` — ссылка внутри текста, `plain` — ссылка отдельной строкой |
+| `icon` | Значок перед названием; без параметра в карточке стоит стрелка |
+| `target` | `_self` (по умолчанию) или `_blank` — открыть в новой вкладке |
+| `state` | Страницы больше нет: `missing` — удалена, `forbidden` — нет доступа; ссылка тогда не работает |
+| `disabled` | Ссылка недоступна |
+| `size`, `line` | `1/2`, `1` или `2` — размер поля формы или высота строки, например для ячейки таблицы |
+| `aria-label` | Подпись для программ экранного доступа |
+
+:::ui.reference-link
+{"label":"Старая страница","state":"missing"}
+:::
+
 ## Другие компоненты
 
 - `ui.input`, `ui.checkbox`, `ui.dropdown` и `ui.list-item` (только текстовый
@@ -276,8 +351,8 @@ lock описаны в справочнике [Framework lock](/ru/reference/fra
 - `ui.tabs` и `ui.dataview` пока не приняты. Вместо них используйте
   [вкладки](/ru/components/blocks/tabs/) и
   [таблицу](/ru/authoring/markdown/#таблицы) Docara.
-- `ui.copy-button`, `ui.reference-link` и `ui.progress-bar` тоже пока не
-  приняты: для них ещё не готово описание, которое Docara может проверить.
+- `ui.copy-button` тоже пока не принят: для него ещё не готово описание,
+  которое Docara может проверить.
 
 Какие компоненты доступны вашему сайту, покажет команда
 `php vendor/bin/docara atlas --json`, а подробности одного компонента —

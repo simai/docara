@@ -35,6 +35,8 @@ final class SmartRegistryTest extends TestCase
                 'ui.dropdown',
                 'ui.input',
                 'ui.list-item',
+                'ui.progress-bar',
+                'ui.reference-link',
                 'ui.tag',
                 'ui.tooltip',
             ],

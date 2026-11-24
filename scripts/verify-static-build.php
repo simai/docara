@@ -884,7 +884,7 @@ function docaraCatalogEntryContractError(
     if (array_diff($required, array_keys($entry)) !== []
         || array_diff(array_keys($entry), $allowed) !== []
         || ! is_string($entry['id'])
-        || preg_match('/\A[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+\z/D', $entry['id']) !== 1
+        || preg_match('/\A[a-z][a-z0-9_]*(?:-[a-z0-9][a-z0-9_]*)*(?:\.[a-z][a-z0-9_]*(?:-[a-z0-9][a-z0-9_]*)*)+\z/D', $entry['id']) !== 1
         || ! in_array(
             $entry['family'],
             ['native_markdown', 'docara_typed', 'framework_smart', 'requirement'],
@@ -1496,7 +1496,7 @@ function docaraCatalogPagesReceipt(string $path): array
                 ],
             )
             || ! is_string($page['id'] ?? null)
-            || preg_match('/\A[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+\z/D', $page['id']) !== 1
+            || preg_match('/\A[a-z][a-z0-9_]*(?:-[a-z0-9][a-z0-9_]*)*(?:\.[a-z][a-z0-9_]*(?:-[a-z0-9][a-z0-9_]*)*)+\z/D', $page['id']) !== 1
             || ! in_array($page['family'] ?? null, ['native_markdown', 'docara_typed', 'framework_smart', 'requirement'], true)
             || ($page['lifecycle'] ?? null) !== 'supported'
             || ! is_string($page['output'] ?? null)
@@ -2163,7 +2163,7 @@ if (is_link($manifestDirectory)
                 }
                 foreach ($supportedComponents as $component) {
                     if (! is_string($component)
-                        || preg_match('/\Aui(?:\.[a-z][a-z0-9_]*)+\z/D', $component) !== 1
+                        || preg_match('/\Aui(?:\.[a-z][a-z0-9_]*(?:-[a-z0-9][a-z0-9_]*)*)+\z/D', $component) !== 1
                     ) {
                         throw new RuntimeException("Resolved page-plan record [$index] has an invalid supported component.");
                     }

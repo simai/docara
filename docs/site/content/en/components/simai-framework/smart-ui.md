@@ -1,7 +1,7 @@
 ---
 title: "SIMAI Framework ui.* components"
-description: "The ui.* Smart components from SIMAI Framework — a button, an alert, a badge, a tag, a tooltip and an avatar: what they are, how a site allows them and how to call them."
-tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar]
+description: "The ui.* Smart components from SIMAI Framework — a button, an alert, a badge, a tag, a tooltip, an avatar, a progress bar and a reference link: what they are, how a site allows them and how to call them."
+tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar, sf-progress-bar, sf-reference-link]
 ---
 
 # SIMAI Framework ui.* components
@@ -54,7 +54,8 @@ checksum of its description, and also the restrictions for a static site:
 build checks the checksums against the component descriptions that ship
 with Docara: if a component is not in the lock or the description does not
 match, the build stops. This site's lock allows `ui.button`, `ui.alert`,
-`ui.badge`, `ui.tag`, `ui.tooltip` and `ui.avatar` — the same ones a new
+`ui.badge`, `ui.tag`, `ui.tooltip`, `ui.avatar`, `ui.progress-bar` and
+`ui.reference-link` — the same ones a new
 project gets. The lock fields are described in detail
 in the [Framework lock](/en/reference/framework-lock/) reference.
 
@@ -269,6 +270,80 @@ Result:
 {"heading":"Documentation team","shape":"square","hue":"indigo","status":"verified"}
 :::
 
+## Progress bar ui.progress-bar
+
+A progress bar shows how much of a task is done, or how full a known range
+is, such as a disk.
+
+```markdown
+:::ui.progress-bar
+{"value":40,"label":"Upload","text-position":"top"}
+:::
+```
+
+Result:
+
+:::ui.progress-bar
+{"value":40,"label":"Upload","text-position":"top"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `value` | How much is done, in per cent: from 0 to 100 |
+| `label` | The caption: what is running |
+| `value-text` | Your own value text for screen readers, such as "3 of 8 files" |
+| `text-position` | Where the percentage stands: `none` (default), `top` above the bar, `inline-end` at the end of the row |
+| `status` | The colour: empty is the theme's main colour, or `neutral`, `info`, `success`, `warning` or `error` |
+| `warning-at`, `error-at` | Thresholds in per cent: from this value on, the bar turns into a warning or an error by itself |
+| `indeterminate` | The work runs but its size is not known yet: a segment crosses the bar |
+| `paused` | The work is paused |
+| `meter` | Not a task's progress but an amount in a range: a quota, a disk |
+| `inline` | A short bar at the end of a row, such as a table cell; use it with `meter` |
+| `size` | `1/3`, `1/2`, `1` (default), `2` or `3` |
+| `aria-label` | A label for screen readers |
+
+:::ui.progress-bar
+{"value":83,"label":"Disk","meter":true,"warning-at":80,"error-at":95,"text-position":"top"}
+:::
+
+:::ui.progress-bar
+{"label":"Preparing","indeterminate":true}
+:::
+
+## Reference link ui.reference-link
+
+A reference link leads to another page: a name, a short note beside it and
+a type icon. Use it when a link should stand out more than a line of text.
+
+```markdown
+:::ui.reference-link
+{"label":"Component model","href":"/en/start/component-model/","text":"Start"}
+:::
+```
+
+Result:
+
+:::ui.reference-link
+{"label":"Component model","href":"/en/start/component-model/","text":"Start"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `label` | The link's name |
+| `href` | Where the link leads: an address on the site (`/…`, `./…`, `#…`) or an external `https://…` address |
+| `text` | A short note beside the name: a section, a source or a number |
+| `appearance` | `card` (default) is a card of its own, `inline` a link in running text, `plain` a link on its own line |
+| `icon` | The icon before the name; without it a card shows an arrow |
+| `target` | `_self` (default) or `_blank` to open in a new tab |
+| `state` | The page is gone: `missing` (deleted) or `forbidden` (no access); the link does not work then |
+| `disabled` | The link is unavailable |
+| `size`, `line` | `1/2`, `1` or `2`: the form field size or the line height, such as for a table cell |
+| `aria-label` | A label for screen readers |
+
+:::ui.reference-link
+{"label":"Old page","state":"missing"}
+:::
+
 ## Other components
 
 - `ui.input`, `ui.checkbox`, `ui.dropdown` and `ui.list-item` (only the text
@@ -279,8 +354,8 @@ Result:
 - `ui.tabs` and `ui.dataview` are not accepted yet. Use the Docara
   [tabs](/en/components/blocks/tabs/) and
   [table](/en/authoring/markdown/#tables) instead.
-- `ui.copy-button`, `ui.reference-link` and `ui.progress-bar` are not
-  accepted yet either: they do not have a description Docara can check yet.
+- `ui.copy-button` is not accepted yet either: it does not have a
+  description Docara can check yet.
 
 The `php vendor/bin/docara atlas --json` command shows which components are
 available to your site, and

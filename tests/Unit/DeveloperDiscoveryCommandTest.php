@@ -45,6 +45,8 @@ final class DeveloperDiscoveryCommandTest extends TestCase
             'ui.dropdown',
             'ui.input',
             'ui.list-item',
+            'ui.progress-bar',
+            'ui.reference-link',
             'ui.tag',
             'ui.tooltip',
         ], array_column($result['data']['items'], 'id'));

@@ -240,7 +240,7 @@ final readonly class FrameworkLock
         }
         foreach ($manifests as $key => $record) {
             if (! is_string($key)
-                || preg_match('/\Aui(?:\.[a-z][a-z0-9_]*)+\z/D', $key) !== 1
+                || ! FrameworkComponentName::isFramework($key)
                 || ! is_array($record)
                 || ($record['provider'] ?? null) !== 'larena/ui'
                 || ! $this->isCommit($record['provider_revision'] ?? null)

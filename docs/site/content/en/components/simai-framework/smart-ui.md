@@ -1,7 +1,7 @@
 ---
 title: "SIMAI Framework ui.* components"
-description: "The ui.* Smart components from SIMAI Framework — ui.button, ui.alert and others: what they are, how a site allows them and how to call them."
-tags: [smart, ui, framework, sf-button, sf-alert]
+description: "The ui.* Smart components from SIMAI Framework — a button, an alert, a badge, a tag, a tooltip and an avatar: what they are, how a site allows them and how to call them."
+tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar]
 ---
 
 # SIMAI Framework ui.* components
@@ -53,8 +53,9 @@ checksum of its description, and also the restrictions for a static site:
 `docara init` creates the file; a Docara update does not change it. The
 build checks the checksums against the component descriptions that ship
 with Docara: if a component is not in the lock or the description does not
-match, the build stops. This site's lock allows `ui.button` and `ui.alert` —
-the same ones a new project gets. The lock fields are described in detail
+match, the build stops. This site's lock allows `ui.button`, `ui.alert`,
+`ui.badge`, `ui.tag`, `ui.tooltip` and `ui.avatar` — the same ones a new
+project gets. The lock fields are described in detail
 in the [Framework lock](/en/reference/framework-lock/) reference.
 
 ## The ui.button button
@@ -125,6 +126,149 @@ has nothing to support them with. Such a call stops the build with
 `FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME`. Docara sets the `id`
 identifier itself.
 
+## The ui.badge badge
+
+A short label: a status, a type or a number.
+
+```markdown
+:::ui.badge
+{"text":"Paid","status":"success"}
+:::
+```
+
+Result:
+
+:::ui.badge
+{"text":"Paid","status":"success"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `text` | The label, up to 80 characters |
+| `status` | `info`, `success`, `warning` or `error` — what the badge reports |
+| `appearance` | `tonal` (the default), `outline` or `main`. `main` is only for a count with the `error` status |
+| `scheme` | `neutral`, `primary`, `secondary`, `tertiary` or `on-surface` |
+| `size` | `1/3` (the default), `1/2` or `1` |
+| `line` | `1/2`, `1`, `2` or `text` — the line height, so the badge does not change the height of a table row or a line of text |
+| `activity` | Where a run stands: `running`, `waiting`, `done`, `stopped`, `failed`, `paused` or `queued`. The badge adds its own icon and word in the page language |
+| `icon`, `icon-position` | The icon name and its place: `start` or `end` |
+| `icon-only` | `true` — only the icon is visible; the text stays for screen readers |
+| `tight` | `true` — narrow side room for dense places |
+| `aria-label` | The label for screen readers, up to 120 characters |
+
+:::ui.badge
+{"text":"PHP 8.4","appearance":"outline","scheme":"on-surface","size":"1/2"}
+:::
+
+:::ui.badge
+{"activity":"running"}
+:::
+
+For a badge inside a line of text the inline
+[Docara badge](/en/components/inline/badge/) `:badge[...]` is handier.
+
+## The ui.tag tag
+
+A tag marks content with a short word. The `checkbox` kind is a filter
+toggle: pressing it checks or unchecks it.
+
+```markdown
+:::ui.tag
+{"text":"Components","kind":"checkbox","count":"12"}
+:::
+```
+
+Result:
+
+:::ui.tag
+{"text":"Components","kind":"checkbox","count":"12"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `text` | The label, up to 80 characters |
+| `kind` | `default` (the default) — a plain label, `checkbox` — a toggle |
+| `status` | `info`, `success`, `warning` or `error` |
+| `appearance` | `default`, `outline` or `ghost` |
+| `size` | `1/3`, `1/2` (the default), `1`, `2` or `3` |
+| `height` | `low`, `default`, `high` or `highest` |
+| `inline` | `true` — the tag sits on the line of another control |
+| `count` | A number after the label, such as `12` or `99+` |
+| `disabled` | `true` — the tag is unavailable |
+| `aria-label` | The label for screen readers |
+
+:::ui.tag
+{"text":"PHP 8.4","appearance":"outline"}
+:::
+
+Tags that are removed with a cross or open a menu are not needed on this
+page: a static site has nothing to handle their action, so Docara does not
+accept them.
+
+## The ui.tooltip tooltip
+
+The Framework tooltip bubble itself: a short text, a second line and a key
+combination. Here it is shown as it is, without the element it usually
+appears over.
+
+```markdown
+:::ui.tooltip
+{"text":"Copy the address","shortcut":"mod+c","arrow":"top-center"}
+:::
+```
+
+Result:
+
+:::ui.tooltip
+{"text":"Copy the address","shortcut":"mod+c","arrow":"top-center"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `text` | The main text, up to 160 characters |
+| `supporting-text` | The second line, up to 300 characters |
+| `shortcut` | A key combination, such as `mod+c` or `shift+/` |
+| `appearance` | `dark` (the default) or `light` |
+| `arrow` | Where the tail is: `none` (the default), `top-center`, `bottom-center`, `inline-start`, `inline-end`, `bottom-inline-start` or `bottom-inline-end` |
+
+:::ui.tooltip
+{"text":"Draft","supporting-text":"Only you can see this page.","appearance":"light","arrow":"inline-start"}
+:::
+
+## The ui.avatar avatar
+
+An avatar shows a person or an organisation: initials from the name, an icon
+and a mark in the corner.
+
+```markdown
+:::ui.avatar
+{"heading":"Anna Smirnova","hue":"auto","status":"online"}
+:::
+```
+
+Result:
+
+:::ui.avatar
+{"heading":"Anna Smirnova","hue":"auto","status":"online"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `heading` | The name: the initials and the screen reader label come from it |
+| `text` | Your own initials instead of the ones from the name, up to 8 characters |
+| `icon` | An icon instead of the initials, for example for a bot or a service |
+| `size` | `1/4`, `1/3`, `1/2`, `1` (the default), `2` or `3` |
+| `shape` | `circle` (the default) — a person, `square` — an organisation, a project, a group |
+| `hue` | The colour of the initials: `auto` — from the name, or a colour name: `red`, `teal`, `indigo` and others |
+| `status` | The mark in the corner: `online`, `away`, `offline`, `company`, `verified` or `none` |
+| `badge-count`, `badge-dot` | A count or a dot on the avatar |
+| `line` | `1/2`, `1` or `2` — the line height when the avatar stands next to text |
+| `aria-label` | The label for screen readers |
+
+:::ui.avatar
+{"heading":"Documentation team","shape":"square","hue":"indigo","status":"verified"}
+:::
+
 ## Other components
 
 - `ui.input`, `ui.checkbox`, `ui.dropdown` and `ui.list-item` (only the text
@@ -132,9 +276,11 @@ identifier itself.
   components use them, for example the install command builder — see the
   [extension examples](/en/examples/extensions/). Directly in Markdown they
   can be called only on a site whose lock allows them.
-- `ui.badge`, `ui.tabs` and `ui.dataview` are not accepted yet. Use the
-  Docara [badge](/en/components/inline/badge/), [tabs](/en/components/blocks/tabs/) and
+- `ui.tabs` and `ui.dataview` are not accepted yet. Use the Docara
+  [tabs](/en/components/blocks/tabs/) and
   [table](/en/authoring/markdown/#tables) instead.
+- `ui.copy-button`, `ui.reference-link` and `ui.progress-bar` are not
+  accepted yet either: they do not have a description Docara can check yet.
 
 The `php vendor/bin/docara atlas --json` command shows which components are
 available to your site, and

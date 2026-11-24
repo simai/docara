@@ -3253,19 +3253,6 @@
         }
     },
     "manifests": {
-        "ui.button": {
-            "provider": "larena/ui",
-            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
-            "sha256": "7c13d0615047c6142c0d7380f94476a04fece5a7a9b95c6372225cead9370041",
-            "consumer_policy": {
-                "managed": [],
-                "blocked": [],
-                "omitted_assets": {
-                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
-                },
-                "excluded_states": []
-            }
-        },
         "ui.alert": {
             "provider": "larena/ui",
             "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
@@ -3300,6 +3287,71 @@
                     }
                 }
             }
+        },
+        "ui.avatar": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "23f615438cdfed3a090933e59fac1437a146596812acc8e60a0382dba4388409",
+            "consumer_policy": {
+                "managed": [],
+                "blocked": [],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": []
+            }
+        },
+        "ui.badge": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "924401b10e467f555b145bf4c3c0e0cb231e35530120ec766bdffcee477b8546",
+            "consumer_policy": {
+                "managed": [],
+                "blocked": [],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": []
+            }
+        },
+        "ui.button": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "7c13d0615047c6142c0d7380f94476a04fece5a7a9b95c6372225cead9370041",
+            "consumer_policy": {
+                "managed": [],
+                "blocked": [],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": []
+            }
+        },
+        "ui.tag": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "b5e34edab90b33dd9560e82fec4ccea5d4e062506c3719e61ab5d9078bfb39db",
+            "consumer_policy": {
+                "managed": [],
+                "blocked": [],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": []
+            }
+        },
+        "ui.tooltip": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "f5776c9149324a71d3e044fd1218b4f28a2b112cff84080c48368a33c3a3c531",
+            "consumer_policy": {
+                "managed": [],
+                "blocked": [],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": []
+            }
         }
     },
     "asset_projection": {
@@ -3315,6 +3367,18 @@
             },
             "smart/alert/js/alert.min.js": {
                 "sha256": "92a4eaab05e2a2f8b29af1e617b37a29b17ce1c013204b913b67d7390e4ea64d"
+            },
+            "smart/avatar/js/avatar.js": {
+                "sha256": "a7594c45b4d657b317c59f42b2c3b418adf5f4097048a67dbdfae4954fada752"
+            },
+            "smart/avatar/js/avatar.min.js": {
+                "sha256": "113ac898ff7a6b4c3efe24de84a045248fd96981346d3a8858e242b86d07ab41"
+            },
+            "smart/badge/js/badge.js": {
+                "sha256": "302c712ce0c024d509f86a97501a39e0671e812a1b8ad3bf88edcfedd4e19fa5"
+            },
+            "smart/badge/js/badge.min.js": {
+                "sha256": "0e941637283591126091ba8474327547c13136b7a2d497b6bd821bcc8d02876a"
             },
             "smart/button-close/css/button-close.css": {
                 "sha256": "3bf84ff663eb381ed5da16bd496d628b9b709c0315d6c589059b424990a2296e"
@@ -3345,6 +3409,24 @@
             },
             "smart/modal/js/modal.min.js": {
                 "sha256": "0da2116c77106c5146684cf8c231729e07671b80a26a2d5abd127b10570f7ded"
+            },
+            "smart/tag/css/tag.css": {
+                "sha256": "eaa8b1e6d0351bc07c2d953b2d662df1789ea9b789a8a135f7f53a4bf81483ea"
+            },
+            "smart/tag/css/tag.min.css": {
+                "sha256": "27cc9279eab272c47b129e32b54b45cb78c65a89f2f442572eccc3aaad83594e"
+            },
+            "smart/tag/js/tag.js": {
+                "sha256": "fbd288c87483eb03497d1f14b8f1e6596c904f9b00b3f4aa60e8ff690cd33f62"
+            },
+            "smart/tag/js/tag.min.js": {
+                "sha256": "efee3ae55fb855e469928fefb43385188937bcbc38283e8daa3c28f24325c5f9"
+            },
+            "smart/tooltip/js/tooltip.js": {
+                "sha256": "28b2708f9db60873cefdbd392c5b78dc9115c3545360d82c42f85dfa4148dfd9"
+            },
+            "smart/tooltip/js/tooltip.min.js": {
+                "sha256": "00346a63b8cec7429f7750883f98fbb1d1052e8283a6f7a3332f3c05f71034c1"
             }
         }
     },
@@ -3390,23 +3472,11 @@
             "smart/avatar-group/js/avatar-group.min.js": {
                 "sha256": "6da69b707d97788a1e5f285c5310bef5898f4c25a7421d66c6c5eedc700f71ca"
             },
-            "smart/avatar/js/avatar.js": {
-                "sha256": "a7594c45b4d657b317c59f42b2c3b418adf5f4097048a67dbdfae4954fada752"
-            },
-            "smart/avatar/js/avatar.min.js": {
-                "sha256": "113ac898ff7a6b4c3efe24de84a045248fd96981346d3a8858e242b86d07ab41"
-            },
             "smart/avatars/js/avatars.js": {
                 "sha256": "2d8bf0710e7b9ced64ae511415d559b0fc1e57741a5e1e5c39d639065f14160c"
             },
             "smart/avatars/js/avatars.min.js": {
                 "sha256": "ce615816fdc6aff7ebfdc23f4cecf2097cdc3548617ecc121f6ea43a4e11af69"
-            },
-            "smart/badge/js/badge.js": {
-                "sha256": "302c712ce0c024d509f86a97501a39e0671e812a1b8ad3bf88edcfedd4e19fa5"
-            },
-            "smart/badge/js/badge.min.js": {
-                "sha256": "0e941637283591126091ba8474327547c13136b7a2d497b6bd821bcc8d02876a"
             },
             "smart/badges/js/badges.js": {
                 "sha256": "436cafd3c8282c834802252008d8ef404e6abbaed5bc5dfcbd0d074f49298176"
@@ -4263,18 +4333,6 @@
             "smart/tag-group/js/tag-group.min.js": {
                 "sha256": "a77a950eb7f54254fd6f0792afbbca22d98c548d6a4672780ab04734e85480dc"
             },
-            "smart/tag/css/tag.css": {
-                "sha256": "eaa8b1e6d0351bc07c2d953b2d662df1789ea9b789a8a135f7f53a4bf81483ea"
-            },
-            "smart/tag/css/tag.min.css": {
-                "sha256": "27cc9279eab272c47b129e32b54b45cb78c65a89f2f442572eccc3aaad83594e"
-            },
-            "smart/tag/js/tag.js": {
-                "sha256": "fbd288c87483eb03497d1f14b8f1e6596c904f9b00b3f4aa60e8ff690cd33f62"
-            },
-            "smart/tag/js/tag.min.js": {
-                "sha256": "efee3ae55fb855e469928fefb43385188937bcbc38283e8daa3c28f24325c5f9"
-            },
             "smart/tags/css/tags.css": {
                 "sha256": "eaa8b1e6d0351bc07c2d953b2d662df1789ea9b789a8a135f7f53a4bf81483ea"
             },
@@ -4337,12 +4395,6 @@
             },
             "smart/toast/js/toast.min.js": {
                 "sha256": "fbb9e16ba8496cc78a5f36895d5feccaa10a7da5b000a8297edf91f3dee2f512"
-            },
-            "smart/tooltip/js/tooltip.js": {
-                "sha256": "28b2708f9db60873cefdbd392c5b78dc9115c3545360d82c42f85dfa4148dfd9"
-            },
-            "smart/tooltip/js/tooltip.min.js": {
-                "sha256": "00346a63b8cec7429f7750883f98fbb1d1052e8283a6f7a3332f3c05f71034c1"
             },
             "smart/tree-item/js/tree-item.js": {
                 "sha256": "c682ca9725da5105d7ae0deb8e58bba059e4601c59febc441d1cb61cb4abcae9"

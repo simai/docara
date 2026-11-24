@@ -1818,11 +1818,11 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/simai-framework/smart-ui.md",
-            "source_sha256": "aaf7eaaf9092925e7c18e9edb9b779d9eea538a4b6011c5c1f24e9d53324f726",
-            "source_structure_sha256": "b21c87938c3f92d877e76ff88e93f4bb81661469e5a400c29527eba84b335551",
+            "source_sha256": "219d3717cde05e7f1de373d8e80ae58e005c26c38112a151446c0edd5b413607",
+            "source_structure_sha256": "a25b81fb04cb82948d6dcaef5d03a8c5c05081666579a76ff9a337a9999a727e",
             "target_path": "content/en/components/simai-framework/smart-ui.md",
-            "target_sha256": "201d70b18c50ba35059aca814e2f82e40af0f582a7652cc5fe32deb80ef85e35",
-            "target_structure_sha256": "b21c87938c3f92d877e76ff88e93f4bb81661469e5a400c29527eba84b335551"
+            "target_sha256": "b0c52e35b3f1ea3d2e37c94fac53c506b88910b80fc2700c0a7ff8ec5ddc9e97",
+            "target_structure_sha256": "a25b81fb04cb82948d6dcaef5d03a8c5c05081666579a76ff9a337a9999a727e"
         },
         {
             "key": "demonstrator-recipes/compact.md",
@@ -2694,10 +2694,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/start/component-model.md",
-            "source_sha256": "fe3b980d55e830a48196b424e9ce297c381e4b36efb655848e21587bd5383af0",
+            "source_sha256": "cf78de75c8c10c756143b13407eae7611ee640b0a9593ebfbe5a615435b998c8",
             "source_structure_sha256": "3f3c8b7441ac18ca7f4171efe1f63977ded8ce68d4f7316c58200ccfe71797df",
             "target_path": "content/en/start/component-model.md",
-            "target_sha256": "97866a913a794b1427aa657e21cdf796653fa85274cce336140a53099bd08511",
+            "target_sha256": "b549bdaafe85a1f6569991cb9bd2a2b9e9a466f1e243fcef0ad8a50093c5bc2d",
             "target_structure_sha256": "3f3c8b7441ac18ca7f4171efe1f63977ded8ce68d4f7316c58200ccfe71797df"
         },
         {

@@ -193,7 +193,11 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.steps',
             'docara.tabs',
             'ui.alert',
+            'ui.avatar',
+            'ui.badge',
             'ui.button',
+            'ui.tag',
+            'ui.tooltip',
         ] as $id) {
             self::assertSame('supported', $lifecycles[$id] ?? null, $id);
         }
@@ -217,7 +221,6 @@ final class EffectiveComponentCatalogTest extends TestCase
                 self::assertIsArray($entry['gap'] ?? null, (string) $entry['id']);
             }
         }
-        self::assertSame('admission_pending', $lifecycles['ui.badge'] ?? null);
         self::assertSame('framework_gap', $lifecycles['content.icon'] ?? null);
         // Code line options shipped: the requirement record is gone and the
         // native code entry carries them.
@@ -428,10 +431,13 @@ final class EffectiveComponentCatalogTest extends TestCase
             'native.table' => 'docs/site/content/ru/authoring/markdown.md',
             'native.task_list' => 'docs/site/content/ru/authoring/markdown.md',
             'ui.alert' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
-            'ui.badge' => 'docs/site/content/ru/start/component-model.md',
+            'ui.avatar' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
+            'ui.badge' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.button' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.dataview' => 'docs/site/content/ru/start/component-model.md',
             'ui.tabs' => 'docs/site/content/ru/start/component-model.md',
+            'ui.tag' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
+            'ui.tooltip' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
         ];
 
         self::assertSame($expected, $actual);
@@ -535,7 +541,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         }
 
         try {
-            (new FrameworkConsumerPolicy)->catalogMetadata('ui.badge');
+            (new FrameworkConsumerPolicy)->catalogMetadata('ui.tabs');
             self::fail('An unreviewed Smart component unexpectedly received an empty consumer policy.');
         } catch (FrameworkComponentException $exception) {
             self::assertSame('FRAMEWORK_CONSUMER_POLICY_MISSING', $exception->errorCode);
@@ -771,7 +777,11 @@ final class EffectiveComponentCatalogTest extends TestCase
         ];
         $smartIdentity = [
             'ui.alert' => '<sf-alert',
+            'ui.avatar' => '<sf-avatar',
+            'ui.badge' => '<sf-badge',
             'ui.button' => '<sf-button',
+            'ui.tag' => '<sf-tag',
+            'ui.tooltip' => '<sf-tooltip',
         ];
         $inlineIdentity = [
             'docara.badge' => '<span class="sf-badge ',
@@ -783,7 +793,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(38, $supported);
+        self::assertCount(42, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),

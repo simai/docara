@@ -1,7 +1,7 @@
 ---
 title: "Компоненты SIMAI Framework ui.*"
-description: "Smart-компоненты ui.* из SIMAI Framework — ui.button, ui.alert и другие: что это, как сайт разрешает их в lock-файле и как вызвать в Markdown."
-tags: [smart, ui, framework, sf-button, sf-alert]
+description: "Smart-компоненты ui.* из SIMAI Framework — кнопка, уведомление, бейдж, тег, подсказка и аватар: что это, как сайт разрешает их в lock-файле и как вызвать в Markdown."
+tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar]
 ---
 
 # Компоненты SIMAI Framework ui.*
@@ -52,7 +52,8 @@ Smart-компоненты `ui.*` — готовые элементы интер
 контрольные суммы с описаниями компонентов, которые поставляются с Docara:
 если компонента нет в lock или описание не совпадает, сборка
 останавливается. Lock этого сайта разрешает
-`ui.button` и `ui.alert` — те же, что получает новый проект. Подробно поля
+`ui.button`, `ui.alert`, `ui.badge`, `ui.tag`, `ui.tooltip` и `ui.avatar` —
+те же, что получает новый проект. Подробно поля
 lock описаны в справочнике [Framework lock](/ru/reference/framework-lock/).
 
 ## Кнопка ui.button
@@ -122,6 +123,149 @@ lock описаны в справочнике [Framework lock](/ru/reference/fra
 `FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME`. Идентификатор `id` Docara
 задаёт сама.
 
+## Бейдж ui.badge
+
+Короткая метка: статус, тип или число.
+
+```markdown
+:::ui.badge
+{"text":"Оплачен","status":"success"}
+:::
+```
+
+Результат:
+
+:::ui.badge
+{"text":"Оплачен","status":"success"}
+:::
+
+| Параметр | Значение |
+| --- | --- |
+| `text` | Надпись, до 80 символов |
+| `status` | `info`, `success`, `warning` или `error` — что сообщает бейдж |
+| `appearance` | `tonal` (по умолчанию), `outline` или `main`. `main` — только для счётчика со статусом `error` |
+| `scheme` | `neutral`, `primary`, `secondary`, `tertiary` или `on-surface` |
+| `size` | `1/3` (по умолчанию), `1/2` или `1` |
+| `line` | `1/2`, `1`, `2` или `text` — высота строки, чтобы бейдж не менял высоту строки таблицы или текста |
+| `activity` | Ход работы: `running`, `waiting`, `done`, `stopped`, `failed`, `paused` или `queued`. Бейдж сам подставит значок и слово на языке страницы |
+| `icon`, `icon-position` | Имя значка и его место: `start` или `end` |
+| `icon-only` | `true` — виден только значок, текст остаётся для программ экранного доступа |
+| `tight` | `true` — узкие поля для плотных мест |
+| `aria-label` | Подпись для программ экранного доступа, до 120 символов |
+
+:::ui.badge
+{"text":"PHP 8.4","appearance":"outline","scheme":"on-surface","size":"1/2"}
+:::
+
+:::ui.badge
+{"activity":"running"}
+:::
+
+Для бейджа внутри строки текста удобнее строчный
+[бейдж Docara](/ru/components/inline/badge/) `:badge[...]`.
+
+## Тег ui.tag
+
+Тег помечает содержимое коротким словом. Вид `checkbox` — переключатель
+фильтра: при нажатии он отмечается или снимает отметку.
+
+```markdown
+:::ui.tag
+{"text":"Компоненты","kind":"checkbox","count":"12"}
+:::
+```
+
+Результат:
+
+:::ui.tag
+{"text":"Компоненты","kind":"checkbox","count":"12"}
+:::
+
+| Параметр | Значение |
+| --- | --- |
+| `text` | Надпись, до 80 символов |
+| `kind` | `default` (по умолчанию) — просто метка, `checkbox` — переключатель |
+| `status` | `info`, `success`, `warning` или `error` |
+| `appearance` | `default`, `outline` или `ghost` |
+| `size` | `1/3`, `1/2` (по умолчанию), `1`, `2` или `3` |
+| `height` | `low`, `default`, `high` или `highest` |
+| `inline` | `true` — тег стоит в строке другого элемента |
+| `count` | Число после надписи, например `12` или `99+` |
+| `disabled` | `true` — тег недоступен |
+| `aria-label` | Подпись для программ экранного доступа |
+
+:::ui.tag
+{"text":"PHP 8.4","appearance":"outline"}
+:::
+
+Теги, которые удаляются крестиком или открывают меню, этой странице не нужны:
+на статическом сайте их действие некому обработать, поэтому Docara их не
+принимает.
+
+## Подсказка ui.tooltip
+
+Сам «пузырёк» подсказки Framework: короткий текст, вторая строка и сочетание
+клавиш. Здесь он показан как есть, без элемента, над которым обычно
+появляется.
+
+```markdown
+:::ui.tooltip
+{"text":"Скопировать адрес","shortcut":"mod+c","arrow":"top-center"}
+:::
+```
+
+Результат:
+
+:::ui.tooltip
+{"text":"Скопировать адрес","shortcut":"mod+c","arrow":"top-center"}
+:::
+
+| Параметр | Значение |
+| --- | --- |
+| `text` | Основной текст, до 160 символов |
+| `supporting-text` | Вторая строка, до 300 символов |
+| `shortcut` | Сочетание клавиш, например `mod+c` или `shift+/` |
+| `appearance` | `dark` (по умолчанию) или `light` |
+| `arrow` | Где хвостик: `none` (по умолчанию), `top-center`, `bottom-center`, `inline-start`, `inline-end`, `bottom-inline-start` или `bottom-inline-end` |
+
+:::ui.tooltip
+{"text":"Черновик","supporting-text":"Эту страницу видите только вы.","appearance":"light","arrow":"inline-start"}
+:::
+
+## Аватар ui.avatar
+
+Аватар показывает человека или организацию: инициалы из имени, значок и
+отметку в углу.
+
+```markdown
+:::ui.avatar
+{"heading":"Анна Смирнова","hue":"auto","status":"online"}
+:::
+```
+
+Результат:
+
+:::ui.avatar
+{"heading":"Анна Смирнова","hue":"auto","status":"online"}
+:::
+
+| Параметр | Значение |
+| --- | --- |
+| `heading` | Имя: из него берутся инициалы и подпись для программ экранного доступа |
+| `text` | Свои инициалы вместо взятых из имени, до 8 символов |
+| `icon` | Значок вместо инициалов, например для бота или сервиса |
+| `size` | `1/4`, `1/3`, `1/2`, `1` (по умолчанию), `2` или `3` |
+| `shape` | `circle` (по умолчанию) — человек, `square` — организация, проект, группа |
+| `hue` | Цвет инициалов: `auto` — по имени, или название цвета: `red`, `teal`, `indigo` и другие |
+| `status` | Отметка в углу: `online`, `away`, `offline`, `company`, `verified` или `none` |
+| `badge-count`, `badge-dot` | Счётчик или точка на аватаре |
+| `line` | `1/2`, `1` или `2` — высота строки, когда аватар стоит рядом с текстом |
+| `aria-label` | Подпись для программ экранного доступа |
+
+:::ui.avatar
+{"heading":"Команда документации","shape":"square","hue":"indigo","status":"verified"}
+:::
+
 ## Другие компоненты
 
 - `ui.input`, `ui.checkbox`, `ui.dropdown` и `ui.list-item` (только текстовый
@@ -129,9 +273,11 @@ lock описаны в справочнике [Framework lock](/ru/reference/fra
   собственные компоненты сайта, например конструктор команды установки — см.
   [примеры расширений](/ru/examples/extensions/). Прямо в Markdown они
   вызываются только на сайте, чей lock их разрешает.
-- `ui.badge`, `ui.tabs` и `ui.dataview` пока не приняты. Вместо них используйте
-  [бейдж](/ru/components/inline/badge/), [вкладки](/ru/components/blocks/tabs/) и
+- `ui.tabs` и `ui.dataview` пока не приняты. Вместо них используйте
+  [вкладки](/ru/components/blocks/tabs/) и
   [таблицу](/ru/authoring/markdown/#таблицы) Docara.
+- `ui.copy-button`, `ui.reference-link` и `ui.progress-bar` тоже пока не
+  приняты: для них ещё не готово описание, которое Docara может проверить.
 
 Какие компоненты доступны вашему сайту, покажет команда
 `php vendor/bin/docara atlas --json`, а подробности одного компонента —

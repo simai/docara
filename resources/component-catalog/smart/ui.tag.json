@@ -1,0 +1,30 @@
+{
+    "id": "ui.tag",
+    "family": "framework_smart",
+    "category": "status",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive_json",
+        "call": ":::ui.tag",
+        "jobs": [
+            "label_content"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "default",
+        "checkbox",
+        "disabled"
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/components/simai-framework/smart-ui.md",
+    "provenance": {
+        "source_kind": "smart_consumer_metadata",
+        "manifest_ref": "resources/framework/manifests/ui-tag.json"
+    }
+}

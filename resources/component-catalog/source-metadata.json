@@ -246,7 +246,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/simai-framework/smart-ui.md",
-            "source_sha256": "02725d9d7055af5b0bd97c067e9103bf4a291fb196c2ff2395e38cf7da1a7986",
+            "source_sha256": "bc0e93140abbb8b3d277c0d6f659e09a5b23e870620b31f5815d667505e11e3d",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/components/simai-framework/smart-ui.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/components/simai-framework/smart-ui.md",
@@ -270,7 +270,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/start/component-model.md",
-            "source_sha256": "fe3b980d55e830a48196b424e9ce297c381e4b36efb655848e21587bd5383af0",
+            "source_sha256": "cf78de75c8c10c756143b13407eae7611ee640b0a9593ebfbe5a615435b998c8",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/start/component-model.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/start/component-model.md",
@@ -573,13 +573,45 @@
             "history_exact": false
         },
         {
+            "source_ref": "resources/framework/manifests/ui-avatar.json",
+            "source_sha256": "23f615438cdfed3a090933e59fac1437a146596812acc8e60a0382dba4388409",
+            "release": "3.18.0",
+            "source_url": "https://github.com/simai/docara/blob/v3.18.0/resources/framework/manifests/ui-avatar.json",
+            "history_url": "https://github.com/simai/docara/commits/v3.18.0/resources/framework/manifests/ui-avatar.json",
+            "history_exact": false
+        },
+        {
+            "source_ref": "resources/framework/manifests/ui-badge.json",
+            "source_sha256": "924401b10e467f555b145bf4c3c0e0cb231e35530120ec766bdffcee477b8546",
+            "release": "3.18.0",
+            "source_url": "https://github.com/simai/docara/blob/v3.18.0/resources/framework/manifests/ui-badge.json",
+            "history_url": "https://github.com/simai/docara/commits/v3.18.0/resources/framework/manifests/ui-badge.json",
+            "history_exact": false
+        },
+        {
             "source_ref": "resources/framework/manifests/ui-button.json",
             "source_sha256": "7c13d0615047c6142c0d7380f94476a04fece5a7a9b95c6372225cead9370041",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/resources/framework/manifests/ui-button.json",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/resources/framework/manifests/ui-button.json",
             "history_exact": false
+        },
+        {
+            "source_ref": "resources/framework/manifests/ui-tag.json",
+            "source_sha256": "b5e34edab90b33dd9560e82fec4ccea5d4e062506c3719e61ab5d9078bfb39db",
+            "release": "3.18.0",
+            "source_url": "https://github.com/simai/docara/blob/v3.18.0/resources/framework/manifests/ui-tag.json",
+            "history_url": "https://github.com/simai/docara/commits/v3.18.0/resources/framework/manifests/ui-tag.json",
+            "history_exact": false
+        },
+        {
+            "source_ref": "resources/framework/manifests/ui-tooltip.json",
+            "source_sha256": "f5776c9149324a71d3e044fd1218b4f28a2b112cff84080c48368a33c3a3c531",
+            "release": "3.18.0",
+            "source_url": "https://github.com/simai/docara/blob/v3.18.0/resources/framework/manifests/ui-tooltip.json",
+            "history_url": "https://github.com/simai/docara/commits/v3.18.0/resources/framework/manifests/ui-tooltip.json",
+            "history_exact": false
         }
     ],
-    "content_sha256": "9d46ad6e54fc9fd4e96d8ddb28a114c96785fdd8e827912c503813a201b50375"
+    "content_sha256": "ab6958345ea5bbd5776c3947815f3dea5b249ac82f24fdf319fad101f447d5e3"
 }

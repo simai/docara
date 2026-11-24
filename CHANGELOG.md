@@ -8,6 +8,17 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **Four more SIMAI Framework Smart components on Markdown pages.**
+  `:::ui.badge`, `:::ui.tag`, `:::ui.tooltip` and `:::ui.avatar` are admitted
+  in the bundled and the starter `simai-framework.lock.json`, each with a
+  manifest written from the Framework's `component.json` at the pinned release
+  `ui-dc9fc39aeb26`, a consumer policy, a server template, a catalogue entry
+  and a live example on the «SIMAI Framework ui.* components» page. The
+  manifests keep the Framework's setting names and values and admit only the
+  ones a static page can honour: a tag that is removed or opens a menu, the
+  avatar's photo and label views and the retired spellings are left out. Their
+  scripts join the eager asset projection. `ui.tabs`, `ui.copy-button`,
+  `ui.reference-link` and `ui.progress-bar` are not admitted yet.
 - **Colours for readers to choose.** `theme.choices` in `docara.json` lists up
   to eight colours, each with an `id`, a `color` and a `title` (text, or text
   by locale). The build makes each with the pinned SIMAI Framework palette into

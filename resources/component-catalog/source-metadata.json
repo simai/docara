@@ -246,7 +246,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/components/simai-framework/smart-ui.md",
-            "source_sha256": "b7d2d6c913b34e84f08f6e20686f48ea7c7565b2788e774b7af4368ab1c1d13d",
+            "source_sha256": "cdbad4dc140d677eaaf414ba963401b8c5f3e62f578dcb3aa16b403a5fd6d06c",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/components/simai-framework/smart-ui.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/components/simai-framework/smart-ui.md",
@@ -270,7 +270,7 @@
         },
         {
             "source_ref": "docs/site/content/ru/start/component-model.md",
-            "source_sha256": "d4215d4b023b569bb5a6d76c3bb3e8d25528578fe89b7e52d6ad8049bbcc37b6",
+            "source_sha256": "c73c8756a43ac6adc513e37b06991b51719ba0051f08d19af7f23bc27fcb98fc",
             "release": "3.18.0",
             "source_url": "https://github.com/simai/docara/blob/v3.18.0/docs/site/content/ru/start/component-model.md",
             "history_url": "https://github.com/simai/docara/commits/v3.18.0/docs/site/content/ru/start/component-model.md",
@@ -589,6 +589,14 @@
             "history_exact": false
         },
         {
+            "source_ref": "resources/framework/manifests/ui-button-copy.json",
+            "source_sha256": "736fd711ed37b4d774c174081f28b1a60d9b7c42cf142c7b061e743e4b7d603f",
+            "release": "3.18.0",
+            "source_url": "https://github.com/simai/docara/blob/v3.18.0/resources/framework/manifests/ui-button-copy.json",
+            "history_url": "https://github.com/simai/docara/commits/v3.18.0/resources/framework/manifests/ui-button-copy.json",
+            "history_exact": false
+        },
+        {
             "source_ref": "resources/framework/manifests/ui-button.json",
             "source_sha256": "7c13d0615047c6142c0d7380f94476a04fece5a7a9b95c6372225cead9370041",
             "release": "3.18.0",
@@ -629,5 +637,5 @@
             "history_exact": false
         }
     ],
-    "content_sha256": "d9f7e0055e7e23692d4dc46a2548efa67c738a0f9452dff7dd163fb10c09876b"
+    "content_sha256": "f5f7c480b5de455f0dd944b15a188724ccd018dc58a0ecdb8c24d44a27a11c14"
 }

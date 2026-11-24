@@ -1,7 +1,7 @@
 ---
 title: "Компоненты SIMAI Framework ui.*"
-description: "Smart-компоненты ui.* из SIMAI Framework — кнопка, уведомление, бейдж, тег, подсказка, аватар, полоса прогресса и ссылка-карточка: что это, как сайт разрешает их в lock-файле и как вызвать в Markdown."
-tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar, sf-progress-bar, sf-reference-link]
+description: "Smart-компоненты ui.* из SIMAI Framework — кнопка, уведомление, бейдж, тег, подсказка, аватар, полоса прогресса, ссылка-карточка и кнопка копирования: что это, как сайт разрешает их в lock-файле и как вызвать в Markdown."
+tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar, sf-progress-bar, sf-reference-link, sf-button-copy]
 ---
 
 # Компоненты SIMAI Framework ui.*
@@ -53,7 +53,7 @@ Smart-компоненты `ui.*` — готовые элементы интер
 если компонента нет в lock или описание не совпадает, сборка
 останавливается. Lock этого сайта разрешает
 `ui.button`, `ui.alert`, `ui.badge`, `ui.tag`, `ui.tooltip`, `ui.avatar`,
-`ui.progress-bar` и `ui.reference-link` —
+`ui.progress-bar`, `ui.reference-link` и `ui.button-copy` —
 те же, что получает новый проект. Подробно поля
 lock описаны в справочнике [Framework lock](/ru/reference/framework-lock/).
 
@@ -341,6 +341,40 @@ lock описаны в справочнике [Framework lock](/ru/reference/fra
 {"label":"Старая страница","state":"missing"}
 :::
 
+## Кнопка копирования ui.button-copy
+
+Кнопка копирования копирует значение или текст элемента страницы, на
+мгновение показывает галочку и сообщает о результате программам экранного
+доступа.
+
+```markdown
+:::ui.button-copy
+{"value":"composer require simai/docara","label":"Скопировать команду"}
+:::
+```
+
+Результат:
+
+:::ui.button-copy
+{"value":"composer require simai/docara","label":"Скопировать команду"}
+:::
+
+| Параметр | Значение |
+| --- | --- |
+| `value` | Текст, который нужно скопировать |
+| `target` | Вместо `value`: `#id` элемента страницы, из которого берётся текст или значение поля. Вместе с `value` не указывайте |
+| `text` | Видимая подпись; без неё кнопка — только значок |
+| `label` | Что копируется, для программ экранного доступа, например «Скопировать команду»; без него — «Копировать» |
+| `size` | `1/3`, `1/2`, `1` (по умолчанию), `2` или `3` |
+| `appearance` | `ghost` (по умолчанию), `outline`, `tonal` или `plain` — только значок без подложки |
+| `icon`, `success-icon` | Значок до нажатия (`content_copy`) и после успешного копирования (`check`) |
+| `success-text`, `error-text` | Свой текст об успехе и об ошибке |
+| `duration` | Сколько миллисекунд виден результат, по умолчанию 2000 |
+
+:::ui.button-copy
+{"value":"https://docara.io/","text":"Скопировать ссылку","icon":"link","appearance":"tonal"}
+:::
+
 ## Другие компоненты
 
 - `ui.input`, `ui.checkbox`, `ui.dropdown` и `ui.list-item` (только текстовый
@@ -351,8 +385,6 @@ lock описаны в справочнике [Framework lock](/ru/reference/fra
 - `ui.tabs` и `ui.dataview` пока не приняты. Вместо них используйте
   [вкладки](/ru/components/blocks/tabs/) и
   [таблицу](/ru/authoring/markdown/#таблицы) Docara.
-- `ui.copy-button` тоже пока не принят: для него ещё не готово описание,
-  которое Docara может проверить.
 
 Какие компоненты доступны вашему сайту, покажет команда
 `php vendor/bin/docara atlas --json`, а подробности одного компонента —

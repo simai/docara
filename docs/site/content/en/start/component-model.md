@@ -97,7 +97,7 @@ An example of container composition: a child `ui.list-item` fills the
 `options` slot of `ui.dropdown`. Such a call builds only on a site whose
 `simai-framework.lock.json` admits both components; this site's lock admits
 `ui.button`, `ui.alert`, `ui.badge`, `ui.tag`, `ui.tooltip`, `ui.avatar`,
-`ui.progress-bar` and `ui.reference-link` now, so the example is only shown here.
+`ui.progress-bar`, `ui.reference-link` and `ui.button-copy` now, so the example is only shown here.
 
 ```markdown
 ::::ui.dropdown {label="Plan"}

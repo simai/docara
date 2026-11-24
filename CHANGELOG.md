@@ -17,8 +17,8 @@ All notable changes to Docara are recorded here. The format follows
   manifests keep the Framework's setting names and values and admit only the
   ones a static page can honour: a tag that is removed or opens a menu, the
   avatar's photo and label views and the retired spellings are left out. Their
-  scripts join the eager asset projection. `ui.tabs` and `ui.copy-button`
-  are not admitted yet.
+  scripts join the eager asset projection. `ui.tabs` is not admitted
+  yet.
 - **Component names with a hyphen, and two more Smart components.** A
   component id may now hold single hyphens inside a segment, so Framework
   names are kept as Framework writes them: `ui.progress-bar` and
@@ -29,6 +29,10 @@ All notable changes to Docara are recorded here. The format follows
   and `:::ui.reference-link` are admitted the same way as the four above, with
   a live example each. The reference link's `href` takes an address on the
   site or an `http(s)` address, and its copy button is left out.
+- **The copy button `ui.button-copy`.** Admitted under the Framework's current
+  name (the older `copy-button` folder is only a rename redirect), from its
+  `component.json` at `ui-dc9fc39aeb26`: all eleven settings, its two events
+  and its stylesheet, with a live example on the Smart UI page.
 - **Colours for readers to choose.** `theme.choices` in `docara.json` lists up
   to eight colours, each with an `id`, a `color` and a `title` (text, or text
   by locale). The build makes each with the pinned SIMAI Framework palette into

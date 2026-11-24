@@ -32,7 +32,7 @@ final class StaticBuildVerifierTest extends TestCase
 
     private const FRAMEWORK_PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
 
-    private const SUPPORTED_COMPONENTS = ['ui.alert', 'ui.avatar', 'ui.badge', 'ui.button', 'ui.progress-bar', 'ui.reference-link', 'ui.tag', 'ui.tooltip'];
+    private const SUPPORTED_COMPONENTS = ['ui.alert', 'ui.avatar', 'ui.badge', 'ui.button', 'ui.button-copy', 'ui.progress-bar', 'ui.reference-link', 'ui.tag', 'ui.tooltip'];
 
     /** @var array<string, true> */
     private array $normalizedBuilds = [];
@@ -611,7 +611,7 @@ final class StaticBuildVerifierTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
-        self::assertCount(44, $supportedEntries);
+        self::assertCount(45, $supportedEntries);
         self::assertCount(3, $unavailableEntries);
         self::assertSame(
             [],

@@ -196,6 +196,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'ui.avatar',
             'ui.badge',
             'ui.button',
+            'ui.button-copy',
             'ui.progress-bar',
             'ui.reference-link',
             'ui.tag',
@@ -436,6 +437,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'ui.avatar' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.badge' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.button' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
+            'ui.button-copy' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.dataview' => 'docs/site/content/ru/start/component-model.md',
             'ui.progress-bar' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
             'ui.reference-link' => 'docs/site/content/ru/components/simai-framework/smart-ui.md',
@@ -783,7 +785,8 @@ final class EffectiveComponentCatalogTest extends TestCase
             'ui.alert' => '<sf-alert',
             'ui.avatar' => '<sf-avatar',
             'ui.badge' => '<sf-badge',
-            'ui.button' => '<sf-button',
+            'ui.button' => "<sf-button\n", // the line break keeps <sf-button-copy apart
+            'ui.button-copy' => "<sf-button-copy\n",
             'ui.progress-bar' => '<sf-progress-bar',
             'ui.reference-link' => '<sf-reference-link',
             'ui.tag' => '<sf-tag',
@@ -799,7 +802,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(44, $supported);
+        self::assertCount(45, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),

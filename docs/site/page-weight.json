@@ -4,6 +4,10 @@
     "max_image_bytes": 1300000,
     "image_oversize_ratio": 2.5,
     "pages": {
+        "/en/": {
+            "max_page_bytes": 10600000,
+            "reason": "10.14 MB: the home page shows the publication diagram, so Mermaid (3.57 MB) loads on it; measured for Docara 3.19.0 on ui-dc9fc39aeb26."
+        },
         "/en/components/code-and-data/diagram-gallery/": {
             "max_page_bytes": 11100000,
             "reason": "10.67 MB: Mermaid (3.57 MB) loads once for the 22 diagrams of the English gallery. Remeasured for ui-dc9fc39aeb26."
@@ -79,6 +83,10 @@
         "/en/examples/smart-button/": {
             "max_page_bytes": 8199999,
             "reason": "7.84 MB: the example frame shows a whole demonstrator page with its own shell sheets, counted again for the frame; over the default from ui-dc9fc39aeb26, whose component sheets doubled."
+        },
+        "/ru/": {
+            "max_page_bytes": 10700000,
+            "reason": "10.26 MB: the home page shows the publication diagram, so Mermaid (3.57 MB) loads on it; measured for Docara 3.19.0 on ui-dc9fc39aeb26."
         },
         "/ru/components/code-and-data/diagram-gallery/": {
             "max_page_bytes": 11300000,

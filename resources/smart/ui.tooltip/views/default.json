@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "ui.tooltip",
+  "view": "default",
+  "template": "smart.ui.tooltip.default"
+}

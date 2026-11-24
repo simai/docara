@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Smart;
 
+use Simai\Docara\Framework\FrameworkComponentName;
+
 /**
  * Platform-neutral contract shared by Framework-owned and Docara-owned Smart
  * manifests. Product-specific admission rules remain in their owner layers.
@@ -16,7 +18,7 @@ final class SmartManifestValidator
         $this->expect(($manifest['schema'] ?? null) === 'larena.ui.smart_manifest.v1', $expectedKey, 'schema');
         $this->expect(($manifest['key'] ?? null) === $expectedKey, $expectedKey, 'key');
         $this->expect(
-            preg_match('/^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+$/D', $expectedKey) === 1,
+            FrameworkComponentName::isDotted($expectedKey),
             $expectedKey,
             'key',
         );
@@ -101,7 +103,7 @@ final class SmartManifestValidator
         $this->expect(($render['strategy'] ?? null) === 'host', $expectedKey, 'render.strategy');
         $this->expect(
             is_string($render['renderer'] ?? null)
-                && preg_match('/^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+$/D', $render['renderer']) === 1,
+                && FrameworkComponentName::isDotted($render['renderer']),
             $expectedKey,
             'render.renderer',
         );

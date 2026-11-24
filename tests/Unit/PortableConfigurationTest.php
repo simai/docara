@@ -318,12 +318,19 @@ final class PortableConfigurationTest extends TestCase
             'id' => 'ui.data.table_row',
             'props' => [],
         ], 'component-call.schema.json');
+        (new SchemaRepository)->assertValid([
+            'schema' => 'docara.component_call.v1',
+            'id' => 'ui.progress-bar',
+            'props' => [],
+        ], 'component-call.schema.json');
 
         foreach ([
             ['schema' => 'docara.component_call.v2', 'id' => 'ui.alert', 'props' => []],
             ['schema' => 'docara.component_call.v1', 'id' => 'alert', 'props' => []],
             ['schema' => 'docara.component_call.v1', 'id' => 'ui.Badge', 'props' => []],
-            ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo-bar', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.-foo', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo-', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo--bar', 'props' => []],
             ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo.', 'props' => []],
             ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo..bar', 'props' => []],
             ['schema' => 'docara.component_call.v1', 'id' => 'ui.alert'],
@@ -717,7 +724,7 @@ final class PortableConfigurationTest extends TestCase
 
     public function test_framework_lock_rejects_noncanonical_smart_component_ids(): void
     {
-        foreach (['ui.foo-bar', 'ui.foo.', 'ui.foo..bar'] as $component) {
+        foreach (['ui.-foo', 'ui.foo-', 'ui.foo--bar', 'ui.foo.', 'ui.foo..bar'] as $component) {
             $lock = $this->frameworkLock();
             $lock['manifests'][$component] = $lock['manifests']['ui.button'];
             unset($lock['manifests']['ui.button']);

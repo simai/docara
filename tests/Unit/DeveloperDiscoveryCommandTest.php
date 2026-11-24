@@ -38,11 +38,17 @@ final class DeveloperDiscoveryCommandTest extends TestCase
             'docara.search',
             'docara.toc',
             'ui.alert',
+            'ui.avatar',
+            'ui.badge',
             'ui.button',
             'ui.checkbox',
             'ui.dropdown',
             'ui.input',
             'ui.list-item',
+            'ui.progress-bar',
+            'ui.reference-link',
+            'ui.tag',
+            'ui.tooltip',
         ], array_column($result['data']['items'], 'id'));
 
         $human = new CommandTester($application->find('list'));

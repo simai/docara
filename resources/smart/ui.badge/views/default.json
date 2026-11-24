@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "ui.badge",
+  "view": "default",
+  "template": "smart.ui.badge.default"
+}

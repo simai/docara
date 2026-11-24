@@ -1,0 +1,247 @@
+{
+    "schema": "larena.ui.smart_manifest.v1",
+    "key": "ui.avatar",
+    "version": "1.0.0",
+    "owner_package": "larena/ui",
+    "kind": "smart",
+    "props": {
+        "type": "object",
+        "properties": {
+            "text": {
+                "type": "string",
+                "maxLength": 8
+            },
+            "heading": {
+                "type": "string",
+                "maxLength": 120
+            },
+            "icon": {
+                "type": "string",
+                "maxLength": 64,
+                "pattern": "^[a-z0-9_]*$"
+            },
+            "size": {
+                "type": "string",
+                "enum": [
+                    "1/4",
+                    "1/3",
+                    "1/2",
+                    "1",
+                    "2",
+                    "3"
+                ]
+            },
+            "line": {
+                "type": "string",
+                "enum": [
+                    "",
+                    "1/2",
+                    "1",
+                    "2"
+                ]
+            },
+            "shape": {
+                "type": "string",
+                "enum": [
+                    "circle",
+                    "square"
+                ]
+            },
+            "hue": {
+                "type": "string",
+                "enum": [
+                    "",
+                    "auto",
+                    "red",
+                    "orange",
+                    "amber",
+                    "yellow",
+                    "lime",
+                    "green",
+                    "teal",
+                    "cyan",
+                    "sky",
+                    "blue",
+                    "indigo",
+                    "violet",
+                    "purple",
+                    "pink",
+                    "brown",
+                    "gray"
+                ]
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "none",
+                    "online",
+                    "away",
+                    "offline",
+                    "company",
+                    "verified"
+                ]
+            },
+            "badge-count": {
+                "type": "string",
+                "maxLength": 8
+            },
+            "badge-dot": {
+                "type": "boolean"
+            },
+            "aria-label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "pattern": "\\S"
+            }
+        },
+        "required": [
+            "size",
+            "line",
+            "shape",
+            "hue",
+            "status",
+            "badge-dot"
+        ],
+        "additionalProperties": false
+    },
+    "slots": [],
+    "events": {
+        "sf-connected": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-after-render": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-updated": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-disconnected": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        }
+    },
+    "views": {
+        "default": []
+    },
+    "presets": {},
+    "constraints": {},
+    "render": {
+        "strategy": "host",
+        "renderer": "ui.sf.element"
+    },
+    "frontend": {
+        "runtime": "simai-framework",
+        "tag": "sf-avatar"
+    },
+    "assets": [
+        {
+            "key": "simai.framework.core.css",
+            "kind": "css",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.core.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.smart_base.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.bridge.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.sf_avatar.js",
+            "kind": "javascript",
+            "critical": true
+        }
+    ],
+    "atlas": {
+        "visible": true,
+        "title": "Avatar",
+        "description": "Shows a person or an organisation by initials or a glyph.",
+        "category": "media",
+        "order": 95,
+        "status": "developer_testable",
+        "readiness": {
+            "safe_to_suggest": true,
+            "safe_to_render": true,
+            "safe_to_bind_data": false,
+            "safe_to_execute_effect": false
+        },
+        "states": [
+            "default",
+            "online",
+            "away",
+            "offline",
+            "company",
+            "verified"
+        ],
+        "accessibility": [
+            "img_role",
+            "accessible_name"
+        ],
+        "example_props": {
+            "size": "1",
+            "line": "",
+            "shape": "circle",
+            "hue": "",
+            "status": "none",
+            "badge-dot": false
+        },
+        "controls": [
+            {
+                "key": "heading",
+                "source": "prop",
+                "widget": "text",
+                "max_length": 120
+            },
+            {
+                "key": "size",
+                "source": "prop",
+                "widget": "select"
+            },
+            {
+                "key": "shape",
+                "source": "prop",
+                "widget": "select"
+            },
+            {
+                "key": "hue",
+                "source": "prop",
+                "widget": "select"
+            },
+            {
+                "key": "status",
+                "source": "prop",
+                "widget": "select"
+            }
+        ],
+        "i18n": {
+            "en": {
+                "title": "Avatar",
+                "description": "Shows a person or an organisation by initials or a glyph."
+            },
+            "ru": {
+                "title": "\u0410\u0432\u0430\u0442\u0430\u0440",
+                "description": "\u041f\u043e\u043a\u0430\u0437\u044b\u0432\u0430\u0435\u0442 \u0447\u0435\u043b\u043e\u0432\u0435\u043a\u0430 \u0438\u043b\u0438 \u043e\u0440\u0433\u0430\u043d\u0438\u0437\u0430\u0446\u0438\u044e \u0438\u043d\u0438\u0446\u0438\u0430\u043b\u0430\u043c\u0438 \u0438\u043b\u0438 \u0437\u043d\u0430\u0447\u043a\u043e\u043c."
+            }
+        }
+    },
+    "provenance": {
+        "source": "simai/ui",
+        "runtime_lock": "resources/framework/runtime-lock.json",
+        "upstream_component": "simai/ui:distr/smart/avatar",
+        "upstream_contract": "simai/ui:distr/smart/avatar/component.json",
+        "upstream_revision": "dc9fc39aeb266bbd8fd2486f21da50d7d1d85d74",
+        "reference_status": "source_backed"
+    }
+}

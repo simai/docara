@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\ComponentCatalog;
 
+use Simai\Docara\Framework\FrameworkComponentName;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final class PublicComponentPage
@@ -13,7 +14,7 @@ final class PublicComponentPage
     {
         $id = $entry['id'] ?? null;
         if (! is_string($id)
-            || preg_match('/^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+$/D', $id) !== 1
+            || ! FrameworkComponentName::isDotted($id)
         ) {
             throw new PortableConfigurationException(
                 'COMPONENT_CATALOG_ID_INVALID',

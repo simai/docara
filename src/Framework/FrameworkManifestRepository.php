@@ -1006,7 +1006,7 @@ final readonly class FrameworkManifestRepository
 
     public static function manifestRelativePath(string $key): string
     {
-        if (preg_match('/\Aui(?:\.[a-z][a-z0-9_]*)+\z/D', $key) !== 1) {
+        if (! FrameworkComponentName::isFramework($key)) {
             throw new FrameworkComponentException('FRAMEWORK_COMPONENT_UNSUPPORTED', $key);
         }
 

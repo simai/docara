@@ -1,0 +1,252 @@
+{
+    "schema": "larena.ui.smart_manifest.v1",
+    "key": "ui.badge",
+    "version": "1.0.0",
+    "owner_package": "larena/ui",
+    "kind": "smart",
+    "props": {
+        "type": "object",
+        "properties": {
+            "text": {
+                "type": "string",
+                "maxLength": 80
+            },
+            "size": {
+                "type": "string",
+                "enum": [
+                    "1/3",
+                    "1/2",
+                    "1"
+                ]
+            },
+            "line": {
+                "type": "string",
+                "enum": [
+                    "",
+                    "1/2",
+                    "1",
+                    "2",
+                    "text"
+                ]
+            },
+            "appearance": {
+                "type": "string",
+                "enum": [
+                    "main",
+                    "tonal",
+                    "outline"
+                ]
+            },
+            "scheme": {
+                "type": "string",
+                "enum": [
+                    "neutral",
+                    "primary",
+                    "secondary",
+                    "tertiary",
+                    "on-surface"
+                ]
+            },
+            "status": {
+                "type": "string",
+                "enum": [
+                    "",
+                    "info",
+                    "success",
+                    "warning",
+                    "error"
+                ]
+            },
+            "activity": {
+                "type": "string",
+                "enum": [
+                    "",
+                    "running",
+                    "waiting",
+                    "done",
+                    "stopped",
+                    "failed",
+                    "paused",
+                    "queued"
+                ]
+            },
+            "icon": {
+                "type": "string",
+                "maxLength": 64,
+                "pattern": "^[a-z0-9_]*$"
+            },
+            "icon-position": {
+                "type": "string",
+                "enum": [
+                    "start",
+                    "end"
+                ]
+            },
+            "icon-only": {
+                "type": "boolean"
+            },
+            "tight": {
+                "type": "boolean"
+            },
+            "aria-label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "pattern": "\\S"
+            }
+        },
+        "required": [
+            "size",
+            "line",
+            "appearance",
+            "scheme",
+            "status",
+            "activity",
+            "icon-position",
+            "icon-only",
+            "tight"
+        ],
+        "additionalProperties": false
+    },
+    "slots": [],
+    "events": {
+        "sf-connected": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-after-render": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-updated": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-disconnected": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        }
+    },
+    "views": {
+        "default": []
+    },
+    "presets": {},
+    "constraints": {},
+    "render": {
+        "strategy": "host",
+        "renderer": "ui.sf.element"
+    },
+    "frontend": {
+        "runtime": "simai-framework",
+        "tag": "sf-badge"
+    },
+    "assets": [
+        {
+            "key": "simai.framework.core.css",
+            "kind": "css",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.core.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.smart_base.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.bridge.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.sf_badge.js",
+            "kind": "javascript",
+            "critical": true
+        }
+    ],
+    "atlas": {
+        "visible": true,
+        "title": "Badge",
+        "description": "Shows a status, a type or a count in a compact label.",
+        "category": "status",
+        "order": 80,
+        "status": "developer_testable",
+        "readiness": {
+            "safe_to_suggest": true,
+            "safe_to_render": true,
+            "safe_to_bind_data": false,
+            "safe_to_execute_effect": false
+        },
+        "states": [
+            "default",
+            "info",
+            "success",
+            "warning",
+            "error"
+        ],
+        "accessibility": [
+            "accessible_name",
+            "text_not_color_only"
+        ],
+        "example_props": {
+            "size": "1/3",
+            "line": "",
+            "appearance": "tonal",
+            "scheme": "neutral",
+            "status": "",
+            "activity": "",
+            "icon-position": "start",
+            "icon-only": false,
+            "tight": false
+        },
+        "controls": [
+            {
+                "key": "text",
+                "source": "prop",
+                "widget": "text",
+                "max_length": 80
+            },
+            {
+                "key": "size",
+                "source": "prop",
+                "widget": "select"
+            },
+            {
+                "key": "appearance",
+                "source": "prop",
+                "widget": "select"
+            },
+            {
+                "key": "scheme",
+                "source": "prop",
+                "widget": "select"
+            },
+            {
+                "key": "status",
+                "source": "prop",
+                "widget": "select"
+            }
+        ],
+        "i18n": {
+            "en": {
+                "title": "Badge",
+                "description": "Shows a status, a type or a count in a compact label."
+            },
+            "ru": {
+                "title": "\u0411\u0435\u0439\u0434\u0436",
+                "description": "\u041a\u043e\u0440\u043e\u0442\u043a\u043e \u043f\u043e\u043a\u0430\u0437\u044b\u0432\u0430\u0435\u0442 \u0441\u0442\u0430\u0442\u0443\u0441, \u0442\u0438\u043f \u0438\u043b\u0438 \u0441\u0447\u0451\u0442\u0447\u0438\u043a."
+            }
+        }
+    },
+    "provenance": {
+        "source": "simai/ui",
+        "runtime_lock": "resources/framework/runtime-lock.json",
+        "upstream_component": "simai/ui:distr/smart/badge",
+        "upstream_contract": "simai/ui:distr/smart/badge/component.json",
+        "upstream_revision": "dc9fc39aeb266bbd8fd2486f21da50d7d1d85d74",
+        "reference_status": "source_backed"
+    }
+}

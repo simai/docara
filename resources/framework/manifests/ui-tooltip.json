@@ -1,0 +1,169 @@
+{
+    "schema": "larena.ui.smart_manifest.v1",
+    "key": "ui.tooltip",
+    "version": "1.0.0",
+    "owner_package": "larena/ui",
+    "kind": "smart",
+    "props": {
+        "type": "object",
+        "properties": {
+            "text": {
+                "type": "string",
+                "maxLength": 160
+            },
+            "supporting-text": {
+                "type": "string",
+                "maxLength": 300
+            },
+            "shortcut": {
+                "type": "string",
+                "maxLength": 40
+            },
+            "appearance": {
+                "type": "string",
+                "enum": [
+                    "light",
+                    "dark"
+                ]
+            },
+            "arrow": {
+                "type": "string",
+                "enum": [
+                    "none",
+                    "top-center",
+                    "bottom-center",
+                    "inline-start",
+                    "inline-end",
+                    "bottom-inline-start",
+                    "bottom-inline-end"
+                ]
+            }
+        },
+        "required": [
+            "appearance",
+            "arrow"
+        ],
+        "additionalProperties": false
+    },
+    "slots": [],
+    "events": {
+        "sf-connected": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-after-render": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-updated": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-disconnected": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        }
+    },
+    "views": {
+        "default": []
+    },
+    "presets": {},
+    "constraints": {},
+    "render": {
+        "strategy": "host",
+        "renderer": "ui.sf.element"
+    },
+    "frontend": {
+        "runtime": "simai-framework",
+        "tag": "sf-tooltip"
+    },
+    "assets": [
+        {
+            "key": "simai.framework.core.css",
+            "kind": "css",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.core.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.smart_base.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.bridge.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.sf_tooltip.js",
+            "kind": "javascript",
+            "critical": true
+        }
+    ],
+    "atlas": {
+        "visible": true,
+        "title": "Tooltip",
+        "description": "Shows a short hint with an optional second line and key combination.",
+        "category": "feedback",
+        "order": 90,
+        "status": "developer_testable",
+        "readiness": {
+            "safe_to_suggest": true,
+            "safe_to_render": true,
+            "safe_to_bind_data": false,
+            "safe_to_execute_effect": false
+        },
+        "states": [
+            "dark",
+            "light"
+        ],
+        "accessibility": [
+            "tooltip_role",
+            "accessible_name"
+        ],
+        "example_props": {
+            "appearance": "dark",
+            "arrow": "none"
+        },
+        "controls": [
+            {
+                "key": "text",
+                "source": "prop",
+                "widget": "text",
+                "max_length": 160
+            },
+            {
+                "key": "appearance",
+                "source": "prop",
+                "widget": "select"
+            },
+            {
+                "key": "arrow",
+                "source": "prop",
+                "widget": "select"
+            }
+        ],
+        "i18n": {
+            "en": {
+                "title": "Tooltip",
+                "description": "Shows a short hint with an optional second line and key combination."
+            },
+            "ru": {
+                "title": "\u041f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0430",
+                "description": "\u041f\u043e\u043a\u0430\u0437\u044b\u0432\u0430\u0435\u0442 \u043a\u043e\u0440\u043e\u0442\u043a\u0443\u044e \u043f\u043e\u0434\u0441\u043a\u0430\u0437\u043a\u0443, \u0432\u0442\u043e\u0440\u0443\u044e \u0441\u0442\u0440\u043e\u043a\u0443 \u0438 \u0441\u043e\u0447\u0435\u0442\u0430\u043d\u0438\u0435 \u043a\u043b\u0430\u0432\u0438\u0448."
+            }
+        }
+    },
+    "provenance": {
+        "source": "simai/ui",
+        "runtime_lock": "resources/framework/runtime-lock.json",
+        "upstream_component": "simai/ui:distr/smart/tooltip",
+        "upstream_contract": "simai/ui:distr/smart/tooltip/component.json",
+        "upstream_revision": "dc9fc39aeb266bbd8fd2486f21da50d7d1d85d74",
+        "reference_status": "source_backed"
+    }
+}

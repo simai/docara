@@ -8,6 +8,27 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **Four more SIMAI Framework Smart components on Markdown pages.**
+  `:::ui.badge`, `:::ui.tag`, `:::ui.tooltip` and `:::ui.avatar` are admitted
+  in the bundled and the starter `simai-framework.lock.json`, each with a
+  manifest written from the Framework's `component.json` at the pinned release
+  `ui-dc9fc39aeb26`, a consumer policy, a server template, a catalogue entry
+  and a live example on the «SIMAI Framework ui.* components» page. The
+  manifests keep the Framework's setting names and values and admit only the
+  ones a static page can honour: a tag that is removed or opens a menu, the
+  avatar's photo and label views and the retired spellings are left out. Their
+  scripts join the eager asset projection. `ui.tabs` and `ui.copy-button`
+  are not admitted yet.
+- **Component names with a hyphen, and two more Smart components.** A
+  component id may now hold single hyphens inside a segment, so Framework
+  names are kept as Framework writes them: `ui.progress-bar` and
+  `ui.reference-link`. A hyphen still never starts or ends a segment or comes
+  twice in a row (`ui.-x`, `ui.x-` and `ui.x--y` stop the build with
+  `FRAMEWORK_COMPONENT_ID_INVALID`); the directive, the lock, the manifest,
+  the catalogue and the JSON schemas share this one grammar. `:::ui.progress-bar`
+  and `:::ui.reference-link` are admitted the same way as the four above, with
+  a live example each. The reference link's `href` takes an address on the
+  site or an `http(s)` address, and its copy button is left out.
 - **Colours for readers to choose.** `theme.choices` in `docara.json` lists up
   to eight colours, each with an `id`, a `color` and a `title` (text, or text
   by locale). The build makes each with the pinned SIMAI Framework palette into

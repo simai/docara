@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "ui.progress-bar",
+  "view": "default",
+  "template": "smart.ui.progress-bar.default"
+}

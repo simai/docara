@@ -1,7 +1,7 @@
 ---
 title: "SIMAI Framework ui.* components"
-description: "The ui.* Smart components from SIMAI Framework — ui.button, ui.alert and others: what they are, how a site allows them and how to call them."
-tags: [smart, ui, framework, sf-button, sf-alert]
+description: "The ui.* Smart components from SIMAI Framework — a button, an alert, a badge, a tag, a tooltip, an avatar, a progress bar and a reference link: what they are, how a site allows them and how to call them."
+tags: [smart, ui, framework, sf-button, sf-alert, sf-badge, sf-tag, sf-tooltip, sf-avatar, sf-progress-bar, sf-reference-link]
 ---
 
 # SIMAI Framework ui.* components
@@ -53,8 +53,10 @@ checksum of its description, and also the restrictions for a static site:
 `docara init` creates the file; a Docara update does not change it. The
 build checks the checksums against the component descriptions that ship
 with Docara: if a component is not in the lock or the description does not
-match, the build stops. This site's lock allows `ui.button` and `ui.alert` —
-the same ones a new project gets. The lock fields are described in detail
+match, the build stops. This site's lock allows `ui.button`, `ui.alert`,
+`ui.badge`, `ui.tag`, `ui.tooltip`, `ui.avatar`, `ui.progress-bar` and
+`ui.reference-link` — the same ones a new
+project gets. The lock fields are described in detail
 in the [Framework lock](/en/reference/framework-lock/) reference.
 
 ## The ui.button button
@@ -125,6 +127,223 @@ has nothing to support them with. Such a call stops the build with
 `FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME`. Docara sets the `id`
 identifier itself.
 
+## The ui.badge badge
+
+A short label: a status, a type or a number.
+
+```markdown
+:::ui.badge
+{"text":"Paid","status":"success"}
+:::
+```
+
+Result:
+
+:::ui.badge
+{"text":"Paid","status":"success"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `text` | The label, up to 80 characters |
+| `status` | `info`, `success`, `warning` or `error` — what the badge reports |
+| `appearance` | `tonal` (the default), `outline` or `main`. `main` is only for a count with the `error` status |
+| `scheme` | `neutral`, `primary`, `secondary`, `tertiary` or `on-surface` |
+| `size` | `1/3` (the default), `1/2` or `1` |
+| `line` | `1/2`, `1`, `2` or `text` — the line height, so the badge does not change the height of a table row or a line of text |
+| `activity` | Where a run stands: `running`, `waiting`, `done`, `stopped`, `failed`, `paused` or `queued`. The badge adds its own icon and word in the page language |
+| `icon`, `icon-position` | The icon name and its place: `start` or `end` |
+| `icon-only` | `true` — only the icon is visible; the text stays for screen readers |
+| `tight` | `true` — narrow side room for dense places |
+| `aria-label` | The label for screen readers, up to 120 characters |
+
+:::ui.badge
+{"text":"PHP 8.4","appearance":"outline","scheme":"on-surface","size":"1/2"}
+:::
+
+:::ui.badge
+{"activity":"running"}
+:::
+
+For a badge inside a line of text the inline
+[Docara badge](/en/components/inline/badge/) `:badge[...]` is handier.
+
+## The ui.tag tag
+
+A tag marks content with a short word. The `checkbox` kind is a filter
+toggle: pressing it checks or unchecks it.
+
+```markdown
+:::ui.tag
+{"text":"Components","kind":"checkbox","count":"12"}
+:::
+```
+
+Result:
+
+:::ui.tag
+{"text":"Components","kind":"checkbox","count":"12"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `text` | The label, up to 80 characters |
+| `kind` | `default` (the default) — a plain label, `checkbox` — a toggle |
+| `status` | `info`, `success`, `warning` or `error` |
+| `appearance` | `default`, `outline` or `ghost` |
+| `size` | `1/3`, `1/2` (the default), `1`, `2` or `3` |
+| `height` | `low`, `default`, `high` or `highest` |
+| `inline` | `true` — the tag sits on the line of another control |
+| `count` | A number after the label, such as `12` or `99+` |
+| `disabled` | `true` — the tag is unavailable |
+| `aria-label` | The label for screen readers |
+
+:::ui.tag
+{"text":"PHP 8.4","appearance":"outline"}
+:::
+
+Tags that are removed with a cross or open a menu are not needed on this
+page: a static site has nothing to handle their action, so Docara does not
+accept them.
+
+## The ui.tooltip tooltip
+
+The Framework tooltip bubble itself: a short text, a second line and a key
+combination. Here it is shown as it is, without the element it usually
+appears over.
+
+```markdown
+:::ui.tooltip
+{"text":"Copy the address","shortcut":"mod+c","arrow":"top-center"}
+:::
+```
+
+Result:
+
+:::ui.tooltip
+{"text":"Copy the address","shortcut":"mod+c","arrow":"top-center"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `text` | The main text, up to 160 characters |
+| `supporting-text` | The second line, up to 300 characters |
+| `shortcut` | A key combination, such as `mod+c` or `shift+/` |
+| `appearance` | `dark` (the default) or `light` |
+| `arrow` | Where the tail is: `none` (the default), `top-center`, `bottom-center`, `inline-start`, `inline-end`, `bottom-inline-start` or `bottom-inline-end` |
+
+:::ui.tooltip
+{"text":"Draft","supporting-text":"Only you can see this page.","appearance":"light","arrow":"inline-start"}
+:::
+
+## The ui.avatar avatar
+
+An avatar shows a person or an organisation: initials from the name, an icon
+and a mark in the corner.
+
+```markdown
+:::ui.avatar
+{"heading":"Anna Smirnova","hue":"auto","status":"online"}
+:::
+```
+
+Result:
+
+:::ui.avatar
+{"heading":"Anna Smirnova","hue":"auto","status":"online"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `heading` | The name: the initials and the screen reader label come from it |
+| `text` | Your own initials instead of the ones from the name, up to 8 characters |
+| `icon` | An icon instead of the initials, for example for a bot or a service |
+| `size` | `1/4`, `1/3`, `1/2`, `1` (the default), `2` or `3` |
+| `shape` | `circle` (the default) — a person, `square` — an organisation, a project, a group |
+| `hue` | The colour of the initials: `auto` — from the name, or a colour name: `red`, `teal`, `indigo` and others |
+| `status` | The mark in the corner: `online`, `away`, `offline`, `company`, `verified` or `none` |
+| `badge-count`, `badge-dot` | A count or a dot on the avatar |
+| `line` | `1/2`, `1` or `2` — the line height when the avatar stands next to text |
+| `aria-label` | The label for screen readers |
+
+:::ui.avatar
+{"heading":"Documentation team","shape":"square","hue":"indigo","status":"verified"}
+:::
+
+## Progress bar ui.progress-bar
+
+A progress bar shows how much of a task is done, or how full a known range
+is, such as a disk.
+
+```markdown
+:::ui.progress-bar
+{"value":40,"label":"Upload","text-position":"top"}
+:::
+```
+
+Result:
+
+:::ui.progress-bar
+{"value":40,"label":"Upload","text-position":"top"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `value` | How much is done, in per cent: from 0 to 100 |
+| `label` | The caption: what is running |
+| `value-text` | Your own value text for screen readers, such as "3 of 8 files" |
+| `text-position` | Where the percentage stands: `none` (default), `top` above the bar, `inline-end` at the end of the row |
+| `status` | The colour: empty is the theme's main colour, or `neutral`, `info`, `success`, `warning` or `error` |
+| `warning-at`, `error-at` | Thresholds in per cent: from this value on, the bar turns into a warning or an error by itself |
+| `indeterminate` | The work runs but its size is not known yet: a segment crosses the bar |
+| `paused` | The work is paused |
+| `meter` | Not a task's progress but an amount in a range: a quota, a disk |
+| `inline` | A short bar at the end of a row, such as a table cell; use it with `meter` |
+| `size` | `1/3`, `1/2`, `1` (default), `2` or `3` |
+| `aria-label` | A label for screen readers |
+
+:::ui.progress-bar
+{"value":83,"label":"Disk","meter":true,"warning-at":80,"error-at":95,"text-position":"top"}
+:::
+
+:::ui.progress-bar
+{"label":"Preparing","indeterminate":true}
+:::
+
+## Reference link ui.reference-link
+
+A reference link leads to another page: a name, a short note beside it and
+a type icon. Use it when a link should stand out more than a line of text.
+
+```markdown
+:::ui.reference-link
+{"label":"Component model","href":"/en/start/component-model/","text":"Start"}
+:::
+```
+
+Result:
+
+:::ui.reference-link
+{"label":"Component model","href":"/en/start/component-model/","text":"Start"}
+:::
+
+| Parameter | Value |
+| --- | --- |
+| `label` | The link's name |
+| `href` | Where the link leads: an address on the site (`/…`, `./…`, `#…`) or an external `https://…` address |
+| `text` | A short note beside the name: a section, a source or a number |
+| `appearance` | `card` (default) is a card of its own, `inline` a link in running text, `plain` a link on its own line |
+| `icon` | The icon before the name; without it a card shows an arrow |
+| `target` | `_self` (default) or `_blank` to open in a new tab |
+| `state` | The page is gone: `missing` (deleted) or `forbidden` (no access); the link does not work then |
+| `disabled` | The link is unavailable |
+| `size`, `line` | `1/2`, `1` or `2`: the form field size or the line height, such as for a table cell |
+| `aria-label` | A label for screen readers |
+
+:::ui.reference-link
+{"label":"Old page","state":"missing"}
+:::
+
 ## Other components
 
 - `ui.input`, `ui.checkbox`, `ui.dropdown` and `ui.list-item` (only the text
@@ -132,9 +351,11 @@ identifier itself.
   components use them, for example the install command builder — see the
   [extension examples](/en/examples/extensions/). Directly in Markdown they
   can be called only on a site whose lock allows them.
-- `ui.badge`, `ui.tabs` and `ui.dataview` are not accepted yet. Use the
-  Docara [badge](/en/components/inline/badge/), [tabs](/en/components/blocks/tabs/) and
+- `ui.tabs` and `ui.dataview` are not accepted yet. Use the Docara
+  [tabs](/en/components/blocks/tabs/) and
   [table](/en/authoring/markdown/#tables) instead.
+- `ui.copy-button` is not accepted yet either: it does not have a
+  description Docara can check yet.
 
 The `php vendor/bin/docara atlas --json` command shows which components are
 available to your site, and

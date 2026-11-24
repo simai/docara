@@ -96,7 +96,8 @@ Docara принимает только Smart-компоненты точной �
 Пример контейнерной композиции: дочерний `ui.list-item` занимает слот
 `options` у `ui.dropdown`. Такой вызов собирается только на сайте, чей
 `simai-framework.lock.json` принимает оба компонента; в lock этого сайта
-сейчас есть `ui.button` и `ui.alert`, поэтому здесь пример только показан.
+сейчас есть `ui.button`, `ui.alert`, `ui.badge`, `ui.tag`, `ui.tooltip`,
+`ui.avatar`, `ui.progress-bar` и `ui.reference-link`, поэтому здесь пример только показан.
 
 ```markdown
 ::::ui.dropdown {label="Тариф"}

@@ -210,7 +210,7 @@ Content-Security-Policy, описано на странице
 
 | Параметр | Значения | По умолчанию | Что задаёт |
 | --- | --- | --- | --- |
-| `layout` | `split`, `centered`, `compact` | `split` | Компоновка: `split` — текст и изображение рядом, `centered` — всё по центру, `compact` — невысокий блок. Старое имя `variant` принимается с предупреждением. |
+| `layout` | `split`, `centered`, `compact`, `stage` | `split` | Компоновка: `split` — текст и изображение рядом, `centered` — всё по центру, `compact` — невысокий блок. Старое имя `variant` принимается с предупреждением. |
 | `padding` | `lg`, `xl`, `2xl` | — | Внутренние отступы сверху и снизу. |
 | `media` | `auto`, `side`, `background`, `none` | `auto` | Где изображение: `auto` — по компоновке, `side` — рядом с текстом, `background` — фоном, `none` — без изображения. |
 | `background_fit` | `cover`, `contain`, `auto` | `cover` | Как фоновое изображение заполняет блок. |

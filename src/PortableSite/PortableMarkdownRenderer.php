@@ -3056,6 +3056,21 @@ HTML;
         if ($mediaMode === 'side' && $variant !== 'split') {
             throw new PortableConfigurationException('MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE', 'Hero media=side requires layout=split.');
         }
+        // A stage hero is a live scene the size of most of the window, with the
+        // text over it: the effect is the scene, so it needs one and takes no
+        // image of its own.
+        if ($variant === 'stage' && $effect === '') {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_EFFECT_REQUIRED',
+                'Hero layout=stage draws its effect as the scene; add effect.',
+            );
+        }
+        if ($variant === 'stage' && ! in_array($mediaMode, ['auto', 'none'], true)) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE',
+                "Hero layout=stage draws its effect as the scene and takes no media=$mediaMode.",
+            );
+        }
         if ($effect !== '' && $mediaMode === 'background') {
             throw new PortableConfigurationException(
                 'MARKDOWN_HERO_EFFECT_MEDIA_CONFLICT',
@@ -3174,6 +3189,16 @@ HTML;
             throw new PortableConfigurationException(
                 'MARKDOWN_HERO_MEDIA_IMAGE_REQUIRED',
                 "Hero media=$mediaMode requires exactly one Markdown image.",
+            );
+        }
+        if ($variant === 'stage' && $imageCount !== 0) {
+            throw $this->locatedHeroImageError(
+                'MARKDOWN_HERO_MEDIA_IMAGE_FORBIDDEN',
+                'Hero layout=stage draws its effect as the scene and takes no image.',
+                $markdown,
+                $sourceRoot,
+                $sourceFile,
+                $sourceLine,
             );
         }
         if ($mediaMode === 'none' && $imageCount !== 0) {

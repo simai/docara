@@ -8,6 +8,15 @@ All notable changes to Docara are recorded here. The format follows
 
 ### Added
 
+- **A hero can be a live scene over the first screen.** `:::hero {layout=stage effect=…}`
+  draws its effect as a scene about four fifths of the window high (82svh,
+  36 to 52rem) with the text over it: the scene takes the pointer through the
+  text column (only links and buttons take it), a scrim in the scene's surface
+  keeps the text readable from the text side (inline start on a wide screen,
+  top on a phone), the scene draws on a phone too, the title takes the
+  Framework display step (text size 11, 9 on a phone), and a "Skip the scene"
+  link (`effects.skip`) appears on the first Tab. A stage needs `effect` and
+  takes no image.
 - **An example keeps its place while it loads.** `:::example {height=320}` holds a
   framed example at that height until it draws, so the page does not jump on a
   first visit; the shell then remembers the measured height per page, example

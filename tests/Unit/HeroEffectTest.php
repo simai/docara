@@ -52,6 +52,41 @@ final class HeroEffectTest extends TestCase
     }
 
     #[Test]
+    public function a_stage_hero_is_a_live_scene_with_the_text_over_it(): void
+    {
+        $html = $this->render(":::hero {layout=stage effect=constellation-net effect_theme=dark}\n# Hero\n\nDescription.\n\n[Start](/start/)\n:::");
+        self::assertMatchesRegularExpression('~^<section data-docara-block="hero" data-sf-effect="constellation-net" data-sf-effect-theme="dark" data-variant="stage"~', $html);
+        self::assertStringNotContainsString('data-docara-hero-scene', $html);
+
+        foreach ([
+            [":::hero {layout=stage}\n# Hero\n\nDescription.\n:::", 'MARKDOWN_HERO_EFFECT_REQUIRED'],
+            [":::hero {layout=stage effect=assembly media=side}\n# Hero\n\nDescription.\n\n![Alt](/assets/a.png)\n:::", 'MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE'],
+            [":::hero {layout=stage effect=assembly}\n# Hero\n\nDescription.\n\n![](/assets/a.png)\n:::", 'MARKDOWN_HERO_MEDIA_IMAGE_FORBIDDEN'],
+        ] as [$source, $code]) {
+            try {
+                $this->render($source);
+                self::fail("$code expected.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($code, $exception->errorCode);
+            }
+        }
+
+        // The scene takes the pointer through the text column, a scrim keeps
+        // the text readable, the scene draws on a phone and can be skipped.
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+        foreach ([
+            '[data-docara-block="hero"][data-variant="stage"]{display:grid;align-content:center;min-block-size:clamp(36rem,82svh,52rem)}',
+            '@media (min-width:64rem){.docara-landing [data-docara-block="hero"][data-variant="stage"]>[data-docara-container]>div>:is(h1,h2,h3,h4):first-child{font-size:var(--sf-text--size-11)}}',
+            '[data-docara-block="hero"][data-variant="stage"]>[data-docara-container]{position:relative;z-index:1;pointer-events:none}',
+            '[data-docara-block="hero"][data-variant="stage"]>[data-docara-container] :is(a,button,input,select,textarea,summary,[tabindex]){pointer-events:auto}',
+        ] as $needle) {
+            self::assertStringContainsString($needle, $css);
+        }
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertStringContainsString("skip.textContent=message('effects.skip');", $shell);
+    }
+
+    #[Test]
     public function a_hero_effect_is_not_shown_under_the_text_on_a_narrow_screen(): void
     {
         // There is no setting for it: the markup carries no narrow-screen mark.
@@ -62,16 +97,16 @@ final class HeroEffectTest extends TestCase
         // pauses the effect there and takes it up again from md.
         $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
         self::assertStringContainsString(
-            '@media not all and (min-width:44rem){[data-docara-block="hero"][data-sf-effect]>[data-sf-effect-layer],'
-            . '[data-docara-block="hero"][data-sf-effect]>.docara-effect-toggle{display:none}'
-            . '[data-docara-block="hero"][data-sf-effect]{background-color:var(--sf-surface-1)}}',
+            '@media not all and (min-width:44rem){[data-docara-block="hero"][data-sf-effect]:not([data-variant="stage"])>[data-sf-effect-layer],'
+            . '[data-docara-block="hero"][data-sf-effect]:not([data-variant="stage"])>.docara-effect-toggle{display:none}'
+            . '[data-docara-block="hero"][data-sf-effect]:not([data-variant="stage"]){background-color:var(--sf-surface-1)}}',
             $css,
         );
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
         foreach ([
             // A split hero's scene stands under the text on a phone, so only an
             // effect behind the whole hero is held on a narrow screen.
-            "var wide=window.matchMedia&&target===hero?window.matchMedia('(min-width: 44rem)'):null;",
+            "var wide=window.matchMedia&&target===hero&&!stage?window.matchMedia('(min-width: 44rem)'):null;",
             'if(paused||narrow){entry.handle.pause()}else{entry.handle.resume()}',
             'entry.button.hidden=!running||reduced||narrow||',
         ] as $needle) {

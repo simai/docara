@@ -158,6 +158,7 @@ If a string is missing from `lang.json`, Docara takes the built-in text: Russian
 | `navigation.repository` — The label of the repository icon in the header | Source repository | Репозиторий |
 | `effects.pause` — The button that stops the hero background animation | Pause background animation | Остановить фоновую анимацию |
 | `effects.play` — The button that starts the hero background animation | Play background animation | Запустить фоновую анимацию |
+| `effects.skip` — The keyboard link that skips a hero layout=stage scene | Skip the scene | Пропустить сцену |
 | `examples.example` — The label of a live example | Example | Пример |
 | `examples.viewer` — The button that checks an example at different widths | Check responsive preview | Проверить адаптивность |
 | `examples.viewer_exit` — The button that leaves the width check | Exit responsive preview | Выйти из режима просмотра |

@@ -136,6 +136,45 @@ Elevation lines, as on a topographic map.
 All the catalogue's effects and their settings are shown on
 [effects.simai.io](https://effects.simai.io/).
 
+## A scene over the first screen
+
+`layout=stage` turns a Hero into a live scene about four fifths of the window
+high: 82 % of the screen height, but no less than 576 and no more than 832 px.
+The text stands over the scene, and the scene is the effect, so without
+`effect` the build stops, and such a Hero takes no image.
+
+:::example {label="A scene over the first screen"}
+```markdown
+:::hero {layout=stage effect=constellation-net effect_theme=dark}
+# Documentation that is easy to read
+Ready parts from tokens to Smart Components. Straight from a CDN, no npm, no build step.
+
+[Start in 5 minutes](/en/start/quick-start/)
+:::
+```
+:::
+
+How a scene differs from an ordinary Hero with an effect:
+
+- **The scene answers the reader.** Hover, clicks, press-and-hold, Ctrl and
+  the wheel, and touch go to the effect. The text lets them through; only
+  links and buttons take them.
+- **The text reads on any scene.** A scrim in the colour of the scene's
+  surface covers it from the text side: from the left on a wide screen (from
+  the right in right-to-left languages), from the top on a phone.
+- **The scene shows on a phone too.** There the text stands in the upper part,
+  under the scrim.
+- **The title is larger.** It is the SIMAI Framework display step: size 11 on a
+  wide screen and 9 on a phone.
+- **The scene can be skipped from the keyboard.** The first Tab shows the link
+  "Skip the scene"; it leads to the block after the Hero. Its label comes from
+  the `effects.skip` string of `lang.json`.
+
+`effect_theme` sets the scene's theme: `dark`, for example, keeps it a night
+panel in both page themes. The scene takes the language and writing direction
+from the page. Pause, the still frame for reduced motion and the stop off
+screen work as for any effect.
+
 ## Pause and reduced motion
 
 While the effect moves, the bottom right corner of the Hero (the left one in

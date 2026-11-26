@@ -156,6 +156,7 @@ Docara нет.
 | `navigation.repository` — Подпись значка репозитория в шапке | Source repository | Репозиторий |
 | `effects.pause` — Кнопка, останавливающая фоновую анимацию hero | Pause background animation | Остановить фоновую анимацию |
 | `effects.play` — Кнопка, запускающая фоновую анимацию hero | Play background animation | Запустить фоновую анимацию |
+| `effects.skip` — Ссылка, пропускающая сцену hero layout=stage, для клавиатуры | Skip the scene | Пропустить сцену |
 | `examples.example` — Подпись живого примера | Example | Пример |
 | `examples.viewer` — Кнопка проверки примера на разной ширине | Check responsive preview | Проверить адаптивность |
 | `examples.viewer_exit` — Кнопка выхода из проверки ширины | Exit responsive preview | Выйти из режима просмотра |

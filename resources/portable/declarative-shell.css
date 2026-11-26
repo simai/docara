@@ -208,8 +208,21 @@ body[data-docara-shell] sf-button:not(:where(.docara-example-inline *)){display:
 [data-docara-block="hero"]>.docara-effect-toggle{position:absolute;z-index:1;inset-block-end:var(--sf-space-1\/3);inset-inline-end:var(--sf-space-1);margin:0;--sf-icon-button-background-color:var(--sf-surface-0);--sf-icon-button-border-color:var(--sf-outline-variant)}
 [data-docara-block="hero"]>.docara-effect-toggle[hidden]{display:none}
 /* Below md a hero is one column and its text spans the block, so a background effect would be drawn under the heading, the text and the buttons. There the hero shows no effect: the layer and its pause button are not shown, the shell pauses the effect, and the hero keeps the surface it has before an effect runs. */
-@media not all and (min-width:44rem){[data-docara-block="hero"][data-sf-effect]>[data-sf-effect-layer],[data-docara-block="hero"][data-sf-effect]>.docara-effect-toggle{display:none}[data-docara-block="hero"][data-sf-effect]{background-color:var(--sf-surface-1)}}
+@media not all and (min-width:44rem){[data-docara-block="hero"][data-sf-effect]:not([data-variant="stage"])>[data-sf-effect-layer],[data-docara-block="hero"][data-sf-effect]:not([data-variant="stage"])>.docara-effect-toggle{display:none}[data-docara-block="hero"][data-sf-effect]:not([data-variant="stage"]){background-color:var(--sf-surface-1)}}
 [data-docara-block="hero"]:has(>.docara-padding-2xl)>.docara-effect-toggle{inset-block-end:min(var(--sf-space-1),(var(--docara-padding-2xl) - var(--sf-ui-1--control-height))/2)}
+/* A stage hero (layout=stage) is a live scene about four fifths of the window high (82 % of the viewport, 36 to 52rem), with the text over it. The scene takes the pointer: the text column lets it through, and only links and buttons take it. A scrim from the text side keeps the text readable: from the inline start on a wide screen, from the top on a phone, in the surface of the scene's own theme. */
+[data-docara-block="hero"][data-variant="stage"]{display:grid;align-content:center;min-block-size:clamp(36rem,82svh,52rem)}
+[data-docara-block="hero"][data-variant="stage"]::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(to bottom,color-mix(in srgb,var(--sf-surface-0) 88%,transparent),color-mix(in srgb,var(--sf-surface-0) 56%,transparent) 55%,transparent)}
+@media (min-width:44rem){[data-docara-block="hero"][data-variant="stage"]::after{background:linear-gradient(to right,color-mix(in srgb,var(--sf-surface-0) 88%,transparent),color-mix(in srgb,var(--sf-surface-0) 56%,transparent) 45%,transparent 72%)}[dir="rtl"] [data-docara-block="hero"][data-variant="stage"]::after{background:linear-gradient(to left,color-mix(in srgb,var(--sf-surface-0) 88%,transparent),color-mix(in srgb,var(--sf-surface-0) 56%,transparent) 45%,transparent 72%)}}
+[data-docara-block="hero"][data-variant="stage"]>[data-docara-container]{position:relative;z-index:1;pointer-events:none}
+[data-docara-block="hero"][data-variant="stage"]>[data-docara-container]>div{max-inline-size:40rem}
+[data-docara-block="hero"][data-variant="stage"]>[data-docara-container] :is(a,button,input,select,textarea,summary,[tabindex]){pointer-events:auto}
+/* The title is the Framework's display step at a display line height: text size 11 when the scene is 44rem wide or more, 9 below, so a stage in a narrow column keeps its title inside. */
+[data-docara-block="hero"][data-variant="stage"]>[data-docara-container]>div>:is(h1,h2,h3,h4):first-child{font-family:var(--sf-display--family);font-size:var(--sf-text--size-9);line-height:1.08}
+@media (min-width:64rem){.docara-landing [data-docara-block="hero"][data-variant="stage"]>[data-docara-container]>div>:is(h1,h2,h3,h4):first-child{font-size:var(--sf-text--size-11)}}
+[data-docara-block="hero"][data-variant="stage"]>.docara-effect-toggle{z-index:2}
+.docara-stage-skip{position:absolute;z-index:3;inset-block-start:var(--sf-space-1\/3);inset-inline-start:var(--sf-space-1)}
+.docara-stage-skip:not(:focus):not(:focus-visible){clip-path:inset(50%);inline-size:1px;block-size:1px;overflow:hidden;white-space:nowrap;padding:0;border:0}
 @media (prefers-reduced-motion:no-preference){[data-docara-block="hero"]:has(>.docara-effect-toggle)>[data-docara-container]:not(.docara-padding-2xl){padding-block-end:calc(var(--sf-ui-1--control-height) + 2*var(--sf-space-1\/3))}}
 .docara-landing .docara-content{width:100%}
 .docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]{box-sizing:border-box;width:100%;max-width:none;margin:0;padding:0}

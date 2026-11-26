@@ -1413,7 +1413,20 @@
       button.innerHTML='<span aria-hidden="true" class="sf-icon sf-icon-regular">pause</span>';
       hero.appendChild(button);
       /* A scene stands beside or under the text, never behind it, so it is shown at every width. */
-      var wide=window.matchMedia&&target===hero?window.matchMedia('(min-width: 44rem)'):null;
+      /* A stage hero is the scene itself and draws at every width; its text sits over a scrim. */
+      var stage=hero.getAttribute('data-variant')==='stage';
+      var wide=window.matchMedia&&target===hero&&!stage?window.matchMedia('(min-width: 44rem)'):null;
+      /* A stage scene can hold many parts a keyboard reaches; a skip link, shown on focus, jumps past it to what follows the hero. */
+      if(stage&&hero.nextElementSibling){
+        var after=hero.nextElementSibling;
+        if(!after.id)after.id='docara-after-stage';
+        if(!after.hasAttribute('tabindex'))after.setAttribute('tabindex','-1');
+        var skip=document.createElement('a');
+        skip.className='docara-stage-skip sf-button sf-button--default sf-button--tonal sf-button--on-surface sf-button--size-1';
+        skip.href='#'+after.id;
+        skip.textContent=message('effects.skip');
+        hero.insertBefore(skip,hero.firstChild);
+      }
       var entry={hero:hero,target:target,button:button,icon:button.firstChild,handle:null,placing:null,wide:wide};
       entries.push(entry);
       if(wide){

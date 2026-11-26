@@ -8,6 +8,8 @@ body[data-docara-shell]{opacity:1!important}
 .docara-outline-mobile{display:none}
 /* The header is the Framework sf-header-site (PortableSiteHeader): the navigation fills the bar between the brand and the tools. */
 .docara-header-content{flex:1 1 auto}
+/* The space between the logo and a left-aligned menu alone (sf-header-site 1.16.0): a space-system step, about 36 px to the first label in the wide bar with the menu item's own padding; the collapsed bar ignores it. */
+.docara-header{--sf-site-header-brand-gap:var(--sf-space-2)}
 /* Until sf-language has drawn its trigger (it then sets data-look), it holds the place of that trigger, so the tools do not shift while its script loads. From sf-language 1.4 (owner decision C142) the trigger is a size-1 button with the language icon, the two-letter code and a chevron: 120 px from the Framework lg breakpoint (60rem), 100 px below it, where the size-1 control is smaller. The picker is a tools element of its own (PortableSiteHeader::splitTools), so in the drawn bar it stands in the bar's tools row. */
 .sf-site-header-tools>sf-language[data-docara-language]:not([data-look]){display:inline-block;inline-size:7.5rem;block-size:2.5rem}
 @media(max-width:59.99rem){.sf-site-header-tools>sf-language[data-docara-language]:not([data-look]){inline-size:6.25rem}}

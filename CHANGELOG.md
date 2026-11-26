@@ -40,6 +40,11 @@ All notable changes to Docara are recorded here. The format follows
   a `:::ui.*` directive takes only scalar JSON settings and no Markdown, so a
   page has no way to write the list of tabs or their panels yet. The
   catalogue's gap record says what is missing; use `:::tabs` meanwhile.
+- **More room between the header logo and the menu.** The shell sets the
+  Framework's `--sf-site-header-brand-gap` (sf-header-site 1.16.0) to
+  `var(--sf-space-2)`, so in the wide bar the first menu label stands about
+  36 px from the logo (32 px before); the other header groups and the
+  collapsed bar are unchanged.
 
 ## [3.19.0] - 2026-11-24
 

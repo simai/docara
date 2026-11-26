@@ -1,0 +1,5300 @@
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "3f3a6e2680d5"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   freezeModalContent: () => (/* binding */ freezeModalContent)
+/* harmony export */ });
+// Keep the closing dialog itself meaningful while its visible content becomes
+// non-interactive. Restore only temporary inert attributes owned by this lease.
+function freezeModalContent(panel, focusPanel = false) {
+  if (!panel) return () => {};
+  const owned = new Set();
+
+  const freeze = () => {
+    for (const child of panel.children) {
+      if (!child.hasAttribute('inert')) {
+        child.setAttribute('inert', '');
+        owned.add(child);
+      }
+    }
+  };
+
+  if (focusPanel) panel.focus({
+    preventScroll: true
+  });
+  freeze();
+  const observer = new panel.ownerDocument.defaultView.MutationObserver(freeze);
+  observer.observe(panel, {
+    childList: true
+  });
+  return () => {
+    observer.disconnect();
+
+    for (const child of owned) {
+      if (child.getAttribute('inert') === '') child.removeAttribute('inert');
+    }
+
+    owned.clear();
+  };
+}
+
+
+
+/***/ },
+
+/***/ "c8d66dd2c299"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   INITIAL_FOCUS: () => (/* binding */ INITIAL_FOCUS),
+/* harmony export */   focusModalInitial: () => (/* binding */ focusModalInitial),
+/* harmony export */   getModalTabStops: () => (/* binding */ getModalTabStops),
+/* harmony export */   holdFieldsReadOnly: () => (/* binding */ holdFieldsReadOnly),
+/* harmony export */   isFieldElement: () => (/* binding */ isFieldElement),
+/* harmony export */   isOneLineField: () => (/* binding */ isOneLineField),
+/* harmony export */   syncModalFocusGuards: () => (/* binding */ syncModalFocusGuards),
+/* harmony export */   trapModalFocus: () => (/* binding */ trapModalFocus),
+/* harmony export */   windowFields: () => (/* binding */ windowFields)
+/* harmony export */ });
+// The fields of a window (owner decision C159, 2026-11-14): a window that
+// holds fields is one form -- a press on its scrim never closes it (6), it
+// asks before its changes go (6), its main answer submits it and Enter in a
+// one-line field presses that answer (9), its first field takes the focus
+// (9), and on a phone a form of more than three fields takes the whole
+// screen (2). Shared by sf-modal and the class modal, and by sf-drawer. They live here,
+// beside the first focus that reads them, so the focus module stays one file
+// with no imports (the unit tests load it as one module).
+//
+// A field is a native control a person types or picks in, or a Framework
+// field element (sf-input*, sf-dropdown, sf-checkbox, sf-switch, sf-radio)
+// whether it has drawn its control yet or not; a field element counts once,
+// whatever it draws inside.
+const NATIVE_FIELD = ['input:not([type="hidden"], [type="button"], [type="submit"], [type="reset"], [type="image"])', 'select', 'textarea', '[contenteditable=""]', '[contenteditable="true"]'].join(', ');
+const FIELD_ELEMENTS = new Set(['sf-dropdown', 'sf-checkbox', 'sf-switch', 'sf-radio', 'sf-segmented']);
+
+const isFieldElement = node => node.localName?.startsWith('sf-input') || FIELD_ELEMENTS.has(node.localName); // One-line fields: Enter in them presses the main answer (9).
+
+
+const ONE_LINE = new Set(['', 'text', 'search', 'email', 'tel', 'url', 'password', 'number', 'date', 'datetime-local', 'month', 'time', 'week']); // The outermost field element a node stands in, under `root`.
+
+function fieldElementOf(node, root) {
+  let host = null;
+
+  for (let at = node; at && at !== root; at = at.parentElement) {
+    if (isFieldElement(at)) host = at;
+  }
+
+  return host;
+} // The window's fields in document order, each once.
+
+
+function windowFields(root) {
+  if (!root?.querySelectorAll) return [];
+  const units = [];
+  const seen = new Set();
+
+  for (const node of root.querySelectorAll('*')) {
+    if (!isFieldElement(node) && !node.matches(NATIVE_FIELD)) continue;
+    if (node.closest('[hidden]')) continue;
+    const unit = fieldElementOf(node, root) || node;
+    if (seen.has(unit)) continue;
+    seen.add(unit);
+    units.push(unit);
+  }
+
+  return units;
+}
+
+function isOneLineField(node) {
+  return node?.localName === 'input' && ONE_LINE.has((node.getAttribute('type') || '').toLowerCase());
+} // Makes the fields read-only while the window saves (9) and answers the undo:
+// only what it changed goes back.
+
+
+function holdFieldsReadOnly(fields) {
+  const changed = [];
+
+  for (const unit of fields) {
+    if (unit.localName?.startsWith('sf-')) {
+      if (!unit.hasAttribute('readonly')) {
+        unit.setAttribute('readonly', '');
+        changed.push(() => unit.removeAttribute('readonly'));
+      }
+
+      continue;
+    }
+
+    if ('readOnly' in unit && !unit.readOnly && unit.localName !== 'select') {
+      unit.readOnly = true;
+      changed.push(() => {
+        unit.readOnly = false;
+      });
+    } else if (unit.localName === 'select' && !unit.hasAttribute('aria-readonly')) {
+      unit.setAttribute('aria-readonly', 'true');
+      unit.inert = true;
+      changed.push(() => {
+        unit.removeAttribute('aria-readonly');
+        unit.inert = false;
+      });
+    }
+  }
+
+  return () => changed.forEach(undo => undo());
+}
+
+const FOCUSABLE_SELECTOR = ['a[href]', 'area[href]', 'button', 'input', 'select', 'textarea', 'iframe', 'summary', 'audio[controls]', 'video[controls]', '[contenteditable]', '[tabindex]'].join(',');
+const GUARDS_KEY = Symbol.for('simai.modal.focus-guards');
+
+function syncModalFocusGuards(modal) {
+  const root = (modal && 'modalRoot' in modal ? modal.modalRoot : modal?.getModalRoot?.()) || modal?.template;
+  const panel = root?.querySelector?.('[data-sf-modal-panel]');
+  const previous = document[GUARDS_KEY];
+  if (previous && previous.panel === panel && previous.before.isConnected && previous.after.isConnected) return;
+  previous?.before.remove();
+  previous?.after.remove();
+  delete document[GUARDS_KEY];
+  if (!panel?.parentNode) return;
+  const guards = {
+    panel,
+    relaying: false
+  };
+
+  for (const edge of ['before', 'after']) {
+    const guard = panel.ownerDocument.createElement('span');
+    guard.tabIndex = 0;
+    guard.className = 'sf-modal-focus-guard';
+    guard.setAttribute('aria-hidden', 'true');
+    guard.addEventListener('focus', () => {
+      if (guards.relaying || !panel.isConnected || root.inert || root.getAttribute('aria-hidden') === 'true') return;
+      const backward = edge === 'before';
+      const stops = getModalTabStops(panel, backward);
+      const destination = backward ? stops.at(-1) : stops[0]; // A frame's child document owns the outgoing key event. If both edges are
+      // frames, return to the meaningful dialog boundary; the next native Tab
+      // enters the requested end of the document without inspecting its origin.
+
+      if (!destination || destination.tagName === 'IFRAME') panel.focus({
+        preventScroll: true
+      });else destination.focus({
+        preventScroll: true
+      });
+    });
+    guards[edge] = guard;
+  }
+
+  panel.before(guards.before);
+  panel.after(guards.after);
+  document[GUARDS_KEY] = guards;
+}
+
+function sameRadioGroup(a, b) {
+  return a?.tagName === 'INPUT' && b?.tagName === 'INPUT' && a.type === 'radio' && b.type === 'radio' && !!a.name && a.name === b.name && a.form === b.form && a.getRootNode() === b.getRootNode();
+} // Shared by ordinary and Smart Modal. Read the current DOM on each Tab so
+// hidden, inert or disabled controls never become stale focus boundaries.
+
+
+function getModalTabStops(panel, backward = false) {
+  const view = panel.ownerDocument.defaultView;
+  const candidates = Array.from(panel.querySelectorAll(FOCUSABLE_SELECTOR)).filter(node => node.tabIndex >= 0 && !node.matches(':disabled') && !node.closest('[inert]') && node.getClientRects().length > 0 && view.getComputedStyle(node).visibility === 'visible').sort((a, b) => (a.tabIndex || Infinity) - (b.tabIndex || Infinity)); // Native radio groups contribute one sequential stop, not every input.
+  // Do not rewrite checked/tabindex or intercept their native arrow-key handling.
+
+  return candidates.filter(node => {
+    if (!sameRadioGroup(node, node)) return true;
+    const group = candidates.filter(candidate => sameRadioGroup(node, candidate));
+    const selected = group.find(candidate => candidate.checked);
+    return node === (selected || group.at(backward ? -1 : 0));
+  });
+}
+
+function trapModalFocus(panel, event) {
+  if (!panel) return;
+  const nodes = getModalTabStops(panel, event.shiftKey);
+  const active = panel.ownerDocument.activeElement;
+
+  if (!nodes.length) {
+    event.preventDefault();
+    panel.focus();
+    return;
+  }
+
+  const first = nodes[0];
+  const last = nodes[nodes.length - 1];
+  const boundary = event.shiftKey ? first : last;
+
+  if (!panel.contains(active) || active === panel || active === boundary || sameRadioGroup(active, boundary)) {
+    const destination = event.shiftKey ? last : first;
+    const guards = panel.ownerDocument[GUARDS_KEY];
+
+    if (destination.tagName === 'IFRAME' && guards?.panel === panel) {
+      // Let the trusted browser Tab action traverse the iframe itself. Calling
+      // iframe.focus() cannot choose its last child in an opaque document.
+      guards.relaying = true;
+
+      try {
+        (event.shiftKey ? guards.after : guards.before).focus({
+          preventScroll: true
+        });
+      } finally {
+        guards.relaying = false;
+      }
+
+      return;
+    }
+
+    event.preventDefault();
+    destination.focus();
+  }
+} // The first focus of an opened window (decisions C25, C39), by name
+// (sf-modal initial-focus):
+//
+// - auto (the default): the element the page marked with the standard
+//   `autofocus` attribute, as a native <dialog> does; else, in a question
+//   window -- one whose answers hold a dangerous one (an sf-button with
+//   status="danger", its drawn .sf-button--danger, or an sf-confirm) -- its
+//   safe answer, «Отмена»; else, in a window with fields, its first field
+//   (owner decision C159 (9), 2026-11-14, as WAI-ARIA's dialog pattern
+//   advises); else the panel, as before. Only answers count: a red
+//   sf-badge or an error message in the body does not make a window a question;
+// - safe: the safe answer whenever there is one;
+// - first: the first control of the window's content (the header's buttons,
+//   the × among them, excluded);
+// - panel: the panel itself.
+//
+// The safe answer is the declining answer of an sf-confirm in the window
+// ([data-action="decline"]) or the page's own answer that closes the window
+// ([data-sf-modal-close], the header's × excluded): a stray Enter or Space then
+// only closes the question. An element that is not focusable itself
+// (sf-button, whose host is display: contents) hands the focus to its first
+// tab stop. Content drawn after the window opened -- an sf-button draws its
+// <button> on its own schedule, an sf-confirm its answers, either perhaps
+// while its script is still loading -- is waited for, frame by frame for up
+// to two seconds, while the focus is still on the panel; anything the person
+// does in between wins. Answers the element that took the focus.
+
+
+const INITIAL_FOCUS = ['auto', 'safe', 'first', 'panel']; // status="error" on an sf-button is danger's dated alias (C13).
+
+const DANGER_SELECTOR = 'sf-button[status="danger"], sf-button[status="error"], .sf-button--danger, sf-confirm'; // The header's × is excluded: its button (.sf-modal-close-button) and, since
+// sf-modal draws it as sf-button-close (C14), that element (.sf-modal-close).
+
+const SAFE_SELECTOR = '[data-action="decline"], [data-sf-modal-close]:not(.sf-modal-close-button):not(.sf-modal-close)';
+
+function takesFocus(node) {
+  if (!node || node.closest('[inert]') || node.closest('[hidden]')) return null;
+  if (node.matches(FOCUSABLE_SELECTOR) && node.tabIndex >= 0 && !node.matches(':disabled')) return node;
+  return getModalTabStops(node)[0] || null;
+}
+
+function isDanger(node) {
+  return node.matches('sf-button[status="danger"], sf-button[status="error"], .sf-button--danger') || Boolean(node.querySelector('.sf-button--danger'));
+} // The element that takes the safe answer's focus, or null while there is none
+// (or it is not drawn yet).
+
+
+function safeAnswer(panel) {
+  for (const host of panel.querySelectorAll(SAFE_SELECTOR)) {
+    if (host.closest('[inert], [hidden]') || isDanger(host)) continue;
+    const target = takesFocus(host);
+    if (target) return target;
+  }
+
+  return null;
+}
+
+function firstFocus(panel, mode) {
+  if (mode === 'panel') return panel;
+  if (mode === 'first') return getModalTabStops(panel).find(node => !node.closest('.sf-modal-header-action')) || panel;
+
+  if (mode === 'auto') {
+    const marked = panel.querySelector('[autofocus]');
+    if (marked && !marked.closest('[inert], [hidden]')) return takesFocus(marked) || panel;
+
+    if (!panel.querySelector(DANGER_SELECTOR)) {
+      const body = panel.querySelector('[data-sf-modal-body-scroll]') || panel;
+      const field = windowFields(body)[0];
+      return field && takesFocus(field) || panel;
+    }
+  }
+
+  return safeAnswer(panel) || panel;
+}
+
+const WAIT_FOR_CONTENT_MS = 2000;
+
+function focusModalInitial(panel, mode = 'auto') {
+  if (!panel) return null;
+  const name = INITIAL_FOCUS.includes(mode) ? mode : 'auto';
+  const target = firstFocus(panel, name);
+  target.focus({
+    preventScroll: true
+  });
+  const doc = panel.ownerDocument;
+  if (doc.activeElement !== target && target !== panel) panel.focus({
+    preventScroll: true
+  });
+
+  if (target === panel && name !== 'panel') {
+    const view = doc.defaultView;
+    const until = (view?.performance?.now() ?? 0) + WAIT_FOR_CONTENT_MS;
+
+    const retry = () => {
+      if (doc.activeElement !== panel || !panel.isConnected) return;
+      const late = firstFocus(panel, name);
+      if (late !== panel) late.focus({
+        preventScroll: true
+      });else if (view.performance.now() < until) view.requestAnimationFrame(retry);
+    };
+
+    view?.requestAnimationFrame(retry);
+  }
+
+  return doc.activeElement === target ? target : panel;
+}
+
+
+
+/***/ },
+
+/***/ "d1e2388bb47f"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Modal: () => (/* binding */ Modal)
+/* harmony export */ });
+/* harmony import */ var _core_js_ComponentObserver__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("d7f974466839");
+/* harmony import */ var _register_helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("58661bec99a6");
+/* harmony import */ var _core_js_page_language__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("8489d1f5bab4");
+/* harmony import */ var _focus__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("c8d66dd2c299");
+/* harmony import */ var _core_js_deprecations_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("06e8cd089f28");
+/* harmony import */ var _core_js_breakpoints_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("1373e294ec38");
+/* harmony import */ var _core_js_sheet_swipe__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("42f1649d1a1b");
+/* harmony import */ var _closing__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("3f3a6e2680d5");
+/* harmony import */ var _motion__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("201fd0b17b8b");
+/* harmony import */ var _spinner_js_spinner_draw__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("50d2a204ba4c");
+/* harmony import */ var _stack__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__("93025a68d8ab");
+/* harmony import */ var _core_js_layer_stack__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__("78628e837a32");
+/* harmony import */ var _lang_index_mjs__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__("418134b64ef5");
+
+
+
+
+
+
+
+
+
+ // A box that holds its own overlays; a modal in it covers the box, not the
+// viewport, and leaves the page scrollable (sf-modal and sf-drawer read the
+// same attribute; the drawer's older name until 2026-12-01).
+
+const OVERLAY_CONTAINER = '[data-sf-overlay-container], [data-sf-drawer-container]';
+
+ // The words live in the component's language files (localization study LC-4):
+// one place for every language, as the Smart components keep them.
+
+
+
+function joinClasses(...parts) {
+  return parts.filter(Boolean).join(' ').trim();
+}
+
+function normalizePosition(value = 'center') {
+  const normalized = String(value || 'center').trim().toLowerCase();
+  return ['center', 'left', 'right', 'inline-start', 'inline-end', 'top', 'bottom'].includes(normalized) ? normalized : 'center';
+} // The window's size by name (owner decision C159 (1), followed by the class
+// window under C224): question 28rem, form 36rem, wide 48rem, full the whole
+// screen; no size, `auto` or anything else is a form, as on <sf-modal>.
+
+
+const SIZES = ['question', 'form', 'wide', 'full'];
+
+function normalizeSize(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  return SIZES.includes(normalized) ? normalized : 'form';
+} // A side window or a sheet is sf-drawer's (owner decision C157 (1)): these
+// positions are its old names until this date, noted once per value, as
+// <sf-modal> notes them.
+
+
+const EDGE_POSITIONS = ['inline-start', 'inline-end', 'left', 'right', 'bottom'];
+const OLD_NAMES_UNTIL = '2027-01-01';
+const OLD_NAMES_SINCE = '2026-11-16';
+
+function normalizeBlurType(value = 'medium') {
+  const normalized = String(value || 'medium').trim().toLowerCase();
+  return ['none', 'small', 'medium', 'large'].includes(normalized) ? normalized : 'medium';
+}
+
+function getBlurClass(type = 'medium') {
+  return `backdrop-blur-${normalizeBlurType(type)}`;
+}
+
+function isBlurTypeValue(value) {
+  return ['none', 'small', 'medium', 'large'].includes(String(value || '').trim().toLowerCase());
+}
+
+function normalizeCssValue(value) {
+  return String(value || '').trim();
+}
+
+function normalizeMode(value) {
+  const normalized = String(value || 'inline').trim().toLowerCase();
+  return ['inline', 'ajax', 'iframe'].includes(normalized) ? normalized : 'inline';
+}
+
+function normalizeDisplay(value) {
+  const normalized = String(value || 'modal').trim().toLowerCase();
+  return ['modal', 'inline'].includes(normalized) ? normalized : 'modal';
+} // An untitled window was headed and named «Modal» on every page; it takes the
+// page language's word instead, as the Smart window does.
+// The loading state and its failure speak the page's language too: they said
+// "Loading..." and "Failed to load content" on every page (simai/ui-source#11
+// follow-up). The words are sf-modal's, so one registration covers both.
+
+
+const UNTITLED = _lang_index_mjs__WEBPACK_IMPORTED_MODULE_12__["default"]; // The node the words are looked up from: the modal once it is on the page,
+// else the document, which is where a modal not yet attached will be.
+
+const modalText = (key, node) => (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_2__.pageText)(UNTITLED, key, node?.isConnected ? node : document.documentElement, 'sf-modal');
+
+const untitled = root => (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_2__.pageText)(UNTITLED, 'title', root, 'sf-modal');
+
+class Modal extends _core_js_ComponentObserver__WEBPACK_IMPORTED_MODULE_0__.ComponentObserver {
+  static componentName = 'Modal';
+  static registry = new Map();
+  static globalBound = false;
+  static stack = [];
+  static openCount = 0;
+  static uid = 0;
+  static lockState = null; // Kept for code that reads it; the z-index comes from the core's one layer
+  // scale (--sf-z-index-layer, default 9000).
+
+  static baseZIndex = 9000;
+
+  static getTopModal() {
+    return (0,_stack__WEBPACK_IMPORTED_MODULE_10__.getTopModalLayer)();
+  } // Whether this modal is the top layer of the document (layer-stack.js): a
+  // drawer or a list opened from it stands above it.
+
+
+  static isTopModal(modal) {
+    return (0,_stack__WEBPACK_IMPORTED_MODULE_10__.isTopModalLayer)(modal);
+  }
+
+  static addToStack(modal) {
+    if (!modal || modal.display === 'inline') {
+      return;
+    }
+
+    Modal.stack = Modal.stack.filter(item => item !== modal);
+    Modal.stack.push(modal);
+    Modal.openCount = Modal.stack.length;
+    (0,_stack__WEBPACK_IMPORTED_MODULE_10__.addModalLayer)(modal);
+  }
+
+  static removeFromStack(modal) {
+    if (!modal || modal.display === 'inline') {
+      return;
+    }
+
+    Modal.stack = Modal.stack.filter(item => item !== modal);
+    Modal.openCount = Modal.stack.length;
+    (0,_stack__WEBPACK_IMPORTED_MODULE_10__.removeModalLayer)(modal);
+  }
+
+  static bringToFront(modal) {
+    if (!modal || modal.display === 'inline' || !Modal.stack.includes(modal)) {
+      return;
+    }
+
+    Modal.stack = Modal.stack.filter(item => item !== modal);
+    Modal.stack.push(modal);
+    (0,_stack__WEBPACK_IMPORTED_MODULE_10__.raiseModalLayer)(modal);
+  }
+
+  static updateStackStyles() {
+    (0,_stack__WEBPACK_IMPORTED_MODULE_10__.updateModalLayers)();
+  }
+
+  constructor(props) {
+    super(props);
+    const params = this.params || {};
+    this.modalId = this.id || params.id || `sf-modal-${++Modal.uid}`;
+    this.isOpen = false;
+    this.lastActive = null;
+    this.root = params.root || null; // The box the modal covers: an element or a selector. Without one the
+    // modal covers the viewport -- or, when it is opened from inside an
+    // overlay container, that box (DEV, 2026-10-18).
+
+    this.container = params.container || null;
+    this.overlay = this.toBoolean(params.overlay, true);
+    this.unclose = this.toBoolean(params.unclose, false);
+    this.showClose = this.toBoolean(params.showClose, true) && !this.unclose;
+    this.showFooter = this.toBoolean(params.showFooter, true);
+    this.closeOnEsc = this.toBoolean(params.closeOnEsc, true) && !this.unclose;
+    this.closeOnOverlay = this.toBoolean(params.closeOnOverlay, true) && !this.unclose;
+    this.preserveScrollGap = this.toBoolean(params.preserveScrollGap, true);
+    this.autoload = this.toBoolean(params.autoload, false);
+    this.position = normalizePosition(params.position);
+    this.size = normalizeSize(params.size);
+    this.fullscreen = this.toBoolean(params.fullscreen, false);
+    this.mode = normalizeMode(params.mode);
+    this.display = normalizeDisplay(params.display);
+    this.src = params.src || '';
+    this.preload = this.toBoolean(params.preload, true);
+    this._fetchController = null;
+    this._contentLoaded = false;
+    this._contentError = null;
+    this._loadingTimer = null;
+    this._loadingShown = false;
+    this._loadingDebounceMs = 500;
+    this.blur = isBlurTypeValue(params.blur) ? true : this.toBoolean(params.blur, false);
+    this.hasCustomBlurType = isBlurTypeValue(params.blurType) || isBlurTypeValue(params.blur);
+    this.blurType = normalizeBlurType(params.blurType || (isBlurTypeValue(params.blur) ? params.blur : '')); // The scrim, as <sf-modal> draws it (C224): default, the shared black 64;
+    // focus, the same with the small backdrop blur (C159 (7), C157 (6): one
+    // scrim). `blur` -- true or a strength -- is the focus scrim: blur: true
+    // laid the overlay surface with a 64 px blur and 'large' 8 px, weaker
+    // than true (study Ok6). The strengths and blurType are old names until
+    // 2027-01-01.
+
+    this.overlayPreset = String(params.overlayPreset || '').trim().toLowerCase() === 'focus' || this.blur ? 'focus' : 'default';
+    this.noteOldNames(params);
+    this.onOverlayClick = this.onOverlayClick.bind(this);
+    this.onSheetPointerDown = this.onSheetPointerDown.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this._modalState = 'closed';
+    this._stackIndex = -1;
+    this._closeTimer = null;
+    this._closeTransitionAbort = null;
+    this.template = this.buildTemplate(params);
+    this.template.id = this.modalId;
+    this.template.setAttribute('data-sf-modal-id', this.modalId);
+    this.template.setAttribute('aria-hidden', 'true');
+    this.init();
+  } // The box given as `container`, or the overlay container `opener` stands in,
+  // or the body.
+
+
+  overlayHomeFor(opener = null) {
+    let box = this.container;
+    if (typeof box === 'string') box = document.querySelector(box);
+
+    if (box instanceof Element) {
+      if (!box.matches(OVERLAY_CONTAINER)) box.setAttribute('data-sf-overlay-container', '');
+      return box;
+    }
+
+    const from = opener instanceof Element ? opener.closest(OVERLAY_CONTAINER) : null;
+    return from || document.body;
+  }
+
+  get overlayHome() {
+    return this.overlayHomeFor();
+  }
+
+  get inContainer() {
+    return Boolean(this.template?.parentElement?.closest(OVERLAY_CONTAINER));
+  }
+
+  placeIn(home) {
+    if (this.display === 'inline' || this.root || !this.template || !home) return;
+    if (this.template.parentElement !== home) home.append(this.template);
+  }
+
+  emitEvent(eventName, {
+    cancelable = false,
+    detail = {}
+  } = {}) {
+    const payload = {
+      modal: this,
+      id: this.modalId,
+      isOpen: this.isOpen,
+      ...detail
+    };
+    let prevented = false;
+
+    if (this.template) {
+      const event = new CustomEvent(eventName, {
+        bubbles: true,
+        cancelable,
+        detail: payload
+      });
+      this.template.dispatchEvent(event);
+      prevented = prevented || event.defaultPrevented;
+    }
+
+    if (typeof window !== 'undefined') {
+      const windowEvent = new CustomEvent(eventName, {
+        cancelable: false,
+        detail: payload
+      });
+      window.dispatchEvent(windowEvent);
+    }
+
+    return !prevented;
+  }
+
+  runCallback(callbackName, payload = {}) {
+    const handler = this.params?.[callbackName];
+
+    if (typeof handler === 'function') {
+      return handler({
+        modal: this,
+        id: this.modalId,
+        isOpen: this.isOpen,
+        ...payload
+      });
+    }
+
+    return undefined;
+  }
+
+  emitBeforeOpen() {
+    const modernAllowed = this.emitEvent('modal:before-open', {
+      cancelable: true,
+      detail: {
+        phase: 'before-open'
+      }
+    });
+    const legacyAllowed = this.emitEvent('SFModalBeforeOpenWindow', {
+      cancelable: true,
+      detail: {
+        phase: 'before-open'
+      }
+    });
+
+    if (!modernAllowed || !legacyAllowed) {
+      return false;
+    }
+
+    const beforeOpenResult = this.runCallback('beforeOpen', {
+      phase: 'before-open'
+    });
+    const beforeOpenWindowResult = this.runCallback('beforeOpenWindow', {
+      phase: 'before-open'
+    });
+    return beforeOpenResult !== false && beforeOpenWindowResult !== false;
+  }
+
+  emitAfterOpen() {
+    this.emitEvent('modal:after-open', {
+      detail: {
+        phase: 'after-open'
+      }
+    });
+    this.emitEvent('SFModalAfterOpenWindow', {
+      detail: {
+        phase: 'after-open'
+      }
+    });
+    this.runCallback('afterOpen', {
+      phase: 'after-open'
+    });
+    this.runCallback('afterOpenWindow', {
+      phase: 'after-open'
+    });
+  }
+
+  emitBeforeClose() {
+    const modernAllowed = this.emitEvent('modal:before-close', {
+      cancelable: true,
+      detail: {
+        phase: 'before-close'
+      }
+    });
+    const legacyAllowed = this.emitEvent('SFModalBeforeCloseWindow', {
+      cancelable: true,
+      detail: {
+        phase: 'before-close'
+      }
+    });
+
+    if (!modernAllowed || !legacyAllowed) {
+      return false;
+    }
+
+    const beforeCloseResult = this.runCallback('beforeClose', {
+      phase: 'before-close'
+    });
+    const beforeCloseWindowResult = this.runCallback('beforeCloseWindow', {
+      phase: 'before-close'
+    });
+    return beforeCloseResult !== false && beforeCloseWindowResult !== false;
+  }
+
+  emitAfterClose() {
+    this.emitEvent('modal:after-close', {
+      detail: {
+        phase: 'after-close'
+      }
+    });
+    this.emitEvent('SFModalAfterCloseWindow', {
+      detail: {
+        phase: 'after-close'
+      }
+    });
+    this.runCallback('afterClose', {
+      phase: 'after-close'
+    });
+    this.runCallback('afterCloseWindow', {
+      phase: 'after-close'
+    });
+  }
+
+  toBoolean(value, fallback) {
+    if (value === undefined || value === null) {
+      return fallback;
+    }
+
+    if (typeof value === 'boolean') {
+      return value;
+    }
+
+    const normalized = `${value}`.trim().toLowerCase();
+
+    if (['1', 'true', 'yes', 'on'].includes(normalized)) {
+      return true;
+    }
+
+    if (['0', 'false', 'no', 'off'].includes(normalized)) {
+      return false;
+    }
+
+    return fallback;
+  }
+
+  getBlurClasses() {
+    return this.hasCustomBlurType ? [getBlurClass(this.blurType)] : [];
+  } // The scrim's classes: the preset's marker, and the focus preset's small
+  // blur (the Smart template's overlayClasses). Its colour is the sheet's
+  // shared scrim (--sf-scrim-color), not a utility, so the window over
+  // another lays none (C159 (7)).
+
+
+  overlayClasses() {
+    return joinClasses(`sf-modal-overlay--${this.overlayPreset}`, this.overlayPreset === 'focus' ? getBlurClass('small') : '');
+  } // The names the class window keeps for a while (SF.deprecations): a side
+  // or bottom position (sf-drawer's, C157 (1)), and the blur strengths.
+
+
+  noteOldNames(params = {}) {
+    const dated = {
+      tag: 'sf-modal',
+      since: OLD_NAMES_SINCE,
+      remove_after: OLD_NAMES_UNTIL
+    };
+
+    if (EDGE_POSITIONS.includes(this.position)) {
+      (0,_core_js_deprecations_js__WEBPACK_IMPORTED_MODULE_4__.noteDeprecated)({
+        component: 'modal',
+        kind: 'value',
+        attribute: 'position',
+        from: this.position,
+        to: this.position === 'bottom' ? 'sf-drawer placement="bottom"' : 'sf-drawer',
+        ...dated
+      });
+    }
+
+    if (isBlurTypeValue(params.blur)) {
+      (0,_core_js_deprecations_js__WEBPACK_IMPORTED_MODULE_4__.noteDeprecated)({
+        component: 'modal',
+        kind: 'value',
+        attribute: 'blur',
+        from: String(params.blur).trim().toLowerCase(),
+        to: "blur: true (overlayPreset: 'focus')",
+        ...dated
+      });
+    }
+
+    if (isBlurTypeValue(params.blurType)) {
+      (0,_core_js_deprecations_js__WEBPACK_IMPORTED_MODULE_4__.noteDeprecated)({
+        component: 'modal',
+        kind: 'value',
+        attribute: 'blurType',
+        from: String(params.blurType).trim().toLowerCase(),
+        to: "overlayPreset: 'focus'",
+        ...dated
+      });
+    }
+  } // On a phone (below sm, owner decision C159 (2)) a window left at the
+  // centre is a sheet at the bottom, the screen's width, its answers sharing
+  // the row; a wide or full window and a form of more than three fields take
+  // the whole screen. The class window stayed a card the width of its text
+  // (332 of 390, study Ok2). The same rule as <sf-modal> (C224).
+
+
+  get onPhone() {
+    return this.display !== 'inline' && Boolean(this._phoneQuery?.matches);
+  }
+
+  contentFields() {
+    const body = this.template?.querySelector('[data-sf-modal-body-scroll]');
+    return body ? (0,_focus__WEBPACK_IMPORTED_MODULE_3__.windowFields)(body) : [];
+  }
+
+  get phoneFullScreen() {
+    if (!this.onPhone || this.position !== 'center') return false;
+    return this.size === 'wide' || this.size === 'full' || this.size === 'form' && this.contentFields().length > 3;
+  }
+
+  get shownPosition() {
+    if (this.position === 'center' && this.onPhone && !this.phoneFullScreen) return 'bottom';
+    return this.position;
+  }
+
+  get shownFullscreen() {
+    return Boolean(this.fullscreen) || this.size === 'full' || this.phoneFullScreen;
+  } // Writes where the window stands now: its position (with the old misspelt
+  // alias class) and whether it takes the whole screen.
+
+
+  applyPlacement() {
+    const root = this.template;
+    if (!root) return;
+    const position = this.display === 'inline' ? this.position : this.shownPosition;
+
+    for (const name of [...root.classList]) {
+      if (/^sf-modal--posit(?:i)?on-/.test(name)) root.classList.remove(name);
+    }
+
+    root.classList.add(`sf-modal--position-${position}`, `sf-modal--positon-${position}`);
+    root.setAttribute('data-sf-modal-position', position);
+    root.setAttribute('data-sf-modal-fullscreen', String(this.display === 'inline' ? this.fullscreen : this.shownFullscreen));
+  }
+
+  watchPhone() {
+    if (this.display === 'inline' || this._phoneQuery) return;
+    const query = (0,_core_js_breakpoints_js__WEBPACK_IMPORTED_MODULE_5__.breakpointMedia)('sm', {
+      below: true
+    });
+    if (!query) return;
+    this._phoneQuery = query;
+
+    this._onPhoneChange = () => this.applyPlacement();
+
+    query.addEventListener?.('change', this._onPhoneChange);
+  } // A window at the bottom is the one sheet (C157 (5)): a swipe down from its
+  // handle row closes it as the x does. The class window drew the grab bar
+  // and did not follow the finger.
+
+
+  onSheetPointerDown(event) {
+    if (event.button !== 0 || !this.isOpen || this.shownPosition !== 'bottom' || this.shownFullscreen) return;
+    const surface = this.template?.querySelector('[data-sf-modal-surface]');
+    const panel = this.template?.querySelector('[data-sf-modal-panel]');
+    if (!surface || !panel || !surface.contains(event.target) || (0,_core_js_sheet_swipe__WEBPACK_IMPORTED_MODULE_6__.startsOnControl)(event.target)) return;
+    if (!(0,_core_js_sheet_swipe__WEBPACK_IMPORTED_MODULE_6__.inHandleRow)(event, surface)) return;
+    (0,_core_js_sheet_swipe__WEBPACK_IMPORTED_MODULE_6__.trackSwipe)(event, {
+      surface: panel,
+      direction: 'down',
+      variable: '--sf-sheet--drag',
+      onEnd: ({
+        dismiss
+      }) => {
+        if (dismiss && !this.unclose) this.close();
+      }
+    });
+  }
+
+  setOverlay(nextValue) {
+    this.overlay = this.toBoolean(nextValue, true);
+    const overlay = this.template?.querySelector('[data-sf-modal-overlay]');
+
+    if (!overlay) {
+      return this;
+    }
+
+    overlay.classList.toggle('hidden', !this.overlay || this.display === 'inline');
+    return this;
+  }
+
+  buildTemplate(params) {
+    const isInline = this.display === 'inline';
+    const root = document.createElement('div'); // sf-modal--positon-* is the legacy misspelt alias of sf-modal--position-*,
+    // written beside it until contracts/changes/journal.json removes it.
+
+    root.className = isInline ? `sf-modal sf-modal--size-${this.size} sf-modal--inline sf-modal--position-${this.position} sf-modal--positon-${this.position} inline-block w-full` : `sf-modal sf-modal--size-${this.size} sf-modal--position-${this.position} sf-modal--positon-${this.position} hidden fixed top-0 inline-start-0 w-full h-full z-9 p-3 items-cross-center content-main-center`;
+    root.setAttribute('role', isInline ? 'region' : 'dialog');
+    root.setAttribute('aria-modal', isInline ? 'false' : 'true');
+    root.setAttribute('data-sf-modal-position', this.position);
+    root.setAttribute('data-sf-modal-size', this.size);
+    root.setAttribute('data-sf-modal-fullscreen', String(this.fullscreen || this.size === 'full'));
+    root.setAttribute('data-sf-modal-display', this.display);
+    root.setAttribute('data-sf-modal-overlay-preset', this.overlayPreset);
+    root.setAttribute('data-sf-modal-state', isInline ? 'inline' : 'closed');
+    const overlay = document.createElement('div'); // The scrim's colour and opacity are the sheet's (--sf-modal-overlay-*).
+    // No paint utility here: since C273 a bg-* class beats the component's
+    // paint, so bg-black would turn the scrim solid. An overlayClass of the
+    // host still recolours it, as a utility on a component should.
+
+    overlay.className = joinClasses('absolute top-0 inline-start-0 w-full h-full', this.overlayClasses(), params.overlayClass);
+    overlay.setAttribute('data-sf-modal-overlay', '');
+    overlay.setAttribute('data-sf-modal-overlay-preset', this.overlayPreset);
+
+    if (!this.overlay || isInline) {
+      overlay.classList.add('hidden');
+    }
+
+    const panel = document.createElement('section');
+    panel.className = joinClasses('relative overflow-visible', params.panelClass);
+    panel.setAttribute('data-sf-modal-panel', '');
+    const width = normalizeCssValue(params.width);
+    const height = normalizeCssValue(params.height);
+
+    if (width) {
+      panel.style.setProperty('--sf-modal-width', width);
+      panel.setAttribute('data-sf-modal-has-width', '');
+    }
+
+    if (height) {
+      panel.style.setProperty('--sf-modal-height', height);
+      panel.setAttribute('data-sf-modal-has-height', '');
+    } // The window's frame is the question window's (decision C39; dispatcher
+    // decision d, docs pre-check 2026-11-10): the frame -- since C105 a
+    // window's inset, --sf-space-2 with the edge inside it, drawn by the
+    // sheet (sf.base, so a surfaceClass padding utility still wins) -- the
+    // title --sf-space-1 above the content, no line under the header, and the
+    // close button on the frame's corner, the title centred on its line. The
+    // frame was --sf-space-2 with a line under the header.
+    // The surface is <sf-modal>'s (C224): the modal surface, and over the
+    // page the elevated one -- the popup place with the modal shadow (C16,
+    // C20). It was the bg-surface utility, in the dark theme 26·27·31 next
+    // to a 15·17·21 page (study Ok4), and its frame variables were the Smart
+    // surface's alone, so a side window lost its frame (Ok3).
+
+
+    const surface = document.createElement('div');
+    surface.className = joinClasses('sf-modal-surface flex flex-col min-w-0', !isInline && 'sf-modal-surface--elevated', params.surfaceClass);
+    surface.setAttribute('data-sf-modal-surface', '');
+    const header = document.createElement('header');
+    header.className = joinClasses('sf-modal-header flex items-start min-w-0 gap-1', params.headerClass);
+
+    if (Array.isArray(params.headerNodes) && params.headerNodes.length) {
+      root.setAttribute('aria-label', params.title || untitled(root));
+      params.headerNodes.forEach(node => {
+        if (node instanceof Node) {
+          header.append(node);
+        }
+      });
+    } else {
+      const title = document.createElement('h2');
+      title.id = `${this.modalId}-title`;
+      root.setAttribute('aria-labelledby', title.id);
+      title.className = 'sf-modal-header-content sf-modal-title m-0';
+      title.textContent = params.title || untitled(root);
+      header.append(title);
+
+      if (this.showClose) {
+        // The close button is sf-button-close's class markup (C14, C15), as
+        // <sf-modal> draws it: it was the icon button's old link look.
+        const closeButton = document.createElement('button');
+        closeButton.type = 'button';
+        closeButton.className = joinClasses( // The close is sf-button-close, ghost (owner decision C14, RG-CL-3):
+        // the class markup of the Smart window's header close.
+        'sf-icon-button sf-icon-button--size-1/3 sf-icon-button--close sf-button-close sf-button-close--ghost sf-button-close--on-surface flex items-cross-center sf-modal-header-action sf-modal-close-button sf-modal-close-button--inline-end m-0', params.closeClass); // The page language's word, as the Smart window has; the glyph inside is
+        // decoration and carries no name of its own.
+
+        closeButton.setAttribute('aria-label', (0,_core_js_page_language__WEBPACK_IMPORTED_MODULE_2__.pageText)(UNTITLED, 'close', closeButton.isConnected ? closeButton : document.documentElement, 'sf-modal'));
+        closeButton.setAttribute('data-sf-modal-close', this.modalId);
+        closeButton.innerHTML = '            <span\n' + '              class="sf-close sf-close--size-1/3 flex content-main-center items-center pointer-events-none"\n' + '              aria-hidden="true"\n' + '            >\n' + '              <span class="sf-close-icon"></span>\n' + '            </span>';
+        header.append(closeButton);
+      }
+    }
+
+    const body = document.createElement('div');
+    body.className = 'sf-modal-body flex flex-col gap-1 min-w-0 overflow-visible';
+    body.setAttribute('data-sf-modal-body', '');
+    const bodyViewport = document.createElement('div');
+    bodyViewport.className = 'sf-modal-body-viewport min-w-0 overflow-visible';
+    bodyViewport.setAttribute('data-sf-modal-body-viewport', '');
+    const bodyScroll = document.createElement('div');
+    bodyScroll.className = joinClasses('sf-modal-body-scroll h-full min-w-0 overflow-y-auto flex flex-col gap-1', params.bodyClass);
+    bodyScroll.setAttribute('data-sf-modal-body-scroll', ''); // Placeholder для ajax-контента (loading/error)
+
+    const contentPlaceholder = document.createElement('div');
+    contentPlaceholder.className = 'sf-modal-content-placeholder flex flex-col gap-2 min-h-8 items-cross-center content-main-center';
+    contentPlaceholder.setAttribute('data-sf-modal-content-placeholder', '');
+
+    if ((this.mode === 'ajax' || this.mode === 'iframe') && this.src) {
+      // Ajax/iframe-режим: показываем loading с debounce, контент загрузится в init()
+      this._scheduleLoading(contentPlaceholder);
+
+      bodyScroll.append(contentPlaceholder);
+    } else if (Array.isArray(params.contentNodes) && params.contentNodes.length) {
+      const content = document.createElement('div');
+      content.className = joinClasses('sf-modal-content flex flex-col gap-2', params.contentClass);
+      params.contentNodes.forEach(node => {
+        if (node instanceof Node) {
+          content.append(node);
+        }
+      });
+      bodyScroll.append(content);
+    }
+
+    if (Array.isArray(params.footerNodes) && params.footerNodes.length && this.showFooter) {
+      const footer = document.createElement('div');
+      footer.className = joinClasses('sf-modal-footer flex flex-wrap', params.footerClass);
+      params.footerNodes.forEach(node => {
+        if (node instanceof Node) {
+          footer.append(node);
+        }
+      });
+      body.append(footer);
+    } else if (typeof params.html === 'string' && params.html.trim()) {
+      bodyScroll.innerHTML = params.html;
+    } else if (this.mode === 'ajax' && this.src || this.mode === 'iframe' && this.src) {// Для ajax/iframe-режима текст не показываем — там loading/error
+    } else {
+      const text = document.createElement('p');
+      text.className = 'm-0 text-2';
+      text.textContent = params.text || '';
+      bodyScroll.append(text);
+    }
+
+    bodyViewport.append(bodyScroll);
+    body.prepend(bodyViewport);
+    surface.append(header, body);
+    panel.append(surface);
+    root.append(overlay, panel);
+    return root;
+  } // --- Ajax API ---
+
+
+  _scheduleLoading(container) {
+    this._cancelLoadingTimer();
+
+    this._loadingShown = false;
+    this._loadingTimer = setTimeout(() => {
+      this._showLoading(container);
+
+      this._loadingShown = true;
+    }, this._loadingDebounceMs);
+  }
+
+  _cancelLoadingTimer() {
+    if (this._loadingTimer) {
+      clearTimeout(this._loadingTimer);
+      this._loadingTimer = null;
+    }
+  }
+
+  _finishLoading() {
+    this._cancelLoadingTimer();
+  }
+
+  _showLoading(container) {
+    container.innerHTML = '';
+    const loading = document.createElement('div');
+    loading.className = 'sf-modal-loading flex flex-col gap-2 items-cross-center content-main-center p-4';
+    loading.setAttribute('data-sf-modal-state', 'loading');
+    const words = modalText('loading', this.template);
+    loading.setAttribute('role', 'status');
+    loading.setAttribute('aria-label', words);
+    const text = document.createElement('p');
+    text.className = 'm-0 text-2 color-on-surface-variant';
+    text.textContent = words;
+    loading.append(text); // The Framework's one spinner, in the page's look (simai/ui-source#11);
+    // the modal sheet draws its slot.
+
+    loading.prepend((0,_spinner_js_spinner_draw__WEBPACK_IMPORTED_MODULE_9__.createInlineSpinner)({
+      className: 'sf-modal-spinner'
+    }));
+    container.append(loading);
+  }
+
+  _showError(container, message) {
+    container.innerHTML = '';
+    const error = document.createElement('div');
+    error.className = 'sf-modal-error flex flex-col gap-2 items-cross-center content-main-center p-4';
+    error.setAttribute('data-sf-modal-state', 'error');
+    error.innerHTML = `
+      <div class="sf-modal-error-icon text-4 color-error">⚠</div>
+      <p class="sf-modal-error-text m-0 text-2 color-error">${this.escapeHtml(message || modalText('loadFailed', this.template))}</p>
+    `;
+    container.append(error);
+  }
+
+  _abortFetch() {
+    if (this._fetchController) {
+      this._fetchController.abort();
+
+      this._fetchController = null;
+    }
+  }
+
+  async _loadContent() {
+    if (!this.src) {
+      return;
+    }
+
+    if (this.mode === 'iframe') {
+      this._loadIframe();
+
+      return;
+    }
+
+    if (this.mode === 'ajax') {
+      this._loadAjax();
+    }
+  }
+
+  async _loadAjax() {
+    // Проверяем, является ли src DOM-селектором
+    if (this.src.startsWith('#')) {
+      const sourceEl = document.querySelector(this.src);
+
+      if (sourceEl) {
+        this._emitBeforeContentUpload();
+
+        const cloned = sourceEl.cloneNode(true);
+        cloned.removeAttribute('id');
+
+        this._finishLoading();
+
+        this._replaceContentWithNode(cloned);
+
+        this._contentLoaded = true;
+
+        this._emitAfterContentUpload();
+      } else {
+        this._contentError = `Element not found: ${this.src}`;
+
+        this._finishLoading();
+
+        this._showContentError();
+      }
+
+      return;
+    } // Fetch по URL
+
+
+    this._abortFetch();
+
+    const controller = new AbortController();
+    this._fetchController = controller;
+
+    try {
+      this._emitBeforeContentUpload();
+
+      const response = await fetch(this.src, {
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const html = await response.text();
+      this._contentLoaded = true;
+
+      this._finishLoading();
+
+      this._replaceContentWithHtml(html);
+
+      this._fetchController = null;
+
+      this._emitAfterContentUpload();
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        // Aborted by a newer load (open() reloads what the constructor began
+        // to preload): the loading state is that load's, and cancelling its
+        // timer here meant a modal opened during the preload never showed it.
+        if (!this._fetchController || this._fetchController === controller) {
+          this._finishLoading();
+        }
+
+        return; // The load was cancelled: no error is shown
+      }
+
+      this._contentError = error.message;
+
+      this._finishLoading();
+
+      this._showContentError();
+    }
+  }
+
+  _loadIframe() {
+    this._emitBeforeContentUpload();
+
+    const bodyScroll = this.template?.querySelector('[data-sf-modal-body-scroll]');
+
+    if (!bodyScroll) {
+      return;
+    } // Удаляем предыдущий контент (включая placeholder)
+
+
+    bodyScroll.innerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.className = 'sf-modal-iframe w-full border-0 radius-surface';
+    iframe.src = this.src;
+    iframe.setAttribute('data-sf-modal-iframe', '');
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.style.minHeight = 'var(--sf-modal-iframe-min-height)';
+    iframe.style.height = '100%';
+    iframe.addEventListener('load', () => {
+      this._contentLoaded = true;
+
+      this._finishLoading();
+
+      this._emitAfterContentUpload();
+    });
+    iframe.addEventListener('error', () => {
+      this._contentError = modalText('frameFailed', this.template);
+
+      this._finishLoading();
+
+      this._showContentError();
+    });
+    bodyScroll.append(iframe);
+  }
+
+  _replaceContentWithNode(node) {
+    const bodyScroll = this.template?.querySelector('[data-sf-modal-body-scroll]');
+
+    if (!bodyScroll) {
+      return;
+    }
+
+    bodyScroll.innerHTML = '';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'sf-modal-content flex flex-col gap-2';
+    wrapper.append(node);
+    bodyScroll.append(wrapper);
+  }
+
+  _replaceContentWithHtml(html) {
+    const bodyScroll = this.template?.querySelector('[data-sf-modal-body-scroll]');
+
+    if (!bodyScroll) {
+      return;
+    }
+
+    bodyScroll.innerHTML = '';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'sf-modal-content flex flex-col gap-2';
+    wrapper.innerHTML = html;
+    bodyScroll.append(wrapper);
+  }
+
+  _showContentError() {
+    const bodyScroll = this.template?.querySelector('[data-sf-modal-body-scroll]');
+
+    if (!bodyScroll) {
+      return;
+    }
+
+    bodyScroll.innerHTML = '';
+    const error = document.createElement('div');
+    error.className = 'sf-modal-error flex flex-col gap-2 items-cross-center content-main-center p-4';
+    error.setAttribute('data-sf-modal-state', 'error');
+    error.innerHTML = `
+      <div class="sf-modal-error-icon text-4 color-error">⚠</div>
+      <p class="sf-modal-error-text m-0 text-2 color-error">${this.escapeHtml(this._contentError || modalText('loadFailed', this.template))}</p>
+    `;
+    bodyScroll.append(error);
+  }
+
+  _emitBeforeContentUpload() {
+    this.emitEvent('modal:before-content-upload', {
+      detail: {
+        src: this.src
+      }
+    });
+    this.runCallback('beforeContentUpload', {
+      src: this.src
+    });
+  }
+
+  _emitAfterContentUpload() {
+    this.emitEvent('modal:after-content-upload', {
+      detail: {
+        src: this.src
+      }
+    });
+    this.runCallback('afterContentUpload', {
+      src: this.src
+    });
+  }
+
+  escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  init() {
+    // Inline mode — рендерим прямо в контейнер sf-modal, не переносим в body
+    if (this.display === 'inline') {
+      this._modalState = 'open';
+      this.template.setAttribute('data-sf-modal-state', 'open');
+      this.template.classList.remove('hidden'); // Если open="false" — скрываем сразу
+
+      if (!this.toBoolean(this.params?.open, true)) {
+        this.isOpen = false;
+        this._modalState = 'closed';
+        this.template.setAttribute('data-sf-modal-state', 'closed');
+        this.template.classList.add('hidden');
+      } else {
+        this.isOpen = true;
+      }
+
+      this.template.setAttribute('aria-hidden', String(!this.isOpen));
+
+      if (this.root) {
+        this.root.append(this.template);
+      }
+
+      Modal.registry.set(this.modalId, this); // Загружаем контент если нужно
+
+      if ((this.mode === 'ajax' || this.mode === 'iframe') && this.src && this.preload !== false) {
+        this._loadContent();
+      }
+
+      return;
+    }
+
+    if (!this.template.isConnected) {
+      this.overlayHome.append(this.template);
+    } // Inline mode — не привязываем глобальные события, не добавляем в body
+
+
+    if (this.display === 'inline') {
+      this.isOpen = true;
+      this._modalState = 'open';
+      this.template.setAttribute('data-sf-modal-state', 'inline');
+      this.template.classList.remove('hidden');
+      Modal.registry.set(this.modalId, this); // Загружаем контент если нужно
+
+      if ((this.mode === 'ajax' || this.mode === 'iframe') && this.src && this.preload !== false) {
+        this._loadContent();
+      }
+
+      return;
+    } // Escape and Tab come through the document layer stack, to the top layer.
+
+
+    this.template.addEventListener('click', this.onOverlayClick);
+    this.template.addEventListener('pointerdown', this.onSheetPointerDown);
+    this.watchPhone();
+    this.applyPlacement();
+    Modal.registry.set(this.modalId, this);
+    Modal.bindGlobalEvents();
+    const shouldOpen = this.toBoolean(this.params?.open, false) || this.autoload;
+
+    if (shouldOpen) {
+      requestAnimationFrame(() => {
+        this.open({
+          animate: false
+        });
+      });
+    } // Загружаем ajax/iframe-контент только если preload !== false
+
+
+    if ((this.mode === 'ajax' || this.mode === 'iframe') && this.src && this.preload !== false) {
+      this._loadContent();
+    }
+  }
+
+  destroyInternal() {
+    this._abortFetch();
+
+    this._cancelLoadingTimer();
+
+    this.cancelCloseTransition(); // Inline mode — не делаем finishClose
+
+    if (this.display !== 'inline' && (this.isOpen || this._modalState === 'closing')) {
+      this._modalState = 'closing';
+      this.finishClose();
+    }
+
+    Modal.removeFromStack(this);
+    this.template.removeEventListener('click', this.onOverlayClick);
+    this.template.removeEventListener('pointerdown', this.onSheetPointerDown);
+    this._phoneQuery?.removeEventListener?.('change', this._onPhoneChange);
+    this._phoneQuery = null;
+    Modal.registry.delete(this.modalId);
+  }
+
+  onOverlayClick(event) {
+    const isOverlay = event.target === this.template.querySelector('[data-sf-modal-overlay]');
+
+    if (isOverlay && this.closeOnOverlay && Modal.isTopModal(this)) {
+      this.close();
+    }
+  } // Handed Escape and Tab by the layer stack while this is the top layer.
+  // Answers true when it took Escape.
+
+
+  onKeyDown(event) {
+    if (!this.isOpen && this._modalState !== 'closing') {
+      return false;
+    }
+
+    if (!Modal.isTopModal(this)) {
+      return false;
+    }
+
+    if (event.key === 'Escape' && this.closeOnEsc && this._modalState !== 'closing' && !event.defaultPrevented) {
+      this.close();
+      return true;
+    }
+
+    if (event.key === 'Tab') {
+      this.trapFocus(event);
+    }
+
+    return false;
+  }
+
+  trapFocus(event) {
+    if (!Modal.isTopModal(this)) {
+      return;
+    }
+
+    const panel = this.template.querySelector('[data-sf-modal-panel]');
+    (0,_focus__WEBPACK_IMPORTED_MODULE_3__.trapModalFocus)(panel, event);
+  }
+
+  focusFirst() {
+    if (this.display !== 'inline' && !Modal.isTopModal(this)) {
+      return;
+    }
+
+    const panel = this.template.querySelector('[data-sf-modal-panel]');
+
+    if (!panel) {
+      return;
+    }
+
+    panel.setAttribute('tabindex', '-1'); // The page's [autofocus] inside the window first (decision C25), else the panel.
+
+    (0,_focus__WEBPACK_IMPORTED_MODULE_3__.focusModalInitial)(panel);
+  }
+
+  applyStackPosition(index = (0,_stack__WEBPACK_IMPORTED_MODULE_10__.getModalLayerIndex)(this)) {
+    this._stackIndex = index;
+
+    if (!this.template || this.display === 'inline') {
+      return this;
+    }
+
+    if (index < 0) {
+      this.template.style.removeProperty('z-index');
+      this.template.style.removeProperty('--sf-modal-stack-index');
+      this.template.removeAttribute('data-sf-modal-stacked');
+      return this;
+    }
+
+    this.template.style.setProperty('--sf-modal-stack-index', String(index));
+    this.template.style.zIndex = String((0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_11__.layerZIndexAt)(index)); // One scrim (owner decision C159 (7)), as <sf-modal> keeps it: a window
+    // over another open window -- a class one or a Smart one, the document's
+    // one stack -- lays none of its own. Two class windows laid two, the page
+    // at about 87 % (study Ok5).
+
+    const windows = (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_11__.openLayers)('modal');
+    this.template.toggleAttribute('data-sf-modal-stacked', windows.indexOf(this) > 0);
+    return this;
+  }
+
+  open(options = {}) {
+    const {
+      animate = true
+    } = typeof options === 'boolean' ? {
+      animate: options
+    } : options; // Inline mode — не скрываем, не делаем scroll lock
+
+    if (this.display === 'inline') {
+      if (this.isOpen) {
+        return;
+      }
+
+      if (!this.emitBeforeOpen()) {
+        return;
+      }
+
+      this.isOpen = true;
+      this._modalState = 'open';
+      this.template.setAttribute('data-sf-modal-state', 'open');
+      this.template.classList.remove('hidden');
+      this.template.setAttribute('aria-hidden', 'false');
+      this.emitAfterOpen();
+      return;
+    }
+
+    if (this.isOpen) {
+      Modal.bringToFront(this);
+      this.cancelCloseTransition();
+      return;
+    }
+
+    if (!this.emitBeforeOpen()) {
+      return;
+    } // Если src был изменён пока модалка была закрыта — загружаем контент
+
+
+    if ((this.mode === 'ajax' || this.mode === 'iframe') && this.src && !this._contentLoaded && !this._contentError) {
+      const bodyScroll = this.template?.querySelector('[data-sf-modal-body-scroll]');
+
+      if (bodyScroll) {
+        this._scheduleLoading(bodyScroll);
+      }
+
+      this._loadContent();
+    } // Reopening cancels a pending close, not the original focus-return target.
+
+
+    this._releaseClosingContent?.();
+    this._releaseClosingContent = null;
+
+    if (this._modalState !== 'closing') {
+      this.lastActive = document.activeElement;
+      this._focusReturnAncestors = (0,_stack__WEBPACK_IMPORTED_MODULE_10__.captureModalFocusAncestors)(this.lastActive);
+      this.placeIn(this.overlayHomeFor(this.lastActive));
+    }
+
+    this.cancelCloseTransition(); // Where it stands now: a sheet or the whole screen on a phone (C159 (2)),
+    // read as it opens, since the fields that decide may have come since.
+
+    this.applyPlacement();
+    this.template.classList.remove('hidden');
+    this.template.classList.add('flex');
+    this.template.setAttribute('aria-hidden', 'false');
+    this.template.classList.toggle('animate', Boolean(animate));
+    this.template.setAttribute('data-sf-modal-state', 'opening');
+    this.isOpen = true;
+    Modal.addToStack(this);
+
+    if (!animate) {
+      this._modalState = 'open';
+      this.template.setAttribute('data-sf-modal-state', 'open');
+      this.focusFirst();
+      this.emitAfterOpen();
+      return;
+    }
+
+    (0,_motion__WEBPACK_IMPORTED_MODULE_8__.scheduleModalFrame)(() => {
+      if (!this.isOpen || this._modalState === 'closing') {
+        return;
+      }
+
+      this._modalState = 'open';
+      this.template.setAttribute('data-sf-modal-state', 'open');
+      this.focusFirst();
+      this.emitAfterOpen();
+    });
+  }
+
+  close() {
+    // Inline mode — просто скрываем через hidden + события
+    if (this.display === 'inline') {
+      if (!this.emitBeforeClose()) {
+        return;
+      }
+
+      this.isOpen = false;
+      this._modalState = 'closed';
+      this.template.setAttribute('data-sf-modal-state', 'closed');
+      this.template.classList.add('hidden');
+      this.template.setAttribute('aria-hidden', 'true');
+      this.emitAfterClose();
+      return;
+    }
+
+    if (!this.isOpen || this._modalState === 'closing') {
+      return;
+    }
+
+    if (!this.emitBeforeClose()) {
+      return;
+    }
+
+    this._modalState = 'closing';
+    this.template.setAttribute('data-sf-modal-state', 'closing');
+    this.isOpen = false;
+    const panel = this.template.querySelector('[data-sf-modal-panel]');
+    this._releaseClosingContent = (0,_closing__WEBPACK_IMPORTED_MODULE_7__.freezeModalContent)(panel, Modal.isTopModal(this));
+    this._closeTransitionAbort = (0,_motion__WEBPACK_IMPORTED_MODULE_8__.scheduleModalClose)(() => this.template, () => this.finishClose());
+  }
+
+  toggle() {
+    if (this.isOpen) {
+      this.close();
+    } else {
+      this.open();
+    }
+  }
+
+  setSrc(newSrc) {
+    this.src = newSrc || '';
+    this._contentLoaded = false;
+    this._contentError = null;
+    this._loadingShown = false;
+
+    this._abortFetch(); // Если модалка не открыта — загрузка произойдёт при open()
+
+
+    if (!this.template || !this.isOpen) {
+      return this;
+    } // Показываем loading в bodyScroll при повторной загрузке (с debounce)
+
+
+    const bodyScroll = this.template?.querySelector('[data-sf-modal-body-scroll]');
+
+    if (bodyScroll) {
+      this._scheduleLoading(bodyScroll);
+    }
+
+    if ((this.mode === 'ajax' || this.mode === 'iframe') && this.src && this.preload !== false) {
+      this._loadContent();
+    }
+
+    return this;
+  }
+
+  reloadContent() {
+    if ((this.mode === 'ajax' || this.mode === 'iframe') && this.src) {
+      this._contentLoaded = false;
+      this._contentError = null;
+      this._loadingShown = false;
+
+      this._abortFetch();
+
+      const bodyScroll = this.template?.querySelector('[data-sf-modal-body-scroll]');
+
+      if (bodyScroll) {
+        this._scheduleLoading(bodyScroll);
+      }
+
+      this._loadContent();
+    }
+
+    return this;
+  }
+
+  cancelCloseTransition() {
+    if (this._closeTimer) {
+      clearTimeout(this._closeTimer);
+      this._closeTimer = null;
+    }
+
+    if (this._closeTransitionAbort) {
+      this._closeTransitionAbort();
+
+      this._closeTransitionAbort = null;
+    }
+
+    if (this._modalState === 'closing') {
+      this._modalState = 'open';
+      this.template.setAttribute('data-sf-modal-state', 'open');
+    }
+  }
+
+  finishClose() {
+    if (this._modalState !== 'closing') {
+      return;
+    }
+
+    if (this._closeTimer) {
+      clearTimeout(this._closeTimer);
+      this._closeTimer = null;
+    }
+
+    if (this._closeTransitionAbort) {
+      this._closeTransitionAbort();
+
+      this._closeTransitionAbort = null;
+    }
+
+    this.template.classList.remove('flex');
+    this.template.classList.add('hidden');
+    this.template.setAttribute('data-sf-modal-state', 'closed');
+    this.template.setAttribute('aria-hidden', 'true');
+    this._releaseClosingContent?.();
+    this._releaseClosingContent = null;
+    this._modalState = 'closed';
+    const wasTop = Modal.isTopModal(this);
+    Modal.removeFromStack(this);
+    (0,_stack__WEBPACK_IMPORTED_MODULE_10__.restoreModalLayerFocus)(wasTop, this.lastActive, this._focusReturnAncestors);
+    this.emitAfterClose();
+  }
+
+  static bindGlobalEvents() {
+    if (Modal.globalBound || typeof document === 'undefined') {
+      return;
+    }
+
+    document.addEventListener('click', event => {
+      const openEl = event.target.closest('[data-sf-modal-open]');
+
+      if (openEl) {
+        const id = openEl.getAttribute('data-sf-modal-open');
+        const modal = Modal.registry.get(id);
+
+        if (modal) {
+          modal.open();
+        }
+
+        return;
+      }
+
+      const closeEl = event.target.closest('[data-sf-modal-close]');
+
+      if (!closeEl) {
+        return;
+      }
+
+      const id = closeEl.getAttribute('data-sf-modal-close');
+
+      if (id) {
+        const modal = Modal.registry.get(id);
+
+        if (modal) {
+          modal.close();
+        }
+
+        return;
+      }
+
+      const modalRoot = closeEl.closest('.sf-modal');
+
+      if (!modalRoot) {
+        return;
+      }
+
+      const modalId = modalRoot.getAttribute('data-sf-modal-id');
+      const modal = Modal.registry.get(modalId);
+
+      if (modal) {
+        modal.close();
+      }
+    });
+    Modal.globalBound = true;
+  } // Kept for code that calls them: the layer stack takes the page lock itself
+  // now, with its default lockPageScroll, while any layer that locks is open.
+
+
+  static lockPage(preserveScrollGap = true) {
+    if (!Modal.lockState) Modal.lockState = (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_11__.lockPageScroll)({
+      preserveScrollGap
+    });
+  }
+
+  static unlockPage() {
+    Modal.lockState?.();
+    Modal.lockState = null;
+  }
+
+}
+
+(0,_register_helper__WEBPACK_IMPORTED_MODULE_1__["default"])('Modal', Modal);
+
+
+/***/ },
+
+/***/ "201fd0b17b8b"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   modalTransitionDuration: () => (/* binding */ modalTransitionDuration),
+/* harmony export */   scheduleModalClose: () => (/* binding */ scheduleModalClose),
+/* harmony export */   scheduleModalFrame: () => (/* binding */ scheduleModalFrame)
+/* harmony export */ });
+const timeInMs = value => {
+  const number = Number.parseFloat(value);
+  return Number.isFinite(number) ? number * (value.trim().endsWith('ms') ? 1 : 1000) : 0;
+}; // Hidden/offscreen documents may throttle requestAnimationFrame indefinitely.
+// Modal state changes must still complete, so the first scheduled channel wins.
+
+
+function scheduleModalFrame(callback, view = window) {
+  let complete = false;
+  let frame = null;
+  let timer = null;
+
+  const run = () => {
+    if (complete) return;
+    complete = true;
+
+    if (frame !== null) {
+      view.cancelAnimationFrame(frame);
+      frame = null;
+    }
+
+    if (timer !== null) {
+      view.clearTimeout(timer);
+      timer = null;
+    }
+
+    callback();
+  };
+
+  frame = view.requestAnimationFrame(run);
+  timer = view.setTimeout(run, 50);
+  if (typeof view.queueMicrotask === 'function') view.queueMicrotask(run);
+  return () => {
+    complete = true;
+    if (frame !== null) view.cancelAnimationFrame(frame);
+    if (timer !== null) view.clearTimeout(timer);
+  };
+} // CSS lists repeat to match transition-property, not the longest input list.
+
+function modalTransitionDuration(style) {
+  const properties = style.transitionProperty.split(',').map(value => value.trim());
+  const durations = style.transitionDuration.split(',').map(timeInMs);
+  const delays = style.transitionDelay.split(',').map(timeInMs);
+  return Math.max(0, ...properties.map((property, index) => {
+    if (!['all', 'opacity', 'transform', '-webkit-transform'].includes(property)) return 0;
+    return Math.max(0, durations[index % durations.length]) + delays[index % delays.length];
+  }));
+} // Measure after the Smart projection has applied the closing state. A bounded
+// timer also completes when no transitionend fires (unchanged or hidden panel).
+// Never finish on the first property/descendant transitionend.
+// The closing state's own transition is the one to wait for (a window closes
+// faster than it opens, decision C159 (8)): while the drawn root does not show
+// the closing state yet -- the Smart window projects it a little later -- the
+// measure waits a frame, a few at most.
+
+const STATE_FRAMES = 4;
+function scheduleModalClose(getRoot, finalize, view = window) {
+  let timer = null,
+      cancelled = false,
+      frames = 0,
+      cancelFrame = () => {};
+
+  const measure = () => {
+    if (cancelled) return;
+    const root = getRoot();
+    const state = root?.getAttribute?.('data-sf-modal-state');
+
+    if (state && state !== 'closing' && frames++ < STATE_FRAMES) {
+      // A frame or 50 ms, whichever comes first -- not a microtask, which runs
+      // before the projection does.
+      let done = false;
+
+      const next = () => {
+        if (done) return;
+        done = true;
+        view.cancelAnimationFrame(frame);
+        view.clearTimeout(fallback);
+        measure();
+      };
+
+      const frame = view.requestAnimationFrame(next);
+      const fallback = view.setTimeout(next, 50);
+
+      cancelFrame = () => {
+        done = true;
+        view.cancelAnimationFrame(frame);
+        view.clearTimeout(fallback);
+      };
+
+      return;
+    }
+
+    const nodes = root?.querySelectorAll('[data-sf-modal-panel], [data-sf-modal-overlay]') || [];
+    const duration = Math.max(0, ...Array.from(nodes, node => {
+      const style = view.getComputedStyle(node);
+      return style.display === 'none' ? 0 : modalTransitionDuration(style);
+    }));
+    timer = view.setTimeout(() => {
+      if (!cancelled) finalize();
+    }, duration);
+  };
+
+  cancelFrame = scheduleModalFrame(measure, view);
+  return () => {
+    cancelled = true;
+    cancelFrame();
+    if (timer !== null) view.clearTimeout(timer);
+  };
+}
+
+/***/ },
+
+/***/ "93025a68d8ab"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   addModalLayer: () => (/* binding */ addModalLayer),
+/* harmony export */   captureModalFocusAncestors: () => (/* binding */ captureModalFocusAncestors),
+/* harmony export */   getModalLayerIndex: () => (/* binding */ getModalLayerIndex),
+/* harmony export */   getTopModalLayer: () => (/* binding */ getTopModalLayer),
+/* harmony export */   isTopModalLayer: () => (/* binding */ isTopModalLayer),
+/* harmony export */   raiseModalLayer: () => (/* binding */ raiseModalLayer),
+/* harmony export */   removeModalLayer: () => (/* binding */ removeModalLayer),
+/* harmony export */   restoreModalLayerFocus: () => (/* binding */ restoreModalLayerFocus),
+/* harmony export */   updateModalLayers: () => (/* binding */ updateModalLayers)
+/* harmony export */ });
+/* harmony import */ var _focus__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("c8d66dd2c299");
+/* harmony import */ var _core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("78628e837a32");
+// Ordinary and Smart Modal are separate bundles. They share the one document
+// layer stack of the core (layer-stack.js, standard 1.3.8 §19), with every
+// other layer -- a drawer, a popover, a list -- not a list of their own: a
+// modal opened from a drawer is above it, takes Escape and Tab while it is,
+// and gives focus back into the drawer when it closes (simai/ui-source#36,
+// #37). Registries, public instance APIs and rendering stay separate.
+//
+// The bundle carries the whole of core/js/layer-stack.js, so its bytes move
+// with that module even where this one does not: component.modal 1.3.1 is the
+// C79 change of densityOf there (an explicit size follows its region). The
+// class modal does not call carryLayerOrigin, so nothing it draws or does
+// changes; sf-modal's portal is the one that takes the region's density.
+
+ // sf-modal's window is its modalRoot (its reader getModalRoot retires, standard
+// 1.3.8 §16.13); the class Modal holds its markup in `template`.
+
+const modalRoot = modal => (modal && 'modalRoot' in modal ? modal.modalRoot : modal?.getModalRoot?.()) || modal?.template || null; // The highest modal open: what Modal.getTopModal() names. A drawer or a list
+// may stand above it; isTopLayer answers whether it is the top of everything.
+
+
+function getTopModalLayer() {
+  return (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.openLayers)('modal').at(-1) || null;
+}
+
+function getModalLayerIndex(modal) {
+  return (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.layerIndex)(modal);
+} // Focus guards stand around the panel of a modal only while it is the top
+// layer; under a drawer or a list they would be tab stops of a layer below.
+
+
+function syncGuards() {
+  const top = (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.topLayer)();
+  (0,_focus__WEBPACK_IMPORTED_MODULE_0__.syncModalFocusGuards)(top?.kind === 'modal' ? top.owner : null);
+}
+
+function updateModalLayers() {
+  for (const owner of (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.openLayers)('modal')) owner.applyStackPosition((0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.layerIndex)(owner));
+
+  syncGuards();
+} // A modal inside an overlay container covers that box, not the page, so the
+// page stays scrollable while it is open.
+
+
+const locksPage = modal => !modal.inContainer; // The page lock is the stack's default one (lockPageScroll), which is the
+// lock this file's _scroll.js held before: the class, the page's own padding
+// plus the gap, and only what it set given back.
+
+
+function addModalLayer(modal) {
+  if ((0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.hasLayer)(modal)) return;
+  (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.openLayer)(modal, {
+    kind: 'modal',
+    locksPage: locksPage(modal),
+    preserveScrollGap: modal.preserveScrollGap !== false,
+    trapsFocus: true,
+    returnTo: modal._lastActive ?? modal.lastActive ?? null,
+    root: () => modalRoot(modal),
+    focusIn: () => modal.focusFirst?.(),
+    onEscape: event => Boolean(modal.onKeyDown?.(event)),
+    onTab: event => modal.onKeyDown?.(event),
+    // Called on every change of the stack, a drawer's or a list's too.
+    place: ({
+      index
+    }) => {
+      modal.applyStackPosition(index);
+      syncGuards();
+    }
+  });
+  syncGuards();
+}
+
+function removeModalLayer(modal) {
+  if (!(0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.hasLayer)(modal)) return; // The modal gives focus back itself, after its closing transition.
+
+  (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.closeLayer)(modal, {
+    restoreFocus: false
+  });
+  modal.applyStackPosition?.(-1);
+  syncGuards();
+}
+
+function raiseModalLayer(modal) {
+  (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.raiseLayer)(modal);
+  syncGuards();
+}
+
+function captureModalFocusAncestors(node) {
+  return (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.landmarksAround)(node);
+}
+
+function restoreModalLayerFocus(wasTop, lastActive, ancestors = []) {
+  (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.returnLayerFocus)(wasTop, lastActive, ancestors);
+}
+
+function isTopModalLayer(modal) {
+  return (0,_core_js_layer_stack__WEBPACK_IMPORTED_MODULE_1__.isTopLayer)(modal);
+}
+
+
+
+/***/ },
+
+/***/ "05f95721a8a3"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("d1e2388bb47f");
+
+
+/***/ },
+
+/***/ "58661bec99a6"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   registerComponent: () => (/* binding */ registerComponent)
+/* harmony export */ });
+// Simple helper to register a component in one call.
+// Usage inside component bundle:
+//   import register from './register-helper';
+//   register('Buttons', Buttons);
+function registerComponent(name, cls) {
+  if (!name || !cls) return;
+
+  if (typeof window !== 'undefined' && typeof window.registerSfComponent === 'function') {
+    window.registerSfComponent(name, cls);
+    return;
+  }
+
+  if (typeof window !== 'undefined' && window.SF?.Loader?.registerComponent) {
+    window.SF.Loader.registerComponent(name, cls);
+    return;
+  }
+
+  if (typeof window !== 'undefined') {
+    const pending = window.SF_PENDING_COMPONENTS = window.SF_PENDING_COMPONENTS || [];
+    pending.push([name, cls]);
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (registerComponent);
+
+/***/ },
+
+/***/ "50d2a204ba4c"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SPINNER_DEFAULT_LOOK: () => (/* binding */ SPINNER_DEFAULT_LOOK),
+/* harmony export */   SPINNER_DOTS: () => (/* binding */ SPINNER_DOTS),
+/* harmony export */   SPINNER_DOTS_FILLED: () => (/* binding */ SPINNER_DOTS_FILLED),
+/* harmony export */   SPINNER_GRID: () => (/* binding */ SPINNER_GRID),
+/* harmony export */   SPINNER_LIVE_AREA: () => (/* binding */ SPINNER_LIVE_AREA),
+/* harmony export */   SPINNER_LOOKS: () => (/* binding */ SPINNER_LOOKS),
+/* harmony export */   SPINNER_STROKE: () => (/* binding */ SPINNER_STROKE),
+/* harmony export */   createInlineSpinner: () => (/* binding */ createInlineSpinner),
+/* harmony export */   createLadderSpinnerSvg: () => (/* binding */ createLadderSpinnerSvg),
+/* harmony export */   createSpinnerSvg: () => (/* binding */ createSpinnerSvg),
+/* harmony export */   createSvgNode: () => (/* binding */ createSvgNode),
+/* harmony export */   normalizeSpinnerLook: () => (/* binding */ normalizeSpinnerLook)
+/* harmony export */ });
+// The spinner's drawing, without the component's side effects (no registry, no
+// observer), so a control that shows work in place of its icon -- a button, an
+// icon button, a group's segment, a modal waiting for its content -- draws the
+// one spinner of the Framework without loading or binding the spinner
+// component (simai/ui-source#10).
+//
+// The ladder: a spinner is drawn on the icon grid. Material Symbols are drawn on
+// 24 units and, at the regular weight the Framework's controls use, stroke 2 of
+// them; a spinner on the same grid, scaled to the icon box of a step, strokes as
+// the icons of that step do, and needs no stroke of its own per step.
+//
+// The ring is drawn inside the icon's live area, not across its box (docs
+// review R027, owner decision C11, 2026-11-07): Material Symbols draw in 20 of
+// their 24 units and leave 2 of air on every side, so a ring that filled the
+// box stood larger than the icon beside it. On the grid the ring's outer edge
+// is the live area -- radius 9 at stroke 2, 20 units across -- and the box
+// stays the icon's box, so a control that swaps its icon for the spinner moves
+// nothing. The proportion is the grid's, the same at every step.
+//
+// The looks (simai/ui-source#11): every spinner carries the four looks on the
+// same ring -- the arc and the breathing arc (one circle, two motions), the
+// comet and the dots -- and the spinner sheet shows the one the page asks for:
+// data-sf-spinner on html, body or any block (the nearest wins), data-variant on
+// the spinner itself above both. The choice is CSS alone, so a page that
+// changes the attribute changes every spinner at once, drawn or not yet drawn.
+// Without the spinner sheet only the arc is shown, still.
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const SPINNER_GRID = 24;
+const SPINNER_STROKE = 2;
+const SPINNER_LIVE_AREA = 20;
+const SPINNER_LOOKS = ['arc', 'breathing', 'comet', 'dots'];
+const SPINNER_DEFAULT_LOOK = 'arc'; // The dots look on the grid: a ring of dots as big as the stroke allows, so at
+// every step the dots are the step's and no attribute sizes them.
+
+const SPINNER_DOTS = 8;
+const SPINNER_DOTS_FILLED = 3; // The comet: a head and a tail a little under half the ring, in segments whose
+// opacity falls towards the end of the tail. Segments rather than a gradient,
+// because an SVG gradient cannot follow a circle and a CSS one would leave the
+// ring and its stroke; each segment strokes in the current ink.
+
+const COMET_SEGMENTS = 10;
+const COMET_LENGTH = 40;
+function normalizeSpinnerLook(value, fallback = SPINNER_DEFAULT_LOOK) {
+  const look = String(value ?? '').trim().toLowerCase();
+  return SPINNER_LOOKS.includes(look) ? look : fallback;
+}
+function createSvgNode(tagName, attributes = {}) {
+  const node = document.createElementNS(SVG_NS, tagName);
+  Object.entries(attributes).forEach(([key, value]) => {
+    if (value === undefined || value === null || value === '') {
+      return;
+    }
+
+    node.setAttribute(key, String(value));
+  });
+  return node;
+}
+
+const round = value => Math.round(value * 1000) / 1000; // The four looks in one drawing. On the ladder it is the 24-unit grid with
+// stroke 2, every look on the ring of the live area (`inset` 2 units from the
+// edge of the box); a spinner still drawn in pixels (the deprecated attributes) passes
+// its own width, height and stroke. The circles carry presentation attributes
+// as well as their classes: the spinner sheet styles them (track colour, the
+// motion of each look, the still frame under reduced motion), and until that
+// sheet has arrived they draw a faint ring and the arc in the current ink
+// rather than a filled black disc; the comet and the dots wait hidden. The arc
+// is a fixed 30% of the ring (simai/ui-source#13): the sheet turns the drawing,
+// the arc itself never changes length.
+
+
+function createSpinnerSvg({
+  width = SPINNER_GRID,
+  height = SPINNER_GRID,
+  stroke = SPINNER_STROKE,
+  dots = SPINNER_DOTS,
+  filled = SPINNER_DOTS_FILLED,
+  dotRadius = null,
+  direction = 'clockwise',
+  pixel = false,
+  inset = 0
+} = {}) {
+  const cx = width / 2;
+  const cy = height / 2; // The outer edge of every look: the track, the arc, the comet and the dots.
+
+  const half = Math.max(stroke, Math.min(width, height) / 2 - inset);
+  const radius = Math.max(1, half - stroke / 2);
+  const svg = createSvgNode('svg', {
+    class: 'sf-loader-svg',
+    viewBox: `0 0 ${width} ${height}`,
+    width: pixel ? width : null,
+    height: pixel ? height : null,
+    'aria-hidden': 'true',
+    focusable: 'false'
+  });
+  const ring = {
+    cx,
+    cy,
+    r: round(radius),
+    fill: 'none',
+    stroke: 'currentColor',
+    'stroke-width': stroke
+  };
+  const track = createSvgNode('circle', {
+    class: 'sf-loader-ring-filled',
+    ...ring,
+    opacity: '0.3'
+  });
+  const accent = createSvgNode('circle', {
+    class: 'sf-loader-ring-accent',
+    ...ring,
+    'stroke-linecap': 'round',
+    pathLength: 100,
+    'stroke-dasharray': '30 70',
+    transform: `rotate(90 ${cx} ${cy})`
+  }); // The comet starts at the top and runs clockwise: segment 0 is the end of the
+  // tail, the last one the head, drawn last and with a round cap.
+
+  const comet = createSvgNode('g', {
+    class: 'sf-loader-comet',
+    display: 'none',
+    transform: `rotate(-90 ${cx} ${cy})`
+  });
+  const segment = COMET_LENGTH / COMET_SEGMENTS;
+
+  for (let index = 0; index < COMET_SEGMENTS; index += 1) {
+    const head = index === COMET_SEGMENTS - 1;
+    comet.append(createSvgNode('circle', {
+      class: `sf-loader-comet-segment${head ? ' sf-loader-comet-head' : ''}`,
+      ...ring,
+      'stroke-linecap': head ? 'round' : 'butt',
+      pathLength: 100,
+      'stroke-dasharray': `${round(segment)} ${round(100 - segment)}`,
+      'stroke-dashoffset': round(-segment * index),
+      opacity: round(((index + 1) / COMET_SEGMENTS) ** 1.6)
+    }));
+  } // The dots sit on the same ring: a dot as wide as the stroke allows without
+  // touching its neighbours, so fewer dots are bigger ones.
+
+
+  const count = Math.max(3, Math.min(32, Math.floor(Number(dots) || SPINNER_DOTS)));
+  const active = Math.max(1, Math.min(count, Math.floor(Number(filled) || SPINNER_DOTS_FILLED)));
+  const fitted = Math.min(stroke, 0.7 * Math.PI * (half - stroke) / count);
+  const dotR = dotRadius === null || dotRadius === undefined || dotRadius === '' ? fitted : Math.max(1, Math.min(Number(dotRadius) || fitted, half / 4));
+  const orbit = Math.max(dotR, half - dotR);
+  const dotsGroup = createSvgNode('g', {
+    class: 'sf-loader-dots',
+    display: 'none',
+    style: `--sf-loader-dot-count:${count}; --sf-loader-dot-filled:${active};`
+  });
+
+  for (let index = 0; index < count; index += 1) {
+    const angle = Math.PI * 2 / count * index - Math.PI / 2;
+    const step = direction === 'counterclockwise' ? index : (count - index) % count;
+    dotsGroup.append(createSvgNode('circle', {
+      class: `sf-loader-dot${index < active ? ' sf-loader-dot--active' : ''}`,
+      cx: round(cx + orbit * Math.cos(angle)),
+      cy: round(cy + orbit * Math.sin(angle)),
+      r: round(dotR),
+      fill: 'currentColor',
+      style: `--sf-loader-dot-index:${index}; --sf-loader-dot-step:${step};`
+    }));
+  }
+
+  svg.append(track, accent, comet, dotsGroup);
+  return svg;
+} // The drawing on the icon grid, the one every spinner on the ladder uses: the
+// ring in the icon's live area, 20 of the 24 units.
+
+function createLadderSpinnerSvg(options = {}) {
+  return createSpinnerSvg({ ...options,
+    width: SPINNER_GRID,
+    height: SPINNER_GRID,
+    stroke: SPINNER_STROKE,
+    dotRadius: null,
+    pixel: false,
+    inset: (SPINNER_GRID - SPINNER_LIVE_AREA) / 2
+  });
+} // A spinner that stands in a control: endless, decorative (the control keeps
+// its label and says aria-busy), and marked bound so the spinner component,
+// when it is on the page, leaves it as drawn. `className` names the control's
+// slot for it; `overlay` lays it over the control's hidden label instead of in
+// the place of an icon. Its look is the page's, as every spinner's.
+
+function createInlineSpinner({
+  className = '',
+  overlay = false
+} = {}) {
+  const root = document.createElement('span');
+  root.className = ['sf-loader-container', 'sf-loader--infinite', className, className && overlay ? `${className}--overlay` : ''].filter(Boolean).join(' ');
+  root.dataset.sfSpinnerBound = '1';
+  root.dataset.infinite = 'true';
+  root.setAttribute('aria-hidden', 'true');
+  const indicator = document.createElement('span');
+  indicator.className = 'sf-loader--loading-indicator';
+  indicator.append(createLadderSpinnerSvg());
+  root.append(indicator);
+  return root;
+}
+
+/***/ },
+
+/***/ "d7f974466839"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ComponentObserver: () => (/* binding */ ComponentObserver)
+/* harmony export */ });
+class ComponentObserver {
+  // Components name themselves with a static field (static componentName =
+  // 'Modal'), and the Loader writes the name on the prototype only when it
+  // registers the class; the lifecycle events read the instance, so an
+  // instance made before that announced itself as `undefined:render`. Not a
+  // getter: the Loader assigns the prototype property, and an accessor
+  // without a setter made that assignment throw.
+  lifecycleName() {
+    return this.componentName ?? this.constructor.componentName;
+  }
+
+  constructor(props) {
+    this.props = props;
+    this.id = props?.id;
+    this.params = props?.param;
+    this.attrs = props?.attrs || {};
+    this.template = null;
+    window.dispatchEvent(new CustomEvent(`${this.lifecycleName()}:beforeRender`, {
+      detail: this
+    }));
+  }
+
+  getUtilityMap() {
+    return this.constructor.utilityMap || null;
+  }
+
+  extractUtilityClasses(values) {
+    if (!Array.isArray(values)) {
+      return [];
+    }
+
+    const classes = new Set();
+    values.forEach(value => {
+      if (typeof value !== 'string') {
+        return;
+      }
+
+      const matches = value.match(/\(([^)]+)\)/g);
+
+      if (!matches) {
+        return;
+      }
+
+      matches.forEach(match => {
+        const raw = match.slice(1, -1);
+        raw.split(/\s+/).filter(Boolean).forEach(cls => {
+          // Only explicit (.class) annotations are classes; the
+          // parentheses in var(--token) are CSS values, not markup.
+          if (cls.startsWith('.') && cls.length > 1) classes.add(cls.slice(1));
+        });
+      });
+    });
+    return Array.from(classes);
+  }
+
+  applyLayoutUtilities(target, selector) {
+    if (!target || !selector) {
+      return;
+    }
+
+    const map = this.getUtilityMap();
+
+    if (!map || !map[selector]) {
+      return;
+    }
+
+    const classes = this.extractUtilityClasses(map[selector]);
+    classes.forEach(cls => target.classList.add(cls));
+  }
+
+  render() {
+    this.html = this.template;
+
+    if (typeof this.init === 'function') {
+      this.init();
+    }
+
+    if (this.html) {
+      window.dispatchEvent(new CustomEvent(`${this.lifecycleName()}:render`, {
+        detail: this
+      }));
+    }
+
+    return this.html;
+  }
+
+  destroy() {
+    this.destroyInternal?.();
+    this.props = null;
+    this.id = null;
+    this.params = null;
+    this.template = null;
+
+    if (this.html) {
+      this.html.remove();
+      this.html = null;
+    }
+
+    window.dispatchEvent(new CustomEvent(`${this.lifecycleName()}:destroy`, {
+      detail: this
+    }));
+  }
+
+  destroyInternal() {}
+
+}
+
+/***/ },
+
+/***/ "f49a716b86bd"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ALIAS_KINDS: () => (/* binding */ ALIAS_KINDS),
+/* harmony export */   ALIAS_MODES: () => (/* binding */ ALIAS_MODES),
+/* harmony export */   TAG_ALIAS_KIND: () => (/* binding */ TAG_ALIAS_KIND),
+/* harmony export */   aliasExpired: () => (/* binding */ aliasExpired),
+/* harmony export */   propertyOf: () => (/* binding */ propertyOf),
+/* harmony export */   readAliasTable: () => (/* binding */ readAliasTable),
+/* harmony export */   readTagAliases: () => (/* binding */ readTagAliases)
+/* harmony export */ });
+// The dated alias table of one component (standard simai.smart-component
+// 1.3.8 §16.20, vocabulary 1.1.5 §9): what the migration converter writes as
+// <component>/aliases.json, read and checked here before core/js/aliases.js
+// installs it on an element. Pure data, no DOM, so a build, a lint and the
+// runtime share one reading of it.
+//
+// A table is a list of rows, or {tag, aliases: [rows]}. A row:
+//
+//   {from, to, kind, since, remove_after, mode?, when?, setting?, tag?}
+//
+//   kind      event | setting | attribute | action | value
+//   since     the first day the new name exists, YYYY-MM-DD
+//   remove_after
+//             the last day the old name is promised, YYYY-MM-DD
+//   mode      events only: same-detail (default) | detail-adds | split
+//   when      events only, optional: {<detail field>: <value>}; the old name
+//             is sent only for a new event whose detail matches (two old
+//             names folded into one new name, as modal:after-hide and
+//             modal:after-show into change)
+//   setting   values only: the attribute the value belongs to
+//
+// A row that does not hold is refused with a reason, never thrown: the rest of
+// the table still installs, and the refusals are reported.
+//
+// A `tag` row renames the element itself ({from: 'sf-close', to:
+// 'sf-button-close', kind: 'tag', since, remove_after}). It is not installed on
+// an element: the Smart base defines the old tag as a subclass when it defines
+// the new one (core/js/tag-aliases.js), so readAliasTable leaves it out and
+// readTagAliases reads it.
+const ALIAS_KINDS = Object.freeze(['event', 'setting', 'attribute', 'action', 'value']);
+const ALIAS_MODES = Object.freeze(['same-detail', 'detail-adds', 'split']);
+const DAY = 86400000;
+const DATE = /^\d{4}-\d{2}-\d{2}$/u;
+const ATTRIBUTE = /^[a-z][a-z0-9-]*$/u;
+const MEMBER = /^[A-Za-z_$][\w$]*$/u;
+
+function dateOf(text) {
+  if (typeof text !== 'string' || !DATE.test(text)) return NaN;
+  const time = Date.parse(`${text}T00:00:00Z`); // 2026-02-30 parses in some engines; it must print back as itself.
+
+  return Number.isNaN(time) || new Date(time).toISOString().slice(0, 10) !== text ? NaN : time;
+} // `remove_after` is the last promised day, whole, in UTC: the old name is
+// open until the end of it and expired from the next midnight.
+
+
+function aliasExpired(row, now = Date.now()) {
+  const last = dateOf(row?.remove_after);
+  return Number.isFinite(last) && now >= last + DAY;
+} // kebab-case attribute -> camelCase property: backdrop-blur -> backdropBlur.
+
+function propertyOf(attribute) {
+  return String(attribute).replace(/-([a-z0-9])/gu, (_, letter) => letter.toUpperCase());
+}
+const TAG_ALIAS_KIND = 'tag'; // A custom element name of the Framework or of a package: lower case, a hyphen.
+
+const ELEMENT = /^[a-z][a-z0-9]*-[a-z0-9-]+$/u;
+
+function primitive(value) {
+  return value === null || ['string', 'number', 'boolean'].includes(typeof value);
+}
+
+function checkRow(row) {
+  if (!row || typeof row !== 'object' || Array.isArray(row)) return 'not-an-object';
+  const {
+    from,
+    to,
+    kind,
+    since,
+    mode = 'same-detail',
+    when,
+    setting
+  } = row;
+  if (!ALIAS_KINDS.includes(kind)) return 'unknown-kind';
+  if (typeof from !== 'string' || !from) return 'no-from';
+  if (to === null || to === undefined || to === '') return 'no-new-name';
+  if (typeof to !== 'string') return 'no-to';
+  if (from === to) return 'same-name';
+  const start = dateOf(since);
+  const end = dateOf(row.remove_after);
+  if (Number.isNaN(start)) return 'bad-since';
+  if (Number.isNaN(end)) return 'bad-remove-after';
+  if (end < start) return 'remove-after-before-since';
+  if (!ALIAS_MODES.includes(mode)) return 'unknown-mode';
+  if (kind !== 'event' && mode !== 'same-detail') return 'mode-on-non-event';
+
+  if (when !== undefined) {
+    if (kind !== 'event') return 'when-on-non-event';
+    if (!when || typeof when !== 'object' || Array.isArray(when) || !Object.values(when).every(primitive)) return 'bad-when';
+  }
+
+  if (kind === 'setting' || kind === 'attribute') {
+    if (!ATTRIBUTE.test(from) || !ATTRIBUTE.test(to)) return 'bad-attribute-name';
+  }
+
+  if (kind === 'action' && (!MEMBER.test(from) || !MEMBER.test(to))) return 'bad-member-name';
+
+  if (kind === 'value') {
+    if (typeof setting !== 'string' || !ATTRIBUTE.test(setting)) return 'value-needs-setting';
+  } else if (setting !== undefined) {
+    return 'setting-on-non-value';
+  }
+
+  return null;
+}
+
+function normal(row, tag) {
+  const out = {
+    kind: row.kind,
+    from: row.from,
+    to: row.to,
+    since: row.since,
+    remove_after: row.remove_after,
+    tag: typeof row.tag === 'string' && row.tag ? row.tag : tag
+  };
+
+  if (row.kind === 'event') {
+    out.mode = row.mode || 'same-detail';
+    if (row.when) out.when = { ...row.when
+    };
+  }
+
+  if (row.kind === 'value') out.setting = row.setting;
+  return Object.freeze(out);
+} // -> {tag, rows: [frozen rows], refused: [{index, from, to, kind, reason}]}
+
+
+function readAliasTable(table, {
+  tag = ''
+} = {}) {
+  const list = Array.isArray(table) ? table : table?.aliases;
+  const owner = !Array.isArray(table) && typeof table?.tag === 'string' && table.tag || tag || '';
+  const rows = [];
+  const refused = [];
+
+  if (!Array.isArray(list)) {
+    refused.push({
+      index: -1,
+      from: null,
+      to: null,
+      kind: null,
+      reason: 'not-a-table'
+    });
+    return {
+      tag: owner,
+      rows,
+      refused
+    };
+  }
+
+  const refuse = (index, row, reason) => refused.push({
+    index,
+    from: row?.from ?? null,
+    to: row?.to ?? null,
+    kind: row?.kind ?? null,
+    reason
+  });
+
+  const seen = new Map();
+  list.forEach((row, index) => {
+    if (row?.kind === TAG_ALIAS_KIND) return;
+    const reason = checkRow(row);
+    if (reason) return refuse(index, row, reason);
+    const one = normal(row, owner); // An attribute, a property or a method has one new name; an event's old
+    // name may be sent beside several new ones (split, folded names).
+
+    const identity = one.kind === 'event' ? `event|${one.from}|${one.to}|${JSON.stringify(one.when ?? null)}` : one.kind === 'value' ? `value|${one.setting}|${one.from}` : `${one.kind === 'action' ? 'action' : 'name'}|${one.from}`;
+    const before = seen.get(identity);
+    if (before) return refuse(index, row, before.to === one.to ? 'duplicate' : 'conflict');
+    seen.set(identity, one);
+    rows.push({
+      index,
+      row: one
+    });
+  }); // Two old names folded into one new name by their detail: without `when`
+  // each would be sent on every new event, the wrong one among them.
+
+  const folded = new Map();
+
+  for (const entry of rows) {
+    const {
+      row
+    } = entry;
+    if (row.kind !== 'event' || row.mode === 'same-detail' || row.when) continue;
+    folded.set(row.to, [...(folded.get(row.to) ?? []), entry]);
+  }
+
+  const ambiguous = new Set();
+
+  for (const group of folded.values()) if (group.length > 1) for (const entry of group) ambiguous.add(entry);
+
+  const kept = [];
+
+  for (const entry of rows) {
+    if (ambiguous.has(entry)) refuse(entry.index, entry.row, 'needs-when');else kept.push(entry.row);
+  }
+
+  refused.sort((a, b) => a.index - b.index);
+  return {
+    tag: owner,
+    rows: kept,
+    refused
+  };
+} // The `tag` rows of a table: -> {tag, rows: [{from, to, since, remove_after}],
+// refused: [{index, from, to, reason}]}. A row renames the table's own tag:
+// its `to` is that tag when the table names one.
+
+function readTagAliases(table, {
+  tag = ''
+} = {}) {
+  const list = Array.isArray(table) ? table : table?.aliases;
+  const owner = !Array.isArray(table) && typeof table?.component === 'string' && table.component || !Array.isArray(table) && typeof table?.tag === 'string' && table.tag || tag || '';
+  const rows = [];
+  const refused = [];
+  if (!Array.isArray(list)) return {
+    tag: owner,
+    rows,
+    refused
+  };
+  const seen = new Set();
+  list.forEach((row, index) => {
+    if (row?.kind !== TAG_ALIAS_KIND) return;
+
+    const refuse = reason => refused.push({
+      index,
+      from: row.from ?? null,
+      to: row.to ?? null,
+      reason
+    });
+
+    if (typeof row.from !== 'string' || !ELEMENT.test(row.from)) return refuse('bad-old-tag');
+    if (typeof row.to !== 'string' || !ELEMENT.test(row.to)) return refuse('bad-new-tag');
+    if (row.from === row.to) return refuse('same-name');
+    if (owner && row.to !== owner) return refuse('not-this-tag');
+    const start = dateOf(row.since);
+    const end = dateOf(row.remove_after);
+    if (Number.isNaN(start)) return refuse('bad-since');
+    if (Number.isNaN(end)) return refuse('bad-remove-after');
+    if (end < start) return refuse('remove-after-before-since');
+    if (seen.has(row.from)) return refuse('duplicate');
+    seen.add(row.from);
+    rows.push(Object.freeze({
+      from: row.from,
+      to: row.to,
+      since: row.since,
+      remove_after: row.remove_after
+    }));
+  });
+  return {
+    tag: owner,
+    rows,
+    refused
+  };
+}
+
+/***/ },
+
+/***/ "1373e294ec38"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BREAKPOINTS: () => (/* binding */ BREAKPOINTS),
+/* harmony export */   breakpointMedia: () => (/* binding */ breakpointMedia),
+/* harmony export */   breakpointQuery: () => (/* binding */ breakpointQuery),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   matchesBreakpoint: () => (/* binding */ matchesBreakpoint)
+/* harmony export */ });
+// The Framework's breakpoints for scripts (reuse audit 2026-11-02, finding 6).
+// The sheets switch at the steps of core/scss/vars/_sf_var__breakpoint.scss;
+// a component that also decides in script (sf-contents, sf-site-header,
+// sf-search) had copied the steps by hand, word for word, and nine such
+// constants (48rem, 60rem, 1023px, 1024) had drifted apart elsewhere, so one
+// admin screen switched at two points. The same values here, and
+// tests/breakpoint-ladder.contract.test.mjs holds the two files equal.
+
+/** The ladder: each name is the width it starts at, in rem as the sheets write it. */
+const BREAKPOINTS = Object.freeze({
+  xs: '0rem',
+  sm: '32rem',
+  // g6, 512px
+  md: '44rem',
+  // h1, 704px
+  lg: '60rem',
+  // h5, 960px
+  xl: '72rem',
+  // h8, 1152px
+  xxl: '80rem' // i0, 1280px
+
+}); // The step under a threshold, as the sheets' media-breakpoint-down writes it:
+// one pixel less, in rem (_mix__breakpoint.scss breakpoint-max).
+
+const PIXEL_REM = 1 / 16;
+/**
+ * The media query of a breakpoint: from its width up, or with `below: true`
+ * the widths under it -- the two sides the sheets switch on. An unknown name
+ * is null, so a typo is not a query that always matches.
+ *
+ *   breakpointQuery('md')                  (min-width: 44rem)
+ *   breakpointQuery('md', {below: true})   (max-width: 43.9375rem)
+ */
+
+function breakpointQuery(name, {
+  below = false
+} = {}) {
+  if (!Object.hasOwn(BREAKPOINTS, name)) return null;
+  const rem = Number.parseFloat(BREAKPOINTS[name]);
+  if (below) return rem > 0 ? `(max-width: ${rem - PIXEL_REM}rem)` : 'not all';
+  return `(min-width: ${rem}rem)`;
+}
+/** The page's MediaQueryList for a breakpoint, to read and to follow; null without matchMedia or for an unknown name. */
+
+function breakpointMedia(name, {
+  below = false,
+  view = globalThis
+} = {}) {
+  const query = breakpointQuery(name, {
+    below
+  });
+  return query && typeof view?.matchMedia === 'function' ? view.matchMedia(query) : null;
+}
+/** Whether the page is at least as wide as the breakpoint now (or under it, with `below`). */
+
+function matchesBreakpoint(name, options = {}) {
+  return breakpointMedia(name, options)?.matches === true;
+}
+const Breakpoints = Object.freeze({
+  ladder: BREAKPOINTS,
+  query: breakpointQuery,
+  media: breakpointMedia,
+  matches: matchesBreakpoint
+}); // Core publishes the helper; component bundles that carry their own copy reuse
+// an already published one instead of replacing it.
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {};
+  if (!globalThis.SF.breakpoints) globalThis.SF.breakpoints = Breakpoints;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Breakpoints);
+
+/***/ },
+
+/***/ "06e8cd089f28"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   clearDeprecations: () => (/* binding */ clearDeprecations),
+/* harmony export */   listDeprecations: () => (/* binding */ listDeprecations),
+/* harmony export */   noteDeprecated: () => (/* binding */ noteDeprecated)
+/* harmony export */ });
+// What a page still uses that the Framework keeps only for compatibility. Every
+// legacy attribute, value or name a component resolves is noted here once, so a
+// person, a probe or an AI upgrading a product can read the list off a running
+// page (SF.deprecations.list()) instead of searching the source for it. The
+// records behind the names are in contracts/changes/journal.json.
+//
+// Nothing is printed by default: a page opts in to console warnings with
+// <html data-sf-deprecations="warn"> or SF.deprecations.warn = true. A dated
+// alias (core/js/aliases.js, standard simai.smart-component §16.20) also
+// records `tag`, `since` and `remove_after`; once its date has passed the
+// record turns `expired` and that is printed once whatever the page opted
+// into, because the name can leave with the next sweep.
+//
+// Every bundle carries its own copy of this module, so a Map of its own made one
+// list per bundle, and SF.deprecations.list() answered with whichever bundle set
+// it last -- [] on a page printing seven warnings from others. The notes live on
+// one shared global instead, whichever copy writes or reads them.
+function sharedNotes() {
+  const root = globalThis.SF = globalThis.SF || {};
+
+  if (!(root.__deprecationNotes instanceof Map)) {
+    Object.defineProperty(root, '__deprecationNotes', {
+      value: new Map(),
+      configurable: true
+    });
+  }
+
+  return root.__deprecationNotes;
+}
+
+function warnEnabled() {
+  const root = globalThis.document?.documentElement;
+  return root?.dataset?.sfDeprecations === 'warn' || globalThis.SF?.deprecations?.warn === true;
+}
+
+function noteDeprecated({
+  component = '',
+  kind = 'attribute',
+  attribute = '',
+  from,
+  to = null,
+  tag,
+  since,
+  remove_after: removeAfter,
+  expired,
+  package: pkg
+} = {}) {
+  if (!from) return;
+  const key = [component, kind, attribute, from].join('|');
+  const notes = sharedNotes();
+  let note = notes.get(key);
+  const firstExpiry = expired === true && note?.expired !== true;
+
+  if (note) {
+    note.count += 1;
+  } else {
+    note = {
+      component,
+      kind,
+      attribute,
+      from,
+      to,
+      count: 1
+    };
+    notes.set(key, note);
+  } // The dated fields are kept only when a caller knows them, so the records of
+  // the Framework's undated aliases keep their shape.
+
+
+  if (tag !== undefined) note.tag = tag;
+  if (since !== undefined) note.since = since;
+  if (removeAfter !== undefined) note.remove_after = removeAfter; // The component package that ships the new name, for a package's element.
+
+  if (pkg) note.package = pkg;
+  if (expired === true) note.expired = true;
+
+  if (firstExpiry) {
+    globalThis.console?.warn?.(`[SIMAI Framework] ${describe(note)} was due to leave after ${note.remove_after || 'its date'}${to ? `; write ${to}` : ''}. See contracts/changes/journal.json.`);
+  } else if (note.count === 1 && warnEnabled()) {
+    globalThis.console?.warn?.(`[SIMAI Framework] ${describe(note)} is a legacy name${note.remove_after ? ` until ${note.remove_after}` : ''}${to ? `; write ${to}` : ''}. See contracts/changes/journal.json.`);
+  }
+}
+
+function describe({
+  component,
+  kind,
+  attribute,
+  from
+}) {
+  const where = component ? `${component}: ` : '';
+  const what = kind === 'value' ? `${attribute}="${from}"` : `${kind} ${from}`;
+  return `${where}${what}`;
+}
+
+function listDeprecations() {
+  return [...sharedNotes().values()].map(note => ({ ...note
+  }));
+}
+function clearDeprecations() {
+  sharedNotes().clear();
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {};
+  const api = globalThis.SF.deprecations || {};
+  api.list = listDeprecations;
+  api.clear = clearDeprecations;
+  api.note = noteDeprecated;
+  globalThis.SF.deprecations = api;
+}
+
+/***/ },
+
+/***/ "78628e837a32"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   FOCUSABLE: () => (/* binding */ FOCUSABLE),
+/* harmony export */   carryLayerOrigin: () => (/* binding */ carryLayerOrigin),
+/* harmony export */   closeLayer: () => (/* binding */ closeLayer),
+/* harmony export */   focusablesIn: () => (/* binding */ focusablesIn),
+/* harmony export */   hasLayer: () => (/* binding */ hasLayer),
+/* harmony export */   hasLayerAbove: () => (/* binding */ hasLayerAbove),
+/* harmony export */   isOutsideTopLayer: () => (/* binding */ isOutsideTopLayer),
+/* harmony export */   isTopLayer: () => (/* binding */ isTopLayer),
+/* harmony export */   landmarksAround: () => (/* binding */ landmarksAround),
+/* harmony export */   layerIndex: () => (/* binding */ layerIndex),
+/* harmony export */   layerZIndex: () => (/* binding */ layerZIndex),
+/* harmony export */   layerZIndexAt: () => (/* binding */ layerZIndexAt),
+/* harmony export */   lockPageScroll: () => (/* binding */ lockPageScroll),
+/* harmony export */   openLayer: () => (/* binding */ openLayer),
+/* harmony export */   openLayers: () => (/* binding */ openLayers),
+/* harmony export */   pressInLayerAbove: () => (/* binding */ pressInLayerAbove),
+/* harmony export */   raiseLayer: () => (/* binding */ raiseLayer),
+/* harmony export */   returnLayerFocus: () => (/* binding */ returnLayerFocus),
+/* harmony export */   startClosedLayerContent: () => (/* binding */ startClosedLayerContent),
+/* harmony export */   topLayer: () => (/* binding */ topLayer),
+/* harmony export */   tryFocus: () => (/* binding */ tryFocus),
+/* harmony export */   updateLayer: () => (/* binding */ updateLayer),
+/* harmony export */   whenClosedLayerOpens: () => (/* binding */ whenClosedLayerOpens)
+/* harmony export */ });
+// The one document layer stack (standard simai.smart-component 1.3.8 §19).
+//
+// Everything that draws above the page -- a modal, a drawer, a popover, a
+// dropdown list, a menu, a calendar, the toast area -- registers here when it
+// opens and leaves when it closes. The stack answers three questions the
+// components used to answer each for itself, from three lists and two z-index
+// bases:
+//
+//   - which layer is on top: the one opened last. Only that layer acts on
+//     Escape, an outside press and Tab; a layer below stands back
+//     (simai/ui-source#36: Escape over a modal opened from a drawer closed the
+//     drawer, because each kept its own stack and the drawer listened first);
+//   - how high each layer is drawn: one z-index scale in opening order, read
+//     from the tokens --sf-z-index-layer and --sf-z-index-layer-step
+//     (simai/ui-source#37: a drawer opened from a modal was drawn under it,
+//     at 90 + 2i against the modal's 9000 + 2i);
+//   - where focus goes when a layer closes: back to what was active when it
+//     opened; if that is gone or outside the new top layer, into the new top
+//     layer; else the nearest landmark; else the body. A layer that closes
+//     while another stands above it moves no focus.
+//
+// It also keeps what every layer did with a copy of its own: one listener for
+// a press outside the top layer (onOutsidePress), one page lock (lockPageScroll,
+// taken for a layer that locks the page and brings no lock of its own) and one
+// list of what can take focus (FOCUSABLE). A popover, a menu and a context menu
+// each bound a document listener for the outside press, and a drawer, a site
+// header, a search window and a modal each wrote the page lock again, three of
+// them without the modal's care for the page's own padding (reuse audit
+// 2026-11-02, findings 1 and 2).
+//
+// Kept on a shared global, not in module scope: every Smart bundle carries its
+// own copy of this module, and the modal's bundle has to see the drawer the
+// drawer's bundle opened. Each document (an iframe too) has its own stack.
+//
+// A layer is any object: a custom element, or the root element of a component
+// without one. One whose `isConnected` is false is passed over, so a layer
+// removed without closing cannot hold every key on the page.
+const STACK_KEY = Symbol.for('sf.layerStack'); // The scale's defaults, the same as core's tokens: 9000 is where the modal
+// stack always started, so nothing a page draws below it changes place.
+
+const LAYER_BASE = 9000;
+const LAYER_STEP = 2;
+const LANDMARKS = 'main, section, article, [role="main"], [role="region"]';
+/**
+ * What a person can move focus to: the one list a layer keeps Tab inside and
+ * moves focus into. A hidden input is not a stop; an editable region is. Each
+ * component kept a list of its own, and they had drifted apart.
+ */
+
+const FOCUSABLE = ['a[href]', 'button:not([disabled])', 'input:not([disabled]):not([type="hidden"])', 'select:not([disabled])', 'textarea:not([disabled])', '[contenteditable="true"]', '[tabindex]:not([tabindex="-1"])'].join(',');
+/**
+ * The focusable nodes inside these roots that are drawn and not inert, in
+ * order. A control taken out of the Tab order (tabindex -1: the other
+ * segments of a roving group such as sf-segmented, a menu's rows) is no Tab
+ * stop: counted, it was the trap's last stop that Tab never reaches, and Tab
+ * from the group's current segment left the layer (sf-header-site's panel
+ * with the theme switch in its settings group, owner decision C161 (8)).
+ */
+
+function focusablesIn(...roots) {
+  return roots.flatMap(root => Array.from(root?.querySelectorAll?.(FOCUSABLE) ?? [])).filter(node => node.getClientRects().length > 0 && !node.closest('[inert]') && node.tabIndex >= 0);
+}
+
+function stack() {
+  const scope = globalThis;
+
+  if (!scope[STACK_KEY]) {
+    Object.defineProperty(scope, STACK_KEY, {
+      value: {
+        layers: [],
+        bound: false,
+        pressBound: false,
+        lease: null,
+        pressTop: new WeakMap()
+      },
+      configurable: true
+    });
+  }
+
+  return scope[STACK_KEY];
+}
+
+const isLive = entry => entry?.owner?.isConnected !== false; // A toast does not take keys or presses: the window under it keeps them.
+
+
+const takesInput = entry => entry.kind !== 'toast';
+
+function find(owner) {
+  return stack().layers.find(entry => entry.owner === owner) || null;
+}
+
+function readToken(name, fallback) {
+  const root = globalThis.document?.documentElement;
+  if (!root || typeof globalThis.getComputedStyle !== 'function') return fallback;
+  const value = parseInt(globalThis.getComputedStyle(root).getPropertyValue(name), 10);
+  return Number.isFinite(value) ? value : fallback;
+}
+/** The z-index of the layer at a place in the stack, as a number. */
+
+
+function layerZIndexAt(index) {
+  if (index < 0) return '';
+  return readToken('--sf-z-index-layer', LAYER_BASE) + index * readToken('--sf-z-index-layer-step', LAYER_STEP);
+} // The class the modal's lock always added, kept so a page that reads it (and
+// the modal's probes, which do) still sees a locked page.
+
+const LOCK_CLASS = 'overflow-hidden';
+/**
+ * The default page lock (§19.1): the document stops scrolling, and the body
+ * takes the scrollbar's width as padding so the page does not jump sideways
+ * when the bar goes. Answers the function that gives it back.
+ *
+ * It was the modal's: it adds the gap to the padding the body already has, and
+ * gives back only what it set -- a class or an overflow the page had before
+ * stays, and a padding the page changed meanwhile is the page's. The overflow
+ * is also written inline, as the drawer, the site header and the search window
+ * wrote it, so the lock holds before the utility sheet with the class arrives.
+ */
+
+function lockPageScroll({
+  preserveScrollGap = true
+} = {}) {
+  const doc = globalThis.document;
+  const html = doc?.documentElement;
+  const body = doc?.body;
+  if (!html || !body) return () => {};
+  const view = doc.defaultView || globalThis.window || globalThis;
+  const gap = Math.max(0, (view.innerWidth || 0) - html.clientWidth);
+  const kept = [html, body].map(node => ({
+    node,
+    locked: node.classList.contains(LOCK_CLASS),
+    overflow: node.style.getPropertyValue('overflow'),
+    overflowPriority: node.style.getPropertyPriority('overflow')
+  }));
+
+  for (const {
+    node
+  } of kept) {
+    node.classList.add(LOCK_CLASS);
+    node.style.setProperty('overflow', 'hidden');
+  }
+
+  const padding = {
+    value: body.style.getPropertyValue('padding-inline-end'),
+    priority: body.style.getPropertyPriority('padding-inline-end'),
+    applied: null
+  };
+
+  if (preserveScrollGap && gap > 0) {
+    const current = parseFloat(view.getComputedStyle?.(body).paddingInlineEnd) || 0;
+    body.style.setProperty('padding-inline-end', `${current + gap}px`, padding.priority);
+    padding.applied = body.style.getPropertyValue('padding-inline-end');
+  }
+
+  return () => {
+    for (const {
+      node,
+      locked,
+      overflow,
+      overflowPriority
+    } of kept) {
+      if (!locked) node.classList.remove(LOCK_CLASS); // Only the overflow this lock wrote: one the page set meanwhile stays.
+
+      if (node.style.getPropertyValue('overflow') !== 'hidden' || node.style.getPropertyPriority('overflow')) continue;
+      if (overflow) node.style.setProperty('overflow', overflow, overflowPriority);else node.style.removeProperty('overflow');
+    }
+
+    if (padding.applied === null || body.style.getPropertyValue('padding-inline-end') !== padding.applied || body.style.getPropertyPriority('padding-inline-end') !== padding.priority) return;
+    if (padding.value) body.style.setProperty('padding-inline-end', padding.value, padding.priority);else body.style.removeProperty('padding-inline-end');
+  };
+} // The page lock is one lease for the whole stack, taken by the first layer
+// that locks the page and given back when no such layer is left -- whichever
+// kind opened first and whichever closes last. A modal and a drawer held two
+// locks before, and closing them out of order unlocked the page under an open
+// window. A layer that brings no lockPage of its own takes the default one.
+
+function syncPageLock() {
+  const state = stack();
+  const locker = state.layers.find(entry => entry.locksPage && isLive(entry));
+
+  if (locker && !state.lease) {
+    const release = locker.lockPage ? locker.lockPage() : lockPageScroll({
+      preserveScrollGap: locker.preserveScrollGap !== false
+    });
+    state.lease = typeof release === 'function' ? release : () => {};
+  } else if (!locker && state.lease) {
+    const release = state.lease;
+    state.lease = null;
+    release();
+  }
+}
+
+function sync() {
+  const state = stack();
+  const top = topLayer();
+  state.layers.forEach((entry, index) => {
+    entry.place?.({
+      index,
+      zIndex: layerZIndexAt(index),
+      top: entry === top
+    });
+  });
+  syncPageLock();
+}
+/** The layer on top: the last opened that takes keys and presses. */
+
+
+function topLayer() {
+  const {
+    layers
+  } = stack();
+
+  for (let at = layers.length - 1; at >= 0; at -= 1) {
+    if (isLive(layers[at]) && takesInput(layers[at])) return layers[at];
+  }
+
+  return null;
+}
+/** Whether this owner is the top layer. One that is not open is top only when nothing is. */
+
+function isTopLayer(owner) {
+  const top = topLayer();
+  return top ? top.owner === owner : !find(owner);
+}
+function hasLayer(owner) {
+  return Boolean(find(owner));
+}
+/** Whether a layer of one of these kinds stands above this owner. */
+
+function hasLayerAbove(owner, kinds = ['modal', 'panel']) {
+  const {
+    layers
+  } = stack();
+  const at = layers.findIndex(entry => entry.owner === owner);
+  if (at < 0) return false;
+  return layers.slice(at + 1).some(entry => isLive(entry) && kinds.includes(entry.kind));
+}
+/**
+ * Whether a press lands in a layer that stands above this owner, of any kind:
+ * a menu, a list or a calendar opened from a popover is drawn beside the page
+ * (SF.menu.open's one menu on the body, a portalled list), so the press on
+ * its row is outside the popover's own box, and the popover must not take it
+ * as an outside press (GB17 Y1: a saved-set menu in a filter window closed the
+ * window on its row's press). A press outside every layer is still outside.
+ */
+
+function pressInLayerAbove(owner, event) {
+  const {
+    layers
+  } = stack();
+  const at = layers.findIndex(entry => entry.owner === owner);
+  if (at < 0) return false;
+  return layers.slice(at + 1).some(entry => isLive(entry) && takesInput(entry) && !pressedOutside(entry, event));
+}
+/** The place of this owner in the stack, -1 when it is not open. */
+
+function layerIndex(owner) {
+  return stack().layers.findIndex(entry => entry.owner === owner);
+}
+/** This owner's z-index, '' when it is not open. */
+
+function layerZIndex(owner) {
+  return layerZIndexAt(layerIndex(owner));
+}
+/** The open layers, bottom first; of one kind when `kind` is given. */
+
+function openLayers(kind = '') {
+  return stack().layers.filter(entry => !kind || entry.kind === kind).map(entry => entry.owner);
+}
+/**
+ * Registers a layer, or raises it to the top when it is already open.
+ *
+ * options:
+ *   kind        'modal' | 'panel' | 'surface' | 'toast'
+ *   locksPage   true to hold the page lock while open; lockPage() takes it and
+ *               returns the function that gives it back, and without one the
+ *               stack takes lockPageScroll({preserveScrollGap})
+ *   preserveScrollGap  false to let the page widen when its scrollbar goes
+ *   trapsFocus  true to keep Tab inside and to return focus on close
+ *   root()      the element the layer draws, for focus and outside presses
+ *   onEscape(event)  closes the layer and answers true when it took the press
+ *   onTab(event)     keeps focus inside
+ *   onOutsidePress(event)  a press began outside root() and the owner while
+ *               this is the top layer; the layer decides what it closes
+ *   focusIn()        moves focus inside
+ *   place({index, zIndex, top})  draws the layer at its height
+ *   returnTo    what was active at open (default: the active element now)
+ */
+
+function openLayer(owner, options = {}) {
+  if (!owner) return null;
+  const state = stack();
+  bindKeys();
+  bindPresses();
+  let entry = find(owner);
+
+  if (entry) {
+    state.layers.splice(state.layers.indexOf(entry), 1);
+    Object.assign(entry, options);
+  } else {
+    const returnTo = options.returnTo !== undefined ? options.returnTo : globalThis.document?.activeElement ?? null;
+    entry = {
+      kind: 'surface',
+      locksPage: false,
+      trapsFocus: false,
+      ...options,
+      owner,
+      returnTo,
+      returnAncestors: landmarksAround(returnTo)
+    };
+  }
+
+  state.layers.push(entry);
+  sync();
+  return entry;
+}
+/** Changes what a layer declares without moving it in the stack. */
+
+function updateLayer(owner, options = {}) {
+  const entry = find(owner);
+  if (!entry) return null;
+  Object.assign(entry, options);
+  sync();
+  return entry;
+}
+/** Raises an open layer to the top. */
+
+function raiseLayer(owner) {
+  const entry = find(owner);
+  if (!entry) return;
+  const {
+    layers
+  } = stack();
+  layers.splice(layers.indexOf(entry), 1);
+  layers.push(entry);
+  sync();
+}
+/**
+ * Removes a layer. Answers whether it was the top one. With `restoreFocus`
+ * (the default) a top layer that traps focus gives focus back by §19.2.
+ */
+
+function closeLayer(owner, {
+  restoreFocus = true
+} = {}) {
+  const entry = find(owner);
+  if (!entry) return false;
+  const wasTop = topLayer() === entry;
+  const {
+    layers
+  } = stack();
+  layers.splice(layers.indexOf(entry), 1);
+  sync();
+
+  if (restoreFocus && wasTop && entry.trapsFocus) {
+    returnLayerFocus(true, entry.returnTo, entry.returnAncestors);
+  }
+
+  return wasTop;
+}
+/** The landmarks around a node, nearest first: where focus falls back to. */
+
+function landmarksAround(node) {
+  const found = [];
+
+  for (let parent = node?.parentElement; parent; parent = parent.parentElement) {
+    if (parent.matches?.(LANDMARKS)) found.push(parent);
+  }
+
+  return found;
+}
+/** Focuses a node if a person could reach it; answers whether it took focus. */
+
+function tryFocus(node, temporaryTabIndex = false) {
+  if (!node?.isConnected || typeof node.focus !== 'function' || node.matches?.(':disabled') || node.closest?.('[inert], [hidden], [aria-hidden="true"]') || !node.getClientRects?.().length || node.ownerDocument.defaultView.getComputedStyle(node).visibility !== 'visible') {
+    return false;
+  }
+
+  const addTabIndex = temporaryTabIndex && !node.hasAttribute('tabindex');
+  let observer;
+
+  const cleanup = () => {
+    observer?.disconnect();
+    node.removeEventListener('blur', cleanup); // Keep an author's own change to the temporary attribute.
+
+    if (addTabIndex && node.getAttribute('tabindex') === '-1') node.removeAttribute('tabindex');
+  };
+
+  if (addTabIndex) {
+    node.setAttribute('tabindex', '-1');
+    node.addEventListener('blur', cleanup, {
+      once: true
+    });
+    observer = new node.ownerDocument.defaultView.MutationObserver(() => {
+      if (!node.isConnected) cleanup();
+    });
+    observer.observe(node.ownerDocument.documentElement, {
+      childList: true,
+      subtree: true
+    });
+  }
+
+  let focused = false;
+
+  try {
+    node.focus({
+      preventScroll: true
+    });
+    focused = node.ownerDocument.activeElement === node;
+    return focused;
+  } catch {
+    return false;
+  } finally {
+    // Removing tabindex while a non-native target is focused blurs it.
+    if (addTabIndex && !focused) cleanup();
+  }
+} // The layer that owns focus now: the topmost one that traps it. A docked
+// panel or an open list under the window does not.
+
+function focusOwner() {
+  const {
+    layers
+  } = stack();
+
+  for (let at = layers.length - 1; at >= 0; at -= 1) {
+    if (isLive(layers[at]) && layers[at].trapsFocus) return layers[at];
+  }
+
+  return null;
+}
+/**
+ * Gives focus back after a layer closed (§19.2): to `target` when it is still
+ * there and inside the layer that now owns focus (or nothing does); else into
+ * that layer; else the nearest landmark; else the body. Nothing moves when the
+ * closed layer was not the top one.
+ */
+
+
+function returnLayerFocus(wasTop, target, ancestors = []) {
+  if (!wasTop) return;
+  const owner = focusOwner();
+  const root = owner?.root?.();
+  if ((!owner || root?.contains(target)) && tryFocus(target)) return;
+
+  if (owner) {
+    owner.focusIn?.();
+    return;
+  }
+
+  const doc = globalThis.document;
+  if (!doc) return; // Nothing had focus when the layer opened (the body was active): that is
+  // the element to give it back to, and it is still there (§19.2). The body
+  // takes no focus() call, so the focus left inside the closed layer is let
+  // go and the body is active again. A landmark here took a focus the page
+  // never gave and wrote a temporary tabindex on the page's own <main> -- in
+  // an editor that <main> is the canvas being edited (lab composition-overlay).
+
+  if (target && (target === doc.body || target === doc.documentElement)) {
+    const active = doc.activeElement;
+    if (active && active !== doc.body && active !== doc.documentElement) active.blur?.();
+    return;
+  }
+
+  const candidates = new Set([...ancestors, ...doc.querySelectorAll('main, [role="main"]'), doc.body]);
+
+  for (const candidate of candidates) {
+    if (tryFocus(candidate, true)) return;
+  }
+} // One listener pair for the whole document, whichever bundle binds it first.
+// The top layer is read when the press starts (window, capture -- before any
+// component's listener) and acted on when it has passed through the page
+// (window, bubble): a control inside that handled Escape keeps it, and a
+// surface that closed itself on the way down does not hand the same press to
+// the layer under it.
+
+function bindKeys() {
+  const state = stack();
+  if (state.bound || typeof globalThis.addEventListener !== 'function') return;
+  state.bound = true;
+  globalThis.addEventListener('keydown', event => {
+    if (event.key === 'Escape' || event.key === 'Tab') state.pressTop.set(event, topLayer());
+  }, true);
+  globalThis.addEventListener('keydown', event => {
+    if (event.key !== 'Escape' && event.key !== 'Tab' || event.defaultPrevented) return;
+    const top = state.pressTop.has(event) ? state.pressTop.get(event) : topLayer();
+    if (!top || top !== topLayer()) return;
+
+    if (event.key === 'Escape') {
+      if (top.onEscape?.(event)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+
+      return;
+    }
+
+    top.onTab?.(event);
+  });
+} // Outside a layer: in the composed path of neither what it draws nor its
+// owner, so a press inside a shadow root or a portal of its own is inside.
+
+
+function pressedOutside(entry, event) {
+  const path = event.composedPath?.() ?? [];
+  const root = entry.root?.();
+  return !path.includes(entry.owner) && !(root && path.includes(root));
+} // One pointerdown listener pair for the whole document, as for the keys: the
+// top layer is read in capture, before any component sees the press, and acts
+// in bubble, once the press has passed through the page. Only the top layer
+// hears it, so a list over a popover closes and the popover stays, and a layer
+// that opened or closed on the way down (a trigger's own press) does not hand
+// the press to another. Each surface bound a document listener of its own
+// before, and the first one bound acted whatever lay above it.
+
+
+function bindPresses() {
+  const state = stack();
+  if (state.pressBound || typeof globalThis.addEventListener !== 'function') return;
+  state.pressBound = true;
+  globalThis.addEventListener('pointerdown', event => {
+    state.pressTop.set(event, topLayer());
+  }, true);
+  globalThis.addEventListener('pointerdown', event => {
+    const top = state.pressTop.has(event) ? state.pressTop.get(event) : topLayer();
+    if (!top?.onOutsidePress || top !== topLayer() || !pressedOutside(top, event)) return;
+    top.onOutsidePress(event);
+  });
+} // A press outside the top layer, read in capture: what a layer below would
+// call outside is ignored there.
+
+
+function isOutsideTopLayer(event) {
+  const top = topLayer();
+  const root = top?.root?.();
+  if (!root) return false;
+  const path = event.composedPath?.() ?? [];
+  return !path.includes(root) && !path.includes(top.owner);
+}
+const THEMES = ['theme-dark', 'theme-light'];
+/**
+ * A layer drawn outside its host (a portal) keeps where it came from (§19.1):
+ * the host's resolved lang and dir, the theme of its nearest themed ancestor,
+ * and the computed values of the host's variables that differ from those
+ * where the portal stands -- `variables` by name, `prefixes` by the start of
+ * the name. It looks and speaks as if it stood where its host stands.
+ *
+ * With `area`, every custom property whose value at the host differs from the
+ * portal's is carried as well (simai/ui-source#46 item 1): a block's retuned
+ * role (--sf-primary), a part's public variable (--sf-button-background-color)
+ * and a page's own name reach the layer's content. `except` names the layer's
+ * own prefixes (--sf-modal-) that the area does not carry: its public names
+ * still travel in `variables`, and the private ones an outer window sets on
+ * its panel never reach a window opened from it. A name carried before and no
+ * longer different is taken back, so a host moved to another area takes that
+ * area's values.
+ */
+// The density a host stands in (C22, C79; core/js/density.js says the same):
+// the nearest region's -- an explicit size follows its region since C79.
+// Written here, not imported: this module is loaded on its own (shared
+// runtime, tests).
+
+function densityOf(from) {
+  for (let node = from; node?.nodeType === 1; node = node.parentElement) {
+    if (node.hasAttribute('data-sf-density')) return node.getAttribute('data-sf-density');
+  }
+
+  return null;
+}
+
+function carryLayerOrigin(portal, host, {
+  variables = [],
+  prefixes = [],
+  area = false,
+  except = []
+} = {}) {
+  if (!portal || !host?.isConnected) return;
+  const doc = host.ownerDocument;
+  const view = doc.defaultView;
+  const nearest = host.closest('[lang]');
+  const lang = nearest?.getAttribute('lang') ?? doc.documentElement.getAttribute('lang') ?? '';
+  if (lang) portal.setAttribute('lang', lang);else portal.removeAttribute('lang'); // Where the copy came from: the page itself, or a section that names its own
+  // language. Only the first follows SF.language.use(), which the page language
+  // does before it announces the change (simai/ui-source#55).
+
+  if (!nearest || nearest === doc.documentElement) portal.dataset.sfLayerLang = 'page';else delete portal.dataset.sfLayerLang; // The density (C22): the ladder the host stands on, so a window or a drawer
+  // at the end of the body is as dense as the page region that opened it.
+
+  const density = densityOf(host);
+  if (density) portal.setAttribute('data-sf-density', density);else portal.removeAttribute('data-sf-density');
+  const declared = host.closest('[dir]')?.getAttribute('dir');
+  const dir = declared && declared !== 'auto' ? declared : view.getComputedStyle(host).direction;
+  if (dir) portal.setAttribute('dir', dir); // The theme only when the host's differs from the portal's place: a page
+  // that retunes tokens on html.theme-dark keeps them, as the class would
+  // otherwise declare the core's values again on the portal.
+
+  const parent = portal.parentElement;
+
+  const theme = node => {
+    const area = node?.closest?.(THEMES.map(name => `.${name}`).join(', '));
+    return area ? THEMES.find(name => area.classList.contains(name)) : '';
+  };
+
+  const carried = portal.dataset.sfLayerTheme || '';
+  const wanted = theme(host) !== theme(parent) ? theme(host) : '';
+  if (carried && carried !== wanted) portal.classList.remove(carried);
+  if (wanted) portal.classList.add(wanted);
+  if (wanted) portal.dataset.sfLayerTheme = wanted;else delete portal.dataset.sfLayerTheme;
+  const previous = (portal.dataset.sfLayerVariables || '').split(' ').filter(Boolean);
+
+  if (!variables.length && !prefixes.length && !area) {
+    for (const name of previous) portal.style.removeProperty(name);
+
+    delete portal.dataset.sfLayerVariables;
+    return;
+  }
+
+  const own = view.getComputedStyle(host);
+  const names = new Set(variables);
+
+  if (prefixes.length || area) {
+    for (const name of own) {
+      if (!name.startsWith('--')) continue;
+      if (prefixes.some(prefix => name.startsWith(prefix))) names.add(name);else if (area && !except.some(prefix => name.startsWith(prefix))) names.add(name);
+    }
+  } // Compared with the portal as it stands without what was carried before,
+  // its theme class already applied: what the theme gives it again is not
+  // written twice.
+
+
+  for (const name of previous) portal.style.removeProperty(name);
+
+  const there = view.getComputedStyle(portal);
+  const kept = [];
+
+  for (const name of names) {
+    const value = own.getPropertyValue(name).trim();
+    if (value && value !== there.getPropertyValue(name).trim()) kept.push([name, value]);
+  }
+
+  for (const [name, value] of kept) portal.style.setProperty(name, value);
+
+  if (kept.length) portal.dataset.sfLayerVariables = kept.map(([name]) => name).join(' ');else delete portal.dataset.sfLayerVariables;
+} // A closed layer's content starts while the layer is closed, after the page's
+// first paint, without being shown. The Loader leaves a Smart element inside a
+// closed container for later and fetches its code when the container opens
+// (standard 1.3.8 §7.2.1, simai/ui-source#47); a closed window's or drawer's
+// root is such a container (inert, out of view). So a page that waited for a
+// tag in a closed window before opening it -- customElements.whenDefined
+// ('sf-menu'), then fill the menu, then open() -- waited for ever (ui-control
+// evidence 2026-11-11-modal-followups). The layer asks for those tags itself,
+// as a component asks for an element it draws (SF.Loader.ensure), once the
+// page has loaded and the browser is idle: the first paint fetches nothing
+// more than before, and the content is drawn where it stands, inside the
+// closed root, which shows nothing.
+//
+// The layer's own closed root is the one container this passes over. A closed
+// container inside it (a tab panel, a closed <details>, an unstarted part)
+// keeps its own deferral, and an element inside a Smart parent that has not
+// taken its source yet waits for it (the Loader's rule), so the walk runs
+// again when what it asked for has drawn: a few rounds, each for the tags
+// the previous one uncovered.
+
+const CLOSED_INSIDE = '[hidden], [inert], details:not([open]), dialog:not([open]), [data-sf-start]:not([data-sf-started])';
+const UNSTARTED = '[data-sf-start]:not([data-sf-started])';
+const CONTENT_ROUNDS = 4;
+
+function closedInside(element, root) {
+  if (element.matches(UNSTARTED)) return true;
+
+  for (let node = element.parentElement; node && node !== root; node = node.parentElement) {
+    if (!node.matches(CLOSED_INSIDE)) continue; // A closed <details> still shows its summary.
+
+    if (node.localName === 'details' && element.closest('summary')?.parentElement === node) continue;
+    return true;
+  }
+
+  return false;
+}
+
+function contentTags(root, loader) {
+  const registry = globalThis.customElements;
+  const tags = new Set();
+
+  for (const element of root.querySelectorAll('*')) {
+    const tag = element.localName;
+    if (!tag.includes('-') || tags.has(tag) || registry?.get?.(tag)) continue;
+    if (!loader.getSmartElementRuleName(element)) continue;
+    if (closedInside(element, root) || loader.shouldDeferNestedSmartElement?.(element)) continue;
+    tags.add(tag);
+  }
+
+  return [...tags];
+}
+
+function whenPageIdle(fn) {
+  const view = globalThis.window;
+
+  const idle = () => {
+    // requestIdleCallback is throttled in a hidden tab; a timer still runs.
+    if (typeof view.requestIdleCallback === 'function' && !view.document?.hidden) view.requestIdleCallback(fn, {
+      timeout: 2000
+    });else view.setTimeout(fn, 200);
+  };
+
+  if (view.document?.readyState === 'complete') idle();else view.addEventListener('load', idle, {
+    once: true
+  });
+} //
+// A page may keep the old timing, the content fetched when the layer opens:
+// SF_BOOT_CONFIG.startClosedLayerContent = false. The first-paint snapshots do
+// (scripts/first-paint-lib.mjs): a closed layer's first paint is the layer as
+// it rests before anything in it starts, and a start at idle time made the
+// picture and its sheet list depend on how soon the browser was idle.
+//
+// Content the page puts into the closed layer later (a list filled from its
+// data, a part loaded into it) starts the same way: the layer watches its
+// closed root and walks it again, a few rounds, once the page is idle after
+// an addition (ui-control evidence 2026-11-11-modal-followups-2-accept, L2).
+// An open root is the Loader's, as any part of the page.
+
+
+function startClosedLayerContent(rootOf) {
+  const view = globalThis.window;
+  if (!view?.document || view.SF_BOOT_CONFIG?.startClosedLayerContent === false) return;
+  let round = 0;
+  let walking = false;
+  let again = false;
+  let watched = null;
+  let watcher = null;
+
+  const next = () => {
+    const loader = view.SF?.Loader;
+    const root = rootOf();
+    walking = false;
+    if (!root?.isConnected || !loader?.ensure || !loader.getSmartElementRuleName) return;
+    watch(root);
+    if (!root.matches(CLOSED_LAYER)) return;
+    const tags = contentTags(root, loader);
+
+    if (!tags.length || ++round > CONTENT_ROUNDS) {
+      if (again) walk();
+      return;
+    }
+
+    walking = true;
+    loader.ensure(tags, {
+      timeout: 10000
+    }).then(() => whenPageIdle(next));
+  };
+
+  const walk = () => {
+    again = false;
+
+    if (walking) {
+      again = true;
+      return;
+    }
+
+    round = 0;
+    walking = true;
+    whenPageIdle(next);
+  };
+
+  const watch = root => {
+    if (watched === root || typeof view.MutationObserver !== 'function') return;
+    watcher?.disconnect();
+    watched = root;
+    watcher = new view.MutationObserver(records => {
+      if (!watched.isConnected) {
+        watcher.disconnect();
+        watcher = null;
+        watched = null;
+        return;
+      }
+
+      if (watched.matches(CLOSED_LAYER) && records.some(record => record.addedNodes.length)) walk();
+    });
+    watcher.observe(root, {
+      childList: true,
+      subtree: true
+    });
+  };
+
+  walking = true;
+  whenPageIdle(next);
+} // A closed window's root or drawer's panel: inert while closed (and while a
+// window is minimised).
+
+const CLOSED_LAYER = '.sf-modal[inert], [data-sf-drawer-panel][inert]'; // A component that fetches its own data (sf-include) and stands in a closed
+// window or drawer fetches it once the layer opens, not at page load: the
+// layer starts its content early so the page can reach its code
+// (startClosedLayerContent), but a part, a list's rows or a user's data the
+// page never opens should not cost the server a request (ui-control
+// evidence 2026-11-11-modal-followups-2-accept, M2). Null when the element is
+// not in a closed layer, or when the page keeps the old timing
+// (SF_BOOT_CONFIG.startClosedLayerContent = false: then nothing in a closed
+// layer starts before it opens); otherwise a promise that settles when the
+// layer opens, or never once `signal` aborts.
+
+function whenClosedLayerOpens(element, signal) {
+  const view = globalThis.window;
+  if (!view?.document || view.SF_BOOT_CONFIG?.startClosedLayerContent === false) return null;
+  const layer = element?.closest?.(CLOSED_LAYER);
+  if (!layer || typeof view.MutationObserver !== 'function') return null;
+  return new Promise(resolve => {
+    const watcher = new view.MutationObserver(() => {
+      if (layer.matches(CLOSED_LAYER) && layer.isConnected) return;
+      watcher.disconnect();
+      resolve();
+    });
+    watcher.observe(layer, {
+      attributes: true,
+      attributeFilter: ['inert']
+    });
+    signal?.addEventListener('abort', () => watcher.disconnect(), {
+      once: true
+    });
+  });
+}
+
+/***/ },
+
+/***/ "8489d1f5bab4"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   followLanguage: () => (/* binding */ followLanguage),
+/* harmony export */   isRussianPage: () => (/* binding */ isRussianPage),
+/* harmony export */   language: () => (/* binding */ language),
+/* harmony export */   localeText: () => (/* binding */ localeText),
+/* harmony export */   pageLanguage: () => (/* binding */ pageLanguage),
+/* harmony export */   pageLocale: () => (/* binding */ pageLocale),
+/* harmony export */   pageText: () => (/* binding */ pageText),
+/* harmony export */   pageWord: () => (/* binding */ pageWord),
+/* harmony export */   refreshLanguage: () => (/* binding */ refreshLanguage),
+/* harmony export */   registeredWord: () => (/* binding */ registeredWord)
+/* harmony export */ });
+/* harmony import */ var _tag_aliases_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("4a85acfb05c1");
+/* harmony import */ var _lang_built_in_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("feccc97e5d7d");
+// What language a component speaks, and how a product adds one.
+//
+// The Framework speaks English by default and whatever the page says otherwise:
+// the language is the nearest [lang] above the node, else the document's, else
+// English. One rule for every component, so a page never mixes two because two
+// components looked in different places.
+//
+// Until 2026-10-10 that was the whole of it, and every component carried a
+// dictionary of exactly two languages written into its source. Adding a third
+// meant editing sixteen files, and a product that needed one could not add it
+// at all. There will be many more than two (owner, 2026-10-11), so the
+// dictionaries a component ships are now a FLOOR rather than the whole set:
+// anything can be registered beside them, for any language, including one the
+// Framework has never heard of.
+//
+// Where a word comes from, in order:
+//
+//   1. the component's own attribute — a consumer who names a word has named
+//      it, and no language changes it;
+//   2. a word registered for the resolved language;
+//   3. the word the component ships for that language;
+//   4. the same two again for the language without its region (`pt-BR` → `pt`);
+//   5. the same two again for English;
+//   6. the key itself, which is a visible defect rather than a blank.
+//
+// Registering is additive and reversible, and it does not require the
+// Framework to know the language exists.
+// The state is shared between every copy of this module, which there are
+// several of: core, each smart component and each composite are separate
+// bundles, and each one carries its own copy of this file. With the registry
+// in module scope the page had as many registries as bundles -- `SF.language`
+// was published from core's copy, the table read its own, and registering a
+// language changed nothing on screen. Only a browser shows that, and it did
+// (2026-10-11).
+ // The languages built into the bundles (owner decision C282): English; every
+// other language, Russian too, is a language file (core/js/language-packs.js).
+
+
+
+const STORE = (() => {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  const key = '__sfPageLanguage';
+
+  if (!root[key]) {
+    root[key] = {
+      listeners: new Set(),
+      registered: new Map(),
+      chosen: null
+    };
+  }
+
+  return root[key];
+})();
+
+const LISTENERS = STORE.listeners;
+const REGISTERED = STORE.registered; // Language packs (owner decision C177, 2026-11-14; C282, 2026-11-17): every
+// language but English, the one built in, is one file per language and
+// delivery, fetched only by a page that speaks it (or included before core as
+// its script form, core/lang/<code>.js). A pack's words go into the same registry as words registered one
+// by one -- so a bundle built before packs existed reads them too -- a
+// Framework pack's beneath what is there, any other pack's over it: a product
+// overrides a Framework word whichever arrived first. The fetching is core's
+// (core/js/language-packs.js); each bundle only asks for a language. A STORE
+// made by an older bundle has no packs yet: they are added here.
+
+const PACKS = STORE.packs ??= {
+  loaded: new Map(),
+  pending: new Map(),
+  request: null
+}; // The languages built into the bundles: English, and in a rollback build Russian
+// too (src/core/lang/built-in.json, C282).
+// Which registered words came from a Framework pack and nothing has said over
+// since: name -> code -> Set of keys. A Framework pack is the Framework's own
+// words in a file, so for a component that names itself by a dated alias of
+// its record's tag (sf-message-log, the heir of sf-list-feed, both under
+// sf-list-feed's record) they are the successor's words, not its own: the
+// words that component ships win over them (ui-control evidence
+// 2026-11-18-pro-over-1ed6: «Лента» instead of «Переписка» once the ru pack
+// was fetched). A word a product registers, or a product pack, is still over
+// everything. Kept beside the words, not instead of them, so a copy of this
+// module from before it reads the registry as it did. A STORE made by an older
+// bundle has none yet: added here.
+
+const FLOOR = STORE.floor ??= new Map();
+
+const floorOf = (name, code) => {
+  if (!FLOOR.has(name)) FLOOR.set(name, new Map());
+  const byLanguage = FLOOR.get(name);
+  if (!byLanguage.has(code)) byLanguage.set(code, new Set());
+  return byLanguage.get(code);
+};
+
+const notFloor = (name, code, keys) => {
+  const marked = FLOOR.get(name)?.get(code);
+  if (!marked) return;
+
+  for (const key of keys) marked.delete(key);
+}; // Whether the word registered for `key` stands for the successor of the
+// component asking, so that its own shipped word is said instead: the asker
+// names a dated alias (its tag is not its record's), and the registered word
+// is a Framework pack's that no product has said over.
+
+
+function successorWord(owner, candidate, key) {
+  if (!owner) return false;
+  const name = normalise(owner);
+  const record = (0,_tag_aliases_js__WEBPACK_IMPORTED_MODULE_0__.canonicalTag)(name);
+  return record !== name && Boolean(FLOOR.get(record)?.get(candidate)?.has(key));
+}
+
+const isBuiltIn = code => code === 'en' || (_lang_built_in_mjs__WEBPACK_IMPORTED_MODULE_1__["default"]?.built_in ?? []).includes(code);
+/**
+ * Ask core for the pack of a language this page speaks (nothing for a
+ * built-in language), and for the part that holds `component`'s words: the Framework's pack
+ * comes in parts by family (core/js/language-packs.js). A core from before
+ * parts takes the language alone.
+ */
+
+
+function needPack(code, component) {
+  const wanted = normalise(code);
+  const base = wanted.split('-')[0];
+  if (!base || isBuiltIn(base)) return;
+  const name = component ? (0,_tag_aliases_js__WEBPACK_IMPORTED_MODULE_0__.canonicalTag)(component) : undefined;
+
+  if (typeof PACKS.request !== 'function') {
+    // Core has not run yet: a Smart bundle placed before core.js (a Docara
+    // page and its example frames load core last) draws before anyone can
+    // fetch. The ask is kept and core makes it when it starts
+    // (core/js/language-packs.js), so the family's part still comes.
+    const early = PACKS.early ??= new Map();
+    const named = aliasOf(wanted);
+
+    for (const one of new Set([base, wanted, ...(named ? [named] : [])])) {
+      if (!early.has(one)) early.set(one, new Set());
+      early.get(one).add(name ?? '');
+    }
+
+    return;
+  }
+
+  PACKS.request(base, name);
+  if (wanted !== base) PACKS.request(wanted, name);
+  const named = aliasOf(wanted);
+  if (named && named !== wanted && named !== base) PACKS.request(named, name);
+} // Words are kept under a component's current tag: a product that registered
+// them for a renamed tag (sf-datepicker, now sf-input-date) keeps its words
+// while the old tag is a dated alias, whichever name the element was written
+// with (core/js/tag-aliases.js).
+
+
+const wordsOf = component => REGISTERED.get((0,_tag_aliases_js__WEBPACK_IMPORTED_MODULE_0__.canonicalTag)(component));
+
+function normalise(value) {
+  return String(value ?? '').trim().toLowerCase().replace('_', '-');
+} // The pack a page language takes. Two tables, both from the localization
+// registry (C278) and both on the shared store, so a bundle carries neither:
+// core/lang/index.json `aliases` (the shipped packs: zh-cn, zh-sg and zh take
+// zh-hans, pt takes pt-br; PACKS.aliases, set by core) and the registry's
+// second names of every language (STORE.aliases, core/js/language-packs.js).
+// A word registered for the alias itself still comes first; any other code
+// is its own.
+
+
+function packOf(code) {
+  const one = PACKS?.aliases?.[code] ?? STORE?.aliases?.[code];
+  return typeof one === 'string' && one ? one : code;
+}
+
+function aliasOf(code) {
+  const named = packOf(code);
+  return named !== code ? named : null;
+}
+/**
+ * The languages to try, most specific first, English last: the language, the
+ * pack it is an alias of, the language without its region and that one's
+ * pack. zh-CN: zh-cn, zh-hans, zh, en; zh-TW: zh-tw, zh, zh-hans, en; pt-PT:
+ * pt-pt, pt, pt-br, en. Until 2026-11-18 a zh-CN or pt page found no pack and
+ * spoke English.
+ */
+
+
+const chain = language => {
+  const wanted = normalise(language);
+  const base = wanted.split('-')[0];
+  const order = [];
+
+  for (const candidate of [wanted, packOf(wanted), base, packOf(base), 'en']) {
+    if (candidate && !order.includes(candidate)) order.push(candidate);
+  }
+
+  return order;
+};
+/** Which component a node belongs to, for words registered against one. */
+
+
+const componentOf = node => {
+  const tag = node?.tagName;
+  return typeof tag === 'string' ? tag.toLowerCase() : null;
+}; // A layer drawn in a portal carries a copy of its host's language, stamped by
+// carryLayerOrigin (§19.1). When that copy came from the page itself, it has
+// to follow the page before the listeners draw: a word read inside a drawer
+// during SF.language.use() answered the language the page had just left, and
+// the portal was carried again only later, with nothing to draw it again
+// (simai/ui-source#55, found by ui-mail). A portal whose host sits in a
+// section with a language of its own is not touched: that section means it.
+
+
+const carryPageLanguage = () => {
+  const doc = globalThis.document;
+  if (!doc?.querySelectorAll) return;
+  const lang = doc.documentElement?.getAttribute('lang') || '';
+
+  for (const portal of doc.querySelectorAll('[data-sf-layer-lang="page"]')) {
+    if (lang) portal.setAttribute('lang', lang);else portal.removeAttribute('lang');
+  }
+};
+
+const announce = () => {
+  carryPageLanguage();
+
+  for (const listener of [...LISTENERS]) {
+    try {
+      listener();
+    } catch {// A listener that throws is not allowed to stop the others: a page that
+      // half-changed language would be worse than one that did not change.
+    }
+  }
+}; // The nearest element that says its language, looking past shadow roots: a
+// pagination drawn inside a data view's shadow root found no [lang] there,
+// fell back to <html lang> and spoke English inside a Russian admin whose
+// language was set on the shell around it.
+
+
+function langOwner(node) {
+  let current = node;
+
+  while (current) {
+    const owner = typeof current.closest === 'function' ? current.closest('[lang]') : null;
+    if (owner) return owner;
+    const root = typeof current.getRootNode === 'function' ? current.getRootNode() : null;
+    current = root && root !== current && root.host ? root.host : null;
+  }
+
+  return null;
+} // The language of a part of the page wins over the language chosen for the
+// whole page (owner, 2026-10-26; standard simai.smart-component 1.3.8 §11.1):
+//   1. a word given on the element itself (the component's own attribute);
+//   2. the nearest [lang] below <html>;
+//   3. the page's choice, SF.language.use(), which also sets <html lang>;
+//   4. <html lang>;
+//   5. English.
+// Until 2026-10-27 the choice won over a section's [lang], so an English
+// section inside a Russian page that had called use('ru') spoke Russian.
+
+
+function languageSource(node) {
+  const owner = langOwner(node);
+  const root = globalThis.document?.documentElement ?? null;
+  if (owner && owner !== root) return owner.getAttribute('lang');
+  if (STORE.chosen) return STORE.chosen;
+  return owner?.getAttribute('lang') || root?.lang || 'en';
+}
+/**
+ * The page's language for this node: the nearest [lang] below <html>, else
+ * the language the page chose, else <html lang>, else English.
+ */
+
+
+function pageLanguage(node) {
+  // The language without its region, whichever way it was set: a page that
+  // chose 'pt-BR' is a Portuguese page, as a page whose markup says
+  // lang="pt-BR" is. The chosen value kept its region and answered 'pt-br',
+  // which matched no dictionary keyed by language and made isRussianPage false
+  // on a page that chose 'ru-RU'. The region stays in pageLocale.
+  return normalise(languageSource(node)).split('-')[0] || 'en';
+}
+/** The page's language with its region kept, which is what formatting wants. */
+
+function pageLocale(node) {
+  return normalise(languageSource(node)) || 'en';
+}
+/**
+ * Follows `lang` in the document (§11.1 «changes are followed»): one observer
+ * for the page, whichever bundle starts it, and the elements under a changed
+ * [lang] draw again. `element.requestComponentUpdate('language')` is what a
+ * Smart element does; anything else passes its own `redraw`. Returns the way
+ * to stop following.
+ */
+
+function followLanguage(element, redraw = () => element.requestComponentUpdate?.('language')) {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  const doc = element?.ownerDocument ?? root.document;
+  const Observer = doc?.defaultView?.MutationObserver ?? root.MutationObserver;
+  if (!doc?.documentElement || typeof Observer !== 'function') return () => {};
+
+  if (!root.__sfLanguageWatch || root.__sfLanguageWatch.document !== doc) {
+    const watch = {
+      document: doc,
+      elements: new Map(),
+      observer: null
+    };
+    watch.observer = new Observer(records => {
+      const changed = [...new Set(records.map(record => record.target))];
+
+      for (const [one, again] of [...watch.elements]) {
+        if (changed.some(target => within(target, one))) {
+          try {
+            again();
+          } catch {// One element that fails to draw does not keep the others in the
+            // old language.
+          }
+        }
+      }
+    });
+    watch.observer.observe(doc.documentElement, {
+      attributes: true,
+      attributeFilter: ['lang'],
+      subtree: true
+    });
+    root.__sfLanguageWatch = watch;
+  }
+
+  const watch = root.__sfLanguageWatch;
+  watch.elements.set(element, redraw);
+  return () => watch.elements.delete(element);
+} // Whether `node` is `target` or below it, across shadow roots.
+
+function within(target, node) {
+  for (let current = node; current;) {
+    if (current === target) return true;
+    current = current.parentNode || current.host || null;
+  }
+
+  return false;
+}
+/**
+ * Tell the page's components that words changed without a registration: the
+ * composition editor words arrive in a chunk of their own (LC-1) and the
+ * forms drawn before them draw again.
+ */
+
+
+function refreshLanguage() {
+  announce();
+}
+function isRussianPage(node) {
+  return pageLanguage(node) === 'ru';
+}
+/**
+ * Text for `key` in the page's language.
+ *
+ * `dictionary` is what the component ships; `component` names it for the
+ * registry and defaults to the node's own tag, so a component calling with
+ * `this` identifies itself without saying so twice.
+ */
+
+function pageText(dictionary, key, node, component) {
+  return localeText(dictionary, key, pageLocale(node), component ?? componentOf(node));
+}
+/**
+ * Text for `key` in a named language, with no node to read it from: a server
+ * fallback or a form drawn before it is placed. The same order as pageText --
+ * words registered for `component`, then the shipped ones, for the language,
+ * the language without its region and English -- and the key last.
+ */
+
+function localeText(dictionary, key, locale, component) {
+  const order = chain(locale || 'en');
+  needPack(order[0], component);
+
+  for (const candidate of order) {
+    let added = component ? wordsOf(component)?.get(candidate)?.[key] : undefined;
+    if (added !== undefined && dictionary?.[candidate]?.[key] !== undefined && successorWord(component, candidate, key)) added = undefined;
+
+    if (added !== undefined) {
+      if (candidate === 'en' && added !== '') warnFallback(order, component, key);
+      return added;
+    }
+
+    const shipped = dictionary?.[candidate]?.[key];
+
+    if (shipped !== undefined) {
+      if (candidate === 'en' && shipped !== '') warnFallback(order, component, key);
+      return shipped;
+    }
+  }
+
+  return key;
+} // A language the Framework does not ship (owner decision C177 (4)) may come
+// partly translated: a word it lacks is said in the fallback language,
+// English, and that is shown, not silent (localization study LC-6). One
+// warning per page and language (de-AT and de are one), naming the first word
+// missed; every word missed is kept by language for SF.language.missing(),
+// and the language files' coverage is scripts/language-coverage.mjs. Kept on
+// the shared global, because every bundle carries this module.
+
+function warnFallback(order, owner, key) {
+  const wanted = packOf(String(order[0] || '').split('-')[0]); // While its pack is on its way the English is a moment, not a gap (the
+  // registry name's pack too: zh-hans for a zh-CN page). Before core runs
+  // nothing can be on its way yet: the word is asked again when the pack core
+  // fetches arrives, and only a word still missing then is one (ui-view
+  // example frames reported sf-pagination "of-pages", which the ru pack holds,
+  // on loads where the bundle ran before core).
+
+  if (!wanted || wanted === 'en' || typeof PACKS.request !== 'function' || order.some(code => code !== 'en' && PACKS.pending.has(code))) return;
+  const root = globalThis;
+  if (!(root.__sfMissingWords instanceof Map)) root.__sfMissingWords = new Map();
+  const seen = root.__sfMissingWords;
+
+  if (!seen.has(wanted)) {
+    seen.set(wanted, new Set());
+    root.console?.warn?.(`[SIMAI Framework] "${wanted}": words missing, said in English (first: ${owner || 'component'} "${key}"); SF.language.missing('${wanted}') lists them`);
+  }
+
+  seen.get(wanted).add(`${owner || 'component'}|${key}`);
+} // Missing words are said once per component, word and language: a page that
+// draws a hundred rows must not print a hundred warnings. The marks are kept on
+// the shared global, because every bundle carries this module.
+
+
+function warnWord(owner, key, locale, said) {
+  const root = typeof globalThis !== 'undefined' ? globalThis : {};
+  if (!(root.__sfWordWarnings instanceof Set)) root.__sfWordWarnings = new Set();
+  const mark = `${owner}|${key}|${locale}|${said}`;
+  if (root.__sfWordWarnings.has(mark)) return;
+
+  root.__sfWordWarnings.add(mark);
+
+  globalThis.console?.warn?.(`[SIMAI Framework] ${owner || 'component'}: no word "${key}" for ${locale}${said === 'key' ? '; the key is shown' : `; said in ${said}`}`);
+}
+
+function fill(text, locale, count, vars) {
+  return String(text).replace(/\{([a-z][\w-]*)\}/giu, (whole, name) => {
+    if (name === 'n' && count !== undefined) {
+      try {
+        return new Intl.NumberFormat(locale).format(count);
+      } catch {
+        return String(count);
+      }
+    }
+
+    return vars && Object.prototype.hasOwnProperty.call(vars, name) ? String(vars[name]) : whole;
+  });
+}
+/**
+ * A component's own word (standard simai.smart-component 1.3.8 §11, §11.1).
+ *
+ * `dictionary` is `{<locale>: {<key>: word}}` from the component's language
+ * files. A word given on the element itself is the caller's to prefer; this
+ * resolves the rest: words registered for the element's language, then the
+ * shipped ones, the language without its region, English, the component's
+ * source language and, last, the key. The last two warn once. A word that
+ * takes a number is an object of plural forms chosen by Intl.PluralRules of
+ * the language the word was found in; `{n}` is the number in that language's
+ * format and `{name}` takes `vars.name`.
+ *
+ * `former` names the key the same word had before a rename (one key or a
+ * list): a product that registered its words under the old key keeps them
+ * until the alias's day. For each language the word registered under the new
+ * key wins, then one registered under an old key, then the shipped one; a
+ * word taken by an old key is reported to `onFormer(oldKey)`, which notes the
+ * deprecation.
+ */
+
+
+function pageWord(dictionary, key, node, {
+  component,
+  source = '',
+  count,
+  vars,
+  former,
+  onFormer
+} = {}) {
+  const owner = component ?? componentOf(node);
+  const locale = pageLocale(node);
+  const order = chain(locale);
+  const sourceLanguage = normalise(source);
+  if (sourceLanguage && !order.includes(sourceLanguage)) order.push(sourceLanguage);
+  const formerKeys = former === undefined || former === null ? [] : [].concat(former);
+  needPack(locale, owner);
+
+  for (const candidate of order) {
+    const registered = owner ? wordsOf(owner)?.get(candidate) : undefined;
+    let added = registered?.[key];
+    if (added !== undefined && dictionary?.[candidate]?.[key] !== undefined && successorWord(owner, candidate, key)) added = undefined;
+
+    if (added === undefined && registered) {
+      const old = formerKeys.find(name => registered[name] !== undefined && registered[name] !== null);
+
+      if (old !== undefined) {
+        added = registered[old];
+        onFormer?.(old);
+      }
+    }
+
+    const word = added !== undefined ? added : dictionary?.[candidate]?.[key];
+    if (word === undefined || word === null) continue;
+    if (candidate === sourceLanguage && !chain(locale).includes(candidate)) warnWord(owner, key, locale, candidate);
+    if (candidate === 'en' && word !== '') warnFallback(chain(locale), owner, key);
+
+    if (typeof word === 'object') {
+      let form = 'other';
+
+      if (count !== undefined) {
+        try {
+          form = new Intl.PluralRules(candidate).select(Number(count));
+        } catch {
+          form = 'other';
+        }
+      }
+
+      const picked = word[form] ?? word.other;
+      if (picked === undefined) continue;
+      return fill(picked, candidate, count, vars);
+    }
+
+    return fill(word, candidate, count, vars);
+  }
+
+  warnWord(owner, key, locale, 'key');
+  return key;
+}
+/**
+ * The word a product registered (SF.language.register, or a product pack)
+ * under `key` for the node's language, its base language or English; the
+ * words a component ships are not read. Undefined when none is registered.
+ * A removed word key kept as a dated alias reads this: the old phrase is
+ * said only while a product still writes the old key.
+ */
+
+function registeredWord(component, key, node) {
+  const byLanguage = wordsOf(component ?? componentOf(node));
+  if (!byLanguage) return undefined;
+
+  for (const candidate of chain(pageLocale(node))) {
+    const word = byLanguage.get(candidate)?.[key];
+    if (word !== undefined && word !== null) return word;
+  }
+
+  return undefined;
+}
+const language = {
+  /** What the page resolves to for this node, region and all. */
+  current(node = globalThis.document?.documentElement ?? null) {
+    return pageLocale(node);
+  },
+
+  /**
+   * Choose a language for the whole page, whatever its markup says. `null`
+   * returns to following the document, which is the default and what a
+   * server-rendered page wants.
+   */
+  use(value) {
+    const next = value === null || value === undefined ? null : normalise(value);
+    if (next === STORE.chosen) return STORE.chosen;
+    STORE.chosen = next;
+    if (next) needPack(next); // The choice is the page's language: <html lang> says it too (§11.1), so
+    // the browser, a screen reader and CSS :lang() agree with the words.
+    // use(null) gives the markup's own language back.
+
+    const root = globalThis.document?.documentElement;
+
+    if (root) {
+      const holder = globalThis;
+
+      if (next) {
+        if (holder.__sfMarkupLanguage === undefined) holder.__sfMarkupLanguage = root.getAttribute('lang');
+        if (root.getAttribute('lang') !== next) root.setAttribute('lang', next);
+      } else if (holder.__sfMarkupLanguage !== undefined) {
+        if (holder.__sfMarkupLanguage === null) root.removeAttribute('lang');else root.setAttribute('lang', holder.__sfMarkupLanguage);
+        holder.__sfMarkupLanguage = undefined;
+      }
+    }
+
+    announce();
+    return STORE.chosen;
+  },
+
+  /**
+   * Add or replace one component's words for one language.
+   *
+   * The words are merged, so a product can correct a single label without
+   * restating the rest, and `null` removes what it added.
+   */
+  register(component, value, words) {
+    const name = (0,_tag_aliases_js__WEBPACK_IMPORTED_MODULE_0__.canonicalTag)(component ?? '');
+    const code = normalise(value);
+    if (!name || !code) throw new TypeError('a component and a language are required');
+    if (!REGISTERED.has(name)) REGISTERED.set(name, new Map());
+    const byLanguage = REGISTERED.get(name);
+
+    if (words === null) {
+      byLanguage.delete(code);
+      FLOOR.get(name)?.delete(code);
+    } else {
+      byLanguage.set(code, { ...(byLanguage.get(code) ?? {}),
+        ...words
+      });
+      notFloor(name, code, Object.keys(words ?? {}));
+    }
+
+    announce();
+    return this;
+  },
+
+  /**
+   * A language pack (schema simai.language-pack, schema_version 1; schema
+   * core/contracts/language-pack.v1.schema.json): every word of one language
+   * for one delivery, by component. A Framework pack's words go beneath the
+   * words already registered, any other pack's over them, as register() does.
+   * The page draws again once. Answers what was taken, or null for something
+   * that is not a pack.
+   */
+  registerPack(pack, url = null) {
+    const code = normalise(pack?.lang);
+
+    if (pack?.schema !== 'simai.language-pack' || pack.schema_version !== 1 || !code || !pack.words || typeof pack.words !== 'object') {
+      globalThis.console?.warn?.(`[SIMAI Framework] not a language pack (simai.language-pack, schema_version 1)${url ? `: ${url}` : ''}`);
+      return null;
+    }
+
+    const under = (pack.delivery ?? 'framework') === 'framework';
+    let words = 0;
+
+    for (const [component, byKey] of Object.entries(pack.words)) {
+      if (!byKey || typeof byKey !== 'object') continue;
+      const name = (0,_tag_aliases_js__WEBPACK_IMPORTED_MODULE_0__.canonicalTag)(component);
+      if (!REGISTERED.has(name)) REGISTERED.set(name, new Map());
+      const byLanguage = REGISTERED.get(name);
+      const now = byLanguage.get(code) ?? {};
+      byLanguage.set(code, under ? { ...byKey,
+        ...now
+      } : { ...now,
+        ...byKey
+      });
+
+      if (under) {
+        const marked = floorOf(name, code);
+
+        for (const key of Object.keys(byKey)) if (!Object.prototype.hasOwnProperty.call(now, key) || marked.has(key)) marked.add(key);
+      } else {
+        notFloor(name, code, Object.keys(byKey));
+      }
+
+      words += Object.keys(byKey).length;
+    }
+
+    const info = {
+      lang: code,
+      delivery: pack.delivery ?? 'framework',
+      status: pack.status ?? null,
+      coverage: pack.coverage ?? null,
+      words,
+      url
+    };
+    PACKS.loaded.set(code, [...(PACKS.loaded.get(code) ?? []), info]); // Core registers the parts that arrived together and draws once
+    // (PACKS.quiet while it does).
+
+    if (!PACKS.quiet) announce();
+    return info;
+  },
+
+  /**
+   * Name a pack file to fetch when the page needs its language: one line for
+   * a product or a page (also SF_BOOT_CONFIG.languages = {code: url}). Core
+   * fetches it once, with the Framework's own pack of that language.
+   */
+  addPack(value, url) {
+    return PACKS.add ? PACKS.add(normalise(value), url) : false;
+  },
+
+  /** Fetch the packs of a language now; resolves when they are registered. */
+  load(value) {
+    return PACKS.load ? PACKS.load(normalise(value)) : Promise.resolve([]);
+  },
+
+  /** The packs on the page: {code: [{lang, delivery, status, coverage, words, url}]}. */
+  packs() {
+    return Object.fromEntries([...PACKS.loaded].map(([code, list]) => [code, list.map(info => ({ ...info
+    }))]));
+  },
+
+  /** One language across many components: `{ 'sf-input-date': {...}, ... }`. */
+  registerAll(value, byComponent = {}) {
+    for (const [component, words] of Object.entries(byComponent)) {
+      this.register(component, value, words);
+    }
+
+    return this;
+  },
+
+  /** The languages something has registered words for. */
+  known(component) {
+    return [...(wordsOf(component ?? '')?.keys() ?? [])];
+  },
+
+  /**
+   * The words the page has said in English so far for want of one in
+   * `value` (C177 (4): a language may ship partly; what it lacks is visible).
+   * `['sf-pagination|pages-label', ...]`; every language's when none is named.
+   */
+  missing(value) {
+    const seen = globalThis.__sfMissingWords instanceof Map ? globalThis.__sfMissingWords : new Map();
+    if (value === undefined) return Object.fromEntries([...seen].map(([code, words]) => [code, [...words]]));
+    return [...(seen.get(packOf(normalise(value).split('-')[0])) ?? [])];
+  },
+
+  /** Every component something has been registered for. */
+  components() {
+    return [...REGISTERED.keys()];
+  },
+
+  /**
+   * Called whenever the chosen language or the registered words change, so a
+   * component can draw itself again. Returns the way to stop listening.
+   */
+  onChange(listener) {
+    if (typeof listener !== 'function') return () => {};
+    LISTENERS.add(listener);
+    return () => LISTENERS.delete(listener);
+  },
+
+  /** Everything registered is forgotten. For tests, and for a product reset. */
+  forget() {
+    REGISTERED.clear();
+    FLOOR.clear();
+    PACKS.loaded.clear(); // The asks kept before core ran go too: they were for the words forgotten.
+
+    PACKS.early?.clear?.();
+    STORE.chosen = null;
+    announce();
+    return this;
+  }
+
+}; // Reachable by a consumer, which it was not: `sf-admin-menu` had written its
+// own reading of the rule because the shared one was an internal module, and
+// the two then disagreed about a region that names its own language. A product
+// composing its own elements gets the same rule here.
+
+if (typeof window !== 'undefined') {
+  window.SF = window.SF || {}; // Every bundle publishes its copy; they share one store, so any copy
+  // answers alike -- except that a bundle built before language packs
+  // (an older package on the page) has no registerPack, addPack, load or
+  // packs. Once a copy with them is published, an older one does not
+  // replace it (C177).
+
+  const holder = window.SF;
+
+  if (!Object.getOwnPropertyDescriptor(holder, 'language')?.set) {
+    let published = holder.language;
+    Object.defineProperty(holder, 'language', {
+      configurable: true,
+      enumerable: true,
+      get: () => published,
+      set: value => {
+        if (typeof value?.registerPack === 'function' || typeof published?.registerPack !== 'function') published = value;
+      }
+    });
+  }
+
+  holder.language = language;
+  window.SF.pageLanguage = pageLanguage;
+  window.SF.pageText = pageText;
+}
+
+/***/ },
+
+/***/ "42f1649d1a1b"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   SWIPE_SHARE: () => (/* binding */ SWIPE_SHARE),
+/* harmony export */   SWIPE_SPEED: () => (/* binding */ SWIPE_SPEED),
+/* harmony export */   handleRowHeight: () => (/* binding */ handleRowHeight),
+/* harmony export */   inHandleRow: () => (/* binding */ inHandleRow),
+/* harmony export */   scrollsAlong: () => (/* binding */ scrollsAlong),
+/* harmony export */   startsOnControl: () => (/* binding */ startsOnControl),
+/* harmony export */   swipeToClose: () => (/* binding */ swipeToClose),
+/* harmony export */   trackSwipe: () => (/* binding */ trackSwipe)
+/* harmony export */ });
+// A finger closing a panel by pushing it toward its edge (owner decision C157
+// (4) and (5), 2026-11-14): the bottom sheet -- sf-drawer placement="bottom"
+// and every phone sheet drawn from core/scss/mix/_mix__sheet.scss -- follows
+// a drag down and closes past a quarter of its height or on a quick flick; a
+// side panel on a phone does the same toward its own edge. The panel follows
+// the finger through a length in a custom property the owner's rule reads
+// (translate), and settles back when the drag stops short.
+//
+//   const stop = trackSwipe(pointerdownEvent, {
+//     surface,                      the box that moves
+//     direction: 'down' | 'left' | 'right' | 'up',
+//     variable: '--sf-sheet--drag', the property set on the surface
+//     onEnd: ({dismiss, back}) => ...,
+//   });
+//
+// dismiss: the drag passed the share or the speed toward the edge; back: it
+// did so the other way (a sheet at rest may open further). A drag along the
+// other axis is let go at once (a list scrolling inside a side panel), and a
+// drag shorter than the slop is a press, not a swipe.
+const SWIPE_SHARE = 0.25;
+const SWIPE_SPEED = 0.5;
+const SLOP = 4;
+const AXES = {
+  down: {
+    axis: 'y',
+    sign: 1
+  },
+  up: {
+    axis: 'y',
+    sign: -1
+  },
+  right: {
+    axis: 'x',
+    sign: 1
+  },
+  left: {
+    axis: 'x',
+    sign: -1
+  }
+}; // What a swipe must not start on: a control keeps its own presses, a field
+// its text selection, a box that scrolls along the swipe's axis its scroll.
+
+const KEEPS_PRESS = 'button, a[href], input, select, textarea, [contenteditable="true"], [role="slider"], [role="scrollbar"], [draggable="true"], sf-resizer';
+function startsOnControl(target) {
+  return Boolean(target instanceof Element && target.closest(KEEPS_PRESS));
+} // Whether something between the target and the surface scrolls along this
+// axis toward the swipe (a wide table in a side panel, a carousel).
+
+function scrollsAlong(target, surface, axis) {
+  for (let node = target instanceof Element ? target : null; node && node !== surface; node = node.parentElement) {
+    const style = getComputedStyle(node);
+    const overflow = axis === 'x' ? style.overflowX : style.overflowY;
+    if (!/(auto|scroll)/u.test(overflow)) continue;
+    if (axis === 'x' ? node.scrollWidth > node.clientWidth + 1 : node.scrollHeight > node.clientHeight + 1) return true;
+  }
+
+  return false;
+}
+function trackSwipe(event, {
+  surface,
+  direction = 'down',
+  variable = '--sf-sheet--drag',
+  onEnd,
+  onMove
+} = {}) {
+  const spec = AXES[direction] || AXES.down;
+  if (!surface || !event) return () => {};
+  const grip = event.currentTarget instanceof Element ? event.currentTarget : surface;
+  const start = {
+    x: event.clientX,
+    y: event.clientY,
+    t: event.timeStamp
+  };
+  const rect = surface.getBoundingClientRect();
+  const size = (spec.axis === 'y' ? rect.height : rect.width) || 1; // The owner names the physical edge: a length along x is left-to-right
+  // whatever the page's direction.
+
+  const physical = spec.sign;
+  let moved = false;
+  let given = false;
+  let delta = 0;
+
+  const along = e => spec.axis === 'y' ? e.clientY - start.y : e.clientX - start.x;
+
+  const across = e => spec.axis === 'y' ? e.clientX - start.x : e.clientY - start.y; // The moves are heard on the document, not the grip: a pointer that leaves
+  // the grip before it is captured (a quick drag off a handle row) still
+  // reports to it.
+
+
+  const doc = grip.ownerDocument || document;
+
+  const clear = () => {
+    doc.removeEventListener('pointermove', move, true);
+    doc.removeEventListener('pointerup', end, true);
+    doc.removeEventListener('pointercancel', end, true);
+    surface.classList.remove('is-dragging');
+    surface.style.removeProperty(variable);
+  };
+
+  const move = e => {
+    if (given || e.pointerId !== event.pointerId) return;
+    const a = along(e);
+
+    if (!moved) {
+      if (Math.abs(a) < SLOP && Math.abs(across(e)) < SLOP) return; // Across the axis first: a scroll or a selection, not this swipe.
+
+      if (Math.abs(across(e)) > Math.abs(a)) {
+        given = true;
+        clear();
+        return;
+      }
+
+      moved = true;
+      surface.classList.add('is-dragging'); // Captured only once it is a swipe: captured at the press, the click
+      // of a tap went to the grip instead of what was tapped.
+
+      try {
+        grip.setPointerCapture?.(event.pointerId);
+      } catch {
+        /* a synthetic event has no pointer */
+      }
+    }
+
+    delta = a; // The panel follows toward its edge only; the other way it holds.
+
+    const toward = Math.max(0, delta * physical);
+    surface.style.setProperty(variable, `${toward * physical}px`);
+    onMove?.(toward);
+  };
+
+  function end(e) {
+    if (e.pointerId !== event.pointerId) return;
+    clear();
+    if (given || !moved || e.type === 'pointercancel') return; // A drag that ends on the grip is not also a press of it.
+    // The click, if any, comes in the same task as the release; one that
+    // never comes must not eat a later press.
+
+    const swallow = click => click.stopImmediatePropagation();
+
+    grip.addEventListener('click', swallow, {
+      capture: true,
+      once: true
+    });
+    setTimeout(() => grip.removeEventListener('click', swallow, {
+      capture: true
+    }));
+    const toward = delta * physical;
+    const speed = toward / Math.max(1, e.timeStamp - start.t);
+    const dismiss = toward > size * SWIPE_SHARE || speed > SWIPE_SPEED;
+    const back = !dismiss && (-toward > size * SWIPE_SHARE || speed < -SWIPE_SPEED);
+    onEnd?.({
+      dismiss,
+      back,
+      distance: toward
+    });
+  }
+
+  doc.addEventListener('pointermove', move, true);
+  doc.addEventListener('pointerup', end, true);
+  doc.addEventListener('pointercancel', end, true);
+  return clear;
+} // The handle row of a sheet drawn by the mixin's ::before: a press within it
+// -- from the sheet's top, the 1/2 control's height (the row the bar is
+// centred in) -- starts the swipe.
+
+function handleRowHeight(surface) {
+  const value = getComputedStyle(surface).getPropertyValue('--sf-ui-1/2--control-height').trim();
+  const match = /^(-?\d*\.?\d+)(px|rem|em)?$/u.exec(value);
+  if (!match) return 32;
+  const unit = match[2] || 'px';
+  const base = unit === 'px' ? 1 : parseFloat(getComputedStyle(unit === 'rem' ? document.documentElement : surface).fontSize) || 16;
+  return Number(match[1]) * base;
+}
+function inHandleRow(event, surface) {
+  const top = surface.getBoundingClientRect().top;
+  return event.clientY >= top && event.clientY - top <= handleRowHeight(surface);
+} // A sheet that a swipe down from its handle row closes: binds the press on
+// the surface and answers the unbinding. `when` says whether the surface is
+// a sheet now (a form anchored on a wide screen is not); a press on a
+// control keeps the control's own press.
+//
+//   const unbind = swipeToClose(surface, {when: () => owned.sheet, onDismiss: () => close()});
+
+function swipeToClose(surface, {
+  when = () => true,
+  onDismiss
+} = {}) {
+  if (!surface) return () => {};
+
+  const onPress = event => {
+    if (event.button !== 0 || !when()) return;
+    if (startsOnControl(event.target) || !inHandleRow(event, surface)) return;
+    trackSwipe(event, {
+      surface,
+      direction: 'down',
+      onEnd: ({
+        dismiss
+      }) => {
+        if (dismiss) onDismiss?.();
+      }
+    });
+  };
+
+  surface.addEventListener('pointerdown', onPress);
+  return () => surface.removeEventListener('pointerdown', onPress);
+}
+
+/***/ },
+
+/***/ "f28a9d913ce0"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+// Generated from the `tag` rows of src/smart/*/aliases.json and the element_aliases of
+// src/core/contracts/packages/*.package.json by scripts/tag-alias-table.mjs; do not edit.
+// The dated tag aliases of the Framework and of its component packages, read by core/js/tag-aliases.js.
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Object.freeze([Object.freeze({
+  from: 'sf-avatars',
+  to: 'sf-avatar-group',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-button-group',
+  to: 'sf-segmented',
+  since: '2026-11-08',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-change-confirm',
+  to: 'sf-confirm-change',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-close',
+  to: 'sf-button-close',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-code-input',
+  to: 'sf-input-code',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-color',
+  to: 'sf-input-color',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-composition-overlay',
+  to: 'sf-editor-overlay',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-content-editor',
+  to: 'sf-editor-content',
+  since: '2026-11-03',
+  remove_after: '2027-01-01',
+  package: 'pro'
+}), Object.freeze({
+  from: 'sf-context-menu',
+  to: 'sf-menu-context',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-copy-button',
+  to: 'sf-button-copy',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-country-code',
+  to: 'sf-input-country',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-data-view',
+  to: 'sf-view',
+  since: '2026-11-03',
+  remove_after: '2027-01-01',
+  package: 'pro'
+}), Object.freeze({
+  from: 'sf-datepicker',
+  to: 'sf-input-date',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-download-file',
+  to: 'sf-file-download',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-icon-button',
+  to: 'sf-button-icon',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-image-field',
+  to: 'sf-input-image',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-inline-editor',
+  to: 'sf-editor-inline',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-lookup',
+  to: 'sf-input-lookup',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-page-header',
+  to: 'sf-header-page',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-property-view',
+  to: 'sf-view-properties',
+  since: '2026-11-03',
+  remove_after: '2027-01-01',
+  package: 'pro'
+}), Object.freeze({
+  from: 'sf-quantity',
+  to: 'sf-input-quantity',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-range-slider',
+  to: 'sf-slider-range',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-rich-text',
+  to: 'sf-input-rich',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-site-header',
+  to: 'sf-header-site',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-table',
+  to: 'sf-view-table',
+  since: '2026-11-03',
+  remove_after: '2027-01-01',
+  package: 'pro'
+}), Object.freeze({
+  from: 'sf-textarea',
+  to: 'sf-input-textarea',
+  since: '2026-11-03',
+  remove_after: '2027-01-01'
+}), Object.freeze({
+  from: 'sf-thread-list',
+  to: 'sf-chat-threads',
+  since: '2026-11-03',
+  remove_after: '2027-01-01',
+  package: 'pro'
+})]));
+
+/***/ },
+
+/***/ "4a85acfb05c1"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   canonicalTag: () => (/* binding */ canonicalTag),
+/* harmony export */   defineTagAliases: () => (/* binding */ defineTagAliases),
+/* harmony export */   isTag: () => (/* binding */ isTag),
+/* harmony export */   listTagAliases: () => (/* binding */ listTagAliases),
+/* harmony export */   noteTagAlias: () => (/* binding */ noteTagAlias),
+/* harmony export */   registerTagAliasRows: () => (/* binding */ registerTagAliasRows),
+/* harmony export */   registerTagAliases: () => (/* binding */ registerTagAliases),
+/* harmony export */   tagNames: () => (/* binding */ tagNames),
+/* harmony export */   tagSelector: () => (/* binding */ tagSelector)
+/* harmony export */ });
+/* harmony import */ var _deprecations_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("06e8cd089f28");
+/* harmony import */ var _alias_table_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("f49a716b86bd");
+/* harmony import */ var _tag_aliases_generated_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("f28a9d913ce0");
+// Dated tag aliases (rename plan R0, ui-control RENAME-PLAN-2026-11-03; change
+// lifecycle: contracts/changes/journal.json, kind "tag"). When a Smart
+// component takes a new tag, the old tag keeps working until its
+// `remove_after` day:
+//
+// - Definition. defineTagAliases(Class, tag) defines each old tag as a trivial
+//   subclass of the class that defines the new one (the Smart base calls it
+//   from define()). The Loader's rule lists the old tag beside the new one, so
+//   markup with the old tag alone loads the bundle.
+// - Note. The first old-tag element a page connects is noted in
+//   SF.deprecations (kind "tag") and named once on the console with the new tag
+//   and the date, whatever the page opted into: an element name is the most
+//   visible thing a page writes, and the old one is going.
+// - Script. Code that finds a renamed element by name asks for both names
+//   through one helper instead of a literal:
+//
+//     import {tagSelector, isTag} from '../../core/js/smart-base';
+//     host.querySelector(`.sf-tag > ${tagSelector('sf-button-close')}`);
+//     if (isTag(node, 'sf-button-close')) ...
+//
+// - Sheets. A selector that names the new tag names the old one beside it in
+//   source, `:is(sf-button-close, sf-close)`, for as long as the alias lives
+//   (scripts/rename-smart-tag.mjs writes it, --sweep takes it out; the
+//   contract test tests/tag-aliases.contract.test.mjs holds both).
+//
+// The aliases are a static table (tag-aliases.generated.js, written by
+// scripts/tag-alias-table.mjs from every component's aliases.json and from the
+// element_aliases of the component package references,
+// contracts/packages/*.package.json), so a lookup finds an old tag before the
+// renamed component's bundle has run, a package's (sf-table, rename plan R2)
+// as well as the Framework's. A package's component adds its rows again when it
+// is defined, which matters only for a package the pair does not reference. Every copy of this
+// module shares one state on the page (a global symbol); the Smart bundles
+// reach it through the shared runtime (smart-base re-exports it).
+
+
+
+const STATE = Symbol.for('simai.sf.tag-aliases');
+
+function state() {
+  if (!globalThis[STATE]) {
+    const shared = {
+      byOld: new Map(),
+      byNew: new Map(),
+      noted: new Set()
+    };
+    Object.defineProperty(globalThis, STATE, {
+      value: shared,
+      configurable: true
+    });
+
+    for (const row of _tag_aliases_generated_js__WEBPACK_IMPORTED_MODULE_2__["default"]) addRow(shared, row);
+  }
+
+  return globalThis[STATE];
+}
+
+function addRow(shared, row) {
+  if (shared.byOld.has(row.from)) return;
+  shared.byOld.set(row.from, row);
+  shared.byNew.set(row.to, [...(shared.byNew.get(row.to) ?? []), row.from]);
+} // Rows from a component's aliases.json (its `tag` rows); the Framework's are
+// already known, a package's are added here.
+
+
+function registerTagAliases(table, tag) {
+  const {
+    rows
+  } = (0,_alias_table_js__WEBPACK_IMPORTED_MODULE_1__.readTagAliases)(table, {
+    tag
+  });
+  const shared = state();
+
+  for (const row of rows) addRow(shared, row);
+
+  return rows;
+} // Rows a component set gives at runtime (SF.RuleLoader.registerPackage(name,
+// {aliases})): {from, to, since, remove_after}, the set's own former tags, so
+// SIMAI Framework needs no table row for a set it does not know. Answers the
+// rows taken; a row whose old tag is already known keeps the first.
+
+function registerTagAliasRows(rows) {
+  const shared = state();
+  const taken = [];
+
+  for (const row of Array.isArray(rows) ? rows : []) {
+    if (!row || typeof row.from !== 'string' || typeof row.to !== 'string') continue;
+    if (shared.byOld.has(row.from)) continue;
+    const clean = Object.freeze({
+      from: row.from,
+      to: row.to,
+      since: String(row.since ?? ''),
+      remove_after: String(row.remove_after ?? ''),
+      ...(typeof row.package === 'string' && row.package ? {
+        package: row.package
+      } : {})
+    });
+    addRow(shared, clean);
+    taken.push(clean);
+  }
+
+  return taken;
+} // The open old names of a tag, its own first: ['sf-button-close', 'sf-close'].
+
+function tagNames(tag) {
+  const name = String(tag || '').toLowerCase();
+  return [name, ...(state().byNew.get(name) ?? [])];
+} // A selector for the tag that matches its old names too:
+// ':is(sf-button-close, sf-close)', or the tag itself when it has none.
+
+function tagSelector(tag) {
+  const names = tagNames(tag);
+  return names.length > 1 ? `:is(${names.join(', ')})` : names[0];
+} // Whether an element is the tag, under its own or an old name.
+
+function isTag(element, tag) {
+  const name = element?.localName;
+  return Boolean(name) && tagNames(tag).includes(name);
+} // The current name of a tag: 'sf-button-close' for 'sf-close'. An old tag the
+// page still has as an element of its own stays itself: a component package
+// built before its rename (rules naming sf-table alone) beside a pair whose
+// table already knows the new name, where the new tag would never upgrade.
+
+function canonicalTag(tag) {
+  const name = String(tag || '').toLowerCase();
+  const row = state().byOld.get(name);
+  if (!row) return name;
+  const own = globalThis.customElements?.get?.(name);
+  if (own && !own.sfTagAliasOf) return name;
+  let rules = null;
+
+  try {
+    rules = globalThis.SF?.Loader?.getCustomElementRules?.() ?? null;
+  } catch {
+    rules = null;
+  }
+
+  if (rules && rules[name] && !rules[row.to]) return name;
+  return row.to;
+} // Every open row: [{from, to, since, remove_after}].
+
+function listTagAliases() {
+  return [...state().byOld.values()].map(row => ({ ...row
+  }));
+} // The page met an element under an old name: once per old tag.
+
+function noteTagAlias(row) {
+  const shared = state();
+  const expired = (0,_alias_table_js__WEBPACK_IMPORTED_MODULE_1__.aliasExpired)(row);
+  (0,_deprecations_js__WEBPACK_IMPORTED_MODULE_0__.noteDeprecated)({
+    component: row.to,
+    kind: 'tag',
+    from: row.from,
+    to: row.to,
+    tag: row.to,
+    since: row.since,
+    remove_after: row.remove_after,
+    expired,
+    package: row.package
+  });
+  if (shared.noted.has(row.from)) return;
+  shared.noted.add(row.from); // deprecations.js prints an expired name itself, and every name when the
+  // page opted in; the note here is for the rest.
+
+  const optedIn = globalThis.document?.documentElement?.dataset?.sfDeprecations === 'warn' || globalThis.SF?.deprecations?.warn === true;
+  if (expired || optedIn) return; // A package's element says which package ships it now (C174 NM-3).
+
+  const where = row.package ? ` from the component package ${row.package}` : '';
+  globalThis.console?.warn?.(`[SIMAI Framework] <${row.from}> is now <${row.to}>; the old tag works until ${row.remove_after}. Write <${row.to}>${where}. See contracts/changes/journal.json.`);
+} // Defines each old tag of `tag` as a subclass of `Base` (the class that
+// defines `tag`), through `define(name, Class)`: the Smart base passes its
+// definition queue, so both names are defined in the same batch. Returns the
+// rows defined.
+
+function defineTagAliases(Base, tag, {
+  table = Base?.aliases,
+  define
+} = {}) {
+  if (table) registerTagAliases(table, tag);
+  const rows = (state().byNew.get(tag) ?? []).map(from => state().byOld.get(from));
+  const registry = globalThis.customElements;
+  const defined = [];
+
+  for (const row of rows) {
+    if (!registry || registry.get(row.from)) continue;
+
+    class TagAlias extends Base {
+      connectedCallback() {
+        noteTagAlias(row);
+        super.connectedCallback?.();
+      }
+
+    }
+
+    Object.defineProperty(TagAlias, 'sfTagAliasOf', {
+      value: row.to
+    });
+    (define ?? ((name, Class) => registry.define(name, Class)))(row.from, TagAlias);
+    defined.push(row);
+  }
+
+  return defined;
+}
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {}; // For scripts that are not Smart bundles (class components, a page):
+  // SF.tags.selector('sf-button-close').
+
+  if (!globalThis.SF.tags) {
+    globalThis.SF.tags = Object.freeze({
+      names: tagNames,
+      selector: tagSelector,
+      is: isTag,
+      canonical: canonicalTag,
+      list: listTagAliases
+    });
+  }
+}
+
+/***/ },
+
+/***/ "d2c7f5f33858"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ },
+
+/***/ "418134b64ef5"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   files: () => (/* binding */ files)
+/* harmony export */ });
+/* harmony import */ var _en_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("ba28adb07617");
+// Written by scripts/build-language-packs.mjs from src/core/lang/built-in.json
+// (owner decision C282); do not edit. The words this bundle carries: the
+// built-in languages' (en); every other language comes from
+// a language file (core/lang/<code>.js or its parts).
+
+
+const files = { en: { runtime: _en_json__WEBPACK_IMPORTED_MODULE_0__.runtime } };
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ en: _en_json__WEBPACK_IMPORTED_MODULE_0__.runtime });
+
+
+/***/ },
+
+/***/ "feccc97e5d7d"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _built_in_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("6a56aa4367e4");
+// The languages built into the component bundles (owner decision C282),
+// for page-language.js: built-in.json, the build switch
+// scripts/build-language-packs.mjs reads too. A module, as lang/index.mjs, so
+// the bundle and Node read the JSON alike.
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_built_in_json__WEBPACK_IMPORTED_MODULE_0__);
+
+
+/***/ },
+
+/***/ "ba28adb07617"
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"runtime":{"title":"Dialog","close":"Close","loading":"Loading…","loadFailed":"Failed to load content","frameFailed":"Failed to load iframe content"}}');
+
+/***/ },
+
+/***/ "6a56aa4367e4"
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"schema":"simai.language-built-in","schema_version":1,"$comment":"The languages built into the component bundles (owner decision C282, 2026-11-17): English only. Russian and every other language ship as language files (core/lang/<code>.js before core.js, or the parts core/lang/<code>/<family>.json core fetches). complete: the languages that must say every word (scripts/language-coverage.mjs exits 1 on a gap). Rollback: built_in [\\"en\\", \\"ru\\"], then node scripts/build-language-packs.mjs and a rebuild put Russian back into the bundles (the language files still ship, so a page that includes ru.js stays right).","built_in":["en"],"complete":["en","ru"]}');
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	const __webpack_module_cache__ = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		const cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		const module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			const e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter/value functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			if(Array.isArray(definition)) {
+/******/ 				var i = 0;
+/******/ 				while(i < definition.length) {
+/******/ 					var key = definition[i++];
+/******/ 					var binding = definition[i++];
+/******/ 					if(!__webpack_require__.o(exports, key)) {
+/******/ 						if(binding === 0) {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
+/******/ 						} else {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, get: binding });
+/******/ 						}
+/******/ 					} else if(binding === 0) { i++; }
+/******/ 				}
+/******/ 			} else {
+/******/ 				for(var key in definition) {
+/******/ 					if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 					}
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/
+/************************************************************************/
+let __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("05f95721a8a3");
+/* harmony import */ var _scss_index_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("d2c7f5f33858");
+
+
+})();
+
+/******/ })()
+;

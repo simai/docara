@@ -1,0 +1,960 @@
+@charset "UTF-8";
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+@layer sf.components {
+  /* The search window (owner decisions C162, C175; standard simai.smart-component
+     1.3.15 §6): the window sf-search draws into its portal while open -- a
+     scrim and one surface. Every length is a token of the one ladder:
+
+     - one surface, the window radius and shadow (C175 (1), C56, C159): 36rem,
+       48rem with the preview pane (C175 (5));
+     - the field is the window's head with no frame and a line under it (C06):
+       a row's height and the plate inset above and below, its glyph over the
+       rows' glyphs and its 16 text over the rows' titles;
+     - rows as in menus and lists (C49, C148 (1)): a glyph 20, the plate inset
+       4 (C106), the row's padding 16 at size 1, 12 compact and on a phone
+       (C77), the glyph 12 before the text (C105 H2), one line 40, a title over
+       a path 48 (compact 44); under a finger 44 and 60;
+     - the group caption is the popup lists' one (C175 (3));
+     - full screen below lg (C162 (7)).
+
+     The public variables are read with the role token as their fallback and
+     never set here. */
+  .sf-search-portal {
+    --sf-search--inset-block: var(--sf-search-inset-block-start, var(--sf-d6));
+    --sf-search--surface: var(--sf-search-background-color, var(--sf-search-background, var(--sf-surface-popup)));
+    --sf-search--radius: var(--sf-search-radius, var(--sf-radius--surface));
+    --sf-search--pad: var(--sf-space-1\/4);
+    --sf-search--row-pad: var(--sf-space-1);
+    --sf-search--row-gap: var(--sf-space-1\/2);
+    --sf-search--glyph: var(--sf-icon-size-2);
+    --sf-search--row: var(--sf-ui-1--control-height);
+    --sf-search--row-two: calc(var(--sf-text-height-1) + var(--sf-text-height-1\/3) + 2 * var(--sf-search--pad));
+    --sf-search--button: var(--sf-ui-1\/2--control-height);
+    --sf-search--axis: calc(var(--sf-search--pad) + var(--sf-search--row-pad));
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0;
+    display: block;
+    /* The window's narrow form reads the portal's width (below), the screen's
+       own when the portal covers the screen. */
+    container: sf-search/inline-size;
+  }
+  /* In an overlay container (a documentation example) the window stays in the
+     container's box: the container is the containing block. */
+  .sf-search-portal--contained {
+    position: absolute;
+  }
+  .sf-search-scrim {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0;
+  }
+  /* One surface (C175 (1)): the head, the filters, the rows and the keys. */
+  .sf-search-window {
+    position: absolute;
+    top: var(--sf-search--inset-block);
+    inset-block-start: var(--sf-search--inset-block);
+    left: 0;
+    right: 0;
+    inset-inline: 0;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: min(var(--sf-search-inline-size, var(--sf-popup--window-form-width, var(--sf-measure-80))), 100% - 2 * var(--sf-space-2));
+    inline-size: min(var(--sf-search-inline-size, var(--sf-popup--window-form-width, var(--sf-measure-80))), 100% - 2 * var(--sf-space-2));
+    max-height: calc(100% - 2 * var(--sf-search--inset-block));
+    max-block-size: calc(100% - 2 * var(--sf-search--inset-block));
+    margin-left: auto;
+    margin-right: auto;
+    margin-inline: auto;
+    overflow: hidden;
+    border-radius: var(--sf-search--radius);
+    box-shadow: var(--sf-shadow-overlay);
+    container-type: inline-size;
+  }
+  /* With a host that shows previews the window is the wide step (C175 (5),
+     C159 (1)). A public width still wins. */
+  .sf-search-window--pane {
+    width: min(var(--sf-search-inline-size, var(--sf-popup--window-wide-width, var(--sf-measure-96))), 100% - 2 * var(--sf-space-2));
+    inline-size: min(var(--sf-search-inline-size, var(--sf-popup--window-wide-width, var(--sf-measure-96))), 100% - 2 * var(--sf-space-2));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .sf-search-window {
+      -webkit-animation: sf-search-enter var(--sf-duration-fast) var(--sf-ease-enter);
+              animation: sf-search-enter var(--sf-duration-fast) var(--sf-ease-enter);
+    }
+    .sf-search-scrim {
+      -webkit-animation: sf-search-fade var(--sf-duration-fast) var(--sf-ease-enter);
+              animation: sf-search-fade var(--sf-duration-fast) var(--sf-ease-enter);
+    }
+  }
+  @-webkit-keyframes sf-search-enter {
+    from {
+      opacity: 0;
+      translate: 0 calc(-1 * var(--sf-space-1\/3));
+    }
+  }
+  @keyframes sf-search-enter {
+    from {
+      opacity: 0;
+      translate: 0 calc(-1 * var(--sf-space-1\/3));
+    }
+  }
+  @-webkit-keyframes sf-search-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes sf-search-fade {
+    from {
+      opacity: 0;
+    }
+  }
+  /* The head (C06, C175 (1)): no frame, a line under it; the glyph over the
+     rows' glyphs, the text over their titles; the X at the end. */
+  .sf-search-head:where(:dir(ltr)){
+    padding-left: var(--sf-search--axis);
+    padding-right: calc(var(--sf-search--pad) + var(--sf-space-1\/3));
+  }
+  .sf-search-head:where(:dir(rtl)){
+    padding-right: var(--sf-search--axis);
+    padding-left: calc(var(--sf-search--pad) + var(--sf-space-1\/3));
+  }
+  .sf-search-head {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--sf-search--row-gap);
+    box-sizing: border-box;
+    min-height: calc(var(--sf-search--row) + 2 * var(--sf-search--pad));
+    min-block-size: calc(var(--sf-search--row) + 2 * var(--sf-search--pad));
+    padding-top: var(--sf-search--pad);
+    padding-bottom: var(--sf-search--pad);
+    padding-block: var(--sf-search--pad);
+    padding-inline: var(--sf-search--axis) calc(var(--sf-search--pad) + var(--sf-space-1\/3));
+    border-bottom-width: var(--sf-px);
+    border-block-end-width: var(--sf-px);
+    border-bottom-style: solid;
+    border-block-end-style: solid;
+  }
+  .sf-search-glyph {
+    display: inline-flex;
+    flex: none;
+    --sf-icon--font-size: var(--sf-search--glyph);
+    --sf-icon--width: var(--sf-search--glyph);
+    --sf-icon--height: var(--sf-search--glyph);
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+  /* «Назад» (C175 (7)): in a command's step, and on the full-screen window
+     below lg, where it closes. It stands where the glyph stood, centred on the
+     glyph's column. The button's host is display: contents, so its native
+     button is what is shown, hidden and placed. */
+  .sf-search-back > button {
+    display: none;
+    flex: none;
+    margin-left: calc((var(--sf-search--glyph) - var(--sf-search--button)) / 2);
+    margin-right: calc((var(--sf-search--glyph) - var(--sf-search--button)) / 2);
+    margin-inline: calc((var(--sf-search--glyph) - var(--sf-search--button)) / 2);
+  }
+  .sf-search-window--step .sf-search-back > button {
+    display: inline-flex;
+  }
+  .sf-search-window--step .sf-search-glyph {
+    display: none;
+  }
+  /* The query: the step's and the operators' tags (C175 (7), (8)) on the
+     text's line, then the input. */
+  .sf-search-query {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sf-space-1\/4);
+    min-width: 0;
+    min-inline-size: 0;
+    /* A tag in a field sits on the field's text line (sf-tag inline, C145 (1)):
+       the head's row less the plate inset on either side. */
+    --sf-tag--line: calc(var(--sf-search--row) - 2 * var(--sf-search--pad));
+  }
+  .sf-search-input {
+    /* Room for a few words beside the tags before the input wraps under them. */
+    flex: 1 1 var(--sf-e2);
+    min-width: 0;
+    min-inline-size: 0;
+    height: var(--sf-search--row);
+    block-size: var(--sf-search--row);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-color: revert-layer;
+    caret-color: var(--sf-primary);
+    font: inherit;
+    /* The head's text stands over the rows' text (C06, SW-4). */
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+    /* The window's one field holds the focus whenever the window is open, and
+       its caret marks it. */
+    outline: none;
+  }
+  .sf-search-input::-webkit-input-placeholder {
+    opacity: 1;
+  }
+  .sf-search-input::-moz-placeholder {
+    opacity: 1;
+  }
+  .sf-search-input:-ms-input-placeholder {
+    opacity: 1;
+  }
+  .sf-search-input::-ms-input-placeholder {
+    opacity: 1;
+  }
+  .sf-search-input::placeholder {
+    opacity: 1;
+  }
+  .sf-search-clear > button {
+    flex: none;
+  }
+  /* The filters (C175 (4)): sf-tag-group of one choice, tags the size of a
+     1/2 button, 4 apart, on the rows' inset. */
+  .sf-search-scopes {
+    flex: none;
+    padding-top: var(--sf-space-1\/3);
+    padding-bottom: var(--sf-space-1\/4);
+    padding-block: var(--sf-space-1\/3) var(--sf-space-1\/4);
+    padding-left: var(--sf-search--axis);
+    padding-right: var(--sf-search--axis);
+    padding-inline: var(--sf-search--axis);
+  }
+  /* The rows' area. */
+  .sf-search-card {
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: column;
+    box-sizing: border-box;
+    min-height: 0;
+    min-block-size: 0;
+    max-height: var(--sf-search-list-max-block-size, none);
+    max-block-size: var(--sf-search-list-max-block-size, none);
+    overflow: auto;
+    -ms-scroll-chaining: none;
+        overscroll-behavior: contain;
+  }
+  .sf-search-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-inline-size: 0;
+    padding: var(--sf-search--pad);
+  }
+  /* A group's caption: the popup lists' one (C175 (3)), on the rows' text
+     start. */
+  .sf-search-caption {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sf-space-1\/2);
+    padding-top: var(--sf-space-1\/3);
+    padding-bottom: var(--sf-space-1\/4);
+    padding-block: var(--sf-space-1\/3) var(--sf-space-1\/4);
+    padding-left: var(--sf-search--row-pad);
+    padding-right: var(--sf-search--row-pad);
+    padding-inline: var(--sf-search--row-pad);
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+    font-weight: var(--sf-weight--medium);
+  }
+  .sf-search-caption-action {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-color: revert-layer;
+    font: inherit;
+    font-weight: var(--sf-font-weight-regular);
+    cursor: pointer;
+  }
+  .sf-search-caption-action:hover {
+    text-decoration: underline;
+  }
+  /* A row: a menu or list row (C49, C148): the glyph or avatar, the title over
+     the path, and at the end a command's keys, a step's chevron, the time, or
+     the selected row's buttons. */
+  .sf-search-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+    box-sizing: border-box;
+    min-height: var(--sf-search--row);
+    min-block-size: var(--sf-search--row);
+    padding-left: var(--sf-search--row-pad);
+    padding-right: var(--sf-search--row-pad);
+    padding-inline: var(--sf-search--row-pad);
+    border-radius: var(--sf-radius--ui);
+    cursor: pointer;
+  }
+  .sf-search-row--two {
+    min-height: var(--sf-search--row-two);
+    min-block-size: var(--sf-search--row-two);
+  }
+  /* The row's own part: a link for a page (C175 (6)), a span otherwise. It
+     holds the picture and the words; the row's end stands beside it. */
+  .sf-search-row-main {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    gap: var(--sf-search--row-gap);
+    min-width: 0;
+    min-inline-size: 0;
+    padding-top: var(--sf-search--pad);
+    padding-bottom: var(--sf-search--pad);
+    padding-block: var(--sf-search--pad);
+    text-decoration: none;
+  }
+  a.sf-search-row-main.focus-visible {
+    outline: none;
+  }
+  a.sf-search-row-main:focus-visible {
+    outline: none;
+  }
+  .sf-search-row-icon {
+    display: inline-flex;
+    flex: none;
+    --sf-icon--color: var(--sf-on-surface-variant);
+    --sf-icon--font-size: var(--sf-search--glyph);
+    --sf-icon--width: var(--sf-search--glyph);
+    --sf-icon--height: var(--sf-search--glyph);
+  }
+  .sf-search-row--more .sf-search-row-icon {
+    --sf-icon--color: var(--sf-primary);
+  }
+  .sf-search-row-avatar {
+    flex: none;
+  }
+  /* A result's own picture (port 1.2.0 image; C175 (2) «картинка у файлов,
+     плашка только у своей картинки записи»): the avatar's size, 1/2 (32, 28
+     on a phone), on the container fill with the control radius, the picture
+     fitted inside it whole. A picture that fails gives the row its glyph. */
+  .sf-search-row-image {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    width: var(--sf-ui-1\/2--control-height);
+    inline-size: var(--sf-ui-1\/2--control-height);
+    height: var(--sf-ui-1\/2--control-height);
+    block-size: var(--sf-ui-1\/2--control-height);
+    border-radius: var(--sf-radius-1);
+  }
+  .sf-search-row-image-picture {
+    display: block;
+    width: 100%;
+    inline-size: 100%;
+    height: 100%;
+    block-size: 100%;
+    -o-object-fit: contain;
+       object-fit: contain;
+  }
+  .sf-search-row-text {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-search-row-line {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-search-row-title,
+  .sf-search-row-path {
+    min-width: 0;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sf-search-row-title {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+  .sf-search-row-badge {
+    flex: none;
+  }
+  .sf-search-row-path {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-search-row-meta,
+  .sf-search-row-next,
+  .sf-search-row-keys {
+    flex: none;
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-search-row-next {
+    --sf-icon--color: var(--sf-on-surface-variant);
+    --sf-icon--font-size: var(--sf-search--glyph);
+    --sf-icon--width: var(--sf-search--glyph);
+    --sf-icon--height: var(--sf-search--glyph);
+  }
+  /* The row's buttons: 32, 8 apart (C105 H5), the last one's edge on the
+     row's plate inset, so its glyph stands over the head's X. */
+  .sf-search-row-actions:where(:dir(ltr)){
+    margin-right: calc(var(--sf-space-1\/3) - var(--sf-search--row-pad));
+  }
+  .sf-search-row-actions:where(:dir(rtl)){
+    margin-left: calc(var(--sf-space-1\/3) - var(--sf-search--row-pad));
+  }
+  .sf-search-row-actions {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--sf-gap--actions);
+    -webkit-margin-end: calc(var(--sf-space-1\/3) - var(--sf-search--row-pad));
+            margin-inline-end: calc(var(--sf-space-1\/3) - var(--sf-search--row-pad));
+  }
+  /* A recent row's cross: on the row a pointer stands on and on the selected
+     row; a finger always sees it (SW-18). */
+  .sf-search-row-actions--recent {
+    opacity: 0;
+  }
+  .sf-search-row:hover .sf-search-row-actions--recent,
+  .sf-search-row--selected .sf-search-row-actions--recent,
+  .sf-search-row-actions--recent[focus-within] {
+    opacity: 1;
+  }
+  .sf-search-row:hover .sf-search-row-actions--recent,
+  .sf-search-row--selected .sf-search-row-actions--recent,
+  .sf-search-row-actions--recent:focus-within {
+    opacity: 1;
+  }
+  @media (pointer: coarse) {
+    .sf-search-row-actions--recent {
+      opacity: 1;
+    }
+  }
+  /* The match (owner decision C139 (8), C162 (3)): the medium weight on the
+     row's own colour, no fill. A page that sets --sf-search-mark-color still
+     gets that fill behind the match. */
+  .sf-search-mark {
+    font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-search-body--stale .sf-search-row-icon {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+  /* The «Поиск…» line (C139 (4), C130 (8)): a row of the list, the spinner in
+     the glyphs' column and the words where the titles start. */
+  .sf-search-wait {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-search--row-gap);
+    min-height: var(--sf-search--row);
+    min-block-size: var(--sf-search--row);
+    padding-left: var(--sf-search--row-pad);
+    padding-right: var(--sf-search--row-pad);
+    padding-inline: var(--sf-search--row-pad);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+  .sf-search-spinner {
+    --sf-loader--delay: 0s;
+    display: inline-flex;
+    flex: none;
+    justify-content: center;
+    width: var(--sf-search--glyph);
+    inline-size: var(--sf-search--glyph);
+  }
+  /* Nothing found and a failure: the inline empty state on the rows' inset
+     (C120 (3), (5), C162 (5)). */
+  .sf-search-state {
+    padding: var(--sf-space-1\/3) var(--sf-search--row-pad) 0;
+  }
+  /* The popular queries: quiet pills on the rows' inset. */
+  .sf-search-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sf-space-1\/4);
+    padding: var(--sf-space-1\/4) var(--sf-search--row-pad);
+  }
+  .sf-search-pill {
+    display: inline-flex;
+    align-items: center;
+    box-sizing: border-box;
+    min-height: var(--sf-ui-1\/2--control-height);
+    min-block-size: var(--sf-ui-1\/2--control-height);
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-block: 0;
+    padding-left: var(--sf-space-1\/2);
+    padding-right: var(--sf-space-1\/2);
+    padding-inline: var(--sf-space-1\/2);
+    border: 0;
+    border-color: revert-layer;
+    border-radius: var(--sf-radius--ui);
+    font: inherit;
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    cursor: pointer;
+  }
+  .sf-search-count:where(:dir(ltr)){
+    margin-left: var(--sf-space-1\/4);
+  }
+  .sf-search-count:where(:dir(rtl)){
+    margin-right: var(--sf-space-1\/4);
+  }
+  .sf-search-count {
+    -webkit-margin-start: var(--sf-space-1\/4);
+            margin-inline-start: var(--sf-space-1\/4);
+    font-size: var(--sf-text-size-1\/3);
+  }
+  .sf-search-notice {
+    padding: var(--sf-space-1\/3) var(--sf-search--axis);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+  /* «Возможно, вы искали …»: offered over the results of the query as asked. */
+  .sf-search-correction:where(:dir(ltr)){
+    text-align: left;
+  }
+  .sf-search-correction:where(:dir(rtl)){
+    text-align: right;
+  }
+  .sf-search-correction {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+    box-sizing: border-box;
+    width: 100%;
+    inline-size: 100%;
+    padding: var(--sf-space-1\/3) var(--sf-search--axis);
+    border: 0;
+    border-color: revert-layer;
+    font: inherit;
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+    text-align: start;
+    cursor: pointer;
+  }
+  /* The list and the words of the row the person stands on (C175 (5)): two
+     halves, a line at the pane's start. */
+  .sf-search-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+  .sf-search-preview:where(:dir(ltr)){
+    border-left-width: var(--sf-px);
+  }
+  .sf-search-preview:where(:dir(rtl)){
+    border-right-width: var(--sf-px);
+  }
+  .sf-search-preview:where(:dir(ltr)){
+    border-left-style: solid;
+  }
+  .sf-search-preview:where(:dir(rtl)){
+    border-right-style: solid;
+  }
+  .sf-search-preview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-1\/4);
+    min-width: 0;
+    min-inline-size: 0;
+    padding: var(--sf-space-1\/2) var(--sf-space-1);
+    border-inline-start-width: var(--sf-px);
+    border-inline-start-style: solid;
+    word-wrap: anywhere;
+  }
+  .sf-search-preview-path {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-search-preview-title {
+    font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-search-preview-text {
+    margin: 0;
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-search-message {
+    padding: var(--sf-space-2) var(--sf-search--row-pad);
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+    text-align: center;
+  }
+  /* The key hints (C175 (11), R252): none until the first ↑/↓ in the window,
+     then three at most on one line; the third leaves a narrow window. */
+  .sf-search-keys {
+    display: flex;
+    flex: none;
+    flex-wrap: nowrap;
+    gap: var(--sf-space-1\/4) var(--sf-space-1);
+    overflow: hidden;
+    padding: var(--sf-space-1\/3) var(--sf-search--axis);
+    border-top-width: var(--sf-px);
+    border-block-start-width: var(--sf-px);
+    border-top-style: solid;
+    border-block-start-style: solid;
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-search-key {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: var(--sf-space-1\/4);
+    white-space: nowrap;
+  }
+  /* A narrow window keeps two key hints (C175 (11)); the step is the ladder's g5
+     (30rem; the branch wrote 26rem, which is off the C181 (2) ladder). */
+  @container (width < 30rem) {
+    .sf-search-key:nth-child(n+3) {
+      display: none;
+    }
+  }
+  /* The window's buttons draw the Framework's ring under the keyboard (the
+     field's own ring is its caret, above). */
+  .sf-search-pill.focus-visible,
+  .sf-search-caption-action.focus-visible,
+  .sf-search-correction.focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+  .sf-search-pill:focus-visible,
+  .sf-search-caption-action:focus-visible,
+  .sf-search-correction:focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+  /* Below lg the window is the whole screen (C162 (7), C139 (7)) with «Назад»
+     at the head's start, which closes it; no preview pane (C175 (5)). The
+     portal's width decides, not the screen's (C181 (2)): below the container
+     step h5 (60rem, lg). The portal covers the screen, so on a page it is the
+     screen's width less a classic scrollbar; a portal held in an overlay
+     container (a documentation example) is that container's width. A container
+     rule holds on the first frame the window draws, as a media rule does. */
+  @container sf-search (width < 60rem) {
+    .sf-search-window,
+    .sf-search-window--pane {
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      inset: 0;
+      width: auto;
+      inline-size: auto;
+      max-height: none;
+      max-block-size: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .sf-search-card {
+      flex: 1 1 auto;
+      max-height: none;
+      max-block-size: none;
+    }
+    .sf-search-back > button {
+      display: inline-flex;
+    }
+    .sf-search-glyph {
+      display: none;
+    }
+    .sf-search-split {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .sf-search-preview {
+      display: none;
+    }
+  }
+  /* Under a finger (below lg): rows 44 and 60 (C49, C148 (1)), no key hints and
+     no keys on the rows (C175 (11)). */
+  @media (pointer: coarse) {
+    @container sf-search (width < 60rem) {
+      .sf-search-window {
+        --sf-search--row: var(--sf-ui-2--control-height);
+        --sf-search--row-two: calc(var(--sf-ui-2--control-height) + 2 * var(--sf-space-1\/2));
+      }
+      .sf-search-keys,
+      .sf-search-row-keys {
+        display: none;
+      }
+    }
+  }
+  /* Under a finger at any width the key hints are not drawn (C175 (11)). */
+  @media (pointer: coarse) {
+    .sf-search-keys {
+      display: none;
+    }
+  }
+}
+@layer sf.paint {
+  .sf-search-portal {
+    --sf-surface-place: var(--sf-search--surface);
+    --sf-surface-place-solid: var(--sf-search--surface);
+    --sf-surface-place-ground: var(--sf-search--surface);
+    --sf-place--ink-variant: var(--sf-on-surface-container-variant);
+    --sf-place--ink: initial;
+    --sf-place--fill-surface: light-dark(var(--sf-surface-container), transparent);
+    --sf-on-surface: light-dark(var(--sf-neutral-10), var(--sf-neutral-90));
+    --sf-on-surface-hover: light-dark(var(--sf-neutral-15), var(--sf-neutral-85));
+    --sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-85));
+    --sf-on-surface-icon: light-dark(var(--sf-neutral-25), var(--sf-neutral-80));
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+    --sf-on-surface-not-set: light-dark(var(--sf-neutral-10--alfa-64), var(--sf-neutral-90--alfa-64));
+    --sf-on-surface-container-variant: var(--sf-place--popup-container-variant, light-dark(var(--sf-neutral-35), var(--sf-neutral-90)));
+    --sf-surface-state-hover: light-dark(var(--sf-neutral-50--alfa-4), var(--sf-neutral-90--alfa-4));
+    --sf-surface-state-select: light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8));
+    --sf-surface-state-active: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+    --sf-surface-container: light-dark(var(--sf-neutral-50--alfa-12), var(--sf-neutral-90--alfa-12));
+    --sf-surface-container-hover: light-dark(var(--sf-neutral-50--alfa-16), var(--sf-neutral-90--alfa-16));
+    --sf-surface-container-active: light-dark(var(--sf-neutral-50--alfa-20), var(--sf-neutral-90--alfa-20));
+    --sf-outline: var(--sf-place--popup-outline, light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48)));
+    --sf-surface-disabled: light-dark(var(--sf-neutral-50--alfa-8), var(--sf-neutral-90--alfa-8));
+    --sf-on-surface-disabled: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-90--alfa-48));
+    --sf-on-surface-muted: var(--sf-on-surface-disabled);
+    --sf-surface-underlay: initial;
+    --sf-surface-place-fill: initial;
+    --sf-disable: var(--sf-surface-disabled);
+    --sf-on-disable: var(--sf-on-surface-disabled);
+    --sf-on-surface-container--variant: var(--sf-on-surface-container-variant);
+    --sf-surface-transparent-active: var(--sf-surface-state-active);
+    --sf-surface-transparent-hover: var(--sf-surface-state-hover);
+    --sf-surface-transparent-select: var(--sf-surface-state-select);
+    --sf-code--color: var(--sf-on-surface);
+    --sf-code--background: var(--sf-surface-container);
+    --sf-place--container-outline: initial;
+    color: var(--sf-on-surface);
+  }
+  :where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, .sf-alert-bar--error .sf-alert-bar-row, .sf-alert-bar--error .sf-alert-bar-strip, .sf-alert-bar--danger .sf-alert-bar-row, .sf-alert-bar--danger .sf-alert-bar-strip, .sf-alert-bar--warning .sf-alert-bar-row, .sf-alert-bar--warning .sf-alert-bar-strip, .sf-alert-bar--info .sf-alert-bar-row, .sf-alert-bar--info .sf-alert-bar-strip, .bg-surface-inverse, .bg-surface-inverse-fixed, .gradient-duo, .bg-primary-container, .bg-secondary-container, .bg-tertiary-container, .bg-info-container, .bg-success-container, .bg-warning-container, .bg-error-container, .sf-surface-media) .sf-search-portal {
+    --sf-outline-variant: light-dark(var(--sf-neutral-50--alfa-24), var(--sf-neutral-90--alfa-24));
+    --sf-on-surface-hover: light-dark(var(--sf-neutral-15), var(--sf-neutral-85));
+    --sf-on-surface-active: light-dark(var(--sf-neutral-20), var(--sf-neutral-85));
+  }
+  :where(.bg-primary, .bg-secondary, .bg-tertiary, .bg-info, .bg-success, .bg-warning, .bg-error, .sf-alert-bar--error .sf-alert-bar-row, .sf-alert-bar--error .sf-alert-bar-strip, .sf-alert-bar--danger .sf-alert-bar-row, .sf-alert-bar--danger .sf-alert-bar-strip, .sf-alert-bar--warning .sf-alert-bar-row, .sf-alert-bar--warning .sf-alert-bar-strip, .sf-alert-bar--info .sf-alert-bar-row, .sf-alert-bar--info .sf-alert-bar-strip, .bg-surface-inverse, .bg-surface-inverse-fixed, .gradient-duo) .sf-search-portal {
+    --sf-primary: var(--sf-place--outer-primary, light-dark(var(--sf-primary-40), var(--sf-primary-80)));
+    --sf-primary-hover: var(--sf-place--outer-primary-hover, light-dark(var(--sf-primary-35), var(--sf-primary-85)));
+    --sf-primary-active: var(--sf-place--outer-primary-active, light-dark(var(--sf-primary-30), var(--sf-primary-90)));
+    --sf-on-primary: var(--sf-place--outer-on-primary, light-dark(var(--sf-white), var(--sf-primary-20)));
+    --sf-primary-container: var(--sf-place--outer-primary-container, light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-50--alfa-24)));
+    --sf-primary-container-hover: var(--sf-place--outer-primary-container-hover, light-dark(var(--sf-primary-50--alfa-16), var(--sf-primary-50--alfa-28)));
+    --sf-primary-container-active: var(--sf-place--outer-primary-container-active, light-dark(var(--sf-primary-50--alfa-20), var(--sf-primary-50--alfa-32)));
+    --sf-on-primary-container: var(--sf-place--outer-on-primary-container, light-dark(var(--sf-primary-10), var(--sf-primary-90)));
+    --sf-on-primary-container-graphic: var(--sf-place--outer-on-primary-container-graphic, light-dark(var(--sf-primary-50), var(--sf-primary-70)));
+    --sf-on-secondary-container: var(--sf-place--outer-on-secondary-container, light-dark(var(--sf-secondary-10), var(--sf-secondary-90)));
+    --sf-on-secondary-container-graphic: var(--sf-place--outer-on-secondary-container-graphic, light-dark(var(--sf-secondary-50), var(--sf-secondary-70)));
+    --sf-on-tertiary-container: var(--sf-place--outer-on-tertiary-container, light-dark(var(--sf-tertiary-10), var(--sf-tertiary-90)));
+    --sf-on-tertiary-container-graphic: var(--sf-place--outer-on-tertiary-container-graphic, light-dark(var(--sf-tertiary-50), var(--sf-tertiary-70)));
+    --sf-on-info-container: var(--sf-place--outer-on-info-container, light-dark(var(--sf-info-10), var(--sf-info-90)));
+    --sf-on-info-container-graphic: var(--sf-place--outer-on-info-container-graphic, light-dark(var(--sf-info-50), var(--sf-info-70)));
+    --sf-on-success-container: var(--sf-place--outer-on-success-container, light-dark(var(--sf-success-10), var(--sf-success-90)));
+    --sf-on-success-container-graphic: var(--sf-place--outer-on-success-container-graphic, light-dark(var(--sf-success-50), var(--sf-success-70)));
+    --sf-on-warning-container: var(--sf-place--outer-on-warning-container, light-dark(var(--sf-warning-10), var(--sf-warning-90)));
+    --sf-on-warning-container-graphic: var(--sf-place--outer-on-warning-container-graphic, light-dark(var(--sf-warning-50), var(--sf-warning-70)));
+    --sf-on-error-container: var(--sf-place--outer-on-error-container, light-dark(var(--sf-error-10), var(--sf-error-90)));
+    --sf-on-error-container-graphic: var(--sf-place--outer-on-error-container-graphic, light-dark(var(--sf-error-50), var(--sf-error-70)));
+    --sf-on-neutral-container: var(--sf-place--outer-on-neutral-container, light-dark(var(--sf-neutral-10), var(--sf-neutral-90)));
+    --sf-on-neutral-container-graphic: var(--sf-place--outer-on-neutral-container-graphic, light-dark(var(--sf-neutral-50), var(--sf-neutral-70)));
+    --sf-link: var(--sf-place--outer-link, light-dark(var(--sf-primary-40), var(--sf-primary-80)));
+    --sf-link-hover: var(--sf-place--outer-link-hover, light-dark(var(--sf-primary-35), var(--sf-primary-85)));
+    --sf-link-active: var(--sf-place--outer-link-active, light-dark(var(--sf-primary-30), var(--sf-primary-90)));
+    --sf-link-visited: var(--sf-place--outer-link-visited, light-dark(var(--sf-tertiary-40), var(--sf-tertiary-80)));
+    --sf-focus: var(--sf-place--outer-focus, light-dark(var(--sf-primary-50), var(--sf-primary-90)));
+    --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
+    --sf-place--plate: initial;
+    --sf-place--on-plate: initial;
+    --sf-place--fill-placeholder: initial;
+    --sf-place--control-hover: initial;
+    --sf-place--control-active: initial;
+    --sf-place--tonal-edge: initial;
+  }
+  :where(.sf-surface-media) .sf-search-portal {
+    --sf-primary: var(--sf-place--outer-primary, light-dark(var(--sf-primary-40), var(--sf-primary-80)));
+    --sf-primary-hover: var(--sf-place--outer-primary-hover, light-dark(var(--sf-primary-35), var(--sf-primary-85)));
+    --sf-primary-active: var(--sf-place--outer-primary-active, light-dark(var(--sf-primary-30), var(--sf-primary-90)));
+    --sf-on-primary: var(--sf-place--outer-on-primary, light-dark(var(--sf-white), var(--sf-primary-20)));
+    --sf-primary-container: var(--sf-place--outer-primary-container, light-dark(var(--sf-primary-50--alfa-12), var(--sf-primary-50--alfa-24)));
+    --sf-primary-container-hover: var(--sf-place--outer-primary-container-hover, light-dark(var(--sf-primary-50--alfa-16), var(--sf-primary-50--alfa-28)));
+    --sf-primary-container-active: var(--sf-place--outer-primary-container-active, light-dark(var(--sf-primary-50--alfa-20), var(--sf-primary-50--alfa-32)));
+    --sf-on-primary-container: var(--sf-place--outer-on-primary-container, light-dark(var(--sf-primary-10), var(--sf-primary-90)));
+    --sf-link: var(--sf-place--outer-link, light-dark(var(--sf-primary-40), var(--sf-primary-80)));
+    --sf-link-hover: var(--sf-place--outer-link-hover, light-dark(var(--sf-primary-35), var(--sf-primary-85)));
+    --sf-link-active: var(--sf-place--outer-link-active, light-dark(var(--sf-primary-30), var(--sf-primary-90)));
+    --sf-link-visited: var(--sf-place--outer-link-visited, light-dark(var(--sf-tertiary-40), var(--sf-tertiary-80)));
+    --sf-focus: var(--sf-place--outer-focus, light-dark(var(--sf-primary-50), var(--sf-primary-90)));
+    --sf-on-primary-container-graphic: var(--sf-place--outer-on-primary-container-graphic, light-dark(var(--sf-primary-50), var(--sf-primary-70)));
+    --sf-on-secondary-container: var(--sf-place--outer-on-secondary-container, light-dark(var(--sf-secondary-10), var(--sf-secondary-90)));
+    --sf-on-secondary-container-graphic: var(--sf-place--outer-on-secondary-container-graphic, light-dark(var(--sf-secondary-50), var(--sf-secondary-70)));
+    --sf-on-tertiary-container: var(--sf-place--outer-on-tertiary-container, light-dark(var(--sf-tertiary-10), var(--sf-tertiary-90)));
+    --sf-on-tertiary-container-graphic: var(--sf-place--outer-on-tertiary-container-graphic, light-dark(var(--sf-tertiary-50), var(--sf-tertiary-70)));
+    --sf-on-info-container: var(--sf-place--outer-on-info-container, light-dark(var(--sf-info-10), var(--sf-info-90)));
+    --sf-on-info-container-graphic: var(--sf-place--outer-on-info-container-graphic, light-dark(var(--sf-info-50), var(--sf-info-70)));
+    --sf-on-success-container: var(--sf-place--outer-on-success-container, light-dark(var(--sf-success-10), var(--sf-success-90)));
+    --sf-on-success-container-graphic: var(--sf-place--outer-on-success-container-graphic, light-dark(var(--sf-success-50), var(--sf-success-70)));
+    --sf-on-warning-container: var(--sf-place--outer-on-warning-container, light-dark(var(--sf-warning-10), var(--sf-warning-90)));
+    --sf-on-warning-container-graphic: var(--sf-place--outer-on-warning-container-graphic, light-dark(var(--sf-warning-50), var(--sf-warning-70)));
+    --sf-on-error-container: var(--sf-place--outer-on-error-container, light-dark(var(--sf-error-10), var(--sf-error-90)));
+    --sf-on-error-container-graphic: var(--sf-place--outer-on-error-container-graphic, light-dark(var(--sf-error-50), var(--sf-error-70)));
+    --sf-on-neutral-container: var(--sf-place--outer-on-neutral-container, light-dark(var(--sf-neutral-10), var(--sf-neutral-90)));
+    --sf-on-neutral-container-graphic: var(--sf-place--outer-on-neutral-container-graphic, light-dark(var(--sf-neutral-50), var(--sf-neutral-70)));
+    --sf-focus--color: var(--sf-place--outer-focus--color, var(--sf-focus));
+    --sf-place--control-hover: initial;
+    --sf-place--control-active: initial;
+  }
+  :where(.bg-surface-4) .sf-search-portal {
+    --sf-primary: var(--sf-place--found-primary);
+    --sf-primary-hover: var(--sf-place--found-primary-hover);
+    --sf-primary-active: var(--sf-place--found-primary-active);
+    --sf-link: var(--sf-place--found-link);
+    --sf-link-hover: var(--sf-place--found-link-hover);
+    --sf-link-active: var(--sf-place--found-link-active);
+  }
+  .sf-search-portal > * {
+    --sf-surface-popup: var(--sf-surface-popup-nested);
+    --sf-on-surface-popup-variant: var(--sf-on-surface-popup-nested-variant);
+    --sf-place--popup-container-variant: light-dark(var(--sf-neutral-35), var(--sf-neutral-95));
+    --sf-place--popup-outline: light-dark(var(--sf-neutral-50--alfa-80), var(--sf-neutral-70));
+    --sf-elevation-3--surface: var(--sf-surface-popup);
+    --sf-on-elevation-3--variant: var(--sf-on-surface-popup-variant);
+  }
+  .sf-search-scrim {
+    /* The shared scrim (core --sf-scrim-*) unless the page sets the search's
+       own colour, which is then the whole scrim (C16, C20). */
+    background: var(--sf-search-scrim-color, var(--sf-scrim-color, var(--sf-black--alfa-64)));
+  }
+  .sf-search-window {
+    background: var(--sf-search--surface);
+    --sf-on-surface-variant: var(--sf-on-surface-popup-variant);
+  }
+  .sf-search-head {
+    border-bottom-color: var(--sf-outline-variant);
+    border-block-end-color: var(--sf-outline-variant);
+  }
+  .sf-search-input {
+    border: 0;
+    background: transparent;
+    color: var(--sf-on-surface);
+  }
+  .sf-search-input::-webkit-input-placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-input::-moz-placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-input:-ms-input-placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-input::-ms-input-placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-input::placeholder {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-caption {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-caption-action {
+    border: 0;
+    background: transparent;
+    color: var(--sf-primary);
+  }
+  .sf-search-row {
+    color: var(--sf-on-surface);
+  }
+  .sf-search-row--selected {
+    /* The selected role (C16). */
+    background: var(--sf-primary-container);
+    color: var(--sf-on-primary-container);
+    --sf-on-surface-variant: var(--sf-on-primary-container);
+  }
+  .sf-search-row--more {
+    color: var(--sf-primary);
+  }
+  /* A result's own picture stands on the container fill (the container's
+     dim ink with it, C16). */
+  .sf-search-row-image {
+    background: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-search-row-main {
+    color: inherit;
+  }
+  .sf-search-row-path {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-row-meta,
+  .sf-search-row-next,
+  .sf-search-row-keys {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-mark {
+    background: var(--sf-search-mark-color, transparent);
+    color: inherit;
+  }
+  /* A search runs over the rows of the last answer (C139 (4), C162 (4)): they
+     stay, a step paler, until the answer replaces them. */
+  .sf-search-body--stale .sf-search-row:not(.sf-search-row--selected) {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-body--stale .sf-search-row-path {
+    color: var(--sf-on-surface-disabled);
+  }
+  .sf-search-wait {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-pill {
+    border: 0;
+    background: var(--sf-surface-container);
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-pill:hover {
+    background: var(--sf-surface-container-hover);
+  }
+  .sf-search-notice {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-correction {
+    border: 0;
+    background: none;
+    color: var(--sf-primary);
+  }
+  .sf-search-correction:hover {
+    background: var(--sf-surface-container-hover);
+  }
+  .sf-search-preview:where(:dir(ltr)){
+    border-left-color: var(--sf-outline-variant);
+  }
+  .sf-search-preview:where(:dir(rtl)){
+    border-right-color: var(--sf-outline-variant);
+  }
+  .sf-search-preview {
+    border-inline-start-color: var(--sf-outline-variant);
+  }
+  .sf-search-preview-path {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-preview-text {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-message {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-search-keys {
+    border-top-color: var(--sf-outline-variant);
+    border-block-start-color: var(--sf-outline-variant);
+    color: var(--sf-on-surface-variant);
+  }
+}

@@ -229,6 +229,10 @@ lock описаны в справочнике [Framework lock](/ru/reference/fra
 | `appearance` | `dark` (по умолчанию) или `light` |
 | `arrow` | Где хвостик: `none` (по умолчанию), `top-center`, `bottom-center`, `inline-start`, `inline-end`, `bottom-inline-start` или `bottom-inline-end` |
 
+Размера у подсказки нет: в SIMAI Framework все подсказки одного размера,
+поэтому параметр `size` сборка не принимает и останавливается с
+`FRAMEWORK_PROP_UNKNOWN`.
+
 :::ui.tooltip
 {"text":"Черновик","supporting-text":"Эту страницу видите только вы.","appearance":"light","arrow":"inline-start"}
 :::

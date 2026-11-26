@@ -1,0 +1,1688 @@
+@charset "UTF-8";
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+/* A button's border is inside its control height: the padding gives each side's
+   border back. The side widths are registered as lengths, so a unitless 0
+   written by a group, a tab row or a host still subtracts; unregistered, it
+   would invalidate the padding. Measured before: outline, surface and every
+   segmented button stood 2px taller than its size. */
+@property --sf-button--border-top-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --sf-button--border-bottom-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --sf-button--border-inline-start-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --sf-button--border-inline-end-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@layer sf.components {
+  /* A button drawn as a link (sf-button href, 2026-11-04) has the button's
+     own ink: the browser gives a link its link colour and an underline, a
+     button ButtonText and none. The visible ink is the text and icon's own. */
+  a.sf-button {
+    text-decoration: none;
+  }
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-button:where(:dir(ltr)){
+    border-bottom-right-radius: var(--sf-button--border-bottom-right-radius, var(--sf-button--radius));
+  }
+  .sf-button:where(:dir(rtl)){
+    border-bottom-left-radius: var(--sf-button--border-bottom-right-radius, var(--sf-button--radius));
+  }
+  .sf-button:where(:dir(ltr)){
+    border-bottom-left-radius: var(--sf-button--border-bottom-left-radius, var(--sf-button--radius));
+  }
+  .sf-button:where(:dir(rtl)){
+    border-bottom-right-radius: var(--sf-button--border-bottom-left-radius, var(--sf-button--radius));
+  }
+  .sf-button:where(:dir(ltr)){
+    border-top-right-radius: var(--sf-button--border-top-right-radius, var(--sf-button--radius));
+  }
+  .sf-button:where(:dir(rtl)){
+    border-top-left-radius: var(--sf-button--border-top-right-radius, var(--sf-button--radius));
+  }
+  .sf-button:where(:dir(ltr)){
+    border-top-left-radius: var(--sf-button--border-top-left-radius, var(--sf-button--radius));
+  }
+  .sf-button:where(:dir(rtl)){
+    border-top-right-radius: var(--sf-button--border-top-left-radius, var(--sf-button--radius));
+  }
+  .sf-button:where(:dir(ltr)){
+    padding-left: calc(var(--sf-button--padding-inline-start) - var(--sf-button--border-inline-start-width));
+  }
+  .sf-button:where(:dir(rtl)){
+    padding-right: calc(var(--sf-button--padding-inline-start) - var(--sf-button--border-inline-start-width));
+  }
+  .sf-button:where(:dir(ltr)){
+    padding-right: calc(var(--sf-button--padding-inline-end) - var(--sf-button--border-inline-end-width));
+  }
+  .sf-button:where(:dir(rtl)){
+    padding-left: calc(var(--sf-button--padding-inline-end) - var(--sf-button--border-inline-end-width));
+  }
+  .sf-button:where(:dir(ltr)){
+    border-right-width: var(--sf-button--border-inline-end-width, 0);
+  }
+  .sf-button:where(:dir(rtl)){
+    border-left-width: var(--sf-button--border-inline-end-width, 0);
+  }
+  .sf-button:where(:dir(ltr)){
+    border-left-width: var(--sf-button--border-inline-start-width, 0);
+  }
+  .sf-button:where(:dir(rtl)){
+    border-right-width: var(--sf-button--border-inline-start-width, 0);
+  }
+  .sf-button {
+    /* Public variables (core/contracts/public-variables.v1.json): names with a
+       single dash after the block, never set by the Framework, read where a
+       resting look is defined -- base, size, appearance, scheme -- and not by
+       hover, focus, disabled, loading or a group's segments, so states and
+       joined groups still show. */
+    --sf-button--radius: var(--sf-button-radius, var(--sf-radius--ui));
+    border-end-end-radius: var(--sf-button--border-bottom-right-radius, var(--sf-button--radius));
+    border-end-start-radius: var(--sf-button--border-bottom-left-radius, var(--sf-button--radius));
+    border-start-end-radius: var(--sf-button--border-top-right-radius, var(--sf-button--radius));
+    border-start-start-radius: var(--sf-button--border-top-left-radius, var(--sf-button--radius));
+    -webkit-padding-start: calc(var(--sf-button--padding-inline-start) - var(--sf-button--border-inline-start-width));
+            padding-inline-start: calc(var(--sf-button--padding-inline-start) - var(--sf-button--border-inline-start-width));
+    padding-top: calc(var(--sf-button--padding-top) - var(--sf-button--border-top-width));
+    -webkit-padding-end: calc(var(--sf-button--padding-inline-end) - var(--sf-button--border-inline-end-width));
+            padding-inline-end: calc(var(--sf-button--padding-inline-end) - var(--sf-button--border-inline-end-width));
+    padding-bottom: calc(var(--sf-button--padding-bottom) - var(--sf-button--border-bottom-width));
+    /* The public border reaches every appearance, not only outline: a default
+       button kept its border at 0 whatever --sf-button-border-width said
+       (public-variables probe, 2026-10-18). Outline and a group's segments set
+       the side widths after this, and win. */
+    --sf-button--border-top-width: var(--sf-button-border-width, 0);
+    --sf-button--border-bottom-width: var(--sf-button-border-width, 0);
+    --sf-button--border-inline-start-width: var(--sf-button-border-width, 0);
+    --sf-button--border-inline-end-width: var(--sf-button-border-width, 0);
+    border-width: var(--sf-button--border-width, 0);
+    border-top-width: var(--sf-button--border-top-width, 0);
+    border-inline-end-width: var(--sf-button--border-inline-end-width, 0);
+    border-bottom-width: var(--sf-button--border-bottom-width, 0);
+    border-inline-start-width: var(--sf-button--border-inline-start-width, 0);
+    border-style: var(--sf-button--border-style, solid);
+    /* Two layers, composed rather than replaced: the focus line the ring puts
+       inside the button, and whatever elevation the button already carries.
+       Written as one shorthand, a focus rule would wipe the elevation. */
+    box-shadow: var(--sf-button--focus-inset, 0 0 var(--sf-transparent)), var(--sf-button--box-shadow, 0 0 var(--sf-transparent));
+  }
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-button .sf-button-text-container:where(:dir(ltr)){
+    padding-right: var(--sf-button-text-container--padding-inline-end);
+  }
+  .sf-button .sf-button-text-container:where(:dir(rtl)){
+    padding-left: var(--sf-button-text-container--padding-inline-end);
+  }
+  .sf-button .sf-button-text-container:where(:dir(ltr)){
+    padding-left: var(--sf-button-text-container--padding-inline-start);
+  }
+  .sf-button .sf-button-text-container:where(:dir(rtl)){
+    padding-right: var(--sf-button-text-container--padding-inline-start);
+  }
+  .sf-button .sf-button-text-container {
+    /* A control label wraps between words and never inside one. Prose in a
+       table breaks mid-word by design, and a button sitting in a cell used to
+       inherit that: "edit" came out on three lines and set the row height. */
+    word-break: normal;
+    --sf-button-text-container--background-color: transparent;
+    font-family: var(--sf-button-text-container--font-family);
+    font-size: var(--sf-button-text-container--font-size);
+    font-weight: var(--sf-button-text-container--font-weight);
+    line-height: var(--sf-button-text-container--line-height);
+    -webkit-padding-end: var(--sf-button-text-container--padding-inline-end);
+            padding-inline-end: var(--sf-button-text-container--padding-inline-end);
+    -webkit-padding-start: var(--sf-button-text-container--padding-inline-start);
+            padding-inline-start: var(--sf-button-text-container--padding-inline-start);
+  }
+  /* An icon beside the label takes the label's weight (owner decision C151
+     point 4): every button label is medium. Set on the button, so a weight
+     the author gives the icon itself still wins; an icon-only button keeps
+     the regular glyph. */
+  .sf-button:has(.sf-button-text-container) {
+    --sf-icon--weight: var(--sf-weight--medium);
+  }
+  .sf-button .sf-icon {
+    font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+    height: var(--sf-icon--height, var(--sf-icon-size-3));
+    width: var(--sf-icon--width, var(--sf-icon-size-3));
+  }
+  /* A label written straight into the button, without its text container,
+     took the browser's button font (13.33 px, line normal) and stood 31 px
+     high in a size 1 slot (docs pre-check 2026-11-10 CQT-01). The bare text
+     gets the size's own text step, so the button keeps its control height;
+     the text container stays the markup the docs teach. */
+  .sf-button:not(:has(> *)) {
+    font-family: var(--sf-text--family);
+    font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-button.sf-button--size-1\/3:not(:has(> *)) {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-button.sf-button--size-1\/2:not(:has(> *)) {
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-button.sf-button--size-1:not(:has(> *)) {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+  .sf-button.sf-button--size-2:not(:has(> *)) {
+    font-size: var(--sf-text-size-2);
+    line-height: var(--sf-text-height-2);
+  }
+  .sf-button.sf-button--size-3:not(:has(> *)) {
+    font-size: var(--sf-text-size-3);
+    line-height: var(--sf-text-height-3);
+  }
+  .sf-button.sf-button--default.sf-button--primary {
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-primary));
+  }
+  /* The set's former words (owner decision C116 (3), (6), 1.17.0): every
+     selector that names on-surface names sf-button--secondary and the
+     non-danger sf-button--surface too, and every selector that names tonal
+     without another scheme names that surface: secondary draws exactly as
+     on-surface of the same kind, surface exactly as tonal on-surface. Both
+     classes are deprecated until 2027-01-01 (write on-surface, write tonal
+     on-surface; journal class-button-set-c116; js/_buttons.js notes them in
+     SF.deprecations). The added names are single classes and the danger
+     guard stands in :where, so no rule changes weight. */
+  .sf-button.sf-button--size-1 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-1--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-1--text-space-x);
+  }
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--tonal.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-1);
+    --sf-button-text-container--line-height: var(--sf-text-height-1);
+  }
+  .sf-button.sf-button--size-1.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--tonal.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--tonal.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--tonal.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-button-text-container, .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary .sf-button-text-container, .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-button-text-container {
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-button.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--primary:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-primary));
+  }
+  .sf-button.sf-button--default.sf-button--primary .sf-icon {
+    --sf-icon--color: var(--sf-on-primary);
+  }
+  .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) {
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-on-surface));
+    /* The label of the plate on a place with its own ink (places states,
+       2026-11-14). The plate is --sf-on-surface, which a strong coloured
+       place, the duo gradient, glass and an inverse place re-declare as their
+       ink; the theme's label, --sf-on-surface-inverse, they cannot re-declare
+       (a tooltip reads it with --sf-surface-inverse), and it read 1.29-1.31:1
+       on the place's white. There the plate is the accent the place made of
+       its ink (--sf-primary), so its label is the accent's label,
+       --sf-on-primary: the place's colour on a strong place and the duo
+       gradient, black on glass. Only where the place declares its ink
+       (--sf-place--ink): elsewhere -- the page, a card, a popup, which take
+       it back (initial) -- this name is invalid (the 0 % mix reads the hook
+       and nothing of it) and the theme's label stays. */
+    --sf-button--on-place-ink: color-mix(in srgb, var(--sf-on-primary), var(--sf-place--ink) 0%);
+  }
+  .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-button--on-place-ink, var(--sf-on-surface-inverse)));
+  }
+  .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-icon {
+    --sf-icon--color: var(--sf-button--on-place-ink, var(--sf-on-surface-inverse));
+  }
+  .sf-button.sf-button--tonal.sf-button--primary {
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-primary-container));
+  }
+  .sf-button.sf-button--tonal.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal.sf-button--primary:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-primary-container));
+  }
+  .sf-button.sf-button--tonal.sf-button--primary .sf-icon {
+    --sf-icon--color: var(--sf-on-primary-container);
+  }
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) {
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-surface-container));
+  }
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface));
+  }
+  /* The icon of a neutral button is half a step paler than its label (C107,
+     owner 2026-11-12): --sf-on-surface-icon. Hovered and pressed it takes the
+     label's colour (sf.states below). */
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-icon);
+  }
+  .sf-button.sf-button--outline.sf-button--primary, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) {
+    --sf-button--background-color: var(--sf-button-background-color, transparent);
+    --sf-button--border-color: var(--sf-button-border-color, var(--sf-outline));
+  }
+  .sf-button.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline.sf-button--primary:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-primary));
+  }
+  .sf-button.sf-button--outline.sf-button--primary .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary .sf-icon {
+    --sf-icon--color: var(--sf-primary);
+  }
+  .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))), .sf-button.sf-button--loading.sf-button--default.sf-button--primary {
+    --sf-button--background-color: var(--sf-button-background-color, transparent);
+  }
+  .sf-button.sf-button--size-2 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-2--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-2--text-space-x);
+  }
+  .sf-button.sf-button--size-2.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--tonal.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-2);
+    --sf-button-text-container--line-height: var(--sf-text-height-2);
+  }
+  .sf-button.sf-button--size-3 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-3--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-3--text-space-x);
+  }
+  .sf-button.sf-button--size-3.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--tonal.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-3);
+    --sf-button-text-container--line-height: var(--sf-text-height-3);
+  }
+  .sf-button.sf-button--size-1\/2 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  }
+  .sf-button.sf-button--size-1\/2.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--tonal.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/2);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-button.sf-button--size-1\/3 .sf-button-text-container {
+    --sf-button-text-container--padding-inline-end: var(--sf-ui-1\/3--text-space-x);
+    --sf-button-text-container--padding-inline-start: var(--sf-ui-1\/3--text-space-x);
+  }
+  .sf-button.sf-button--size-1\/3.sf-button--default.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--tonal.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3.sf-button--outline.sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link).sf-button--primary :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/3);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-button--size-1 {
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-default));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, var(--sf-ui-1--space-x));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, var(--sf-ui-1--space-x));
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-default));
+  }
+  .sf-button.sf-button--size-1 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+  }
+  /* Density (spacing) moves the side padding only: one height per size
+     whatever the look or the spacing (owner rule C01, docs review R022,
+     2026-11-07). The step is the one the size's tightness ladder already
+     gives -- the tightness value less the default one -- added to the size's
+     side padding, so compact is narrower and spacious wider at the same
+     control height. The block padding stays the size's default step, which is
+     what --sf-ui-*--control-height is made of. Before, the steps changed the
+     block padding and a compact size 1 stood 32px, a spacious one 56px. */
+  .sf-button--size-1:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
+  }
+  .sf-button--size-1:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
+  }
+  .sf-button--size-1:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
+  }
+  .sf-button--size-2 {
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-default));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, var(--sf-ui-2--space-x));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, var(--sf-ui-2--space-x));
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-default));
+  }
+  .sf-button.sf-button--size-2 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+  }
+  .sf-button--size-2:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
+  }
+  .sf-button--size-2:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
+  }
+  .sf-button--size-2:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
+  }
+  .sf-button--size-3 {
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-default));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, var(--sf-ui-3--space-x));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, var(--sf-ui-3--space-x));
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-default));
+  }
+  .sf-button.sf-button--size-3 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-3);
+    --sf-icon--height: var(--sf-text-height-3);
+    --sf-icon--width: var(--sf-text-height-3);
+  }
+  .sf-button--size-3:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
+  }
+  .sf-button--size-3:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
+  }
+  .sf-button--size-3:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/2 {
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, var(--sf-ui-1\/2--space-x));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, var(--sf-ui-1\/2--space-x));
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
+  }
+  .sf-button.sf-button--size-1\/2 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+  .sf-button--size-1\/2:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/2:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/2:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/3 {
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, var(--sf-ui-1\/3--space-x));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, var(--sf-ui-1\/3--space-x));
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+  }
+  .sf-button.sf-button--size-1\/3 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/3);
+    --sf-icon--height: var(--sf-text-height-1\/3);
+    --sf-icon--width: var(--sf-text-height-1\/3);
+  }
+  .sf-button--size-1\/3:is(.tightness-low, .spacing-compact) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/3:is(.tightness-high, .spacing-comfortable) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/3:is(.tightness-highest, .spacing-spacious) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
+  }
+  /* Height (owner decision C27): a size keeps its text, icons and inner
+     scale; height picks the control height from the size's tightness steps
+     -- low, high, highest beside the default one -- as the block padding, so
+     the control stands at line height + 2 x the step, on the UI height
+     ladder. The side padding grows by the same step less the default one,
+     half of what the height adds, so the gap from the end to the icon stays
+     the same. The public --sf-button-padding-block and
+     --sf-button-padding-inline still win. Declared after spacing: a button
+     that says both takes the sides from its height. */
+  .sf-button--size-1.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-low) - var(--sf-ui-1--space-y-tightness-default)));
+  }
+  .sf-button--size-1.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-high) - var(--sf-ui-1--space-y-tightness-default)));
+  }
+  .sf-button--size-1.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1--space-x) + var(--sf-ui-1--space-y-tightness-highest) - var(--sf-ui-1--space-y-tightness-default)));
+  }
+  .sf-button--size-2.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-low) - var(--sf-ui-2--space-y-tightness-default)));
+  }
+  .sf-button--size-2.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-high) - var(--sf-ui-2--space-y-tightness-default)));
+  }
+  .sf-button--size-2.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-2--space-x) + var(--sf-ui-2--space-y-tightness-highest) - var(--sf-ui-2--space-y-tightness-default)));
+  }
+  .sf-button--size-3.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-low) - var(--sf-ui-3--space-y-tightness-default)));
+  }
+  .sf-button--size-3.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-high) - var(--sf-ui-3--space-y-tightness-default)));
+  }
+  .sf-button--size-3.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-3--space-x) + var(--sf-ui-3--space-y-tightness-highest) - var(--sf-ui-3--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/2.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-low) - var(--sf-ui-1\/2--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/2.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-high) - var(--sf-ui-1\/2--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/2.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/2--space-x) + var(--sf-ui-1\/2--space-y-tightness-highest) - var(--sf-ui-1\/2--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/3.sf-button--height-low {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-low) - var(--sf-ui-1\/3--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/3.sf-button--height-high {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-high) - var(--sf-ui-1\/3--space-y-tightness-default)));
+  }
+  .sf-button--size-1\/3.sf-button--height-highest {
+    --sf-button--padding-top: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
+    --sf-button--padding-bottom: var(--sf-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, calc(var(--sf-ui-1\/3--space-x) + var(--sf-ui-1\/3--space-y-tightness-highest) - var(--sf-ui-1\/3--space-y-tightness-default)));
+  }
+  .sf-button--outline {
+    --sf-button--border-bottom-width: var(--sf-button-border-width, var(--sf-px));
+    --sf-button--border-inline-end-width: var(--sf-button-border-width, var(--sf-px));
+    --sf-button--border-inline-start-width: var(--sf-button-border-width, var(--sf-px));
+    --sf-button--border-style: solid;
+    --sf-button--border-top-width: var(--sf-button-border-width, var(--sf-px));
+    --sf-button--border-width: var(--sf-px);
+  }
+  .sf-button.radius-default {
+    border-radius: var(--sf-radius--ui);
+  }
+  .sf-button.radius-square {
+    border-radius: var(--sf-radius-square);
+  }
+  .sf-button.radius-rounded {
+    border-radius: var(--sf-radius-rounded);
+  }
+  /* Joined segments draw one line where they meet, not two: the line at a
+     join is the end edge of the segment before it, and a segment that follows
+     another has no start edge of its own. Both edges at a join stood side by
+     side before, a line twice the frame's between neighbours (docs review
+     R003, 2026-11-06). An outline segment beside the others owns both of its
+     joins (sf.override, _css__buttons_custom). */
+  .sf-button.segment-start {
+    --sf-button--border-top-right-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-button--border-inline-end-width: var(--sf-px);
+  }
+  .sf-button.segment-middle {
+    --sf-button--border-top-left-radius: var(--sf-radius-square);
+    --sf-button--border-top-right-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-button--border-inline-start-width: 0;
+    --sf-button--border-inline-end-width: var(--sf-px);
+  }
+  .sf-button.segment-end {
+    --sf-button--border-top-left-radius: var(--sf-radius-square);
+    --sf-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-button--border-inline-start-width: 0;
+  }
+  /* The former surface look (owner decision C116 (6), 1.17.0): a surface
+     button of any scheme but danger draws as tonal on-surface, the soft grey
+     button -- the tonal and on-surface selectors above and below name it.
+     Only a danger surface keeps the former look here until 2027-01-01: a
+     faint fill of the neutral alpha ramp, a border one step stronger, the
+     error ink (C13). The :where keeps the rules' weight.
+
+     Ghost used to be the transparent member of this pair. At rest it was
+     identical to link and differed only by a hover tint of 8% instead of 16%,
+     too little for anyone to choose between them, so they became one look.
+     Its name is ghost (decision C15): `--ghost` is the class, `--link` its
+     former name, drawn by the same rules until 2027-01-01 (journal
+     class-button-link-to-ghost). */
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error) {
+    --sf-button--background-color: var(--sf-button-background-color, transparent);
+  }
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error) {
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-surface-state-hover));
+    --sf-button--border-color: var(--sf-button-border-color, var(--sf-surface-state-select));
+    --sf-button--border-bottom-width: var(--sf-button-border-width, var(--sf-px));
+    --sf-button--border-inline-end-width: var(--sf-button-border-width, var(--sf-px));
+    --sf-button--border-inline-start-width: var(--sf-button-border-width, var(--sf-px));
+    --sf-button--border-style: solid;
+    --sf-button--border-top-width: var(--sf-button-border-width, var(--sf-px));
+    --sf-button--border-width: var(--sf-px);
+  }
+  .sf-button.sf-button--size-1.sf-button--surface:where(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-1);
+    --sf-button-text-container--line-height: var(--sf-text-height-1);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-button.sf-button--size-2.sf-button--surface:where(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-2);
+    --sf-button-text-container--line-height: var(--sf-text-height-2);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-button.sf-button--size-3.sf-button--surface:where(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-3);
+    --sf-button-text-container--line-height: var(--sf-text-height-3);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-button.sf-button--size-1\/2.sf-button--surface:where(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/2);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/2);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-button.sf-button--size-1\/3.sf-button--surface:where(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/3);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/3);
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+  /* Danger on the surface look reads as danger (C13): the label and the icon
+     in the error ink, as on outline and ghost; the fill and the edge stay the
+     surface's own neutral ramp. Before, no rule named the pair and the label
+     fell back to the plain ink -- black in light, white in dark (buttons
+     review 2026-11-09). */
+  .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-place--ink, var(--sf-error)));
+  }
+  .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) .sf-icon {
+    --sf-icon--color: var(--sf-place--ink, var(--sf-error));
+  }
+}
+@layer sf.paint {
+  /* A link drawn as a button starts from the button's ink, not the link's;
+     at no weight of its own (:where), so the appearance's on-colour below
+     reaches a link's bare text as it reaches a button's (DEV msg-0bea9d3c,
+     group build 16 G11: a.sf-button--default.sf-button--primary drew black
+     on blue, a.sf-button (0,1,1) outranking .sf-button:not(:has(> *))). */
+  :where(a).sf-button {
+    color: ButtonText;
+  }
+  .sf-button {
+    background-color: var(--sf-button--background-color);
+    border-color: var(--sf-button--border-color, var(--sf-button-border-color, transparent));
+  }
+  .sf-button .sf-button-text-container {
+    background-color: var(--sf-button-text-container--background-color);
+    color: var(--sf-button-text-container--color);
+  }
+  .sf-button .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-button:not(:has(> *)) {
+    /* ...and the ink the text container would have drawn it in, the
+       appearance's on-colour, not the browser's buttontext (2026-11-11
+       acceptance D1: primary filled was white on light blue in dark). */
+    color: var(--sf-button-text-container--color);
+  }
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  /* The line at a join of filled parts (VL-77, owner 2026-11-24) is the
+     part's own label ink at 24, the step of the quiet line
+     (--sf-outline-variant): it stands on the part's fill with the contrast
+     the label has, so it reads alike on every fill and in both themes
+     (1.5-2.0:1 measured). It was white at 24 on every fill: 1.04:1 on a light
+     tonal fill and 1.06-1.14:1 on a dark-theme filled one, invisible there
+     and seen only on the dark fills. The ink is the label's role of each
+     look, the author's --sf-button-color first; outline draws its own frame
+     and ghost the group's outline (the custom sheet). */
+  .sf-button.sf-button--default.sf-button--primary {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-primary));
+  }
+  .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-button--on-place-ink, var(--sf-on-surface-inverse)));
+  }
+  .sf-button.sf-button--tonal.sf-button--primary {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-primary-container));
+  }
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-surface));
+  }
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-error));
+  }
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-on-error-container));
+  }
+  .sf-button.sf-button--surface:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--join-ink: var(--sf-button-color, var(--sf-place--ink, var(--sf-error)));
+  }
+  .sf-button:not(.sf-button--outline):is(.segment-start, .segment-middle):where(:dir(ltr)){
+    border-right-color: color-mix(in srgb, var(--sf-button--join-ink, currentColor) 24%, transparent);
+  }
+  .sf-button:not(.sf-button--outline):is(.segment-start, .segment-middle):where(:dir(rtl)){
+    border-left-color: color-mix(in srgb, var(--sf-button--join-ink, currentColor) 24%, transparent);
+  }
+  .sf-button:not(.sf-button--outline):is(.segment-start, .segment-middle):where(:dir(ltr)){
+    border-right-color: color-mix(in srgb, currentColor 24%, transparent);
+  }
+  .sf-button:not(.sf-button--outline):is(.segment-start, .segment-middle):where(:dir(rtl)){
+    border-left-color: color-mix(in srgb, currentColor 24%, transparent);
+  }
+  .sf-button:not(.sf-button--outline):is(.segment-start, .segment-middle) {
+    border-inline-end-color: color-mix(in srgb, var(--sf-button--join-ink, currentColor) 24%, transparent);
+  }
+}
+@layer sf.states {
+  /* A disabled part's join takes the disabled ink of its label (VL-77). */
+  .sf-button:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) {
+    --sf-button--join-ink: var(--sf-on-surface-disabled);
+  }
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled).focus-visible, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not(.disabled).focus-visible, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled).focus-visible, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not(.disabled).focus-visible {
+    --sf-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not(.disabled):focus-visible, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not(.disabled):focus-visible {
+    --sf-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-button.sf-button--default.sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)), .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)), .sf-button.sf-button--tonal.sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)), .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) {
+    --sf-button--background-color: var(--sf-surface-disabled);
+  }
+  .sf-button.sf-button--default.sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal.sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline.sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default.sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--tonal.sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--outline.sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-on-surface-disabled);
+  }
+  .sf-button.sf-button--outline.sf-button--primary:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) {
+    --sf-button--border-color: var(--sf-outline-disabled);
+  }
+  .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) {
+    --sf-button--border-color: var(--sf-outline-variant);
+  }
+  .sf-button.sf-button--default.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-primary-hover);
+  }
+  .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-on-surface-hover);
+  }
+  .sf-button.sf-button--tonal.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-primary-container-hover);
+  }
+  /* On a strong coloured place the hover and press fills are the place's own
+     steps (R190 AA-10; mix sf-place-strong-accent, --sf-place--control-hover
+     and -active), which keep the white label at 4.5:1 and more; elsewhere the
+     roles. */
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-place--control-hover, var(--sf-surface-container-hover));
+  }
+  /* The neutral label on a hovered or pressed fill (C113 follow-up). The
+     ink roles --sf-on-surface-hover / -active step toward the middle tone, as
+     they must for the filled on-surface plate that also reads them; on a
+     fill that the dark theme lightens, that took the label down while the
+     plate came up: 3.89:1 pressed on a popup. In the dark theme the label
+     keeps --sf-on-surface (5.14 pressed on a popup, 5.70 hovered) and the
+     plate alone carries the state; the light theme keeps the steps. */
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover:not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover:not(:has(> *)) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-hover), var(--sf-on-surface));
+  }
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-primary-container-hover);
+  }
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-primary-hover);
+  }
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-icon {
+    --sf-icon--color: var(--sf-primary-hover);
+  }
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-hover), var(--sf-on-surface));
+  }
+  .sf-button.sf-button--default.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-button.sf-button--default.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-button--background-color: var(--sf-primary-active);
+  }
+  .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-button--background-color: var(--sf-on-surface-active);
+  }
+  .sf-button.sf-button--tonal.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-button.sf-button--tonal.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-button--background-color: var(--sf-primary-container-active);
+  }
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-button--background-color: var(--sf-place--control-active, var(--sf-surface-container-active));
+  }
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active:not(:has(> *)), .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active:not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active:not(:has(> *)), .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active:not(:has(> *)) {
+    --sf-button-text-container--color: light-dark(var(--sf-on-surface-active), var(--sf-on-surface));
+  }
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-button--background-color: var(--sf-primary-container-active);
+  }
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut), .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active:not(:has(> *)), .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active:not(:has(> *)), .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-primary-active);
+  }
+  .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active .sf-icon, .sf-button.sf-button--outline.sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link).sf-button--primary:not(:disabled):not([aria-disabled=true]):not(.disabled).active .sf-icon {
+    --sf-icon--color: var(--sf-primary-active);
+  }
+  .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active .sf-icon, .sf-button.sf-button--outline:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled):active .sf-icon, .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):not(:disabled):not([aria-disabled=true]):not(.disabled).active .sf-icon {
+    --sf-icon--color: light-dark(var(--sf-on-surface-active), var(--sf-on-surface));
+  }
+  /* The ring is an outline: it shares no property with the elevation shadow,
+     so a focused raised button keeps its shadow, and the offset is a token
+     rather than a faked spread. */
+  .sf-button:not(:disabled):not(.disabled).focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+    /* A filled button gets a second, inner line in its own ink. The ring colour
+       is chosen to read against the surface, and on a filled control the fill
+       can sit one step away from it on the same ramp: in the dark theme the
+       ring measured 1.31:1 against the primary fill, so the ring alone read as
+       part of the button. The ink is the label's colour, which contrasts with
+       that fill by construction; where a button has no fill worth separating
+       from, the token stays transparent and nothing is drawn. */
+    --sf-button--focus-inset: inset 0 0 0 var(--sf-focus--offset) var(--sf-button--focus-ink, transparent);
+  }
+  .sf-button:not(:disabled):not(.disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+    /* A filled button gets a second, inner line in its own ink. The ring colour
+       is chosen to read against the surface, and on a filled control the fill
+       can sit one step away from it on the same ramp: in the dark theme the
+       ring measured 1.31:1 against the primary fill, so the ring alone read as
+       part of the button. The ink is the label's colour, which contrasts with
+       that fill by construction; where a button has no fill worth separating
+       from, the token stays transparent and nothing is drawn. */
+    --sf-button--focus-inset: inset 0 0 0 var(--sf-focus--offset) var(--sf-button--focus-ink, transparent);
+  }
+  .sf-button.sf-button--default.sf-button--primary {
+    --sf-button--focus-ink: var(--sf-on-primary);
+  }
+  .sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))) {
+    --sf-button--focus-ink: var(--sf-button--on-place-ink, var(--sf-on-surface-inverse, var(--sf-surface-page)));
+  }
+  @media (forced-colors: active) {
+    .sf-button:not(:disabled):not(.disabled).focus-visible {
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--width);
+    }
+    .sf-button:not(:disabled):not(.disabled):focus-visible {
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--width);
+    }
+    /* A filled button keeps an edge in forced colours (simai/ui-source#25,
+       ui-chat). The system paints every button's fill the same ButtonFace, so
+       a default or tonal button, which has no border of its own, read as bare
+       text beside an outline button. A hairline in ButtonText is drawn
+       inside the control height: the padding gives the border back, so the
+       button does not grow. A disabled one draws it in GrayText. */
+    .sf-button:is(.sf-button--default, :is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error)))) {
+      --sf-button--border-top-width: var(--sf-px);
+      --sf-button--border-bottom-width: var(--sf-px);
+      --sf-button--border-inline-start-width: var(--sf-px);
+      --sf-button--border-inline-end-width: var(--sf-px);
+      --sf-button--border-width: var(--sf-px);
+      --sf-button--border-style: solid;
+      border-color: ButtonText;
+    }
+    .sf-button:is(.sf-button--default, :is(.sf-button--tonal, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error)))):is(:disabled:not(.sf-button-state-loading:not(.disabled)), [aria-disabled=true]:not(.sf-button-state-loading:not(.disabled)), .disabled) {
+      border-color: GrayText;
+    }
+  }
+  .sf-button.sf-button.sf-button:is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+  /* The states of the two ramp appearances: the fill rises one step on hover and
+     another when pressed, and surface raises its border alongside. The steps
+     are the surface roles (state hover 4, select 8, active 12, container
+     active 16; DEV acceptance 2026-11-10 Q3), not --sf-alpha-*, which is
+     black or white on every place and stayed grey on a coloured one. */
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-surface-state-select);
+  }
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--border-color: var(--sf-surface-state-active);
+  }
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) {
+    --sf-button--background-color: var(--sf-surface-state-active);
+  }
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) {
+    --sf-button--border-color: var(--sf-surface-container-active);
+  }
+  /* The icon catches the label up under a pointer (C107 (4)): the surface
+     look's label keeps --sf-on-surface in every state. */
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)),
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error).disabled {
+    --sf-button--background-color: transparent;
+    --sf-button--border-color: var(--sf-surface-state-hover);
+  }
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error).disabled :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)),
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error).disabled:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-on-surface-disabled);
+  }
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) .sf-icon,
+  .sf-button.sf-button--surface:where(.sf-button--danger, .sf-button--error).disabled .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+}
+/* The destructive status (`danger`, decision C13; `error` is its former name
+   on a control and draws the same). Every role it paints with is the error family's twin
+   of the primary one -- fill, text, hover, active, disabled and the focus ink --
+   so a destructive control behaves exactly like a primary one and only its
+   colour says what it does. Added because the Framework had error roles and no
+   way for a control to use them: a product that wanted a red delete had to
+   reach past the component and set its colour by hand, and the next one would
+   have done it again. The outline's border stays the neutral control outline,
+   as it does for every other scheme. */
+@layer sf.components {
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-error));
+  }
+  .sf-button.sf-button--size-1.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-1);
+    --sf-button-text-container--line-height: var(--sf-text-height-1);
+  }
+  .sf-button.sf-button--size-1.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-2.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-3.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1\/3.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-button-text-container,
+  .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-button-text-container {
+    --sf-button-text-container--font-family: var(--sf-text--family);
+    --sf-button-text-container--font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-error));
+  }
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error) .sf-icon {
+    --sf-icon--color: var(--sf-on-error);
+  }
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--background-color: var(--sf-button-background-color, var(--sf-error-container));
+  }
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner), .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-error-container));
+  }
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error) .sf-icon {
+    --sf-icon--color: var(--sf-on-error-container);
+  }
+  /* Only the danger outline has a coloured border (owner decision C118, R205):
+     the error role at the ink family's 64 step -- 3.4:1 light, 5.1:1 dark on
+     the page, above 3:1 for a control's edge -- the same red as its hover
+     plate, so a hovered danger is one colour. Primary and on-surface outlines
+     keep the shared grey --sf-outline; a disabled danger keeps it too. */
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--background-color: var(--sf-button-background-color, transparent);
+    --sf-button--border-color: var(--sf-button-border-color, color-mix(in srgb, var(--sf-error) 64%, transparent));
+  }
+  /* On a place with its own ink -- a strong coloured place, the duo
+     gradient, glass, an inverse place, which declare it as --sf-place--ink --
+     the label and the icons are that ink in every state, as the status
+     containers' ink is there (places states, 2026-11-14): a hue on a colour
+     is that colour or near it (secondary and error read 1.00-2.05:1 on the
+     strong places and the inverse, 1.74-1.95 on glass over a light picture;
+     only the duo gradient's dark secondary and glass over a dark picture
+     passed 4.5, so no place keeps a hue in every theme and picture). The
+     page and every opaque place (initial) keep the hue and its steps. The
+     fill and the edge keep their hue. */
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:has(> *)),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-place--ink, var(--sf-error)));
+  }
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error) .sf-icon,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) .sf-icon {
+    --sf-icon--color: var(--sf-place--ink, var(--sf-error));
+  }
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error),
+  .sf-button.sf-button--loading.sf-button--default:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--background-color: var(--sf-button-background-color, transparent);
+  }
+  .sf-button.sf-button--size-2.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-2.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-2.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-2);
+    --sf-button-text-container--line-height: var(--sf-text-height-2);
+  }
+  .sf-button.sf-button--size-3.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-3.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-3.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-3);
+    --sf-button-text-container--line-height: var(--sf-text-height-3);
+  }
+  .sf-button.sf-button--size-1\/2.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-1\/2.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-1\/2.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-1\/2:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/2);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-button.sf-button--size-1\/3.sf-button--default:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-1\/3.sf-button--tonal:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-1\/3.sf-button--outline:is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--size-1\/3:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error) :is(.sf-button-text-container, .sf-button-shortcut) {
+    --sf-button-text-container--font-size: var(--sf-text-size-1\/3);
+    --sf-button-text-container--line-height: var(--sf-text-height-1\/3);
+  }
+}
+@layer sf.states {
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).focus-visible,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled).focus-visible {
+    --sf-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):focus-visible,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not(.disabled):focus-visible {
+    --sf-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)),
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) {
+    --sf-button--background-color: var(--sf-surface-disabled);
+  }
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)),
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)),
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-on-surface-disabled);
+  }
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):is(:disabled, [aria-disabled=true]):not(.sf-button-state-loading:not(.disabled)) {
+    --sf-button--border-color: var(--sf-outline-disabled);
+  }
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-error-hover);
+  }
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-error-container-hover);
+  }
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-error-container-hover);
+  }
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover:not(:has(> *)),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-place--ink, var(--sf-error-hover));
+  }
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-icon,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-icon {
+    --sf-icon--color: var(--sf-place--ink, var(--sf-error-hover));
+  }
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active,
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-button--background-color: var(--sf-error-active);
+  }
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active,
+  .sf-button.sf-button--tonal:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-button--background-color: var(--sf-error-container-active);
+  }
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active,
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-button--background-color: var(--sf-error-container-active);
+  }
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active:not(:has(> *)),
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active:not(:has(> *)),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active:not(:has(> *)),
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active:not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-place--ink, var(--sf-error-active));
+  }
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active .sf-icon,
+  .sf-button.sf-button--outline:is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active .sf-icon,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled):active .sf-icon,
+  .sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--danger, .sf-button--error):not(:disabled):not([aria-disabled=true]):not(.disabled).active .sf-icon {
+    --sf-icon--color: var(--sf-place--ink, var(--sf-error-active));
+  }
+  .sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error) {
+    --sf-button--focus-ink: var(--sf-on-error);
+  }
+}
+@layer sf.components {
+  /* full-width (owner decision C36): the control fills its container, as
+     sf-segmented's full-width does, and its content stays in the middle;
+     without it a button is as wide as its content. The height is unchanged. */
+  .sf-button.sf-button--full-width {
+    width: 100%;
+    inline-size: 100%;
+    justify-content: center;
+  }
+  /* overflow="truncate" (sf-button 1.17.0, FW-LH-1, owner decision C301 (2)):
+     the label stays on one line and is cut with an ellipsis at the button's
+     max-width (the max-width setting, then the public --sf-button-max-width) or
+     at the width its container gives, whichever is less; the icons, the menu arrow and the keys
+     keep their size. The whole label is in the markup (the accessible name) and
+     in the Framework's tooltip the button draws while it is cut. The class form
+     is the same markup: .sf-button--truncate on the button. */
+  .sf-button.sf-button--truncate {
+    max-width: min(var(--sf-button--max-width, var(--sf-button-max-width, 100%)), 100%);
+    max-inline-size: min(var(--sf-button--max-width, var(--sf-button-max-width, 100%)), 100%);
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-button.sf-button--truncate > .sf-button-text-container {
+    min-width: 0;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sf-button.sf-button--truncate > :not(.sf-button-text-container) {
+    flex-shrink: 0;
+  }
+  /* The split button (owner decision C119; ui-control research
+     2026-11-13-buttons-system R206): a label part, an ordinary .sf-button, and a
+     square arrow part, an .sf-icon-button of the same size and height (the icon
+     button is square on every rung, so both parts stand on the ladder height),
+     joined as a button group joins: inner corners square, a 1 px seam. Between
+     two filled parts the seam is the page (a gap of --sf-px); two outlined parts
+     share one border (the arrow steps back over it). Two tab stops; the focused
+     part stands above its neighbour so the ring is never under it. sf-button
+     draws it with menu and split; the class form is the same markup. */
+  .sf-button-split {
+    display: inline-flex;
+    align-items: stretch;
+    gap: var(--sf-px);
+    max-width: 100%;
+    max-inline-size: 100%;
+    vertical-align: middle;
+    isolation: isolate;
+  }
+  .sf-button-split:has(> .sf-button--outline) {
+    gap: 0;
+  }
+  .sf-button-split > .sf-button:where(:dir(ltr)){
+    border-top-right-radius: 0;
+  }
+  .sf-button-split > .sf-button:where(:dir(rtl)){
+    border-top-left-radius: 0;
+  }
+  .sf-button-split > .sf-button:where(:dir(ltr)){
+    border-bottom-right-radius: 0;
+  }
+  .sf-button-split > .sf-button:where(:dir(rtl)){
+    border-bottom-left-radius: 0;
+  }
+  .sf-button-split > .sf-button {
+    min-width: 0;
+    min-inline-size: 0;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+  .sf-button-split > .sf-icon-button:where(:dir(ltr)),
+  .sf-button-split > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:where(:dir(ltr)){
+    border-top-left-radius: 0;
+  }
+  .sf-button-split > .sf-icon-button:where(:dir(rtl)),
+  .sf-button-split > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:where(:dir(rtl)){
+    border-top-right-radius: 0;
+  }
+  .sf-button-split > .sf-icon-button:where(:dir(ltr)),
+  .sf-button-split > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:where(:dir(ltr)){
+    border-bottom-left-radius: 0;
+  }
+  .sf-button-split > .sf-icon-button:where(:dir(rtl)),
+  .sf-button-split > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:where(:dir(rtl)){
+    border-bottom-right-radius: 0;
+  }
+  .sf-button-split > .sf-icon-button,
+  .sf-button-split > :is(sf-button-icon, sf-icon-button) > .sf-icon-button {
+    flex: 0 0 auto;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+  }
+  .sf-button-split:has(> .sf-button--outline) > .sf-icon-button:where(:dir(ltr)),
+  .sf-button-split:has(> .sf-button--outline) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:where(:dir(ltr)){
+    margin-left: calc(var(--sf-px) * -1);
+  }
+  .sf-button-split:has(> .sf-button--outline) > .sf-icon-button:where(:dir(rtl)),
+  .sf-button-split:has(> .sf-button--outline) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button:where(:dir(rtl)){
+    margin-right: calc(var(--sf-px) * -1);
+  }
+  .sf-button-split:has(> .sf-button--outline) > .sf-icon-button,
+  .sf-button-split:has(> .sf-button--outline) > :is(sf-button-icon, sf-icon-button) > .sf-icon-button {
+    -webkit-margin-start: calc(var(--sf-px) * -1);
+            margin-inline-start: calc(var(--sf-px) * -1);
+  }
+  .sf-button-split > .focus-visible,
+  .sf-button-split > :is(sf-button-icon, sf-icon-button) > .focus-visible {
+    position: relative;
+    z-index: 1;
+  }
+  .sf-button-split > :focus-visible,
+  .sf-button-split > :is(sf-button-icon, sf-icon-button) > :focus-visible {
+    position: relative;
+    z-index: 1;
+  }
+  /* full-width (C36) on a split button: the label part takes the room. */
+  .sf-button-split.sf-button-split--full-width {
+    display: flex;
+    width: 100%;
+    inline-size: 100%;
+  }
+  .sf-button-split.sf-button-split--full-width > .sf-button {
+    flex: 1 1 auto;
+  }
+  .sf-button,
+  .sf-icon-button {
+    transition-duration: var(--sf-duration-fast);
+    transition-property: background-color, border-color, box-shadow, color;
+    transition-timing-function: var(--sf-animation);
+  }
+  .sf-button {
+    /* A loading button shows the Framework's one loading indicator, the spinner,
+       at the size of its icon (simai/ui-source#10). It is natively disabled --
+       that is what stops a second click -- but keeps its scheme colour while it
+       works (owner decision C36): the disabled look's rules skip
+       sf-button-state-loading, unless the button is also disabled, which the
+       element then marks with .disabled. sf-button-state-loading is the
+       documented state class; the generic `loading` beside it is kept for
+       existing markup (and greys, as before, without the state class). */
+  }
+  .sf-button > * {
+    position: relative;
+    z-index: 1;
+  }
+  .sf-button.loading, .sf-button.sf-button-state-loading {
+    pointer-events: none;
+    position: relative;
+    /* The stripes that were the loading look are gone. A page that set
+       --sf-button-loading-stripe still gets them, still and in its colour,
+       until the sweep of journal token-button-loading-stripe; unset, the layer
+       paints nothing. */
+  }
+  .sf-button.loading::after, .sf-button.sf-button-state-loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0;
+    background-image: repeating-linear-gradient(135deg, var(--sf-button-loading-stripe, transparent) 0, var(--sf-button-loading-stripe, transparent) var(--sf-space-1\/2), transparent var(--sf-space-1\/2), transparent var(--sf-space-1));
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  /* The spinner's slot: exactly the box of the button's icon at every step, so a
+     spinner in place of an icon changes nothing around it. The ladder is the
+     icon's (.sf-button .sf-icon in the main sheet), here as one variable, and
+     the spinner sheet draws the same diameter for the same step. */
+  .sf-button {
+    --sf-button-spinner--size: var(--sf-icon-size-3);
+  }
+  .sf-button.sf-button--size-1\/3 {
+    --sf-button-spinner--size: var(--sf-text-height-1\/3);
+  }
+  .sf-button.sf-button--size-1\/2 {
+    --sf-button-spinner--size: var(--sf-text-height-1\/2);
+  }
+  .sf-button.sf-button--size-1 {
+    --sf-button-spinner--size: var(--sf-text-height-1);
+  }
+  .sf-button.sf-button--size-2 {
+    --sf-button-spinner--size: var(--sf-text-height-2);
+  }
+  .sf-button.sf-button--size-3 {
+    --sf-button-spinner--size: var(--sf-text-height-3);
+  }
+  /* The button sheet draws the slot on its own, so the box is right before the
+     spinner sheet has arrived (or on a page that never loads it): the arc then
+     draws still, from the presentation attributes the drawing carries. */
+  .sf-button .sf-button-spinner {
+    --sf-loader-svg-width: var(--sf-button-spinner--size);
+    --sf-loader-svg-height: var(--sf-button-spinner--size);
+    display: inline-flex;
+    /* As the icon's: the slot sits on the line as the icon did, so a button
+       laid out without flex is no taller with the spinner than with its icon. */
+    vertical-align: bottom;
+    flex: none;
+    width: var(--sf-button-spinner--size);
+    inline-size: var(--sf-button-spinner--size);
+    height: var(--sf-button-spinner--size);
+    block-size: var(--sf-button-spinner--size);
+    /* The background ring is the spinner's own: that ink at 16 %, drawn whole
+       (spinner sheet, DEV J1/S1); the button sets only the colour. */
+  }
+  .sf-button .sf-button-spinner .sf-loader-ring-filled {
+    opacity: 1;
+  }
+  .sf-button .sf-button-spinner :is(.sf-loader--loading-indicator, .sf-loader-svg) {
+    display: block;
+    width: 100%;
+    inline-size: 100%;
+    height: 100%;
+    block-size: 100%;
+  }
+  /* Without an icon the spinner is laid over the label, which keeps its place
+     and is only made invisible: the button keeps its width to the pixel at any
+     label, size, spacing or padding variable, and the label stays the button's
+     accessible name. Reserving room beside the label instead would widen every
+     resting button, or change a loading one by the icon and its gap. */
+  .sf-button > .sf-button-spinner--overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0;
+    margin: auto;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sf-button,
+    .sf-icon-button {
+      transition-duration: 0s;
+    }
+  }
+}
+@layer sf.paint {
+  .sf-button .sf-button-spinner {
+    /* The label's ink (owner decision C36): the label colour rules reach the
+       spinner too, so a loading button's spinner is the colour of its label on
+       every appearance and scheme. */
+    color: var(--sf-loader--color, var(--sf-button-text-container--color, currentColor));
+  }
+}
+@layer sf.override {
+  /* Joined segments draw one line where they meet (docs review R003,
+     2026-11-06): the line at a join is the end edge of the segment before
+     it, and a segment that follows another has no start edge. Here and not
+     beside the segment rules in sf.components: surface writes its four edges
+     after them there and gave every follower its start edge back: two lines
+     at each join. sf-segmented writes its own edges over these
+     (a vertical group joins on the block axis). */
+  .sf-button:is(.segment-middle, .segment-end) {
+    --sf-button--border-inline-start-width: 0;
+  }
+  /* Ghost segments (--link, the former name, until 2027-01-01) beside an outline one form one closed control: they draw
+     the group's perimeter -- top, bottom and their end edge, the first one
+     its start edge too -- in the role the group draws it, --sf-outline. */
+  .sf-button:is(.sf-button--ghost, .sf-button--link)[class*=segment-] {
+    border-color: var(--sf-outline);
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-bottom-width: var(--sf-px);
+    --sf-button--border-inline-end-width: var(--sf-px);
+  }
+  .sf-button:is(.sf-button--ghost, .sf-button--link).segment-start {
+    --sf-button--border-inline-start-width: var(--sf-px);
+  }
+  /* Any other segment beside an outline one (a button or an icon button)
+     keeps the block edges of the frame, so the control stands in one height. */
+  :is(sf-button, :is(sf-button-icon, sf-icon-button)):has(> :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) + sf-button > .sf-button[class*=segment-]:not(.sf-button--outline),
+  :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-] + .sf-button[class*=segment-]:not(.sf-button--outline),
+  sf-button:has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) > .sf-button[class*=segment-]:not(.sf-button--outline),
+  .sf-button[class*=segment-]:not(.sf-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) {
+    --sf-button--border-top-width: var(--sf-px);
+    --sf-button--border-bottom-width: var(--sf-px);
+  }
+  /* The outline segment -- the selected one of such a control -- owns both
+     of its joins: the segment before it leaves its end edge to it ... */
+  sf-button:has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) > .sf-button[class*=segment-]:not(.sf-button--outline),
+  .sf-button[class*=segment-]:not(.sf-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) {
+    --sf-button--border-inline-end-width: 0;
+  }
+  sf-button:has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) > .sf-button.segment-start:not(.sf-button--outline),
+  .sf-button.segment-start:not(.sf-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) {
+    --sf-button--border-inline-start-width: var(--sf-px);
+  }
+  /* ... and draws its own start edge after one that is not an outline. */
+  :is(sf-button, :is(sf-button-icon, sf-icon-button)):has(> [class*=segment-]:not(.sf-button--outline):not(.sf-icon-button--outline)) + sf-button > .sf-button.sf-button--outline[class*=segment-],
+  [class*=segment-]:not(.sf-button--outline):not(.sf-icon-button--outline) + .sf-button.sf-button--outline[class*=segment-] {
+    --sf-button--border-inline-start-width: var(--sf-px);
+  }
+}
+@layer sf.states {
+  /* A disabled button's spinner (disabled and loading) takes the disabled
+     ink, the ink of its label -- unless --sf-loader--color is set. */
+  .sf-button:is(:disabled:not(.sf-button-state-loading:not(.disabled)), [aria-disabled=true]:not(.sf-button-state-loading:not(.disabled)), .disabled) .sf-button-spinner {
+    color: var(--sf-loader--color, var(--sf-on-surface-disabled));
+  }
+  /* The label under an overlaid spinner: in its place and in the accessibility
+     tree, not painted. text-fill reaches what sits inside it (a count). */
+  .sf-button > .sf-button-spinner--overlay ~ * {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
+@layer sf.components {
+  /* on-surface-variant (sf-button scheme): the on-surface family one step
+     quieter. The button carries sf-button--on-surface as well, so its fill,
+     edge and type are on-surface's; here the label and the icons take
+     --sf-on-surface-variant (a tonal button has already turned that role to
+     its container's variant). A filled (default) button keeps on-surface's
+     inverse ink: on a dark fill there is no quieter step. Hover, press and
+     disabled are the states' (sf.states), as for on-surface. */
+  .sf-button:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))).sf-button--on-surface-variant:not(.sf-button--default) :is(.sf-button-text-container, .sf-button-shortcut, .sf-button-spinner),
+  .sf-button:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))).sf-button--on-surface-variant:not(.sf-button--default):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-color, var(--sf-on-surface-variant));
+  }
+  .sf-button:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))).sf-button--on-surface-variant:not(.sf-button--default) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+  /* A shortcut (sf-button shortcut): the keys at the end of the button, in a
+     wrapper that takes the label's ink and text size -- every rule that gives
+     the label its ink or its size gives it to the wrapper too, so the caps are
+     sized from the label (0.8125em of it). The keys themselves are the kbd
+     component's: inside a button they are soft caps mixed from that ink, so
+     they read on a filled button with no rule of the button's own (owner
+     decision 2026-11-07, docs review R030, rule C04). The button never styles
+     a key. */
+  .sf-button .sf-button-shortcut {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    font-size: var(--sf-button-text-container--font-size);
+  }
+}
+@layer sf.paint {
+  .sf-button .sf-button-shortcut {
+    color: var(--sf-button-text-container--color);
+  }
+}
+/* A toggle that is on (owner decision 2026-11-07, docs review R028, rule C12).
+   Not pressed, the button keeps its own look. Pressed -- sf-button writes
+   sf-button--pressed, plain markup says aria-pressed="true" -- it wears one
+   look whatever its appearance or scheme: the primary container fill, the
+   label and the icons in --sf-on-primary-container, and the icons filled
+   (below, outside the layers). Two cues, the fill and the filled glyph, so the
+   state is not told by colour alone; the same roles in both themes. The edge
+   keeps its width -- the padding has given it back, so the size's one height
+   holds (C01). An outline toggle keeps its frame's colour over the fill (C393:
+   a fill and a frame; group build 16 G14, a gap in a group's outline); a
+   ghost or link toggle's edge is transparent, the fill showing through it. Before, the pressed toggle drew the momentary press (a grey fill
+   inside the outline) and its icon stayed outlined; beside a tonal button it
+   was not clear which one was pressed.
+   Hover and press over it step the container (+4 and +8 of the fill family,
+   the container's own -hover and -active); focus keeps the fill and draws the
+   ring; disabled wears the disabled look. The selectors repeat the block class
+   to stand over every appearance's state rule in this layer.
+   Only a toggle wears it (1.17.0, owner decision C211 (1)): a button with an
+   edge or without a fill in the neutral scheme -- outline or ghost (link) in
+   on-surface. A filled button draws its own pressed state (C309 (2), below).
+   A tonal button, or an outline or ghost one in another scheme, keeps its
+   own look under aria-pressed and the runtime says so once in the console
+   (js/_buttons.js); a choice of one among several (a view, a width, a theme)
+   is sf-segmented, not toggles. The tonal toggle rules (TB-3, the neutral
+   tonal toggle after C113) are gone with it. */
+@layer sf.states {
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-container));
+    --sf-button--focus-ink: transparent;
+  }
+  /* A pressed outline toggle keeps its frame over the fill (group build 16
+     G14, SEG-1; C393: a fill and a frame): in a group of segments the
+     pressed one drew no edge and the group's outline had a gap. A ghost or
+     link toggle has no frame to keep. */
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-button--border-color: transparent;
+  }
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-button--background-color: var(--sf-primary-container-hover);
+  }
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):active {
+    --sf-button--background-color: var(--sf-primary-container-active);
+  }
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active,.focus-visible) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):not(:has(> *)),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active,.focus-visible):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
+  }
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active, :focus-visible) :is(.sf-button-text-container, .sf-button-shortcut),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):not(:has(> *)),
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active, :focus-visible):not(:has(> *)) {
+    --sf-button-text-container--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
+  }
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) .sf-icon,
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active,.focus-visible) .sf-icon {
+    --sf-icon--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
+  }
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) .sf-icon,
+  .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active, :focus-visible) .sf-icon {
+    --sf-icon--color: var(--sf-button-pressed-color, var(--sf-on-primary-container));
+  }
+  /* Forced colours paint every fill ButtonFace, so the fill cannot say it:
+     the edge does, in Highlight, inside the control height. The filled icon
+     still says it too. */
+  @media (forced-colors: active) {
+    .sf-button.sf-button.sf-button.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+      --sf-button--border-top-width: var(--sf-px);
+      --sf-button--border-bottom-width: var(--sf-px);
+      --sf-button--border-inline-start-width: var(--sf-px);
+      --sf-button--border-inline-end-width: var(--sf-px);
+      --sf-button--border-width: var(--sf-px);
+      --sf-button--border-style: solid;
+      border-color: Highlight;
+    }
+  }
+}
+/* A filled button that is pressed (owner decision C309 (2), 2026-11-18,
+   extending C211 (1)): the pressed state is drawn on a filled button too, so
+   a filled toggle over an effect (pause, «less motion») reads and shows that
+   it is on. It keeps its fill's family and takes the press step of its scheme
+   for as long as it is pressed -- the colour a press gives it for a moment
+   (primary-active, on-surface-active, error-active; the tone scale holds its
+   label at 4.5:1 there, msg-bc1702eb) -- and its icons are filled (below), so
+   the state is told by two cues, not by colour alone. Hover keeps the press
+   step; focus draws the ring; disabled wears the disabled look. */
+@layer sf.states {
+  .sf-button.sf-button.sf-button.sf-button.sf-button--default.sf-button--primary:is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-primary-active));
+  }
+  .sf-button.sf-button.sf-button.sf-button.sf-button--default:is(.sf-button--on-surface, .sf-button--secondary, .sf-button--surface:where(:not(.sf-button--danger):not(.sf-button--error))):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-on-surface-active));
+  }
+  .sf-button.sf-button.sf-button.sf-button.sf-button--default:is(.sf-button--danger, .sf-button--error):is(.sf-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-button--background-color: var(--sf-button-pressed-background-color, var(--sf-error-active));
+  }
+}
+/* The second cue: the icons of a pressed toggle are filled. Outside the
+   layers because the glyph's own --sf-icon--fill is (component.icons); a
+   page's --sf-icon-fill still wins, as everywhere. */
+.sf-button:is(.sf-button--outline, .sf-button--ghost, .sf-button--link):is(.sf-button--on-surface, .sf-button--secondary):is(.sf-button--pressed, [aria-pressed=true]) .sf-icon,
+.sf-button.sf-button--default:is(.sf-button--pressed, [aria-pressed=true]) .sf-icon {
+  --sf-icon--fill: 1;
+}
+
+/* aria-disabled="true" is disabled for the look and the pointer (owner remark
+   2026-11-15, the copy button): a button that keeps its focus while it cannot
+   act -- a copy at work, a step not yet open -- draws the disabled look, takes
+   no hover or press, and shows the arrow. The state rules read
+   :not(:disabled, [aria-disabled="true"]) and the disabled look
+   :is(:disabled, [aria-disabled="true"]), at the specificity they had. It
+   still takes focus and its ring, and the page decides what a press does. */
+@layer sf.components {
+  .sf-button[aria-disabled=true] {
+    cursor: default;
+  }
+}
+/* A button with an icon and no label is square (1.17.0, owner decision C211
+   (2)), as sf-icon-button of the same size: its side padding is its block
+   padding, so it stands as wide as it is tall at every size, height and
+   density (size 1: 40 x 40 on desktop; before 56 x 40, the side padding of a
+   labelled button). In the sheet, so the first frame is square without the
+   script; a label written as an empty container counts as none. It needs an
+   accessible name -- aria-label -- and the runtime says once in the console
+   when it has none (js/_buttons.js). The public --sf-button-padding-inline
+   still wins. */
+@layer sf.components {
+  .sf-button:has(> :is(.sf-icon, sf-icon, .sf-button-spinner)):not(:has(> .sf-button-text-container:not(:empty))) {
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, var(--sf-button--padding-top));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, var(--sf-button--padding-bottom));
+  }
+}
+/* The plain look, sf-button--plain (1.22.0; DEV order msg-cfe379b5 item 2,
+   owner-approved sign-in screen 2026-11-19, C381; the name of the icon
+   button's look without a plate, sf-icon-button--plain, C201): a quiet text
+   tool next to text or fields -- a language link, «Забыли пароль?» drawn as a
+   button. No fill and no edge in any state: hover, press, an open menu
+   (aria-expanded) and focus leave the background transparent. It is a ghost
+   setting: written beside sf-button--ghost, so the label takes ghost's ink
+   and steps from ghost's rules, and these rules take the plate away; the
+   link's state signal (C186, its navigation form): a line under the label at
+   full ink under the pointer, on a press, while its menu is open and on
+   keyboard focus, none at rest. The focus ring is every button's. The box is
+   the content: no side padding, the label's outer side space dropped, so a
+   plain button's first glyph or letter stands on the line it is placed on;
+   the control height of the size stays (the hit area and the row). An
+   icon-only plain button keeps its square. A plain button is not a toggle
+   (C211) and not a segment. */
+@layer sf.components {
+  .sf-button.sf-button.sf-button.sf-button--plain:has(> .sf-button-text-container:not(:empty)) {
+    /* The padding rule subtracts the border width: the border's own width
+       here makes it none. */
+    --sf-button--padding-inline-start: var(--sf-button-padding-inline, var(--sf-button--border-inline-start-width));
+    --sf-button--padding-inline-end: var(--sf-button-padding-inline, var(--sf-button--border-inline-end-width));
+  }
+  .sf-button.sf-button.sf-button.sf-button--plain > .sf-button-text-container:first-child {
+    --sf-button-text-container--padding-inline-start: var(--sf-0);
+  }
+  .sf-button.sf-button.sf-button.sf-button--plain > .sf-button-text-container:last-child {
+    --sf-button-text-container--padding-inline-end: var(--sf-0);
+  }
+  .sf-button.sf-button--plain .sf-button-text-container {
+    -webkit-text-decoration-line: none;
+            text-decoration-line: none;
+    -webkit-text-decoration-color: currentColor;
+            text-decoration-color: currentColor;
+    text-decoration-thickness: var(--sf-px);
+    text-underline-offset: var(--sf-a3);
+    -webkit-text-decoration-skip: ink;
+            text-decoration-skip-ink: auto;
+  }
+}
+@layer sf.states {
+  .sf-button.sf-button.sf-button.sf-button.sf-button.sf-button--plain,
+  .sf-button.sf-button.sf-button.sf-button.sf-button.sf-button--plain:is(:hover, :active, .active, :focus,.focus-visible, [aria-expanded=true]) {
+    --sf-button--background-color: transparent;
+    --sf-button--focus-inset: 0 0 var(--sf-transparent);
+    background-color: transparent;
+    border-color: transparent;
+  }
+  .sf-button.sf-button.sf-button.sf-button.sf-button.sf-button--plain,
+  .sf-button.sf-button.sf-button.sf-button.sf-button.sf-button--plain:is(:hover, :active, .active, :focus, :focus-visible, [aria-expanded=true]) {
+    --sf-button--background-color: transparent;
+    --sf-button--focus-inset: 0 0 var(--sf-transparent);
+    background-color: transparent;
+    border-color: transparent;
+  }
+  .sf-button.sf-button--plain:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active, .active,.focus-visible, [aria-expanded=true]) .sf-button-text-container {
+    -webkit-text-decoration-line: underline;
+            text-decoration-line: underline;
+  }
+  .sf-button.sf-button--plain:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active, .active, :focus-visible, [aria-expanded=true]) .sf-button-text-container {
+    -webkit-text-decoration-line: underline;
+            text-decoration-line: underline;
+  }
+}
+@layer sf.components {
+  /* shrink="icon" (owner decision C370, 2026-11-19): an sf-button its bar asks
+     to give way (sf-header-site collapse auto sets data-shrunk on it) draws its
+     glyph only, as a square of its own height -- the side padding takes the
+     top padding, the glyph is the line's square -- so it stands in one row
+     with the icon buttons beside it. The words and the keys stay in the button
+     (its name and aria-keyshortcuts are unchanged) and are not drawn. A rule,
+     not a drawing, so the bar measures the row it decided in the same task;
+     the ghost look and the tooltip come with the button's next drawing. The
+     glyph keeps its regular weight, as an icon-only button does. */
+  sf-button[shrink=icon][data-shrunk=true] > .sf-button {
+    --sf-button--padding-inline-start: var(--sf-button--padding-top);
+    --sf-button--padding-inline-end: var(--sf-button--padding-top);
+    --sf-icon--weight: var(--sf-weight--regular);
+    justify-content: center;
+  }
+  sf-button[shrink=icon][data-shrunk=true] > .sf-button > :is(.sf-button-text-container, .sf-button-shortcut) {
+    display: none;
+  }
+}
+@layer sf.base {
+  .sf-button:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+  }
+  .sf-button:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+  }
+  .sf-button:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-button-text-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+  }
+}

@@ -115,6 +115,24 @@ MD, 'content/closable.md');
             ->compile($document, 'closable', 'Closable');
     }
 
+    public function test_the_retired_tooltip_size_is_not_a_tooltip_setting(): void
+    {
+        // sf-tooltip 1.5.4 retires size (one size for every tooltip, drawn
+        // the same whatever its value), so the manifest leaves it out and a
+        // page that sets it stops the build.
+        $document = (new DocumentParser)->parse(<<<'MD'
+:::ui.tooltip
+{"text":"Copy","size":"1"}
+:::
+MD, 'content/tooltip-size.md');
+
+        $this->expectException(FrameworkComponentException::class);
+        $this->expectExceptionMessage('FRAMEWORK_PROP_UNKNOWN');
+
+        DeclarativePageCompiler::bundled($this->frameworkLock())
+            ->compile($document, 'tooltip-size', 'Tooltip size');
+    }
+
     public function test_document_node_registry_fails_closed_for_an_unknown_node_type(): void
     {
         $span = new SourceSpan('content/unknown.md', 1, 1);

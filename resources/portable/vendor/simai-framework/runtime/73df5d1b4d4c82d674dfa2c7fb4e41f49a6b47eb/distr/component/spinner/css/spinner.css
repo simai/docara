@@ -1,0 +1,384 @@
+@charset "UTF-8";
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+/*
+* _var__component_name.scss
+* 
+* SCSS file containing variables for component styling.
+* 
+* Used to define default parameters (color, size, etc.)
+* that can be overridden in other parts of the project.
+* 
+* Example usage:
+* --sf-icon--fill: 0; // Fill for icon
+*/
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+/* In the components layer, as every other component: outside it these rules
+   outranked every utility, whatever its layer. */
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-loader-container {
+    /* The colour: on-surface-variant on its own (C130 (6), below), the
+       control's ink inside a control; --sf-loader--color on the spinner or any
+       ancestor still sets it (simai/ui-source#10; it was primary before). */
+    /* The ring under the arc is the spinner's own ink at 16 % (the fill family
+       of the alpha scale), drawn whole: the variable carries the alpha, the
+       ring has no opacity of its own (DEV J1/S1, 2026-11-11). It was
+       --sf-surface-container under an opacity of 30 %, about 5 % of grey, and
+       could not be seen; a button's ring was already this. A page's
+       --sf-spinner-track-color sets colour and alpha together. */
+    --sf-loader-track-color: var(--sf-spinner-track-color, color-mix(in srgb, currentColor 16%, transparent));
+    /* The size ladder (simai/ui-source#10): at each step the spinner is exactly
+       the icon of a button of the same size, so it can stand in for that icon in
+       a button, a field, a chip or a menu item. Step 1 when none is written. */
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1));
+    /* In units of the 24-unit icon grid the arc is drawn on: the stroke of a
+       regular-weight icon, which scales with the box as the icon's does. */
+    --sf-loader-stroke-width: var(--sf-spinner-stroke-width, 2);
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/2));
+    /* The words are small text at every step (owner decision C130 (6)): they
+       name the wait, they are not a heading; they grew with the ring before
+       (20 px at 2, 24 px at 3). */
+    --sf-loader-text-size: var(--sf-text-size-1\/2);
+    --sf-loader-text-line: var(--sf-text-height-1\/2);
+    --sf-loader-cycle-duration: calc(var(--sf-duration-slow) * 6);
+    --sf-loader-dot-duration: calc(var(--sf-duration-slow) * 3);
+    /* The turn of the arc (one a second, linear, simai/ui-source#13), of the
+       breathing and comet looks, and the breath itself (simai/ui-source#11). */
+    --sf-loader-arc-duration: calc(var(--sf-duration-slow) * 2);
+    --sf-loader-spin-duration: calc(var(--sf-duration-slow) * 4);
+    --sf-loader-breath-duration: calc(var(--sf-duration-slow) * 3);
+    --sf-loader-comet-duration: calc(var(--sf-duration-slow) * 2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sf-loader-text-gap);
+    justify-content: center;
+  }
+  .sf-loader-container .sf-loader--text {
+    font-family: var(--sf-text--family);
+    font-weight: 400;
+    font-size: var(--sf-loader-text-size);
+    line-height: var(--sf-loader-text-line);
+  }
+  /* Said, not shown (SP-07): label-hidden keeps the words for a screen reader
+     and takes them from the eye. Out of the flow, so the spinner stands alone in
+     its box and the gap to the words goes with them. */
+  .sf-loader-container.sf-loader--label-hidden .sf-loader--text {
+    position: absolute;
+    width: var(--sf-a1);
+    inline-size: var(--sf-a1);
+    height: var(--sf-a1);
+    block-size: var(--sf-a1);
+    margin: calc(-1 * var(--sf-a1));
+    padding: 0;
+    overflow: hidden;
+    -webkit-clip-path: inset(50%);
+            clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+    border-color: revert-layer;
+  }
+  .sf-loader-container.sf-loader--size-1\/3 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1\/3));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1\/3));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/3));
+  }
+  .sf-loader-container.sf-loader--size-1\/2 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1\/2));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1\/2));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/3));
+  }
+  .sf-loader-container.sf-loader--size-1 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-1));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-1));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1\/2));
+  }
+  .sf-loader-container.sf-loader--size-2 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-2));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-2));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-1));
+  }
+  .sf-loader-container.sf-loader--size-3 {
+    --sf-loader-svg-width: var(--sf-spinner-size, var(--sf-text-height-3));
+    --sf-loader-svg-height: var(--sf-spinner-size, var(--sf-text-height-3));
+    --sf-loader-text-gap: var(--sf-spinner-gap, var(--sf-space-2));
+  }
+  /* The show delay (owner decision C130 (8)): a wait under a second shows
+     nothing, so a spinner appears only after 1 s; a skeleton shows at once. The
+     spinner holds its place and stays hidden (from a screen reader too) while
+     sf-loader-wait runs, then shows. Any sf-spinner, and class markup that
+     writes data-delay; the spinners a control draws in itself (a loading
+     button, a badge, a modal) show at once, they are the control's state.
+     --sf-loader--delay comes from the delay setting (data-delay); 0 shows at
+     once. If a page stops every animation the spinner simply shows at once. */
+  sf-spinner > .sf-loader-container,
+  .sf-loader-container[data-delay] {
+    -webkit-animation: sf-loader-wait var(--sf-loader--delay, 1s) step-end;
+            animation: sf-loader-wait var(--sf-loader--delay, 1s) step-end;
+  }
+  @-webkit-keyframes sf-loader-wait {
+    from, to {
+      visibility: hidden;
+    }
+  }
+  @keyframes sf-loader-wait {
+    from, to {
+      visibility: hidden;
+    }
+  }
+  /* A spinner drawn in pixels (data-width, data-height, data-stroke-width,
+     data-dot-radius: deprecated, journal attribute-spinner-pixel-geometry) keeps
+     the strokes it had, in the pixels of its own drawing, until the sweep. */
+  .sf-loader-container.sf-loader--pixel-geometry {
+    --sf-loader-stroke-width: var(--sf-a5);
+  }
+  .sf-loader-container.sf-loader--pixel-geometry:is(.sf-loader--size-1\/3, .sf-loader--size-1\/2) {
+    --sf-loader-stroke-width: var(--sf-a4);
+  }
+  .sf-loader-container.sf-loader--pixel-geometry:is(.sf-loader--size-1, .sf-loader--size-2) {
+    --sf-loader-stroke-width: var(--sf-a6);
+  }
+  .sf-loader-container.sf-loader--pixel-geometry.sf-loader--size-3 {
+    --sf-loader-stroke-width: var(--sf-a8);
+  }
+}
+@layer sf.paint {
+  .sf-loader-container {
+    /* A spinner on its own is the place's quiet ink, on-surface-variant (owner
+       decision C130 (6)): quieter than the text beside it, as the «готовится»
+       glyph of C120; the words under it read the same ink (below). A control
+       that draws one (a button, an icon button, a badge, a modal) sets the
+       colour on its own spinner, so a spinner in a button keeps the button's
+       ink. --sf-spinner-color and --sf-loader--color still set it. */
+    color: var(--sf-spinner-color, var(--sf-loader--color, var(--sf-on-surface-variant)));
+  }
+  .sf-loader-container .sf-loader--text {
+    /* The words take the spinner's own ink, currentColor (DEV J1/S1; RG-SP-1):
+       on-surface-variant for a spinner on its own, as its arc (C130 (6), set on
+       the container above), and the control's ink inside a button or another
+       control. --sf-spinner-text-color still sets them apart. */
+    color: var(--sf-spinner-text-color, currentColor);
+  }
+  .sf-loader-container.sf-loader--label-hidden .sf-loader--text {
+    border: 0;
+  }
+}
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+/* One look, the arc (owner decision C130 (5), C11): a fixed 30 % of the ring
+   going round at one turn a second (simai/ui-source#13). breathing, comet and
+   dots -- as a spinner's kind (data-variant) or a page's data-sf-spinner --
+   are former names until the journal's date (value-spinner-one-look): they
+   draw the arc. The drawing still holds the comet and the dots groups, hidden,
+   so a page's markup keeps its shape until the sweep. The look stays a set of
+   inherited variables, now the arc's only. */
+/* In the components layer, as every other component: outside it these rules
+   outranked every utility, whatever its layer. */
+@layer sf.components {
+  .sf-loader-container .sf-loader--loading-indicator,
+  .sf-loader-container .sf-loader--circles {
+    display: inline-flex;
+    height: var(--sf-loader-svg-height);
+    width: var(--sf-loader-svg-width);
+  }
+  .sf-loader-container .sf-loader-svg {
+    display: block;
+    height: 100%;
+    overflow: visible;
+    width: 100%;
+  }
+  /* A page's look and a spinner's own: whatever they name, the arc (C130 (5)).
+     The rules weigh nothing; an empty name sets nothing and inherits. */
+  :where([data-sf-spinner]:not([data-sf-spinner=""])) {
+    --sf-loader--look-track: inline;
+    --sf-loader--look-accent: inline;
+    --sf-loader--look-comet: none;
+    --sf-loader--look-dots: none;
+    --sf-loader--look-motion: none;
+    --sf-loader--look-motion-duration: var(--sf-loader-cycle-duration);
+    --sf-loader--look-motion-easing: linear;
+    --sf-loader--look-spin: sf-loader-svg-rotate;
+    --sf-loader--look-spin-duration: var(--sf-loader-arc-duration);
+    --sf-loader--look-dash: 30 70;
+  }
+  .sf-loader-container:where([data-variant]:not([data-variant=""])) {
+    --sf-loader--look-track: inline;
+    --sf-loader--look-accent: inline;
+    --sf-loader--look-comet: none;
+    --sf-loader--look-dots: none;
+    --sf-loader--look-motion: none;
+    --sf-loader--look-motion-duration: var(--sf-loader-cycle-duration);
+    --sf-loader--look-motion-easing: linear;
+    --sf-loader--look-spin: sf-loader-svg-rotate;
+    --sf-loader--look-spin-duration: var(--sf-loader-arc-duration);
+    --sf-loader--look-dash: 30 70;
+  }
+  /* The arc, breathing and comet turn the whole drawing; the track is a full
+     ring and does not show it. The arc is nothing but that turn: a fixed 30% of
+     the ring going round at one turn a second, so its length never changes --
+     breathing's does (simai/ui-source#13). */
+  /* In longhands: in the shorthand a name of none reads as the fill mode. */
+  .sf-loader-container .sf-loader-svg {
+    -webkit-animation-name: var(--sf-loader--look-spin, sf-loader-svg-rotate);
+            animation-name: var(--sf-loader--look-spin, sf-loader-svg-rotate);
+    -webkit-animation-duration: var(--sf-loader--look-spin-duration, var(--sf-loader-arc-duration));
+            animation-duration: var(--sf-loader--look-spin-duration, var(--sf-loader-arc-duration));
+    -webkit-animation-timing-function: linear;
+            animation-timing-function: linear;
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+  }
+  .sf-loader-container .sf-loader-ring-filled {
+    display: var(--sf-loader--look-track, inline);
+    fill: none;
+    /* Drawn whole: the alpha is in --sf-loader-track-color. 1, not nothing: the
+       drawing's own opacity attribute (0.3, for the paint before this sheet)
+       would hold otherwise. */
+    opacity: 1;
+    stroke: var(--sf-loader-track-color, color-mix(in srgb, currentColor 16%, transparent));
+    stroke-linecap: round;
+    stroke-width: var(--sf-loader-stroke-width);
+  }
+  .sf-loader-container .sf-loader-ring-accent {
+    display: var(--sf-loader--look-accent, inline);
+    fill: none;
+    stroke: currentColor;
+    stroke-dasharray: var(--sf-loader--look-dash, 30 70);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: var(--sf-loader-stroke-width);
+  }
+  .sf-loader-container .sf-loader--loading-indicator .sf-loader-ring-accent {
+    -webkit-animation-name: var(--sf-loader--look-motion, none);
+            animation-name: var(--sf-loader--look-motion, none);
+    -webkit-animation-duration: var(--sf-loader--look-motion-duration, var(--sf-loader-cycle-duration));
+            animation-duration: var(--sf-loader--look-motion-duration, var(--sf-loader-cycle-duration));
+    -webkit-animation-timing-function: var(--sf-loader--look-motion-easing, linear);
+            animation-timing-function: var(--sf-loader--look-motion-easing, linear);
+    -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+  }
+  .sf-loader-container.sf-loader--infinite .sf-loader--loading-indicator .sf-loader-ring-accent,
+  .sf-loader-container.sf-loader--infinite .sf-loader-svg {
+    -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+  }
+  .sf-loader-container .sf-loader-comet {
+    display: var(--sf-loader--look-comet, none);
+  }
+  .sf-loader-container .sf-loader-comet-segment {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--sf-loader-stroke-width);
+  }
+  .sf-loader-container .sf-loader-dots {
+    display: var(--sf-loader--look-dots, none);
+  }
+  .sf-loader-container .sf-loader-dot {
+    fill: currentColor;
+    opacity: var(--sf-opacity-20);
+    -webkit-animation: sf-loader-dot-wave var(--sf-loader-dot-duration) linear both;
+            animation: sf-loader-dot-wave var(--sf-loader-dot-duration) linear both;
+    -webkit-animation-delay: calc(var(--sf-loader-dot-duration) / var(--sf-loader-dot-count) * var(--sf-loader-dot-step) * -1);
+            animation-delay: calc(var(--sf-loader-dot-duration) / var(--sf-loader-dot-count) * var(--sf-loader-dot-step) * -1);
+  }
+  .sf-loader-container .sf-loader-dot--active {
+    opacity: var(--sf-opacity-60);
+  }
+  .sf-loader-container.sf-loader--infinite .sf-loader-dot {
+    -webkit-animation-iteration-count: infinite;
+            animation-iteration-count: infinite;
+  }
+  @-webkit-keyframes sf-loader-svg-rotate {
+    0% {
+      -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+  }
+  @keyframes sf-loader-svg-rotate {
+    0% {
+      -webkit-transform: rotate(0deg);
+              transform: rotate(0deg);
+    }
+    100% {
+      -webkit-transform: rotate(360deg);
+              transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes sf-loader-dot-wave {
+    0% {
+      opacity: var(--sf-opacity-20);
+    }
+    18% {
+      opacity: 1;
+    }
+    40% {
+      opacity: var(--sf-opacity-60);
+    }
+    100% {
+      opacity: var(--sf-opacity-20);
+    }
+  }
+  @keyframes sf-loader-dot-wave {
+    0% {
+      opacity: var(--sf-opacity-20);
+    }
+    18% {
+      opacity: 1;
+    }
+    40% {
+      opacity: var(--sf-opacity-60);
+    }
+    100% {
+      opacity: var(--sf-opacity-20);
+    }
+  }
+  /* Reduced motion (owner decision C220, closes C130 (7)): nothing turns, and
+     no arc stands still either -- a 30 % arc read as an amount done. The whole
+     ring is tinted with the spinner's ink at 32 %, the top of the fill family,
+     and the arc is not drawn: the picture of the paused and reduced-motion bar
+     and ring (C131 (8)). The same in every place, as every spinner -- on its
+     own, in a button, an icon button, a field, a badge, a modal -- is this
+     drawing under this sheet. */
+  @media (prefers-reduced-motion: reduce) {
+    .sf-loader-container .sf-loader-svg,
+    .sf-loader-container .sf-loader-ring-accent,
+    .sf-loader-container .sf-loader-dot {
+      -webkit-animation: none !important;
+              animation: none !important;
+    }
+    .sf-loader-container .sf-loader-ring-accent {
+      display: none;
+    }
+    .sf-loader-container .sf-loader-ring-filled {
+      opacity: 1;
+      stroke: color-mix(in srgb, currentColor 32%, transparent);
+    }
+  }
+}

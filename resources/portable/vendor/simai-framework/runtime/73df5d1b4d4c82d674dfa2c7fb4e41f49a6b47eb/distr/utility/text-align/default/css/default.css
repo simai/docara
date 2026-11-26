@@ -1,0 +1,27 @@
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+@layer sf.utilities {
+  .text-start:where(:dir(ltr)) {
+    text-align: left;
+  }
+  .text-start:where(:dir(rtl)) {
+    text-align: right;
+  }
+  .text-start {
+    text-align: start;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-end:where(:dir(ltr)) {
+    text-align: right;
+  }
+  .text-end:where(:dir(rtl)) {
+    text-align: left;
+  }
+  .text-end {
+    text-align: end;
+  }
+  .text-justify {
+    text-align: justify;
+  }
+}

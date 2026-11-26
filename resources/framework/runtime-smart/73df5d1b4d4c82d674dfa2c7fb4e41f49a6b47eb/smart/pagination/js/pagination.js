@@ -1,0 +1,2969 @@
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "1373e294ec38"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BREAKPOINTS: () => (/* binding */ BREAKPOINTS),
+/* harmony export */   breakpointMedia: () => (/* binding */ breakpointMedia),
+/* harmony export */   breakpointQuery: () => (/* binding */ breakpointQuery),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   matchesBreakpoint: () => (/* binding */ matchesBreakpoint)
+/* harmony export */ });
+// The Framework's breakpoints for scripts (reuse audit 2026-11-02, finding 6).
+// The sheets switch at the steps of core/scss/vars/_sf_var__breakpoint.scss;
+// a component that also decides in script (sf-contents, sf-site-header,
+// sf-search) had copied the steps by hand, word for word, and nine such
+// constants (48rem, 60rem, 1023px, 1024) had drifted apart elsewhere, so one
+// admin screen switched at two points. The same values here, and
+// tests/breakpoint-ladder.contract.test.mjs holds the two files equal.
+
+/** The ladder: each name is the width it starts at, in rem as the sheets write it. */
+const BREAKPOINTS = Object.freeze({
+  xs: '0rem',
+  sm: '32rem',
+  // g6, 512px
+  md: '44rem',
+  // h1, 704px
+  lg: '60rem',
+  // h5, 960px
+  xl: '72rem',
+  // h8, 1152px
+  xxl: '80rem' // i0, 1280px
+
+}); // The step under a threshold, as the sheets' media-breakpoint-down writes it:
+// one pixel less, in rem (_mix__breakpoint.scss breakpoint-max).
+
+const PIXEL_REM = 1 / 16;
+/**
+ * The media query of a breakpoint: from its width up, or with `below: true`
+ * the widths under it -- the two sides the sheets switch on. An unknown name
+ * is null, so a typo is not a query that always matches.
+ *
+ *   breakpointQuery('md')                  (min-width: 44rem)
+ *   breakpointQuery('md', {below: true})   (max-width: 43.9375rem)
+ */
+
+function breakpointQuery(name, {
+  below = false
+} = {}) {
+  if (!Object.hasOwn(BREAKPOINTS, name)) return null;
+  const rem = Number.parseFloat(BREAKPOINTS[name]);
+  if (below) return rem > 0 ? `(max-width: ${rem - PIXEL_REM}rem)` : 'not all';
+  return `(min-width: ${rem}rem)`;
+}
+/** The page's MediaQueryList for a breakpoint, to read and to follow; null without matchMedia or for an unknown name. */
+
+function breakpointMedia(name, {
+  below = false,
+  view = globalThis
+} = {}) {
+  const query = breakpointQuery(name, {
+    below
+  });
+  return query && typeof view?.matchMedia === 'function' ? view.matchMedia(query) : null;
+}
+/** Whether the page is at least as wide as the breakpoint now (or under it, with `below`). */
+
+function matchesBreakpoint(name, options = {}) {
+  return breakpointMedia(name, options)?.matches === true;
+}
+const Breakpoints = Object.freeze({
+  ladder: BREAKPOINTS,
+  query: breakpointQuery,
+  media: breakpointMedia,
+  matches: matchesBreakpoint
+}); // Core publishes the helper; component bundles that carry their own copy reuse
+// an already published one instead of replacing it.
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {};
+  if (!globalThis.SF.breakpoints) globalThis.SF.breakpoints = Breakpoints;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Breakpoints);
+
+/***/ },
+
+/***/ "2ee7a47e9b10"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   MOTION_ATTRIBUTE: () => (/* binding */ MOTION_ATTRIBUTE),
+/* harmony export */   MOTION_CHANGE: () => (/* binding */ MOTION_CHANGE),
+/* harmony export */   reducedMotion: () => (/* binding */ reducedMotion),
+/* harmony export */   watchMotion: () => (/* binding */ watchMotion)
+/* harmony export */ });
+// Whether to keep things still: the device asks for less motion
+// (prefers-reduced-motion: reduce), or the person stopped motion on this site
+// (<html data-sf-motion="reduce">, written by the sf-display-settings panel
+// through SF.displaySettings; owner decision C196, 2026-11-15). Core's own
+// scripts read this one function; the core sheet stops CSS animations and
+// transitions under the same mark (core/scss/_sf_css__display.scss).
+//
+// No state and no side effect, so every bundle may carry it.
+const MOTION_ATTRIBUTE = 'data-sf-motion';
+const MOTION_CHANGE = 'sf-display-change';
+function reducedMotion(root = globalThis.document?.documentElement, win = globalThis) {
+  try {
+    if (win.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return true;
+  } catch {// No media queries here: only the page's own mark.
+  }
+
+  return root?.getAttribute?.(MOTION_ATTRIBUTE) === 'reduce';
+} // Calls `listener` when either source changes; returns the stop.
+
+function watchMotion(listener, win = globalThis) {
+  const media = win.matchMedia?.('(prefers-reduced-motion: reduce)') ?? null;
+  const doc = win.document;
+  media?.addEventListener?.('change', listener);
+  doc?.addEventListener?.(MOTION_CHANGE, listener);
+  return () => {
+    media?.removeEventListener?.('change', listener);
+    doc?.removeEventListener?.(MOTION_CHANGE, listener);
+  };
+}
+
+/***/ },
+
+/***/ "6978f1cc153b"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   EDGE_MARGIN: () => (/* binding */ EDGE_MARGIN),
+/* harmony export */   NEAR_END: () => (/* binding */ NEAR_END),
+/* harmony export */   NEAR_START: () => (/* binding */ NEAR_START),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   readingPosition: () => (/* binding */ readingPosition),
+/* harmony export */   scrollerOf: () => (/* binding */ scrollerOf),
+/* harmony export */   watchEdge: () => (/* binding */ watchEdge)
+/* harmony export */ });
+/* harmony import */ var _motion_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("2ee7a47e9b10");
+// The reading position of a scrolling column (duplication audit 2026-11-03,
+// A-6): what a feed, a log, a conversation or a long list does to keep a
+// person's place while its content changes under them. It was written in
+// ui-pro's sf-message-log (keep the place while history is added above,
+// follow the end only when the reader is there, «to the latest», ask once
+// when the top is reached), and the end-of-list loading again in
+// sf-chat-threads and the ui-chat pilot. One rule now, for every column:
+//
+//   const position = readingPosition(scroller, {onStart: () => askEarlier()});
+//   position.keep(() => column.prepend(fragment));  // the place does not move
+//   const follow = position.atEnd();                  // before an append
+//   column.append(node);
+//   if (follow) position.toEnd();
+//   scroller.addEventListener('scroll', () => position.check());
+//
+//   const stop = watchEdge(sentinel, () => askMore()); // the end came into reach
+//
+// It owns no content and fetches nothing: it measures one element and says
+// when an edge is reached. The element is the scroller -- the box with
+// overflow that a person scrolls.
+//
+// Nothing here keeps state at module scope: each column gets its own
+// controller, so the copies of this module that every bundle carries cannot
+// disagree (bundles each carry their own module copy).
+// The device's reduced motion or the site's «остановить движение» (C196).
+ // Within this distance of the end counts as being there. 96px is about two
+// lines of text and an entry's action row: closer than that, a person reading
+// the end of a column is reading the end.
+
+const NEAR_END = 96; // The start is "reached" a little before it is reached, so an earlier page is
+// usually there by the time the person scrolls into it.
+
+const NEAR_START = 240; // The end of a list asks for its next page this far before it is in view.
+
+const EDGE_MARGIN = '200px';
+
+const frame = callback => typeof globalThis.requestAnimationFrame === 'function' ? globalThis.requestAnimationFrame(callback) : setTimeout(callback, 16);
+/**
+ * A controller of one scroller's reading position.
+ *
+ * options:
+ *   nearEnd    px from the end that count as being at it (NEAR_END);
+ *   nearStart  px from the start that count as reaching it (NEAR_START);
+ *   onStart    () => void, called from check() when the start is reached and
+ *              the position is not settling (an earlier page is wanted).
+ */
+
+
+function readingPosition(scroller, {
+  nearEnd = NEAR_END,
+  nearStart = NEAR_START,
+  onStart = null
+} = {}) {
+  let settling = false;
+  let element = scroller ?? null;
+  const controller = {
+    /** The scroller this controller measures; set it again when the box is drawn anew. */
+    get element() {
+      return element;
+    },
+
+    set element(next) {
+      element = next ?? null;
+    },
+
+    /** Is the end of the column in view (within nearEnd)? A column not drawn yet is at its end. */
+    atEnd() {
+      if (!element) return true;
+      return element.scrollHeight - element.scrollTop - element.clientHeight < nearEnd;
+    },
+
+    /** Is the start within reach (within nearStart)? */
+    atStart() {
+      if (!element) return false;
+      return element.scrollTop < nearStart;
+    },
+
+    /**
+     * Change the content above what is read without moving it: the distance
+     * from the end is measured before `mutate` and restored after. What was
+     * under the reader's eyes is the same distance from the end before and
+     * after the history above it grew.
+     */
+    keep(mutate) {
+      if (!element) return mutate?.();
+      const fromEnd = element.scrollHeight - element.scrollTop;
+      const result = mutate?.();
+      element.scrollTop = element.scrollHeight - fromEnd;
+      return result;
+    },
+
+    /**
+     * Go to the end in the next frame: smoothly, unless `instant` or the
+     * reader asked for reduced motion. `then` runs after the jump. With
+     * `settle`, reaching the start is not reported until the frame after:
+     * a column that opens at its start for one frame does not ask for a page
+     * nobody wanted.
+     */
+    toEnd({
+      instant = false,
+      settle = false,
+      then = null
+    } = {}) {
+      if (settle) settling = true;
+      frame(() => {
+        if (element) element.scrollTo({
+          top: element.scrollHeight,
+          behavior: instant || (0,_motion_js__WEBPACK_IMPORTED_MODULE_0__.reducedMotion)() ? 'instant' : 'smooth'
+        });
+        then?.();
+        if (settle) frame(() => {
+          settling = false;
+        });
+      });
+    },
+
+    /** Hold reports of the start (while a column is replaced). */
+    hold() {
+      settling = true;
+    },
+
+    release() {
+      settling = false;
+    },
+
+    get settling() {
+      return settling;
+    },
+
+    /** Call on scroll: reports onStart once the start is in reach and the position is not settling. */
+    check() {
+      if (settling || !onStart || !controller.atStart()) return false;
+      onStart();
+      return true;
+    }
+
+  };
+  return controller;
+}
+/**
+ * Report when `sentinel` comes within `margin` of the scroller it sits in --
+ * the end of a list in reach, the start of a feed. Never from a scroll handler
+ * that fires sixty times a second. `root` is the scroller; null (the default)
+ * is the viewport, which still sees the clipping of every scroller around the
+ * sentinel. Answers the way to stop watching. A watch that starts on an edge
+ * already in reach reports it at once.
+ */
+
+function watchEdge(sentinel, callback, {
+  root = null,
+  margin = EDGE_MARGIN
+} = {}) {
+  if (!sentinel || typeof callback !== 'function' || typeof globalThis.IntersectionObserver !== 'function') return () => {};
+  const observer = new globalThis.IntersectionObserver(entries => {
+    if (entries.some(entry => entry.isIntersecting)) callback();
+  }, {
+    root,
+    rootMargin: margin
+  });
+  observer.observe(sentinel);
+  return () => observer.disconnect();
+}
+/**
+ * The box that scrolls `node`: the nearest ancestor whose block overflow is
+ * auto or scroll, or null for the page. watchEdge takes it as `root`, so its
+ * margin reaches ahead inside that box; measured against the viewport, the
+ * margin would stop at the box's clipped edge.
+ */
+
+function scrollerOf(node) {
+  const view = node?.ownerDocument?.defaultView;
+
+  for (let at = node?.parentElement; at && view; at = at.parentElement) {
+    if (at === node.ownerDocument.documentElement || at === node.ownerDocument.body) return null;
+    if (/^(auto|scroll|overlay)$/u.test(view.getComputedStyle(at).overflowY)) return at;
+  }
+
+  return null;
+}
+const ReadingPosition = Object.freeze({
+  create: readingPosition,
+  watchEdge,
+  scrollerOf,
+  NEAR_END,
+  NEAR_START,
+  EDGE_MARGIN
+}); // Core publishes the helper; component bundles that carry their own copy reuse
+// an already published one instead of replacing it.
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {};
+  if (!globalThis.SF.readingPosition) globalThis.SF.readingPosition = ReadingPosition;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ReadingPosition);
+
+/***/ },
+
+/***/ "d26573af0eef"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isDestructiveAction: () => (/* binding */ isDestructiveAction),
+/* harmony export */   orderActions: () => (/* binding */ orderActions)
+/* harmony export */ });
+// The one danger rule of the group actions (owner decision C295, defect BA-1:
+// sf-pagination, sf-view, sf-view-table and sf-gallery each had a rule of
+// their own, or none). An action is dangerous when it says so -- status
+// "danger" (C13), or the danger flag of sf-pagination's markup -- or when its
+// id deletes: delete, remove, destroy, trash, as a word at the start
+// ("remove-all"), never inside another one ("deleted-view").
+//
+// A dangerous action is red, stands last after a line in the more menu and is
+// asked about first (C39) unless it says confirm: false. sf-pagination
+// re-exports this file, so a host that imported isDestructiveAction from it
+// keeps the same answer.
+const DELETING = /^(delete|remove|destroy|trash)\b/iu;
+/** Whether an action deletes or cannot be undone. */
+
+function isDestructiveAction(item) {
+  if (!item || typeof item !== 'object') return false;
+  if (item.status === 'danger' || item.status === 'error' || item.danger === true) return true;
+  return DELETING.test(String(item.id ?? item.value ?? ''));
+}
+/** The actions as listed: as written, the dangerous ones last. */
+
+function orderActions(actions = []) {
+  return [...actions].sort((a, b) => Number(isDestructiveAction(a)) - Number(isDestructiveAction(b)));
+}
+
+/***/ },
+
+/***/ "403726af3b51"
+(module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   ofPagesParts: () => (/* binding */ ofPagesParts),
+/* harmony export */   pageWindow: () => (/* binding */ pageWindow)
+/* harmony export */ });
+/* harmony import */ var _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("deb1a4d61565");
+/* harmony import */ var _core_js_element_manifest__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("5b7d7695b41b");
+/* harmony import */ var _core_js_deprecations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("d3818183b14c");
+/* harmony import */ var _core_js_breakpoints_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("1373e294ec38");
+/* harmony import */ var _core_js_reading_position_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("6978f1cc153b");
+/* harmony import */ var _js_templates_default__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("a57d260bd333");
+/* harmony import */ var _js_actions_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("0b6c983d0722");
+/* harmony import */ var _component_json__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("344edfee8242");
+/* harmony import */ var _aliases_json__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("90fab10c70dd");
+/* harmony import */ var _lang_index_mjs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__("97c2f8ebc346");
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__, _core_js_element_manifest__WEBPACK_IMPORTED_MODULE_1__, _core_js_deprecations__WEBPACK_IMPORTED_MODULE_2__, _js_templates_default__WEBPACK_IMPORTED_MODULE_5__]);
+([_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__, _core_js_element_manifest__WEBPACK_IMPORTED_MODULE_1__, _core_js_deprecations__WEBPACK_IMPORTED_MODULE_2__, _js_templates_default__WEBPACK_IMPORTED_MODULE_5__] = __webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+/* harmony import */ var _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _core_js_element_manifest__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_core_js_element_manifest__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _core_js_deprecations__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_core_js_deprecations__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+
+
+
+
+
+
+ // Only the words on screen ship in the bundle, English only (owner decision
+// C282): Russian and every other language come from a language file. The
+// title, settings and events stay in the language files for the Studio and the
+// docs (localization study LC-2).
+
+const en = _lang_index_mjs__WEBPACK_IMPORTED_MODULE_9__.files.en; // sf-pagination from its component.json (standard simai.smart-component 1.3.8
+// §3, §4, §8, §11): its settings are attributes and properties made by
+// core/js/element-manifest.js, every word it says is lang/<locale>.json (an
+// English page used to read «Всего:» under a list that had switched, owner
+// 2026-10-10), and its events take the vocabulary's names; the old ones --
+// sf-page-change, sf-show-more, … -- follow with their old detail until
+// 2026-12-01 (aliases.json).
+//
+// Its words had camelCase keys before the language files (totalLabel, …); a
+// product that registered its own words under them through
+// SF.language.register keeps them until 2026-12-01, each old key noted once
+// in SF.deprecations (change journal option-pagination-word-keys-camel-to-kebab).
+
+const camelKey = key => String(key).replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase()); // Words added after the rename never had a camelCase key, so they have no
+// former key either (title-page, 1.4.0; the appearances' words, 1.5.0).
+
+
+const LATER_WORDS = new Set(["title-page", "of-pages", "range", "range-many", "page-size-text", "previous-text", "next-text", "cursor-next-text", "show-more-count", "shown"]); // The appearances of decision C97 (2026-11-12). An element written without
+// appearance draws the compatible footer (range, page size, field, Show more,
+// band) until FOOTER_UNTIL: those parts belong to the list that owns them.
+
+const APPEARANCES = ["field", "numbers", "arrows", "cursor", "more"];
+const FOOTER_SINCE = "2026-11-12";
+const FOOTER_UNTIL = "2027-01-01"; // How the more appearance asks for the next portion (C167 (1)).
+
+const LOADS = ["button", "auto"]; // Is the button within watchEdge's margin of the box that scrolls it (or of
+// the window)? Read once, on the scroll that arms the watch.
+
+const EDGE_REACH = parseFloat(_core_js_reading_position_js__WEBPACK_IMPORTED_MODULE_4__.EDGE_MARGIN) || 0;
+
+function inReach(node, root) {
+  const at = node.getBoundingClientRect();
+  const view = node.ownerDocument.defaultView;
+  const box = root ? root.getBoundingClientRect() : {
+    top: 0,
+    bottom: view?.innerHeight ?? 0
+  };
+  return at.top <= box.bottom + EDGE_REACH && at.bottom >= box.top - EDGE_REACH;
+} // Places of numbers: seven, five below the sm step of the ladder
+// (core/js/breakpoints.js, the sheets' media-breakpoint-down) and wherever
+// the pagination's own box has no room for seven (RG-NV 12: a 30rem column
+// on a wide screen; the element decides by its own width, as the footer does
+// by its container, C181 (2)).
+// The page window of numbers (USWDS, GOV.UK; prototype pagination-study.html):
+// at most `slots` places, the first and the last page always, a gap where
+// pages are left out. Exactly `slots` places once there are more pages than
+// that, so the row keeps its width while a person pages.
+
+
+function pageWindow(current, count, slots) {
+  if (count <= slots) return Array.from({
+    length: Math.max(0, count)
+  }, (_, index) => index + 1);
+  const side = slots - 2;
+  const inner = side - 2;
+  let start = Math.max(2, current - Math.floor((inner - 1) / 2));
+  let end = start + inner - 1;
+
+  if (end > count - 1) {
+    end = count - 1;
+    start = end - inner + 1;
+  }
+
+  if (start <= 3) {
+    start = 2;
+    end = side;
+  } else if (end >= count - 2) {
+    end = count - 1;
+    start = count - side + 1;
+  }
+
+  const places = [1];
+  if (start > 2) places.push("gap");
+
+  for (let page = start; page <= end; page += 1) places.push(page);
+
+  if (end < count - 1) places.push("gap");
+  places.push(count);
+  return places;
+}
+const PaginationElement = (0,_core_js_element_manifest__WEBPACK_IMPORTED_MODULE_1__.elementFromManifest)(_component_json__WEBPACK_IMPORTED_MODULE_7__, {
+  base: (_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0___default()),
+  lang: _lang_index_mjs__WEBPACK_IMPORTED_MODULE_9__.files,
+  source: "ru",
+  aliases: _aliases_json__WEBPACK_IMPORTED_MODULE_8__,
+  formerWords: {
+    since: "2026-10-27",
+    remove_after: "2026-12-01",
+    words: Object.fromEntries(Object.keys(en.runtime).filter(key => !LATER_WORDS.has(key)).map(key => [key, camelKey(key)]))
+  }
+}); // A word's key in the language files: pagesLabel → pages-label.
+
+const wordKey = key => String(key).replace(/[A-Z]/gu, letter => `-${letter.toLowerCase()}`); // An old event's detail (§16.20 split rows): the camelCase fields it had.
+
+
+const camelDetail = detail => Object.fromEntries(Object.entries(detail).map(([key, value]) => [key.replace(/-([a-z])/gu, (_, letter) => letter.toUpperCase()), value]));
+
+function parsePageSizes(value, fallback = [10, 20, 30, 40]) {
+  const valid = size => Number.isInteger(size) && size > 0;
+
+  if (Array.isArray(value)) {
+    const sizes = value.map(Number).filter(valid);
+    return sizes.length ? sizes : fallback;
+  } // An absent attribute used to answer with a single size of zero rather than
+  // the default: splitting "" yields one empty segment, Number("") is 0, and 0
+  // is finite, so the list was never empty and the fallback was never reached.
+  // A page size has to be a positive whole number, which is also what rules out
+  // "20.5" and "-1".
+
+
+  const parsed = String(value ?? "").split(",").map(item => item.trim()).filter(item => item !== "").map(Number).filter(valid);
+  return parsed.length ? parsed : fallback;
+}
+
+function parseActions(value, fallback = []) {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean);
+  }
+
+  const parsed = String(value || "").split("|").map(entry => entry.trim()).filter(Boolean).map(entry => {
+    const [valueTextPart, flagsPart = ""] = entry.split("::");
+    const [rawValue, ...rawText] = valueTextPart.split(":");
+    const value = String(rawValue || "").trim();
+    const text = rawText.join(":").trim() || value;
+    const flags = flagsPart.split(",").map(flag => flag.trim().toLowerCase()).filter(Boolean);
+    return {
+      value,
+      text,
+      disabled: flags.includes("disabled"),
+      selected: flags.includes("selected"),
+      danger: flags.includes("danger")
+    };
+  }).filter(item => item.value || item.text).map((item, index) => ({ ...item,
+    value: item.value || `action-${index + 1}`
+  }));
+  return parsed.length ? parsed : fallback;
+} // The boolean settings that are on by default (component.json).
+
+
+const DEFAULT_ON = new Set(Object.entries(_component_json__WEBPACK_IMPORTED_MODULE_7__.settings).filter(([, spec]) => spec.type === "boolean" && spec.default === true).map(([name]) => name)); // «[3] из 12»: the field stands where the word says {page} («{page} из
+// {count}»), so a language may put the count first. The text around the
+// field, trimmed: {before, after}. A word without {page} (a product's word
+// from before 1.7.x) is all after the field, as it was.
+
+function ofPagesParts(word) {
+  const text = String(word ?? "");
+  const at = text.indexOf("{page}");
+  if (at < 0) return {
+    before: "",
+    after: text.trim()
+  };
+  return {
+    before: text.slice(0, at).trim(),
+    after: text.slice(at + "{page}".length).trim()
+  };
+}
+
+class SfPagination extends PaginationElement {
+  static get props() {
+    return { ...super.props,
+      templateName: {
+        attribute: "template",
+        default: "default"
+      },
+      // The step of the size ladder its controls and labels take: 1, or the
+      // dense 1/2 of an admin, where a page row stands beside 32px controls.
+      size: {
+        default: "1",
+        values: ["1/2", "1"]
+      },
+      top: {
+        type: Boolean,
+        default: true
+      },
+      middle: {
+        type: Boolean,
+        default: true
+      },
+      bottom: {
+        type: Boolean,
+        default: true
+      },
+      topClass: {
+        default: ""
+      },
+      mainClass: {
+        default: ""
+      },
+      bottomClass: {
+        default: ""
+      },
+      ariaLabel: {
+        attribute: "aria-label",
+        default: ""
+      },
+      pagesLabel: {
+        attribute: "pages-label",
+        default: ""
+      },
+      pageLabel: {
+        attribute: "page-label",
+        default: ""
+      },
+      previousLabel: {
+        attribute: "previous-label",
+        default: ""
+      },
+      nextLabel: {
+        attribute: "next-label",
+        default: ""
+      },
+      lastLabel: {
+        attribute: "last-label",
+        default: ""
+      },
+      firstLabel: {
+        attribute: "first-label",
+        default: ""
+      },
+      pageFieldLabel: {
+        attribute: "page-field-label",
+        default: ""
+      },
+      totalLabel: {
+        attribute: "total-label",
+        default: ""
+      },
+      selectedLabel: {
+        attribute: "selected-label",
+        default: ""
+      },
+      selectedCount: {
+        attribute: "selected-count",
+        type: Number,
+        default: 0
+      },
+      showMoreText: {
+        attribute: "show-more-text",
+        default: ""
+      },
+      countKnown: {
+        attribute: "count-known",
+        type: Boolean,
+        default: true
+      },
+      totalExact: {
+        attribute: "total-exact",
+        type: Boolean,
+        default: true
+      },
+      canCount: {
+        attribute: "can-count",
+        type: Boolean,
+        default: false
+      },
+      counting: {
+        type: Boolean,
+        default: false
+      },
+      hasNextPage: {
+        attribute: "has-next",
+        type: Boolean,
+        default: false
+      },
+      showCountLabel: {
+        attribute: "show-count-label",
+        default: ""
+      },
+      countingLabel: {
+        attribute: "counting-label",
+        default: ""
+      },
+      showMoreBusy: {
+        attribute: "show-more-busy",
+        type: Boolean,
+        default: false
+      },
+      shownLabel: {
+        attribute: "shown-label",
+        default: ""
+      },
+      load: {
+        default: "button",
+        values: LOADS
+      },
+      current: {
+        type: Number,
+        default: 1
+      },
+      total: {
+        type: Number,
+        default: 10
+      },
+      pageSize: {
+        attribute: "page-size",
+        type: Number,
+        default: 10
+      },
+      pageSizes: {
+        attribute: "page-sizes",
+        default: [10, 20, 30, 40],
+
+        parser(value, defaultValue) {
+          return parsePageSizes(value, defaultValue);
+        }
+
+      },
+      showPageSize: {
+        attribute: "show-page-size",
+        type: Boolean,
+        default: true
+      },
+      pageSizeLabel: {
+        attribute: "page-size-label",
+        default: ""
+      },
+      showActions: {
+        attribute: "show-actions",
+        type: Boolean,
+        default: true
+      },
+      actions: {
+        default: [],
+
+        parser(value, defaultValue) {
+          return parseActions(value, defaultValue);
+        }
+
+      },
+      action: {
+        default: ""
+      },
+      actionApplyText: {
+        attribute: "action-apply-text",
+        default: ""
+      },
+      showActionForAll: {
+        attribute: "show-action-for-all",
+        type: Boolean,
+        default: false
+      },
+      actionForAll: {
+        attribute: "action-for-all",
+        type: Boolean,
+        default: false
+      },
+      actionForAllLabel: {
+        attribute: "action-for-all-label",
+        default: ""
+      },
+      actionChooseLabel: {
+        attribute: "action-choose-label",
+        default: ""
+      },
+      actionsRegionLabel: {
+        attribute: "actions-region-label",
+        default: ""
+      },
+      clearSelectionLabel: {
+        attribute: "clear-selection-label",
+        default: ""
+      },
+      actionsLabel: {
+        attribute: "actions-label",
+        default: ""
+      },
+      appearance: {
+        default: "field",
+        values: APPEARANCES
+      },
+      href: {
+        default: ""
+      },
+      pageParam: {
+        attribute: "page-param",
+        default: ""
+      },
+      pageInTitle: {
+        attribute: "page-in-title",
+        type: Boolean,
+        default: false
+      }
+    };
+  } // Show more of the compatible footer (until 2027-01-01) only where an
+  // author wrote top: «Показать ещё» is an appearance of its own (C97 (1),
+  // C167 (1)), and a footer written without appearance drew it above its
+  // page row by default -- at 390 a list showed «Показать ещё» and «из 3»
+  // at once (Larena LF-11). Written, top keeps it, noted in SF.deprecations.
+
+
+  get top() {
+    return this.hasAttribute("top") && this.getBooleanAttr("top", true);
+  }
+
+  get middle() {
+    return this.getBooleanAttr("middle", true);
+  }
+
+  get bottom() {
+    return this.getBooleanAttr("bottom", true);
+  }
+
+  get topClass() {
+    return this.getAttribute("top-class") || "";
+  }
+
+  get mainClass() {
+    return this.getAttribute("main-class") || "";
+  }
+
+  get bottomClass() {
+    return this.getAttribute("bottom-class") || "";
+  }
+
+  get showMoreText() {
+    return this.getAttribute("show-more-text") || this.sfWord("show-more-text");
+  }
+
+  get ariaLabel() {
+    return this.getAttribute("aria-label") || this.sfWord("aria-label");
+  }
+
+  get pagesLabel() {
+    return this.getAttribute("pages-label") || this.sfWord("pages-label");
+  } // The appearance (C97): field, numbers, arrows, cursor or more.
+
+
+  get appearance() {
+    const value = this.getAttribute("appearance");
+    return APPEARANCES.includes(value) ? value : "field";
+  } // No appearance written: the compatible footer of 1.4 and before, in the
+  // look of C97 (range, «По 20 ▾», field «из 12»), until 2027-01-01.
+
+
+  get footer() {
+    return !this.hasAttribute("appearance");
+  }
+
+  get pageLabel() {
+    return this.getAttribute("page-label") || this.sfWord("page-label");
+  }
+
+  get previousLabel() {
+    return this.getAttribute("previous-label") || this.sfWord("previous-label");
+  }
+
+  get nextLabel() {
+    return this.getAttribute("next-label") || this.sfWord("next-label");
+  }
+
+  get firstLabel() {
+    return this.getAttribute("first-label") || this.sfWord("first-label");
+  }
+
+  get pageFieldLabel() {
+    return this.getAttribute("page-field-label") || this.sfWord("page-field-label");
+  }
+
+  get lastLabel() {
+    return this.getAttribute("last-label") || this.sfWord("last-label");
+  }
+
+  get totalLabel() {
+    return this.getAttribute("total-label") || this.sfWord("total-label");
+  }
+
+  get selectedLabel() {
+    return this.getAttribute("selected-label") || this.sfWord("selected-label");
+  } // How many rows are marked. It is capped by the total only when there is a
+  // total: with the count unknown the cap was zero, so a marked row read as
+  // none and the panel of bulk controls never appeared at all.
+
+
+  get selectedCount() {
+    const parsed = Math.trunc(this.getNumberAttr("selected-count", 0));
+
+    if (!Number.isFinite(parsed)) {
+      return 0;
+    }
+
+    const atLeastNone = Math.max(parsed, 0);
+    return this.countKnown && this.totalExact ? Math.min(atLeastNone, this.total) : atLeastNone;
+  }
+
+  get total() {
+    const parsed = Math.trunc(this.getNumberAttr("total", 10));
+    return Number.isFinite(parsed) && parsed >= 0 ? parsed : 10;
+  } // Whether the number of records is known at all. A host that does not count
+  // every answer says so, and then the view shows a link in place of the number
+  // and asks what is behind it only when someone wants it.
+
+
+  get countKnown() {
+    return this.getBooleanAttr("count-known", true);
+  } // Whether the total is the number itself or an estimate (vocabulary 1.1.5
+  // total-exact; standard 1.3.8 gate 29). sf-view says false from the
+  // port's `total_exact`: the row then reads «~N», and neither the last page
+  // nor the page count is offered as a fact; the count link asks for the
+  // number when the host can count.
+
+
+  get totalExact() {
+    return this.getBooleanAttr("total-exact", true);
+  } // The number is known and exact: the only case in which the view derives a
+  // last page and a page count from it.
+
+
+  get exactCount() {
+    return this.countKnown && this.totalExact;
+  } // The total as it is shown: «~450» for an estimate.
+
+
+  get shownTotal() {
+    return this.totalExact ? String(this.total) : `~${this.total}`;
+  } // Whether the host can count when asked. Without it the view offers nothing:
+  // a link that answers "unavailable" is worse than no link.
+
+
+  get canCount() {
+    return this.getBooleanAttr("can-count", false);
+  }
+
+  get counting() {
+    return this.getBooleanAttr("counting", false);
+  } // Said by the host when it sends no total. It is the only thing that moves
+  // forward and Show more then, so the view never derives a page count it was
+  // not given.
+
+
+  get hasNextPage() {
+    return this.getBooleanAttr("has-next", false);
+  } // With an estimate the estimated page count says there is more, and so does
+  // has_next: the estimate may be short of the truth.
+
+
+  get hasNext() {
+    if (this.exactCount) return this.current < this.pageCount;
+    if (this.countKnown) return this.current < this.pageCount || this.hasNextPage;
+    return this.hasNextPage;
+  }
+
+  get showCountLabel() {
+    return this.getAttribute("show-count-label") || this.sfWord("show-count-label");
+  } // The next portion is on its way. It is answered inside the button that asked
+  // for it, not by a loader over the whole table: the rows on screen are not
+  // going anywhere.
+
+
+  get showMoreBusy() {
+    return this.getBooleanAttr("show-more-busy", false);
+  } // button (default) or auto: auto also asks when a person's scroll brings
+  // the more button within reach (C167 (1)).
+
+
+  get load() {
+    const value = this.getAttribute("load");
+    return LOADS.includes(value) ? value : "button";
+  } // The line under the more button, {shown} and {total} filled in: an
+  // author's shown-label, else the language word.
+
+
+  get shownText() {
+    if (!this.countKnown) return "";
+    const vars = {
+      shown: this.shown,
+      total: this.shownTotal
+    };
+    const own = this.getAttribute("shown-label");
+    return own ? own.replace(/\{(shown|total)\}/gu, (_, name) => String(vars[name])) : this.sfWord("shown", {
+      vars
+    });
+  }
+
+  get countingLabel() {
+    return this.getAttribute("counting-label") || this.sfWord("counting-label");
+  }
+
+  get pageSize() {
+    const parsed = Math.trunc(this.getNumberAttr("page-size", 10));
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 10;
+  }
+
+  set pageSize(value) {
+    this.setAttribute("page-size", String(Math.trunc(Number(value)) || 10));
+  }
+
+  get pageCount() {
+    return Math.max(1, Math.ceil(this.total / this.pageSize));
+  }
+
+  get pageSizes() {
+    return parsePageSizes(this.getAttribute("page-sizes"), [10, 20, 30, 40]);
+  }
+
+  get showPageSize() {
+    return this.getBooleanAttr("show-page-size", true);
+  }
+
+  get pageSizeLabel() {
+    return this.getAttribute("page-size-label") || this.sfWord("page-size-label");
+  }
+
+  get showActions() {
+    return this.getBooleanAttr("show-actions", true);
+  }
+
+  get actions() {
+    return parseActions(this.getAttribute("actions"), []);
+  } // No action until one is chosen. This used to fall through to the first
+  // enabled action in the list, which made Apply pressable the moment a row was
+  // marked — and the first action in a host's list is as likely to be "delete
+  // for ever" as anything else. A host that does want a starting action says so
+  // with the attribute or by marking one selected.
+
+
+  get action() {
+    const attrValue = this.getAttribute("action") || "";
+
+    if (attrValue) {
+      return attrValue;
+    }
+
+    return this.actions.find(item => item.selected && !item.disabled)?.value || "";
+  }
+
+  get actionApplyText() {
+    return this.getAttribute("action-apply-text") || this.sfWord("action-apply-text");
+  }
+
+  get showActionForAll() {
+    return this.getBooleanAttr("show-action-for-all", false);
+  }
+
+  get actionForAll() {
+    return this.getBooleanAttr("action-for-all", false);
+  }
+
+  get actionForAllLabel() {
+    return this.getAttribute("action-for-all-label") || this.sfWord("action-for-all-label");
+  }
+
+  get actionsLabel() {
+    return this.getAttribute("actions-label") || this.sfWord("actions-label");
+  } // The labels are read through getters, like every other word this component
+  // shows: the template context is built from `this.<name>`, so a declared prop
+  // without a getter reaches the template as undefined. The first attempt at
+  // the panel left the list's placeholder empty for exactly that reason.
+
+
+  get actionChooseLabel() {
+    return this.getAttribute("action-choose-label") || this.sfWord("action-choose-label");
+  }
+
+  get actionsRegionLabel() {
+    return this.getAttribute("actions-region-label") || this.sfWord("actions-region-label");
+  }
+
+  get clearSelectionLabel() {
+    return this.getAttribute("clear-selection-label") || this.sfWord("clear-selection-label");
+  } // The address of a page, as a template: «?page={page}» or
+  // «/news/page/{page}/», with {page-size} for the page size (PG-10). Set,
+  // the arrows are links with rel prev/next and a page typed in the field is
+  // opened by its address; empty, they are buttons, as before 1.4.0.
+
+
+  get href() {
+    return (this.getAttribute("href") || "").trim();
+  } // The name of the address's query parameter that holds the page («page»):
+  // the page is read from it when the element is placed and on Back and
+  // Forward, and written to it (a new history entry) when a person moves.
+  // Page 1 is the address without it. Empty: the address is not touched.
+
+
+  get pageParam() {
+    return (this.getAttribute("page-param") || "").trim();
+  } // Whether the page number joins the document title («Новости — Страница
+  // 3»), as search results and catalogues do; page 1 keeps the title as it
+  // was. One pagination of a document says it, not every list on the page.
+
+
+  get pageInTitle() {
+    return this.getBooleanAttr("page-in-title", false);
+  } // The address of one page from the template, or "" without a template or a
+  // page to name (the last page of an estimate).
+
+
+  pageHref(page) {
+    const template = this.href;
+    const number = Number.parseInt(String(page ?? ""), 10);
+    if (!template || !Number.isFinite(number) || number < 1) return "";
+    return template.replace(/\{page\}/gu, String(number)).replace(/\{page-size\}/gu, String(this.pageSize));
+  } // A press on an arrow link. A plain press moves here and reports it; a host
+  // that takes the move in place (it loads the rows itself) cancels
+  // sf-pagination-change, and the link is not followed. A press with a
+  // modifier (a new tab, a new window) is the browser's alone.
+  // The address is read before the move: the move draws the arrows of the
+  // new page at once, and the browser reads a link's href only after the
+  // press is handled, so «next» showing page 4 opened page 5 (PG-10). A
+  // followed link is therefore opened here, by the address it showed.
+
+
+  followLink(event, page) {
+    if (event?.defaultPrevented) return this;
+    if (event && (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return this;
+    const address = this.pageHref(page);
+    const outcome = this.goToPage(page, {
+      link: true
+    });
+    if (outcome.outcome !== "applied") return this;
+    event?.preventDefault?.();
+    if (!outcome.taken && address) globalThis.location?.assign?.(address);
+    return this;
+  } // The page being read. It is held inside the page count only when there is a
+  // count: without one the count is one page, and that clamp pinned every page
+  // to the first — the switcher showed a single place on page three, and
+  // nothing else could move.
+
+
+  get current() {
+    const parsed = Math.trunc(this.getNumberAttr("current", 1));
+
+    if (!Number.isFinite(parsed)) {
+      return 1;
+    }
+
+    const atLeastFirst = Math.max(parsed, 1);
+    return this.exactCount ? Math.min(atLeastFirst, this.pageCount) : atLeastFirst;
+  } // The page as a setting (§4.3): written from outside it is not reported (§8).
+
+
+  set current(value) {
+    this.setAttribute("current", String(Math.trunc(Number(value)) || 1));
+  } // How many pages there are, when that is known at all. Said out loud rather
+  // than reported as one page, so a host is not told a count the view does not
+  // have.
+  // An estimate gives no page count either: a count derived from «~450» would
+  // be reported to the host as fact.
+
+
+  get knownPageCount() {
+    return this.exactCount ? this.pageCount : null;
+  } // A window of at most five numbers around the page being read, the current one
+  // in the middle where there is room for it.
+  //
+  // The scheme before this one showed 1, 2, a gap and the two pages behind the
+  // current one, and the gap jumped into the middle of what it hid. The
+  // consumer's owner replaced it on 2026-10-04: the ends are reached by the
+  // first and last buttons, any page by the number field, and a window around
+  // the current page is what a person actually reads. Pages ahead are shown only
+  // when they exist — with a count that is arithmetic, and without one only the
+  // next page is known to be there, from `has_next`.
+
+
+  get pageItems() {
+    // Without a count there is no empty-set case to answer: the host has said
+    // there are records and whether more follow, and the window is built from
+    // the page being read, so the row is the same in both modes.
+    if (this.exactCount && this.total === 0) {
+      return [];
+    }
+
+    const window = 5;
+    const current = this.current; // The last page a number may name: the last one there is when it is known,
+    // and otherwise the next one, which `has_next` says exists.
+    // With an estimate, as far as the estimate reaches or the next page.
+
+    const furthest = this.exactCount ? this.pageCount : this.countKnown ? Math.max(this.pageCount, current + (this.hasNextPage ? 1 : 0)) : current + (this.hasNextPage ? 1 : 0);
+    const start = Math.max(1, Math.min(current - 2, furthest - window + 1));
+    const end = Math.min(furthest, start + window - 1);
+    return Array.from({
+      length: Math.max(0, end - start + 1)
+    }, (_, index) => ({
+      type: "page",
+      value: start + index,
+      selected: start + index === current,
+      edge: start + index === 1 || start + index === furthest
+    }));
+  } // Whether numbers shows five places in place of seven: on a narrow screen
+  // (below the sm step, C97 (6)) and wherever its own box has no room for
+  // seven (fitPlaces).
+
+
+  get narrow() {
+    return Boolean(this._sfNarrow?.matches) || this._sfCramped === true;
+  } // Seven places or five by the pagination's own room (RG-NV 12). Seven
+  // places that do not fit their box fall to five, and the width seven need
+  // is kept; five go back to seven once the box is that wide again. Started
+  // at five, the width of seven is the row's own plus two places and their
+  // gaps. Read after each drawing and whenever the box changes size.
+
+
+  fitPlaces() {
+    const nav = this.querySelector(":scope > nav.sf-pagination");
+
+    if (nav !== this._sfFitNav) {
+      this._sfFitObserver?.disconnect();
+      this._sfFitNav = nav;
+
+      if (nav && typeof ResizeObserver === "function") {
+        this._sfFitObserver = new ResizeObserver(() => this.fitPlaces());
+
+        this._sfFitObserver.observe(nav);
+      }
+    }
+
+    if (!nav || this.appearance !== "numbers" || this.footer || this._sfNarrow?.matches) return;
+    const list = nav.querySelector(":scope > .sf-pagination-list");
+    const room = nav.clientWidth;
+    if (!list || !(room > 0)) return;
+    const need = list.scrollWidth;
+    let cramped = this._sfCramped === true;
+
+    if (!cramped && need > room + 0.5) {
+      this._sfWideNeed = need;
+      cramped = true;
+    } else if (cramped) {
+      if (!(this._sfWideNeed > 0)) {
+        const slot = list.querySelector(":scope > .sf-pagination-slot");
+        const gap = Number.parseFloat(globalThis.getComputedStyle?.(list)?.columnGap) || 0;
+        this._sfWideNeed = need + 2 * ((slot?.getBoundingClientRect().width || 0) + gap);
+      }
+
+      if (room >= this._sfWideNeed - 0.5) cramped = false;
+    }
+
+    if (cramped === (this._sfCramped === true)) return;
+    this._sfCramped = cramped;
+    this.refresh("narrow");
+  } // The places of numbers: page numbers and gaps, at most seven (five on a
+  // narrow screen). Without an exact count the row reaches the page has_next
+  // promises and ends in a gap while more follow: there is no last page to
+  // name (USWDS «unbounded»).
+
+
+  get pageSlots() {
+    if (this.exactCount && this.total === 0) return [];
+    const slots = this.narrow ? 5 : 7;
+    const current = this.current;
+    const unbounded = !this.exactCount && this.hasNextPage;
+    const count = this.exactCount ? this.pageCount : Math.max(this.countKnown ? this.pageCount : 0, current + (this.hasNextPage ? 1 : 0));
+    const places = pageWindow(current, count, unbounded ? slots - 1 : slots);
+    if (unbounded) places.push("gap");
+    return places.map(place => place === "gap" ? {
+      type: "gap"
+    } : {
+      type: "page",
+      value: place,
+      selected: place === current
+    });
+  } // The first and the last row of the range part: «41–60».
+
+
+  get range() {
+    const from = (this.current - 1) * this.pageSize + 1;
+    const to = this.exactCount ? Math.min(this.total, this.current * this.pageSize) : this.current * this.pageSize;
+    return {
+      from,
+      to
+    };
+  } // The range part's line (C97 point 2): «41–60 из 240», «41–60 из ~450»,
+  // «41–60 из многих». A total-label the author wrote keeps the line of 1.4
+  // («Всего: 240») until 2027-01-01.
+
+
+  get rangeText() {
+    if (this.hasAttribute("total-label")) {
+      return this.countKnown || this.counting || this.canCount ? `${this.totalLabel} ${this.countKnown ? this.shownTotal : ""}`.trim() : "";
+    }
+
+    if (this.exactCount && this.total === 0) return "";
+    const {
+      from,
+      to
+    } = this.range;
+    return this.countKnown ? this.sfWord("range", {
+      vars: {
+        from,
+        to,
+        total: this.shownTotal
+      }
+    }) : this.sfWord("range-many", {
+      vars: {
+        from,
+        to
+      }
+    });
+  } // How many rows more shows: every portion up to the current one.
+
+
+  get shown() {
+    return this.exactCount ? Math.min(this.total, this.current * this.pageSize) : this.current * this.pageSize;
+  }
+
+  firstPage() {
+    return this.goToPage(1);
+  } // The field takes any page and is held to what exists: a number outside the
+  // range is brought back to it rather than refused, because a person typing 99
+  // into a view of twelve pages means the end.
+
+
+  goToTypedPage(value) {
+    const parsed = Number.parseInt(String(value ?? "").trim(), 10);
+
+    if (!Number.isFinite(parsed)) {
+      return this;
+    }
+
+    const furthest = this.exactCount ? this.pageCount : parsed;
+    const page = Math.min(Math.max(parsed, 1), Math.max(1, furthest)); // With an address template the typed page is opened by its address, as
+    // the arrows are, unless the host takes the move in place.
+
+    if (this.href) {
+      const outcome = this.goToPage(page, {
+        link: true
+      });
+
+      if (outcome.outcome === "applied" && !outcome.taken) {
+        globalThis.location?.assign?.(this.pageHref(page));
+      }
+
+      return outcome;
+    }
+
+    return this.goToPage(page);
+  } // The field grows with the number being typed. It is done to the element
+  // rather than through the state on purpose: a re-render on every keystroke
+  // would take the caret with it, which is a defect this component has had.
+
+
+  fitPageField(input) {
+    const field = input?.closest?.(".sf-pagination-page-field");
+    if (!field) return this;
+    const digits = String(input.value ?? "").replace(/\D/gu, "").length;
+    field.style.setProperty("--sf-pagination-page-input--digits", String(Math.max(digits, 1)));
+    return this;
+  }
+  /**
+   * One of this pagination's words, in the page's language. An attribute wins
+   * over both: a consumer who names a word has named it.
+   */
+
+
+  text(key, attribute) {
+    return attribute && this.getAttribute(attribute) || this.sfWord(wordKey(key));
+  }
+
+  templateContext() {
+    const props = this.getPropsContext();
+    return this.createTemplateContext({ ...props,
+      component: this,
+      rootClass: this.getRootClass(),
+      appearance: this.appearance,
+      footer: this.footer,
+      top: this.top,
+      topClass: this.topClass,
+      mainClass: this.mainClass,
+      bottomClass: this.bottomClass,
+      // A label only an author's own pages-label still draws (until
+      // 2027-01-01): the row says what it is without it.
+      pagesLabelShown: this.hasAttribute("pages-label"),
+      fieldDigits: Math.max(String(this.current).length, this.exactCount ? String(this.pageCount).length : 1, 1),
+      ofPages: this.countKnown ? ofPagesParts(this.sfWord("of-pages", {
+        vars: {
+          count: this.totalExact ? this.pageCount : `~${this.pageCount}`
+        }
+      })) : null,
+      pageSlots: this.appearance === "numbers" ? this.pageSlots : [],
+      slotDigits: String(this.exactCount ? this.pageCount : this.current + 1).length,
+      previousText: this.sfWord("previous-text"),
+      nextText: this.sfWord("next-text"),
+      cursorNextText: this.sfWord("cursor-next-text"),
+      placeText: this.sfWord("title-page", {
+        vars: {
+          page: this.current
+        }
+      }),
+      showMoreCountText: this.getAttribute("show-more-text") || (this.exactCount ? this.sfWord("show-more-count", {
+        vars: {
+          count: Math.min(this.pageSize, Math.max(0, this.total - this.shown))
+        }
+      }) : this.showMoreText),
+      shownText: this.shownText,
+      shownPercent: this.exactCount && this.total > 0 ? Math.round(this.shown / this.total * 100) : null,
+      rangeText: this.rangeText,
+      pageSizeText: this.sfWord("page-size-text", {
+        vars: {
+          size: this.pageSize
+        }
+      }),
+      ariaLabel: this.ariaLabel,
+      pagesLabel: this.pagesLabel,
+      pageLabel: this.pageLabel,
+      previousLabel: this.previousLabel,
+      nextLabel: this.nextLabel,
+      lastLabel: this.lastLabel,
+      firstLabel: this.firstLabel,
+      pageFieldLabel: this.pageFieldLabel,
+      totalLabel: this.totalLabel,
+      selectedLabel: this.selectedLabel,
+      selectedCount: this.selectedCount,
+      showMoreText: this.showMoreText,
+      current: this.current,
+      total: this.total,
+      pageCount: this.knownPageCount,
+      hasPrev: this.current > 1,
+      hasNext: this.hasNext,
+      // Everything fits one page (C97, C167 (1), Larena LF-11): no page to
+      // go to either way, so the page navigation is not drawn.
+      singlePage: this.current <= 1 && !this.hasNext,
+      countKnown: this.countKnown,
+      totalExact: this.totalExact,
+      shownTotal: this.shownTotal,
+      // The last page is a jump to a number: offered when the number is
+      // exact, or when the host can count it first (the button asks for the
+      // count). A host that cannot count (a cursor list) has no last page
+      // (PG-11).
+      canJumpToLast: this.exactCount || this.canCount,
+      exactCount: this.exactCount,
+      href: this.href,
+      canCount: this.canCount,
+      counting: this.counting,
+      showCountLabel: this.showCountLabel,
+      countingLabel: this.countingLabel,
+      showMoreBusy: this.showMoreBusy,
+      pageItems: this.pageItems,
+      pageSize: this.pageSize,
+      pageSizes: this.pageSizes,
+      showPageSize: this.showPageSize,
+      pageSizeLabel: this.pageSizeLabel,
+      showActions: this.showActions,
+      actions: this.actions,
+      action: this.action,
+      actionApplyText: this.actionApplyText,
+      showActionForAll: this.showActionForAll,
+      actionForAll: this.actionForAll,
+      actionForAllLabel: this.actionForAllLabel,
+      actionsLabel: this.actionsLabel,
+      actionChooseLabel: this.actionChooseLabel,
+      actionsRegionLabel: this.actionsRegionLabel,
+      clearSelectionLabel: this.clearSelectionLabel,
+      bulkActions: this.bulkActions,
+      bulkPageCount: this.bulkPageCount,
+      bulkCountText: this.bulkCountText
+    });
+  }
+
+  template() {
+    return (0,_js_templates_default__WEBPACK_IMPORTED_MODULE_5__.renderPaginationTemplate)(this.templateContext());
+  }
+
+  getTopSection() {
+    return this.querySelector(".sf-pagination-top");
+  }
+
+  getMainSection() {
+    return this.querySelector(".sf-pagination-main");
+  }
+
+  getBottomSection() {
+    return this.querySelector(".sf-pagination-bottom");
+  } // The action go-to-page {page} (§4.4): answers an outcome. A page the person
+  // asked for (a number, an arrow, the field) or a host finishing what a
+  // person started (the last page once the count arrives) is reported as
+  // sf-pagination-change.
+  // A second argument is the element's own: {link} for a press on an arrow
+  // link or a page typed with an address template (sf-pagination-change is
+  // then cancelable, and a cancel means "taken in place, do not follow"),
+  // {address} for a page read from the address (not written back to it).
+
+
+  goToPage(page, {
+    link = false,
+    address = false
+  } = {}) {
+    if (this.exactCount && this.total === 0) {
+      return {
+        outcome: "refused",
+        reason: "empty"
+      };
+    }
+
+    const parsed = Number.parseInt(String(page?.page ?? page ?? ""), 10);
+
+    if (!Number.isFinite(parsed)) {
+      return {
+        outcome: "refused",
+        reason: "invalid"
+      };
+    }
+
+    const previous = this.current; // With no count there is no last page to clamp against. The host answers a
+    // page that has run out with no records, which is honest; clamping to a
+    // page count derived from nothing would not be.
+
+    const next = this.exactCount ? Math.min(Math.max(parsed, 1), this.pageCount) : Math.max(parsed, 1);
+
+    if (next === previous) {
+      return {
+        outcome: "refused",
+        reason: "current"
+      };
+    }
+
+    this.setState({
+      current: next
+    });
+    const followed = this.sfEmit("change", {
+      previous,
+      current: next,
+      total: this.total,
+      "page-count": this.knownPageCount,
+      "page-size": this.pageSize
+    }, link ? {
+      cancelable: true
+    } : {});
+    const taken = link && followed === false; // The address follows a move made here; a link that is followed writes
+    // its own address, and a page read from the address is already in it.
+
+    if (!address && (!link || taken)) this.writeAddress(next);
+    this.applyTitle();
+    return taken ? {
+      outcome: "applied",
+      taken: true
+    } : {
+      outcome: "applied"
+    };
+  } // The page the address names (page-param), or null when it names none.
+
+
+  addressPage() {
+    if (!this.pageParam || !globalThis.location) return null;
+    const value = new URLSearchParams(globalThis.location.search).get(this.pageParam);
+    if (value === null) return 1;
+    const page = Number.parseInt(value, 10);
+    return Number.isFinite(page) && page >= 1 ? page : null;
+  } // The page written to the address as a new history entry, so Back returns
+  // to the page before; page 1 is the address without the parameter.
+
+
+  writeAddress(page) {
+    if (!this.pageParam || !globalThis.history?.pushState || !globalThis.location) return;
+    const url = new URL(globalThis.location.href);
+    if (page > 1) url.searchParams.set(this.pageParam, String(page));else url.searchParams.delete(this.pageParam);
+    if (url.href === globalThis.location.href) return;
+    globalThis.history.pushState(globalThis.history.state, "", url.href);
+  } // The address moved (placed on it, Back, Forward): the page follows it and
+  // is reported like any move, so the host loads it.
+
+
+  followAddress() {
+    const page = this.addressPage();
+    if (page !== null && page !== this.current) this.goToPage(page, {
+      address: true
+    });
+  } // The document title with the page in it (page-in-title). The title the
+  // page had is kept and comes back on page 1 and when the element leaves.
+
+
+  applyTitle() {
+    if (!globalThis.document) return;
+
+    if (!this.pageInTitle) {
+      this.restoreTitle();
+      return;
+    }
+
+    if (this._sfTitle === undefined || document.title !== this._sfTitleShown) {
+      this._sfTitle = document.title;
+    }
+
+    const shown = this.current > 1 ? `${this._sfTitle} — ${this.sfWord("title-page", {
+      vars: {
+        page: this.current
+      }
+    })}` : this._sfTitle;
+    this._sfTitleShown = shown;
+    if (document.title !== shown) document.title = shown;
+  }
+
+  restoreTitle() {
+    if (this._sfTitle === undefined || !globalThis.document) return;
+    if (document.title === this._sfTitleShown) document.title = this._sfTitle;
+    this._sfTitle = undefined;
+    this._sfTitleShown = undefined;
+  }
+
+  onConnected() {
+    super.onConnected?.();
+    this._sfNarrow = (0,_core_js_breakpoints_js__WEBPACK_IMPORTED_MODULE_3__.breakpointMedia)("sm", {
+      below: true
+    });
+
+    if (this._sfNarrow) {
+      this._sfNarrow.addEventListener?.("change", () => {
+        if (this.appearance === "numbers" && !this.footer) this.refresh("narrow");
+      }, {
+        signal: this.sfScope
+      });
+    }
+
+    this.sfScope?.addEventListener?.("abort", () => {
+      this._sfFitObserver?.disconnect();
+      this._sfFitObserver = null;
+      this._sfFitNav = null;
+    }, {
+      once: true
+    });
+
+    if (this.pageParam && globalThis.addEventListener) {
+      globalThis.addEventListener("popstate", () => this.followAddress(), {
+        signal: this.sfScope
+      }); // After the page's own listeners are on: a host that appends the
+      // element and then listens still hears the page the address names.
+
+      queueMicrotask(() => {
+        if (this.isConnected) this.followAddress();
+      });
+    }
+  }
+
+  onDisconnected() {
+    this.restoreTitle();
+    this.unwatchMore();
+    super.onDisconnected?.();
+  } // The title follows the page whoever set it: a person, the host, the address.
+
+
+  afterRender(changed) {
+    const result = super.afterRender(changed);
+
+    if (typeof changed !== "function") {
+      this.applyTitle();
+      this.noteFooterParts();
+      this.keepMoreFocus();
+      this.watchMore();
+      this.fitPlaces();
+    }
+
+    return result;
+  } // What this element still draws for compatibility (C97, until 2027-01-01),
+  // each noted once in SF.deprecations: the footer parts a list now composes
+  // itself, Show more beside the pages, the band of bulk controls and the
+  // words of the 1.4 footer an author wrote.
+
+
+  noteFooterParts() {
+    const note = (kind, from, to, attribute = "") => (0,_core_js_deprecations__WEBPACK_IMPORTED_MODULE_2__.noteDeprecated)({
+      component: "sf-pagination",
+      tag: "sf-pagination",
+      kind,
+      attribute,
+      from,
+      to,
+      since: FOOTER_SINCE,
+      remove_after: FOOTER_UNTIL
+    });
+
+    if (this.footer) note("value", "(none)", "field", "appearance");
+    if (this.footer && this.top && this.hasNext) note("setting", "top", 'appearance="more"');
+
+    if (this.footer && this.bottom && this.showActions && this.actions.length && this.selectedCount > 0) {
+      note("setting", "actions", "sf-view");
+    }
+
+    for (const attribute of ["total-label", "pages-label"]) {
+      if (this.hasAttribute(attribute)) note("attribute", attribute, null);
+    }
+  } // One of the events of the parts that leave for the list (C97 points 3
+  // and 5), noted once as it is sent.
+
+
+  noteFooterEvent(name) {
+    (0,_core_js_deprecations__WEBPACK_IMPORTED_MODULE_2__.noteDeprecated)({
+      component: "sf-pagination",
+      tag: "sf-pagination",
+      kind: "event",
+      from: `sf-pagination-${name}`,
+      to: "sf-view",
+      since: FOOTER_SINCE,
+      remove_after: FOOTER_UNTIL
+    });
+  } // The page-size menu (C97 point 3): radio rows of the sizes offered, opened
+  // from the quiet button. The button's host is display: contents, so the
+  // menu is placed against the button it draws.
+
+
+  togglePageSizeMenu(button) {
+    const menu = this.querySelector(".sf-pagination-size-menu");
+    if (!menu) return this;
+    menu.entries = this.pageSizes.map(size => ({
+      id: String(size),
+      text: this.sfWord("page-size-text", {
+        vars: {
+          size
+        }
+      }),
+      kind: "radio",
+      checked: size === this.pageSize
+    }));
+    const anchor = button?.querySelector?.("button") ?? button;
+    if (typeof menu.toggleFor === "function") menu.toggleFor(anchor, {
+      align: "end",
+      width: "content"
+    });else menu.openFor?.(anchor, {
+      align: "end"
+    });
+    return this;
+  }
+
+  choosePageSize(event) {
+    const size = Number.parseInt(String(event?.detail?.id ?? event?.detail?.entry?.id ?? ""), 10);
+    if (Number.isFinite(size)) this.setPageSize(size);
+    event?.currentTarget?.close?.();
+    return this;
+  } // The last page needs a number, and without a count nobody has one yet. So
+  // the number is asked for, and the jump happens when it arrives — which is
+  // why the request carries the reason. Counting on every answer instead is
+  // exactly what this mode exists to avoid.
+  // An estimate is no number to jump to either: the jump waits for the count.
+
+
+  lastPage() {
+    if (!this.exactCount) {
+      return this.requestCount("last-page");
+    }
+
+    return this.goToPage(this.pageCount);
+  } // Asked when there is no number, or only an estimate of it.
+
+
+  requestCount(reason = "total") {
+    if (this.exactCount || !this.canCount || this.counting) {
+      return this;
+    }
+
+    this.setState({
+      counting: true
+    });
+    this.sfEmit("count", {
+      reason,
+      current: this.current,
+      "page-size": this.pageSize
+    });
+    return this;
+  } // The panel's cross drops the selection. The pagination does not hold it —
+  // the rows do — so this is an announcement, not a mutation, and the view
+  // passes it to the table.
+
+
+  clearSelection() {
+    this.noteFooterEvent("selection-clear");
+    this.sfEmit("selection-clear", {
+      "selected-count": this.selectedCount,
+      total: this.total
+    });
+    return this;
+  } // The more button's own control: sf-button's host is display: contents (no
+  // box to observe or focus), so the native button it draws inside.
+
+
+  moreButton() {
+    return this.querySelector(".sf-pagination-more .sf-pagination-more-button")?.querySelector("button, a") ?? null;
+  } // load="auto": the more button asks for the next portion when a person
+  // brings it within reach (core/js/reading-position.js watchEdge), not when
+  // it is there already -- a short list whose button shows on load waits for
+  // the press or for the first scroll (study LF-8: the next page was asked for
+  // on load). The first scroll of the box that scrolls the button arms the
+  // watch; if the button is in reach then, that scroll brought it there. The
+  // button stays for the keyboard and for a browser without IntersectionObserver.
+
+
+  watchMore() {
+    const button = this.appearance === "more" && !this.footer && this.load === "auto" ? this.moreButton() : null;
+
+    if (!button) {
+      this.unwatchMore();
+      return;
+    }
+
+    if (this._moreEdge === button && this._stopMore) return;
+    this.unwatchMore();
+    this._moreEdge = button;
+    const root = (0,_core_js_reading_position_js__WEBPACK_IMPORTED_MODULE_4__.scrollerOf)(button);
+    const scroller = root ?? this.ownerDocument;
+    let moved = false;
+    let reached = false;
+
+    const ask = () => {
+      if (!this.isConnected || this.showMoreBusy || !this.hasNext) return;
+      this.showMore(null);
+    };
+
+    const onScroll = () => {
+      moved = true;
+      scroller.removeEventListener("scroll", onScroll);
+      if (reached && inReach(button, root)) ask();
+    };
+
+    scroller.addEventListener("scroll", onScroll, {
+      passive: true
+    });
+    const stopEdge = (0,_core_js_reading_position_js__WEBPACK_IMPORTED_MODULE_4__.watchEdge)(button, () => {
+      if (moved) ask();else reached = true;
+    }, {
+      root
+    });
+
+    this._stopMore = () => {
+      stopEdge();
+      scroller.removeEventListener("scroll", onScroll);
+    };
+  }
+
+  unwatchMore() {
+    this._stopMore?.();
+    this._stopMore = null;
+    this._moreEdge = null;
+  } // The focus a person left on the more button stays with it: the button is
+  // disabled while the portion loads (the browser drops the focus of a
+  // disabled control), so it takes the focus back when the portion arrives,
+  // and when the last portion removes the button the focus goes to the
+  // «Показано» line rather than to the page.
+
+
+  keepMoreFocus() {
+    if (!this._moreFocus || this.showMoreBusy) return;
+    const active = this.ownerDocument.activeElement;
+
+    if (active && active !== this.ownerDocument.body && !this.contains(active)) {
+      this._moreFocus = false;
+      return;
+    }
+
+    const button = this.moreButton();
+    const line = this.querySelector(".sf-pagination-more .sf-pagination-shown");
+
+    if (button && !button.disabled) {
+      this._moreFocus = false;
+      if (active !== button) button.focus({
+        preventScroll: true
+      });
+    } else if (!button && line) {
+      this._moreFocus = false;
+      line.focus({
+        preventScroll: true
+      });
+    } else if (button) {
+      // sf-button draws its enabled state a frame after this element: ask
+      // again then, a few frames at most.
+      this._moreFocusTries = (this._moreFocusTries ?? 0) + 1;
+
+      if (this._moreFocusTries > 10) {
+        this._moreFocus = false;
+        this._moreFocusTries = 0;
+        return;
+      }
+
+      globalThis.requestAnimationFrame?.(() => this.keepMoreFocus());
+      return;
+    }
+
+    this._moreFocusTries = 0;
+  } // The action show-more (§4.4), vocabulary §5 load-more {direction: after}.
+  // The button the person pressed was `item`; it is no data (§8), so only
+  // the old name sf-show-more still carries it.
+
+
+  showMore(item = null) {
+    this._showMoreItem = item; // A press of the more button keeps its focus (keepMoreFocus).
+
+    if (item && this.appearance === "more" && item.contains?.(this.ownerDocument.activeElement)) this._moreFocus = true;
+
+    try {
+      this.sfEmit("load-more", {
+        direction: "after",
+        current: this.current,
+        total: this.total,
+        "page-size": this.pageSize,
+        "page-count": this.knownPageCount,
+        "has-next": this.hasNext
+      });
+    } finally {
+      this._showMoreItem = null;
+    }
+
+    return {
+      outcome: "applied"
+    };
+  }
+
+  setPageSize(size) {
+    const parsed = Math.trunc(Number(size));
+
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return this;
+    }
+
+    const previous = this.pageSize;
+
+    if (parsed === previous) {
+      return this;
+    }
+
+    const pageCount = Math.max(1, Math.ceil(this.total / parsed));
+    const current = this.exactCount ? Math.min(this.current, pageCount) : this.current;
+    const moved = current !== this.current;
+    this.setState({
+      pageSize: parsed,
+      current
+    });
+    if (moved) this.writeAddress(current);
+    this.noteFooterEvent("size-change");
+    this.sfEmit("size-change", {
+      previous,
+      "page-size": parsed,
+      current,
+      total: this.total,
+      "page-count": this.exactCount ? pageCount : null
+    });
+    return this;
+  }
+
+  setAction(action) {
+    const previous = this.action;
+    const value = String(action || "").trim(); // An empty value is the choice at the top of the list, so it has to be able
+    // to put the chooser back where it started and take Apply out of reach
+    // again; before, it was ignored and a chosen action could not be undone.
+
+    if (value === previous) {
+      return this;
+    }
+
+    this.setState({
+      action: value
+    });
+    this.noteFooterEvent("action-change");
+    this.sfEmit("action-change", {
+      previous,
+      action: value
+    });
+    return this;
+  }
+
+  setActionForAll(value) {
+    const previous = this.actionForAll;
+    const next = Boolean(value);
+
+    if (next === previous) {
+      return this;
+    }
+
+    this.setState({
+      actionForAll: next
+    });
+    this.noteFooterEvent("action-for-all-change");
+    this.sfEmit("action-for-all-change", {
+      previous,
+      "action-for-all": next
+    }); // An action under the filter is applied against a confirmed total, so
+    // marking the box is the moment the number is needed. Asking for it here
+    // and not at Apply means the person sees what they are about to touch
+    // before they press anything.
+
+    if (next) {
+      this.requestCount("action-for-all");
+    }
+
+    return this;
+  } // The band is sf-bulk-actions (C295, 1.9.0): the actions in its shape. The
+  // danger is the bar's one rule (BA-1); the band asked no question before,
+  // and a host that asks its own keeps doing so, so the band's actions say
+  // confirm false.
+
+
+  get bulkActions() {
+    return this.actions.map(item => ({
+      id: item.value,
+      text: item.text,
+      disabled: Boolean(item.disabled),
+      status: (0,_js_actions_js__WEBPACK_IMPORTED_MODULE_6__.isDestructiveAction)(item) ? "danger" : "",
+      confirm: false
+    }));
+  } // A host's own count word (selected-label) stays its line; otherwise the
+  // bar's words: «Выбрано N», «Выбраны все N».
+
+
+  get bulkCountText() {
+    return this.hasAttribute("selected-label") ? `${this.selectedLabel} ${this.selectedCount}`.trim() : "";
+  } // The rows on the page, for the bar's «Выбрать все N»: the page size, or
+  // what is left on the last page when the count is exact.
+
+
+  get bulkPageCount() {
+    if (!this.exactCount) return this.pageSize;
+    const left = this.total - (this.current - 1) * this.pageSize;
+    return Math.max(0, Math.min(this.pageSize, left));
+  } // The bar's action: the band's chosen action and its scope, then Apply, so
+  // the host hears sf-pagination-action-change, -action-for-all-change and
+  // -apply as before.
+
+
+  applyBulkAction(event) {
+    const detail = event?.detail ?? {};
+    if (!detail.id) return this;
+    this.setAction(detail.id);
+    this.setActionForAll(detail.scope === "all");
+    return this.applyAction();
+  } // BA-3: «for all» lasts while the selection does. A changed count takes it
+  // back, so a second action after a change no longer goes to all N.
+
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    super.attributeChangedCallback?.(name, oldValue, newValue);
+
+    if (name === "selected-count" && this.isConnected && oldValue !== null && oldValue !== newValue && this.actionForAll) {
+      this.setActionForAll(false);
+    }
+
+    if (name === "selected-count" || name === "show-action-for-all") {
+      queueMicrotask(() => this.askCountForAll());
+    }
+  } // The bar offers «Выбрать все N» once the whole page is selected, and N is
+  // the number the action would go to: without an exact count the old «для
+  // всех» box asked for it when marked. The bar has no box, so the count is
+  // asked for when the whole page is selected (reason action-for-all, as
+  // before) and the offer appears with the answer.
+
+
+  askCountForAll() {
+    if (!this.isConnected || !this.showActionForAll || this.exactCount || !this.canCount || this.counting) {
+      return this;
+    }
+
+    if (this.selectedCount > 0 && this.selectedCount >= this.bulkPageCount) {
+      this.requestCount("action-for-all");
+    }
+
+    return this;
+  }
+
+  applyAction() {
+    if (!this.action) {
+      return this;
+    } // vocabulary §5 apply: the scope is the marked rows, or everything under
+    // the filter when «for all» is on.
+
+
+    this.noteFooterEvent("apply");
+    this.sfEmit("apply", {
+      action: this.action,
+      scope: this.actionForAll ? "filter" : "selection",
+      current: this.current,
+      total: this.total,
+      "page-size": this.pageSize,
+      "page-count": this.knownPageCount
+    });
+    return this;
+  }
+
+  get state() {
+    return {
+      topClass: this.topClass,
+      mainClass: this.mainClass,
+      bottomClass: this.bottomClass,
+      top: this.top,
+      middle: this.middle,
+      bottom: this.bottom,
+      rootClass: this.getRootClass(),
+      ariaLabel: this.ariaLabel,
+      pagesLabel: this.pagesLabel,
+      pageLabel: this.pageLabel,
+      previousLabel: this.previousLabel,
+      nextLabel: this.nextLabel,
+      lastLabel: this.lastLabel,
+      totalLabel: this.totalLabel,
+      selectedLabel: this.selectedLabel,
+      selectedCount: this.selectedCount,
+      showMoreText: this.showMoreText,
+      current: this.current,
+      total: this.total,
+      totalExact: this.totalExact,
+      pageCount: this.knownPageCount,
+      pageSize: this.pageSize,
+      pageSizes: this.pageSizes,
+      showPageSize: this.showPageSize,
+      pageSizeLabel: this.pageSizeLabel,
+      showActions: this.showActions,
+      actions: this.actions,
+      action: this.action,
+      actionApplyText: this.actionApplyText,
+      showActionForAll: this.showActionForAll,
+      actionForAll: this.actionForAll,
+      actionForAllLabel: this.actionForAllLabel,
+      actionsLabel: this.actionsLabel
+    };
+  }
+
+  setState(nextState = {}) {
+    Object.entries(nextState || {}).forEach(([key, value]) => {
+      const attr = (0,_core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__.toAttributeName)(key);
+
+      if (!attr) {
+        return;
+      } // Off for a boolean that is on by default is written, not removed:
+      // without the attribute it reads as on again. sf-view sends
+      // countKnown and totalExact false this way.
+
+
+      if (value === false && DEFAULT_ON.has(attr)) {
+        this.setAttribute(attr, "false");
+        return;
+      }
+
+      if (value === false || value === null || value === undefined || value === "") {
+        this.removeAttribute(attr);
+        return;
+      }
+
+      if (value === true) {
+        this.setAttribute(attr, "");
+        return;
+      }
+
+      this.setAttribute(attr, String(value));
+    });
+    return this;
+  } // The old names keep their old detail (§16.20 split rows): the element, its
+  // template and the camelCase fields were in it.
+
+
+  sfAliasAdapters() {
+    const old = detail => ({
+      component: this,
+      tagName: this.componentTagName,
+      template: this.componentTemplateName,
+      ...camelDetail(detail)
+    });
+
+    return {
+      "sf-page-change": old,
+      "sf-page-size-change": old,
+      "sf-count-request": old,
+      "sf-selection-clear": old,
+      "sf-action-change": old,
+      "sf-action-for-all-change": old,
+      "sf-action-apply": detail => ({ ...old(detail),
+        actionForAll: detail.scope === "filter"
+      }),
+      "sf-show-more": detail => ({ ...old(detail),
+        item: this._showMoreItem ?? null
+      })
+    };
+  }
+
+  onPageChange(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener(this.sfEventName("change"), // The new detail, with the camelCase names a handler of the old one
+      // read (pageSize, pageCount) beside the vocabulary's.
+      event => {
+        handler(event.detail?.current, { ...camelDetail(event.detail ?? {}),
+          ...event.detail
+        }, event);
+      }, options);
+    }
+
+    return this;
+  }
+
+  onShowMore(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener(this.sfEventName("load-more"), event => {
+        handler({ ...camelDetail(event.detail ?? {}),
+          ...event.detail
+        }, event);
+      }, options);
+    }
+
+    return this;
+  }
+
+}
+
+SfPagination.define("sf-pagination");
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ },
+
+/***/ "0b6c983d0722"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isDestructiveAction: () => (/* reexport safe */ _bulk_actions_js_danger_js__WEBPACK_IMPORTED_MODULE_0__.isDestructiveAction),
+/* harmony export */   orderActions: () => (/* reexport safe */ _bulk_actions_js_danger_js__WEBPACK_IMPORTED_MODULE_0__.orderActions)
+/* harmony export */ });
+/* harmony import */ var _bulk_actions_js_danger_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("d26573af0eef");
+// C116 and BA-1 (owner decision C295): the danger rule of the group actions
+// is one, sf-bulk-actions' (an action that deletes says so with status
+// "danger" or the danger flag -- "delete:Delete::danger", {danger: true} -- or
+// by a value that deletes: delete, remove, destroy, trash). sf-pagination
+// re-exports it for the hosts that imported it from here.
+
+
+/***/ },
+
+/***/ "a57d260bd333"
+(module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   renderPaginationTemplate: () => (/* binding */ renderPaginationTemplate)
+/* harmony export */ });
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("2a080a730149");
+var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([lit__WEBPACK_IMPORTED_MODULE_0__]);
+var __webpack_async_dependencies_result__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__);
+lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_async_dependencies_result__[0];
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lit__WEBPACK_IMPORTED_MODULE_0__);
+ // sf-pagination's markup (decision C97, 2026-11-12). The element is page
+// navigation, in five appearances, each a named <nav> holding only the way
+// between pages:
+//
+//   numbers   ‹ 1 … 4 [5] 6 … 12 ›  (sites, catalogues, search; up to seven
+//             places, five on a phone; links when href is a template)
+//   field     |‹ ‹ [3] из 12 › ›|   (a dense table)
+//   arrows    ‹ Назад · Страница 3 · Далее ›  (the count is not known)
+//   cursor    В начало · Дальше ›  (a cursor list: no number, no last page)
+//   more      Показать ещё 20 / Показано 40 из 240  (its own look, never in
+//             one row with the arrows)
+//
+// In every appearance a control at an end is disabled, not removed, so the row
+// keeps its width while a person pages (PG-02).
+//
+// An element written without appearance draws the footer it drew before 1.5.0
+// -- the range «41–60 из 240», the page-size button «По 20 ▾», the field, and
+// Show more and the band of bulk controls when asked -- as a compatible
+// composition until 2027-01-01. Those parts belong to the list that owns them
+// (sf-view), which composes them beside an sf-pagination of its own appearance
+// (change journal value-pagination-footer-parts-to-view).
+
+function joinClasses(...tokens) {
+  return tokens.flat().filter(Boolean).join(" ");
+}
+
+const stepOf = context => context.size === "1/2" ? "1/2" : "1"; // The page a person is on, and the way to any other. Its width is the width of
+// the longest page number there is, so it does not grow while a person pages.
+
+
+function renderPageField(context, component) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <label
+      class="sf-pagination-page-field flex items-cross-center"
+      style=${`--sf-pagination-page-input--digits: ${context.fieldDigits}`}
+    >
+      <sf-input
+        size=${context.size}
+        appearance="bordered"
+        root-class="sf-pagination-page-input"
+        value=${String(context.current)}
+        inputmode="numeric"
+        aria-label=${context.pageFieldLabel}
+        @input=${event => component.fitPageField(event.target)}
+        @keydown=${event => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    component.goToTypedPage(event.target?.value);
+  }}
+      ></sf-input>
+    </label>
+  `;
+} // An arrow. With an address template (href) it is a link to its page, so a
+// server-printed list pages without the script and a reader or a crawler
+// knows the neighbours: prev and next say rel (PG-10). The link wears the
+// icon button's own classes (the ghost, on-surface look sf-button-icon draws
+// here), because a link inside a button would be two controls in one.
+// At an end it stays where it is, disabled (C97 point 4): a link loses its
+// address and says aria-disabled, a button is disabled.
+
+
+function renderDirection(context, {
+  kind,
+  icon,
+  label,
+  page,
+  go,
+  disabled = false
+}) {
+  const href = context.href && !disabled ? context.component.pageHref(page) : "";
+
+  if (context.href) {
+    const size = stepOf(context);
+    return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+      <li class="sf-pagination-item">
+        <a
+          class=${joinClasses(`sf-pagination-direction sf-pagination-direction--${kind} sf-pagination-link`, `sf-icon-button sf-icon-button--size-${size} sf-icon-button--icon sf-icon-button--ghost sf-icon-button--on-surface flex items-cross-center`, href ? "" : "disabled")}
+          href=${href || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+          role=${href ? lit__WEBPACK_IMPORTED_MODULE_0__.nothing : "link"}
+          aria-disabled=${href ? lit__WEBPACK_IMPORTED_MODULE_0__.nothing : "true"}
+          rel=${href && (kind === "prev" || kind === "next") ? kind : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+          title=${label}
+          aria-label=${label}
+          @click=${event => href ? context.component.followLink(event, page) : event.preventDefault()}
+        ><sf-icon root-class="pointer-events-none" icon=${icon} weight="400" aria-hidden="true"></sf-icon></a>
+      </li>
+    `;
+  }
+
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <li class="sf-pagination-item">
+      <sf-button-icon
+        class=${`sf-pagination-direction sf-pagination-direction--${kind}`}
+        size=${context.size}
+        appearance="ghost"
+        scheme="on-surface"
+        icon=${icon}
+        title=${label}
+        aria-label=${label}
+        ?disabled=${disabled}
+        @click=${go}
+      ></sf-button-icon>
+    </li>
+  `;
+}
+
+const first = (context, component) => renderDirection(context, {
+  kind: "first",
+  icon: "first_page",
+  label: context.firstLabel,
+  page: 1,
+  disabled: !context.hasPrev,
+  go: () => component.firstPage()
+});
+
+const previous = (context, component) => renderDirection(context, {
+  kind: "prev",
+  icon: "keyboard_arrow_left",
+  label: context.previousLabel,
+  page: context.current - 1,
+  disabled: !context.hasPrev,
+  go: () => component.goToPage(context.current - 1)
+});
+
+const next = (context, component) => renderDirection(context, {
+  kind: "next",
+  icon: "keyboard_arrow_right",
+  label: context.nextLabel,
+  page: context.current + 1,
+  disabled: !context.hasNext,
+  go: () => component.goToPage(context.current + 1)
+}); // The last page is a jump to a number: drawn where the jump can be answered
+// (the count exact, or a host that can count it first; PG-11). A link only to
+// a page that is known: an estimate asks for the count first.
+
+
+const last = (context, component) => context.canJumpToLast ? renderDirection(context, {
+  kind: "last",
+  icon: "last_page",
+  label: context.lastLabel,
+  page: context.exactCount ? context.pageCount : null,
+  disabled: !context.hasNext,
+  go: () => component.lastPage()
+}) : lit__WEBPACK_IMPORTED_MODULE_0__.nothing; // field: |‹ ‹ [3] из 12 › ›|. «из 12» only for an exact count; an estimate
+// reads «из ~23», and no count says nothing after the field. The word
+// of-pages places the field ({page}): the text before it and after it.
+
+
+function renderField(context, component) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <ol class="sf-pagination-list flex items-cross-center">
+      ${first(context, component)}
+      ${previous(context, component)}
+      <li class="sf-pagination-item sf-pagination-item-field flex items-cross-center">
+        ${context.ofPages?.before ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<span class="sf-pagination-of" aria-hidden="true">${context.ofPages.before}</span>` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        ${renderPageField(context, component)}
+        ${context.ofPages?.after ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<span class="sf-pagination-of" aria-hidden="true">${context.ofPages.after}</span>` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+      </li>
+      ${next(context, component)}
+      ${last(context, component)}
+    </ol>
+  `;
+} // A page number of numbers: the button's own look (ghost, on-surface; the
+// current page tonal, primary) on a link when href is a template, else on a
+// button. The current page says aria-current="page".
+
+
+function renderPageSlot(context, component, slot) {
+  if (slot.type === "gap") {
+    return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<li class="sf-pagination-item sf-pagination-slot sf-pagination-slot--gap" aria-hidden="true"><span class="sf-pagination-gap">…</span></li>`;
+  }
+
+  const classes = joinClasses("sf-pagination-page", "sf-button", `sf-button--size-${stepOf(context)}`, slot.selected ? "sf-button--tonal sf-button--primary sf-pagination-page--current" : "sf-button--ghost sf-button--link sf-button--on-surface", "flex", "items-cross-center");
+  const label = `${context.pageLabel} ${slot.value}`;
+  const text = (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<span class="sf-button-text-container text-center pointer-events-none flex-1">${slot.value}</span>`;
+  const href = context.href ? component.pageHref(slot.value) : "";
+  const body = href ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<a
+        class=${classes}
+        href=${href}
+        aria-label=${label}
+        aria-current=${slot.selected ? "page" : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        data-page=${String(slot.value)}
+        @click=${event => slot.selected ? event.preventDefault() : component.followLink(event, slot.value)}
+      >${text}</a>` : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<button
+        type="button"
+        class=${classes}
+        aria-label=${label}
+        aria-current=${slot.selected ? "page" : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        data-page=${String(slot.value)}
+        @click=${() => component.goToPage(slot.value)}
+      >${text}</button>`;
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<li class="sf-pagination-item sf-pagination-slot">${body}</li>`;
+} // numbers: ‹ 1 … 4 [5] 6 … 12 ›, up to seven places (five on a phone), the
+// first and the last page always, the ellipsis not a control.
+
+
+function renderNumbers(context, component) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <ol class="sf-pagination-list flex items-cross-center" style=${`--sf-pagination--digits: ${context.slotDigits}`}>
+      ${previous(context, component)}
+      ${context.pageSlots.map(slot => renderPageSlot(context, component, slot))}
+      ${next(context, component)}
+    </ol>
+  `;
+} // A text button of arrows and cursor: the button's own element, a link when
+// href is a template (sf-button drops the address while it is disabled).
+
+
+function textButton(context, component, {
+  kind,
+  text,
+  page,
+  disabled,
+  appearance = "ghost",
+  scheme = "on-surface",
+  iconStart,
+  iconEnd,
+  go
+}) {
+  const href = context.href && !disabled ? component.pageHref(page) : "";
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <li class="sf-pagination-item">
+      <sf-button
+        class=${`sf-pagination-direction sf-pagination-direction--${kind}`}
+        size=${context.size}
+        appearance=${appearance}
+        scheme=${scheme}
+        text=${text}
+        icon-start=${iconStart || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        icon-end=${iconEnd || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        href=${href || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        rel=${href && (kind === "prev" || kind === "next") ? kind : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        ?disabled=${disabled}
+        @click=${event => href ? component.followLink(event, page) : go()}
+      ></sf-button>
+    </li>
+  `;
+} // arrows: ‹ Назад · Страница 3 · Далее ›, for a total that is not known or
+// only estimated: no last page and no number to type.
+
+
+function renderArrows(context, component) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <ol class="sf-pagination-list flex items-cross-center">
+      ${textButton(context, component, {
+    kind: "prev",
+    text: context.previousText,
+    page: context.current - 1,
+    disabled: !context.hasPrev,
+    iconStart: "chevron_left",
+    go: () => component.goToPage(context.current - 1)
+  })}
+      <li class="sf-pagination-item sf-pagination-place" role="status">${context.placeText}</li>
+      ${textButton(context, component, {
+    kind: "next",
+    text: context.nextText,
+    page: context.current + 1,
+    disabled: !context.hasNext,
+    iconEnd: "chevron_right",
+    go: () => component.goToPage(context.current + 1)
+  })}
+    </ol>
+  `;
+} // cursor: В начало · Дальше ›. The host knows only whether there is more
+// (has-next); there is no page number to show and never a last page (Larena
+// msg-0852f1a2). «В начало» is page 1, «Дальше» the next portion.
+
+
+function renderCursor(context, component) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <ol class="sf-pagination-list flex items-cross-center">
+      ${textButton(context, component, {
+    kind: "first",
+    text: context.firstLabel,
+    page: 1,
+    disabled: !context.hasPrev,
+    iconStart: "first_page",
+    go: () => component.firstPage()
+  })}
+      ${textButton(context, component, {
+    kind: "next",
+    text: context.cursorNextText,
+    page: context.current + 1,
+    disabled: !context.hasNext,
+    appearance: "outline",
+    scheme: "primary",
+    iconEnd: "chevron_right",
+    go: () => component.goToPage(context.current + 1)
+  })}
+    </ol>
+  `;
+} // more: «Показать ещё 20», then «Показано 40 из 240» and a thin bar. It adds a
+// portion (sf-pagination-load-more); current is the number of portions shown.
+// When everything is shown the button goes and the line stays.
+// The line is a polite status (heard once a portion has loaded) and takes the
+// focus when the last portion removes the button (tabindex -1, never a Tab
+// stop); its words are shown-label (C167 (1)). load="auto" watches the button
+// itself (index.js watchMore), so the template is the same for both.
+
+
+function renderMore(context, component) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <div class="sf-pagination-more flex flex-col items-cross-center">
+      ${context.hasNext ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+            <sf-button
+              class="sf-pagination-more-button"
+              size=${context.size}
+              appearance="outline"
+              scheme="primary"
+              text=${context.showMoreCountText}
+              ?loading=${context.showMoreBusy}
+              ?disabled=${context.showMoreBusy}
+              @click=${event => component.showMore(event.target)}
+            ></sf-button>
+          ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+      ${context.shownText ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+            <span class="sf-pagination-shown" role="status" tabindex="-1">${context.shownText}</span>
+            ${context.shownPercent === null ? lit__WEBPACK_IMPORTED_MODULE_0__.nothing : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<sf-progress-bar
+                  class="sf-pagination-progress"
+                  size="1/3"
+                  value=${String(context.shownPercent)}
+                  text-position="none"
+                  label=${context.shownText}
+                ></sf-progress-bar>`}
+          ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+    </div>
+  `;
+}
+
+const VIEWS = {
+  field: renderField,
+  numbers: renderNumbers,
+  arrows: renderArrows,
+  cursor: renderCursor,
+  more: renderMore
+}; // The range part of the compatible footer: «41–60 из 240», «41–60 из многих»,
+// «41–60 из ~450» with an offer to count, and a short wait while it does. A
+// host that cannot count is not offered the count at all. A total-label the
+// author wrote keeps the «Всего: 240» line until 2027-01-01.
+
+function renderRange(context, component) {
+  const countButton = (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <sf-button
+      class="sf-pagination-count-request"
+      size=${context.size}
+      appearance="ghost"
+      scheme="primary"
+      text=${context.showCountLabel}
+      @click=${() => component.requestCount("total")}
+    ></sf-button>
+  `; // The wait is a mark beside the range, not a line of words: the spinner's
+  // label is its name and stays unseen (label-hidden, SP-07), as in lookup.
+
+  const spinner = (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<sf-spinner size=${context.size} label=${context.countingLabel} label-hidden></sf-spinner>`;
+  const offer = context.exactCount ? lit__WEBPACK_IMPORTED_MODULE_0__.nothing : context.counting ? spinner : context.canCount ? countButton : lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <div class="sf-pagination-left flex items-cross-center">
+      <div class="sf-pagination-total flex items-cross-center">
+        ${context.rangeText ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<span class="sf-pagination-range" role="status">${context.rangeText}</span>` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+        ${offer}
+      </div>
+    </div>
+  `;
+} // The page-size part of the compatible footer: a quiet button «По 20 ▾» that
+// opens a menu of radio rows (C97 point 3), not a labelled select. Its name
+// says what it is: «На странице: 20».
+
+
+function renderPageSize(context, component) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <div class="sf-pagination-count flex items-cross-center">
+      <sf-button
+        class="sf-pagination-size"
+        size=${context.size}
+        appearance="ghost"
+        scheme="on-surface"
+        icon-end="arrow_drop_down"
+        text=${context.pageSizeText}
+        aria-label=${`${context.pageSizeLabel} ${context.pageSize}`.trim()}
+        aria-haspopup="menu"
+        @click=${event => component.togglePageSizeMenu(event.currentTarget)}
+      ></sf-button>
+      <sf-menu-context
+        class="sf-pagination-size-menu"
+        popup
+        size=${context.size}
+        aria-label=${context.pageSizeLabel}
+        @sf-menu-context-select=${event => component.choosePageSize(event)}
+      ></sf-menu-context>
+    </div>
+  `;
+} // The band of bulk controls, kept for a pagination that carries it until
+// 2027-01-01 (C97 point 5: it belongs to the list). Since 1.9.0 it is the
+// group actions bar, sf-bulk-actions (owner decision C295): «Выбрано N», the
+// actions as buttons (up to three, the rest in «⋯», the dangerous one last in
+// it, BA-1), «Выбрать все N» once the page is selected and ×. The pagination
+// passes its settings to the bar and turns the bar's events into its own
+// (setAction, setActionForAll, applyAction, clearSelection), so a host that
+// listens for sf-pagination-apply and -selection-clear is served as before.
+
+
+function renderBand(context, component) {
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <sf-bulk-actions
+      class=${joinClasses("sf-pagination-bulk", context.bottomClass)}
+      data-sf-bulk="bar"
+      place="dock"
+      size=${context.size}
+      count=${String(context.selectedCount)}
+      page-count=${String(context.bulkPageCount)}
+      total=${context.showActionForAll && context.countKnown ? String(context.total) : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+      ?all-selected=${Boolean(context.showActionForAll && context.actionForAll)}
+      label=${context.actionsRegionLabel}
+      count-text=${context.bulkCountText || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+      .actions=${context.bulkActions}
+      @sf-bulk-actions-action=${event => component.applyBulkAction(event)}
+      @sf-bulk-actions-select-all=${() => component.setActionForAll(true)}
+      @sf-bulk-actions-select-page=${() => component.setActionForAll(false)}
+      @sf-bulk-actions-clear=${() => component.clearSelection()}
+    ></sf-bulk-actions>
+  `;
+} // The compatible footer (no appearance written): one row «41–60 из 240 · По 20
+// ▾ · ‹ [3] из 12 ›» -- the sf-view admin footer of C97 point 5 -- with Show
+// more on a line of its own above it (never in one row with the arrows) and
+// the band below.
+
+
+function renderFooter(context, component) {
+  const mainClasses = joinClasses("sf-pagination-main", "flex", "items-cross-center", "content-main-between", context.mainClass); // One page: the range and the page size stay, the field does not
+  // (Larena LF-11).
+
+  const hasPages = (!context.countKnown || context.total > 0) && !context.singlePage;
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    ${context.top && context.hasNext ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+          <div class=${joinClasses("sf-pagination-top", "flex", "content-main-center", context.topClass)}>
+            <sf-button
+              class="sf-pagination-more-button"
+              size=${context.size}
+              appearance="outline"
+              scheme="primary"
+              ?loading=${context.showMoreBusy}
+              ?disabled=${context.showMoreBusy}
+              @click=${event => component.showMore(event.target)}
+              text=${context.showMoreText}
+            ></sf-button>
+          </div>
+        ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+    ${context.middle ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+          <div class=${mainClasses}>
+            ${renderRange(context, component)}
+            ${hasPages ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                  <div class="sf-pagination-container flex items-cross-center">
+                    ${context.pagesLabelShown ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<span class="sf-pagination-pages-label">${context.pagesLabel}</span>` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+                    ${renderField(context, component)}
+                  </div>
+                ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+            ${context.showPageSize && hasPages ? renderPageSize(context, component) : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+          </div>
+        ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+    ${context.bottom && context.showActions && context.actions?.length && context.selectedCount > 0 ? renderBand(context, component) : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+  `;
+}
+
+function renderPaginationTemplate(context) {
+  const {
+    component
+  } = context;
+  const appearance = context.footer ? "footer" : VIEWS[context.appearance] ? context.appearance : "field"; // Everything on one page: no page navigation (Larena LF-11). The more
+  // appearance keeps its «Показано 12 из 12» line; the others draw nothing
+  // and the nav is hidden, so it takes no room and is not announced.
+
+  const empty = !context.footer && appearance !== "more" && context.singlePage;
+  const rootClasses = joinClasses("sf-pagination", `sf-pagination--size-${stepOf(context)}`, `sf-pagination--${appearance}`, "flex", context.footer ? "flex-col" : "items-cross-center", context.rootClass);
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+    <nav
+      class=${rootClasses}
+      style=${context.rootStyle || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+      aria-label=${context.ariaLabel}
+      ?hidden=${empty}
+    >
+      ${empty ? lit__WEBPACK_IMPORTED_MODULE_0__.nothing : context.footer ? renderFooter(context, component) : VIEWS[appearance](context, component)}
+    </nav>
+  `;
+}
+__webpack_async_result__();
+} catch(e) { __webpack_async_result__(e); } });
+
+/***/ },
+
+/***/ "d3818183b14c"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("deprecations", 1) : new Promise((resolve, reject) => globalThis.addEventListener("sf-runtime-ready", () => globalThis.SF.runtimeModule("deprecations", 1).then(resolve, reject), { once: true })));
+
+/***/ },
+
+/***/ "5b7d7695b41b"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("element-manifest", 1) : new Promise((resolve, reject) => globalThis.addEventListener("sf-runtime-ready", () => globalThis.SF.runtimeModule("element-manifest", 1).then(resolve, reject), { once: true })));
+
+/***/ },
+
+/***/ "2a080a730149"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("lit", 1) : new Promise((resolve, reject) => globalThis.addEventListener("sf-runtime-ready", () => globalThis.SF.runtimeModule("lit", 1).then(resolve, reject), { once: true })));
+
+/***/ },
+
+/***/ "deb1a4d61565"
+(module) {
+
+module.exports = (globalThis.SF && globalThis.SF.runtimeModule ? globalThis.SF.runtimeModule("smart-base", 1) : new Promise((resolve, reject) => globalThis.addEventListener("sf-runtime-ready", () => globalThis.SF.runtimeModule("smart-base", 1).then(resolve, reject), { once: true })));
+
+/***/ },
+
+/***/ "97c2f8ebc346"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   files: () => (/* binding */ files)
+/* harmony export */ });
+/* harmony import */ var _en_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("38d83a636029");
+// Written by scripts/build-language-packs.mjs from src/core/lang/built-in.json
+// (owner decision C282); do not edit. The words this bundle carries: the
+// built-in languages' (en); every other language comes from
+// a language file (core/lang/<code>.js or its parts).
+
+
+const files = { en: { runtime: _en_json__WEBPACK_IMPORTED_MODULE_0__.runtime } };
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ en: _en_json__WEBPACK_IMPORTED_MODULE_0__.runtime });
+
+
+/***/ },
+
+/***/ "90fab10c70dd"
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"$comment":"Dated aliases of sf-pagination for the shim (core/js/aliases.js, standard §16 item 20). mode: same-detail (the shim sends the new and the old name), split (the old detail from the element\'s adapter), host-attribute (no shim).","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","aliases":[{"from":"aria-label","to":null,"kind":"attribute","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","mode":"host-attribute","section":"§3.1, §4.8","note":"stays a host attribute, read for the accessible name; no shim"},{"from":"sf-page-change","to":"sf-pagination-change","kind":"event","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","mode":"split","cancelable":false,"section":"§8","note":"the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element\'s detail adapter makes it"},{"from":"sf-page-size-change","to":"sf-pagination-size-change","kind":"event","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","mode":"split","cancelable":false,"section":"§8","note":"the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element\'s detail adapter makes it"},{"from":"sf-count-request","to":"sf-pagination-count","kind":"event","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","mode":"split","cancelable":false,"section":"§8, vocabulary §5 count","note":"the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element\'s detail adapter makes it"},{"from":"sf-show-more","to":"sf-pagination-load-more","kind":"event","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","mode":"split","cancelable":false,"section":"§8, vocabulary §5 load-more","note":"the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element\'s detail adapter makes it"},{"from":"sf-selection-clear","to":"sf-pagination-selection-clear","kind":"event","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","mode":"split","cancelable":false,"section":"§8, an own verb","note":"the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element\'s detail adapter makes it"},{"from":"sf-action-change","to":"sf-pagination-action-change","kind":"event","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","mode":"split","cancelable":false,"section":"§8","note":"the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element\'s detail adapter makes it"},{"from":"sf-action-for-all-change","to":"sf-pagination-action-for-all-change","kind":"event","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","mode":"split","cancelable":false,"section":"§8","note":"the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element\'s detail adapter makes it"},{"from":"sf-action-apply","to":"sf-pagination-apply","kind":"event","component":"sf-pagination","since":"2026-10-27","remove_after":"2026-12-01","mode":"split","cancelable":false,"section":"§8, vocabulary §5 apply","note":"the old detail adds component, tagName, template and the camelCase fields, which §8 and the vocabulary took out: the element\'s detail adapter makes it"}]}');
+
+/***/ },
+
+/***/ "344edfee8242"
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"id":"smart.pagination","tag":"sf-pagination","version":"1.10.2","kind":"leaf","settings":{"appearance":{"type":"enum","values":["field","numbers","arrows","cursor","more"],"default":"field"},"top":{"type":"boolean","default":true},"middle":{"type":"boolean","default":true},"bottom":{"type":"boolean","default":true},"top-class":{"type":"string","default":""},"main-class":{"type":"string","default":""},"bottom-class":{"type":"string","default":""},"pages-label":{"type":"string","default-from":"runtime.pages-label"},"page-label":{"type":"string","default-from":"runtime.page-label"},"previous-label":{"type":"string","default-from":"runtime.previous-label"},"next-label":{"type":"string","default-from":"runtime.next-label"},"last-label":{"type":"string","default-from":"runtime.last-label"},"total-label":{"type":"string","default-from":"runtime.total-label"},"selected-label":{"type":"string","default-from":"runtime.selected-label"},"selected-count":{"type":"number","integer":true,"min":0,"default":0},"show-more-text":{"type":"string","default-from":"runtime.show-more-text"},"total":{"type":"number","integer":true,"min":0,"default":10},"page-size":{"type":"number","integer":true,"min":1,"default":10},"page-sizes":{"type":"string","default":"10,20,30,40"},"show-page-size":{"type":"boolean","default":true},"page-size-label":{"type":"string","default-from":"runtime.page-size-label"},"show-actions":{"type":"boolean","default":true},"actions":{"type":"string","default":""},"action":{"type":"string","default":""},"action-apply-text":{"type":"string","default-from":"runtime.action-apply-text"},"show-action-for-all":{"type":"boolean","default":false},"action-for-all":{"type":"boolean","default":false},"action-for-all-label":{"type":"string","default-from":"runtime.action-for-all-label"},"actions-label":{"type":"string","default-from":"runtime.actions-label"},"action-choose-label":{"type":"string","default-from":"runtime.action-choose-label"},"actions-region-label":{"type":"string","default-from":"runtime.actions-region-label"},"clear-selection-label":{"type":"string","default-from":"runtime.clear-selection-label"},"count-known":{"type":"boolean","default":true},"total-exact":{"type":"boolean","default":true},"can-count":{"type":"boolean","default":false},"counting":{"type":"boolean","default":false},"has-next":{"type":"boolean","default":false},"show-count-label":{"type":"string","default-from":"runtime.show-count-label"},"counting-label":{"type":"string","default-from":"runtime.counting-label"},"first-label":{"type":"string","default-from":"runtime.first-label"},"page-field-label":{"type":"string","default-from":"runtime.page-field-label"},"show-more-busy":{"type":"boolean","default":false},"shown-label":{"type":"string","default-from":"runtime.shown"},"load":{"type":"enum","values":["button","auto"],"default":"button"},"size":{"type":"enum","values":["1/2","1"],"default":"1"},"href":{"type":"string","default":""},"page-param":{"type":"string","default":""},"page-in-title":{"type":"boolean","default":false}},"values":{"current":{"type":"number","integer":true,"min":1,"default":1}},"events":{"change":{"x-native":false,"carries":{"previous":"number","current":"number","total":"number","page-count":{"type":"number","nullable":true},"page-size":"number"}},"size-change":{"carries":{"previous":"number","page-size":"number","current":"number","total":"number","page-count":{"type":"number","nullable":true}}},"count":{"carries":{"reason":{"type":"enum","values":["total","last-page","action-for-all"]},"current":"number","page-size":"number"}},"load-more":{"carries":{"direction":{"type":"enum","values":["after"]},"current":"number","total":"number","page-size":"number","page-count":{"type":"number","nullable":true},"has-next":"boolean"}},"selection-clear":{"carries":{"selected-count":"number","total":"number"},"own-verb":true},"action-change":{"carries":{"previous":"string","action":"string"}},"action-for-all-change":{"carries":{"previous":"boolean","action-for-all":"boolean"}},"apply":{"carries":{"action":"string","scope":{"type":"enum","values":["selection","filter"]},"current":"number","total":"number","page-size":"number","page-count":{"type":"number","nullable":true}}}},"actions":{"go-to-page":{"with":{"page":"number"}},"show-more":{}},"css-variables":{"--sf-pagination-background-color":{"type":"color","state":"default"},"--sf-pagination-color":{"type":"color","state":"default"},"--sf-pagination-gap":{"type":"length","state":"default"},"--sf-pagination-divider-color":{"type":"color","state":"default"},"--sf-pagination-page-background-color":{"type":"color","state":"default"},"--sf-pagination-page-color":{"type":"color","state":"default"},"--sf-pagination-page-radius":{"type":"length","state":"default"},"--sf-pagination-current-background-color":{"type":"color","state":"current"},"--sf-pagination-current-color":{"type":"color","state":"current"},"--sf-pagination-block-size-1/2":{"type":"length","state":"default","x-published":"root"},"--sf-pagination-block-size-1":{"type":"length","state":"default","x-published":"root"}}}');
+
+/***/ },
+
+/***/ "38d83a636029"
+(module) {
+
+module.exports = /*#__PURE__*/JSON.parse('{"title":"Pagination","runtime":{"action-apply-text":"Apply","action-choose-label":"Choose an action","action-for-all-label":"For all","actions-label":"Action for the selected records","actions-region-label":"Actions for the selected","aria-label":"Result pages","clear-selection-label":"Clear the selection","counting-label":"Counting","cursor-next-text":"Next","first-label":"First","last-label":"Last","next-label":"Next page","next-text":"Next","of-pages":"{page} of {count}","page-field-label":"Page:","page-label":"Page","page-size-label":"Per page:","page-size-text":"{size} per page","pages-label":"Pages:","previous-label":"Previous page","previous-text":"Back","range":"{from}–{to} of {total}","range-many":"{from}–{to} of many","selected-label":"Selected:","show-count-label":"count","show-more-count":"Show {count} more","show-more-text":"Show more","shown":"Showing {shown} of {total}","title-page":"Page {page}","total-label":"Total:"},"events":{"selection-clear":{"label":"Selection cleared"}}}');
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	const __webpack_module_cache__ = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		const cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		const module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			const e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/************************************************************************/
+/******/ 	/* webpack/runtime/async module */
+/******/ 	(() => {
+/******/ 		const hasSymbol = typeof Symbol === "function";
+/******/ 		const webpackQueues = hasSymbol ? Symbol("webpack queues") : "__webpack_queues__";
+/******/ 		const webpackExports = hasSymbol ? Symbol("webpack exports") : "__webpack_exports__";
+/******/ 		const webpackError = hasSymbol ? Symbol("webpack error") : "__webpack_error__";
+/******/
+/******/ 		const resolveQueue = (queue) => {
+/******/ 			if(queue?.d < 1) {
+/******/ 				queue.d = 1;
+/******/ 				queue.forEach((fn) => (fn.r--));
+/******/ 				queue.forEach((fn) => (fn.r-- ? fn.r++ : fn()));
+/******/ 			}
+/******/ 		}
+/******/ 		const wrapDeps = (deps) => (deps.map((dep) => {
+/******/ 			if(dep !== null && typeof dep === "object") {
+/******/
+/******/ 				if(dep[webpackQueues]) return dep;
+/******/ 				if(dep.then) {
+/******/ 					const queue = [];
+/******/ 					queue.d = 0;
+/******/ 					dep.then((r) => {
+/******/ 						obj[webpackExports] = r;
+/******/ 						resolveQueue(queue);
+/******/ 					}, (e) => {
+/******/ 						obj[webpackError] = e;
+/******/ 						resolveQueue(queue);
+/******/ 					});
+/******/ 					const obj = {};
+/******/
+/******/ 					obj[webpackQueues] = (fn) => (fn(queue));
+/******/ 					return obj;
+/******/ 				}
+/******/ 			}
+/******/ 			const ret = {};
+/******/ 			ret[webpackQueues] = x => {};
+/******/ 			ret[webpackExports] = dep;
+/******/ 			return ret;
+/******/ 		}));
+/******/ 		__webpack_require__.a = (module, body, hasAwait) => {
+/******/ 			let queue;
+/******/ 			hasAwait && ((queue = []).d = -1);
+/******/ 			const depQueues = new Set();
+/******/ 			const exports = module.exports;
+/******/ 			let currentDeps;
+/******/ 			let outerResolve;
+/******/ 			let reject;
+/******/ 			const promise = new Promise((resolve, rej) => {
+/******/ 				reject = rej;
+/******/ 				outerResolve = resolve;
+/******/ 			});
+/******/ 			promise[webpackExports] = exports;
+/******/ 			promise[webpackQueues] = (fn) => (queue && fn(queue), depQueues.forEach(fn), promise["catch"](x => {}));
+/******/ 			module.exports = promise;
+/******/ 			const handle = (deps) => {
+/******/ 				currentDeps = wrapDeps(deps);
+/******/ 				let fn;
+/******/ 				const getResult = () => (currentDeps.map((d) => {
+/******/
+/******/ 					if(d[webpackError]) throw d[webpackError];
+/******/ 					return d[webpackExports];
+/******/ 				}))
+/******/ 				const promise = new Promise((resolve) => {
+/******/ 					fn = () => (resolve(getResult));
+/******/ 					fn.r = 0;
+/******/ 					const fnQueue = (q) => (q !== queue && !depQueues.has(q) && (depQueues.add(q), q && !q.d && (fn.r++, q.push(fn))));
+/******/ 					currentDeps.map((dep) => (dep[webpackQueues](fnQueue)));
+/******/ 				});
+/******/ 				return fn.r ? promise : getResult();
+/******/ 			}
+/******/ 			const done = (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue))
+/******/ 			body(handle, done);
+/******/ 			queue?.d < 0 && (queue.d = 0);
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			const getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter/value functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			if(Array.isArray(definition)) {
+/******/ 				var i = 0;
+/******/ 				while(i < definition.length) {
+/******/ 					var key = definition[i++];
+/******/ 					var binding = definition[i++];
+/******/ 					if(!__webpack_require__.o(exports, key)) {
+/******/ 						if(binding === 0) {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
+/******/ 						} else {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, get: binding });
+/******/ 						}
+/******/ 					} else if(binding === 0) { i++; }
+/******/ 				}
+/******/ 			} else {
+/******/ 				for(var key in definition) {
+/******/ 					if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 					}
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/
+/************************************************************************/
+/******/
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module used 'module' so it can't be inlined
+/******/ 	let __webpack_exports__ = __webpack_require__("403726af3b51");
+/******/
+/******/ })()
+;

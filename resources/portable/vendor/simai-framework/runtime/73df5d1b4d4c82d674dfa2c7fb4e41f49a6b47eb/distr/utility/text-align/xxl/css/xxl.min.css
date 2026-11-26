@@ -1,0 +1,2 @@
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+@layer sf.utilities{@media(min-width: 80rem){.xxl\:text-start:where(:dir(ltr)){text-align:left}.xxl\:text-start:where(:dir(rtl)){text-align:right}.xxl\:text-start{text-align:start}.xxl\:text-center{text-align:center}.xxl\:text-end:where(:dir(ltr)){text-align:right}.xxl\:text-end:where(:dir(rtl)){text-align:left}.xxl\:text-end{text-align:end}.xxl\:text-justify{text-align:justify}}}

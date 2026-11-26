@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: simai/ui
-          ref: dc9fc39aeb266bbd8fd2486f21da50d7d1d85d74
+          ref: 73df5d1b4d4c82d674dfa2c7fb4e41f49a6b47eb
           path: .dependencies/ui
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
         with:

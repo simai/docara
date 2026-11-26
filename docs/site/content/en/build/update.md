@@ -132,7 +132,8 @@ in versions 3.0.0–3.0.5, `ui-25beeb814ae8` in versions 3.1.0–3.5.0,
 `ui-b4a77681f0a7` in versions 3.14.0–3.14.2,
 `ui-7fb26d395af2` in version 3.14.3,
 `ui-141822273efe` in versions 3.15.0–3.17.0,
-`ui-dc9fc39aeb26` in later versions. A build no longer needs
+`ui-dc9fc39aeb26` in versions 3.18.0–3.19.0,
+`ui-73df5d1b4d4c` in later versions. A build no longer needs
 a separate Framework copy or environment variables: you can remove
 `DOCARA_SIMAI_UI_ROOT` and `SIMAI_UI_ROOT` from the build environment and from
 CI. These variables stay optional and are needed only to build with another
@@ -234,7 +235,8 @@ Look at the `runtime.pair_id` value in `simai-framework.lock.json`:
 php -r 'echo json_decode(file_get_contents("simai-framework.lock.json"), true)["runtime"]["pair_id"], PHP_EOL;'
 ```
 
-The values `ui-dc9fc39aeb26` (the current release), `ui-141822273efe` (Docara
+The values `ui-73df5d1b4d4c` (the current release), `ui-dc9fc39aeb26` (Docara
+3.18.0–3.19.0), `ui-141822273efe` (Docara
 3.15.0–3.17.0), `ui-7fb26d395af2` (Docara 3.14.3), `ui-b4a77681f0a7` (Docara 3.14.0–3.14.2), `ui-2a671352d67b` (Docara
 3.13.0–3.13.1), `ui-c3015f76bcc2` (Docara 3.12.0–3.12.2), `ui-7153f7a9c092` (Docara 3.10.0–3.11.1), `ui-32c7a64e4575` (Docara 3.6.0–3.9.1), `ui-25beeb814ae8` (Docara 3.1.0–3.5.0), `ui-82fc0ba882ba` (Docara 3.0.0–3.0.5) and
 `ui-4f5e5067afeb-smart-7d932ed51408` (the Docara 2.18 lock)

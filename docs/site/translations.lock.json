@@ -1350,10 +1350,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/build/update.md",
-            "source_sha256": "95e421ddb115cb72eef94d2d3bc224d8566f4b6da008a5adc6f0f2bb717075a7",
+            "source_sha256": "c3e02074b8bc64f522ebc699e1d16b617672ac748f0cae6e2f57116d0142945b",
             "source_structure_sha256": "0727012f1f63fb4272242ff0cc5d2b775c93116bc4a4aaa1712d4ebaa2ebf6b3",
             "target_path": "content/en/build/update.md",
-            "target_sha256": "ee2696d97fd4bb3b1ac06baaae4b76a6d0be6963ba0a285cf4c93536fee30d66",
+            "target_sha256": "b3e65319ab47ae113d71d53dd06cc2e724e5d71b960f9ad14abec520f6866543",
             "target_structure_sha256": "0727012f1f63fb4272242ff0cc5d2b775c93116bc4a4aaa1712d4ebaa2ebf6b3"
         },
         {
@@ -1818,10 +1818,10 @@
             "locale": "en",
             "review": "ai_verified",
             "source_path": "content/ru/components/simai-framework/smart-ui.md",
-            "source_sha256": "40808b867940cda7913c17ea24aaa42c27ce29b5e0511c3265ac916f7574b0e9",
+            "source_sha256": "48733378e2f266d2b5c49cd01a193bb12cd9a4055d80787aaf3eb4bea67989e6",
             "source_structure_sha256": "ea60625059fb8fe3ef1f3e17bba047cba7a8bf64c71d17ad564ed8e37d38b47f",
             "target_path": "content/en/components/simai-framework/smart-ui.md",
-            "target_sha256": "33d64b21bce95e334cdab7d08abb0a5c6e9b54376a330968566c2bdabfbe0f98",
+            "target_sha256": "908cb256406908848b76c2f7f9221d592533244216d29722b02b8d5668f40ee8",
             "target_structure_sha256": "ea60625059fb8fe3ef1f3e17bba047cba7a8bf64c71d17ad564ed8e37d38b47f"
         },
         {

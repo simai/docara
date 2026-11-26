@@ -24,6 +24,18 @@ All notable changes to Docara are recorded here. The format follows
   4000; anything else stops the build with
   `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID`.
 
+### Changed
+
+- **SIMAI Framework pair `ui-73df5d1b4d4c`.** Docara pins Framework group
+  build 19 (core.runtime 1.69.0, core.styles 1.25.0; runtime projection of
+  2,918 files). The admitted `ui.*` manifests name the new release and keep
+  their settings. The lock Docara 3.18.0 to 3.19.0 shipped
+  (`ui-dc9fc39aeb26`) keeps building with the bundled release.
+- **`ui.tooltip` has no size.** sf-tooltip 1.5.4 retires `size` (every
+  tooltip is one size), so the manifest keeps leaving it out; the Smart UI
+  page now says so, and a page that sets it stops with
+  `FRAMEWORK_PROP_UNKNOWN`.
+
 ## [3.19.0] - 2026-11-24
 
 ### Added

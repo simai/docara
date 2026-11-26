@@ -222,7 +222,7 @@
         "runtime_lock": "resources/framework/runtime-lock.json",
         "upstream_component": "simai/ui:distr/smart/tag",
         "upstream_contract": "simai/ui:distr/smart/tag/component.json",
-        "upstream_revision": "dc9fc39aeb266bbd8fd2486f21da50d7d1d85d74",
+        "upstream_revision": "73df5d1b4d4c82d674dfa2c7fb4e41f49a6b47eb",
         "reference_status": "source_backed"
     }
 }

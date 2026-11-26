@@ -117,8 +117,9 @@ final class SiteThemeTest extends TestCase
         // ui-7fb26d395af2 with 128 tones and 160 steps; from ui-994f9db407fa
         // the theme writes the four dynamic palettes only (TG-01: the statuses
         // are core's static hues), 64 tones and 80 steps. This digest is the
-        // bundled release's own output through Docara's runner.
-        self::assertSame('79b0cb2b9c15780c7834cffc1d987268a19955ce000df97fb1a5d8f6fd07f944', hash('sha256', $css));
+        // bundled release's own output through Docara's runner; ui-73df5d1b4d4c
+        // writes two more variables (146).
+        self::assertSame('1b1e8248b22d16e9acc62a164c63312746db9b49673599a6fc0856d3793b9b4a', hash('sha256', $css));
         self::assertStringContainsString('  --sf-primary-50--alfa-12: #0088561f;', $css);
         self::assertStringContainsString('  --sf-neutral-90--alfa-8: #e0e3de14;', $css);
         self::assertStringContainsString('  --sf-primary-40: #006d44;', $css);
@@ -126,13 +127,13 @@ final class SiteThemeTest extends TestCase
         self::assertStringContainsString('  --sf-tertiary-40: #00677d;', $css);
         self::assertStringContainsString('  --sf-neutral-98: #f7faf5;', $css);
         self::assertStringNotContainsString('--sf-error-', $css, 'No theme moves the status hues.');
-        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-dc9fc39aeb26 SF.ThemePalette.themeToCss */', $comment);
+        self::assertSame('/* docara-theme: #0a7d4f (hue 161, chroma 85), SIMAI Framework ui-73df5d1b4d4c SF.ThemePalette.themeToCss */', $comment);
 
         $receipt = $result['receipt'];
         self::assertSame('docara.site_theme.v1', $receipt['schema']);
         self::assertSame(['hue' => 161, 'chroma' => 85], $receipt['palette']);
-        self::assertSame('ui-dc9fc39aeb26', $receipt['framework']['pair_id']);
-        self::assertSame(144, $receipt['stylesheet']['variables']);
+        self::assertSame('ui-73df5d1b4d4c', $receipt['framework']['pair_id']);
+        self::assertSame(146, $receipt['stylesheet']['variables']);
         self::assertSame('docara-theme.' . hash('sha256', $result['content']) . '.css', $receipt['stylesheet']['filename']);
 
         self::assertSame($result, $this->palette()->stylesheet($this->lock(), $this->theme(['color' => '#0A7D4F'])), 'The same colour gives the same bytes.');
@@ -173,7 +174,7 @@ final class SiteThemeTest extends TestCase
         self::assertStringStartsWith('/* docara-theme choice forest: #2e7d32 (hue ', $result['content']);
         self::assertStringNotContainsString("\n:root {", $result['content']);
         self::assertNull($result['receipt']['palette']);
-        self::assertSame(144, $result['receipt']['stylesheet']['variables']);
+        self::assertSame(146, $result['receipt']['stylesheet']['variables']);
     }
 
     #[Test]

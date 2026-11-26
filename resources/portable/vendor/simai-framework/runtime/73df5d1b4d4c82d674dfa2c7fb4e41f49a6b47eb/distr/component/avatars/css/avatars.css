@@ -1,0 +1,1201 @@
+@charset "UTF-8";
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+@layer sf.components {
+  /* The add button draws its own dashed edge, whatever look the button has
+     (docs precheck AV-04): a ghost button has no border, so dashed alone drew
+     nothing. The button's own border variables carry it, so its padding gives the
+     edge back and the height holds. */
+  .sf-add-button .sf-icon-button {
+    --sf-icon-button--border-top-width: var(--sf-icon-button-border-width, var(--sf-px));
+    --sf-icon-button--border-bottom-width: var(--sf-icon-button-border-width, var(--sf-px));
+    --sf-icon-button--border-inline-start-width: var(--sf-icon-button-border-width, var(--sf-px));
+    --sf-icon-button--border-inline-end-width: var(--sf-icon-button-border-width, var(--sf-px));
+    --sf-icon-button--border-width: var(--sf-icon-button-border-width, var(--sf-px));
+    --sf-icon-button--border-color: var(--sf-icon-button-border-color, var(--sf-outline));
+    border-style: dashed;
+  }
+}
+@layer sf.components {
+  /* The media box keeps the card's ratio, photo or not: set on the img alone,
+     a card without a photo drew a box 0 px tall (192 x 0, owner remark R212),
+     and the box now stands at its size before the photo arrives. */
+  .sf-avatar-card.sf-avatar-card--square .sf-avatar-card-image,
+  .sf-avatar-card.sf-avatar-card-square .sf-avatar-card-image,
+  .sf-avatar-card.sf-avatar-card--square img,
+  .sf-avatar-card.sf-avatar-card-square img {
+    aspect-ratio: 1/1;
+  }
+  .sf-avatar-card img {
+    max-width: 100%;
+    max-height: 100%;
+    -o-object-fit: cover;
+       object-fit: cover;
+  }
+  /* The portrait is the one vertical ratio of the shared list, 3:4 (owner
+     decision C230, 2026-11-16; C188 (6) list 1:1 . 4:3 . 3:2 . 16:9 . 21:9 .
+     3:4 . auto). It was 9:16: at 224 wide a photo 184 x 327 and a card 423
+     tall. sf-avatar-card--portrait-9x16 keeps the former 9:16 until
+     2027-01-01 (journal class-avatar-card-portrait-9x16), noted once in
+     SF.deprecations. */
+  .sf-avatar-card.sf-avatar-card--portrait .sf-avatar-card-image,
+  .sf-avatar-card.sf-avatar-card-portrait .sf-avatar-card-image,
+  .sf-avatar-card.sf-avatar-card--portrait img,
+  .sf-avatar-card.sf-avatar-card-portrait img {
+    aspect-ratio: 3/4;
+  }
+  .sf-avatar-card.sf-avatar-card--portrait-9x16 .sf-avatar-card-image,
+  .sf-avatar-card.sf-avatar-card--portrait-9x16 img {
+    aspect-ratio: 9/16;
+  }
+  .disabled .sf-avatar,
+  .disabled .sf-avatar:hover,
+  .disabled .sf-avatar:focus,
+  .disabled .sf-avatar:active {
+    --sf-avatar--border-color: transparent;
+  }
+  .sf-add-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .sf-add-button .sf-tooltip:where(:dir(ltr)){
+    left: 50%;
+  }
+  .sf-add-button .sf-tooltip:where(:dir(rtl)){
+    right: 50%;
+  }
+  .sf-add-button .sf-tooltip {
+    position: absolute;
+    inset-inline-start: 50%;
+    bottom: calc(100% + var(--sf-space-1));
+    inset-block-end: calc(100% + var(--sf-space-1));
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+    z-index: var(--sf-layer--message);
+    display: none;
+    pointer-events: none;
+  }
+  .sf-add-button:hover .sf-tooltip,
+  .sf-add-button[focus-within] .sf-tooltip {
+    display: block;
+  }
+  .sf-add-button:hover .sf-tooltip,
+  .sf-add-button:focus-within .sf-tooltip {
+    display: block;
+  }
+}
+@layer sf.components {
+  /* A badge is a square drawing in the avatar's corner (docs precheck AV-01):
+     its height is its width, so a badge without its drawing -- a letter --
+     no longer stands as a 16x30 pill over the initials, and the drawing
+     fills the square. */
+  /* The company and «verified» badge is a small mark of the avatar's step,
+     from core's badge table (owner decision C132): 8 on 1/4 and 1/3, 12 on
+     1/2 and 1, 16 on 2 and 3. It was a text size: 14 and 20 on a desktop. */
+  .sf-avatar-badge {
+    width: var(--sf-avatar-badge--width);
+    height: var(--sf-avatar-badge--width);
+  }
+  .sf-avatar-badge > svg {
+    display: block;
+    width: 100%;
+    inline-size: 100%;
+    height: 100%;
+    block-size: 100%;
+  }
+  .sf-avatar-badge--size-1 {
+    --sf-avatar-badge--width: var(--sf-micro--badge-1);
+  }
+  .sf-avatar-badge--size-2 {
+    --sf-avatar-badge--width: var(--sf-micro--badge-2);
+  }
+  .sf-avatar-badge--size-3 {
+    --sf-avatar-badge--width: var(--sf-micro--badge-3);
+  }
+  .sf-avatar-badge--size-1\/4 {
+    --sf-avatar-badge--width: var(--sf-micro--badge-1\/4);
+  }
+  .sf-avatar-badge--size-1\/3 {
+    --sf-avatar-badge--width: var(--sf-micro--badge-1\/3);
+  }
+  .sf-avatar-badge--size-1\/2 {
+    --sf-avatar-badge--width: var(--sf-micro--badge-1\/2);
+  }
+}
+@layer sf.paint {
+  .sf-avatar-badge {
+    background-color: var(--sf-avatar-badge--background-color, transparent);
+  }
+}
+@layer sf.components {
+  /* utility-hint: display/block */
+  .sf-online-indicator {
+    box-sizing: border-box;
+    border-radius: var(--sf-radius-circle);
+    width: var(--sf-online-indicator--width);
+    height: var(--sf-online-indicator--height);
+    background-image: linear-gradient(var(--sf-online-indicator--background-color) 0 0);
+    box-shadow: 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place, transparent), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place-ground, transparent);
+    --sf-online-indicator--ring-fill: color-mix(in srgb, var(--sf-surface-place-fill) 100%, var(--sf-surface-underlay) 0%);
+    outline: var(--sf-online-indicator--ring-width) solid var(--sf-online-indicator--ring-fill, transparent);
+    outline-offset: 0;
+    --sf-online-indicator--height: var(--sf-micro--point-2);
+    --sf-online-indicator--width: var(--sf-micro--point-2);
+    --sf-online-indicator--ring-width: var(--sf-micro--ring-2);
+  }
+  .sf-online-indicator--size-1 {
+    --sf-online-indicator--height: var(--sf-micro--point-1);
+    --sf-online-indicator--width: var(--sf-micro--point-1);
+    --sf-online-indicator--ring-width: var(--sf-micro--ring-1);
+  }
+  .sf-online-indicator--size-2 {
+    --sf-online-indicator--height: var(--sf-micro--point-2);
+    --sf-online-indicator--width: var(--sf-micro--point-2);
+    --sf-online-indicator--ring-width: var(--sf-micro--ring-2);
+  }
+  .sf-online-indicator--size-3 {
+    --sf-online-indicator--height: var(--sf-micro--point-3);
+    --sf-online-indicator--width: var(--sf-micro--point-3);
+    --sf-online-indicator--ring-width: var(--sf-micro--ring-3);
+  }
+  .sf-online-indicator--size-1\/4 {
+    --sf-online-indicator--height: var(--sf-micro--point-1\/4);
+    --sf-online-indicator--width: var(--sf-micro--point-1\/4);
+    --sf-online-indicator--ring-width: var(--sf-micro--ring-1\/4);
+  }
+  .sf-online-indicator--size-1\/3 {
+    --sf-online-indicator--height: var(--sf-micro--point-1\/3);
+    --sf-online-indicator--width: var(--sf-micro--point-1\/3);
+    --sf-online-indicator--ring-width: var(--sf-micro--ring-1\/3);
+  }
+  .sf-online-indicator--size-1\/2 {
+    --sf-online-indicator--height: var(--sf-micro--point-1\/2);
+    --sf-online-indicator--width: var(--sf-micro--point-1\/2);
+    --sf-online-indicator--ring-width: var(--sf-micro--ring-1\/2);
+  }
+  .sf-online-indicator--offline {
+    display: none;
+  }
+  .sf-online-indicator--online {
+    --sf-online-indicator--background-color: var(--sf-success);
+  }
+  .sf-online-indicator--away {
+    --sf-online-indicator--background-color: var(--sf-surface-place, transparent);
+    box-shadow: inset 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-on-surface-variant), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place, transparent), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place-ground, transparent);
+  }
+  .sf-online-indicator > .sf-dot {
+    --sf-dot-item--size: var(--sf-online-indicator--width);
+    --sf-dot-item--ring: var(--sf-online-indicator--ring-width);
+  }
+  .sf-online-indicator:has(> .sf-dot) {
+    --sf-online-indicator--background-color: var(--sf-surface-place, transparent);
+    box-shadow: 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place, transparent), 0 0 0 var(--sf-online-indicator--ring-width) var(--sf-surface-place-ground, transparent);
+  }
+  @media (forced-colors: active) {
+    .sf-online-indicator {
+      outline: var(--sf-online-indicator--ring-width) solid Canvas;
+    }
+    .sf-online-indicator--away {
+      border-width: var(--sf-online-indicator--ring-width);
+      border-style: solid;
+    }
+    .sf-online-indicator:has(> .sf-dot) {
+      border: 0;
+      border-color: revert-layer;
+    }
+  }
+}
+@layer sf.paint {
+  .sf-online-indicator {
+    background-color: var(--sf-surface-place-ground, transparent);
+  }
+  @media (forced-colors: active) {
+    .sf-online-indicator--away {
+      border-color: CanvasText;
+    }
+    .sf-online-indicator:has(> .sf-dot) {
+      border: 0;
+    }
+  }
+}
+/* The card and its parts have no fill of their own: the page's surface and
+   space utilities make the card (the docs' bg-surface-container p-2
+   radius-surface). The transparent defaults stand in sf.base, under the
+   utilities, so a bg-* class on the card or a part wins (C16; content study
+   Ав4, 2026-11-16: the components layer wrote transparent over the
+   utility's fill). The public variables still set each fill. */
+@layer sf.base {
+  .sf-avatar-card {
+    background-color: var(--sf-avatar-card--background-color, transparent);
+  }
+  .sf-avatar-card .sf-avatar-card-image {
+    background-color: var(--sf-avatar-card-image--background-color, transparent);
+  }
+  .sf-avatar-card .sf-avatar-card-content {
+    background-color: var(--sf-avatar-card-content--background-color, transparent);
+  }
+  .sf-avatar-card .sf-avatar-card-row {
+    background-color: var(--sf-avatar-card-row--background-color, transparent);
+  }
+}
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-avatar-card {
+    gap: var(--sf-avatar-card--gap, var(--sf-space-1\/3));
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-avatar-card .sf-avatar-card-content {
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-text-size-1);
+    font-weight: var(--sf-font-weight-medium);
+    line-height: var(--sf-text-height-1);
+  }
+  /* utility-hint: flex/1 (.flex-1) display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-avatar-card-row--gap, var(--sf-space-1\/4)) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-avatar-card .sf-avatar-card-row {
+    font-family: var(--sf-avatar-card-row--font-family, var(--sf-text--family));
+    font-size: var(--sf-avatar-card-row--font-size, var(--sf-text-size-1));
+    font-weight: var(--sf-avatar-card-row--font-weight, var(--sf-font-weight-regular));
+    gap: var(--sf-avatar-card-row--gap, var(--sf-space-1\/4));
+    line-height: var(--sf-avatar-card-row--line-height, var(--sf-text-height-1));
+  }
+  .sf-avatar-card .sf-icon {
+    font-size: var(--sf-icon--font-size, var(--sf-text-height-1));
+    height: var(--sf-icon--height, var(--sf-text-height-1));
+    width: var(--sf-icon--width, var(--sf-text-height-1));
+  }
+  .sf-avatar-card .sf-avatar-card-title {
+    font-family: var(--sf-avatar-card-title--font-family, var(--sf-text--family));
+    font-size: var(--sf-avatar-card-title--font-size, var(--sf-text-size-1));
+    font-weight: var(--sf-avatar-card-title--font-weight, var(--sf-font-weight-medium));
+    line-height: var(--sf-avatar-card-title--line-height, var(--sf-text-height-1));
+  }
+  /* The media box without a photo (owner decision C124, 2026-11-13; research
+     control/research/2026-11-13-avatar-placeholder.md, variants B and A).
+     With a name: the initials on the person's hue -- sf-avatar's hue="auto"
+     rule, the hue's plate and ink (core .sf-hue-<name>) -- as the round avatar
+     draws them. Without a name: the person glyph on the neutral fill in the
+     round placeholder's colours. The glyph (45 % of the box) and the initials
+     (36 % of its width) are a share of the media box, container query units:
+     the media exception of C18, sized by the box rather than a ladder step. */
+  .sf-avatar-card .sf-avatar-card-placeholder {
+    container-type: inline-size;
+    overflow: hidden;
+  }
+  .sf-avatar-card .sf-avatar-card-initials {
+    font-family: var(--sf-text--family);
+    font-size: 36cqi;
+    font-weight: var(--sf-font-weight-medium);
+    line-height: 1;
+    white-space: nowrap;
+  }
+  /* The icon sheet sizes .sf-icon outside the layers, so the glyph takes its
+     size through the icon's own size variables (the author's
+     --sf-icon-glyph-size still wins). */
+  .sf-avatar-card .sf-avatar-card-placeholder .sf-icon {
+    --sf-icon--font-size: 45cqi;
+    --sf-icon--height: 45cqi;
+    --sf-icon--width: 45cqi;
+  }
+}
+@layer sf.paint {
+  .sf-avatar-card .sf-avatar-card-content {
+    color: var(--sf-on-surface);
+  }
+  .sf-avatar-card .sf-avatar-card-row {
+    color: var(--sf-avatar-card-row--color, var(--sf-on-surface-variant));
+  }
+  .sf-avatar-card .sf-avatar-card-title {
+    color: var(--sf-avatar-card-title--color, var(--sf-on-surface));
+  }
+  .sf-avatar-card .sf-avatar-card-placeholder {
+    background-color: var(--sf-surface-container);
+    /* The container text role, as on the round placeholder (C124 "the round
+       placeholder's colours"): dimmed text inside reads the container ink. */
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+    color: var(--sf-on-surface-container-variant);
+  }
+  .sf-avatar-card .sf-avatar-card-placeholder--text:is(.sf-hue-red, .sf-hue-orange, .sf-hue-amber, .sf-hue-yellow, .sf-hue-lime, .sf-hue-green, .sf-hue-teal, .sf-hue-cyan, .sf-hue-sky, .sf-hue-blue, .sf-hue-indigo, .sf-hue-violet, .sf-hue-purple, .sf-hue-pink, .sf-hue-brown, .sf-hue-gray, .sf-hue-primary, .sf-hue-secondary, .sf-hue-tertiary) {
+    background-color: var(--sf-hue-container);
+    color: var(--sf-on-hue-container);
+  }
+  .sf-avatar-card .sf-avatar-card-placeholder .sf-icon {
+    color: inherit;
+  }
+}
+@layer sf.base {
+  .sf-avatar--picture {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+  }
+}
+@layer sf.components {
+  /* utility-hint: display/block */
+  .sf-avatar:where(:dir(ltr)){
+    border-bottom-right-radius: var(--sf-avatar--border-bottom-right-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+  }
+  .sf-avatar:where(:dir(rtl)){
+    border-bottom-left-radius: var(--sf-avatar--border-bottom-right-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+  }
+  .sf-avatar:where(:dir(ltr)){
+    border-bottom-left-radius: var(--sf-avatar--border-bottom-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+  }
+  .sf-avatar:where(:dir(rtl)){
+    border-bottom-right-radius: var(--sf-avatar--border-bottom-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+  }
+  .sf-avatar:where(:dir(ltr)){
+    border-top-right-radius: var(--sf-avatar--border-top-right-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+  }
+  .sf-avatar:where(:dir(rtl)){
+    border-top-left-radius: var(--sf-avatar--border-top-right-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+  }
+  .sf-avatar:where(:dir(ltr)){
+    border-top-left-radius: var(--sf-avatar--border-top-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+  }
+  .sf-avatar:where(:dir(rtl)){
+    border-top-right-radius: var(--sf-avatar--border-top-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+  }
+  .sf-avatar:where(:dir(ltr)){
+    border-right-width: var(--sf-avatar--border-inline-end-width, 0);
+  }
+  .sf-avatar:where(:dir(rtl)){
+    border-left-width: var(--sf-avatar--border-inline-end-width, 0);
+  }
+  .sf-avatar:where(:dir(ltr)){
+    border-left-width: var(--sf-avatar--border-inline-start-width, 0);
+  }
+  .sf-avatar:where(:dir(rtl)){
+    border-right-width: var(--sf-avatar--border-inline-start-width, 0);
+  }
+  .sf-avatar {
+    border-end-end-radius: var(--sf-avatar--border-bottom-right-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+    border-end-start-radius: var(--sf-avatar--border-bottom-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+    border-start-end-radius: var(--sf-avatar--border-top-right-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+    border-start-start-radius: var(--sf-avatar--border-top-left-radius, var(--sf-avatar-radius, var(--sf-radius-circle)));
+    font-family: var(--sf-avatar--font-family, var(--sf-text--family));
+    /* Initials in the medium weight (owner decision C152 (3), 2026-11-14;
+       Material, Fluent, Telegram): regular letters on a tinted plate read
+       thin at 1/3 and 1/2. */
+    font-weight: var(--sf-avatar--font-weight, var(--sf-weight--medium));
+    width: var(--sf-avatar--width);
+    height: var(--sf-avatar--height);
+    font-size: var(--sf-avatar--font-size);
+    line-height: var(--sf-avatar--line-height);
+    white-space: nowrap;
+    border-width: var(--sf-avatar--border-width, 0);
+    border-top-width: var(--sf-avatar--border-top-width, 0);
+    border-inline-end-width: var(--sf-avatar--border-inline-end-width, 0);
+    border-bottom-width: var(--sf-avatar--border-bottom-width, 0);
+    border-inline-start-width: var(--sf-avatar--border-inline-start-width, 0);
+    border-style: var(--sf-avatar--border-style, solid);
+    box-shadow: var(--sf-avatar--box-shadow);
+    /* A picture of a fixed size: in a row of wrapping text it keeps its
+       circle (docs precheck AV-03: line avatars became 12.7x16 ovals on a
+       phone, squeezed by the text beside them). */
+    flex-shrink: 0;
+    /* A picture drawn as the background (dropdown, list and tag rows set
+       background-image with bg-cover) fills the whole circle, ring included,
+       once and centred. With the defaults it was tiled from the inner edge of
+       the transparent ring, so slivers of the next copies showed above and
+       below the circle ("ears", R155, flags in the country list at 8x). The
+       ring, when coloured, is drawn over the picture's edge. */
+    background-origin: border-box;
+    background-position: center;
+    background-repeat: no-repeat;
+    --sf-avatar--background-color: var(--sf-avatar-background-color, transparent);
+    --sf-avatar--border-top-width: var(--sf-avatar-border-width, var(--sf-px));
+    --sf-avatar--border-bottom-width: var(--sf-avatar-border-width, var(--sf-px));
+    --sf-avatar--border-inline-start-width: var(--sf-avatar-border-width, var(--sf-px));
+    --sf-avatar--border-inline-end-width: var(--sf-avatar-border-width, var(--sf-px));
+  }
+  .sf-avatar .sf-avatar-badge:where(:dir(ltr)){
+    border-bottom-right-radius: var(--sf-avatar-badge--border-end-end-radius);
+  }
+  .sf-avatar .sf-avatar-badge:where(:dir(rtl)){
+    border-bottom-left-radius: var(--sf-avatar-badge--border-end-end-radius);
+  }
+  .sf-avatar .sf-avatar-badge:where(:dir(ltr)){
+    border-bottom-left-radius: var(--sf-avatar-badge--border-end-start-radius);
+  }
+  .sf-avatar .sf-avatar-badge:where(:dir(rtl)){
+    border-bottom-right-radius: var(--sf-avatar-badge--border-end-start-radius);
+  }
+  .sf-avatar .sf-avatar-badge:where(:dir(ltr)){
+    border-top-right-radius: var(--sf-avatar-badge--border-start-end-radius);
+  }
+  .sf-avatar .sf-avatar-badge:where(:dir(rtl)){
+    border-top-left-radius: var(--sf-avatar-badge--border-start-end-radius);
+  }
+  .sf-avatar .sf-avatar-badge:where(:dir(ltr)){
+    border-top-left-radius: var(--sf-avatar-badge--border-start-start-radius);
+  }
+  .sf-avatar .sf-avatar-badge:where(:dir(rtl)){
+    border-top-right-radius: var(--sf-avatar-badge--border-start-start-radius);
+  }
+  .sf-avatar .sf-avatar-badge {
+    border: var(--sf-avatar-badge--border, 0 solid);
+    border-color: revert-layer;
+    border-end-end-radius: var(--sf-avatar-badge--border-end-end-radius);
+    border-end-start-radius: var(--sf-avatar-badge--border-end-start-radius);
+    border-start-end-radius: var(--sf-avatar-badge--border-start-end-radius);
+    border-start-start-radius: var(--sf-avatar-badge--border-start-start-radius);
+    border-style: var(--sf-avatar-badge--border-style, solid);
+    border-width: var(--sf-avatar-badge--border-width, 0);
+  }
+  /* The placeholder glyph is a share of the avatar's own box, one table on
+     every screen and density (owner decisions C124: 57-67 % of the circle,
+     and C132 (6): no 14 among the small parts; content study Ав3,
+     2026-11-16). The box steps 16 . 20 . 24 . 28 . 32 . 36 . 40 . 44 . 48 .
+     52 . 56 take the glyph 12 . 12 . 16 . 16 . 20 . 24 . 24 . 28 . 28 . 32 .
+     32: 12, and 4 more at each of the boxes 24, 32, 36, 44 and 52. Each
+     step is clamp(0, (box - threshold + 1 px) x 1000, 4): 4 from the
+     threshold on, 0 below it. It followed the icon ladder of the size name,
+     which moves with the text: a 20 circle took 14 in compact and 16 on a
+     phone, a 36 circle 20 (56 %). The desktop row is unchanged. An avatar
+     without a size step (an author's own width) keeps the size-3 icon. */
+  .sf-avatar .sf-icon {
+    --sf-avatar--glyph-size: calc(var(--sf-b2)
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-c2) + var(--sf-a1)) * 1000, var(--sf-a4))
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-c6) + var(--sf-a1)) * 1000, var(--sf-a4))
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-c8) + var(--sf-a1)) * 1000, var(--sf-a4))
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-d1) + var(--sf-a1)) * 1000, var(--sf-a4))
+      + clamp(var(--sf-a0), (var(--sf-avatar--width) - var(--sf-d3) + var(--sf-a1)) * 1000, var(--sf-a4)));
+    /* The icon sheet sizes .sf-icon outside the layers from its own size
+       variables, so the glyph is set through them. */
+    --sf-icon--font-size: var(--sf-avatar--glyph-size, var(--sf-icon-size-3));
+    --sf-icon--height: var(--sf-avatar--glyph-size, var(--sf-icon-size-3));
+    --sf-icon--width: var(--sf-avatar--glyph-size, var(--sf-icon-size-3));
+    font-size: var(--sf-icon--font-size);
+    height: var(--sf-icon--height);
+    width: var(--sf-icon--width);
+  }
+  .sf-avatar .sf-avatar-badge.sf-avatar-badge--company {
+    --sf-avatar-badge--border: var(--sf-px) solid;
+    --sf-avatar-badge--border-end-end-radius: var(--sf-radius-circle);
+    --sf-avatar-badge--border-end-start-radius: var(--sf-radius-circle);
+    --sf-avatar-badge--border-start-end-radius: var(--sf-radius-circle);
+    --sf-avatar-badge--border-start-start-radius: var(--sf-radius-circle);
+    --sf-avatar-badge--border-style: solid;
+    --sf-avatar-badge--border-width: var(--sf-px);
+    --sf-avatar-badge--border-color: var(--sf-surface-place);
+  }
+  /* The badge drawings take their inks from the colour roles (C18): the
+     company plate is the error role with on-error for its glyph, the
+     verified plate the primary role with on-primary. In the light theme the
+     verified badge is the drawing's own colour (primary-40 on white) and the
+     company plate is the error role's tone 40; in the dark theme both follow
+     their roles (tone 80 plates, tone 20 glyphs). */
+  .sf-avatar-badge--company .sf-avatar-badge-plate {
+    fill: var(--sf-error);
+  }
+  .sf-avatar-badge--company .sf-avatar-badge-glyph {
+    fill: var(--sf-on-error);
+  }
+  .sf-avatar-badge--verified .sf-avatar-badge-plate {
+    fill: var(--sf-primary);
+  }
+  .sf-avatar-badge--verified .sf-avatar-badge-glyph {
+    fill: var(--sf-on-primary);
+  }
+  .sf-avatar--size-1 {
+    --sf-avatar--font-size: var(--sf-text-size-1);
+    --sf-avatar--height: var(--sf-ui-1--control-height);
+    --sf-avatar--line-height: var(--sf-text-height-1);
+    --sf-avatar--width: var(--sf-ui-1--control-height);
+  }
+  .sf-avatar--size-2 {
+    --sf-avatar--font-size: var(--sf-text-size-2);
+    --sf-avatar--height: var(--sf-ui-2--control-height);
+    --sf-avatar--line-height: var(--sf-text-height-2);
+    --sf-avatar--width: var(--sf-ui-2--control-height);
+  }
+  .sf-avatar--size-3 {
+    --sf-avatar--font-size: var(--sf-text-size-3);
+    --sf-avatar--height: var(--sf-ui-3--control-height);
+    --sf-avatar--line-height: var(--sf-text-height-3);
+    --sf-avatar--width: var(--sf-ui-3--control-height);
+  }
+  .sf-avatar--size-1\/2 {
+    --sf-avatar--font-size: var(--sf-text-size-1\/2);
+    --sf-avatar--height: var(--sf-ui-1\/2--control-height);
+    --sf-avatar--line-height: var(--sf-text-height-1\/2);
+    --sf-avatar--width: var(--sf-ui-1\/2--control-height);
+  }
+  /* The two smallest steps (C18, docs precheck AV-05). 1/3 is the low height
+     of size 1/3, 24 on a desktop and 20 on a phone; 1/4 is 16 on both (owner
+     decision C132 #q-avatar, below). */
+  .sf-avatar--size-1\/3 {
+    --sf-avatar--font-size: var(--sf-text-size-1\/3);
+    --sf-avatar--height: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-avatar--line-height: var(--sf-text-height-1\/3);
+    --sf-avatar--width: calc(var(--sf-text-height-1\/3) + 2 * var(--sf-ui-1\/3--space-y-tightness-low));
+  }
+  /* 1/4 is 16 on every screen (owner decision C132 #q-avatar): the small
+     step 16, the bottom of the main ladder. It was the text line of 1/2, 20
+     on a desktop and 16 on a phone. */
+  .sf-avatar--size-1\/4 {
+    --sf-avatar--font-size: var(--sf-text-size-1\/4);
+    --sf-avatar--height: var(--sf-b6);
+    --sf-avatar--line-height: var(--sf-text-height-1\/4);
+    --sf-avatar--width: var(--sf-b6);
+  }
+  /* Compact moves every avatar one step down its own ladder (dispatcher call
+     2026-11-12; density, C22): 16 / 24 / 32 / 40 / 48 / 56 become 16 / 20 /
+     24 / 32 / 40 / 48, no step skipped. 1/4 is 16 at every density since
+     C132 (above; group build 3: C132 wins over this ladder where they
+     disagree), so compact 1/4 and 1/3 are 16 and 20; on a desktop 1/3 reads
+     --sf-icon-size-3 (24, compact 20) and 1/2 the text line of 1/2 and
+     --sf-space-1/2 (20 + 12, compact 16 + 8). Before, compact kept 1/4 at 20 and 1/3 at 24, and 1/2 read
+     its control height (28): the compact ladder stood 20 / 24 / 28. The steps are the
+     region's tokens, so an explicit size and data-sf-density="normal" take
+     the normal values back with them; the phone ladder (below 60rem) keeps
+     the rules above. */
+  @media (min-width: 60rem) {
+    .sf-avatar--size-1\/3 {
+      --sf-avatar--height: var(--sf-icon-size-3);
+      --sf-avatar--width: var(--sf-icon-size-3);
+    }
+    .sf-avatar--size-1\/2 {
+      --sf-avatar--height: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2));
+      --sf-avatar--width: calc(var(--sf-text-height-1\/2) + var(--sf-space-1\/2));
+    }
+  }
+  .sf-avatar--placeholder, .sf-avatar--text {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-surface-container));
+  }
+  /* The hue of initials (owner decision C17, 2026-11-08): sf-hue-<name> gives
+     the element a hue's role set (core/scss/_sf_css__hue.scss), and the
+     initials stand on its container in its ink. Only the initials take one: a
+     picture covers the fill and the placeholder stays neutral, whatever the
+     classes say. A host's --sf-avatar-background-color and --sf-avatar-color
+     still win. */
+  .sf-avatar--text:is(.sf-hue-red, .sf-hue-orange, .sf-hue-amber, .sf-hue-yellow, .sf-hue-lime, .sf-hue-green, .sf-hue-teal, .sf-hue-cyan, .sf-hue-sky, .sf-hue-blue, .sf-hue-indigo, .sf-hue-violet, .sf-hue-purple, .sf-hue-pink, .sf-hue-brown, .sf-hue-gray, .sf-hue-primary, .sf-hue-secondary, .sf-hue-tertiary) {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-hue-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-hue-container));
+  }
+  /* The former tone classes, until 2027-01-01 (journal
+     class-c17-avatar-tone-to-hue): each reads the former role, which holds
+     the value of its hue's container now (rose is pink). */
+  .sf-avatar--text.sf-avatar--tone-rose {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-rose-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-rose-container));
+  }
+  .sf-avatar--text.sf-avatar--tone-amber {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-amber-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-amber-container));
+  }
+  .sf-avatar--text.sf-avatar--tone-lime {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-lime-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-lime-container));
+  }
+  .sf-avatar--text.sf-avatar--tone-green {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-green-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-green-container));
+  }
+  .sf-avatar--text.sf-avatar--tone-teal {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-teal-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-teal-container));
+  }
+  .sf-avatar--text.sf-avatar--tone-sky {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-sky-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-sky-container));
+  }
+  .sf-avatar--text.sf-avatar--tone-indigo {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-indigo-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-indigo-container));
+  }
+  .sf-avatar--text.sf-avatar--tone-violet {
+    --sf-avatar--background-color: var(--sf-avatar-background-color, var(--sf-tone-violet-container));
+    --sf-avatar--color: var(--sf-avatar-color, var(--sf-on-tone-violet-container));
+  }
+  /* The decorative level (owner decisions C91 level 2 and C65): initials
+     with a hue on a placeholder from 64 px (C65: covers only on placeholders
+     from 64, the d6 step) take a cover of their hue -- the C17 plate stepping
+     into a second container step towards the far corner, mixed in OKLab,
+     roles only -- under the same ink. The avatar ladder ends at size 3
+     (56 px, 52 on a phone), so the ladder's avatars stay flat (C65: avatars
+     are flat); an avatar the author sizes to 64 px or more takes it. No hue,
+     no cover: the neutral look stays neutral (C17). Off unless
+     sf-avatar--expressive (sf-avatar's expressive setting) or
+     data-sf-style="expressive" above it says so; the nearest data-sf-style
+     wins, strict being the default. The switch is a number the image's size
+     multiplies, so off is the C17 plate exactly. */
+  :where([data-sf-style=expressive]) {
+    --sf-style--expressive: 1;
+  }
+  :where([data-sf-style=strict]) {
+    --sf-style--expressive: 0;
+  }
+  .sf-avatar.sf-avatar--expressive {
+    --sf-style--expressive: 1;
+  }
+  /* The image is as wide as the avatar from the d6 step (64 px) on, and has
+     no size below it: read from the avatar's width (the size step or the
+     author's), not the painted box, which is the width less the 1 px ring on
+     each side; one pixel of slack, so 64 itself takes it. */
+  .sf-avatar--text:is(.sf-hue-red, .sf-hue-orange, .sf-hue-amber, .sf-hue-yellow, .sf-hue-lime, .sf-hue-green, .sf-hue-teal, .sf-hue-cyan, .sf-hue-sky, .sf-hue-blue, .sf-hue-indigo, .sf-hue-violet, .sf-hue-purple, .sf-hue-pink, .sf-hue-brown, .sf-hue-gray, .sf-hue-primary, .sf-hue-secondary, .sf-hue-tertiary) {
+    background-image: linear-gradient(135deg in oklab, transparent, var(--sf-hue-container));
+    background-repeat: no-repeat;
+    background-size: calc(clamp(0px, (var(--sf-avatar--width, 0px) - var(--sf-d6) + var(--sf-px)) * 1000, 100%) * var(--sf-style--expressive, 0)) calc(100% * var(--sf-style--expressive, 0));
+  }
+  @media (forced-colors: active) {
+    .sf-avatar--text {
+      background-image: none;
+    }
+  }
+  /* The square (an organisation, a project, a group, a bot, an app) takes a
+     corner that grows with its step (owner decision C152 (4), 2026-11-14):
+     4 at 1/4 and 1/3 (--sf-radius-1/2), 8 at 1/2 and 1 (--sf-radius-1), 12
+     at 2 and 3 (--sf-b2). It was 4 at every step, a sharp square at 48 and
+     56. An avatar on a text line (no step) keeps the control corner. */
+  .sf-avatar--square {
+    --sf-avatar--square-radius: var(--sf-radius--ui);
+    --sf-avatar--border-bottom-right-radius: var(--sf-avatar-radius, var(--sf-avatar--square-radius));
+    --sf-avatar--border-bottom-left-radius: var(--sf-avatar-radius, var(--sf-avatar--square-radius));
+    --sf-avatar--border-top-right-radius: var(--sf-avatar-radius, var(--sf-avatar--square-radius));
+    --sf-avatar--border-top-left-radius: var(--sf-avatar-radius, var(--sf-avatar--square-radius));
+  }
+  .sf-avatar--square:is(.sf-avatar--size-1\/4, .sf-avatar--size-1\/3) {
+    --sf-avatar--square-radius: var(--sf-radius-1\/2);
+  }
+  .sf-avatar--square:is(.sf-avatar--size-1\/2, .sf-avatar--size-1) {
+    --sf-avatar--square-radius: var(--sf-radius-1);
+  }
+  .sf-avatar--square:is(.sf-avatar--size-2, .sf-avatar--size-3) {
+    --sf-avatar--square-radius: var(--sf-b2);
+  }
+  /* An <img> picture fills the same circle as a background one. The ring is
+     taken off the avatar and drawn by the picture itself as an inset outline,
+     over its edge: an image inside the ring was a circle one ring smaller
+     than its size, and a lookup row clips its avatar to the inner edge. The
+     outline has the ring's width and colour, so hover still shows. */
+  .sf-avatar:has(> .sf-avatar-image) {
+    --sf-avatar--border-top-width: 0;
+    --sf-avatar--border-bottom-width: 0;
+    --sf-avatar--border-inline-start-width: 0;
+    --sf-avatar--border-inline-end-width: 0;
+  }
+  .sf-avatar-image {
+    width: 100%;
+    inline-size: 100%;
+    height: 100%;
+    block-size: 100%;
+    -o-object-fit: cover;
+       object-fit: cover;
+    border-radius: inherit;
+    outline: var(--sf-avatar-border-width, var(--sf-px)) solid var(--sf-avatar--border-color, var(--sf-avatar-border-color, transparent));
+    outline-offset: calc(var(--sf-avatar-border-width, var(--sf-px)) * -1);
+  }
+  /* The photo over the initials (owner decision C152 (2), 2026-11-14): the
+     initials (or the glyph) stand on their plate from the first frame; the
+     photo lies over them, transparent until it has come, then fades in, and
+     a photo that fails is dropped (data-sf-loaded, js/picture.js). Once it is
+     in, the plate and the letters step back, so a photo with transparent
+     parts looks as it did. It was an empty circle while loading and the
+     browser's broken-image glyph on an error. */
+  .sf-avatar:has(> .sf-avatar-image) {
+    position: relative;
+  }
+  .sf-avatar > .sf-avatar-image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0;
+  }
+  /* Transparent until it has come only where it lies over initials or a
+     glyph, as sf-avatar draws it and these docs ask (photo over initials).
+     A lone <img class="sf-avatar-image"> -- the documented picture variant,
+     with nothing under it to show -- is drawn as it loads, as before C152:
+     an image no script marks stayed invisible for good (group build 16, G7,
+     avatar-picture-fill; red on group builds 14 and 15). */
+  .sf-avatar > :is(.sf-avatar-text, sf-icon, .sf-icon) ~ .sf-avatar-image {
+    opacity: 0;
+    transition: opacity var(--sf-duration-fast) var(--sf-animation, ease);
+  }
+  .sf-avatar > .sf-avatar-image[data-sf-loaded=true] {
+    opacity: 1;
+  }
+  .sf-avatar > .sf-avatar-image[data-sf-loaded=error] {
+    display: none;
+  }
+  .sf-avatar:has(> .sf-avatar-image[data-sf-loaded=true]) {
+    --sf-avatar--background-color: transparent;
+    background-image: none;
+  }
+  .sf-avatar:has(> .sf-avatar-image[data-sf-loaded=true]) > :is(.sf-avatar-text, sf-icon) {
+    visibility: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sf-avatar > :is(.sf-avatar-text, sf-icon, .sf-icon) ~ .sf-avatar-image {
+      transition: none;
+    }
+  }
+  /* The anchor of a name tooltip (C152 (7)): the avatar's own box, so the
+     tooltip sheet, fetched when the first one draws, moves nothing. */
+  .sf-avatar-anchor {
+    display: inline-flex;
+    flex: none;
+    position: relative;
+    vertical-align: middle;
+  }
+}
+@layer sf.paint {
+  .sf-avatar {
+    color: var(--sf-avatar--color, var(--sf-avatar-color, var(--sf-on-surface-variant)));
+    background-color: var(--sf-avatar--background-color);
+    border-color: var(--sf-avatar--border-color, var(--sf-avatar-border-color, transparent));
+  }
+  .sf-avatar .sf-avatar-badge {
+    border: var(--sf-avatar-badge--border, 0 solid);
+    border-color: var(--sf-avatar-badge--border-color, transparent);
+  }
+  .sf-avatar--placeholder, .sf-avatar--text {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+}
+@layer sf.states {
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled):hover .sf-online-indicator.sf-online-indicator--online,
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled).focus-visible .sf-online-indicator.sf-online-indicator--online {
+    --sf-online-indicator--background-color: var(--sf-success);
+  }
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled):hover .sf-online-indicator.sf-online-indicator--online,
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled):focus-visible .sf-online-indicator.sf-online-indicator--online {
+    --sf-online-indicator--background-color: var(--sf-success);
+  }
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled):hover {
+    --sf-avatar--border-color: var(--sf-primary-hover);
+    --sf-avatar--border-style: solid;
+    --sf-avatar--border-width: var(--sf-px);
+  }
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled).focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+  :is(button, a).sf-avatar:not(:disabled):not(.disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+  }
+}
+@layer sf.components {
+  /* An avatar beside a label takes the label's line of a form size, the way an
+     icon does, and its initials half of it. Its own sizes are control heights. */
+  .sf-avatar.sf-avatar--line-1\/2 {
+    --sf-avatar--height: var(--sf-text-height-1\/2);
+    --sf-avatar--width: var(--sf-text-height-1\/2);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1\/2) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-avatar.sf-avatar--line-1 {
+    --sf-avatar--height: var(--sf-text-height-1);
+    --sf-avatar--width: var(--sf-text-height-1);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-1) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-1);
+  }
+  .sf-avatar.sf-avatar--line-2 {
+    --sf-avatar--height: var(--sf-text-height-2);
+    --sf-avatar--width: var(--sf-text-height-2);
+    --sf-avatar--font-size: min(var(--sf-text-size-1\/3), calc(var(--sf-text-height-2) / 2));
+    --sf-avatar--line-height: var(--sf-text-height-2);
+  }
+}
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/center (.items-center) */
+  .sf-avatar-label-group {
+    gap: var(--sf-avatar-label-group--gap);
+    /* The group may be narrower than its text, so the no-wrap lines can end
+       in an ellipsis (docs precheck smart content AV-01): as a grid or flex
+       item it took the text's whole width -- 499 in a 300 frame -- and the
+       lines ran out without one. */
+    min-width: 0;
+    min-inline-size: 0;
+    max-width: 100%;
+    max-inline-size: 100%;
+  }
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-avatar-label-group .sf-avatar-label-group-container {
+    min-width: 0;
+    min-inline-size: 0;
+    /* The name and the role wrap inside the group (owner decision C152 (7):
+       the name is printed, so it is read whole, not cut): a word longer than
+       the line -- a long surname, an address -- breaks rather than running out
+       of the container (register RG-S1-24, 2026-11-16: 144 px past a 300 px
+       frame). no-wrap lines still end in an ellipsis and carry the full text
+       as their title. */
+    word-wrap: break-word;
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-title {
+    font-family: var(--sf-avatar-label-group-title--font-family, var(--sf-text--family));
+    font-size: var(--sf-avatar-label-group-title--font-size);
+    font-weight: var(--sf-avatar-label-group-title--font-weight, var(--sf-font-weight-medium));
+    line-height: var(--sf-avatar-label-group-title--line-height);
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-text {
+    font-family: var(--sf-avatar-label-group-text--font-family, var(--sf-text--family));
+    font-size: var(--sf-avatar-label-group-text--font-size);
+    font-weight: var(--sf-avatar-label-group-text--font-weight, var(--sf-font-weight-regular));
+    line-height: var(--sf-avatar-label-group-text--line-height);
+  }
+  /* The name takes the text step of the avatar's size; the second line one
+     step smaller, in the explanation's ink (owner decision C229, 2026-11-16,
+     as the explanation of a list row): 3 -> 2, 2 -> 1, 1 -> 1/2, 1/2 -> 1/3,
+     1/3 -> 1/4; 1/4 is the smallest text step, both lines stay on it. The two
+     lines were one size, told apart only by colour, and stood taller than the
+     avatar. */
+  .sf-avatar-label-group--size-3 .sf-avatar-label-group-title {
+    --sf-avatar-label-group-title--font-size: var(--sf-text-size-3);
+    --sf-avatar-label-group-title--line-height: var(--sf-text-height-3);
+  }
+  .sf-avatar-label-group--size-3 .sf-avatar-label-group-text,
+  .sf-avatar-label-group--size-2 .sf-avatar-label-group-title {
+    --sf-avatar-label-group-text--font-size: var(--sf-text-size-2);
+    --sf-avatar-label-group-text--line-height: var(--sf-text-height-2);
+    --sf-avatar-label-group-title--font-size: var(--sf-text-size-2);
+    --sf-avatar-label-group-title--line-height: var(--sf-text-height-2);
+  }
+  .sf-avatar-label-group--size-2 .sf-avatar-label-group-text,
+  .sf-avatar-label-group--size-1 .sf-avatar-label-group-title {
+    --sf-avatar-label-group-text--font-size: var(--sf-text-size-1);
+    --sf-avatar-label-group-text--line-height: var(--sf-text-height-1);
+    --sf-avatar-label-group-title--font-size: var(--sf-text-size-1);
+    --sf-avatar-label-group-title--line-height: var(--sf-text-height-1);
+  }
+  .sf-avatar-label-group--size-1 .sf-avatar-label-group-text,
+  .sf-avatar-label-group--size-1\/2 .sf-avatar-label-group-title {
+    --sf-avatar-label-group-text--font-size: var(--sf-text-size-1\/2);
+    --sf-avatar-label-group-text--line-height: var(--sf-text-height-1\/2);
+    --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/2);
+    --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-avatar-label-group--size-1\/2 .sf-avatar-label-group-text,
+  .sf-avatar-label-group--size-1\/3 .sf-avatar-label-group-title {
+    --sf-avatar-label-group-text--font-size: var(--sf-text-size-1\/3);
+    --sf-avatar-label-group-text--line-height: var(--sf-text-height-1\/3);
+    --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/3);
+    --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-avatar-label-group--size-1\/3 .sf-avatar-label-group-text,
+  .sf-avatar-label-group--size-1\/4 .sf-avatar-label-group-title,
+  .sf-avatar-label-group--size-1\/4 .sf-avatar-label-group-text {
+    --sf-avatar-label-group-text--font-size: var(--sf-text-size-1\/4);
+    --sf-avatar-label-group-text--line-height: var(--sf-text-height-1\/4);
+    --sf-avatar-label-group-title--font-size: var(--sf-text-size-1\/4);
+    --sf-avatar-label-group-title--line-height: var(--sf-text-height-1\/4);
+  }
+  /* The gap from the avatar to its words is the icon-to-text gap of a row
+     (owner decision C229 by C105 H2): 12, and 8 in compact density and on a
+     phone (--sf-space-1/2 moves so); 4 beside the two smallest avatars, as an
+     icon inside text (H3). It grew with the step, 16 at size 3. */
+  .sf-avatar-label-group {
+    --sf-avatar-label-group--gap: var(--sf-space-1\/2);
+  }
+  .sf-avatar-label-group--size-1\/3,
+  .sf-avatar-label-group--size-1\/4 {
+    --sf-avatar-label-group--gap: var(--sf-space-1\/4);
+  }
+}
+@layer sf.paint {
+  .sf-avatar-label-group {
+    background-color: var(--sf-avatar-label-group--background-color, transparent);
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-container {
+    background-color: var(--sf-avatar-label-group-container--background-color, transparent);
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-title {
+    color: var(--sf-avatar-label-group-title--color, var(--sf-on-surface));
+  }
+  .sf-avatar-label-group .sf-avatar-label-group-text {
+    color: var(--sf-avatar-label-group-text--color, var(--sf-on-surface-variant));
+  }
+}
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/3) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-avatar-group {
+    gap: var(--sf-space-1\/3);
+  }
+  /* The overlap follows the avatars' own size step (owner decision C152 (6);
+     content study Ав2, 2026-11-16): 4 up to size 1, 8 at 2 and 3, so the next
+     circle with its cut-out leaves the letters whole. The author sets only the
+     avatars' size; the group reads it from each avatar (or the one a link,
+     a button or the «+N» place holds). */
+  .sf-avatar-group .sf-avatar-group-avatars > * {
+    --sf-avatar-group--overlap: var(--sf-space-1\/4);
+  }
+  .sf-avatar-group .sf-avatar-group-avatars > :is(.sf-avatar--size-2, .sf-avatar--size-3, :has(.sf-avatar--size-2, .sf-avatar--size-3)) {
+    --sf-avatar-group--overlap: var(--sf-space-1\/3);
+  }
+  .sf-avatar-group .sf-avatar-group-avatars > * + *:where(:dir(ltr)){
+    margin-left: calc(var(--sf-avatar-group--overlap) * -1);
+  }
+  .sf-avatar-group .sf-avatar-group-avatars > * + *:where(:dir(rtl)){
+    margin-right: calc(var(--sf-avatar-group--overlap) * -1);
+  }
+  .sf-avatar-group .sf-avatar-group-avatars > * + * {
+    -webkit-margin-start: calc(var(--sf-avatar-group--overlap) * -1);
+            margin-inline-start: calc(var(--sf-avatar-group--overlap) * -1);
+  }
+  /* The overlap modifiers -- size-1/4, -1/3 and -1/2 and their former names
+     xs, sm and md -- chose the overlap whatever the avatars' size: 8 and 12 on
+     avatars of size 1, 4 on avatars of size 3. They keep drawing what they drew
+     until 2027-01-01 and the Loader notes each once in SF.deprecations
+     (journal class-avatar-group-overlap-by-size; the xs/sm/md record
+     class-avatar-group-overlap-size-names keeps its own date). */
+  .sf-avatar-group:is(.sf-avatar-group--size-1\/4, .sf-avatar-group--size-xs) .sf-avatar-group-avatars > * + *:where(:dir(ltr)){
+    margin-left: calc(var(--sf-space-1\/4) * -1);
+  }
+  .sf-avatar-group:is(.sf-avatar-group--size-1\/4, .sf-avatar-group--size-xs) .sf-avatar-group-avatars > * + *:where(:dir(rtl)){
+    margin-right: calc(var(--sf-space-1\/4) * -1);
+  }
+  .sf-avatar-group:is(.sf-avatar-group--size-1\/4, .sf-avatar-group--size-xs) .sf-avatar-group-avatars > * + * {
+    -webkit-margin-start: calc(var(--sf-space-1\/4) * -1);
+            margin-inline-start: calc(var(--sf-space-1\/4) * -1);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    border-color: revert-layer;
+    border-style: solid;
+    border-width: var(--sf-avatar-group--ring, var(--sf-px));
+  }
+  /* The cut-out is the ring of the presence point at the avatar's size (owner
+     decision C132 «одинаковая обводка»; avatar study AV-6, 2026-11-14): the
+     one table --sf-micro--ring-<size> of core, 1 px at 1/4 and 1/3 and 2 px
+     from 1/2 on. It was 1 px at every size beside a 2 px ring on the point. An
+     avatar on a text line (no size step) keeps 1 px. */
+  .sf-avatar-group .sf-avatar--size-1\/4 {
+    --sf-avatar-group--ring: var(--sf-micro--ring-1\/4);
+  }
+  .sf-avatar-group .sf-avatar--size-1\/3 {
+    --sf-avatar-group--ring: var(--sf-micro--ring-1\/3);
+  }
+  .sf-avatar-group .sf-avatar--size-1\/2 {
+    --sf-avatar-group--ring: var(--sf-micro--ring-1\/2);
+  }
+  .sf-avatar-group .sf-avatar--size-1 {
+    --sf-avatar-group--ring: var(--sf-micro--ring-1);
+  }
+  .sf-avatar-group .sf-avatar--size-2 {
+    --sf-avatar-group--ring: var(--sf-micro--ring-2);
+  }
+  .sf-avatar-group .sf-avatar--size-3 {
+    --sf-avatar-group--ring: var(--sf-micro--ring-3);
+  }
+  .sf-avatar-group:is(.sf-avatar-group--size-1\/3, .sf-avatar-group--size-sm) .sf-avatar-group-avatars > * + *:where(:dir(ltr)){
+    margin-left: calc(var(--sf-space-1\/3) * -1);
+  }
+  .sf-avatar-group:is(.sf-avatar-group--size-1\/3, .sf-avatar-group--size-sm) .sf-avatar-group-avatars > * + *:where(:dir(rtl)){
+    margin-right: calc(var(--sf-space-1\/3) * -1);
+  }
+  .sf-avatar-group:is(.sf-avatar-group--size-1\/3, .sf-avatar-group--size-sm) .sf-avatar-group-avatars > * + * {
+    -webkit-margin-start: calc(var(--sf-space-1\/3) * -1);
+            margin-inline-start: calc(var(--sf-space-1\/3) * -1);
+  }
+  .sf-avatar-group:is(.sf-avatar-group--size-1\/2, .sf-avatar-group--size-md) .sf-avatar-group-avatars > * + *:where(:dir(ltr)){
+    margin-left: calc(var(--sf-space-1\/2) * -1);
+  }
+  .sf-avatar-group:is(.sf-avatar-group--size-1\/2, .sf-avatar-group--size-md) .sf-avatar-group-avatars > * + *:where(:dir(rtl)){
+    margin-right: calc(var(--sf-space-1\/2) * -1);
+  }
+  .sf-avatar-group:is(.sf-avatar-group--size-1\/2, .sf-avatar-group--size-md) .sf-avatar-group-avatars > * + * {
+    -webkit-margin-start: calc(var(--sf-space-1\/2) * -1);
+            margin-inline-start: calc(var(--sf-space-1\/2) * -1);
+  }
+  /* «+N» with the list of everyone (owner decision C152 (6)): an sf-popover
+     whose trigger is a button of the avatars' size and shape; it overlaps the
+     last avatar as the avatars overlap each other. */
+  .sf-avatar-group-avatars > .sf-avatar-group-more {
+    display: inline-flex;
+    flex: none;
+  }
+  .sf-avatar-group-avatars > .sf-avatar-group-more > button.sf-avatar {
+    border-style: solid;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    font-family: var(--sf-avatar--font-family, var(--sf-text--family));
+    font-size: var(--sf-avatar--font-size);
+    font-weight: var(--sf-avatar--font-weight, var(--sf-weight--medium));
+    line-height: var(--sf-avatar--line-height);
+  }
+  /* The list behind «+N»: one row per person, the picture and the name, the
+     gap of one group (C105: 8). */
+  .sf-avatar-group-list {
+    list-style: none;
+    margin: 0;
+    padding: var(--sf-space-1\/4) 0;
+  }
+  .sf-avatar-group-list-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-1\/3);
+    padding: var(--sf-space-1\/4) var(--sf-space-1\/2);
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-avatar-group-list-name {
+    min-width: 0;
+    min-inline-size: 0;
+    word-wrap: anywhere;
+  }
+}
+@layer sf.paint {
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(.focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not([focus-within]):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+  .sf-avatar-group .sf-avatar:not(:hover):not(:active):not(:focus):not(:focus-visible):not(:focus-within):not(:disabled):not(:visited):not(:checked):not(:indeterminate) {
+    border: var(--sf-avatar-group--ring, var(--sf-px)) solid;
+    /* The cut-out between overlapping avatars is the place they stand on
+       (C16): white in both themes drew a white ring on a dark page. */
+    border-color: var(--sf-surface-place, transparent);
+  }
+}

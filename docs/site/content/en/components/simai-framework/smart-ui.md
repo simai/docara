@@ -232,6 +232,10 @@ Result:
 | `appearance` | `dark` (the default) or `light` |
 | `arrow` | Where the tail is: `none` (the default), `top-center`, `bottom-center`, `inline-start`, `inline-end`, `bottom-inline-start` or `bottom-inline-end` |
 
+A tooltip has no size: in SIMAI Framework every tooltip is the same size, so
+the build does not accept a `size` parameter and stops with
+`FRAMEWORK_PROP_UNKNOWN`.
+
 :::ui.tooltip
 {"text":"Draft","supporting-text":"Only you can see this page.","appearance":"light","arrow":"inline-start"}
 :::

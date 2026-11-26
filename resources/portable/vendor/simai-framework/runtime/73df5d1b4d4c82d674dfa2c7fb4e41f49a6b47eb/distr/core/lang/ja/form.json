@@ -1,0 +1,46 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "ja",
+  "name": "日本語",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-form": {
+      "required-note": "* — 必須項目",
+      "submit": "保存",
+      "cancel": "キャンセル",
+      "edit": "編集",
+      "send": "送信",
+      "answer-sending": "送信中…",
+      "answer-cancelling": "キャンセル中…",
+      "answer-sent": "送信済み",
+      "answer-expired": "回答期限が過ぎました",
+      "unsaved": "保存されていない変更があります",
+      "errors-title": {
+        "other": "{n} 件の項目を修正してください"
+      },
+      "value-missing": "「{label}」を入力してください",
+      "help-label": "{label} の詳細",
+      "empty-value": "未設定",
+      "origin-own": "個別の値",
+      "origin-above": "共通",
+      "origin-reset": "共通の値に戻す",
+      "origin-locked": "上位レベルでロックされています",
+      "saved-at": "{time} に保存しました",
+      "readonly-reason": "閲覧のみ",
+      "leave-heading": "保存せずに移動しますか?",
+      "leave-text": "このページの変更は失われます。",
+      "leave-discard": "保存しない",
+      "leave-keep": "編集を続ける"
+    }
+  }
+}

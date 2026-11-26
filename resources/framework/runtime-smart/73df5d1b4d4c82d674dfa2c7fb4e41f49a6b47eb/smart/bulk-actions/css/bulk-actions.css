@@ -1,0 +1,256 @@
+@charset "UTF-8";
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+@layer sf.components {
+  /* sf-bulk-actions (standard simai.smart-component 1.3.16 §6; owner decision
+     C295; prototype sf-bulk-actions-study, variant A). One row: the count and
+     the offer at the start, the actions, «⋯» and the clear cross at the end.
+     Its padding is the view settings panel's (LV3-26, the owner's list review):
+     space-1/3 above and below and at the end, space-1 at the start (8 / 16 / 8
+     on a desktop), so its height is the rung's control height and 2 x space-1/3
+     and its edges (50 at 1/2, 58 at 1, 66 at 2: inside the edge the 48, 56 and
+     64 steps); the groups wrap 16 apart (the role --sf-gap--groups),
+     inside a group 8 (the role --sf-gap--actions, C105: one group 8). The buttons are sf-button's
+     own look (outline on-surface, C116); nothing here repaints a button. An
+     action's words never wrap (LV3-27, LV4-23): the code folds by width, the
+     actions that do not fit go into «⋯» one by one, and «Выбрано N» stays on
+     the bar's line.
+
+     place: dock (default) stands over the list's bottom edge at the card's
+     width and sticks to the bottom of the scroll; top is the toolbar's place
+     in the primary container; float a plate at the middle of the window's
+     bottom edge; inline a plain row in the flow.
+
+     The public variables are read with the system value as their fallback and
+     never set here:
+       --sf-bulk-actions-background     the bar's surface
+       --sf-bulk-actions-border-color   the bar's edge
+       --sf-bulk-actions-color          the count's text
+       --sf-bulk-actions-gap            between the groups
+       --sf-bulk-actions-padding-block  above and below the row
+       --sf-bulk-actions-padding-inline at the start and the end (one or two values)
+       --sf-bulk-actions-radius         the bar's corners */
+  .sf-bulk-actions {
+    --sf-bulk-actions--gap: var(--sf-bulk-actions-gap, var(--sf-gap--groups));
+    --sf-bulk-actions--group-gap: var(--sf-gap--actions);
+    --sf-bulk-actions--padding-block: var(--sf-bulk-actions-padding-block, var(--sf-space-1\/3));
+    --sf-bulk-actions--padding-inline: var(--sf-bulk-actions-padding-inline, var(--sf-space-1) var(--sf-space-1\/3));
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: var(--sf-bulk-actions--group-gap);
+    -webkit-column-gap: var(--sf-bulk-actions--gap);
+       -moz-column-gap: var(--sf-bulk-actions--gap);
+            column-gap: var(--sf-bulk-actions--gap);
+    box-sizing: border-box;
+    min-width: 0;
+    min-inline-size: 0;
+    padding-top: var(--sf-bulk-actions--padding-block);
+    padding-bottom: var(--sf-bulk-actions--padding-block);
+    padding-block: var(--sf-bulk-actions--padding-block);
+    padding-left: var(--sf-bulk-actions--padding-inline);
+    padding-right: var(--sf-bulk-actions--padding-inline);
+    padding-inline: var(--sf-bulk-actions--padding-inline);
+    border-width: var(--sf-px);
+    border-style: solid;
+    border-radius: var(--sf-bulk-actions-radius, var(--sf-radius--surface));
+    container: sf-bulk-actions/inline-size;
+  }
+  .sf-bulk-actions[hidden] {
+    display: none;
+  }
+  /* One line (LV3-27, BB-1): the static row and the drawn count row are held
+     on one line at any width; until the code folds what does not fit into «⋯»
+     (the next frame after a jump narrower, the first frame out of the phone
+     row, an action tried back) it is clipped at the end, so the bar keeps its
+     height in every frame. The code measures the overflow by width. A run, a
+     result or a done line (no --held) still wraps. */
+  .sf-bulk-actions[data-sf-static],
+  .sf-bulk-actions--held {
+    flex-wrap: nowrap;
+    overflow: clip;
+  }
+  .sf-bulk-actions--held .sf-bulk-actions__lead {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+  }
+  /* The first paint (C55): the static markup is the wide row; where the code
+     will draw the phone's row (the bar narrower than sm, C181: a container
+     step) it shows the same row before the code comes -- the first action as
+     its icon, «⋯» and × -- so the bar is already its drawn height. */
+  @container sf-bulk-actions (width < 32rem) {
+    .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action > button:not(:has(.sf-icon)),
+    .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action:has(> button .sf-icon) ~ .sf-bulk-actions__action > button,
+    .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action .sf-button-text-container {
+      display: none;
+    }
+    .sf-bulk-actions[data-sf-static] .sf-bulk-actions__action > button {
+      flex-shrink: 0;
+      justify-content: center;
+      padding-left: var(--sf-space-1\/4);
+      padding-right: var(--sf-space-1\/4);
+      padding-inline: var(--sf-space-1\/4);
+    }
+    .sf-bulk-actions[data-sf-static] .sf-bulk-actions__offer > button {
+      display: none;
+    }
+  }
+  .sf-bulk-actions__lead,
+  .sf-bulk-actions__end,
+  .sf-bulk-actions__actions,
+  .sf-bulk-actions__answers,
+  .sf-bulk-actions__run {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-bulk-actions--group-gap);
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-bulk-actions__lead {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+  }
+  .sf-bulk-actions__run {
+    flex: 1 1 var(--sf-f6);
+    flex-wrap: wrap;
+    -webkit-column-gap: var(--sf-bulk-actions--gap);
+       -moz-column-gap: var(--sf-bulk-actions--gap);
+            column-gap: var(--sf-bulk-actions--gap);
+  }
+  .sf-bulk-actions__end:where(:dir(ltr)){
+    margin-left: auto;
+  }
+  .sf-bulk-actions__end:where(:dir(rtl)){
+    margin-right: auto;
+  }
+  .sf-bulk-actions__end {
+    -webkit-margin-start: auto;
+            margin-inline-start: auto;
+  }
+  .sf-bulk-actions__actions {
+    flex-wrap: nowrap;
+  }
+  .sf-bulk-actions__actions > * > button,
+  .sf-bulk-actions__lead:not([data-sf-bulk-done]) .sf-bulk-actions__offer > button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .sf-bulk-actions__count,
+  .sf-bulk-actions__say {
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+    -webkit-font-feature-settings: "tnum";
+            font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .sf-bulk-actions__count {
+    font-weight: var(--sf-font-weight-medium);
+  }
+  .sf-bulk-actions--size-1 :is(.sf-bulk-actions__count, .sf-bulk-actions__say) {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+  .sf-bulk-actions--size-2 :is(.sf-bulk-actions__count, .sf-bulk-actions__say) {
+    font-size: var(--sf-text-size-2);
+    line-height: var(--sf-text-height-2);
+  }
+  .sf-bulk-actions__say--warning,
+  .sf-bulk-actions__say--done {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sf-gap--icon-inline);
+  }
+  /* The done line (C387) beside the actions: where they do not fit the row
+     wraps, as the count row does; a line too long for a row of its own is cut
+     with an ellipsis (its whole text in the tooltip and the live region). */
+  .sf-bulk-actions__lead[data-sf-bulk-done] {
+    flex: 1 1 0;
+    flex-wrap: nowrap;
+    min-width: -webkit-min-content;
+    min-width: -moz-min-content;
+    min-width: min-content;
+    min-inline-size: -webkit-min-content;
+    min-inline-size: -moz-min-content;
+    min-inline-size: min-content;
+  }
+  .sf-bulk-actions__say--done {
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-bulk-actions__say--done .sf-bulk-actions__text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sf-bulk-actions__lead[data-sf-bulk-done] .sf-bulk-actions__offer > button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .sf-bulk-actions__progress {
+    flex: 1 1 var(--sf-f0);
+    min-width: var(--sf-e2);
+    min-inline-size: var(--sf-e2);
+    max-width: var(--sf-g0);
+    max-inline-size: var(--sf-g0);
+  }
+  .sf-bulk-actions--dock {
+    position: sticky;
+    bottom: 0;
+    inset-block-end: 0;
+    z-index: var(--sf-layer--sticky);
+  }
+  .sf-bulk-actions--float {
+    position: fixed;
+    bottom: var(--sf-space-1);
+    inset-block-end: var(--sf-space-1);
+    left: var(--sf-space-1);
+    right: var(--sf-space-1);
+    inset-inline: var(--sf-space-1);
+    max-width: var(--sf-h2);
+    max-inline-size: var(--sf-h2);
+    margin-left: auto;
+    margin-right: auto;
+    margin-inline: auto;
+    z-index: var(--sf-layer--sticky);
+  }
+  /* A phone: the actions are icon buttons named in their tooltips; the start
+     steps in to the screen's edge, as the end. */
+  .sf-bulk-actions--compact {
+    --sf-bulk-actions--padding-inline: var(--sf-bulk-actions-padding-inline, var(--sf-space-1\/3));
+  }
+  .sf-bulk-actions--compact.sf-bulk-actions--dock {
+    border-radius: var(--sf-bulk-actions-radius, var(--sf-radius--ui));
+  }
+}
+@layer sf.paint {
+  .sf-bulk-actions {
+    border-color: var(--sf-bulk-actions-border-color, var(--sf-outline-variant));
+    background-color: var(--sf-bulk-actions-background, var(--sf-surface-card));
+    color: var(--sf-bulk-actions-color, var(--sf-on-surface));
+  }
+  .sf-bulk-actions--dock {
+    box-shadow: var(--sf-shadow-raised);
+  }
+  .sf-bulk-actions--top {
+    border-color: transparent;
+    background-color: var(--sf-bulk-actions-background, var(--sf-primary-container));
+    color: var(--sf-bulk-actions-color, var(--sf-on-primary-container));
+  }
+  .sf-bulk-actions--float {
+    background-color: var(--sf-bulk-actions-background, var(--sf-surface-popup));
+    box-shadow: var(--sf-shadow-overlay);
+  }
+  .sf-bulk-actions__warning {
+    color: var(--sf-warning);
+  }
+  .sf-bulk-actions__done--done {
+    color: var(--sf-success);
+  }
+  .sf-bulk-actions__done--background {
+    color: var(--sf-on-surface-icon);
+  }
+  @media (forced-colors: active) {
+    .sf-bulk-actions {
+      border-color: CanvasText;
+    }
+  }
+}

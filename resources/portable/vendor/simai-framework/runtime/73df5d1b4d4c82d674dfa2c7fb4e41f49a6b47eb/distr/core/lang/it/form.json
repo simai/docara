@@ -1,0 +1,48 @@
+{
+  "$schema": "../../contracts/language-pack.v1.schema.json",
+  "schema": "simai.language-pack",
+  "schema_version": 1,
+  "delivery": "framework",
+  "lang": "it",
+  "name": "Italiano",
+  "dir": "ltr",
+  "status": "draft",
+  "review": "Machine translation by the Framework dispatcher (C278, 2026-11-18): every word, CLDR plural forms, country and language names from CLDR; not yet read by a native speaker.",
+  "coverage": {
+    "words": 24,
+    "translated": 24,
+    "share": 100
+  },
+  "words": {
+    "sf-form": {
+      "required-note": "* — campi obbligatori",
+      "submit": "Salva",
+      "cancel": "Annulla",
+      "edit": "Modifica",
+      "send": "Invia",
+      "answer-sending": "Invio…",
+      "answer-cancelling": "Annullamento…",
+      "answer-sent": "Inviato",
+      "answer-expired": "Il tempo per rispondere è scaduto",
+      "unsaved": "Hai modifiche non salvate",
+      "errors-title": {
+        "one": "Correggi {n} campo",
+        "many": "Correggi {n} campi",
+        "other": "Correggi {n} campi"
+      },
+      "value-missing": "Compila il campo «{label}»",
+      "help-label": "Maggiori informazioni su {label}",
+      "empty-value": "Non impostato",
+      "origin-own": "Valore proprio",
+      "origin-above": "comune",
+      "origin-reset": "Usa il valore comune",
+      "origin-locked": "Bloccato a un livello superiore",
+      "saved-at": "Salvato alle {time}",
+      "readonly-reason": "Sola lettura",
+      "leave-heading": "Uscire senza salvare?",
+      "leave-text": "Le modifiche in questa pagina andranno perse.",
+      "leave-discard": "Non salvare",
+      "leave-keep": "Continua a modificare"
+    }
+  }
+}

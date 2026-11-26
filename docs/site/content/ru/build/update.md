@@ -131,7 +131,8 @@ Docara 3.0 содержит закреплённый релиз SIMAI Framework 
 `ui-b4a77681f0a7` в версиях 3.14.0–3.14.2,
 `ui-7fb26d395af2` в версии 3.14.3,
 `ui-141822273efe` в версиях 3.15.0–3.17.0,
-`ui-dc9fc39aeb26` в более поздних версиях. Для сборки
+`ui-dc9fc39aeb26` в версиях 3.18.0–3.19.0,
+`ui-73df5d1b4d4c` в более поздних версиях. Для сборки
 больше не нужны отдельная копия Framework и переменные окружения:
 `DOCARA_SIMAI_UI_ROOT` и `SIMAI_UI_ROOT` можно убрать из окружения сборки и
 CI. Эти переменные остаются необязательными и нужны только для сборки с другой
@@ -230,7 +231,8 @@ php vendor/bin/docara update --apply
 php -r 'echo json_decode(file_get_contents("simai-framework.lock.json"), true)["runtime"]["pair_id"], PHP_EOL;'
 ```
 
-Значения `ui-dc9fc39aeb26` (текущий релиз), `ui-141822273efe` (Docara
+Значения `ui-73df5d1b4d4c` (текущий релиз), `ui-dc9fc39aeb26` (Docara
+3.18.0–3.19.0), `ui-141822273efe` (Docara
 3.15.0–3.17.0), `ui-7fb26d395af2` (Docara 3.14.3), `ui-b4a77681f0a7` (Docara 3.14.0–3.14.2), `ui-2a671352d67b` (Docara
 3.13.0–3.13.1), `ui-c3015f76bcc2` (Docara 3.12.0–3.12.2), `ui-7153f7a9c092` (Docara 3.10.0–3.11.1), `ui-32c7a64e4575` (Docara 3.6.0–3.9.1), `ui-25beeb814ae8` (Docara 3.1.0–3.5.0), `ui-82fc0ba882ba` (Docara 3.0.0–3.0.5) и
 `ui-4f5e5067afeb-smart-7d932ed51408` (lock Docara 2.18)

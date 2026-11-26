@@ -1,0 +1,1210 @@
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+/* A button's border is inside its control height: the padding gives each side's
+   border back. The side widths are registered as lengths, so a unitless 0
+   written by a group, a tab row or a host still subtracts; unregistered, it
+   would invalidate the padding. Measured before: outline, surface and every
+   segmented button stood 2px taller than its size. */
+@property --sf-icon-button--border-top-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --sf-icon-button--border-bottom-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --sf-icon-button--border-inline-start-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@property --sf-icon-button--border-inline-end-width {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
+@layer sf.components {
+  /* A link drawn as an icon button (sf-button-icon href, decision C51) takes
+     no link underline, as a.sf-button; its ink is the icon button's own. */
+  a.sf-icon-button {
+    text-decoration: none;
+  }
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-icon-button:where(:dir(ltr)) {
+    border-bottom-right-radius: var(--sf-icon-button--border-bottom-right-radius, var(--sf-icon-button--radius));
+  }
+  .sf-icon-button:where(:dir(rtl)) {
+    border-bottom-left-radius: var(--sf-icon-button--border-bottom-right-radius, var(--sf-icon-button--radius));
+  }
+  .sf-icon-button:where(:dir(ltr)) {
+    border-bottom-left-radius: var(--sf-icon-button--border-bottom-left-radius, var(--sf-icon-button--radius));
+  }
+  .sf-icon-button:where(:dir(rtl)) {
+    border-bottom-right-radius: var(--sf-icon-button--border-bottom-left-radius, var(--sf-icon-button--radius));
+  }
+  .sf-icon-button:where(:dir(ltr)) {
+    border-top-right-radius: var(--sf-icon-button--border-top-right-radius, var(--sf-icon-button--radius));
+  }
+  .sf-icon-button:where(:dir(rtl)) {
+    border-top-left-radius: var(--sf-icon-button--border-top-right-radius, var(--sf-icon-button--radius));
+  }
+  .sf-icon-button:where(:dir(ltr)) {
+    border-top-left-radius: var(--sf-icon-button--border-top-left-radius, var(--sf-icon-button--radius));
+  }
+  .sf-icon-button:where(:dir(rtl)) {
+    border-top-right-radius: var(--sf-icon-button--border-top-left-radius, var(--sf-icon-button--radius));
+  }
+  .sf-icon-button:where(:dir(ltr)) {
+    padding-left: calc(var(--sf-icon-button--padding-inline-start) - var(--sf-icon-button--border-inline-start-width));
+  }
+  .sf-icon-button:where(:dir(rtl)) {
+    padding-right: calc(var(--sf-icon-button--padding-inline-start) - var(--sf-icon-button--border-inline-start-width));
+  }
+  .sf-icon-button:where(:dir(ltr)) {
+    padding-right: calc(var(--sf-icon-button--padding-inline-end) - var(--sf-icon-button--border-inline-end-width));
+  }
+  .sf-icon-button:where(:dir(rtl)) {
+    padding-left: calc(var(--sf-icon-button--padding-inline-end) - var(--sf-icon-button--border-inline-end-width));
+  }
+  .sf-icon-button:where(:dir(ltr)) {
+    border-right-width: var(--sf-icon-button--border-inline-end-width, 0);
+  }
+  .sf-icon-button:where(:dir(rtl)) {
+    border-left-width: var(--sf-icon-button--border-inline-end-width, 0);
+  }
+  .sf-icon-button:where(:dir(ltr)) {
+    border-left-width: var(--sf-icon-button--border-inline-start-width, 0);
+  }
+  .sf-icon-button:where(:dir(rtl)) {
+    border-right-width: var(--sf-icon-button--border-inline-start-width, 0);
+  }
+  .sf-icon-button {
+    --sf-icon-button--radius: var(--sf-icon-button-radius, var(--sf-radius--ui));
+    border-end-end-radius: var(--sf-icon-button--border-bottom-right-radius, var(--sf-icon-button--radius));
+    border-end-start-radius: var(--sf-icon-button--border-bottom-left-radius, var(--sf-icon-button--radius));
+    border-start-end-radius: var(--sf-icon-button--border-top-right-radius, var(--sf-icon-button--radius));
+    border-start-start-radius: var(--sf-icon-button--border-top-left-radius, var(--sf-icon-button--radius));
+    -webkit-padding-start: calc(var(--sf-icon-button--padding-inline-start) - var(--sf-icon-button--border-inline-start-width));
+            padding-inline-start: calc(var(--sf-icon-button--padding-inline-start) - var(--sf-icon-button--border-inline-start-width));
+    padding-top: calc(var(--sf-icon-button--padding-top) - var(--sf-icon-button--border-top-width));
+    -webkit-padding-end: calc(var(--sf-icon-button--padding-inline-end) - var(--sf-icon-button--border-inline-end-width));
+            padding-inline-end: calc(var(--sf-icon-button--padding-inline-end) - var(--sf-icon-button--border-inline-end-width));
+    padding-bottom: calc(var(--sf-icon-button--padding-bottom) - var(--sf-icon-button--border-bottom-width));
+    /* The public border reaches every appearance, as on sf-button: the side
+       widths are registered lengths inside the control height. Outline,
+       surface and a group's segments set them after this, and win. */
+    --sf-icon-button--border-top-width: var(--sf-icon-button-border-width, 0);
+    --sf-icon-button--border-bottom-width: var(--sf-icon-button-border-width, 0);
+    --sf-icon-button--border-inline-start-width: var(--sf-icon-button-border-width, 0);
+    --sf-icon-button--border-inline-end-width: var(--sf-icon-button-border-width, 0);
+    border-width: var(--sf-icon-button--border-width, 0);
+    border-top-width: var(--sf-icon-button--border-top-width, 0);
+    border-inline-end-width: var(--sf-icon-button--border-inline-end-width, 0);
+    border-bottom-width: var(--sf-icon-button--border-bottom-width, 0);
+    border-inline-start-width: var(--sf-icon-button--border-inline-start-width, 0);
+    border-style: var(--sf-icon-button--border-style, solid);
+    box-shadow: var(--sf-icon-button--focus-inset, 0 0 var(--sf-transparent)), var(--sf-icon-button--box-shadow, 0 0 var(--sf-transparent));
+  }
+  /* A close draws its cross in the box an icon gets: the line of its size
+     (--sf-text-height-N), the cross at the text size centred in it. The close
+     part's own padding is a step of its own ladder, which matched the line on
+     the desktop only: on the mobile ladder the close button stood 30px at size
+     1/2 against the icon button's 28px, and 38 against 36 at size 1. The tag,
+     which draws the box itself, sets these to 0 in its own layer. */
+  .sf-icon-button.sf-icon-button--size-1\/3.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close, .sf-icon-button.sf-icon-button--size-1\/3.sf-icon-button--close > .sf-close {
+    --sf-close--padding-top: calc((var(--sf-text-height-1\/3) - var(--sf-text-size-1\/3)) / 2);
+    --sf-close--padding-bottom: calc((var(--sf-text-height-1\/3) - var(--sf-text-size-1\/3)) / 2);
+    --sf-close--padding-inline-start: calc((var(--sf-text-height-1\/3) - var(--sf-text-size-1\/3)) / 2);
+    --sf-close--padding-inline-end: calc((var(--sf-text-height-1\/3) - var(--sf-text-size-1\/3)) / 2);
+  }
+  .sf-icon-button.sf-icon-button--size-1\/2.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close, .sf-icon-button.sf-icon-button--size-1\/2.sf-icon-button--close > .sf-close {
+    --sf-close--padding-top: calc((var(--sf-text-height-1\/2) - var(--sf-text-size-1\/2)) / 2);
+    --sf-close--padding-bottom: calc((var(--sf-text-height-1\/2) - var(--sf-text-size-1\/2)) / 2);
+    --sf-close--padding-inline-start: calc((var(--sf-text-height-1\/2) - var(--sf-text-size-1\/2)) / 2);
+    --sf-close--padding-inline-end: calc((var(--sf-text-height-1\/2) - var(--sf-text-size-1\/2)) / 2);
+  }
+  .sf-icon-button.sf-icon-button--size-1.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close, .sf-icon-button.sf-icon-button--size-1.sf-icon-button--close > .sf-close {
+    --sf-close--padding-top: calc((var(--sf-text-height-1) - var(--sf-text-size-1)) / 2);
+    --sf-close--padding-bottom: calc((var(--sf-text-height-1) - var(--sf-text-size-1)) / 2);
+    --sf-close--padding-inline-start: calc((var(--sf-text-height-1) - var(--sf-text-size-1)) / 2);
+    --sf-close--padding-inline-end: calc((var(--sf-text-height-1) - var(--sf-text-size-1)) / 2);
+  }
+  .sf-icon-button.sf-icon-button--size-2.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close, .sf-icon-button.sf-icon-button--size-2.sf-icon-button--close > .sf-close {
+    --sf-close--padding-top: calc((var(--sf-text-height-2) - var(--sf-text-size-2)) / 2);
+    --sf-close--padding-bottom: calc((var(--sf-text-height-2) - var(--sf-text-size-2)) / 2);
+    --sf-close--padding-inline-start: calc((var(--sf-text-height-2) - var(--sf-text-size-2)) / 2);
+    --sf-close--padding-inline-end: calc((var(--sf-text-height-2) - var(--sf-text-size-2)) / 2);
+  }
+  .sf-icon-button.sf-icon-button--size-3.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close, .sf-icon-button.sf-icon-button--size-3.sf-icon-button--close > .sf-close {
+    --sf-close--padding-top: calc((var(--sf-text-height-3) - var(--sf-text-size-3)) / 2);
+    --sf-close--padding-bottom: calc((var(--sf-text-height-3) - var(--sf-text-size-3)) / 2);
+    --sf-close--padding-inline-start: calc((var(--sf-text-height-3) - var(--sf-text-size-3)) / 2);
+    --sf-close--padding-inline-end: calc((var(--sf-text-height-3) - var(--sf-text-size-3)) / 2);
+  }
+  .sf-icon-button .sf-icon {
+    font-size: var(--sf-icon--font-size, var(--sf-icon-size-3));
+    height: var(--sf-icon--height, var(--sf-icon-size-3));
+    width: var(--sf-icon--width, var(--sf-icon-size-3));
+  }
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-primary));
+  }
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-primary));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-primary-container));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-primary-container));
+  }
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
+    --sf-icon-button--border-color: var(--sf-icon-button-border-color, var(--sf-outline));
+  }
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary));
+  }
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--close {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
+  }
+  /* The ghost glyph is the ink of sf-button's ghost label of the same scheme
+     (1.14.0, RG-IB-1): --sf-primary, --sf-error. It was the pressed step
+     (-active), a darker colour than the button beside it. */
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary));
+  }
+  /* An icon with no text is the icon of a button with text (C107 (3), owner
+     2026-11-12): --sf-on-surface-icon, half a step paler than a label; under
+     a pointer it takes --sf-on-surface (the custom sheet's sf.states). Only
+     the service marks inside a field or a row stay --sf-on-surface-variant. */
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-icon));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-surface-container));
+    /* No container text role here (RG-IB-1 b, 2026-11-16): the control
+       carries no text, only a glyph, and a glyph asks 3:1 (C107 (2)), not the
+       4.5:1 of text. The quiet glyph keeps the page's --sf-on-surface-variant,
+       as outline and ghost of the scheme do (one scheme, one ink): 4.17:1 and
+       more over the container fill on surfaces 0 to 3 in both themes, and
+       quieter than the neutral --sf-on-surface-icon (the container variant,
+       neutral-85, read brighter than it in the dark theme). */
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-on-surface));
+    /* The glyph of the plate on a place with its own ink, as on sf-button
+       (component.buttons 1.14.0; inverse places IP, 2026-11-14). The plate
+       is --sf-on-surface, which a strong coloured place, the duo gradient,
+       glass and an inverse place re-declare as their ink; the theme's glyph,
+       --sf-on-surface-inverse, they cannot re-declare (a tooltip reads it
+       with --sf-surface-inverse). There the plate is the accent the place
+       made of its ink (--sf-primary), so its glyph is the accent's label,
+       --sf-on-primary. Only where the place declares --sf-place--ink:
+       elsewhere -- the page, a card, a popup, which take it back (initial)
+       -- this name is invalid (the 0 % mix reads the hook and nothing of it)
+       and the theme's glyph stays. */
+    --sf-icon-button--on-place-ink: color-mix(in srgb, var(--sf-on-primary), var(--sf-place--ink) 0%);
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));
+  }
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-primary));
+  }
+  /* A close is drawn as ghost whatever look of the icon button it writes
+     (component.icon-buttons 1.15.0, RG-CL-3; owner decision C14: no squares,
+     no outlined circle, no solid plate under a cross). default, tonal,
+     outline and surface on sf-icon-button--close are dated aliases of ghost
+     until 2027-01-01: the ghost rules of the close name every look, the
+     filled, tonal and outlined ones no longer name the close, and the runtime
+     says it once per button (journal class-icon-button-close-looks-c14). A
+     close of its own is sf-button-close. */
+  .sf-icon-button.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
+  }
+  .sf-icon-button.sf-icon-button--size-2.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+  }
+  /* Size 3 is 36 on the icon ladder (C151 (1)) and one step down, 28, on a
+     phone, where the text line of size 3 is 24 like size 2's (1.15.1,
+     RG-FAB-3). On a desktop the text line of size 3 is that step, in a
+     compact region too. */
+  .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-c4);
+    --sf-icon--height: var(--sf-c4);
+    --sf-icon--width: var(--sf-c4);
+    /* The control keeps its ladder height (52 on a phone): the larger glyph
+       takes its two extra pixels a side from the padding, so it sits in the
+       middle with 12 around it and every height variant keeps its size. */
+    margin: calc((var(--sf-text-height-3) - var(--sf-c4)) / 2);
+  }
+  @media (min-width: 60rem) {
+    .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+      --sf-icon--font-size: var(--sf-text-height-3);
+      --sf-icon--height: var(--sf-text-height-3);
+      --sf-icon--width: var(--sf-text-height-3);
+      margin: 0;
+    }
+  }
+  /* A loading size 3 button draws its spinner in that same icon box (C11):
+     28 with the padding's two pixels a side on a phone, the text line of
+     size 3 from 60rem (the custom sheet's slot, here one class stronger). */
+  .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon {
+    --sf-icon-button-spinner--size: var(--sf-c4);
+  }
+  .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon .sf-icon-button-spinner {
+    margin: calc((var(--sf-text-height-3) - var(--sf-c4)) / 2);
+  }
+  @media (min-width: 60rem) {
+    .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon {
+      --sf-icon-button-spinner--size: var(--sf-text-height-3);
+    }
+    .sf-icon-button.sf-icon-button--size-3.sf-icon-button--icon .sf-icon-button-spinner {
+      margin: 0;
+    }
+  }
+  .sf-icon-button.sf-icon-button--size-1\/2.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+  .sf-icon-button.sf-icon-button--size-1\/3.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-text-height-1\/3);
+    --sf-icon--height: var(--sf-text-height-1\/3);
+    --sf-icon--width: var(--sf-text-height-1\/3);
+  }
+  .sf-icon-button.sf-icon-button--size-1.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+  }
+  .sf-icon-button--size-1 {
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-default));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-default));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-default));
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-default));
+  }
+  /* An icon button has no density (1.14.0, owner decision C213): size and
+     height already change it and keep it square. spacing-compact,
+     -comfortable and -spacious (and the older tightness-low, -high,
+     -highest) moved the side padding only and drew 32 x 40 ... 80 x 56;
+     they draw nothing now, and the runtime notes them until 2027-01-01
+     (journal class-icon-button-density-c213). sf-button keeps density. */
+  .sf-icon-button--size-2 {
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-default));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-default));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-default));
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-default));
+  }
+  .sf-icon-button--size-3 {
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-default));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-default));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-default));
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-default));
+  }
+  .sf-icon-button--size-1\/2 {
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-default));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-default));
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-default));
+  }
+  .sf-icon-button--size-1\/3 {
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-default));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-default));
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+  }
+  /* Height (owner decision C27, C35): as on sf-button, height picks the
+     control height from the size's tightness steps -- low, high, highest
+     beside the default one -- and the icon keeps the size. An icon button is
+     square, so the step is the padding on all four sides: the control stands
+     at the size's line + 2 x the step, on the UI height ladder (size 1 on
+     desktop 32 / 40 / 48 / 56, compact 28 / 32 / 40 / 48, phone 28 / 36 / 44 /
+     52). A close keeps its cross at the text size in the line's box (the
+     close padding rules above), so a close takes the same heights. The
+     public --sf-icon-button-padding-block and -inline still win. Declared
+     after the density classes: a button that says both takes its sides from
+     its height. */
+  .sf-icon-button--size-1.sf-icon-button--height-low {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-low));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-low));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-low));
+  }
+  .sf-icon-button--size-1.sf-icon-button--height-high {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-high));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-high));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-high));
+  }
+  .sf-icon-button--size-1.sf-icon-button--height-highest {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1--space-y-tightness-highest));
+  }
+  .sf-icon-button--size-2.sf-icon-button--height-low {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-low));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-low));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-low));
+  }
+  .sf-icon-button--size-2.sf-icon-button--height-high {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-high));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-high));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-high));
+  }
+  .sf-icon-button--size-2.sf-icon-button--height-highest {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-2--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-2--space-y-tightness-highest));
+  }
+  .sf-icon-button--size-3.sf-icon-button--height-low {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-low));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-low));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-low));
+  }
+  .sf-icon-button--size-3.sf-icon-button--height-high {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-high));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-high));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-high));
+  }
+  .sf-icon-button--size-3.sf-icon-button--height-highest {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-3--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-3--space-y-tightness-highest));
+  }
+  .sf-icon-button--size-1\/2.sf-icon-button--height-low {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-low));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-low));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-low));
+  }
+  .sf-icon-button--size-1\/2.sf-icon-button--height-high {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-high));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-high));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-high));
+  }
+  .sf-icon-button--size-1\/2.sf-icon-button--height-highest {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/2--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/2--space-y-tightness-highest));
+  }
+  .sf-icon-button--size-1\/3.sf-icon-button--height-low {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-low));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-low));
+  }
+  /* The floor of the ladder (component.icon-buttons 1.15.0, RG-CL-4; C14,
+     C36): the lowest control is 24. Below 60rem the phone's low step of size
+     1/3 is 2 and drew 16 + 2 x 2 = 20; there a low 1/3 takes the size's
+     default step, 24, the phone ladder's first step. A close drawn by
+     sf-button-close stands in this box and takes it too. */
+  @media not all and (min-width: 60rem) {
+    .sf-icon-button--size-1\/3.sf-icon-button--height-low {
+      --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+      --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-default));
+      --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-default));
+      --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-default));
+    }
+  }
+  .sf-icon-button--size-1\/3.sf-icon-button--height-high {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-high));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-high));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-high));
+  }
+  .sf-icon-button--size-1\/3.sf-icon-button--height-highest {
+    --sf-icon-button--padding-top: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
+    --sf-icon-button--padding-bottom: var(--sf-icon-button-padding-block, var(--sf-ui-1\/3--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-start: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-highest));
+    --sf-icon-button--padding-inline-end: var(--sf-icon-button-padding-inline, var(--sf-ui-1\/3--space-y-tightness-highest));
+  }
+  /* No border on a close (component.icon-buttons 1.15.0, RG-CL-3, C14): the
+     cross is drawn without a square; :where keeps the weight of the rule. */
+  .sf-icon-button--outline:where(:not(.sf-icon-button--close)) {
+    --sf-icon-button--border-bottom-width: var(--sf-icon-button-border-width, var(--sf-px));
+    --sf-icon-button--border-inline-end-width: var(--sf-icon-button-border-width, var(--sf-px));
+    --sf-icon-button--border-inline-start-width: var(--sf-icon-button-border-width, var(--sf-px));
+    --sf-icon-button--border-style: solid;
+    --sf-icon-button--border-top-width: var(--sf-icon-button-border-width, var(--sf-px));
+    --sf-icon-button--border-width: var(--sf-icon-button-border-width, var(--sf-px));
+  }
+  .sf-icon-button.radius-default {
+    border-radius: var(--sf-radius--ui);
+    /* The corner a count or a dot sits on (simai/ui-source#12). */
+    --sf-icon-button--anchor-radius: var(--sf-radius--ui);
+  }
+  .sf-icon-button.radius-square {
+    border-radius: var(--sf-radius-square);
+  }
+  .sf-icon-button.radius-rounded {
+    border-radius: var(--sf-radius-rounded);
+  }
+  .sf-icon-button.segment-start {
+    --sf-icon-button--border-top-right-radius: var(--sf-radius-square);
+    --sf-icon-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+  }
+  /* One line at a join, as on the button: the end edge of the segment
+     before it; a segment that follows another has no start edge (docs
+     review R003, 2026-11-06). */
+  .sf-icon-button.segment-middle {
+    --sf-icon-button--border-top-left-radius: var(--sf-radius-square);
+    --sf-icon-button--border-top-right-radius: var(--sf-radius-square);
+    --sf-icon-button--border-bottom-right-radius: var(--sf-radius-square);
+    --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-icon-button--border-inline-start-width: 0;
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+  }
+  .sf-icon-button.segment-end {
+    --sf-icon-button--border-top-left-radius: var(--sf-radius-square);
+    --sf-icon-button--border-bottom-left-radius: var(--sf-radius-square);
+    --sf-icon-button--border-inline-start-width: 0;
+  }
+}
+@layer sf.paint {
+  .sf-icon-button {
+    /* Public variables (core/contracts/public-variables.v1.json): names with a
+       single dash after the block, never set by the Framework, read where a
+       resting look is defined -- base, size, spacing, appearance, scheme -- and
+       not by hover, focus, pressed, disabled, loading or a group's segments, so
+       states and joined groups still show. */
+    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
+    background-color: var(--sf-icon-button--background-color);
+    border-color: var(--sf-icon-button--border-color, var(--sf-icon-button-border-color, transparent));
+  }
+  .sf-icon-button .sf-close-icon {
+    background-color: var(--sf-close-icon--background-color);
+    border-color: var(--sf-close-icon--border-color, transparent);
+  }
+  .sf-icon-button .sf-icon {
+    color: var(--sf-icon--color, var(--sf-icon-button-color, var(--sf-on-surface-variant)));
+  }
+  /* The line at a join of filled parts (VL-77, owner 2026-11-24), as on
+     sf-button: the label ink of the look at 24, the step of the quiet line.
+     The label's role and not the glyph's paler one, so a join reads the same
+     whichever part stands first. It was white at 24 on every fill. */
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-primary));
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary) {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-icon-button--on-place-ink, var(--sf-on-surface-inverse)));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-primary-container));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary) {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-surface));
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error) {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-error));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error) {
+    --sf-icon-button--join-ink: var(--sf-icon-button-color, var(--sf-on-error-container));
+  }
+  .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle):where(:dir(ltr)) {
+    border-right-color: color-mix(in srgb, var(--sf-icon-button--join-ink, currentColor) 24%, transparent);
+  }
+  .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle):where(:dir(rtl)) {
+    border-left-color: color-mix(in srgb, var(--sf-icon-button--join-ink, currentColor) 24%, transparent);
+  }
+  .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle):where(:dir(ltr)) {
+    border-right-color: color-mix(in srgb, currentColor 24%, transparent);
+  }
+  .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle):where(:dir(rtl)) {
+    border-left-color: color-mix(in srgb, currentColor 24%, transparent);
+  }
+  .sf-icon-button:not(.sf-icon-button--outline):is(.segment-start, .segment-middle) {
+    border-inline-end-color: color-mix(in srgb, var(--sf-icon-button--join-ink, currentColor) 24%, transparent);
+  }
+}
+@layer sf.states {
+  /* A disabled part's join takes the disabled ink of its label (VL-77). */
+  .sf-icon-button:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon-button--join-ink: var(--sf-on-surface-disabled);
+  }
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon-button--background-color: var(--sf-surface-disabled);
+  }
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)), .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon-button--border-color: var(--sf-outline-variant);
+  }
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-primary-hover);
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-primary-container-hover);
+  }
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-primary-container-hover);
+  }
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-surface-container-hover);
+  }
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button.sf-icon-button--default.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-icon-button--background-color: var(--sf-primary-active);
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-icon-button--background-color: var(--sf-primary-container-active);
+  }
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-icon-button--background-color: var(--sf-primary-container-active);
+  }
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-icon-button--background-color: var(--sf-surface-container-active);
+  }
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not(.disabled).focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not(.disabled).focus-visible, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not(.disabled).focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not(.disabled).focus-visible, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled):not(.disabled).focus-visible, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled):not(.disabled).focus-visible {
+    --sf-icon-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-icon-button.sf-icon-button--outline.sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled):not(.disabled):focus-visible, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--close:not(:disabled):not(.disabled):focus-visible {
+    --sf-icon-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-on-surface-hover);
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active, .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-icon-button--background-color: var(--sf-on-surface-active);
+  }
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon, .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--close:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-surface-disabled);
+  }
+  .sf-icon-button:not(:disabled):not(.disabled).focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+    /* The same second line the button draws: on a filled control the ring
+       colour can sit next to the fill on one ramp and disappear into it, so the
+       control's own ink separates them. Transparent where there is no fill to
+       separate from. */
+    --sf-icon-button--focus-inset: inset 0 0 0 var(--sf-focus--offset) var(--sf-icon-button--focus-ink, transparent);
+  }
+  .sf-icon-button:not(:disabled):not(.disabled):focus-visible {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--offset);
+    /* The same second line the button draws: on a filled control the ring
+       colour can sit next to the fill on one ramp and disappear into it, so the
+       control's own ink separates them. Transparent where there is no fill to
+       separate from. */
+    --sf-icon-button--focus-inset: inset 0 0 0 var(--sf-focus--offset) var(--sf-icon-button--focus-ink, transparent);
+  }
+  .sf-icon-button.sf-icon-button--default.sf-icon-button--primary:where(:not(.sf-icon-button--close)) {
+    --sf-icon-button--focus-ink: var(--sf-on-primary);
+  }
+  /* Flush against its neighbours, so the ring turns inwards. Same colour, same
+     width, only the offset changes sign. */
+  .sf-icon-button.segment-start:not(:disabled):not(.disabled).focus-visible,
+  .sf-icon-button.segment-middle:not(:disabled):not(.disabled).focus-visible,
+  .sf-icon-button.segment-end:not(:disabled):not(.disabled).focus-visible {
+    outline-offset: var(--sf-focus--inset);
+  }
+  .sf-icon-button.segment-start:not(:disabled):not(.disabled):focus-visible,
+  .sf-icon-button.segment-middle:not(:disabled):not(.disabled):focus-visible,
+  .sf-icon-button.segment-end:not(:disabled):not(.disabled):focus-visible {
+    outline-offset: var(--sf-focus--inset);
+  }
+  @media (forced-colors: active) {
+    .sf-icon-button:not(:disabled):not(.disabled).focus-visible {
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
+    }
+    .sf-icon-button:not(:disabled):not(.disabled):focus-visible {
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
+    }
+  }
+}
+/* The destructive status (`danger`, decision C13; `error` is its former name
+   on a control and draws the same). Every role it paints with is the error family's twin
+   of the primary one -- fill, text, hover, active, disabled and the focus ink --
+   so a destructive control behaves exactly like a primary one and only its
+   colour says what it does. Added because the Framework had error roles and no
+   way for a control to use them: a product that wanted a red delete had to
+   reach past the component and set its colour by hand, and the next one would
+   have done it again. The outline's border stays the neutral control outline,
+   as it does for every other scheme. */
+@layer sf.components {
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-error));
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-error));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, var(--sf-error-container));
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-error-container));
+  }
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
+    /* The danger outline's border is red at the ink family's 64 step (C118),
+       as on sf-button; the other outlines keep the shared grey. */
+    --sf-icon-button--border-color: var(--sf-icon-button-border-color, color-mix(in srgb, var(--sf-error) 64%, transparent));
+  }
+  /* On a place with its own ink -- a strong coloured place, the duo
+     gradient, glass, an inverse place, which declare it as --sf-place--ink --
+     the outline, ghost and link danger glyph is that ink, as on sf-button
+     (component.buttons 1.14.0; inverse places IP, 2026-11-14): red on a
+     colour read 1.22-2.05:1. The page and every opaque place (initial) keep
+     the hue; the edge and the state fills keep their hue. */
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
+  }
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon,
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
+  }
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
+  }
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error)));
+  }
+}
+@layer sf.states {
+  /* Tonal danger greys when disabled as every other look does (C36 follow-up:
+     before, it kept its red container and ink). */
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)),
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon-button--background-color: var(--sf-surface-disabled);
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)),
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)),
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)),
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon-button--border-color: var(--sf-outline-variant);
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-error-hover);
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-error-container-hover);
+  }
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover,
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover,
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-error-container-hover);
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active,
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-icon-button--background-color: var(--sf-error-active);
+  }
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active,
+  .sf-icon-button:is(.sf-icon-button--tonal, .sf-icon-button--surface):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-icon-button--background-color: var(--sf-error-container-active);
+  }
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active,
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active,
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):active,
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled).active,
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):active,
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled).active {
+    --sf-icon-button--background-color: var(--sf-error-container-active);
+  }
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not(.disabled).focus-visible,
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not(.disabled).focus-visible,
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not(.disabled).focus-visible {
+    --sf-icon-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-icon-button.sf-icon-button--outline:is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible,
+  .sf-icon-button:is(.sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not(.disabled):focus-visible,
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not(.disabled):focus-visible {
+    --sf-icon-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-surface-disabled);
+  }
+  .sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error):where(:not(.sf-icon-button--close)) {
+    --sf-icon-button--focus-ink: var(--sf-on-error);
+  }
+}
+@layer sf.override {
+  /* One line at a join (docs review R003, 2026-11-06), as on the button: a
+     segment that follows another has no start edge. Here, after surface has
+     written its four edges in sf.components. */
+  .sf-icon-button:is(.segment-middle, .segment-end) {
+    --sf-icon-button--border-inline-start-width: 0;
+  }
+  /* Ghost segments (--link, the former name) draw the group's perimeter in
+     --sf-outline, as ghost buttons do (VL-77, 2026-11-25): the icon one drew
+     only the white join over no fill, 1.0:1 on the light page, so an icon
+     ghost before a ghost button stood without a frame or a line. */
+  .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link)[class*=segment-] {
+    border-color: var(--sf-outline);
+    --sf-icon-button--border-top-width: var(--sf-px);
+    --sf-icon-button--border-bottom-width: var(--sf-px);
+    --sf-icon-button--border-inline-end-width: var(--sf-px);
+  }
+  .sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link).segment-start {
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+  }
+  /* Any other segment beside an outline one keeps the block edges of the
+     frame, so the control stands in one height. */
+  :is(sf-button, :is(sf-button-icon, sf-icon-button)):has(> :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) + :is(sf-button-icon, sf-icon-button) > .sf-icon-button[class*=segment-]:not(.sf-icon-button--outline),
+  :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-] + .sf-icon-button[class*=segment-]:not(.sf-icon-button--outline),
+  :is(sf-button-icon, sf-icon-button):has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) > .sf-icon-button[class*=segment-]:not(.sf-icon-button--outline),
+  .sf-icon-button[class*=segment-]:not(.sf-icon-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) {
+    --sf-icon-button--border-top-width: var(--sf-px);
+    --sf-icon-button--border-bottom-width: var(--sf-px);
+  }
+  /* The outline segment owns both of its joins: the segment before it leaves
+     its end edge to it ... */
+  :is(sf-button-icon, sf-icon-button):has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) > .sf-icon-button[class*=segment-]:not(.sf-icon-button--outline),
+  .sf-icon-button[class*=segment-]:not(.sf-icon-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) {
+    --sf-icon-button--border-inline-end-width: 0;
+  }
+  :is(sf-button-icon, sf-icon-button):has(+ :is(sf-button, :is(sf-button-icon, sf-icon-button)) > :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) > .sf-icon-button.segment-start:not(.sf-icon-button--outline),
+  .sf-icon-button.segment-start:not(.sf-icon-button--outline):has(+ :is(.sf-button--outline, .sf-icon-button--outline)[class*=segment-]) {
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+  }
+  /* ... and draws its own start edge after one that is not an outline. */
+  :is(sf-button, :is(sf-button-icon, sf-icon-button)):has(> [class*=segment-]:not(.sf-button--outline):not(.sf-icon-button--outline)) + :is(sf-button-icon, sf-icon-button) > .sf-icon-button.sf-icon-button--outline[class*=segment-],
+  [class*=segment-]:not(.sf-button--outline):not(.sf-icon-button--outline) + .sf-icon-button.sf-icon-button--outline[class*=segment-] {
+    --sf-icon-button--border-inline-start-width: var(--sf-px);
+  }
+}
+/* An icon button shows work as a button does (simai/ui-source#10): the
+   spinner, in place of its icon and exactly its size. A loading icon button is
+   natively disabled -- that is what stops a second click -- but keeps its
+   scheme colour while it works, as sf-button does (owner decision C36): the
+   disabled look's rules skip sf-icon-button-state-loading, unless the button
+   is also disabled, which the element then marks with .disabled. The generic
+   `loading` without the state class greys, as before. */
+@layer sf.components {
+  .sf-icon-button > * {
+    position: relative;
+    z-index: 1;
+  }
+  .sf-icon-button.loading, .sf-icon-button.sf-icon-button-state-loading {
+    pointer-events: none;
+    position: relative;
+    /* The stripes that were the loading look are gone. A page that set
+       --sf-icon-button-loading-stripe still gets them, still and in its
+       colour, until the sweep of journal token-button-loading-stripe; unset,
+       the layer paints nothing. */
+  }
+  .sf-icon-button.loading::after, .sf-icon-button.sf-icon-button-state-loading::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    inset: 0;
+    background-image: repeating-linear-gradient(135deg, var(--sf-icon-button-loading-stripe, transparent) 0, var(--sf-icon-button-loading-stripe, transparent) var(--sf-space-1\/2), transparent var(--sf-space-1\/2), transparent var(--sf-space-1));
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  /* The spinner's slot is the icon's box at every step (.sf-icon-button--icon
+     .sf-icon in the main sheet), drawn by this sheet so it is right before the
+     spinner sheet arrives. */
+  .sf-icon-button {
+    --sf-icon-button-spinner--size: var(--sf-icon-size-3);
+  }
+  .sf-icon-button.sf-icon-button--size-1\/3 {
+    --sf-icon-button-spinner--size: var(--sf-text-height-1\/3);
+  }
+  .sf-icon-button.sf-icon-button--size-1\/2 {
+    --sf-icon-button-spinner--size: var(--sf-text-height-1\/2);
+  }
+  .sf-icon-button.sf-icon-button--size-1 {
+    --sf-icon-button-spinner--size: var(--sf-text-height-1);
+  }
+  .sf-icon-button.sf-icon-button--size-2 {
+    --sf-icon-button-spinner--size: var(--sf-text-height-2);
+  }
+  .sf-icon-button.sf-icon-button--size-3 {
+    --sf-icon-button-spinner--size: var(--sf-text-height-3);
+  }
+  .sf-icon-button .sf-icon-button-spinner {
+    --sf-loader-svg-width: var(--sf-icon-button-spinner--size);
+    --sf-loader-svg-height: var(--sf-icon-button-spinner--size);
+    display: inline-flex;
+    /* As the icon's: the slot sits on the line as the icon did, so a button
+       laid out without flex is no taller with the spinner than with its icon. */
+    vertical-align: bottom;
+    flex: none;
+    width: var(--sf-icon-button-spinner--size);
+    inline-size: var(--sf-icon-button-spinner--size);
+    height: var(--sf-icon-button-spinner--size);
+    block-size: var(--sf-icon-button-spinner--size);
+    /* The background ring is the spinner's own: that ink at 16 %, drawn whole
+       (spinner sheet, DEV J1/S1); the button sets only the colour. */
+  }
+  .sf-icon-button .sf-icon-button-spinner .sf-loader-ring-filled {
+    opacity: 1;
+  }
+  .sf-icon-button .sf-icon-button-spinner :is(.sf-loader--loading-indicator, .sf-loader-svg) {
+    display: block;
+    width: 100%;
+    inline-size: 100%;
+    height: 100%;
+    block-size: 100%;
+  }
+}
+@layer sf.paint {
+  .sf-icon-button .sf-icon-button-spinner {
+    /* The icon's colour (C36 follow-up): the spinner stands where the icon
+       stood and reads the same variables the icon does. */
+    color: var(--sf-loader--color, var(--sf-icon--color, var(--sf-icon-color, currentColor)));
+  }
+}
+@layer sf.components {
+  /* on-surface-variant (sf-button-icon scheme): the on-surface family one step
+     quieter. It is one class (Smart joint pass SM-CPY-2, 2026-11-17: the
+     control wrote sf-icon-button--on-surface beside it, and the quiet glyph
+     held only by the order of the sheets): every on-surface rule lists it
+     with on-surface and secondary, so its fill and edge are on-surface's, and
+     the two rules below stand one class above those rules (the doubled
+     .sf-icon-button), so the glyph takes
+     --sf-on-surface-variant, the page's role on every look (a tonal control
+     no longer turns it to its container's variant: RG-IB-1 b). A filled (default) control keeps on-surface's
+     inverse glyph: on a dark fill there is no quieter step. Hover, press and
+     disabled are the states' (sf.states), as for on-surface. */
+  /* The colours are set on the control, as every other scheme rule sets them,
+     and never on the glyph itself: a rule on the glyph would stand over the
+     value a state hands down, and a disabled quiet control would keep its
+     resting colour. A close control draws its cross through sf-button-close, whose
+     own element stands between the control and the mark, so that colour is
+     handed down too. */
+  .sf-icon-button.sf-icon-button:is(.sf-icon-button--on-surface-variant.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):not(.sf-icon-button--default) {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
+  }
+  .sf-icon-button.sf-icon-button:is(.sf-icon-button--on-surface-variant.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):not(.sf-icon-button--default) .sf-close-icon,
+  .sf-icon-button.sf-icon-button:is(.sf-icon-button--on-surface-variant.sf-icon-button--on-surface-variant, .sf-icon-button--secondary).sf-icon-button--close .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
+  }
+}
+@layer sf.states {
+  /* The quiet neutral meets the plain one under a pointer (decision C15,
+     docs review R033): the cross of a quiet close darkens to --sf-on-surface
+     on hover and press, a tonal one too (1.14.0, RG-IB-3); the quiet glyph
+     takes the neutral steps below. */
+  .sf-icon-button:is(.sf-icon-button--on-surface-variant.sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline, .sf-icon-button--close):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active, .active) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface));
+  }
+  /* Under a pointer the glyph takes the ink sf-button's label takes in the
+     same look and scheme (1.14.0, RG-IB-1, RG-IB-3; C107 (4)): the neutral
+     glyph -- plain or quiet, tonal, outline or ghost -- the label's hover and
+     press steps of on-surface (the dark theme keeps --sf-on-surface); before,
+     outline and ghost took --sf-on-surface and a quiet tonal one stayed
+     where it rested. An outline or ghost primary or danger glyph steps as
+     the label does, -hover then -active (the place's ink on a place with
+     one). A filled or tonal coloured control keeps its glyph, as the
+     button's label does. */
+  .sf-icon-button:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon--color: var(--sf-icon-button-color, light-dark(var(--sf-on-surface-hover), var(--sf-on-surface)));
+  }
+  .sf-icon-button:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--link, .sf-icon-button--ghost, .sf-icon-button--outline).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) {
+    --sf-icon--color: var(--sf-icon-button-color, light-dark(var(--sf-on-surface-active), var(--sf-on-surface)));
+  }
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary-hover));
+  }
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-primary-hover));
+  }
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost).sf-icon-button--primary.sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-primary-active));
+  }
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline).sf-icon-button--primary.sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-primary-active));
+  }
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-hover)));
+  }
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-hover)));
+  }
+  .sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--link, .sf-icon-button--ghost):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--icon:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) {
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-active)));
+  }
+  .sf-icon-button:is(:is(.sf-icon-button--link, .sf-icon-button--ghost), .sf-icon-button--default, .sf-icon-button--tonal, .sf-icon-button--surface, .sf-icon-button--outline):is(.sf-icon-button--danger, .sf-icon-button--error).sf-icon-button--close:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-place--ink, var(--sf-error-active)));
+  }
+  /* A disabled icon button's spinner (disabled and loading) takes the disabled
+     ink -- unless --sf-loader--color is set. */
+  .sf-icon-button:is(:disabled:not(.sf-icon-button-state-loading:not(.disabled)), [aria-disabled=true]:not(.sf-icon-button-state-loading:not(.disabled)), .disabled) .sf-icon-button-spinner {
+    color: var(--sf-loader--color, var(--sf-on-surface-disabled));
+  }
+}
+/* A toggle that is on (owner decision 2026-11-07, docs review R028, rule C12),
+   as sf-button's (component.buttons): sf-button-icon writes
+   sf-icon-button--pressed, plain markup says aria-pressed="true". One look
+   whatever the appearance or scheme: the primary container fill, the icon in
+   --sf-on-primary-container and filled -- two cues, not colour alone. The edge
+   keeps its width (the height holds); an outline toggle keeps its frame over
+   the fill (C393, G14), a ghost or link one's edge is transparent. Hover
+   and press step the container; focus keeps the fill and draws the ring;
+   disabled wears the disabled look.
+   Only a toggle wears it (1.13.0, owner decision C211 (1)), as on sf-button:
+   outline or ghost (link) in the neutral scheme (on-surface, its quiet
+   variant, the former secondary). A filled icon button draws its own pressed
+   state (C309 (2), below). A tonal, surface or danger icon button keeps its
+   own look under aria-pressed and the runtime says so once in the console; the tonal toggle rules (TB-3, after C113) are gone. */
+@layer sf.states {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-container));
+    --sf-icon-button--focus-ink: transparent;
+    --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
+  }
+  /* A pressed outline toggle keeps its frame over the fill (group build 16
+     G14, SEG-1; C393: a fill and a frame): in a group of segments the
+     pressed one drew no edge and the group's outline had a gap. A ghost or
+     link toggle has no frame to keep. */
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-icon-button--border-color: transparent;
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active,.focus-visible) {
+    --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:hover, :active, :focus-visible) {
+    --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-primary-container-hover);
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):active {
+    --sf-icon-button--background-color: var(--sf-primary-container-active);
+  }
+  @media (forced-colors: active) {
+    .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+      --sf-icon-button--border-top-width: var(--sf-px);
+      --sf-icon-button--border-bottom-width: var(--sf-px);
+      --sf-icon-button--border-inline-start-width: var(--sf-px);
+      --sf-icon-button--border-inline-end-width: var(--sf-px);
+      --sf-icon-button--border-width: var(--sf-px);
+      --sf-icon-button--border-style: solid;
+      border-color: Highlight;
+    }
+  }
+}
+/* A filled icon button that is pressed (owner decision C309 (2), as
+   sf-button's, component.buttons): the press step of its scheme while it is
+   pressed and the icon filled. */
+@layer sf.states {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--default.sf-icon-button--primary:is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-active));
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--default:is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-on-surface-active));
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--default:is(.sf-icon-button--danger, .sf-icon-button--error):is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-error-active));
+  }
+}
+/* The second cue: the icon of a pressed toggle is filled. Outside the layers
+   because the glyph's own --sf-icon--fill is (component.icons). */
+.sf-icon-button:is(.sf-icon-button--outline, .sf-icon-button--ghost, .sf-icon-button--link):is(.sf-icon-button--on-surface, .sf-icon-button--on-surface-variant, .sf-icon-button--secondary):is(.sf-icon-button--pressed, [aria-pressed=true]) .sf-icon,
+.sf-icon-button.sf-icon-button--default:is(.sf-icon-button--pressed, [aria-pressed=true]) .sf-icon {
+  --sf-icon--fill: 1;
+}
+
+/* The glyph inside an icon button keeps the bottom alignment (1.9.1, owner
+   decision C151 point 5 and its group-build-5 return). C151 puts an icon in
+   running text on the middle of the line; inside an icon button the glyph is
+   the whole content, and a button laid out without flex -- sf-file-preview's
+   actions, class markup without .flex -- would hang it on its own strut and
+   grow off the ladder (28.55 for 28 at size 1/2, compact and on a phone). At
+   bottom the line box is the glyph's, as the spinner's slot above keeps it.
+   Unlayered, as the icon's own rule is, so it wins over it. */
+.sf-icon-button .sf-icon,
+.sf-icon-button sf-icon {
+  vertical-align: bottom;
+}
+
+/* aria-disabled="true" is disabled for the look and the pointer (owner remark
+   2026-11-15, the copy button), as on sf-button: the disabled look, no hover
+   or press, the arrow; focus and its ring stay. */
+@layer sf.components {
+  .sf-icon-button[aria-disabled=true] {
+    cursor: default;
+  }
+}
+/* The plain look, sf-icon-button--plain (1.11.0, owner decision C201,
+   2026-11-15; study icon-button-plain-study.html#q-icon-plain, variant B1;
+   the name is the owner's, D11e). An icon inside another element -- a field's
+   actions, the help mark at a heading, copy in a code block, the plain copy
+   component -- with no plate in any state: only the glyph's ink moves, at rest
+   --sf-on-surface-variant, under the pointer --sf-on-surface, on a press
+   --sf-primary. The focus ring is every button's (the base rule in sf.states),
+   the hit area is the icon button's of the same size (the size classes above).
+   A plain icon button is neutral whatever the scheme or the status say: a
+   destructive or coloured action stays a ghost or an outline. Panels and
+   toolbars keep the looks with a plate (C15, C116); the ghost look, drawn by
+   sf-icon-button--link, is unchanged. The ink is a variable of the button, as
+   every look sets it, so the copy result's ink and a page's
+   --sf-icon-button-color at rest still reach the glyph. */
+@layer sf.components {
+  .sf-icon-button.sf-icon-button--plain {
+    --sf-icon-button--background-color: transparent;
+    --sf-icon-button--border-color: transparent;
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
+  }
+  .sf-icon-button.sf-icon-button--plain.sf-icon-button--close > :is(sf-button-close, sf-close) > .sf-close > .sf-close-icon,
+  .sf-icon-button.sf-icon-button--plain.sf-icon-button--close > .sf-close > .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-icon-button-color, var(--sf-on-surface-variant));
+  }
+}
+/* The states. No plate in any state, a pressed toggle included -- its cues
+   are the primary ink and the filled glyph: the fill, the image and the edge
+   are written as properties, which no other state rule writes on an icon
+   button except over a tonal or surface fill and in forced colours (the
+   pressed toggle's Highlight edge stays there), so the pressed toggle's
+   variables, however specific, never reach the paint. The ink rules repeat
+   the class to stand over the scheme rules that also move the ink under a
+   pointer (the on-surface catch-up above) and the pressed toggle's ink. */
+@layer sf.states {
+  .sf-icon-button.sf-icon-button--plain {
+    --sf-icon-button--focus-ink: transparent;
+    background-color: transparent;
+    background-image: none;
+    border-color: transparent;
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--plain:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon--color: var(--sf-on-surface);
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--plain:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active, .sf-icon-button--pressed, [aria-pressed=true]) {
+    --sf-icon--color: var(--sf-primary);
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--plain:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+  .sf-icon-button.sf-icon-button--plain:not(:disabled):not([aria-disabled=true]):not(.disabled):hover .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-surface);
+  }
+  .sf-icon-button.sf-icon-button--plain:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-primary);
+  }
+  .sf-icon-button.sf-icon-button--plain:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) .sf-close-icon {
+    --sf-close-icon--background-color: var(--sf-on-surface-disabled);
+  }
+}
+/* The toggle look, sf-icon-button--toggle (1.20.0, owner decision C393,
+   2026-11-19; study views-switcher-study.html section 2, the ring row). A
+   quiet icon toggle in a row of controls -- a view switch, a panel switch --
+   whose state reads from the plate, never from the glyph: the icon keeps its
+   outline weight in both states. Off it is a ghost of the neutral scheme: no
+   fill, no edge, the glyph --sf-on-surface-icon; under the pointer the
+   neutral container step (--sf-surface-container-hover). On it is two cues
+   (rule C12): the soft --sf-primary-container plate and a 1 px (--sf-px)
+   --sf-primary ring inside the button, the glyph --sf-on-primary-container;
+   the ring stays on hover (--sf-primary-container-hover) and press
+   (-active). Focus draws every button's ring outside. The ring is a shadow
+   inside the edge, so the button keeps its size in both states. Neutral
+   whatever the scheme or the status say, as plain is. The pressed look of
+   outline, ghost and default (filled glyph, C12/C211/C309) is unchanged. */
+@layer sf.components {
+  .sf-icon-button.sf-icon-button.sf-icon-button--toggle {
+    --sf-icon-button--background-color: var(--sf-icon-button-background-color, transparent);
+    --sf-icon-button--border-color: transparent;
+    --sf-icon--color: var(--sf-icon-button-color, var(--sf-on-surface-icon));
+  }
+}
+@layer sf.states {
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-surface-container-hover);
+    --sf-icon--color: var(--sf-icon-button-color, light-dark(var(--sf-on-surface-hover), var(--sf-on-surface)));
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) {
+    --sf-icon-button--background-color: var(--sf-surface-container-active);
+    --sf-icon--color: var(--sf-icon-button-color, light-dark(var(--sf-on-surface-active), var(--sf-on-surface)));
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:not(:disabled):not([aria-disabled=true]):not(.disabled).focus-visible {
+    --sf-icon-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:not(:disabled):not([aria-disabled=true]):not(.disabled):focus-visible {
+    --sf-icon-button--background-color: var(--sf-transparent-for-focus);
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+    --sf-icon-button--background-color: var(--sf-icon-button-pressed-background-color, var(--sf-primary-container));
+    --sf-icon-button--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-primary);
+    --sf-icon-button--focus-ink: transparent;
+    --sf-icon--color: var(--sf-icon-button-pressed-color, var(--sf-on-primary-container));
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):hover {
+    --sf-icon-button--background-color: var(--sf-primary-container-hover);
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled):is(:active, .active) {
+    --sf-icon-button--background-color: var(--sf-primary-container-active);
+  }
+  /* Disabled: the disabled ink; a toggle that is on keeps its ring in the
+     disabled edge, so the state still reads. */
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+  .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed=true]):is(:disabled, [aria-disabled=true]):not(.sf-icon-button-state-loading:not(.disabled)) {
+    --sf-icon-button--box-shadow: inset 0 0 0 var(--sf-px) var(--sf-outline-variant);
+  }
+  @media (forced-colors: active) {
+    .sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button.sf-icon-button--toggle:is(.sf-icon-button--pressed, [aria-pressed=true]):not(:disabled):not([aria-disabled=true]):not(.disabled) {
+      --sf-icon-button--border-top-width: var(--sf-px);
+      --sf-icon-button--border-bottom-width: var(--sf-px);
+      --sf-icon-button--border-inline-start-width: var(--sf-px);
+      --sf-icon-button--border-inline-end-width: var(--sf-px);
+      --sf-icon-button--border-width: var(--sf-px);
+      --sf-icon-button--border-style: solid;
+      border-color: Highlight;
+    }
+  }
+}
+/* Touch screens rule 12 (DEV decision on the coarse-pointer target size,
+   group build 19): under a coarse pointer an icon button keeps its drawn
+   size and its hit area reaches the touch target, --sf-hit--touch (44), by
+   an invisible pseudo-element under its neighbours (core mix/_mix__touch.scss,
+   _sf_css__touch_targets.scss). In sf.base and without weight, so a sheet
+   that positions the button (a close in a corner) keeps its position. Left
+   out where the row is the target or a part keeps an area of its own: tab
+   rows (they grow to 44), sf-settings rows, the tag's remove button (C145
+   (1)), the drawer head (C173 (6)) and the loading layer. */
+@media (pointer: coarse) and (not (any-pointer: fine)) {
+  @layer sf.base {
+    :where(.sf-icon-button:not(.loading):not(.sf-icon-button-state-loading):not(.sf-tabs-top *):not(.sf-settings-row *):not(.sf-tag > *):not(.sf-drawer-head *):not(.sf-drawer-edge *)) {
+      position: relative;
+    }
+    :where(.sf-icon-button:not(.loading):not(.sf-icon-button-state-loading):not(.sf-tabs-top *):not(.sf-settings-row *):not(.sf-tag > *):not(.sf-drawer-head *):not(.sf-drawer-edge *))::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: min(var(--sf-px) * 0, (100% - var(--sf-hit--touch)) / 2);
+      right: min(var(--sf-px) * 0, (100% - var(--sf-hit--touch)) / 2);
+      bottom: min(var(--sf-px) * 0, (100% - var(--sf-hit--touch)) / 2);
+      left: min(var(--sf-px) * 0, (100% - var(--sf-hit--touch)) / 2);
+      inset: min(var(--sf-px) * 0, (100% - var(--sf-hit--touch)) / 2);
+    }
+  }
+}
+@layer sf.base {
+  .sf-icon-button:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+  }
+  .sf-icon-button:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+  }
+}

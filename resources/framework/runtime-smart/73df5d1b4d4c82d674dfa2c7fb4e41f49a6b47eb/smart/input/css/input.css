@@ -1,0 +1,500 @@
+@charset "UTF-8";
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+@layer sf.components {
+  /* The inherited-value slot (simai/ui-source#28): the «inherited» marker while
+     the field holds nothing of its own, the reset button once it does. Each
+     control that opts in imports this sheet, so the rules are the same
+     everywhere the state is drawn.
+
+     The marker sits one step down the ladder from the field and inside its
+     box: the slot's end inset is the space between the field's control height
+     and the step below, halved, less the field's hairline. The reset is the
+     field's own action (owner decision C123, below), not a step-down button. */
+  .sf-field-inherited-slot {
+    flex: none;
+    gap: var(--sf-space-1\/4);
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-field-inherited-slot--size-1\/2 {
+    --sf-field-inherited-slot--inset: calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-3)) / 2 - var(--sf-px));
+  }
+  .sf-field-inherited-slot--size-1 {
+    --sf-field-inherited-slot--inset: calc((var(--sf-ui-1--control-height) - var(--sf-ui-1\/2--control-height)) / 2 - var(--sf-px));
+  }
+  .sf-field-inherited-slot--size-2 {
+    --sf-field-inherited-slot--inset: calc((var(--sf-ui-2--control-height) - var(--sf-ui-1--control-height)) / 2 - var(--sf-px));
+  }
+  /* The marker reads as a note about the value, not as the value: the
+     placeholder's ink, one text step down, and never broken across lines. */
+  .sf-field-inherited:where(:dir(ltr)){
+    padding-right: var(--sf-field-inherited-slot--inset, 0px);
+  }
+  .sf-field-inherited:where(:dir(rtl)){
+    padding-left: var(--sf-field-inherited-slot--inset, 0px);
+  }
+  .sf-field-inherited {
+    white-space: nowrap;
+    -webkit-padding-end: var(--sf-field-inherited-slot--inset, 0px);
+            padding-inline-end: var(--sf-field-inherited-slot--inset, 0px);
+  }
+  .sf-field-inherited--size-1\/3 {
+    font-size: var(--sf-text-size-1\/3);
+    line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-field-inherited--size-1\/2 {
+    font-size: var(--sf-text-size-1\/2);
+    line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-field-inherited--size-1 {
+    font-size: var(--sf-text-size-1);
+    line-height: var(--sf-text-height-1);
+  }
+  /* The reset (owner decision C123, variant A; R214; prototype
+     prototypes/field-icon-actions.html): the field layer's .sf-field-action
+     (component.inputs, inputs/scss/field-action.scss), which every field that
+     draws the slot loads -- a glyph without a plate in any state,
+     on-surface-variant at rest, on-surface under the pointer and on a press,
+     the keyboard ring round the glyph, an invisible hit area the field's
+     inner height (never under 24) and the glyph plus half the inset wide. The
+     glyph is the field's leading-icon size, the field's text line. Each field
+     says its step through --sf-field-action--glyph, --height and --inset: sf-input,
+     sf-dropdown and sf-input-color in their own sheets, the three whose slot
+     stands outside a field box below. In a field box the value keeps half an
+     inset to the glyph, the next glyph (the clear, the chevron) half an inset
+     after it, and the last glyph ends on the field's inset (C123 (6)). The
+     slot holds either the marker or the reset, never both. */
+  .sf-field-inherited-slot:has(> .sf-field-action:not([hidden])) {
+    gap: 0;
+  }
+  /* Another action right after the slot (sf-dropdown's chevron, sf-input's
+     clear) stands half an inset from glyph to glyph, and the value keeps half
+     an inset to the reset's glyph, at every step: the field layer's
+     --sf-field-action--pair-space and --sf-field-action--value-space
+     (component.inputs, field-action.scss), which take the 24 floor of a 1/3
+     field, and of a 1/2 field in the compact density or on a phone, into
+     account for every action of every field. */
+  /* sf-input: the slot is the last thing in the field before any end text.
+     While it holds the marker it takes the field's end padding back and the
+     marker keeps that padding as its own, so its words end where the field's
+     text would. */
+  .sf-input-field > .sf-field-inherited-slot:where(:dir(ltr)){
+    margin-right: calc(-1 * var(--sf-input-field--padding-inline-end, 0px));
+  }
+  .sf-input-field > .sf-field-inherited-slot:where(:dir(rtl)){
+    margin-left: calc(-1 * var(--sf-input-field--padding-inline-end, 0px));
+  }
+  .sf-input-field > .sf-field-inherited-slot {
+    align-self: center;
+    -webkit-margin-end: calc(-1 * var(--sf-input-field--padding-inline-end, 0px));
+            margin-inline-end: calc(-1 * var(--sf-input-field--padding-inline-end, 0px));
+  }
+  .sf-input-field > .sf-field-inherited-slot > .sf-field-inherited:where(:dir(ltr)){
+    padding-right: var(--sf-input-field--padding-inline-end, 0px);
+  }
+  .sf-input-field > .sf-field-inherited-slot > .sf-field-inherited:where(:dir(rtl)){
+    padding-left: var(--sf-input-field--padding-inline-end, 0px);
+  }
+  .sf-input-field > .sf-field-inherited-slot > .sf-field-inherited {
+    -webkit-padding-end: var(--sf-input-field--padding-inline-end, 0px);
+            padding-inline-end: var(--sf-input-field--padding-inline-end, 0px);
+  }
+  /* While it holds the reset, the field stands on its plain inset (C77) as
+     with sf-input's own actions, and the value keeps a quarter inset of its
+     own before the quarter the hit area stands out past the glyph: half an
+     inset in all. The field-action rules give the last glyph's quarter back,
+     so it ends on the inset. */
+  .sf-input-field > .sf-field-inherited-slot:has(> .sf-field-action:not([hidden])):where(:dir(ltr)){
+    margin-right: 0;
+  }
+  .sf-input-field > .sf-field-inherited-slot:has(> .sf-field-action:not([hidden])):where(:dir(rtl)){
+    margin-left: 0;
+  }
+  .sf-input-field > .sf-field-inherited-slot:has(> .sf-field-action:not([hidden])) {
+    align-self: center;
+    -webkit-margin-end: 0;
+            margin-inline-end: 0;
+  }
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field:has(> .sf-field-inherited-slot > .sf-field-action:not([hidden])) {
+    --sf-input-field--padding-inline-end: var(--sf-input-padding-inline, calc(var(--sf-input--inset) - var(--sf-px)));
+  }
+  .sf-input:is(.sf-input--size-1\/3, .sf-input--size-1\/2, .sf-input--size-1, .sf-input--size-2, .sf-input--size-3) .sf-input-field > input:has(+ .sf-field-inherited-slot > .sf-field-action:not([hidden])) {
+    --sf-input-input--padding-inline-end: var(--sf-field-action--value-space);
+  }
+  /* sf-dropdown: the chevron is laid over the field's end, in room the text
+     keeps for it. With a slot it joins the row instead, after the slot, so
+     neither sits under the other at any width; the text stops at the slot.
+     The chevron is the field's action (C123 (3)): in the row it still gives
+     back the quarter inset its hit area stands out past the glyph, so its
+     glyph keeps the axis it had, on the field's inset; the slot and the
+     chevron reach into the field's block padding, so the field keeps its
+     height. */
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > input {
+    --sf-dropdown-input--padding-inline-end: 0px;
+    min-width: 0;
+    min-inline-size: 0;
+  }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > button:where(:dir(ltr)){
+    margin-right: calc(-1 * var(--sf-icon-button--padding-inline-end, 0px));
+  }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > button:where(:dir(rtl)){
+    margin-left: calc(-1 * var(--sf-icon-button--padding-inline-end, 0px));
+  }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > button {
+    position: static;
+    flex: none;
+    margin-top: calc(-1 * var(--sf-dropdown-field--padding-top, 0px));
+    margin-bottom: calc(-1 * var(--sf-dropdown-field--padding-bottom, 0px));
+    margin-block: calc(-1 * var(--sf-dropdown-field--padding-top, 0px)) calc(-1 * var(--sf-dropdown-field--padding-bottom, 0px));
+    -webkit-margin-end: calc(-1 * var(--sf-icon-button--padding-inline-end, 0px));
+            margin-inline-end: calc(-1 * var(--sf-icon-button--padding-inline-end, 0px));
+  }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > button.sf-field-action:last-child:where(:dir(ltr)){
+    margin-right: calc((var(--sf-field-action--glyph-size) - var(--sf-field-action--hit-inline)) / 2);
+  }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > button.sf-field-action:last-child:where(:dir(rtl)){
+    margin-left: calc((var(--sf-field-action--glyph-size) - var(--sf-field-action--hit-inline)) / 2);
+  }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot) > button.sf-field-action:last-child {
+    -webkit-margin-end: calc((var(--sf-field-action--glyph-size) - var(--sf-field-action--hit-inline)) / 2);
+            margin-inline-end: calc((var(--sf-field-action--glyph-size) - var(--sf-field-action--hit-inline)) / 2);
+  }
+  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot {
+    margin-top: calc(-1 * var(--sf-dropdown-field--padding-top, 0px));
+    margin-bottom: calc(-1 * var(--sf-dropdown-field--padding-bottom, 0px));
+    margin-block: calc(-1 * var(--sf-dropdown-field--padding-top, 0px)) calc(-1 * var(--sf-dropdown-field--padding-bottom, 0px));
+  }
+  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-inherited:where(:dir(ltr)){
+    padding-right: var(--sf-space-1\/4);
+  }
+  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-inherited:where(:dir(rtl)){
+    padding-left: var(--sf-space-1\/4);
+  }
+  .sf-dropdown .sf-dropdown-field > .sf-field-inherited-slot > .sf-field-inherited {
+    -webkit-padding-end: var(--sf-space-1\/4);
+            padding-inline-end: var(--sf-space-1\/4);
+  }
+  /* While the slot holds the reset, the reset and the chevron are two
+     actions side by side: no field gap between them, half an inset from glyph
+     to glyph, and the value a quarter inset of its own before the reset's hit
+     area (half an inset to its glyph). */
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot > .sf-field-action:not([hidden])) {
+    --sf-dropdown-field--gap: calc(var(--sf-px) * 0);
+  }
+  .sf-dropdown .sf-dropdown-field:has(> .sf-field-inherited-slot > .sf-field-action:not([hidden])) > input:not([type=hidden]) {
+    --sf-dropdown-input--padding-inline-end: var(--sf-field-action--value-space);
+  }
+  /* sf-input-textarea and sf-switch: the slot is its own row or its own cell, so it
+     needs no inset into a box; sf-input-quantity's stands after the box, on
+     its row (C53, F3). */
+  .sf-textarea-inherited,
+  .sf-switch-inherited,
+  .sf-color-inherited-slot {
+    --sf-field-inherited-slot--inset: 0px;
+  }
+  .sf-textarea-inherited {
+    justify-content: flex-end;
+  }
+  /* The reset outside a field box (C123 (1), (2)): sf-input-textarea's on its
+     own row under the box, sf-switch's after the label, sf-input-quantity's
+     after the box on its row. The glyph is the field's text line, as in a
+     box. Beside the quantity box the hit area is the box's inner height; under
+     the textarea and beside the switch, where no box gives a height, it is a
+     square of the glyph plus half the inset -- never under 24 either way. The
+     inset is the field's own (the textarea's) or C77's step (the quantity's
+     and the switch's: 12 at 1/3 and 1/2, 16 at 1, 20 / 24 at 2 / 3 on a
+     desktop, 12 on a phone; field-ladder.inset). Under the textarea the glyph
+     ends on the box's inset, under the end of its text. */
+  .sf-textarea-inherited {
+    --sf-field-action--inset: var(--sf-textarea--inset, var(--sf-space-1));
+  }
+  .sf-switch-inherited,
+  .sf-quantity-inherited {
+    --sf-field-action--inset: var(--sf-space-1);
+  }
+  :is(.sf-switch-inherited, .sf-quantity-inherited):is(.sf-field-inherited-slot--size-1\/3, .sf-field-inherited-slot--size-1\/2) {
+    --sf-field-action--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+  }
+  @media (min-width: 60rem) {
+    :is(.sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-2 {
+      --sf-field-action--inset: var(--sf-space-2);
+    }
+    :is(.sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-3 {
+      --sf-field-action--inset: var(--sf-space-3);
+    }
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-1\/3 {
+    --sf-field-action--glyph: var(--sf-text-height-1\/3);
+    --sf-field-action--height: var(--sf-ui-1\/3--control-height);
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-1\/2 {
+    --sf-field-action--glyph: var(--sf-text-height-1\/2);
+    --sf-field-action--height: var(--sf-ui-1\/2--control-height);
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-1 {
+    --sf-field-action--glyph: var(--sf-text-height-1);
+    --sf-field-action--height: var(--sf-ui-1--control-height);
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-2 {
+    --sf-field-action--glyph: var(--sf-text-height-2);
+    --sf-field-action--height: var(--sf-ui-2--control-height);
+  }
+  :is(.sf-textarea-inherited, .sf-switch-inherited, .sf-quantity-inherited).sf-field-inherited-slot--size-3 {
+    --sf-field-action--glyph: var(--sf-text-height-3);
+    --sf-field-action--height: var(--sf-ui-3--control-height);
+  }
+  .sf-textarea-inherited > .sf-field-action,
+  .sf-switch-inherited > .sf-field-action {
+    --sf-field-action--hit-block: var(--sf-field-action--hit-inline);
+  }
+  /* sf-input-quantity paints every glyph in it the quiet ink at the stepper's
+     size (.sf-quantity .sf-icon); its reset's glyph takes the field action's
+     ink and size back, so it turns to the text's ink under the pointer. */
+  .sf-quantity .sf-quantity-row > .sf-quantity-inherited.sf-field-inherited-slot > .sf-field-action.sf-field-reset .sf-icon {
+    --sf-icon--color: var(--sf-field-action--ink);
+    --sf-icon--font-size: var(--sf-field-action--glyph-size);
+    --sf-icon--height: var(--sf-field-action--glyph-size);
+    --sf-icon--width: var(--sf-field-action--glyph-size);
+  }
+  .sf-textarea-inherited > .sf-field-action:where(:dir(ltr)){
+    margin-right: calc(var(--sf-field-action--inset) - (var(--sf-field-action--hit-inline) - var(--sf-field-action--glyph-size)) / 2);
+  }
+  .sf-textarea-inherited > .sf-field-action:where(:dir(rtl)){
+    margin-left: calc(var(--sf-field-action--inset) - (var(--sf-field-action--hit-inline) - var(--sf-field-action--glyph-size)) / 2);
+  }
+  .sf-textarea-inherited > .sf-field-action {
+    -webkit-margin-end: calc(var(--sf-field-action--inset) - (var(--sf-field-action--hit-inline) - var(--sf-field-action--glyph-size)) / 2);
+            margin-inline-end: calc(var(--sf-field-action--inset) - (var(--sf-field-action--hit-inline) - var(--sf-field-action--glyph-size)) / 2);
+  }
+  /* A switch drawn in its inherited state says so by its ink: the knob stands
+     where the inherited value puts it, quieter than a value somebody chose. */
+  sf-switch[data-inherited] .sf-switch-toggler {
+    opacity: 0.64;
+  }
+  /* Forced colours (simai/ui-source#57, found by ui-mail's audit Q-03): while
+     the field holds nothing of its own, the inherited value lives in the
+     placeholder -- it is the text the document will use, not a hint. The
+     forced palette paints every placeholder GrayText, the «unavailable» ink,
+     which in Chrome's default light forced theme is rgb(96, 0, 0): the value
+     read as an error or as a disabled control. So in that mode, and only while
+     the value is inherited, the placeholder is CanvasText, the page's own text;
+     the marker beside it already is. An ordinary placeholder is a hint, not a
+     value, and keeps GrayText.
+
+     The tag and the state carry the rule past the controls' own placeholder
+     rules, which are classes in this same layer (`.sf-input .sf-input-field
+     input::placeholder`, and three classes for a dropdown's appearance). */
+  @media (forced-colors: active) {
+    sf-input[data-inherited] .sf-input .sf-input-field input::-webkit-input-placeholder {
+      --sf-input-placeholder--color: CanvasText;
+    }
+    sf-input[data-inherited] .sf-input .sf-input-field input::-moz-placeholder {
+      --sf-input-placeholder--color: CanvasText;
+    }
+    sf-input[data-inherited] .sf-input .sf-input-field input:-ms-input-placeholder {
+      --sf-input-placeholder--color: CanvasText;
+    }
+    sf-input[data-inherited] .sf-input .sf-input-field input::-ms-input-placeholder {
+      --sf-input-placeholder--color: CanvasText;
+    }
+    sf-input[data-inherited] .sf-input .sf-input-field input::placeholder {
+      --sf-input-placeholder--color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::-webkit-input-placeholder {
+      --sf-textarea-placeholder--color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::-moz-placeholder {
+      --sf-textarea-placeholder--color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea:-ms-input-placeholder {
+      --sf-textarea-placeholder--color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::-ms-input-placeholder {
+      --sf-textarea-placeholder--color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::placeholder {
+      --sf-textarea-placeholder--color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::-webkit-input-placeholder {
+      --sf-dropdown-placeholder--color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::-moz-placeholder {
+      --sf-dropdown-placeholder--color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input:-ms-input-placeholder {
+      --sf-dropdown-placeholder--color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::-ms-input-placeholder {
+      --sf-dropdown-placeholder--color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::placeholder {
+      --sf-dropdown-placeholder--color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::-webkit-input-placeholder {
+      --sf-quantity-placeholder--color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::-moz-placeholder {
+      --sf-quantity-placeholder--color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input:-ms-input-placeholder {
+      --sf-quantity-placeholder--color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::-ms-input-placeholder {
+      --sf-quantity-placeholder--color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::placeholder {
+      --sf-quantity-placeholder--color: CanvasText;
+    }
+  }
+}
+/* Paint (C273): the fill, edge and place colour of these parts stand in
+   sf.paint, under the utilities, so bg-*, border-* and color-* on them
+   win; their geometry stays in sf.components, over the utilities. */
+@layer sf.paint {
+  .sf-field-inherited {
+    color: var(--sf-on-surface-variant);
+  }
+  @media (forced-colors: active) {
+    sf-input[data-inherited] .sf-input .sf-input-field input::-webkit-input-placeholder {
+      color: CanvasText;
+    }
+    sf-input[data-inherited] .sf-input .sf-input-field input::-moz-placeholder {
+      color: CanvasText;
+    }
+    sf-input[data-inherited] .sf-input .sf-input-field input:-ms-input-placeholder {
+      color: CanvasText;
+    }
+    sf-input[data-inherited] .sf-input .sf-input-field input::-ms-input-placeholder {
+      color: CanvasText;
+    }
+    sf-input[data-inherited] .sf-input .sf-input-field input::placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::-webkit-input-placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::-moz-placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea:-ms-input-placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::-ms-input-placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-textarea, sf-textarea)[data-inherited] .sf-textarea textarea::placeholder {
+      color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::-webkit-input-placeholder {
+      color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::-moz-placeholder {
+      color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input:-ms-input-placeholder {
+      color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::-ms-input-placeholder {
+      color: CanvasText;
+    }
+    sf-dropdown[data-inherited] .sf-dropdown .sf-dropdown-field input::placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::-webkit-input-placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::-moz-placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input:-ms-input-placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::-ms-input-placeholder {
+      color: CanvasText;
+    }
+    :is(sf-input-quantity, sf-quantity)[data-inherited] .sf-quantity .sf-quantity-wrap input::placeholder {
+      color: CanvasText;
+    }
+  }
+}
+@layer sf.components {
+  .sf-input.sf-input--bordered > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--filled > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+  .sf-input.sf-input--size-1 > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--size-1 > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+  }
+  .sf-input.sf-input--size-2 > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--size-2 > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+  }
+  .sf-input.sf-input--size-1\/2 > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--size-1\/2 > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+  .sf-input.sf-input--size-1\/3 > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input.sf-input--size-1\/3 > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/3);
+    --sf-icon--height: var(--sf-text-height-1\/3);
+    --sf-icon--width: var(--sf-text-height-1\/3);
+  }
+  /* Size 3 has no rule here: the class layer's (component/inputs
+     _css__custom.scss, field-ladder.icon, C151) draws its icon -- 36, and
+     28 on a phone. A rule of this weight drew the text line, 24, there. */
+  .sf-input.error > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon {
+    --sf-icon--color: var(--sf-error);
+  }
+  /* C191 (2): on a touch screen the password eye's hit area is a square of
+     the field's inner height (the hit area's block size); the glyph keeps its
+     size and still ends on the inset (the field layer's end margin follows
+     the hit width). */
+  @media (pointer: coarse) {
+    .sf-input .sf-input-field > .sf-field-action.sf-input-reveal {
+      --sf-field-action--hit-inline: var(--sf-field-action--hit-block);
+    }
+  }
+  /* C191 (3): the Caps Lock line stands where the hint stands, in the hint's
+     type and quiet ink; an error above it keeps the error's ink to itself. */
+  .sf-input.error > .sf-input-hint-text-wrap.sf-input-caps[data-field-message=caps],
+  .sf-input > .sf-input-hint-text-wrap.sf-input-caps[data-field-message=caps] {
+    --sf-input-hint-text-wrap--color: var(--sf-on-surface-variant);
+  }
+  /* Said, not shown: the polite line that announces the Caps Lock hint. */
+  .sf-input-caps-said {
+    position: absolute;
+    width: var(--sf-px);
+    inline-size: var(--sf-px);
+    height: var(--sf-px);
+    block-size: var(--sf-px);
+    margin: calc(-1 * var(--sf-px));
+    padding: 0;
+    overflow: hidden;
+    -webkit-clip-path: inset(50%);
+            clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+    border-color: revert-layer;
+  }
+}
+/* Paint (C273): the fill, edge and place colour of these parts stand in
+   sf.paint, under the utilities, so bg-*, border-* and color-* on them
+   win; their geometry stays in sf.components, over the utilities. */
+@layer sf.paint {
+  .sf-input-caps-said {
+    border: 0;
+  }
+}
+@layer sf.states {
+  .sf-input:has(input:enabled:not(:disabled):not(.disabled):hover) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input:has(input:enabled:not(:disabled):not(.disabled):active) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input:has(input:enabled:not(:disabled):not(.disabled).focus-visible) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+  .sf-input:has(input:enabled:not(:disabled):not(.disabled):hover) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input:has(input:enabled:not(:disabled):not(.disabled):active) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input:has(input:enabled:not(:disabled):not(.disabled):focus-visible) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+  .sf-input:has(input:disabled) > .sf-input-field > .sf-input-hint > sf-icon > .sf-icon, .sf-input:has(input:disabled) > .sf-input-field > .sf-input-left > sf-icon > .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+}

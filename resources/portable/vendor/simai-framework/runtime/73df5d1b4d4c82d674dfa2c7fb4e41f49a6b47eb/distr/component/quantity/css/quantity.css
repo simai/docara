@@ -1,0 +1,1250 @@
+@charset "UTF-8";
+@layer sf.reset, sf.tokens, sf.base, sf.paint, sf.utilities, sf.components, sf.overrides, sf.states;
+/*
+* Main SCSS file for including styles for component.
+*
+* Imports:
+* - Styling variables (_var__component_name.scss)
+* - Base styles (_css__component_name.scss)
+*
+*/
+@layer sf.components {
+  .sf-quantity .sf-quantity-wrap input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    text-align: center;
+  }
+}
+@layer sf.components {
+  /* utility-hint: display/flex (.flex) flex-direction/column (.flex-col) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-space-1\/4) justify-content/flex-start (.justify-start) */
+  .sf-quantity {
+    min-width: 0;
+    min-inline-size: 0;
+    width: 100%;
+    inline-size: 100%;
+    gap: var(--sf-quantity--gap, var(--sf-space-1\/4));
+  }
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-quantity-label--gap) justify-content/flex-start (.justify-start) align-items/flex-start (.items-start) */
+  .sf-quantity .sf-quantity-label {
+    --sf-quantity-label--background-color: transparent;
+    --sf-quantity-label--gap: var(--sf-space-1\/4);
+    gap: var(--sf-quantity-label--gap);
+  }
+  .sf-quantity .sf-quantity-text {
+    /* C153 (1): the label in the text ink. */
+    --sf-quantity-text--color: var(--sf-on-surface);
+    --sf-quantity-text--font-family: var(--sf-text--family);
+    --sf-quantity-text--font-weight: var(--sf-font-weight-regular);
+    font-family: var(--sf-quantity-text--font-family);
+    font-size: var(--sf-quantity-text--font-size);
+    font-weight: var(--sf-quantity-text--font-weight);
+    line-height: var(--sf-quantity-text--line-height);
+  }
+  /* The help or error line under the field, drawn by sf-quantity as the input and
+     textarea draw theirs: secondary ink, the error colour on an error, one text
+     step below the box. */
+  .sf-quantity .sf-quantity-hint-text-wrap {
+    --sf-quantity-hint-text-wrap--color: var(--sf-on-surface-variant);
+    font-family: var(--sf-text--family);
+    font-size: var(--sf-quantity-hint-text-wrap--font-size);
+    font-weight: var(--sf-font-weight-regular);
+    line-height: var(--sf-quantity-hint-text-wrap--line-height);
+  }
+  .sf-quantity.sf-quantity--size-1 .sf-quantity-hint-text-wrap {
+    --sf-quantity-hint-text-wrap--font-size: var(--sf-text-size-1\/2);
+    --sf-quantity-hint-text-wrap--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity.sf-quantity--size-2 .sf-quantity-hint-text-wrap {
+    --sf-quantity-hint-text-wrap--font-size: var(--sf-text-size-1);
+    --sf-quantity-hint-text-wrap--line-height: var(--sf-text-height-1);
+  }
+  .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-hint-text-wrap {
+    --sf-quantity-hint-text-wrap--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-hint-text-wrap--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.error .sf-quantity-hint-text-wrap {
+    --sf-quantity-hint-text-wrap--color: var(--sf-error);
+  }
+  .sf-quantity .sf-quantity-required {
+    /* C153 (2): the mark in the label's ink. */
+    --sf-quantity-required--color: var(--sf-on-surface);
+    --sf-quantity-required--font-family: var(--sf-text--family);
+    --sf-quantity-required--font-weight: var(--sf-font-weight-regular);
+    font-family: var(--sf-quantity-required--font-family);
+    font-size: var(--sf-quantity-required--font-size);
+    font-weight: var(--sf-quantity-required--font-weight);
+    line-height: var(--sf-quantity-required--line-height);
+  }
+  /* utility-hint: display/flex (.flex) flex-direction/row (.flex-row) flex-wrap/nowrap (.flex-nowrap) gap/var(--sf-quantity-wrap--gap) justify-content/center (.justify-center) align-items/center (.items-center) */
+  .sf-quantity .sf-quantity-wrap:where(:dir(ltr)){
+    border-bottom-right-radius: var(--sf-quantity-wrap--border-end-end-radius);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(rtl)){
+    border-bottom-left-radius: var(--sf-quantity-wrap--border-end-end-radius);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(ltr)){
+    border-bottom-left-radius: var(--sf-quantity-wrap--border-end-start-radius);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(rtl)){
+    border-bottom-right-radius: var(--sf-quantity-wrap--border-end-start-radius);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(ltr)){
+    border-top-right-radius: var(--sf-quantity-wrap--border-start-end-radius);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(rtl)){
+    border-top-left-radius: var(--sf-quantity-wrap--border-start-end-radius);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(ltr)){
+    border-top-left-radius: var(--sf-quantity-wrap--border-start-start-radius);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(rtl)){
+    border-top-right-radius: var(--sf-quantity-wrap--border-start-start-radius);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(ltr)){
+    padding-right: var(--sf-quantity-wrap--padding-inline-end);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(rtl)){
+    padding-left: var(--sf-quantity-wrap--padding-inline-end);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(ltr)){
+    padding-left: var(--sf-quantity-wrap--padding-inline-start);
+  }
+  .sf-quantity .sf-quantity-wrap:where(:dir(rtl)){
+    padding-right: var(--sf-quantity-wrap--padding-inline-start);
+  }
+  .sf-quantity .sf-quantity-wrap {
+    min-width: 0;
+    min-inline-size: 0;
+    --sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-transparent));
+    --sf-quantity-wrap--border: var(--sf-quantity-border-width, var(--sf-px)) solid;
+    --sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-outline));
+    --sf-quantity-wrap--border-end-end-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
+    --sf-quantity-wrap--border-end-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
+    --sf-quantity-wrap--border-start-end-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
+    --sf-quantity-wrap--border-start-start-radius: var(--sf-quantity-radius, var(--sf-radius--ui));
+    /* The class component's gap; the Smart field's is 0 (C53 F2, below). */
+    --sf-quantity-wrap--gap: var(--sf-quantity-gap, var(--sf-space-2));
+    border: var(--sf-quantity-wrap--border);
+    border-color: revert-layer;
+    border-end-end-radius: var(--sf-quantity-wrap--border-end-end-radius);
+    border-end-start-radius: var(--sf-quantity-wrap--border-end-start-radius);
+    border-start-end-radius: var(--sf-quantity-wrap--border-start-end-radius);
+    border-start-start-radius: var(--sf-quantity-wrap--border-start-start-radius);
+    box-shadow: var(--sf-quantity-wrap--box-shadow);
+    gap: var(--sf-quantity-wrap--gap);
+    padding-bottom: var(--sf-quantity-wrap--padding-bottom);
+    -webkit-padding-end: var(--sf-quantity-wrap--padding-inline-end);
+            padding-inline-end: var(--sf-quantity-wrap--padding-inline-end);
+    -webkit-padding-start: var(--sf-quantity-wrap--padding-inline-start);
+            padding-inline-start: var(--sf-quantity-wrap--padding-inline-start);
+    padding-top: var(--sf-quantity-wrap--padding-top);
+    transition-property: background-color, border-color, box-shadow;
+    transition-duration: var(--sf-duration-fast);
+    transition-timing-function: var(--sf-animation);
+  }
+  .sf-quantity .sf-icon-button:where(:dir(ltr)){
+    border-bottom-right-radius: var(--sf-icon-button--border-end-end-radius);
+  }
+  .sf-quantity .sf-icon-button:where(:dir(rtl)){
+    border-bottom-left-radius: var(--sf-icon-button--border-end-end-radius);
+  }
+  .sf-quantity .sf-icon-button:where(:dir(ltr)){
+    border-bottom-left-radius: var(--sf-icon-button--border-end-start-radius);
+  }
+  .sf-quantity .sf-icon-button:where(:dir(rtl)){
+    border-bottom-right-radius: var(--sf-icon-button--border-end-start-radius);
+  }
+  .sf-quantity .sf-icon-button:where(:dir(ltr)){
+    border-top-right-radius: var(--sf-icon-button--border-start-end-radius);
+  }
+  .sf-quantity .sf-icon-button:where(:dir(rtl)){
+    border-top-left-radius: var(--sf-icon-button--border-start-end-radius);
+  }
+  .sf-quantity .sf-icon-button:where(:dir(ltr)){
+    border-top-left-radius: var(--sf-icon-button--border-start-start-radius);
+  }
+  .sf-quantity .sf-icon-button:where(:dir(rtl)){
+    border-top-right-radius: var(--sf-icon-button--border-start-start-radius);
+  }
+  .sf-quantity .sf-icon-button {
+    --sf-icon-button--border-end-end-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
+    --sf-icon-button--border-end-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
+    --sf-icon-button--border-start-end-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
+    --sf-icon-button--border-start-start-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
+    border-end-end-radius: var(--sf-icon-button--border-end-end-radius);
+    border-end-start-radius: var(--sf-icon-button--border-end-start-radius);
+    border-start-end-radius: var(--sf-icon-button--border-start-end-radius);
+    border-start-start-radius: var(--sf-icon-button--border-start-start-radius);
+  }
+  /* The field is on the size ladder (geometry standard): the box is the control
+     height of its size, as sf-input's field is, with the same block padding, and
+     the steppers are icon buttons one rung down -- a size 1 field (40px on a
+     desktop) carries size 1/2 steppers (32px) -- whatever size class the markup
+     gives them, so hand-written markup lands on the ladder too. The steppers sit
+     in the middle of the box and reach into its block padding, as sf-input's
+     trailing buttons do; the inline padding is the gap they leave above and
+     below, so «−» and «+» stand the same distance from every edge. */
+  .sf-quantity .sf-quantity-wrap {
+    box-sizing: border-box;
+    height: var(--sf-quantity-wrap--block-size);
+    block-size: var(--sf-quantity-wrap--block-size);
+  }
+  /* utility-hint: display/flex (.flex) */
+  .sf-quantity .sf-quantity-wrap input:where(:dir(ltr)){
+    padding-right: var(--sf-quantity-input--padding-inline-end);
+  }
+  .sf-quantity .sf-quantity-wrap input:where(:dir(rtl)){
+    padding-left: var(--sf-quantity-input--padding-inline-end);
+  }
+  .sf-quantity .sf-quantity-wrap input:where(:dir(ltr)){
+    padding-left: var(--sf-quantity-input--padding-inline-start);
+  }
+  .sf-quantity .sf-quantity-wrap input:where(:dir(rtl)){
+    padding-right: var(--sf-quantity-input--padding-inline-start);
+  }
+  .sf-quantity .sf-quantity-wrap input {
+    min-width: 0;
+    min-inline-size: 0;
+    border: 0;
+    border-color: revert-layer;
+    outline: 0;
+    --sf-quantity-input--background-color: transparent;
+    font-family: var(--sf-quantity-input--font-family);
+    font-size: var(--sf-quantity-input--font-size);
+    font-weight: var(--sf-quantity-input--font-weight);
+    line-height: var(--sf-quantity-input--line-height);
+    -webkit-padding-end: var(--sf-quantity-input--padding-inline-end);
+            padding-inline-end: var(--sf-quantity-input--padding-inline-end);
+    -webkit-padding-start: var(--sf-quantity-input--padding-inline-start);
+            padding-inline-start: var(--sf-quantity-input--padding-inline-start);
+    /* As tall as its line box, as sf-input's value is, so the two values share a
+       baseline (simai/ui-source#23). */
+    height: auto;
+    block-size: auto;
+  }
+  .sf-quantity .sf-quantity-wrap input::-webkit-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-variant);
+    --sf-quantity-placeholder--font-family: var(--sf-text--family);
+    font-family: var(--sf-quantity-placeholder--font-family);
+    font-size: var(--sf-quantity-placeholder--font-size);
+    line-height: var(--sf-quantity-placeholder--line-height);
+  }
+  .sf-quantity .sf-quantity-wrap input::-moz-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-variant);
+    --sf-quantity-placeholder--font-family: var(--sf-text--family);
+    font-family: var(--sf-quantity-placeholder--font-family);
+    font-size: var(--sf-quantity-placeholder--font-size);
+    line-height: var(--sf-quantity-placeholder--line-height);
+  }
+  .sf-quantity .sf-quantity-wrap input:-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-variant);
+    --sf-quantity-placeholder--font-family: var(--sf-text--family);
+    font-family: var(--sf-quantity-placeholder--font-family);
+    font-size: var(--sf-quantity-placeholder--font-size);
+    line-height: var(--sf-quantity-placeholder--line-height);
+  }
+  .sf-quantity .sf-quantity-wrap input::-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-variant);
+    --sf-quantity-placeholder--font-family: var(--sf-text--family);
+    font-family: var(--sf-quantity-placeholder--font-family);
+    font-size: var(--sf-quantity-placeholder--font-size);
+    line-height: var(--sf-quantity-placeholder--line-height);
+  }
+  .sf-quantity .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-variant);
+    --sf-quantity-placeholder--font-family: var(--sf-text--family);
+    font-family: var(--sf-quantity-placeholder--font-family);
+    font-size: var(--sf-quantity-placeholder--font-size);
+    line-height: var(--sf-quantity-placeholder--line-height);
+  }
+  .sf-quantity .sf-icon {
+    font-size: var(--sf-icon--font-size, var(--sf-text-size-3));
+    height: var(--sf-icon--height, var(--sf-text-size-3));
+    width: var(--sf-icon--width, var(--sf-text-size-3));
+  }
+  .sf-quantity.sf-quantity--size-1 .sf-quantity-text {
+    --sf-quantity-text--font-size: var(--sf-text-size-1\/2);
+    --sf-quantity-text--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity.sf-quantity--size-1 .sf-quantity-required {
+    --sf-quantity-required--font-size: var(--sf-text-size-1\/2);
+    --sf-quantity-required--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity.sf-quantity--size-1 .sf-quantity-wrap {
+    --sf-quantity-wrap--block-size: var(--sf-ui-1--control-height);
+    --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-quantity--number-height)) / 2 - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1--control-height) - var(--sf-quantity--number-height)) / 2 - var(--sf-px)));
+    --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-1--space-y-tightness-default) - var(--sf-px)));
+  }
+  /* The stepper is the control one rung below the field and its glyph the
+     field's own icon, as sf-input draws its icon at the same size (QT-03): the
+     padding is what the rung leaves around that glyph. The rung is the
+     stepper's height, --sf-quantity--number-height (below). */
+  .sf-quantity.sf-quantity--size-1 .sf-quantity-count {
+    --sf-icon-button--padding-bottom: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+    --sf-icon-button--padding-inline-end: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+    --sf-icon-button--padding-inline-start: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+    --sf-icon-button--padding-top: calc((var(--sf-quantity--number-height) - var(--sf-text-height-1)) / 2);
+  }
+  .sf-quantity.sf-quantity--size-1 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+  }
+  /* Icons other than the steppers keep the quiet ink; a stepper takes its ink
+     from its icon button, which turns it to on-surface under a pointer (QT-04). */
+  .sf-quantity:not(:has(input:disabled)) .sf-icon:not(.sf-quantity-count > .sf-icon) {
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+  .sf-quantity.sf-quantity--size-1 input {
+    --sf-quantity-input--padding-inline-end: var(--sf-ui-1--text-space-x);
+    --sf-quantity-input--padding-inline-start: var(--sf-ui-1--text-space-x);
+  }
+  /* The number's type is set on the box, so the unit beside the number
+     (.sf-quantity-unit) inherits the same size, line and family (C53). */
+  .sf-quantity.sf-quantity--size-1 .sf-quantity-wrap {
+    --sf-quantity-input--font-size: var(--sf-text-size-1);
+    --sf-quantity-input--line-height: var(--sf-text-height-1);
+    --sf-quantity-input--font-family: var(--sf-text--family);
+    --sf-quantity-input--font-weight: var(--sf-font-weight-regular);
+  }
+  .sf-quantity input {
+    --sf-quantity-input--color: var(--sf-quantity-color, var(--sf-on-surface));
+  }
+  .sf-quantity.sf-quantity--size-1:has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary);
+  }
+  .sf-quantity.sf-quantity--size-1:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary);
+  }
+  .sf-quantity:has(input:disabled) input {
+    --sf-quantity-input--color: var(--sf-on-surface-disabled);
+  }
+  .sf-quantity.sf-quantity--size-2 .sf-quantity-text {
+    --sf-quantity-text--font-size: var(--sf-text-size-1);
+    --sf-quantity-text--line-height: var(--sf-text-height-1);
+  }
+  .sf-quantity.sf-quantity--size-2 .sf-quantity-required {
+    --sf-quantity-required--font-size: var(--sf-text-size-1);
+    --sf-quantity-required--line-height: var(--sf-text-height-1);
+  }
+  .sf-quantity.sf-quantity--size-2 .sf-quantity-wrap {
+    --sf-quantity-wrap--block-size: var(--sf-ui-2--control-height);
+    --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-2--control-height) - var(--sf-ui-1--control-height)) / 2 - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-2--control-height) - var(--sf-ui-1--control-height)) / 2 - var(--sf-px)));
+    --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-2--space-y-tightness-default) - var(--sf-px)));
+  }
+  .sf-quantity.sf-quantity--size-2 .sf-quantity-count {
+    --sf-icon-button--padding-bottom: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-2)) / 2);
+    --sf-icon-button--padding-inline-end: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-2)) / 2);
+    --sf-icon-button--padding-inline-start: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-2)) / 2);
+    --sf-icon-button--padding-top: calc((var(--sf-ui-1--control-height) - var(--sf-text-height-2)) / 2);
+  }
+  .sf-quantity.sf-quantity--size-2 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+  }
+  .sf-quantity.sf-quantity--size-2 input {
+    --sf-quantity-input--padding-inline-end: var(--sf-ui-2--text-space-x);
+    --sf-quantity-input--padding-inline-start: var(--sf-ui-2--text-space-x);
+  }
+  .sf-quantity.sf-quantity--size-2 .sf-quantity-wrap {
+    --sf-quantity-input--font-size: var(--sf-text-size-2);
+    --sf-quantity-input--line-height: var(--sf-text-height-2);
+  }
+  .sf-quantity.sf-quantity--size-2 .sf-quantity-wrap, .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-wrap {
+    --sf-quantity-input--font-family: var(--sf-text--family);
+  }
+  .sf-quantity.sf-quantity--size-2:has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):active) .sf-quantity-wrap, .sf-quantity.sf-quantity--size-1\/2:has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+  }
+  .sf-quantity.sf-quantity--size-2:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap, .sf-quantity.sf-quantity--size-1\/2:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+  }
+  .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-text {
+    --sf-quantity-text--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-text--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-required {
+    --sf-quantity-required--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-required--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-wrap {
+    --sf-quantity-wrap--block-size: var(--sf-ui-1\/2--control-height);
+    --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-3)) / 2 - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/2--control-height) - var(--sf-icon-size-3)) / 2 - var(--sf-px)));
+    --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/2--space-y-tightness-default) - var(--sf-px)));
+  }
+  .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-count {
+    --sf-icon-button--padding-bottom: calc((var(--sf-icon-size-3) - var(--sf-text-height-1\/2)) / 2);
+    --sf-icon-button--padding-inline-end: calc((var(--sf-icon-size-3) - var(--sf-text-height-1\/2)) / 2);
+    --sf-icon-button--padding-inline-start: calc((var(--sf-icon-size-3) - var(--sf-text-height-1\/2)) / 2);
+    --sf-icon-button--padding-top: calc((var(--sf-icon-size-3) - var(--sf-text-height-1\/2)) / 2);
+  }
+  .sf-quantity.sf-quantity--size-1\/2 .sf-icon {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity.sf-quantity--size-1\/2 input {
+    --sf-quantity-input--padding-inline-end: var(--sf-ui-1\/2--text-space-x);
+    --sf-quantity-input--padding-inline-start: var(--sf-ui-1\/2--text-space-x);
+  }
+  .sf-quantity.sf-quantity--size-1\/2 .sf-quantity-wrap {
+    --sf-quantity-input--font-size: var(--sf-text-size-1\/2);
+    --sf-quantity-input--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity--size-1 .sf-quantity-wrap input::-webkit-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-quantity--size-1 .sf-quantity-wrap input::-moz-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-quantity--size-1 .sf-quantity-wrap input:-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-quantity--size-1 .sf-quantity-wrap input::-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-quantity--size-1 .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1);
+  }
+  .sf-quantity--size-2 .sf-quantity-wrap input::-webkit-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-quantity--size-2 .sf-quantity-wrap input::-moz-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-quantity--size-2 .sf-quantity-wrap input:-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-quantity--size-2 .sf-quantity-wrap input::-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-quantity--size-2 .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-2);
+  }
+  .sf-quantity--size-1\/2 .sf-quantity-wrap input::-webkit-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity--size-1\/2 .sf-quantity-wrap input::-moz-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity--size-1\/2 .sf-quantity-wrap input:-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity--size-1\/2 .sf-quantity-wrap input::-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity--size-1\/2 .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/2);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity:has(input:disabled) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-outline-disabled);
+  }
+  .sf-quantity:has(input:disabled) .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+  .sf-quantity:has(input:disabled) .sf-quantity-wrap input::-webkit-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-disabled);
+  }
+  .sf-quantity:has(input:disabled) .sf-quantity-wrap input::-moz-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-disabled);
+  }
+  .sf-quantity:has(input:disabled) .sf-quantity-wrap input:-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-disabled);
+  }
+  .sf-quantity:has(input:disabled) .sf-quantity-wrap input::-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-disabled);
+  }
+  .sf-quantity:has(input:disabled) .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface-disabled);
+  }
+  .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):hover) .sf-quantity-wrap {
+    /* C153 (4): hover in the text ink. */
+    --sf-quantity-wrap--border-color: var(--sf-on-surface);
+  }
+  .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap {
+    /* C153 (4): hover in the text ink. */
+    --sf-quantity-wrap--border-color: var(--sf-on-surface);
+  }
+  .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap input::-webkit-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap input::-moz-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap input:-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap input::-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):active) .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  .sf-quantity:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  /* C153 (4), R242: focus by mouse or keys draws a 2 px edge of the focus colour
+     inside the wrap, over its border; no ring outside, nothing moves. */
+  .sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap {
+    outline: var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color);
+    outline-offset: var(--sf-focus--inset);
+  }
+  /* The ring belongs to the wrap, so the bare control gives its own up -- the same
+     bargain the field makes, and for the same reason: a text control matches
+     :focus-visible on a click as well as on a tab. */
+  .sf-quantity input.focus-visible {
+    /* !important: a page's unlayered :focus-visible rule beats any layered one,
+       and drew a second frame on the bare input (owner, 2026-11-01). */
+    outline: none !important;
+  }
+  .sf-quantity input:focus-visible {
+    /* !important: a page's unlayered :focus-visible rule beats any layered one,
+       and drew a second frame on the bare input (owner, 2026-11-01). */
+    outline: none !important;
+  }
+  .sf-quantity.error .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-transparent-for-focus);
+    --sf-quantity-wrap--border-color: var(--sf-quantity-invalid-border-color, var(--sf-error));
+  }
+  .sf-quantity.error .sf-icon:not(.sf-quantity-count > .sf-icon) {
+    --sf-icon--color: var(--sf-on-surface-variant);
+  }
+  .sf-quantity.error .sf-quantity-wrap input::-webkit-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  .sf-quantity.error .sf-quantity-wrap input::-moz-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  .sf-quantity.error .sf-quantity-wrap input:-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  .sf-quantity.error .sf-quantity-wrap input::-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  .sf-quantity.error .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--color: var(--sf-on-surface);
+  }
+  /* The stepper glyph against the icon button's own size-1/3 glyph rule
+     (.sf-icon-button.sf-icon-button--size-1/3.sf-icon-button--icon .sf-icon),
+     which the ghost look's --icon class brings: one class more, so the glyph
+     stays the field's icon (QT-03). */
+  .sf-quantity.sf-quantity--size-1 .sf-icon-button.sf-quantity-count.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-text-height-1);
+    --sf-icon--height: var(--sf-text-height-1);
+    --sf-icon--width: var(--sf-text-height-1);
+  }
+  .sf-quantity.sf-quantity--size-2 .sf-icon-button.sf-quantity-count.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-text-height-2);
+    --sf-icon--height: var(--sf-text-height-2);
+    --sf-icon--width: var(--sf-text-height-2);
+  }
+  .sf-quantity.sf-quantity--size-1\/2 .sf-icon-button.sf-quantity-count.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-text-height-1\/2);
+    --sf-icon--height: var(--sf-text-height-1\/2);
+    --sf-icon--width: var(--sf-text-height-1\/2);
+  }
+  /* A read-only field is sf-input's read-only field (QT-08, the rule in
+     _css__inputs.scss): not filled -- a fill reads as a control to press (C16),
+     so the ground stays --sf-transparent even over --sf-quantity-background-color
+     -- and the line of a region for its edge; the value keeps its full ink.
+     No hover or press colour reaches it (the hover, press and placeholder-press
+     rules skip :read-only), and its steppers are disabled buttons. */
+  .sf-quantity:not(.error):has(input:-moz-read-only:not(:disabled)) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-transparent);
+    --sf-quantity-wrap--border-color: var(--sf-outline-variant);
+  }
+  .sf-quantity:not(.error):has(input:read-only:not(:disabled)) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-transparent);
+    --sf-quantity-wrap--border-color: var(--sf-outline-variant);
+  }
+}
+@layer sf.paint {
+  .sf-quantity {
+    background-color: var(--sf-quantity--background-color, transparent);
+  }
+  .sf-quantity .sf-quantity-label {
+    background-color: var(--sf-quantity-label--background-color);
+  }
+  .sf-quantity .sf-quantity-text {
+    color: var(--sf-quantity-text--color);
+  }
+  .sf-quantity .sf-quantity-hint-text-wrap {
+    color: var(--sf-quantity-hint-text-wrap--color);
+  }
+  .sf-quantity .sf-quantity-required {
+    color: var(--sf-quantity-required--color);
+  }
+  .sf-quantity .sf-quantity-wrap {
+    background-color: var(--sf-quantity-wrap--background-color);
+    border: var(--sf-quantity-wrap--border);
+    border-color: var(--sf-quantity-wrap--border-color, transparent);
+    /* The filled look's bottom line (C52, C224): the bordered look has none of
+       its own, so the line is the border. */
+    border-bottom-color: var(--sf-quantity-wrap--line-color, var(--sf-quantity-wrap--border-color, transparent));
+    border-block-end-color: var(--sf-quantity-wrap--line-color, var(--sf-quantity-wrap--border-color, transparent));
+  }
+  .sf-quantity .sf-icon-button {
+    background-color: var(--sf-icon-button--background-color);
+  }
+  .sf-quantity .sf-quantity-wrap input {
+    border: 0;
+    background-color: var(--sf-quantity-input--background-color);
+    color: var(--sf-quantity-input--color);
+  }
+  .sf-quantity .sf-quantity-wrap input::-webkit-input-placeholder {
+    color: var(--sf-quantity-placeholder--color);
+  }
+  .sf-quantity .sf-quantity-wrap input::-moz-placeholder {
+    color: var(--sf-quantity-placeholder--color);
+  }
+  .sf-quantity .sf-quantity-wrap input:-ms-input-placeholder {
+    color: var(--sf-quantity-placeholder--color);
+  }
+  .sf-quantity .sf-quantity-wrap input::-ms-input-placeholder {
+    color: var(--sf-quantity-placeholder--color);
+  }
+  .sf-quantity .sf-quantity-wrap input::placeholder {
+    color: var(--sf-quantity-placeholder--color);
+  }
+  .sf-quantity .sf-icon {
+    color: var(--sf-icon--color, var(--sf-on-surface-variant));
+  }
+  .sf-quantity:has(input:disabled) .sf-button .sf-icon {
+    background-color: var(--sf-on-surface-disabled);
+  }
+}
+/* Owner decision C53 (2026-11-10; research control/research/2026-11-10-number-input.md,
+   prototype prototypes/number-input.html), fixes F1-F8 of R111-R115.
+
+   F1: the box is as wide as the longest number the field holds, not as its
+   container. The number place is (digits + 1/2) characters wide -- half a
+   character for the caret -- and the figures are tabular (F5), so 1ch is one
+   digit and stepping 9 -> 10 does not move the text. The digits come from
+   the element (--sf-quantity--digits: the bounds, the value and the
+   inherited value at the field's decimals; at least 2, 6 with no upper
+   bound) or the digits setting, which a column of fields sets to one
+   number so the column is straight (F6). */
+@layer sf.components {
+  /* C53 is the Smart field's look (sf-input-quantity renders the box in a
+     .sf-quantity-row); the class component (label.sf-quantity with the box
+     as its own child) keeps its own: the column's width, the layout gap and
+     the field's text inset (DEV review D1 of the C53 round). */
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap {
+    --sf-quantity-wrap--gap: var(--sf-quantity-gap, calc(var(--sf-px) * 0));
+  }
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input {
+    --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
+    --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+  }
+  .sf-quantity .sf-quantity-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: var(--sf-space-1\/4);
+    min-width: 0;
+    min-inline-size: 0;
+    max-width: 100%;
+    max-inline-size: 100%;
+  }
+  /* F3: the box never lets its steppers out. It is as wide as its parts and
+     no wider than its row; in a column narrower than that, the number place
+     gives way, not the steppers. */
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap {
+    flex: 0 1 auto;
+    min-width: 0;
+    min-inline-size: 0;
+    max-width: 100%;
+    max-inline-size: 100%;
+  }
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count,
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-unit {
+    flex: none;
+  }
+  /* The number place (F4): as tall as a stepper, the steppers' corner, the
+     surface hover fill under a pointer and the text cursor, so it reads as a
+     place to type. */
+  /* SM-QT-1: the width holds the box's own padding, and the box says its
+     sizing, so a page's border-box reset (unlayered, it wins over every
+     layered rule) no longer takes the padding out of the number: «2026» at
+     grouping="false" stood in 37 of the 42 it needs in a docs page. */
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input {
+    flex: 0 1 auto;
+    box-sizing: border-box;
+    width: calc((var(--sf-quantity--digits, 6) + 0.5) * 1ch + var(--sf-quantity-input--padding-inline-start, calc(var(--sf-px) * 0)) + var(--sf-quantity-input--padding-inline-end, calc(var(--sf-px) * 0)));
+    inline-size: calc((var(--sf-quantity--digits, 6) + 0.5) * 1ch + var(--sf-quantity-input--padding-inline-start, calc(var(--sf-px) * 0)) + var(--sf-quantity-input--padding-inline-end, calc(var(--sf-px) * 0)));
+    min-width: 0;
+    min-inline-size: 0;
+    height: var(--sf-quantity--number-height);
+    block-size: var(--sf-quantity--number-height);
+    align-self: center;
+    border-radius: var(--sf-quantity-stepper-radius, var(--sf-radius-1\/2));
+    -webkit-font-feature-settings: "tnum";
+            font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+    cursor: text;
+    transition-property: background-color;
+    transition-duration: var(--sf-duration-fast);
+    transition-timing-function: var(--sf-animation);
+  }
+  /* Size 1's stepper is the field less 4 on each side (--sf-space-1/4): 32 in
+     a 40 field, 28 in a phone's 36 -- the 1/2 control, as before. In a
+     compact region C79 brings the field down to 32 and the 1/2 control to 28,
+     which left 2 to the frame; the stepper is 24 there, as plain 1/2's of
+     the same 32 height (RG-QT-4). */
+  .sf-quantity.sf-quantity--size-1 {
+    --sf-quantity--number-height: calc(var(--sf-ui-1--control-height) - 2 * var(--sf-space-1\/4));
+  }
+  .sf-quantity.sf-quantity--size-2 {
+    --sf-quantity--number-height: var(--sf-ui-1--control-height);
+  }
+  .sf-quantity.sf-quantity--size-1\/2 {
+    --sf-quantity--number-height: var(--sf-icon-size-3);
+  }
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input:enabled:not(:-moz-read-only):not(.focus-visible):hover {
+    --sf-quantity-input--background-color: var(--sf-surface-state-hover);
+  }
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input:enabled:not(:read-only):not(.focus-visible):hover {
+    --sf-quantity-input--background-color: var(--sf-surface-state-hover);
+  }
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input:enabled:not(:-moz-read-only):not(:focus-visible):hover {
+    --sf-quantity-input--background-color: var(--sf-surface-state-hover);
+  }
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > input:enabled:not(:read-only):not(:focus-visible):hover {
+    --sf-quantity-input--background-color: var(--sf-surface-state-hover);
+  }
+  /* The unit after the number, in the quiet ink, the number's own type. */
+  .sf-quantity .sf-quantity-unit:where(:dir(ltr)){
+    padding-right: var(--sf-space-1\/4);
+  }
+  .sf-quantity .sf-quantity-unit:where(:dir(rtl)){
+    padding-left: var(--sf-space-1\/4);
+  }
+  .sf-quantity .sf-quantity-unit {
+    -webkit-padding-end: var(--sf-space-1\/4);
+            padding-inline-end: var(--sf-space-1\/4);
+    font-family: var(--sf-quantity-input--font-family);
+    font-size: var(--sf-quantity-input--font-size);
+    line-height: var(--sf-quantity-input--line-height);
+    white-space: nowrap;
+    cursor: text;
+  }
+  /* On a touch phone the core lifts a field's text to 16px so iOS does not
+     zoom into it (_sf_css__touch_fields.scss, same query); the unit takes
+     the same floor so it stays the number's size. */
+  @media (hover: none) and (pointer: coarse) {
+    @media not all and (min-width: 60rem) {
+      .sf-quantity .sf-quantity-unit {
+        font-size: max(var(--sf-quantity-input--font-size), 16px);
+      }
+    }
+  }
+  /* An exact value (steppers="none"): a plain number field. The text starts
+     where sf-input's does (the field's space-x, then the text inset), the
+     unit follows the number as sf-input's end text does, and the keys still
+     step. */
+  .sf-quantity.sf-quantity--steppers-none .sf-quantity-row > .sf-quantity-wrap > input:where(:dir(ltr)){
+    text-align: left;
+  }
+  .sf-quantity.sf-quantity--steppers-none .sf-quantity-row > .sf-quantity-wrap > input:where(:dir(rtl)){
+    text-align: right;
+  }
+  .sf-quantity.sf-quantity--steppers-none .sf-quantity-row > .sf-quantity-wrap > input {
+    text-align: start;
+  }
+  /* The number starts where sf-input's value does (C77, C153 (7)): the
+     step's inset from the outer edge, the border counted inside it, with
+     the same corner correction (field-ladder.inset; 12 / 16 / 20, compact
+     12 / 12 / 16, phone 12). The box's border and the number's own 4
+     (--sf-space-1/4) come off it. It stood at the step's space-x plus its
+     text step: 25 at 1, 21 on a phone. */
+  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1\/3 {
+    --sf-quantity--line-radius: min(var(--sf-quantity-radius, var(--sf-radius--ui)), var(--sf-ui-1\/3--control-height) / 2);
+    --sf-quantity--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+  }
+  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1\/2 {
+    --sf-quantity--line-radius: min(var(--sf-quantity-radius, var(--sf-radius--ui)), var(--sf-ui-1\/2--control-height) / 2);
+    --sf-quantity--inset: max(var(--sf-space-1\/2), var(--sf-b2));
+  }
+  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-1 {
+    --sf-quantity--line-radius: min(var(--sf-quantity-radius, var(--sf-radius--ui)), var(--sf-ui-1--control-height) / 2);
+    --sf-quantity--inset: var(--sf-space-1);
+  }
+  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-2 {
+    --sf-quantity--line-radius: min(var(--sf-quantity-radius, var(--sf-radius--ui)), var(--sf-ui-2--control-height) / 2);
+    --sf-quantity--inset: var(--sf-space-1);
+  }
+  @media (min-width: 60rem) {
+    .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-2 {
+      --sf-quantity--inset: var(--sf-space-2);
+    }
+  }
+  .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-3 {
+    --sf-quantity--line-radius: min(var(--sf-quantity-radius, var(--sf-radius--ui)), var(--sf-ui-3--control-height) / 2);
+    --sf-quantity--inset: var(--sf-space-1);
+  }
+  @media (min-width: 60rem) {
+    .sf-quantity.sf-quantity--steppers-none.sf-quantity--size-3 {
+      --sf-quantity--inset: var(--sf-space-3);
+    }
+  }
+  .sf-quantity.sf-quantity--steppers-none:is(.sf-quantity--size-1\/3, .sf-quantity--size-1\/2, .sf-quantity--size-1, .sf-quantity--size-2, .sf-quantity--size-3) .sf-quantity-row > .sf-quantity-wrap {
+    --sf-quantity--value-inset: calc(var(--sf-quantity--inset) + max(calc(var(--sf-px) * 0), var(--sf-quantity--line-radius) - var(--sf-radius-1\/2)) / 2);
+    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc(var(--sf-quantity--value-inset) - var(--sf-px) - var(--sf-space-1\/4)));
+    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc(var(--sf-quantity--value-inset) - var(--sf-px) - var(--sf-space-1\/4)));
+  }
+  /* The inherited marker and reset stand after the box, on its row (F3):
+     no inset into a box. */
+  .sf-quantity .sf-quantity-inherited {
+    --sf-field-inherited-slot--inset: calc(var(--sf-px) * 0);
+  }
+  /* F8: under a finger a stepper answers on the box's whole height and to
+     the box's outer edge; the picture keeps its rung. */
+  .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count {
+    position: relative;
+  }
+  @media (pointer: coarse) {
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count::before {
+      content: "";
+      position: absolute;
+      top: calc(-1 * (var(--sf-quantity-wrap--padding-inline-start) + var(--sf-px)));
+      bottom: calc(-1 * (var(--sf-quantity-wrap--padding-inline-start) + var(--sf-px)));
+      inset-block: calc(-1 * (var(--sf-quantity-wrap--padding-inline-start) + var(--sf-px)));
+      left: 0;
+      right: 0;
+      inset-inline: 0;
+    }
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count:first-child::before:where(:dir(ltr)){
+      left: calc(-1 * (var(--sf-quantity-wrap--padding-inline-start) + var(--sf-px)));
+    }
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count:first-child::before:where(:dir(rtl)){
+      right: calc(-1 * (var(--sf-quantity-wrap--padding-inline-start) + var(--sf-px)));
+    }
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count:first-child::before {
+      inset-inline-start: calc(-1 * (var(--sf-quantity-wrap--padding-inline-start) + var(--sf-px)));
+    }
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count:last-child::before:where(:dir(ltr)){
+      right: calc(-1 * (var(--sf-quantity-wrap--padding-inline-end) + var(--sf-px)));
+    }
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count:last-child::before:where(:dir(rtl)){
+      left: calc(-1 * (var(--sf-quantity-wrap--padding-inline-end) + var(--sf-px)));
+    }
+    .sf-quantity .sf-quantity-row > .sf-quantity-wrap > .sf-quantity-count:last-child::before {
+      inset-inline-end: calc(-1 * (var(--sf-quantity-wrap--padding-inline-end) + var(--sf-px)));
+    }
+  }
+}
+@layer sf.paint {
+  .sf-quantity .sf-quantity-unit {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-quantity:has(input:disabled) .sf-quantity-unit {
+    color: var(--sf-on-surface-disabled);
+  }
+}
+/* The steppers are drawn by the script before the icon-button sheet may have
+   arrived; until it does they were the browser's grey button, fading out over
+   the button's transition (simai/ui-source#2). No weight here: the icon
+   button's own rules win the moment they apply. */
+@layer sf.components {
+  :where(.sf-quantity .sf-quantity-count) {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    border: 0;
+    border-color: revert-layer;
+  }
+}
+@layer sf.paint {
+  :where(.sf-quantity .sf-quantity-count) {
+    background-color: transparent;
+    border: 0;
+  }
+}
+@layer sf.states {
+  /* One focus look by mouse and by keys (owner decision C153 (4), finished in
+     component.quantity 1.10.0): sf-quantity--pointer-focus no longer changes
+     anything. The script still writes it while a pointer focus lasts, for a
+     page selector that reads it, until 2027-01-01 (journal
+     class-quantity-pointer-focus-c153). */
+  .sf-quantity .sf-quantity-count:disabled .sf-icon {
+    --sf-icon--color: var(--sf-on-surface-disabled);
+  }
+  /* The step buttons sit inside the field, so their own ring turns inwards. */
+  .sf-quantity .sf-icon-button.sf-quantity-count:not(:disabled).focus-visible {
+    outline-offset: var(--sf-focus--inset);
+  }
+  .sf-quantity .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
+    outline-offset: var(--sf-focus--inset);
+  }
+  @media (forced-colors: active) {
+    .sf-quantity:has(input:not(:disabled):not(.disabled):focus) .sf-quantity-wrap {
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
+      --sf-quantity-wrap--box-shadow: none;
+    }
+    .sf-quantity .sf-icon-button.sf-quantity-count:not(:disabled).focus-visible {
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
+      --sf-icon-button--box-shadow: none;
+    }
+    .sf-quantity .sf-icon-button.sf-quantity-count:not(:disabled):focus-visible {
+      outline: var(--sf-focus--width) solid currentColor;
+      outline-offset: var(--sf-focus--inset);
+      --sf-icon-button--box-shadow: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sf-quantity .sf-quantity-wrap {
+      transition-duration: 0s;
+    }
+  }
+}
+/* The outer steps of the field ladder (inputs/scss/_field-ladder.scss): at
+   1/3 and 3 the box is as tall as sf-input of the size (28 / 56 on a
+   desktop); it drew the neighbouring kept size, 32 / 48. The number is the
+   text of the size, the label, help and error a step below, the stepper a
+   rung below the field as at the kept sizes: the control of size 2 inside a
+   size 3 box; inside a 1/3 box, where the ladder has no control below, the
+   1/2 text line (20), which leaves the box's block padding round it. */
+@layer sf.components {
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-text,
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-required {
+    --sf-quantity-text--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-text--line-height: var(--sf-text-height-1\/3);
+    --sf-quantity-required--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-required--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-hint-text-wrap {
+    --sf-quantity-hint-text-wrap--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-hint-text-wrap--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 {
+    --sf-quantity--number-height: var(--sf-text-height-1\/2);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-wrap {
+    --sf-quantity-wrap--block-size: var(--sf-ui-1\/3--control-height);
+    --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/3--space-y-tightness-default) - var(--sf-px)));
+    --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-1\/3--space-y-tightness-default) - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/3--control-height) - var(--sf-text-height-1\/2)) / 2 - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-1\/3--control-height) - var(--sf-text-height-1\/2)) / 2 - var(--sf-px)));
+    --sf-quantity-input--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-input--line-height: var(--sf-text-height-1\/3);
+    --sf-quantity-input--font-family: var(--sf-text--family);
+    --sf-quantity-input--font-weight: var(--sf-font-weight-regular);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-count {
+    --sf-icon-button--padding-bottom: calc((var(--sf-text-height-1\/2) - var(--sf-text-height-1\/3)) / 2);
+    --sf-icon-button--padding-inline-end: calc((var(--sf-text-height-1\/2) - var(--sf-text-height-1\/3)) / 2);
+    --sf-icon-button--padding-inline-start: calc((var(--sf-text-height-1\/2) - var(--sf-text-height-1\/3)) / 2);
+    --sf-icon-button--padding-top: calc((var(--sf-text-height-1\/2) - var(--sf-text-height-1\/3)) / 2);
+  }
+  /* The icon of the step, a step down on a phone (field-ladder.icon,
+     C151): 28 at 3 there, not the 24 of the text line. */
+  .sf-quantity.sf-quantity--size-1\/3 .sf-icon,
+  .sf-quantity.sf-quantity--size-1\/3 .sf-icon-button.sf-quantity-count.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-text-height-1\/3);
+    --sf-icon--height: var(--sf-text-height-1\/3);
+    --sf-icon--width: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 input {
+    --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
+    --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-wrap input::-webkit-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-wrap input::-moz-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-wrap input:-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-wrap input::-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/3 .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-1\/3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-1\/3);
+  }
+  .sf-quantity.sf-quantity--size-1\/3:has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+  }
+  .sf-quantity.sf-quantity--size-1\/3:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+  }
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-text,
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-required {
+    --sf-quantity-text--font-size: var(--sf-text-size-2);
+    --sf-quantity-text--line-height: var(--sf-text-height-2);
+    --sf-quantity-required--font-size: var(--sf-text-size-2);
+    --sf-quantity-required--line-height: var(--sf-text-height-2);
+  }
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-hint-text-wrap {
+    --sf-quantity-hint-text-wrap--font-size: var(--sf-text-size-2);
+    --sf-quantity-hint-text-wrap--line-height: var(--sf-text-height-2);
+  }
+  .sf-quantity.sf-quantity--size-3 {
+    --sf-quantity--number-height: var(--sf-ui-2--control-height);
+  }
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-wrap {
+    --sf-quantity-wrap--block-size: var(--sf-ui-3--control-height);
+    --sf-quantity-wrap--padding-bottom: var(--sf-quantity-padding-block, calc(var(--sf-ui-3--space-y-tightness-default) - var(--sf-px)));
+    --sf-quantity-wrap--padding-top: var(--sf-quantity-padding-block, calc(var(--sf-ui-3--space-y-tightness-default) - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-end: var(--sf-quantity-padding-inline, calc((var(--sf-ui-3--control-height) - var(--sf-ui-2--control-height)) / 2 - var(--sf-px)));
+    --sf-quantity-wrap--padding-inline-start: var(--sf-quantity-padding-inline, calc((var(--sf-ui-3--control-height) - var(--sf-ui-2--control-height)) / 2 - var(--sf-px)));
+    --sf-quantity-input--font-size: var(--sf-text-size-3);
+    --sf-quantity-input--line-height: var(--sf-text-height-3);
+    --sf-quantity-input--font-family: var(--sf-text--family);
+    --sf-quantity-input--font-weight: var(--sf-font-weight-regular);
+  }
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-count {
+    --sf-icon-button--padding-bottom: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-3)) / 2);
+    --sf-icon-button--padding-inline-end: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-3)) / 2);
+    --sf-icon-button--padding-inline-start: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-3)) / 2);
+    --sf-icon-button--padding-top: calc((var(--sf-ui-2--control-height) - var(--sf-text-height-3)) / 2);
+  }
+  @media not all and (min-width: 60rem) {
+    .sf-quantity.sf-quantity--size-3 .sf-quantity-count {
+      --sf-icon-button--padding-bottom: calc((var(--sf-ui-2--control-height) - var(--sf-icon-size-4)) / 2);
+      --sf-icon-button--padding-inline-end: calc((var(--sf-ui-2--control-height) - var(--sf-icon-size-4)) / 2);
+      --sf-icon-button--padding-inline-start: calc((var(--sf-ui-2--control-height) - var(--sf-icon-size-4)) / 2);
+      --sf-icon-button--padding-top: calc((var(--sf-ui-2--control-height) - var(--sf-icon-size-4)) / 2);
+    }
+  }
+  /* The icon of the step, a step down on a phone (field-ladder.icon,
+     C151): 28 at 3 there, not the 24 of the text line. */
+  .sf-quantity.sf-quantity--size-3 .sf-icon,
+  .sf-quantity.sf-quantity--size-3 .sf-icon-button.sf-quantity-count.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+    --sf-icon--font-size: var(--sf-text-height-3);
+    --sf-icon--height: var(--sf-text-height-3);
+    --sf-icon--width: var(--sf-text-height-3);
+  }
+  @media not all and (min-width: 60rem) {
+    .sf-quantity.sf-quantity--size-3 .sf-icon,
+    .sf-quantity.sf-quantity--size-3 .sf-icon-button.sf-quantity-count.sf-icon-button--icon :is(.sf-icon, sf-icon:not(:defined)) {
+      --sf-icon--font-size: var(--sf-icon-size-4);
+      --sf-icon--height: var(--sf-icon-size-4);
+      --sf-icon--width: var(--sf-icon-size-4);
+    }
+  }
+  .sf-quantity.sf-quantity--size-3 input {
+    --sf-quantity-input--padding-inline-end: var(--sf-space-1\/4);
+    --sf-quantity-input--padding-inline-start: var(--sf-space-1\/4);
+  }
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-wrap input::-webkit-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-3);
+  }
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-wrap input::-moz-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-3);
+  }
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-wrap input:-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-3);
+  }
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-wrap input::-ms-input-placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-3);
+  }
+  .sf-quantity.sf-quantity--size-3 .sf-quantity-wrap input::placeholder {
+    --sf-quantity-placeholder--font-size: var(--sf-text-size-3);
+    --sf-quantity-placeholder--line-height: var(--sf-text-height-3);
+  }
+  .sf-quantity.sf-quantity--size-3:has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+  }
+  .sf-quantity.sf-quantity--size-3:has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+  }
+}
+/* C153 (1): at size 1 the label stays 14 on a phone (below 60rem), as
+   sf-input's. (2) A disabled field's mark goes with its label. */
+@media not all and (min-width: 60rem) {
+  .sf-quantity.sf-quantity.sf-quantity--size-1 .sf-quantity-text,
+  .sf-quantity.sf-quantity.sf-quantity--size-1 .sf-quantity-required {
+    --sf-quantity-text--font-size: var(--sf-text-size-1);
+    --sf-quantity-text--line-height: var(--sf-text-height-1);
+    --sf-quantity-required--font-size: var(--sf-text-size-1);
+    --sf-quantity-required--line-height: var(--sf-text-height-1);
+  }
+}
+.sf-quantity:has(input:disabled) .sf-quantity-required {
+  --sf-quantity-required--color: var(--sf-on-surface-disabled);
+}
+
+.sf-quantity:has(input:disabled) .sf-quantity-text {
+  --sf-quantity-text--color: var(--sf-on-surface-disabled);
+}
+
+/* The filled look (owner decision C224, 2026-11-16; prototypes/forms-quantity-study.html
+   #q-qty-filled), on request only (owner decision C283, 2026-11-17): a
+   quantity is bordered by default, as in the released pair; sf-quantity--filled
+   draws it filled, no border: sf-input--filled's and sf-textarea--filled's box
+   (C52, C113). sf-quantity--bordered names the default. The public variables keep their meaning:
+   --sf-quantity-background-color is the fill, --sf-quantity-border-color the
+   edge and the bottom line. Read-only (QT-08), the focus edge and the
+   steppers are the same in both looks. */
+@layer sf.components {
+  /* The place's dim ink, kept above the box, which re-declares it as the ink
+     on a fill: the placeholder stays the place's dim ink, as sf-input's. */
+  .sf-quantity.sf-quantity--filled {
+    --sf-quantity--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-variant));
+  }
+  .sf-quantity.sf-quantity--filled:not(.error) .sf-quantity-wrap input:enabled::-webkit-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-quantity--place-variant);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error) .sf-quantity-wrap input:enabled::-moz-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-quantity--place-variant);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error) .sf-quantity-wrap input:enabled:-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-quantity--place-variant);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error) .sf-quantity-wrap input:enabled::-ms-input-placeholder {
+    --sf-quantity-placeholder--color: var(--sf-quantity--place-variant);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error) .sf-quantity-wrap input:enabled::placeholder {
+    --sf-quantity-placeholder--color: var(--sf-quantity--place-variant);
+  }
+  /* At rest: the container fill, a transparent edge a state colours, the
+     bottom line in --sf-outline. */
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:-moz-read-only)) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-surface-container));
+    --sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-transparent-for-focus));
+    --sf-quantity-wrap--line-color: var(--sf-quantity-border-color, var(--sf-outline));
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:read-only)) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-quantity-background-color, var(--sf-surface-container));
+    --sf-quantity-wrap--border-color: var(--sf-quantity-border-color, var(--sf-transparent-for-focus));
+    --sf-quantity-wrap--line-color: var(--sf-quantity-border-color, var(--sf-outline));
+  }
+  /* While someone types in it, the ordinary field: no fill and the region's
+     line for its edge. Lighter than the hover rule, so hover still colours
+     the edge; later than the rest, as specific. */
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:not(:-moz-read-only)[focus-within]) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-outline);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:not(:read-only)[focus-within]) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-outline);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:not(:-moz-read-only):focus-within) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-outline);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:not(:read-only):focus-within) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-outline);
+  }
+  /* Under the pointer the hover step of the fill, the dim ink made for a fill
+     and the edge in one colour (C113, C153 (4)). */
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):hover) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-surface-container-hover);
+    --sf-quantity--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-container-variant));
+    --sf-quantity-wrap--line-color: var(--sf-quantity-wrap--border-color);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):hover) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-surface-container-hover);
+    --sf-quantity--place-variant: var(--sf-place--fill-placeholder, var(--sf-on-surface-container-variant));
+    --sf-quantity-wrap--line-color: var(--sf-quantity-wrap--border-color);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+    --sf-quantity-wrap--line-color: var(--sf-quantity-wrap--border-color);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):active) .sf-quantity-wrap {
+    --sf-quantity-wrap--border-color: var(--sf-primary-active);
+    --sf-quantity-wrap--line-color: var(--sf-quantity-wrap--border-color);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only)[focus-within]) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-transparent);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only)[focus-within]) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-transparent);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:-moz-read-only):focus-within) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-transparent);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:disabled):not(.disabled):not(:read-only):focus-within) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-transparent);
+  }
+  /* Disabled: the disabled fill and no edge, as sf-input--filled. */
+  .sf-quantity.sf-quantity--filled:has(input:disabled) .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-surface-disabled);
+    --sf-quantity-wrap--border-color: var(--sf-transparent-for-focus);
+  }
+  /* Invalid: the error container fill, as sf-input--filled and
+     sf-textarea--filled; the message under the box takes the error colour. */
+  .sf-quantity.sf-quantity--filled.error .sf-quantity-wrap {
+    --sf-quantity-wrap--background-color: var(--sf-error-container);
+    --sf-quantity-wrap--border-color: var(--sf-transparent-for-focus);
+  }
+}
+@layer sf.paint {
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:-moz-read-only)) .sf-quantity-wrap {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+  .sf-quantity.sf-quantity--filled:not(.error):has(input:enabled:not(:read-only)) .sf-quantity-wrap {
+    --sf-on-surface-variant: var(--sf-on-surface-container-variant);
+  }
+}
+@layer sf.base {
+  .sf-quantity:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+  .sf-quantity:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-quantity-label {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: start;
+    justify-items: start;
+  }
+  .sf-quantity:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-quantity-wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    justify-items: center;
+  }
+  .sf-quantity:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-quantity-count {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    justify-items: center;
+  }
+  .sf-quantity:where(:not([data-sf-started] *):not([data-sf-static]):not([data-sf-static] *)) .sf-quantity-wrap input {
+    display: flex;
+  }
+}

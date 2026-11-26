@@ -189,13 +189,13 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('ui-dc9fc39aeb26', $lock['runtime']['pair_id']);
-        $this->assertSame('dc9fc39aeb266bbd8fd2486f21da50d7d1d85d74', $lock['runtime']['ui']['commit']);
-        $this->assertSame('dc9fc39aeb266bbd8fd2486f21da50d7d1d85d74', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('7bd5312087bf002a9283190d29c96ee58ba33a57', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('ui-73df5d1b4d4c', $lock['runtime']['pair_id']);
+        $this->assertSame('73df5d1b4d4c82d674dfa2c7fb4e41f49a6b47eb', $lock['runtime']['ui']['commit']);
+        $this->assertSame('73df5d1b4d4c82d674dfa2c7fb4e41f49a6b47eb', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('b209ab955296b2476480e4d1ab82db164dfca6ad', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('7c13d0615047c6142c0d7380f94476a04fece5a7a9b95c6372225cead9370041', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('4773b1cb6b3da2b45d6f4e3fa2a8872e86d43c2c520340e0b6112652b36b7d4e', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('23a5817fbfc3d247853d17ad270dd6914bafc6fd139ffe5524060ae6b317570b', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('f8c25205d51f18ab777f7ab3e6b8643203a72dfefd3ac799f01acaed32f96048', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui', $lock['asset_projection']['source']['provider']);
@@ -204,40 +204,40 @@ class PortableInitCommandTest extends TestCase
             $lock['asset_projection']['source']['revision'],
         );
         $this->assertSame([
-            'smart/alert/js/alert.js' => '8b77bc4979065ed983d2768cd6f01da9cbcf91d738a612d14d3a93eca52a5bc1',
-            'smart/alert/js/alert.min.js' => '92a4eaab05e2a2f8b29af1e617b37a29b17ce1c013204b913b67d7390e4ea64d',
-            'smart/avatar/js/avatar.js' => 'a7594c45b4d657b317c59f42b2c3b418adf5f4097048a67dbdfae4954fada752',
-            'smart/avatar/js/avatar.min.js' => '113ac898ff7a6b4c3efe24de84a045248fd96981346d3a8858e242b86d07ab41',
-            'smart/badge/js/badge.js' => '302c712ce0c024d509f86a97501a39e0671e812a1b8ad3bf88edcfedd4e19fa5',
-            'smart/badge/js/badge.min.js' => '0e941637283591126091ba8474327547c13136b7a2d497b6bd821bcc8d02876a',
+            'smart/alert/js/alert.js' => 'a2177dd9ba1559150b0085c5bf2cd9b1bc272703690b7ffaa92639d180aff07e',
+            'smart/alert/js/alert.min.js' => '3dd52eb8cea060036f995972372c1b38771539a1670d1e4fcfff887ef7b82ffb',
+            'smart/avatar/js/avatar.js' => 'b04235faaad48e325bfbc37f2f98dab21f3b04bf9b75fd6b4b1433fac105af16',
+            'smart/avatar/js/avatar.min.js' => 'bf390e889e72ac0fa8cc96d6cf6696bebbdf9cb0321207cd5c5b8b6631028e56',
+            'smart/badge/js/badge.js' => '925a514cfabe7609c33b9cc314d7b595fb671331b6605ea178641ab9ce96ed4a',
+            'smart/badge/js/badge.min.js' => '3c8a8031cdb2af2b27f48c6e1f922a4020fe2826bfe29f54a40d6a89fb3d6ed9',
             'smart/button-close/css/button-close.css' => '3bf84ff663eb381ed5da16bd496d628b9b709c0315d6c589059b424990a2296e',
             'smart/button-close/css/button-close.min.css' => '01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b',
-            'smart/button-close/js/button-close.js' => '3d8b4b40388cff993b9249eb2ede14be8ecc1cbfa7d5903aa42ef5917cefa382',
-            'smart/button-close/js/button-close.min.js' => 'cea2541e6e8bad730efd39af6bdacadcbc4f337bd408285612c87e911513dff8',
-            'smart/button-copy/css/button-copy.css' => 'ba3bea40bb79e3e3127ba84c6fbc5ab2f26e4277603e650ae04f1a753a985574',
-            'smart/button-copy/css/button-copy.min.css' => '8d586705d9f4a47bbf24fcc471e57d03e87feaab598e50d0482640b7b742cbc7',
-            'smart/button-copy/js/button-copy.js' => 'b4b1806453dfbd50fa58f1effdec982c18b602eae9930079d7f5fbb031fdb050',
-            'smart/button-copy/js/button-copy.min.js' => '8a61e71b987d8d8eab42c0bd45ba4e7b03b2bc7d618b7739d82564c8a6966818',
-            'smart/button-icon/css/button-icon.css' => '4e0dd8bd70d8f7e45a280cf2e15cae90e1c1b7d0d81fc18a74d5d68779d8c605',
-            'smart/button-icon/css/button-icon.min.css' => '594bf26b8da057142dff351d7c9d98176fb87381859d2bf0cf30f7d672f65434',
-            'smart/button-icon/js/button-icon.js' => 'd56b7b9504b9dc897b55f69357197c31c2fbfd88531508a716873b6491ed84e5',
-            'smart/button-icon/js/button-icon.min.js' => 'c8407f8877341ab5ff5052fe8bf9a379fc4db03648c28d5957865f3431a85d3c',
-            'smart/button/js/button.js' => '613abcf187feef9704712cfe73b39494ec61f3ddc976f98d303c2b6096bf35e2',
-            'smart/button/js/button.min.js' => 'a90bf1d7ba00b5af0465f7feaa9f67aa01f3abcde80d10217cc3a1a1955399d9',
-            'smart/icon/js/icon.js' => '9fa56722958ebbbfd8e1f36a9b9bedda7d8653ece7f4e28aa54a7b798133718a',
-            'smart/icon/js/icon.min.js' => 'ccc35e22f1a69f6667273184e04228972cd8eb5717cf9c0b1412b953a005fcdb',
-            'smart/modal/js/modal.js' => '7c18ac1c4a0d9807f926c9d5d8b615f6272b603a0e2e3bd07982fc97fdd6f15d',
-            'smart/modal/js/modal.min.js' => '0da2116c77106c5146684cf8c231729e07671b80a26a2d5abd127b10570f7ded',
-            'smart/progress-bar/js/progress-bar.js' => 'e3ec6c3f65672473672801016d6de76e2191125b4bb35eb86de86d6ef9a57512',
-            'smart/progress-bar/js/progress-bar.min.js' => 'a10f002064f288016b23a3009e623db41d6cad910c7a7d8020d26d89e49fbcd0',
-            'smart/reference-link/js/reference-link.js' => '7742058515bd2ab6a835830f35f3129179f412e84b61c8146c8c1d03936b2c09',
-            'smart/reference-link/js/reference-link.min.js' => '4bc0550c0bb660424aace504d444d4ec0f9ad53623490c0090d78a11ac4972b8',
-            'smart/tag/css/tag.css' => 'eaa8b1e6d0351bc07c2d953b2d662df1789ea9b789a8a135f7f53a4bf81483ea',
-            'smart/tag/css/tag.min.css' => '27cc9279eab272c47b129e32b54b45cb78c65a89f2f442572eccc3aaad83594e',
-            'smart/tag/js/tag.js' => 'fbd288c87483eb03497d1f14b8f1e6596c904f9b00b3f4aa60e8ff690cd33f62',
-            'smart/tag/js/tag.min.js' => 'efee3ae55fb855e469928fefb43385188937bcbc38283e8daa3c28f24325c5f9',
-            'smart/tooltip/js/tooltip.js' => '28b2708f9db60873cefdbd392c5b78dc9115c3545360d82c42f85dfa4148dfd9',
-            'smart/tooltip/js/tooltip.min.js' => '00346a63b8cec7429f7750883f98fbb1d1052e8283a6f7a3332f3c05f71034c1',
+            'smart/button-close/js/button-close.js' => '0b3c0ce0f693fbaf87d3299c51756589388005668b89927fc5c1b4f2a6d98943',
+            'smart/button-close/js/button-close.min.js' => '1a5ff3713ff6b8c98cba98beecc9e0425b346b41ae34e1481f864a1dfd86b092',
+            'smart/button-copy/css/button-copy.css' => '06e8a6e47f5b06b51bfdeceaaa1d108a90c99d8b0fca2698ff3a1a23566d6c66',
+            'smart/button-copy/css/button-copy.min.css' => '68adea43e82ada4addeb92a450fd9488acdb1b7d6b79309137b10fa4836898bd',
+            'smart/button-copy/js/button-copy.js' => '3c06164f4aabaac3861a8f5943848730c7b69b38ceac35b51f21381ee17ced97',
+            'smart/button-copy/js/button-copy.min.js' => '53a20873d6eeee72d3f03538488248ca7ccb4dd60e9aa21495d2b0e843940599',
+            'smart/button-icon/css/button-icon.css' => '44a32a6144036767c6a7c1bdb60bb3fce67eae3db446a1e34d83bc48484d86b7',
+            'smart/button-icon/css/button-icon.min.css' => 'a8e4966b896823f60e67c061348ecb4567ee7544abb1626002b0eafbaae03835',
+            'smart/button-icon/js/button-icon.js' => 'bb783a03ecd342b10db63566555aaab585a1003f03c5e1d0df8e10e6b863640f',
+            'smart/button-icon/js/button-icon.min.js' => 'ac29e4424a3c4d59af50f27b8c57d466548f7e73d71dd2e8d485c6481885dc8b',
+            'smart/button/js/button.js' => 'c47017fc31c76b495bda5fc1af7c761e7742c6edb4ee783c2217f5dd2c404015',
+            'smart/button/js/button.min.js' => '3ee9fdc6f92203369ccd5a896ea4d63cc1ef9d091c828053c2a052c1d998db41',
+            'smart/icon/js/icon.js' => '70c78f440f375632c2290e2685768b79f1d42b35572a3d2db84f8ffbd58b869d',
+            'smart/icon/js/icon.min.js' => 'f699827e45589d4d25acbfb20768c535b511ed93c85346eb492837ebc5f90e6e',
+            'smart/modal/js/modal.js' => 'b563b140b1c617e0ac24cc0b7e36a3e9e6e6e3a9db7930dab334bbdf0bd12f35',
+            'smart/modal/js/modal.min.js' => '60908ce69ef5f940eb03a8c77aa7277cf86327bf36ac9467b19ec1094f620f34',
+            'smart/progress-bar/js/progress-bar.js' => '91d106b4d3c19925636430f79bfed5542f02299eb310ea5091c16ed19f93e889',
+            'smart/progress-bar/js/progress-bar.min.js' => '67ff8444405d5d3d245638848956c7fa10cc0df23208d1b1982e043d3f6599ef',
+            'smart/reference-link/js/reference-link.js' => 'db26304c69da3419f61887ba16b32a60a9aac31d87ffdeb83250f0050a62154e',
+            'smart/reference-link/js/reference-link.min.js' => '9d433c19c295c11411de699632ff20ac7bb5ea551b7b49f8a0c19f11833ad8cf',
+            'smart/tag/css/tag.css' => 'a1a86edc4d8d7780d5bac9dbc4ff23f9590e2285da5198e319e22211a5499336',
+            'smart/tag/css/tag.min.css' => '280a6d72fe06e07370ff5976e9826bac051934e8493c7d3be949cd9afb5c767f',
+            'smart/tag/js/tag.js' => 'b4ea1d9f988af52388d6c439a57307499ee9fb1538423178bcf98d71187b8b82',
+            'smart/tag/js/tag.min.js' => '9f636caa91e23833dfb536bc01c2ba68fb73d46f21b737991dad9f08afac6503',
+            'smart/tooltip/js/tooltip.js' => '38c1059e31cd0e517debdbe1be02562359e824cf3a4d3936a240bbec54d840d0',
+            'smart/tooltip/js/tooltip.min.js' => '1ed8cc403bfe5ba9aaa7fb9191b3d488d3854f7d8a56a7a447195b33b2f32f2e',
         ], array_map(
             static fn (array $record): string => $record['sha256'],
             $lock['asset_projection']['files'],
@@ -245,9 +245,9 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame('docara.framework_dynamic_asset_projection.v1', $lock['dynamic_asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['dynamic_asset_projection']['mount']);
         $this->assertSame($lock['runtime']['ui_smart']['commit'], $lock['dynamic_asset_projection']['source']['revision']);
-        $this->assertCount(318, $lock['dynamic_asset_projection']['files']);
+        $this->assertCount(323, $lock['dynamic_asset_projection']['files']);
         $this->assertSame(
-            '7d75f7a7ff1513c924637b2b899564863be8ccedd78184fdc2baed18d070b939',
+            '8f3e2e9cbaacf7935dfe2be7e0992f0336b067a3576e190f7693163226675d7e',
             $lock['dynamic_asset_projection']['files']['smart/input/js/input.js']['sha256'],
         );
         $this->assertSame('docara.framework_icon_projection.v1', $lock['icon_projection']['schema']);

@@ -501,6 +501,7 @@ surrounding documentation.
 | `sources` | `true`, `false` | `true` | The source code tabs; `false` shows only the result. |
 | `layout` | `column`, `wide` | `column` | The example's width: `column` follows the text column, `wide` spans the window edge to edge on a landing page. |
 | `viewport` | `column`, `desktop` | `column` | The screen the example is made for: `column` is the text column, `desktop` a 1280-wide desktop. Such an example keeps its width and scrolls sideways; in a column narrower than 512 it takes the column's width. |
+| `height` | integer | — | The example frame's height in pixels (32 to 4000) while the example loads, so the page does not jump on a first visit. Once the example has drawn, the frame takes its real height, and the site remembers it for the reader's next visits. Applies to examples in their own frame. |
 | `log` | string | — | The example log: event names separated by spaces that are recorded from the example's root, for example `"click sf-button-press"`. |
 | `log_console` | `true`, `false` | `false` | The "Console" tab in the log: the example's `console.log`, `info`, `warn` and `error`. Turns the log on even without `log`. |
 | `log_open` | `true`, `false` | `true` | Whether the log opens expanded; `false` opens it collapsed. |

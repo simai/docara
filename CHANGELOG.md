@@ -6,6 +6,15 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- **An example keeps its place while it loads.** `:::example {height=320}` holds a
+  framed example at that height until it draws, so the page does not jump on a
+  first visit; the shell then remembers the measured height per page, example
+  and width for the reader's next visits. Values are whole pixels from 32 to
+  4000; anything else stops the build with
+  `MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID`.
+
 ## [3.19.0] - 2026-11-24
 
 ### Added

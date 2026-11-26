@@ -890,6 +890,13 @@ final class PortableMarkdownRenderer
                 $log,
                 $ownTheme,
             );
+            // A frame learns its height only once its document has drawn, so
+            // an author's height holds the frame's place on a first visit;
+            // the shell remembers the measured height for the next ones.
+            $height = $this->exampleHeight($attributes);
+            if ($height !== null) {
+                $preview = preg_replace('/^<iframe /', '<iframe data-docara-example-height="' . $height . '" ', $preview, 1);
+            }
         } elseif ($hasMarkdown) {
             $preview = '<div data-docara-example-inline-preview>' . $this->nestInlineHeadings($compiledPreview) . '</div>';
             // The device widths need a document of their own: the inline
@@ -1026,6 +1033,7 @@ final class PortableMarkdownRenderer
                 $this->attributeBoolean($attributes['sources'], 'example', 'sources');
             }
             $this->catalogueChoice(trim($attributes['layout'] ?? 'column'), 'example', 'layout');
+            $this->exampleHeight($attributes);
             $this->exampleLog($attributes);
             $ownTheme = $this->exampleOwnTheme($attributes);
             if (trim($attributes['label'] ?? 'Example') === '') {
@@ -1343,6 +1351,23 @@ final class PortableMarkdownRenderer
             // announces itself and the shell sizes the frame.
             . ' data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-page" sandbox="allow-scripts" allow="clipboard-write" scrolling="no" loading="lazy" data-docara-srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
+    }
+
+    /** @param array<string, string> $attributes */
+    private function exampleHeight(array $attributes): ?int
+    {
+        if (! array_key_exists('height', $attributes)) {
+            return null;
+        }
+        $value = trim($attributes['height']);
+        if (preg_match('/^[1-9][0-9]{1,3}$/', $value) !== 1 || (int) $value < 32 || (int) $value > 4000) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID',
+                "Markdown component [example] has invalid [height] value [$value]: use whole pixels from 32 to 4000.",
+            );
+        }
+
+        return (int) $value;
     }
 
     /**

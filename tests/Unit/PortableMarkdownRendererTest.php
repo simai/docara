@@ -2599,6 +2599,32 @@ MD);
     }
 
     #[Test]
+    public function an_example_height_holds_the_frame_place_until_the_example_draws(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $html = $renderer->render(":::example {preview=sandbox height=320}\n```markdown\nText\n```\n:::\n");
+        self::assertMatchesRegularExpression('~<iframe data-docara-example-height="320" [^>]*data-docara-example-frame~', $html);
+
+        // An inline example draws with the page, so it needs no held height.
+        $inline = $renderer->render(":::example {preview=inline height=320}\n```markdown\nText\n```\n:::\n");
+        self::assertStringNotContainsString('data-docara-example-height', $inline);
+
+        foreach (['0', '20', '4001', '12.5', '320px', 'tall'] as $invalid) {
+            try {
+                $renderer->render(":::example {preview=sandbox height={$invalid}}\n```markdown\nText\n```\n:::\n");
+                self::fail("height={$invalid} must be rejected.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID', $exception->errorCode);
+            }
+        }
+
+        // The shell remembers the measured height per page, example and width.
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        self::assertStringContainsString("'docara-example-height:'+location.pathname+'#'+id", $shell);
+        self::assertStringContainsString('localStorage.setItem(heightKey,JSON.stringify({w:frame.clientWidth,h:size}))', $shell);
+    }
+
+    #[Test]
     public function a_desktop_example_gets_a_frame_that_scrolls_sideways_under_a_chip(): void
     {
         $renderer = new PortableMarkdownRenderer;

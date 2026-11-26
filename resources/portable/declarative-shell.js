@@ -302,6 +302,19 @@
   }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));
   var docaraExampleFrames=Array.from(document.querySelectorAll('iframe[data-docara-example-frame]'));
+  /* A frame learns its height only after its document draws. Until then it holds the height it had at this width on the reader's last visit, or the author's height attribute, so the page does not jump as examples load. */
+  function exampleHeightKey(frame){
+    if(frame.hasAttribute('data-docara-example-responsive-frame'))return null;
+    var example=frame.closest('[data-docara-example]');
+    var id=example?example.getAttribute('data-docara-example'):'';
+    return id?'docara-example-height:'+location.pathname+'#'+id:null;
+  }
+  docaraExampleFrames.forEach(function(frame){
+    var key=exampleHeightKey(frame),width=frame.clientWidth,size=0;
+    if(key)try{var stored=JSON.parse(localStorage.getItem(key)||'null');if(stored&&Math.abs(Number(stored.w)-width)<=8&&Number(stored.h)>=32)size=Number(stored.h)}catch(error){}
+    if(!size)size=Number(frame.getAttribute('data-docara-example-height'))||0;
+    if(size>=32)frame.style.blockSize=Math.ceil(size)+'px';
+  });
   /* A frame document starts in the page's language and direction: scripts inside it read <html lang> as they start (file sizes, dates, default labels), before the frame runtime hears from the page. */
   function docaraFrameSource(source){
     var lang=document.documentElement.lang||'',direction=document.documentElement.dir==='rtl'?'rtl':'';
@@ -758,6 +771,8 @@
     /* The frame reports a box for each open menu or dialog, whether or not it reaches past the frame's flow. */
     exampleFrameState(frame).layers=boxes.length;
     frame.style.blockSize=size+'px';
+    var heightKey=exampleHeightKey(frame);
+    if(heightKey&&!boxes.length)try{localStorage.setItem(heightKey,JSON.stringify({w:frame.clientWidth,h:size}))}catch(error){}
     /* An open menu's room hangs below the frame's flow height over what follows, as a menu does on a page: the page keeps its place, and only the frame's flow box and the menus stay visible and clickable. */
     if(extra>0){
       var width=frame.clientWidth,flowSize=size-extra;

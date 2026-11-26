@@ -518,8 +518,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // for 9678ad0e: 3519. Seven admitted ui.* Smart components with their
         // runtime files, counted on the merged main: 3528. The Framework pair
         // ui-73df5d1b4d4c (595 more runtime files) and the shell groups that
-        // follow it: 4125.
-        self::assertCount(4125, $firstFiles);
+        // follow it: 4125. The stage hero example and the example height
+        // row, counted on the merged main: 4127.
+        self::assertCount(4127, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_ends_with($path, '/core/css/utility.full.css'),

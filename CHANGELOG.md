@@ -6,6 +6,8 @@ All notable changes to Docara are recorded here. The format follows
 
 ## [Unreleased]
 
+## [3.20.0] - 2026-11-26
+
 ### Added
 
 - **A hero can be a live scene over the first screen.** `:::hero {layout=stage effect=…}`

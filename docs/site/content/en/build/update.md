@@ -133,7 +133,7 @@ in versions 3.0.0–3.0.5, `ui-25beeb814ae8` in versions 3.1.0–3.5.0,
 `ui-7fb26d395af2` in version 3.14.3,
 `ui-141822273efe` in versions 3.15.0–3.17.0,
 `ui-dc9fc39aeb26` in versions 3.18.0–3.19.0,
-`ui-73df5d1b4d4c` in later versions. A build no longer needs
+`ui-73df5d1b4d4c` from version 3.20.0. A build no longer needs
 a separate Framework copy or environment variables: you can remove
 `DOCARA_SIMAI_UI_ROOT` and `SIMAI_UI_ROOT` from the build environment and from
 CI. These variables stay optional and are needed only to build with another

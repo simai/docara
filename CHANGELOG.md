@@ -35,6 +35,11 @@ All notable changes to Docara are recorded here. The format follows
   tooltip is one size), so the manifest keeps leaving it out; the Smart UI
   page now says so, and a page that sets it stops with
   `FRAMEWORK_PROP_UNKNOWN`.
+- **`ui.tabs` stays unadmitted, for a Docara reason now.** The Framework
+  declares how tab panels are given (`<div role="tabpanel" data-entry>`), but
+  a `:::ui.*` directive takes only scalar JSON settings and no Markdown, so a
+  page has no way to write the list of tabs or their panels yet. The
+  catalogue's gap record says what is missing; use `:::tabs` meanwhile.
 
 ## [3.19.0] - 2026-11-24
 

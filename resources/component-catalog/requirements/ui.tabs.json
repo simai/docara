@@ -24,9 +24,9 @@
         "framework_owner": "simai/ui"
     },
     "gap": {
-        "owner": "simai/ui",
-        "reason": "The Framework tabs Smart component is not admitted for Markdown pages yet, so pages cannot call it directly.",
+        "owner": "simai/docara",
+        "reason": "Since ui-73df5d1b4d4c the Framework declares how a panel is given (sf-tabs 1.5.4: one <div role=\"tabpanel\" data-entry=\"<item id>\"> per item, printed beside the items setting), but Docara cannot take it from a Markdown page yet: a :::ui.* directive carries only a JSON object of scalar settings, its manifest contract admits string, boolean, integer and number props but not the list-typed items setting, and a Framework directive cannot hold Markdown or another directive, so there is no place for the panel content.",
         "fallback": "Use the typed :::tabs block with level-three headings; it renders accessible tabs from Framework classes.",
-        "admission": "The Framework lock pins a ui.tabs Smart manifest with its assets, and Docara admits it with a consumer policy, tests, a docs page with a live example and a catalogue entry; this record is then removed."
+        "admission": "Docara decides how a Markdown page writes the panels (an authoring syntax), lets a Framework manifest declare a list-typed prop with its item fields, and prints one tabpanel per item; ui.tabs then lands with its manifest, consumer policy, tests, a docs page with a live example and a catalogue entry, and this record is removed."
     }
 }
